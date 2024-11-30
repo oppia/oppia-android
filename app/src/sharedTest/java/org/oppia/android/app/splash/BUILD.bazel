@@ -29,6 +29,7 @@ app_test(
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_auto_android_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",

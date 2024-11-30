@@ -18,6 +18,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SU
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
@@ -32,6 +33,8 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_STO
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RETROFIT_CALL_FAILED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SURVEY_POPUP
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -106,6 +109,8 @@ class OppiaLoggerTest {
     private val TEST_INFO_EXCEPTION = Throwable(TEST_INFO_LOG_EXCEPTION)
     private val TEST_WARN_EXCEPTION = Throwable(TEST_WARN_LOG_EXCEPTION)
     private val TEST_ERROR_EXCEPTION = Throwable(TEST_ERROR_LOG_EXCEPTION)
+
+    private val TEST_PROFILE_ID = ProfileId.newBuilder().setInternalId(0).build()
   }
 
   @Inject
@@ -418,6 +423,22 @@ class OppiaLoggerTest {
     assertThat(eventContext.appInForegroundTime.appSessionId).matches(TEST_APP_SESSION_ID)
     assertThat(eventContext.appInForegroundTime.foregroundTime)
       .isEqualTo(TEST_FOREGROUND_TIME.toFloat())
+  }
+
+  @Test
+  fun testLogger_createProfileOnboardingStartedContext_returnsCorrectProfileOnboardingContext() {
+    val eventContext = oppiaLogger.createProfileOnboardingStartedContext(TEST_PROFILE_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(START_PROFILE_ONBOARDING_EVENT)
+    assertThat(eventContext.startProfileOnboardingEvent.profileId).isEqualTo(TEST_PROFILE_ID)
+  }
+
+  @Test
+  fun testLogger_createProfileOnboardingEndedContext_returnsCorrectProfileOnboardingContext() {
+    val eventContext = oppiaLogger.createProfileOnboardingEndedContext(TEST_PROFILE_ID)
+
+    assertThat(eventContext.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+    assertThat(eventContext.endProfileOnboardingEvent.profileId).isEqualTo(TEST_PROFILE_ID)
   }
 
   private fun setUpTestApplicationComponent() {
