@@ -23,7 +23,8 @@ class ProfileDeleteSuccessDialogFragment : InjectableDialogFragment() {
     const val DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG = "DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT"
 
     /** Returns a new instance of [ProfileDeleteSuccessDialogFragment]. */
-    fun createNewInstance(): ProfileDeleteSuccessDialogFragment = ProfileDeleteSuccessDialogFragment()
+    fun createNewInstance(): ProfileDeleteSuccessDialogFragment
+        = ProfileDeleteSuccessDialogFragment()
   }
 
   override fun onAttach(context: Context) {
