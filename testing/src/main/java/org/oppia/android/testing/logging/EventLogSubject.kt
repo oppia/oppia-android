@@ -22,6 +22,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SU
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
@@ -55,6 +56,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SOLUTION
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_OVER_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SUBMIT_ANSWER_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_IN_LESSON_LANGUAGE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
@@ -1326,6 +1328,58 @@ class EventLogSubject private constructor(
   }
 
   /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [START_PROFILE_ONBOARDING_EVENT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasStartProfileOnboardingContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(START_PROFILE_ONBOARDING_EVENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasStartProfileOnboardingContext] and returns a
+   * [ProfileOnboardingContextSubject] to test the corresponding context.
+   */
+  fun hasStartProfileOnboardingContextThat(): ProfileOnboardingContextSubject {
+    hasStartProfileOnboardingContext()
+    return ProfileOnboardingContextSubject.assertThat(
+      actual.context.startProfileOnboardingEvent
+    )
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasStartProfileOnboardingContextThat(
+    block: ProfileOnboardingContextSubject.() -> Unit
+  ) {
+    hasStartProfileOnboardingContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [END_PROFILE_ONBOARDING_EVENT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasEndProfileOnboardingContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(END_PROFILE_ONBOARDING_EVENT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasEndProfileOnboardingContext] and returns a
+   * [ProfileOnboardingContextSubject] to test the corresponding context.
+   */
+  fun hasEndProfileOnboardingContextThat(): ProfileOnboardingContextSubject {
+    hasEndProfileOnboardingContext()
+    return ProfileOnboardingContextSubject.assertThat(
+      actual.context.endProfileOnboardingEvent
+    )
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasEndProfileOnboardingContextThat(
+    block: ProfileOnboardingContextSubject.() -> Unit
+  ) {
+    hasEndProfileOnboardingContextThat().block()
+  }
+
+  /**
    * Truth subject for verifying properties of [AppLanguageSelection]s.
    *
    * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
@@ -2397,6 +2451,36 @@ class EventLogSubject private constructor(
       fun assertThat(actual: FeatureFlagItemContext?):
         FeatureFlagItemContextSubject =
           assertAbout(::FeatureFlagItemContextSubject).that(actual)
+    }
+  }
+
+  /**
+   * Truth subject for verifying properties of [EventLog.ProfileOnboardingContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.ProfileOnboardingContext] proto can be verified through inherited methods.
+   *
+   * Call [ProfileOnboardingContextSubject.assertThat] to create the subject.
+   */
+  class ProfileOnboardingContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.ProfileOnboardingContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [LiteProtoSubject] to test [EventLog.ProfileOnboardingContext.getProfileId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasProfileIdThat(): LiteProtoSubject = LiteProtoTruth.assertThat(actual.profileId)
+
+    companion object {
+      /**
+       * Returns a new [ProfileOnboardingContextSubject] to verify aspects of the specified
+       * [EventLog.ProfileOnboardingContext] value.
+       */
+      fun assertThat(actual: EventLog.ProfileOnboardingContext): ProfileOnboardingContextSubject =
+        assertAbout(::ProfileOnboardingContextSubject).that(actual)
     }
   }
 

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.R
+import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
@@ -21,11 +22,14 @@ import org.oppia.android.app.options.AudioLanguageSelectionViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.AudioLanguageSelectionFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */
@@ -34,7 +38,9 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
+  private val profileManagementController: ProfileManagementController,
   private val translationController: TranslationController,
+  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
@@ -118,12 +124,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
 
     binding.onboardingNavigationContinue.setOnClickListener {
       updateSelectedAudioLanguage(selectedLanguage, profileId).also {
-        val intent = HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
-        fragment.startActivity(intent)
-        // Finish this activity as well as all activities immediately below it in the current
-        // task so that the user cannot navigate back to the onboarding flow by pressing the
-        // back button once onboarding is complete
-        fragment.activity?.finishAffinity()
+        logInToProfile(profileId)
       }
     }
 
@@ -157,6 +158,30 @@ class AudioLanguageFragmentPresenter @Inject constructor(
           else -> {} // Do nothing.
         }
       }
+  }
+
+  private fun logInToProfile(profileId: ProfileId) {
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(
+      fragment,
+      { result ->
+        if (result is AsyncResult.Success) {
+          navigateToHomeScreen(profileId)
+        }
+      }
+    )
+  }
+
+  private fun navigateToHomeScreen(profileId: ProfileId) {
+    val intent = if (enableMultipleClassrooms.value) {
+      ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
+    } else {
+      HomeActivity.createHomeActivity(fragment.requireContext(), profileId)
+    }
+    fragment.startActivity(intent)
+    // Finish this activity as well as all activities immediately below it in the current
+    // task so that the user cannot navigate back to the onboarding flow by pressing the
+    // back button once onboarding is complete.
+    fragment.activity?.finishAffinity()
   }
 
   /** Save the current dropdown selection to be retrieved on configuration change. */
