@@ -167,7 +167,7 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog_checkOpensSuccessDialog() {
+  fun testProfileEdit_clickProfileDeletionButton_checkOpensDeletionDialog_checkOpensSuccessDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
@@ -181,7 +181,7 @@ class ProfileEditFragmentTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog_checkOpensSuccessDialog() {
+  fun testProfileEdit_configChange_clickDelete_checkOpensDeletionDialog_checkOpensSuccessDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
@@ -197,7 +197,7 @@ class ProfileEditFragmentTest {
 
   @Test
   @Config(qualifiers = "land")
-  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkOpensDeletionDialog_checkOpensSuccessDialogIsVisible() {
+  fun testProfileEdit_clickDelete_landscapeMode_checkOpensDeletionDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
