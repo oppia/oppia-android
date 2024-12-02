@@ -593,8 +593,8 @@ class ProfileEditFragmentTest {
         .build() as TestApplicationComponent
     }
 
-    fun inject(profileEditFragmentTest: ProfileEditFragmentTest)
-        = component.inject(profileEditFragmentTest)
+    fun inject(profileEditFragmentTest: ProfileEditFragmentTest) =
+      component.inject(profileEditFragmentTest)
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
       component
