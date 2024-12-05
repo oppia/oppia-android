@@ -446,6 +446,7 @@ class HtmlParserTest {
       textView.text = htmlResult
       return@runWithActivity textView to htmlResult
     }
+
     assertThat(htmlResult.toString()).isEqualTo(
       "The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
         "number is bigger or smaller than another"
@@ -473,6 +474,7 @@ class HtmlParserTest {
     val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     assertThat(imageSpans.first().source).isEqualTo("test.png")
+
     assertThat(htmlResult.toString().startsWith("\n")).isFalse()
     assertThat(htmlResult.toString().endsWith("\n")).isFalse()
   }
