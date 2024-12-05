@@ -470,7 +470,6 @@ class HtmlParserTest {
         textView
       )
     }
-
     val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
     assertThat(imageSpans.first().source).isEqualTo("test.png")
