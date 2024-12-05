@@ -72,9 +72,20 @@ class ClassroomListActivity :
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
   }
 
-  override fun onRestart() {
-    super.onRestart()
-    classroomListActivityPresenter.handleOnRestart()
+  override fun onBackPressed() {
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val exitProfileDialogArguments =
+      ExitProfileDialogArguments
+        .newBuilder()
+        .setHighlightItem(HighlightItem.NONE)
+        .build()
+    val dialogFragment = ExitProfileDialogFragment
+      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
