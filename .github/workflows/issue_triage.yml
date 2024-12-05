@@ -1,0 +1,91 @@
+name: Issue Triage and Management
+
+on:
+  issues:
+    types: [opened, labeled, assigned]
+
+permissions:
+  issues: write
+
+jobs:
+  triage-on-issue-open:
+    runs-on: ubuntu-latest
+    if: github.event.sender.login != 'github-actions'
+    steps:
+      - name: Reply to Issue
+        uses: peter-evans/issues-comment-action@v2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          comment: >
+            Thanks for filing the issue! We’ll review it shortly and route it to the correct team.
+
+      - name: Check Labels for Proper Triaging
+        id: check-labels
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const labels = issue.data.labels.map(label => label.name);
+            const requiredLabels = {
+              types: ['bug', 'enhancement', 'good first issue'],
+              impacts: ['Impact: High', 'Impact: Medium', 'Impact: Low'],
+              work: ['Work: High', 'Work: Medium', 'Work: Low'],
+              priorities: ['Priority: Essential', 'Priority: Important', 'Priority: Nice-to-have']
+            };
+
+            const hasTypeLabel = labels.some(label => requiredLabels.types.includes(label));
+            const hasImpactLabel = labels.some(label => requiredLabels.impacts.includes(label));
+            const hasWorkLabel = labels.some(label => requiredLabels.work.includes(label));
+            const hasPriorityLabel = labels.some(label => requiredLabels.priorities.includes(label));
+
+            const needsTriage = !(hasTypeLabel && hasImpactLabel && hasWorkLabel && hasPriorityLabel);
+
+            core.setOutput('needs-triage', needsTriage);
+
+      - name: Manage Needs Triage Label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const needsTriage = '${{ steps.check-labels.outputs.needs-triage }}' === 'true';
+            if (needsTriage) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: ['needs-triage']
+              });
+            } else {
+              try {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  name: 'needs-triage'
+                });
+              } catch (error) {
+                if (error.status !== 404) {
+                  throw error;
+                }
+              }
+            }
+
+      - name: Verify Project Assignment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const projects = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+
+            const openProjects = projects.data.filter(project => project.state === 'open');
+            if (openProjects.length !== 1) {
+              throw new Error(Issue must be assigned to exactly one open project. Found: ${openProjects.length});
+            }
+            console.log(Valid project assignment: ${openProjects[0].name});
