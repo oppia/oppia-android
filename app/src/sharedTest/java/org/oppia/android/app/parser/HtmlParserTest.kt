@@ -5,19 +5,14 @@ import android.app.Application
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -140,7 +135,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import junit.framework.Assert.fail
 import kotlin.reflect.KClass
 
 // TODO(#277): Add tests for UrlImageParser.
@@ -319,60 +313,6 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_withEscapedNewlineTabsAndDoubleNewlines_removesExtraNewlinesCorrectly() {
-    val rawHtmlContent = "This is a line.\\n\\t<p>This is another line with a tab.</p>\\n\\n<p>And this is a third line.</p>"
-
-    val cleanedHtmlContent = rawHtmlContent
-      .replace("\\n\\t", "")
-      .replace("\\n\\n", "")
-
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val (textView, parsedHtmlResult) = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      val spannableResult = htmlParser.parseOppiaHtml(cleanedHtmlContent, textView)
-      return@runWithActivity textView to spannableResult
-    }
-
-    assertThat(parsedHtmlResult.toString()).doesNotContain("\\n\\t")
-    assertThat(parsedHtmlResult.toString()).doesNotContain("\\n\\n")
-    assertThat(parsedHtmlResult.toString()).isEqualTo(cleanedHtmlContent)
-
-    assertThat(textView.text.toString()).isEqualTo(parsedHtmlResult.toString())
-  }
-
-  @Test
-  fun testHtmlContent_withLeadingTrailingNewlinesAndImage_trimsNewlinesCorrectly() {
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = true,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val rawHtmlContent = "\n<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
-      "</oppia-noninteractive-image>\n"
-    val (textView, trimmedHtmlResult) = activityScenarioRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
-      val spannableResult = htmlParser.parseOppiaHtml(rawHtmlContent, textView)
-      return@runWithActivity textView to spannableResult
-    }
-
-    assertThat(trimmedHtmlResult.toString())
-      .isEqualTo("<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
-        "</oppia-noninteractive-image>")
-    assertThat(textView.text.toString()).isEqualTo(trimmedHtmlResult.toString())
-
-    assertThat(trimmedHtmlResult.startsWith("\n")).isFalse()
-    assertThat(trimmedHtmlResult.endsWith("\n")).isFalse()
-  }
-
-  @Test
   fun testHtmlContent_handleCustomOppiaTags_parsedHtmlDisplaysStyledText() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -485,6 +425,56 @@ class HtmlParserTest {
     // Verify that the image span is prefixed & suffixed with a space to work around an AOSP bug.
     assertThat(htmlResult.toString()).startsWith(" ")
     assertThat(htmlResult.toString()).endsWith(" ")
+  }
+
+  @Test
+  fun testHtmlContentReplace_removesUnwantedNewlines() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val (_, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "<ul><li>\n\tThe counting numbers (1, 2, 3, 4, 5 ….)\n\n</li><li>\n\tHow to tell" +
+          " whether one counting number is bigger or smaller than another.\n\n</li></ul>",
+        textView
+      )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
+    }
+    assertThat(htmlResult.toString()).isEqualTo(
+      "The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
+        "number is bigger or smaller than another"
+    )
+  }
+
+  @Test
+  fun testHtmlContent_withImageTag_trimsLeadingAndTrailingNewlines() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "\n<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>\n",
+        textView
+      )
+    }
+
+    val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+    assertThat(imageSpans.first().source).isEqualTo("test.png")
+    assertThat(htmlResult.toString().startsWith("\n")).isFalse()
+    assertThat(htmlResult.toString().endsWith("\n")).isFalse()
   }
 
   @Test
