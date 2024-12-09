@@ -1,13 +1,11 @@
 package org.oppia.android.app.settings.profile
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogListener
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
@@ -151,16 +149,11 @@ class ProfileEditFragmentPresenter @Inject constructor(
         fragment,
         Observer {
           if (it is AsyncResult.Success) {
-            if (fragment.requireContext().resources.getBoolean(R.bool.isTablet)) {
-              val intent =
-                Intent(fragment.requireContext(), AdministratorControlsActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            } else {
-              val intent = Intent(fragment.requireContext(), ProfileListActivity::class.java)
-              intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-              fragment.startActivity(intent)
-            }
+            ProfileDeleteSuccessDialogFragment.createNewInstance()
+              .showNow(
+                fragment.childFragmentManager,
+                ProfileDeleteSuccessDialogFragment.DELETE_PROFILE_SUCCESS_DIALOG_FRAGMENT_TAG
+              )
           }
         }
       )

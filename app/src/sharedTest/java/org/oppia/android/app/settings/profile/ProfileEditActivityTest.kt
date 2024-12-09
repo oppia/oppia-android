@@ -244,6 +244,10 @@ class ProfileEditActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_success_dialog_positive_button))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       } else {
@@ -263,6 +267,10 @@ class ProfileEditActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_success_dialog_positive_button))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
