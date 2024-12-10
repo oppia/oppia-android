@@ -11,6 +11,7 @@ import org.xml.sax.Attributes
 const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val CUSTOM_IMG_ALT_TEXT_ATTRIBUTE = "alt-with-value"
+private const val CUSTOM_IMG_CAPTION_ATTRIBUTE = "caption-with-value"
 
 /**
  * A custom tag handler for supporting custom Oppia images parsed with [CustomHtmlContentHandler].
@@ -27,6 +28,8 @@ class ImageTagHandler(
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
+    val caption = attributes.getJsonStringValue(CUSTOM_IMG_CAPTION_ATTRIBUTE)
+
     if (source != null) {
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
@@ -57,6 +60,13 @@ class ImageTagHandler(
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, output.length, spannableBuilder)
-    } else consoleLogger.w("ImageTagHandler", "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
+    } else consoleLogger.w("ImageTagHandler",
+      "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
+
+    if (!caption.isNullOrBlank()) {
+      output.append("\n").append(caption)
+    } else {
+      consoleLogger.w("ImageTagHandler", "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE")
+    }
   }
 }

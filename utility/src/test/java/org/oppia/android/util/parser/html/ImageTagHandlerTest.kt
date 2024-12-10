@@ -70,6 +70,11 @@ private const val IMAGE_TAG_WITH_SPACE_ONLY_ALT_VALUE_MARKUP =
     "caption-with-value=\"&amp;quot;&amp;quot;\" " +
     "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
 
+private const val IMAGE_TAG_WITH_CAPTION_MARKUP =
+  "<oppia-noninteractive-image alt-with-value=\"&amp;quot;alt text 1&amp;quot;\" " +
+    "caption-with-value=\"&amp;quot;This is a caption&amp;quot;\" " +
+    "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
+
 /** Tests for [ImageTagHandler]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -98,6 +103,35 @@ class ImageTagHandlerTest {
   }
 
   // TODO(#3085): Introduce test for verifying that the error log scenario is logged correctly.
+
+  @Test
+  fun testParseHtml_withImageCardMarkupAndCaption_includesCaptionBelowImage() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = IMAGE_TAG_WITH_CAPTION_MARKUP,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).isEqualTo("alt text 1\nThis is a caption")
+  }
+
+  @Test
+  fun testParseHtml_withMultipleImageCardMarkupsAndCaptions_includesAllCaptions() {
+    val combinedHtml = "$IMAGE_TAG_WITH_CAPTION_MARKUP and $IMAGE_TAG_WITH_CAPTION_MARKUP"
+
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = combinedHtml,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).isEqualTo("alt text 1\nThis is a caption"+
+      " and alt text 1\nThis is a caption")
+  }
 
   @Test
   fun testParseHtml_emptyString_doesNotIncludeImageSpan() {
