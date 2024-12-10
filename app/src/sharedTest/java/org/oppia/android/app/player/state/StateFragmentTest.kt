@@ -1138,7 +1138,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  fun testStateFragment_loadDragDropExp_mergeItems_dargAndDrop_retainStateOnConfigurationChange() {
+  fun testStateFragment_loadDragDropExp_mergeItems_dragAndDrop_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1322,6 +1322,197 @@ class StateFragmentTest {
             context.getString(R.string.correct_submitted_answer)
           )
         )
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_wrongAnswer_retainsLatestState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Wrong answer: Move 1st item to 2nd position.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("3/5")))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 1,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("0.35")))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_wrongAnswer_unArrangedRetainState_causeSubmitTimeError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      playThroughPrototypeState8()
+
+      // Drag and drop interaction without grouping.
+      // Ninth state: Drag Drop Sort. Wrong answer: Move 1st item to 2nd position.
+      dragAndDropItem(fromPosition = 0, toPosition = 1)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("3/5")))
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.drag_drop_interaction_error)).check(
+        matches(withText(R.string.drag_and_drop_interaction_empty_input))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestStateCount() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).check(matches(hasChildCount(3)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(2)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestStateText() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 1,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("I bought")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeUnlinkFirstTwoItems_wrongAnswer_retainsLatestState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      unlinkDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(withId(R.id.drag_drop_interaction_recycler_view)).check(matches(hasChildCount(4)))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_item_recyclerview
+        )
+      ).check(matches(hasChildCount(1)))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_loadDragDropExp_mergeItems_dragItem_wrongAnswer_retainsLatestState() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      dragAndDropItem(fromPosition = 0, toPosition = 2)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 2,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_loadDragDropExp_mergeItems_unArrangedRetainState_causeSubmitTimeError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      mergeDragAndDropItems(position = 0)
+      clickSubmitAnswerButton()
+
+      scrollToViewType(DRAG_DROP_SORT_INTERACTION)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_item_recyclerview,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText("a camera at the store")))
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.drag_drop_interaction_error)).check(
+        matches(withText(R.string.drag_and_drop_interaction_empty_input))
       )
     }
   }
