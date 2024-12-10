@@ -17,9 +17,12 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.ProfileChooserAddViewBinding
 import org.oppia.android.databinding.ProfileChooserFragmentBinding
@@ -29,8 +32,11 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -73,6 +79,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val analyticsController: AnalyticsController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -174,30 +181,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       updateLearnerIdIfAbsent(model.profile)
-      if (model.profile.pin.isEmpty()) {
-        profileManagementController.loginToProfile(model.profile.id).toLiveData().observe(
-          fragment,
-          Observer {
-            if (it is AsyncResult.Success) {
-              if (enableMultipleClassrooms.value) {
-                activity.startActivity(
-                  ClassroomListActivity.createClassroomListActivity(activity, model.profile.id)
-                )
-              } else {
-                activity.startActivity(
-                  HomeActivity.createHomeActivity(activity, model.profile.id)
-                )
-              }
-            }
-          }
-        )
+      if (enableOnboardingFlowV2.value) {
+        ensureProfileOnboarded(model.profile)
       } else {
-        val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
-          activity,
-          chooserViewModel.adminPin,
-          model.profile.id.internalId
-        )
-        activity.startActivity(pinPasswordIntent)
+        logInToProfile(model.profile)
       }
     }
   }
@@ -265,6 +252,56 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     if (profile.learnerId.isNullOrEmpty()) {
       // TODO(#4345): Block on the following data provider before allowing the user to log in.
       profileManagementController.initializeLearnerId(profile.id)
+    }
+  }
+
+  private fun ensureProfileOnboarded(profile: Profile) {
+    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOnboarding) {
+      logInToProfile(profile)
+    } else {
+      launchOnboardingScreen(profile.id, profile.name)
+    }
+  }
+
+  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
+    val introActivityParams = IntroActivityParams.newBuilder()
+      .setProfileNickname(profileName)
+      .build()
+
+    val intent = IntroActivity.createIntroActivity(activity)
+    intent.apply {
+      putProtoExtra(IntroActivity.PARAMS_KEY, introActivityParams)
+      decorateWithUserProfileId(profileId)
+    }
+
+    activity.startActivity(intent)
+  }
+
+  private fun logInToProfile(profile: Profile) {
+    if (profile.pin.isNullOrBlank()) {
+      profileManagementController.loginToProfile(profile.id).toLiveData().observe(
+        fragment,
+        {
+          if (it is AsyncResult.Success) {
+            if (enableMultipleClassrooms.value) {
+              activity.startActivity(
+                ClassroomListActivity.createClassroomListActivity(activity, profile.id)
+              )
+            } else {
+              activity.startActivity(
+                HomeActivity.createHomeActivity(activity, profile.id)
+              )
+            }
+          }
+        }
+      )
+    } else {
+      val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
+        activity,
+        chooserViewModel.adminPin,
+        profile.id.internalId
+      )
+      activity.startActivity(pinPasswordIntent)
     }
   }
 }

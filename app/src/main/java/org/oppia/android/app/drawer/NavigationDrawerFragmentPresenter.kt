@@ -109,13 +109,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         drawerLayout.closeDrawers()
         footerViewModel.isDeveloperOptionsSelected.set(true)
         val intent = starter.createIntent(activity, profileId)
-        fragment.activity!!.startActivity(intent)
-        if (previousMenuItemId == 0) fragment.activity!!.finish()
+        fragment.requireActivity().startActivity(intent)
+        if (previousMenuItemId == 0) fragment.requireActivity().finish()
         else if (previousMenuItemId != null &&
           NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
           NavigationDrawerItem.HOME
         ) {
-          fragment.activity!!.finish()
+          fragment.requireActivity().finish()
         }
         drawerLayout.closeDrawers()
       }
@@ -148,13 +148,13 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity,
             profileId
           )
-        fragment.activity!!.startActivity(intent)
-        if (previousMenuItemId == -1) fragment.activity!!.finish()
+        fragment.requireActivity().startActivity(intent)
+        if (previousMenuItemId == -1) fragment.requireActivity().finish()
         else if (previousMenuItemId != null &&
           NavigationDrawerItem.valueFromNavId(previousMenuItemId!!) !=
           NavigationDrawerItem.HOME
         ) {
-          fragment.activity!!.finish()
+          fragment.requireActivity().finish()
         }
         drawerLayout.closeDrawers()
       }
@@ -240,7 +240,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             ClassroomListActivity.createClassroomListActivity(activity, profileId)
           else
             HomeActivity.createHomeActivity(activity, profileId)
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.OPTIONS -> {
@@ -248,9 +248,9 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
-            fragment.activity!!.finish()
+            fragment.requireActivity().finish()
           }
           drawerLayout.closeDrawers()
         }
@@ -259,18 +259,18 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
             activity, profileId,
             /* isFromNavigationDrawer= */ true
           )
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
-            fragment.activity!!.finish()
+            fragment.requireActivity().finish()
           }
           drawerLayout.closeDrawers()
         }
         NavigationDrawerItem.DOWNLOADS -> {
           val intent =
             MyDownloadsActivity.createMyDownloadsActivityIntent(activity, internalProfileId)
-          fragment.activity!!.startActivity(intent)
+          fragment.requireActivity().startActivity(intent)
           if (checkIfPreviousActivityShouldGetFinished(menuItemId)) {
-            fragment.activity!!.finish()
+            fragment.requireActivity().finish()
           }
           drawerLayout.closeDrawers()
         }
@@ -412,7 +412,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          fragment.requireActivity().invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.component_color_shared_slide_drawer_open_status_bar_color,
             activity,
@@ -451,7 +451,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       ) {
         override fun onDrawerOpened(drawerView: View) {
           super.onDrawerOpened(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          fragment.requireActivity().invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.component_color_shared_slide_drawer_open_status_bar_color,
             activity,
@@ -461,7 +461,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
         override fun onDrawerClosed(drawerView: View) {
           super.onDrawerClosed(drawerView)
-          fragment.activity!!.invalidateOptionsMenu()
+          fragment.requireActivity().invalidateOptionsMenu()
           StatusBarColor.statusBarColorUpdate(
             R.color.component_color_shared_activity_status_bar_color,
             activity,
@@ -473,7 +473,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
       /* Synchronize the state of the drawer indicator/affordance with the linked [drawerLayout]. */
       drawerLayout.post { drawerToggle.syncState() }
       if (previousMenuItemId != NavigationDrawerItem.HOME.ordinal && previousMenuItemId != -1) {
-        fragment.activity!!.finish()
+        fragment.requireActivity().finish()
       }
     }
   }

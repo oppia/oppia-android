@@ -38,10 +38,6 @@ class HomeActivityPresenter @Inject constructor(private val activity: AppCompatA
     }
   }
 
-  fun handleOnRestart() {
-    setUpNavigationDrawer()
-  }
-
   private fun setUpNavigationDrawer() {
     val toolbar = activity.findViewById<View>(R.id.home_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)

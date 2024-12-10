@@ -137,15 +137,15 @@ class AppStartupStateController @Inject constructor(
   ): StartupMode {
     // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
     // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
-    if (!enableAppAndOsDeprecation.get().value) {
+    return if (!enableAppAndOsDeprecation.get().value) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
         onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED
         else -> StartupMode.USER_NOT_YET_ONBOARDED
       }
+    } else {
+      deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
     }
-
-    return deprecationController.processStartUpMode(onboardingState, deprecationResponseDatabase)
   }
 
   private fun computeBuildNoticeMode(
