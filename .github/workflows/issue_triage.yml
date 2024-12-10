@@ -12,13 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.sender.login != 'github-actions'
     steps:
-      - name: Reply to Issue
+      - name: Reply to Issue (Only on Opened)
+        if: ${{ github.event.action == 'opened' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.issue.number }}
-          comment: >
+          body: |
             Thanks for filing the issue! We’ll review it shortly and route it to the correct team.
-
+            
       - name: Check Labels for Proper Triaging
         id: check-labels
         uses: actions/github-script@v6
@@ -84,3 +85,4 @@ jobs:
             } else {
               console.log(`Valid project assignment: ${assignedProjects[0].name}`);
             }
+              
