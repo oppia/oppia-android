@@ -74,7 +74,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const projects = await github.rest.projects.listForRepo({
+            const projects = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo
             });
