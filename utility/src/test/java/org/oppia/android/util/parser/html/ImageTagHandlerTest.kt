@@ -129,8 +129,10 @@ class ImageTagHandlerTest {
       )
 
     val parsedHtmlStr = parsedHtml.toString()
-    assertThat(parsedHtmlStr).isEqualTo("alt text 1\nThis is a caption"+
-      " and alt text 1\nThis is a caption")
+    assertThat(parsedHtmlStr).isEqualTo(
+      "alt text 1\nThis is a caption" +
+        " and alt text 1\nThis is a caption"
+    )
   }
 
   @Test

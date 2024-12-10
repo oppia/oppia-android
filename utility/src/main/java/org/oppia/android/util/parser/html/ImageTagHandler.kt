@@ -60,8 +60,10 @@ class ImageTagHandler(
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, output.length, spannableBuilder)
-    } else consoleLogger.w("ImageTagHandler",
-      "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
+    } else consoleLogger.w(
+      "ImageTagHandler",
+      "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE"
+    )
 
     if (!caption.isNullOrBlank()) {
       output.append("\n").append(caption)
