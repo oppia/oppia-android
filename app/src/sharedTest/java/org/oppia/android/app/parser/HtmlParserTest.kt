@@ -428,7 +428,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContentReplace_removesUnwantedNewlines() {
+  fun testHtmlContentParsing_removesUnwantedNewlines() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
@@ -454,7 +454,7 @@ class HtmlParserTest {
   }
 
   @Test
-  fun testHtmlContent_withImageTag_trimsLeadingAndTrailingNewlines() {
+  fun testHtmlContentParsing_withImageTag_trimsLeadingAndTrailingNewlines() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
       entityType = "",
