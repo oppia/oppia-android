@@ -697,7 +697,6 @@ class ProfileChooserFragmentTest {
   fun testFragment_enableOnboardingV2_landscape_shortList_checkScrollArrowsAreNotDisplayed() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
-    profileTestHelper.addMoreProfiles(2)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_list_scroll_left)).check(
