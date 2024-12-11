@@ -114,6 +114,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -225,9 +226,8 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag("android_enable_downloads_support")
+  @DisableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
-//    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
