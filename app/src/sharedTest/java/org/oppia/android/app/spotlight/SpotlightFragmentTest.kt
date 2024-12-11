@@ -75,11 +75,9 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.ResetFeatureFlagToDefault
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -102,6 +100,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 /** Tests for [SpotlightFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -110,7 +110,6 @@ import javax.inject.Singleton
   application = SpotlightFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-@EnableFeatureFlag("android_enable_spotlight_ui")
 class SpotlightFragmentTest {
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -148,10 +147,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
-  @ResetFeatureFlagToDefault("android_enable_spotlight_ui")
-//  @DisableFeatureFlag("android_enable_spotlight_ui")
+  @DisableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
-//    TestPlatformParameterModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -172,9 +169,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
-//  @EnableFeatureFlag("android_enable_spotlight_ui")
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
-//    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -195,8 +191,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -217,8 +213,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -253,8 +249,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -288,8 +284,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -319,8 +315,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -352,8 +348,8 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use { scenario ->

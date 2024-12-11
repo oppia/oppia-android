@@ -2,6 +2,22 @@ package org.oppia.android.util.platformparameter
 
 import javax.inject.Qualifier
 
+enum class FeatureFlag {
+  DOWNLOADS_SUPPORT,
+  EXTRA_TOPIC_TABS_UI,
+  LEARNER_STUDY_ANALYTICS,
+  FAST_LANGUAGE_SWITCHING_IN_LESSON,
+  LOGGING_LEARNER_STUDY_IDS,
+  EDIT_ACCOUNTS_OPTIONS_UI,
+  ENABLE_PERFORMANCE_METRICS_COLLECTION,
+  SPOTLIGHT_UI,
+  INTERACTION_CONFIG_CHANGE_STATE_RETENTION,
+  APP_AND_OS_DEPRECATION,
+  ENABLE_NPS_SURVEY,
+  ENABLE_ONBOARDING_FLOW_V2,
+  ENABLE_MULTIPLE_CLASSROOMS
+}
+
 /**
  * This file contains all the constants that are associated with individual Feature Flags.
  * These constants are:

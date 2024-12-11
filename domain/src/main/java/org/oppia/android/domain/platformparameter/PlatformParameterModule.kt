@@ -41,6 +41,7 @@ import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
@@ -67,6 +68,7 @@ import org.oppia.android.util.platformparameter.PERFORMANCE_METRICS_COLLECTION_U
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionHighFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionLowFrequencyTimeIntervalInMinutes
 import org.oppia.android.util.platformparameter.PerformanceMetricsCollectionUploadTimeIntervalInMinutes
+import org.oppia.android.util.platformparameter.PlatformParameter
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG
@@ -86,7 +88,7 @@ class PlatformParameterModule {
   fun provideEnableDownloadsSupport(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return overriddenParameters[DOWNLOADS_SUPPORT]?.let {
+    return overriddenFeatureFlags[FeatureFlag.DOWNLOADS_SUPPORT]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
@@ -130,7 +132,7 @@ class PlatformParameterModule {
   fun provideLearnerStudyAnalytics(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return overriddenParameters[LEARNER_STUDY_ANALYTICS]?.let {
+    return overriddenFeatureFlags[FeatureFlag.LEARNER_STUDY_ANALYTICS]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
       ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
@@ -152,7 +154,7 @@ class PlatformParameterModule {
   fun provideLoggingLearnerStudyIds(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return overriddenParameters[LOGGING_LEARNER_STUDY_IDS]?.let {
+    return overriddenFeatureFlags[FeatureFlag.LOGGING_LEARNER_STUDY_IDS]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
       ?: PlatformParameterValue.createDefaultParameter(LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE)
@@ -163,7 +165,7 @@ class PlatformParameterModule {
   fun provideCacheLatexRendering(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return overriddenParameters[CACHE_LATEX_RENDERING]?.let {
+    return overriddenPlatformParameters[PlatformParameter.CACHE_LATEX_RENDERING]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(CACHE_LATEX_RENDERING)
       ?: PlatformParameterValue.createDefaultParameter(CACHE_LATEX_RENDERING_DEFAULT_VALUE)
@@ -222,7 +224,7 @@ class PlatformParameterModule {
   fun provideEnableSpotlightUi(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return overriddenParameters[SPOTLIGHT_UI]?.let {
+    return overriddenFeatureFlags[FeatureFlag.SPOTLIGHT_UI]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE)
@@ -233,11 +235,10 @@ class PlatformParameterModule {
   fun provideEnableExtraTopicTabsUi(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      EXTRA_TOPIC_TABS_UI
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
-    )
+    return overriddenFeatureFlags[FeatureFlag.EXTRA_TOPIC_TABS_UI]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(EXTRA_TOPIC_TABS_UI)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE)
   }
 
   @Provides
@@ -359,20 +360,27 @@ class PlatformParameterModule {
   }
 
   companion object {
-    private val overriddenParameters = mutableMapOf<String, Any>()
+    private val overriddenFeatureFlags = mutableMapOf<FeatureFlag, Any>()
+    private val overriddenPlatformParameters = mutableMapOf<PlatformParameter, Any>()
 
-    fun overrideParameter(name: String, value: Any) {
+    fun overrideFeatureFlags(name: FeatureFlag, value: Any) {
       println("Name: $name, value: $value")
-      overriddenParameters[name] = value
+      overriddenFeatureFlags[name] = value
     }
 
-    fun resetParameterToDefault(name: String) {
+    fun overridePlatformParameters(name: PlatformParameter, value: Any) {
+      println("Name: $name, value: $value")
+      overriddenPlatformParameters[name] = value
+    }
+
+    fun resetFeatureFlagToDefault(name: FeatureFlag) {
       println("Resetting $name")
-      overriddenParameters.remove(name)
+      overriddenFeatureFlags.remove(name)
     }
 
     fun clearAllParameterOverrides() {
-      overriddenParameters.clear()
+      overriddenFeatureFlags.clear()
+      overriddenPlatformParameters.clear()
     }
   }
 }
