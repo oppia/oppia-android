@@ -361,7 +361,9 @@
   <string name="profile_edit_delete_dialog_message">سيتم حذف كل التقدم ولن تتمكن من استعادته.</string>
   <string name="profile_edit_delete_dialog_positive">حذف</string>
   <string name="profile_edit_delete_dialog_negative">إلغاء</string>
+  <string name="profile_edit_delete_successful_message">تم حذف الملف الشخصي بنجاح.</string>
   <string name="profile_edit_allow_download_heading">السماح بالوصول للتنزيل</string>
+  <string name="profile_edit_delete_success_dialog_positive_button">حسنا</string>
   <string name="profile_edit_allow_download_sub">المستخدم قادر على تنزيل ومسح المحتوى بدون كلمة السر الخاصة بالمشرف.</string>
   <string name="profile_picture_activity_title">صورة الملف الشخصي</string>
   <string name="profile_progress_edit_dialog_title">صورة الملف الشخصي</string>
@@ -466,6 +468,30 @@
   <string name="up_button_disabled">أعلى</string>
   <string name="down_button_disabled">أسفل</string>
   <string name="profile_last_visited">%1$s %2$s</string>
+  <plurals name="minutes_ago">
+    <item quantity="zero">صفر دقيقة</item>
+    <item quantity="one">منذ دقيقة واحدة</item>
+    <item quantity="two">دقيقتان</item>
+    <item quantity="few">دقائق قليلة</item>
+    <item quantity="many">دقائق كثيرة</item>
+    <item quantity="other">منذ %s دقائق</item>
+  </plurals>
+  <plurals name="hours_ago">
+    <item quantity="zero">صفر ساعة</item>
+    <item quantity="one">منذ ساعة واحدة</item>
+    <item quantity="two">ساعتان</item>
+    <item quantity="few">ساعات قليلة</item>
+    <item quantity="many">ساعات كثيرة</item>
+    <item quantity="other">منذ %s ساعات</item>
+  </plurals>
+  <plurals name="days_ago">
+    <item quantity="zero">صفر يوم</item>
+    <item quantity="one">منذ يوم واحد</item>
+    <item quantity="two">يومان</item>
+    <item quantity="few">أيام قليلة</item>
+    <item quantity="many">أيام كثيرة</item>
+    <item quantity="other">منذ %s أيام</item>
+  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">برجاء اختيار خيار واحد على الأقل.</string>
