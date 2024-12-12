@@ -330,10 +330,10 @@ class PlatformParameterModule {
   fun provideEnableNpsSurvey(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_NPS_SURVEY)
-      ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_NPS_SURVEY_DEFAULT_VALUE
-      )
+    return overriddenFeatureFlags[FeatureFlag.ENABLE_NPS_SURVEY]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(ENABLE_NPS_SURVEY)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_NPS_SURVEY_DEFAULT_VALUE)
   }
 
   @Provides

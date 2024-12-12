@@ -83,7 +83,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -107,6 +106,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -174,8 +176,9 @@ class ExplorationActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testExplorationActivity_closeExploration_surveyGatingCriteriaMet_showsSurveyPopup() {
-    setUpTestWithNpsEnabled()
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
@@ -227,8 +230,9 @@ class ExplorationActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testExplorationActivity_closeExploration_surveyGatingCriteriaNotMet_noSurveyPopup() {
-    setUpTestWithNpsEnabled()
+    setUpTestApplicationComponent()
     getApplicationDependencies(
       internalProfileId,
       TEST_CLASSROOM_ID_0,
@@ -273,8 +277,9 @@ class ExplorationActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testExplorationActivity_updateGatingProvider_surveyGatingCriteriaMet_keepsSurveyDialog() {
-    setUpTestWithNpsEnabled()
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
 
@@ -335,11 +340,6 @@ class ExplorationActivityLocalTest {
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
-  }
-
-  private fun setUpTestWithNpsEnabled() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
-    setUpTestApplicationComponent()
   }
 
   private fun markAllSpotlightsSeen() {
@@ -405,7 +405,7 @@ class ExplorationActivityLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
