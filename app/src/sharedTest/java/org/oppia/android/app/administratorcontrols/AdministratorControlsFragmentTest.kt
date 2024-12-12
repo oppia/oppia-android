@@ -91,7 +91,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -114,6 +113,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.util.platformparameter.FeatureFlag
 
 @RunWith(AndroidJUnit4::class)
@@ -122,6 +122,8 @@ import org.oppia.android.util.platformparameter.FeatureFlag
   application = AdministratorControlsFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+@EnableFeatureFlag(FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI)
+@EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
 class AdministratorControlsFragmentTest {
 
   @get:Rule
@@ -145,8 +147,6 @@ class AdministratorControlsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()

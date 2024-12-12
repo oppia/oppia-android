@@ -120,11 +120,10 @@ class PlatformParameterModule {
   fun provideEnableEditAccountsOptionsUi(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      EDIT_ACCOUNTS_OPTIONS_UI
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-    )
+    return overriddenFeatureFlags[FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(EDIT_ACCOUNTS_OPTIONS_UI)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE)
   }
 
   @Provides
@@ -143,10 +142,10 @@ class PlatformParameterModule {
   fun provideFastInLessonLanguageSwitching(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON)
-      ?: PlatformParameterValue.createDefaultParameter(
-        FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
-      )
+    return overriddenFeatureFlags[FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON)
+      ?: PlatformParameterValue.createDefaultParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE)
   }
 
   @Provides
@@ -342,10 +341,10 @@ class PlatformParameterModule {
   fun provideEnableOnboardingFlowV2(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_ONBOARDING_FLOW_V2)
-      ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-      )
+    return overriddenFeatureFlags[FeatureFlag.ENABLE_ONBOARDING_FLOW_V2]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(ENABLE_ONBOARDING_FLOW_V2)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE)
   }
 
   @Provides
@@ -353,10 +352,10 @@ class PlatformParameterModule {
   fun provideEnableMultipleClassrooms(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
-      ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
-      )
+    return overriddenFeatureFlags[FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
+      ?: PlatformParameterValue.createDefaultParameter(ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE)
   }
 
   companion object {

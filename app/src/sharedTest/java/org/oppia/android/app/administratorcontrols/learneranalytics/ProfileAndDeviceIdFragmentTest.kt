@@ -141,6 +141,7 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -152,6 +153,9 @@ import javax.inject.Singleton
   application = ProfileAndDeviceIdFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+@EnableFeatureFlag(FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI)
+@EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+@EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
 class ProfileAndDeviceIdFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
@@ -174,9 +178,6 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
-//    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-//    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-//    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()

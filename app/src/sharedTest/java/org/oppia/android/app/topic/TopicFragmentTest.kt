@@ -207,6 +207,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent()
@@ -232,6 +233,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testTopicLessonTabSpotlight_spotlightNotSeenBefore_checkSpotlightIsShown() {
     initializeApplicationComponent()
@@ -247,6 +249,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
     initializeApplicationComponent()
@@ -264,6 +267,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent()
@@ -296,6 +300,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkShown() {
     initializeApplicationComponent()
@@ -334,6 +339,7 @@ class TopicFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkNotShown() {
     initializeApplicationComponent()

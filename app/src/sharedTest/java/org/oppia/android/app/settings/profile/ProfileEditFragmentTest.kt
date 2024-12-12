@@ -92,7 +92,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -117,6 +116,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 /** Tests for [ProfileEditFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -153,7 +156,6 @@ class ProfileEditFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    TestPlatformParameterModule.reset()
   }
 
   @After
@@ -200,8 +202,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -216,16 +218,16 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadDisabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -241,8 +243,8 @@ class ProfileEditFragmentTest {
 
   @Test
   @Config(qualifiers = "land")
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     val addProfileProvider = profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -259,8 +261,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -277,8 +279,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -293,8 +295,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -309,8 +311,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     profileManagementController.addProfile(
       name = "James",
       pin = "123",
@@ -325,16 +327,16 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button))
         .check(matches(not(isDisplayed())))
@@ -342,8 +344,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testProfileEdit_studyOn_hasMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
     }
@@ -351,8 +353,8 @@ class ProfileEditFragmentTest {
 
   @Test
   @Config(qualifiers = "land")
+  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
@@ -360,8 +362,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
@@ -376,8 +378,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_featureOff_doesNotHaveEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
 
     // Without the study feature enabled, the switch should not be visible.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -387,8 +389,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_featureOn_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
@@ -398,8 +400,8 @@ class ProfileEditFragmentTest {
 
   @Test
   @Config(qualifiers = "land")
+  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_featureOn_landscape_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -414,8 +416,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_featureOn_doNotHaveSwitchingPermission_enableLanguageSwitchingIsOff() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     // Without the permission to switch languages, the setting should be off by default.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -425,8 +427,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_featureOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     val updateLangProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
       profileId = ProfileId.newBuilder().apply { internalId = 0 }.build(),
@@ -442,8 +444,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_featureOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     // Open the UI, but don't interact with it.
     launchFragmentTestActivity(internalProfileId = 0).use {}
 
@@ -458,8 +460,8 @@ class ProfileEditFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testProfileEdit_studyOn_clickEnableLanguageSwitching_hasSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     // Enable language switching in the UI.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -515,7 +517,7 @@ class ProfileEditFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
