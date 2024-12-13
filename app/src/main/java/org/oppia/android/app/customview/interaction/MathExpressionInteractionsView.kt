@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.utility.KeyboardHelper.Companion.hideSoftKeyboard
 import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
@@ -19,7 +19,7 @@ import org.oppia.android.app.utility.KeyboardHelper.Companion.showSoftKeyboard
 //  maxLength="200".
 
 /**
- * The custom [EditText] class for math expression interactions interaction view.
+ * The custom [AppCompatEditText] class for math expression interactions interaction view.
  *
  * Note that the hint should be set via [setPlaceholder] to ensure that it's properly initialized if
  * using databinding, otherwise setting the hint through android:hint should work fine.
@@ -28,14 +28,14 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   defStyle: Int = android.R.attr.editTextStyle
-) : EditText(context, attrs, defStyle), View.OnFocusChangeListener {
+) : AppCompatEditText(context, attrs, defStyle), View.OnFocusChangeListener {
   private var hintText: CharSequence = ""
   private val stateKeyboardButtonListener: StateKeyboardButtonListener
 
   init {
     onFocusChangeListener = this
     // Assume multi-line for the purpose of properly showing long hints.
-    setSingleLine(hint != null)
+    isSingleLine = hint != null
     stateKeyboardButtonListener = context as StateKeyboardButtonListener
   }
 
@@ -79,12 +79,13 @@ class MathExpressionInteractionsView @JvmOverloads constructor(
   private fun hideHint() {
     hint = ""
     typeface = Typeface.DEFAULT
-    setSingleLine(true)
+    isSingleLine = true
   }
 
   private fun restoreHint() {
     hint = hintText
-    if (text.isEmpty()) setTypeface(typeface, Typeface.ITALIC)
-    setSingleLine(false)
+
+    if (text?.isEmpty() == true) setTypeface(typeface, Typeface.ITALIC)
+    isSingleLine = false
   }
 }

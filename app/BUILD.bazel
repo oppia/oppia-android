@@ -610,6 +610,7 @@ android_library(
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
         "//third_party:androidx_drawerlayout_drawerlayout",
+        "//third_party:androidx_fragment_fragment",
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_recyclerview_recyclerview",
         "//third_party:androidx_viewpager2_viewpager2",

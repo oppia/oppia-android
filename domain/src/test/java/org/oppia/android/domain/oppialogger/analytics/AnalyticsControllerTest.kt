@@ -36,6 +36,7 @@ import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
@@ -48,7 +49,6 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -1115,6 +1115,32 @@ class AnalyticsControllerTest {
     assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
   }
 
+  @Test
+  fun testController_lowPriorityEvent_withProfileOnboardingStartedContext_checkLogsEvent() {
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    analyticsController.logProfileOnboardingStartedContext(profileId = profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasStartProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(profileId)
+    }
+  }
+
+  @Test
+  fun testController_lowPriorityEvent_withProfileOnboardingEndedContext_checkLogsEvent() {
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    analyticsController.logProfileOnboardingEndedContext(profileId = profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasEndProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(profileId)
+    }
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -1328,7 +1354,7 @@ class AnalyticsControllerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
     ]
   )
