@@ -147,7 +147,6 @@ class OppiaTestRule : TestRule {
       PlatformParameterModule.resetFeatureFlagToDefault(resetFeatureFlag.name)
     }
 
-
     /*
     overriddenBoolParameters?.forEach { overriddenValue ->
       PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)

@@ -118,6 +118,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
@@ -176,7 +177,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /** Tests for [ExplorationActivity]. */
 @RunWith(AndroidJUnit4::class)

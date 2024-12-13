@@ -113,6 +113,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
@@ -156,7 +157,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000

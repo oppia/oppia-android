@@ -133,6 +133,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.security.MessageDigest
@@ -141,7 +142,6 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.FeatureFlag
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.

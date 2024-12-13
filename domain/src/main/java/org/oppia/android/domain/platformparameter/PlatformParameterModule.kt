@@ -123,7 +123,9 @@ class PlatformParameterModule {
     return overriddenFeatureFlags[FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(EDIT_ACCOUNTS_OPTIONS_UI)
-      ?: PlatformParameterValue.createDefaultParameter(ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
+      )
   }
 
   @Provides
@@ -145,7 +147,9 @@ class PlatformParameterModule {
     return overriddenFeatureFlags[FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON)
-      ?: PlatformParameterValue.createDefaultParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(
+        FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
+      )
   }
 
   @Provides

@@ -16,6 +16,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.junit.Assert.fail
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguageSelection
@@ -37,7 +39,9 @@ import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSiz
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -67,6 +71,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -75,11 +80,6 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.junit.Before
-import org.junit.Rule
-import org.oppia.android.testing.EnableFeatureFlag
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.util.platformparameter.FeatureFlag
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_CLASSROOM_ID = "test_classroomId"
