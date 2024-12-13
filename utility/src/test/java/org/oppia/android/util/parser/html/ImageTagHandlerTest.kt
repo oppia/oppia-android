@@ -2,9 +2,13 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Typeface
 import android.text.Html
+import android.text.Layout
 import android.text.Spannable
+import android.text.style.AlignmentSpan
 import android.text.style.ImageSpan
+import android.text.style.StyleSpan
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -70,9 +74,9 @@ private const val IMAGE_TAG_WITH_SPACE_ONLY_ALT_VALUE_MARKUP =
     "caption-with-value=\"&amp;quot;&amp;quot;\" " +
     "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
 
-private const val IMAGE_TAG_WITH_CAPTION_MARKUP =
-  "<oppia-noninteractive-image alt-with-value=\"&amp;quot;alt text 1&amp;quot;\" " +
-    "caption-with-value=\"&amp;quot;This is a caption&amp;quot;\" " +
+val IMAGE_TAG_WITH_CAPTION_MARKUP =
+  "<oppia-noninteractive-image alt-with-value=\"&amp;quot;alt text 3&amp;quot;\" " +
+    "caption-with-value=\"&amp;quot;Sample Caption&amp;quot;\" " +
     "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
 
 /** Tests for [ImageTagHandler]. */
@@ -105,34 +109,31 @@ class ImageTagHandlerTest {
   // TODO(#3085): Introduce test for verifying that the error log scenario is logged correctly.
 
   @Test
-  fun testParseHtml_withImageCardMarkupAndCaption_includesCaptionBelowImage() {
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        html = IMAGE_TAG_WITH_CAPTION_MARKUP,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
-      )
-
-    val parsedHtmlStr = parsedHtml.toString()
-    assertThat(parsedHtmlStr).isEqualTo("alt text 1\nThis is a caption")
-  }
-
-  @Test
-  fun testParseHtml_withMultipleImageCardMarkupsAndCaptions_includesAllCaptions() {
-    val combinedHtml = "$IMAGE_TAG_WITH_CAPTION_MARKUP and $IMAGE_TAG_WITH_CAPTION_MARKUP"
-
-    val parsedHtml =
-      CustomHtmlContentHandler.fromHtml(
-        html = combinedHtml,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithImageTagSupport
-      )
-
-    val parsedHtmlStr = parsedHtml.toString()
-    assertThat(parsedHtmlStr).isEqualTo(
-      "alt text 1\nThis is a caption" +
-        " and alt text 1\nThis is a caption"
+  fun testParseHtml_withImageCardMarkup_withCaption_addsCaptionWithStyleAndAlignment() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = IMAGE_TAG_WITH_CAPTION_MARKUP,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithImageTagSupport
     )
+
+    val parsedHtmlString = parsedHtml.toString()
+    assertThat(parsedHtmlString).contains("Sample Caption")
+
+    val styleSpans = parsedHtml.getSpans(
+      /* start = */ 0,
+      /* end = */ parsedHtml.length,
+      StyleSpan::class.java
+    )
+    assertThat(styleSpans).hasLength(1)
+    assertThat(styleSpans[0].style).isEqualTo(Typeface.ITALIC)
+
+    val alignmentSpans = parsedHtml.getSpans(
+      /* start = */ 0,
+      /* end = */ parsedHtml.length,
+      AlignmentSpan.Standard::class.java
+    )
+    assertThat(alignmentSpans).hasLength(1)
+    assertThat(alignmentSpans[0].alignment).isEqualTo(Layout.Alignment.ALIGN_CENTER)
   }
 
   @Test

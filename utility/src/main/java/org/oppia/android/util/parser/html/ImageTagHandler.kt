@@ -1,9 +1,13 @@
 package org.oppia.android.util.parser.html
 
+import android.graphics.Typeface
 import android.text.Editable
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.style.AlignmentSpan
 import android.text.style.ImageSpan
+import android.text.style.StyleSpan
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
@@ -64,11 +68,26 @@ class ImageTagHandler(
       "ImageTagHandler",
       "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE"
     )
-
     if (!caption.isNullOrBlank()) {
-      output.append("\n").append(caption)
-    } else {
-      consoleLogger.w("ImageTagHandler", "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE")
-    }
+      output.append("\n")
+      val captionStart = output.length
+      output.append(caption)
+      val captionEnd = output.length
+      output.setSpan(
+        StyleSpan(Typeface.ITALIC),
+        captionStart,
+        captionEnd,
+        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+      output.setSpan(
+        AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+        captionStart,
+        captionEnd,
+        Spannable.SPAN_PARAGRAPH
+      )
+    } else consoleLogger.w(
+      "ImageTagHandler",
+      "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE"
+    )
   }
 }
