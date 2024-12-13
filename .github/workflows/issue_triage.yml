@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.sender.login != 'github-actions'
     steps:
-      - name: Reply to Issue (Only on Opened)
+      - name: Reply to Issue
         if: ${{ github.event.action == 'opened' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Thanks for filing the issue! We’ll review it shortly and route it to the correct team.
-            
+
       - name: Check Labels for Proper Triaging
         id: check-labels
         uses: actions/github-script@v6
@@ -35,13 +35,11 @@ jobs:
               types: ['bug', 'enhancement', 'good first issue'],
               impacts: ['Impact: High', 'Impact: Medium', 'Impact: Low'],
               work: ['Work: High', 'Work: Medium', 'Work: Low'],
-              priorities: ['Priority: Essential', 'Priority: Important', 'Priority: Nice-to-have']
             };
             const hasTypeLabel = labels.some(label => requiredLabels.types.includes(label));
             const hasImpactLabel = labels.some(label => requiredLabels.impacts.includes(label));
             const hasWorkLabel = labels.some(label => requiredLabels.work.includes(label));
-            const hasPriorityLabel = labels.some(label => requiredLabels.priorities.includes(label));
-            const needsTriage = !(hasTypeLabel && hasImpactLabel && hasWorkLabel && hasPriorityLabel);
+            const needsTriage = !(hasTypeLabel && hasImpactLabel && hasWorkLabel);
             core.setOutput('needs-triage', needsTriage);
 
       - name: Manage Needs Triage Label
@@ -71,18 +69,3 @@ jobs:
               }
             }
 
-      - name: Verify Project Assignment
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const projects = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-            const assignedProjects = projects.data.filter(project => project.state === 'open');
-            if (assignedProjects.length !== 1) {
-              console.warn(`Issue must be assigned to exactly one open project. Found: ${assignedProjects.length}`);
-            } else {
-              console.log(`Valid project assignment: ${assignedProjects[0].name}`);
-            }
-              
