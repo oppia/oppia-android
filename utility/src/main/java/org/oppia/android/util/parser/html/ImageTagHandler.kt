@@ -85,6 +85,17 @@ class ImageTagHandler(
         captionEnd,
         Spannable.SPAN_PARAGRAPH
       )
+
+      // Insert a newline after the caption and reset alignment.
+      output.append("\n")
+      val resetStart = output.length
+      output.append(" ") // Add a placeholder space for resetting alignment.
+      output.setSpan(
+        AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
+        resetStart,
+        output.length,
+        Spannable.SPAN_PARAGRAPH
+      )
     } else consoleLogger.w(
       "ImageTagHandler",
       "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE"
