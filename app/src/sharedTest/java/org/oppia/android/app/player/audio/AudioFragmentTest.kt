@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
@@ -22,9 +24,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.util.HumanReadables
+import androidx.test.espresso.util.TreeIterables
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -113,6 +118,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -125,8 +131,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = AudioFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  application = AudioFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi"
 )
 class AudioFragmentTest {
   @get:Rule
@@ -174,8 +179,7 @@ class AudioFragmentTest {
 
   private fun createAudioFragmentTestIntent(profileId: Int): Intent {
     return AudioFragmentTestActivity.createAudioFragmentTestActivity(
-      context,
-      profileId
+      context, profileId
     )
   }
 
@@ -188,14 +192,13 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_progress_seek_bar))
-        .check(
-          matches(
-            withContentDescription(
-              context.getString(R.string.audio_player_seekbar_content_description)
-            )
+      onView(withId(R.id.audio_progress_seek_bar)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_player_seekbar_content_description)
           )
         )
+      )
     }
   }
 
@@ -208,14 +211,47 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_language_icon))
-        .check(
-          matches(
-            withContentDescription(
-              context.getString(R.string.audio_language_icon_content_description)
+      onView(withId(R.id.audio_language_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(R.string.audio_language_icon_content_description)
+          )
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testAudioFragment_playAudio_configurationChange_checkAudioPaused() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        internalProfileId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      waitForTheView(
+        allOf(
+          withId(R.id.play_pause_audio_icon),
+          WithNonZeroDimensionsMatcher()
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
             )
           )
         )
+      )
     }
   }
 
@@ -228,10 +264,16 @@ class AudioFragmentTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(matches(isDisplayed()))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -250,8 +292,15 @@ class AudioFragmentTest {
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -268,8 +317,15 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -290,8 +346,15 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -307,8 +370,15 @@ class AudioFragmentTest {
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
       onView(isRoot()).perform(orientationLandscape())
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_pause_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_pause_description
+            )
+          )
+        )
+      )
     }
   }
 
@@ -330,16 +400,22 @@ class AudioFragmentTest {
       onView(withId(R.id.audio_language_icon)).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.hinglish_localized_language_name))
-        .inRoot(isDialog())
+      onView(withText(R.string.hinglish_localized_language_name)).inRoot(isDialog())
         .perform(click())
 
       testCoroutineDispatchers.runCurrent()
       onView(withText("Ok")).inRoot(isDialog()).perform(click())
 
       testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.play_pause_audio_icon))
-        .check(matches(withContentDescription(context.getString(R.string.audio_play_description))))
+      onView(withId(R.id.play_pause_audio_icon)).check(
+        matches(
+          withContentDescription(
+            context.getString(
+              R.string.audio_play_description
+            )
+          )
+        )
+      )
       onView(withId(R.id.audio_progress_seek_bar)).check(matches(withSeekBarPosition(0)))
     }
   }
@@ -539,5 +615,52 @@ class AudioFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+  /** Returns a matcher that matches view based on non-zero width and height. */
+  private class WithNonZeroDimensionsMatcher : TypeSafeMatcher<View>() {
+
+    override fun matchesSafely(target: View): Boolean {
+      val targetWidth = target.width
+      val targetHeight = target.height
+      return targetWidth > 0 && targetHeight > 0
+    }
+
+    override fun describeTo(description: Description) {
+      description.appendText("with non-zero width and height")
+    }
+  }
+
+  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
+    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
+  }
+
+  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
+    return object : ViewAction {
+      override fun getDescription(): String {
+        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
+      }
+
+      override fun getConstraints(): Matcher<View> {
+        return isRoot()
+      }
+
+      override fun perform(uiController: UiController?, view: View?) {
+        checkNotNull(uiController)
+        uiController.loopMainThreadUntilIdle()
+        val startTime = System.currentTimeMillis()
+        val endTime = startTime + millis
+
+        do {
+          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
+            return
+          }
+          uiController.loopMainThreadForAtLeast(50)
+        } while (System.currentTimeMillis() < endTime)
+
+        // Couldn't match in time.
+        throw PerformException.Builder().withActionDescription(description)
+          .withViewDescription(HumanReadables.describe(view)).withCause(TimeoutException()).build()
+      }
+    }
   }
 }
