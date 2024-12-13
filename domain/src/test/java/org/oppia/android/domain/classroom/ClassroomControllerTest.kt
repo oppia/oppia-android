@@ -27,7 +27,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -50,6 +49,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 /** Tests for [ClassroomController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -57,6 +59,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ClassroomControllerTest.TestApplication::class)
+@EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
 class ClassroomControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -72,7 +75,6 @@ class ClassroomControllerTest {
   @Before
   fun setUp() {
     profileId0 = ProfileId.newBuilder().setInternalId(0).build()
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     setUpTestApplicationComponent()
   }
 
@@ -381,7 +383,7 @@ class ClassroomControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, TestPlatformParameterModule::class,
+      SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

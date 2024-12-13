@@ -9,7 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
@@ -45,7 +44,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -67,6 +65,11 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 private const val SESSION_LENGTH_1 = 300000L
 private const val SESSION_LENGTH_2 = 600000L
@@ -76,7 +79,11 @@ private const val SESSION_LENGTH_3 = 100000L
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationActiveTimeControllerTest.TestApplication::class)
+@EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
 class ExplorationActiveTimeControllerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -97,11 +104,6 @@ class ExplorationActiveTimeControllerTest {
 
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
-
-  @Before
-  fun setUp() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
-  }
 
   @Test
   fun testSessionTimer_explorationStartedCallbackReceived_startsSessionTimer() {
@@ -562,7 +564,7 @@ class ExplorationActiveTimeControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, PlatformParameterSingletonModule::class,
-      TestPlatformParameterModule::class, ExplorationStorageTestModule::class,
+      PlatformParameterModule::class, ExplorationStorageTestModule::class,
       LogStorageModule::class
     ]
   )
