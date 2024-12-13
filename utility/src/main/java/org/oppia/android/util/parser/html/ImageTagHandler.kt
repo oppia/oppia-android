@@ -89,7 +89,7 @@ class ImageTagHandler(
       // Insert a newline after the caption and reset alignment.
       output.append("\n")
       val resetStart = output.length
-      output.append(" ") // Add a placeholder space for resetting alignment.
+      output.append(" ")
       output.setSpan(
         AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
         resetStart,

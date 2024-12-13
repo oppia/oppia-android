@@ -74,7 +74,7 @@ private const val IMAGE_TAG_WITH_SPACE_ONLY_ALT_VALUE_MARKUP =
     "caption-with-value=\"&amp;quot;&amp;quot;\" " +
     "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
 
-val IMAGE_TAG_WITH_CAPTION_MARKUP =
+private const val IMAGE_TAG_WITH_CAPTION_MARKUP =
   "<oppia-noninteractive-image alt-with-value=\"&amp;quot;alt text 3&amp;quot;\" " +
     "caption-with-value=\"&amp;quot;Sample Caption&amp;quot;\" " +
     "filepath-with-value=\"&amp;quot;test_image1.png&amp;quot;\"></oppia-noninteractive-image>"
@@ -132,8 +132,27 @@ class ImageTagHandlerTest {
       /* end = */ parsedHtml.length,
       AlignmentSpan.Standard::class.java
     )
-    assertThat(alignmentSpans).hasLength(1)
+    assertThat(alignmentSpans).hasLength(2)
+
+    // Check the first AlignmentSpan for center alignment (caption)
     assertThat(alignmentSpans[0].alignment).isEqualTo(Layout.Alignment.ALIGN_CENTER)
+
+    // Check the second AlignmentSpan for normal alignment (reset)
+    assertThat(alignmentSpans[1].alignment).isEqualTo(Layout.Alignment.ALIGN_NORMAL)
+  }
+
+  @Test
+  fun testParseHtml_withMultipleImages_withCaptions_includesAllCaptions() {
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = "$IMAGE_TAG_WITH_CAPTION_MARKUP and $IMAGE_TAG_WITH_CAPTION_MARKUP",
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).contains("Sample Caption")
+    assertThat(parsedHtmlStr).contains("Sample Caption")
   }
 
   @Test
