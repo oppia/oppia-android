@@ -30,19 +30,19 @@ jobs:
           script: |
             const issueNumber = context.issue.number;
 
-            // Fetch all open projects in the repository
+            # Fetch all open projects in the repository
             const projects = await github.rest.projects.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
 
-            // Filter to get only open projects
+            # Filter to get only open projects
             const assignedProjects = projects.data.filter(project => project.state === 'open');
 
             if (assignedProjects.length !== 1) {
               console.warn(`Issue must be assigned to exactly one open project. Found: ${assignedProjects.length}`);
 
-              // Add a comment to notify about incorrect project assignment
+              # Add a comment to notify about incorrect project assignment
               const existingComments = await github.rest.issues.listComments({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -64,5 +64,3 @@ jobs:
             } else {
               console.log(`Valid project assignment: ${assignedProjects[0].name}`);
             }
-
-            
