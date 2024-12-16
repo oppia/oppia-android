@@ -64,3 +64,4 @@ jobs:
             } else {
               console.log(`Valid project assignment: ${assignedProjects[0].name}`);
             }
+
