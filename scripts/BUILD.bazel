@@ -312,3 +312,10 @@ java_binary(
     main_class = "org.oppia.android.scripts.telemetry.DecodeUserStudyEventStringKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/telemetry:decode_user_study_event_string_lib"],
 )
+
+kt_jvm_binary(
+    name = "check_textview_styles",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.xml.TextViewStyleCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:check_textview_styles"],
+)
