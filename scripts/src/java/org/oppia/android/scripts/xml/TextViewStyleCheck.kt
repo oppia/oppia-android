@@ -16,7 +16,10 @@ import javax.xml.parsers.DocumentBuilderFactory
  *   bazel run //scripts:check_textview_styles -- $(pwd)
  */
 fun main(vararg args: String) {
-  require(args.isNotEmpty()) { "Usage: bazel run //scripts:check_textview_styles -- <path_to_repository_root>" }
+  require(args.isNotEmpty()) {
+    "Usage: bazel run" +
+      " //scripts:check_textview_styles -- <path_to_repository_root>"
+  }
 
   val repoRoot = File(args[0])
   require(repoRoot.exists()) { "Repository root path does not exist: ${args[0]}" }
