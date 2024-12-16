@@ -47,6 +47,7 @@ fun main(vararg args: String) {
 
       if (styleAttribute == null || !styleAttribute.startsWith("@style/")) {
         errors.add("${file.path}: TextView element is missing a centrally managed style.")
+        break
       }
     }
   }
