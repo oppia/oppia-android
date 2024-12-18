@@ -21,6 +21,7 @@ class FontScaleConfigurationUtil @Inject constructor() {
     // TODO(#3616): Migrate to the proper SDK 30+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     windowManager!!.defaultDisplay.getMetrics(metrics)
+    @Suppress("DEPRECATION")
     metrics.scaledDensity = configuration.fontScale * metrics.density
     context.createConfigurationContext(configuration)
     context.resources.displayMetrics.setTo(metrics)
