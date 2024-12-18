@@ -9,6 +9,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.TAG_SWITCH_PROFILE_DIALOG
+import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
@@ -16,6 +17,7 @@ import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.model.ScreenName.CLASSROOM_LIST_ACTIVITY
@@ -23,6 +25,8 @@ import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIn
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicPlayStoryActivityIntent
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
@@ -32,7 +36,8 @@ class ClassroomListActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   RouteToTopicListener,
   RouteToTopicPlayStoryListener,
-  RouteToRecentlyPlayedListener {
+  RouteToRecentlyPlayedListener,
+  ExitProfileListener {
   @Inject
   lateinit var classroomListActivityPresenter: ClassroomListActivityPresenter
 
@@ -42,7 +47,11 @@ class ClassroomListActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
+
+  @Inject
+  @field:EnableOnboardingFlowV2
+  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 
   companion object {
     /** Returns a new [Intent] to route to [ClassroomListActivity] for a specified [profileId]. */
@@ -58,14 +67,9 @@ class ClassroomListActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    internalProfileId = intent.extractCurrentUserProfileId().internalId
+    profileId = intent.extractCurrentUserProfileId()
     classroomListActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
-  }
-
-  override fun onRestart() {
-    super.onRestart()
-    classroomListActivityPresenter.handleOnRestart()
   }
 
   override fun onBackPressed() {
@@ -88,7 +92,7 @@ class ClassroomListActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(profileId)
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(
@@ -120,5 +124,25 @@ class ClassroomListActivity :
         storyId
       )
     )
+  }
+
+  override fun exitProfile(profileType: ProfileType) {
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val exitProfileDialogArguments =
+      ExitProfileDialogArguments
+        .newBuilder().apply {
+          if (enableOnboardingFlowV2.value) {
+            this.profileType = profileType
+          }
+          this.highlightItem = HighlightItem.NONE
+        }
+        .build()
+    val dialogFragment = ExitProfileDialogFragment
+      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 }

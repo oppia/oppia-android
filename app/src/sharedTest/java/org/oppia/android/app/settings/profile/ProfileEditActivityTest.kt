@@ -92,7 +92,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -245,6 +244,10 @@ class ProfileEditActivityTest {
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_success_dialog_positive_button))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
       if (context.resources.getBoolean(R.bool.isTablet)) {
         intended(hasComponent(AdministratorControlsActivity::class.java.name))
       } else {
@@ -264,6 +267,10 @@ class ProfileEditActivityTest {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_positive))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_success_dialog_positive_button))
         .inRoot(isDialog())
         .perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -371,7 +378,7 @@ class ProfileEditActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]
