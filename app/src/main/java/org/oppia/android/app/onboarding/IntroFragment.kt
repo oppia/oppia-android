@@ -64,7 +64,7 @@ class IntroFragment : InjectableFragment() {
     const val INTRO_FRAGMENT_ARGUMENT_KEY = "IntroFragment.Arguments"
 
     /**
-     * Creates a new instance of a IntroFragment.
+     * Creates a new instance of an [IntroFragment].
      *
      * @param profileNickname the nickname associated with this learner profile
      * @param parentScreen the parent screen opening this [IntroFragment] instance

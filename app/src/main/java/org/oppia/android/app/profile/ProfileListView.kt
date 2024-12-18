@@ -79,7 +79,6 @@ class ProfileListView @JvmOverloads constructor(
    * Sets the list of profiles that this view shows.
    * @param newDataList the new list of profiles to present
    */
-
   fun setProfileList(newDataList: List<ProfileItemViewModel>?) {
     if (newDataList != null) {
       profileDataList = newDataList

@@ -46,46 +46,47 @@ class ProfileChooserViewModel @Inject constructor(
     )
   }
 
-  private fun retrieveProfiles(profilesResult: AsyncResult<List<Profile>>):
-    List<ProfileItemViewModel> {
-      val profileList = when (profilesResult) {
-        is AsyncResult.Failure -> {
-          oppiaLogger.e(
-            "ProfileChooserViewModel",
-            "Failed to retrieve the list of profiles", profilesResult.error
-          )
-          emptyList()
-        }
-        is AsyncResult.Pending -> emptyList()
-        is AsyncResult.Success -> profilesResult.value
-      }.map {
-        ProfileItemViewModel(it, profileClickListener::onProfileClicked)
+  private fun retrieveProfiles(
+    profilesResult: AsyncResult<List<Profile>>
+  ): List<ProfileItemViewModel> {
+    val profileList = when (profilesResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(
+          "ProfileChooserViewModel",
+          "Failed to retrieve the list of profiles", profilesResult.error
+        )
+        emptyList()
       }
-
-      profileList.forEach { profileItemViewModel ->
-        if (profileItemViewModel.profile.avatar.avatarTypeCase
-          == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB
-        ) {
-          usedColors.add(profileItemViewModel.profile.avatar.avatarColorRgb)
-        }
-      }
-
-      val sortedProfileList = profileList.sortedBy { profileItemViewModel ->
-        machineLocale.run { profileItemViewModel.profile.name.toMachineLowerCase() }
-      }.toMutableList()
-
-      val adminProfileViewModel = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
-
-      sortedProfileList.remove(adminProfileViewModel)
-      adminPin = adminProfileViewModel.profile.pin
-      adminProfileId = adminProfileViewModel.profile.id
-      sortedProfileList.add(0, adminProfileViewModel)
-
-      if (sortedProfileList.size == 10) {
-        canAddProfile.set(false)
-      }
-      return sortedProfileList
+      is AsyncResult.Pending -> emptyList()
+      is AsyncResult.Success -> profilesResult.value
+    }.map {
+      ProfileItemViewModel(it, profileClickListener::onProfileClicked)
     }
+
+    profileList.forEach { profileItemViewModel ->
+      if (profileItemViewModel.profile.avatar.avatarTypeCase
+        == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB
+      ) {
+        usedColors.add(profileItemViewModel.profile.avatar.avatarColorRgb)
+      }
+    }
+
+    val sortedProfileList = profileList.sortedBy { profileItemViewModel ->
+      machineLocale.run { profileItemViewModel.profile.name.toMachineLowerCase() }
+    }.toMutableList()
+
+    val adminProfileViewModel = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
+
+    sortedProfileList.remove(adminProfileViewModel)
+    adminPin = adminProfileViewModel.profile.pin
+    adminProfileId = adminProfileViewModel.profile.id
+    sortedProfileList.add(0, adminProfileViewModel)
+
+    if (sortedProfileList.size == 10) {
+      canAddProfile.set(false)
+    }
+    return sortedProfileList
+  }
 
   /** The admin profile's PIN. */
   lateinit var adminPin: String
