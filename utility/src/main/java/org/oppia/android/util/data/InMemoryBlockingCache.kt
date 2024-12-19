@@ -123,6 +123,7 @@ class InMemoryBlockingCache<T : Any> private constructor(
 
   private val state = State(initialValue, null, changeObserver)
 
+  @OptIn(kotlinx.coroutines.ObsoleteCoroutinesApi::class)
   private val actor = scope.actor<Pair<CacheOp<T, Any?>, Channel<Result<Any?>>>>(
     capacity = Channel.UNLIMITED
   ) {
