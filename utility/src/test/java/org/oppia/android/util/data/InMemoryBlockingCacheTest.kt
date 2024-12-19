@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
