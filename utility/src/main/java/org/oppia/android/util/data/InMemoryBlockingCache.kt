@@ -31,6 +31,7 @@ class InMemoryBlockingCache<T : Any> private constructor(
   private var value: T? = initialValue
   private val scope = CoroutineScope(SupervisorJob() + blockingDispatcher)
   private var changeObserver: suspend (T?, T?) -> Unit = { _, _ -> }
+
   private sealed class CacheOp<T, R> {
     abstract suspend fun execute(state: State<T>): R
 

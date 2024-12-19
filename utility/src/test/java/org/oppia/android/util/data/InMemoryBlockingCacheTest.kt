@@ -67,7 +67,7 @@ class InMemoryBlockingCacheTest {
   }
 
   @Test
-  fun testSequentiality() = runBlocking {
+  fun testSequentially_updatesExecuteInOrder() {
     val first = Job()
     val second = Job()
 
@@ -80,12 +80,15 @@ class InMemoryBlockingCacheTest {
       second.join()
       "second"
     }
+
     second.complete()
     testCoroutineDispatchers.advanceUntilIdle()
+
     first.complete()
     testCoroutineDispatchers.advanceUntilIdle()
-    firstUpdate.await()
-    secondUpdate.await()
+
+    awaitCompletion(firstUpdate)
+    awaitCompletion(secondUpdate)
     assertThat(awaitCompletion(cache.readAsync())).isEqualTo("second")
   }
 
