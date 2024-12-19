@@ -12,8 +12,10 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,6 +64,29 @@ class InMemoryBlockingCacheTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+  }
+
+  @Test
+  fun testSequentiality() = runBlocking {
+    val first = Job()
+    val second = Job()
+
+    val cache = cacheFactory.create<String>()
+    val firstUpdate = cache.updateAsync {
+      first.join()
+      "first"
+    }
+    val secondUpdate = cache.updateAsync {
+      second.join()
+      "second"
+    }
+    second.complete()
+    testCoroutineDispatchers.advanceUntilIdle()
+    first.complete()
+    testCoroutineDispatchers.advanceUntilIdle()
+    firstUpdate.await()
+    secondUpdate.await()
+    assertThat(awaitCompletion(cache.readAsync())).isEqualTo("second")
   }
 
   @Test
