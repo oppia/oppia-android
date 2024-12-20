@@ -27,6 +27,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import androidx.core.os.BundleCompat
 
 /** [String] key for mapping to [ReadingTextSizeFragment]. */
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
@@ -78,7 +79,9 @@ class OptionsActivity :
         OptionsActivityParams.newBuilder().setIsFromNavigationDrawer(isFromNavigationDrawer)
           .build()
       return Intent(context, OptionsActivity::class.java).apply {
-        putProtoExtra(OPTIONS_ACTIVITY_PARAMS_KEY, args)
+        val extras = intent.extras ?: Bundle()
+        BundleCompat.putParcelable(extras, OPTIONS_ACTIVITY_PARAMS_KEY, args)
+        intent.putExtras(extras) // Attach to the intent
         decorateWithScreenName(OPTIONS_ACTIVITY)
         if (profileId != null) {
           decorateWithUserProfileId(profileId)
@@ -90,21 +93,18 @@ class OptionsActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val args = intent.getProtoExtra(
-      OPTIONS_ACTIVITY_PARAMS_KEY,
-      OptionsActivityParams.getDefaultInstance()
-    )
-    val isFromNavigationDrawer = args?.isFromNavigationDrawer ?: false
+    val args = intent.extras?.let {
+      BundleCompat.getParcelable(it, OPTIONS_ACTIVITY_PARAMS_KEY, OptionsActivityParams::class.java)
+    } ?: OptionsActivityParams.getDefaultInstance()
+    val isFromNavigationDrawer = args.isFromNavigationDrawer
     profileId = intent.extractCurrentUserProfileId()
     internalProfileId = profileId.internalId
     if (savedInstanceState != null) {
       isFirstOpen = false
     }
-    val stateArgs =
-      savedInstanceState?.getProto(
-        OPTIONS_ACTIVITY_STATE_KEY,
-        OptionsActivityStateBundle.getDefaultInstance()
-      )
+    val stateArgs = savedInstanceState?.let {
+      BundleCompat.getParcelable(it, OPTIONS_ACTIVITY_STATE_KEY, OptionsActivityStateBundle::class.java)
+    } ?: OptionsActivityStateBundle.getDefaultInstance()
 
     selectedFragment = if (savedInstanceState == null) {
       READING_TEXT_SIZE_FRAGMENT
@@ -126,10 +126,9 @@ class OptionsActivity :
       ActivityResultContracts.StartActivityForResult()
     ) { result ->
       if (result.resultCode == RESULT_OK && result.data != null) {
-        val textSizeResults = result.data?.getProtoExtra(
-          MESSAGE_READING_TEXT_SIZE_RESULTS_KEY,
-          ReadingTextSizeActivityResultBundle.getDefaultInstance()
-        )
+        val textSizeResults = result.data?.extras?.let {
+          BundleCompat.getSerializable(it, MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, ReadingTextSizeActivityResultBundle::class.java)
+        } ?: ReadingTextSizeActivityResultBundle.getDefaultInstance()
         if (textSizeResults != null) {
           optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)
         }
@@ -140,9 +139,13 @@ class OptionsActivity :
       ActivityResultContracts.StartActivityForResult()
     ) { result ->
       if (result.resultCode == RESULT_OK && result.data != null) {
-        val audioLanguage = result.data?.getProtoExtra(
-          MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY, AudioLanguageActivityResultBundle.getDefaultInstance()
-        )?.audioLanguage
+        val audioLanguage = result.data?.let {
+          BundleCompat.getSerializable(
+            it.extras ?: Bundle(),
+            MESSAGE_AUDIO_LANGUAGE_RESULTS_KEY,
+            AudioLanguageActivityResultBundle::class.java
+          )?.audioLanguage
+        }
         if (audioLanguage != null) {
           optionActivityPresenter.updateAudioLanguage(audioLanguage)
         }
@@ -200,11 +203,9 @@ class OptionsActivity :
     super.onSaveInstanceState(outState)
     val titleTextView = findViewById<TextView>(R.id.options_activity_selected_options_title)
     val args = OptionsActivityStateBundle.newBuilder().apply {
-      if (titleTextView != null) {
-        selectedOptionsTitle = titleTextView.text.toString()
-      }
+      selectedOptionsTitle = titleTextView?.text?.toString() ?: ""
       selectedFragment = this@OptionsActivity.selectedFragment
     }.build()
-    outState.putProto(OPTIONS_ACTIVITY_STATE_KEY, args)
+    BundleCompat.putParcelable(outState, OPTIONS_ACTIVITY_STATE_KEY, args)
   }
 }
