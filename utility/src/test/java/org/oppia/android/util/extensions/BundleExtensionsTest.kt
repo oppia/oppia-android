@@ -199,11 +199,13 @@ class BundleExtensionsTest {
 
     assertThat(intent).extras().hasSize(1)
     assertThat(intent).extras().containsKey("first_extra")
-    assertThat(BundleCompat.getSerializable(
-      intent.extras!!,
-      "first_extra",
-      String::class.java
-    )).isNotInstanceOf(String::class.java)
+    assertThat(
+      BundleCompat.getSerializable(
+        intent.extras!!,
+        "first_extra",
+        String::class.java
+      )
+    ).isNotInstanceOf(String::class.java)
   }
 
   @Test

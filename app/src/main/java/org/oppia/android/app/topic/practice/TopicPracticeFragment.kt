@@ -33,7 +33,7 @@ class TopicPracticeFragment : InjectableFragment() {
       }.build()
       return TopicPracticeFragment().apply {
         arguments = Bundle().apply {
-          putProto(TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY, args)  // Changed
+          putProto(TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY, args) // Changed
           decorateWithUserProfileId(profileId)
         }
       }

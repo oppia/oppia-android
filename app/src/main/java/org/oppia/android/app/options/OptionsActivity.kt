@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.BundleCompat
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
@@ -19,15 +20,10 @@ import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.ReadingTextSizeActivityResultBundle
 import org.oppia.android.app.model.ScreenName.OPTIONS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProto
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import androidx.core.os.BundleCompat
 
 /** [String] key for mapping to [ReadingTextSizeFragment]. */
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
@@ -103,7 +99,10 @@ class OptionsActivity :
       isFirstOpen = false
     }
     val stateArgs = savedInstanceState?.let {
-      BundleCompat.getParcelable(it, OPTIONS_ACTIVITY_STATE_KEY, OptionsActivityStateBundle::class.java)
+      BundleCompat.getParcelable(
+        it,
+        OPTIONS_ACTIVITY_STATE_KEY, OptionsActivityStateBundle::class.java
+      )
     } ?: OptionsActivityStateBundle.getDefaultInstance()
 
     selectedFragment = if (savedInstanceState == null) {
@@ -127,7 +126,10 @@ class OptionsActivity :
     ) { result ->
       if (result.resultCode == RESULT_OK && result.data != null) {
         val textSizeResults = result.data?.extras?.let {
-          BundleCompat.getSerializable(it, MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, ReadingTextSizeActivityResultBundle::class.java)
+          BundleCompat.getSerializable(
+            it,
+            MESSAGE_READING_TEXT_SIZE_RESULTS_KEY, ReadingTextSizeActivityResultBundle::class.java
+          )
         } ?: ReadingTextSizeActivityResultBundle.getDefaultInstance()
         if (textSizeResults != null) {
           optionActivityPresenter.updateReadingTextSize(textSizeResults.selectedReadingTextSize)

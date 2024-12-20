@@ -1,8 +1,6 @@
 package org.oppia.android.util.extensions
 
-import android.annotation.TargetApi
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.core.app.BundleCompat
 import com.google.protobuf.ByteString
