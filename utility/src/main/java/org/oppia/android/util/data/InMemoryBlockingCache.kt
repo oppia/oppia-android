@@ -1,15 +1,19 @@
 package org.oppia.android.util.data
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.async
 import org.oppia.android.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.withContext
 
 /**
  * An in-memory cache that provides blocking CRUD operations such that each operation is guaranteed to operate exactly
@@ -23,133 +27,135 @@ class InMemoryBlockingCache<T : Any> private constructor(
   blockingDispatcher: CoroutineDispatcher,
   initialValue: T?
 ) {
+  private val scope = CoroutineScope(blockingDispatcher + SupervisorJob())
 
   /**
    * The value of the cache. Note that this does not require a lock since it's only ever accessed via the blocking
    * dispatcher's single thread.
    */
   private var value: T? = initialValue
-  private val scope = CoroutineScope(SupervisorJob() + blockingDispatcher)
   private var changeObserver: suspend (T?, T?) -> Unit = { _, _ -> }
 
-  private sealed class CacheOp<T, R> {
-    abstract suspend fun execute(state: State<T>): R
+  private sealed class CacheOp<out T : Any, R> {
+    abstract val response: CompletableDeferred<R>
+    abstract suspend fun execute(cache: InMemoryBlockingCache<@UnsafeVariance T>)
+  }
 
-    data class Create<T>(val value: T) : CacheOp<T, T>() {
-      override suspend fun execute(state: State<T>): T {
-        state.value = value
-        state.changeObserver(state.previousValue, value)
-        state.previousValue = value
-        return value
+  private class Create<T : Any>(
+    val newValue: T,
+    override val response: CompletableDeferred<T>
+  ) : CacheOp<T, T>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      response.complete(cache.setCache(newValue))
+    }
+  }
+
+  private class CreateIfAbsent<T : Any>(
+    val generate: suspend () -> T,
+    override val response: CompletableDeferred<T>
+  ) : CacheOp<T, T>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      response.complete(cache.setCache(cache.value ?: generate()))
+    }
+  }
+
+  private class Read<T : Any>(
+    override val response: CompletableDeferred<T?>
+  ) : CacheOp<T, T?>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      response.complete(cache.value)
+    }
+  }
+
+  private class Update<T : Any>(
+    val update: suspend (T?) -> T,
+    override val response: CompletableDeferred<T>
+  ) : CacheOp<T, T>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      response.complete(cache.setCache(update(cache.value)))
+    }
+  }
+
+  private class UpdateIfPresent<T : Any>(
+    val update: suspend (T) -> T,
+    override val response: CompletableDeferred<T>
+  ) : CacheOp<T, T>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      val currentValue = checkNotNull(cache.value) {
+        "Expected to update the cache only after it's been created"
       }
+      response.complete(cache.setCache(update(currentValue)))
     }
+  }
 
-    data class CreateIfAbsent<T>(val generate: suspend () -> T) : CacheOp<T, T>() {
-      override suspend fun execute(state: State<T>): T {
-        if (state.value == null) {
-          val newValue = generate()
-          state.value = newValue
-          state.changeObserver(state.previousValue, newValue)
-          state.previousValue = newValue
-        }
-        return checkNotNull(state.value)
+  private class UpdateWithCustomChannel<T : Any, V>(
+    val update: suspend (T) -> Pair<T, V>,
+    override val response: CompletableDeferred<V>
+  ) : CacheOp<T, V>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      val currentValue = checkNotNull(cache.value) {
+        "Expected to update the cache only after it's been created"
       }
+      val (newValue, result) = update(currentValue)
+      cache.setCache(newValue)
+      response.complete(result)
     }
+  }
 
-    class Read<T>(val dummy: Boolean = true) : CacheOp<T, T?>() {
-      override suspend fun execute(state: State<T>): T? = state.value
+  private class Delete<T : Any>(
+    override val response: CompletableDeferred<Unit>
+  ) : CacheOp<T, Unit>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      cache.clearCache()
+      response.complete(Unit)
     }
+  }
 
-    class ReadIfPresent<T>(val dummy: Boolean = true) : CacheOp<T, T>() {
-      override suspend fun execute(state: State<T>): T {
-        return checkNotNull(state.value) {
-          "Expected to read the cache only after it's been created"
-        }
-      }
-    }
-
-    data class Update<T>(val transform: suspend (T?) -> T) : CacheOp<T, T>() {
-      override suspend fun execute(state: State<T>): T {
-        val newValue = transform(state.value)
-        state.value = newValue
-        state.changeObserver(state.previousValue, newValue)
-        state.previousValue = newValue
-        return newValue
-      }
-    }
-
-    data class UpdateIfPresent<T>(val transform: suspend (T) -> T) : CacheOp<T, T>() {
-      override suspend fun execute(state: State<T>): T {
-        val currentValue = checkNotNull(state.value) {
-          "Expected to update the cache only after it's been created"
-        }
-        val newValue = transform(currentValue)
-        state.value = newValue
-        state.changeObserver(state.previousValue, newValue)
-        state.previousValue = newValue
-        return newValue
-      }
-    }
-
-    data class UpdateWithCustom<T, V>(
-      val transform: suspend (T) -> Pair<T, V>
-    ) : CacheOp<T, V>() {
-      override suspend fun execute(state: State<T>): V {
-        val currentValue = checkNotNull(state.value) {
-          "Expected to update the cache only after it's been created"
-        }
-        val (newValue, result) = transform(currentValue)
-        state.value = newValue
-        state.changeObserver(state.previousValue, newValue)
-        state.previousValue = newValue
-        return result
-      }
-    }
-
-    class Delete<T>(val dummy: Boolean = true) : CacheOp<T, Unit>() {
-      override suspend fun execute(state: State<T>) {
-        state.changeObserver(state.value, null)
-        state.previousValue = state.value
-        state.value = null
+  private class MaybeDelete<T : Any>(
+    val shouldDelete: suspend (T) -> Boolean,
+    override val response: CompletableDeferred<Boolean>
+  ) : CacheOp<T, Boolean>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      val valueSnapshot = cache.value
+      if (valueSnapshot != null && shouldDelete(valueSnapshot)) {
+        cache.clearCache()
+        response.complete(true)
+      } else {
+        response.complete(false)
       }
     }
   }
 
-  private class State<T>(
-    var value: T?,
-    var previousValue: T?,
-    var changeObserver: suspend (T?, T?) -> Unit
-  )
+  private class MaybeForceDelete<T : Any>(
+    val shouldDelete: suspend (T?) -> Boolean,
+    override val response: CompletableDeferred<Boolean>
+  ) : CacheOp<T, Boolean>() {
+    override suspend fun execute(cache: InMemoryBlockingCache<T>) {
+      if (shouldDelete(cache.value)) {
+        cache.clearCache()
+        response.complete(true)
+      } else {
+        response.complete(false)
+      }
+    }
+  }
 
-  private val state = State(initialValue, null, changeObserver)
-
-  @OptIn(kotlinx.coroutines.ObsoleteCoroutinesApi::class)
-  private val actor = scope.actor<Pair<CacheOp<T, Any?>, Channel<Result<Any?>>>>(
+  @OptIn(ObsoleteCoroutinesApi::class)
+  private val actor = scope.actor<CacheOp<T, *>>(
     capacity = Channel.UNLIMITED
   ) {
-    for ((op, resultChannel) in channel) {
+    for (msg in channel) {
       try {
-        val result = op.execute(state)
-        resultChannel.send(Result.success(result))
+        msg.execute(this@InMemoryBlockingCache)
       } catch (e: Exception) {
-        resultChannel.send(Result.failure(e))
-      } finally {
-        resultChannel.close()
+        msg.response.completeExceptionally(e)
       }
     }
-  }
-
-  @Suppress("UNCHECKED_CAST")
-  private suspend fun <R> submitOperation(op: CacheOp<T, R>): R {
-    val resultChannel = Channel<Result<Any?>>()
-    actor.send(op as CacheOp<T, Any?> to resultChannel)
-    val result = resultChannel.receive() as Result<R>
-    return result.getOrThrow()
   }
 
   /** Registers an observer that is called synchronously whenever this cache's contents are changed. */
-  fun observeChanges(observer: suspend (T?, T?) -> Unit) {
-    state.changeObserver = observer
+  fun observeChanges(changeObserver: suspend (T?, T?) -> Unit) {
+    this.changeObserver = changeObserver
   }
 
   /**
@@ -157,7 +163,9 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * specified value. The [Deferred] will be passed the most up-to-date state of the cache.
    */
   fun createAsync(newValue: T): Deferred<T> = scope.async {
-    submitOperation(CacheOp.Create(newValue))
+    CompletableDeferred<T>().also { deferred ->
+      actor.send(Create(newValue, deferred))
+    }.await()
   }
 
   /**
@@ -166,7 +174,9 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * The provided function must be thread-safe and should have no side effects.
    */
   fun createIfAbsentAsync(generate: suspend () -> T): Deferred<T> = scope.async {
-    submitOperation(CacheOp.CreateIfAbsent(generate))
+    CompletableDeferred<T>().also { deferred ->
+      actor.send(CreateIfAbsent(generate, deferred))
+    }.await()
   }
 
   /**
@@ -174,7 +184,9 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * initialized.
    */
   fun readAsync(): Deferred<T?> = scope.async {
-    submitOperation(CacheOp.Read())
+    CompletableDeferred<T?>().also { deferred ->
+      actor.send(Read(deferred))
+    }.await()
   }
 
   /**
@@ -182,7 +194,9 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * an exception will be thrown.
    */
   fun readIfPresentAsync(): Deferred<T> = scope.async {
-    submitOperation(CacheOp.ReadIfPresent())
+    val deferred = CompletableDeferred<T?>()
+    actor.send(Read(deferred))
+    checkNotNull(deferred.await()) { "Expected to read the cache only after it's been created" }
   }
 
   /**
@@ -191,41 +205,38 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * side effects. This function is safe to call regardless of whether the cache has been created, meaning it can be
    * used also to initialize the cache.
    */
-  fun updateAsync(transform: suspend (T?) -> T): Deferred<T> = scope.async {
-    submitOperation(CacheOp.Update(transform))
+  fun updateAsync(update: suspend (T?) -> T): Deferred<T> = scope.async {
+    CompletableDeferred<T>().also { deferred ->
+      actor.send(Update(update, deferred))
+    }.await()
   }
 
   /**
    * Returns a [Deferred] in the same way as [updateAsync], excepted this update is expected to occur after cache
    * creation otherwise an exception will be thrown.
    */
-  fun updateIfPresentAsync(transform: suspend (T) -> T): Deferred<T> = scope.async {
-    submitOperation(CacheOp.UpdateIfPresent(transform))
+  fun updateIfPresentAsync(update: suspend (T) -> T): Deferred<T> = scope.async {
+    CompletableDeferred<T>().also { deferred ->
+      actor.send(UpdateIfPresent(update, deferred))
+    }.await()
   }
 
   /** See [updateIfPresentAsync]. Returns a custom deferred result. */
   fun <V> updateWithCustomChannelIfPresentAsync(
-    transform: suspend (T) -> Pair<T, V>
+    update: suspend (T) -> Pair<T, V>
   ): Deferred<V> = scope.async {
-    submitOperation(CacheOp.UpdateWithCustom(transform))
-  }
-
-  /**
-   * Returns a [Deferred] in the same way and for the same conditions as [updateIfPresentAsync] except the provided
-   * function is expected to update the cache in-place and return a custom value to propagate to the result of the
-   * [Deferred] object.
-   */
-  fun <O> updateInPlaceIfPresentAsync(transform: suspend (T) -> O): Deferred<O> = scope.async {
-    transform(
-      checkNotNull(state.value) { "Expected to update the cache only after it's been created" }
-    )
+    CompletableDeferred<V>().also { deferred ->
+      actor.send(UpdateWithCustomChannel(update, deferred))
+    }.await()
   }
 
   /**
    * Returns a [Deferred] that executes when this cache has been fully cleared, or if it's already been cleared.
    */
   fun deleteAsync(): Deferred<Unit> = scope.async {
-    submitOperation(CacheOp.Delete())
+    CompletableDeferred<Unit>().also { deferred ->
+      actor.send(Delete(deferred))
+    }.await()
   }
 
   /**
@@ -235,11 +246,9 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * Note that the provided function will not be called if the cache is already cleared.
    */
   fun maybeDeleteAsync(shouldDelete: suspend (T) -> Boolean): Deferred<Boolean> = scope.async {
-    val valueSnapshot = state.value
-    if (valueSnapshot != null && shouldDelete(valueSnapshot)) {
-      submitOperation(CacheOp.Delete())
-      true
-    } else false
+    CompletableDeferred<Boolean>().also { deferred ->
+      actor.send(MaybeDelete(shouldDelete, deferred))
+    }.await()
   }
 
   /**
@@ -247,20 +256,34 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * be called regardless of the state of the cache, and whose return value will be returned in this method's
    * [Deferred].
    */
-  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> =
-    scope.async {
-      if (shouldDelete(state.value)) {
-        submitOperation(CacheOp.Delete())
-        true
-      } else false
+  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> = scope.async {
+    CompletableDeferred<Boolean>().also { deferred ->
+      actor.send(MaybeForceDelete(shouldDelete, deferred))
+    }.await()
+  }
+  private suspend fun notifyChange(oldValue: T?, newValue: T?) {
+    withContext(Dispatchers.Main) {
+      changeObserver(oldValue, newValue)
     }
+  }
+  private suspend fun setCache(newValue: T): T {
+    val oldValue = value
+    value = newValue
+    notifyChange(oldValue, newValue)
+    return newValue
+  }
+
+  private suspend fun clearCache() {
+    val oldValue = value
+    value = null
+    changeObserver(oldValue, null)
+  }
 
   /** An injectable factory for [InMemoryBlockingCache]es. */
   @Singleton
   class Factory @Inject constructor(
     @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher
   ) {
-    /** Returns a new [InMemoryBlockingCache] with, optionally, the specified initial value. */
     fun <T : Any> create(initialValue: T? = null): InMemoryBlockingCache<T> {
       return InMemoryBlockingCache(blockingDispatcher, initialValue)
     }
