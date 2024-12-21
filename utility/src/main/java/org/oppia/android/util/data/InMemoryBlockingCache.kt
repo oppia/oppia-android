@@ -4,16 +4,16 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import org.oppia.android.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.withContext
 
 /**
  * An in-memory cache that provides blocking CRUD operations such that each operation is guaranteed to operate exactly
@@ -256,7 +256,8 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * be called regardless of the state of the cache, and whose return value will be returned in this method's
    * [Deferred].
    */
-  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean> = scope.async {
+  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean>
+  = scope.async {
     CompletableDeferred<Boolean>().also { deferred ->
       actor.send(MaybeForceDelete(shouldDelete, deferred))
     }.await()
