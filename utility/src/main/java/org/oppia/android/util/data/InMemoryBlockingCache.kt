@@ -256,12 +256,12 @@ class InMemoryBlockingCache<T : Any> private constructor(
    * be called regardless of the state of the cache, and whose return value will be returned in this method's
    * [Deferred].
    */
-  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean): Deferred<Boolean>
-  = scope.async {
-    CompletableDeferred<Boolean>().also { deferred ->
-      actor.send(MaybeForceDelete(shouldDelete, deferred))
-    }.await()
-  }
+  fun maybeForceDeleteAsync(shouldDelete: suspend (T?) -> Boolean):
+    Deferred<Boolean> = scope.async {
+      CompletableDeferred<Boolean>().also { deferred ->
+        actor.send(MaybeForceDelete(shouldDelete, deferred))
+      }.await()
+    }
   private suspend fun notifyChange(oldValue: T?, newValue: T?) {
     withContext(Dispatchers.Main) {
       changeObserver(oldValue, newValue)
