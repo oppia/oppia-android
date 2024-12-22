@@ -1118,6 +1118,18 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_loadDragDropExp_groupingItemsEnablesSubmitButton() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickSubmitAnswerButton()
+      verifySubmitAnswerButtonIsDisabled()
+      mergeDragAndDropItems(position = 0)
+      verifySubmitAnswerButtonIsEnabled()
+    }
+  }
+
+  @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_retainStateOnConfigurationChange() {
     setUpTestWithLanguageSwitchingFeatureOff()
