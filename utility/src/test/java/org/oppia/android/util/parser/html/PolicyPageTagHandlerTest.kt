@@ -129,8 +129,10 @@ class PolicyPageTagHandlerTest {
         customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 
-   assertThat(contentDescription).isEqualTo("By using %s, you agree to our " +
-     " Link to Terms of Service and Link to Privacy Policy.")
+    assertThat(contentDescription).isEqualTo(
+      "By using %s, you agree to our " +
+        " Link to Terms of Service and Link to Privacy Policy."
+    )
   }
 
   @Test

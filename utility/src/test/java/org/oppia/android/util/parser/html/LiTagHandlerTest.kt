@@ -154,13 +154,13 @@ class LiTagHandlerTest {
           CUSTOM_LIST_OL_TAG to liTaghandler
         )
       )
-  assertThat(contentDescription).isEqualTo(
-    "\nYou should know the following before going on:\n" +
-      "The counting numbers (1, 2, 3, 4, 5 ….)\n" +
-      "How to tell whether one counting number is bigger or smaller than another \n" +
-      "Item 1 \n" +
-      "Item 2"
-  )
+    assertThat(contentDescription).isEqualTo(
+      "\nYou should know the following before going on:\n" +
+        "The counting numbers (1, 2, 3, 4, 5 ….)\n" +
+        "How to tell whether one counting number is bigger or smaller than another \n" +
+        "Item 1 \n" +
+        "Item 2"
+    )
   }
 
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
