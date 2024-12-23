@@ -810,7 +810,78 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_addManyProfiles_checkProfilesSortedAndNoAddProfile() {
+  fun testFragment_enableOnboardingV2_addManyProfiles_checkNoAddProfile() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
+      scrollToPosition(position = 1)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 1,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "A"
+      )
+      scrollToPosition(position = 2)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 2,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "B"
+      )
+      scrollToPosition(position = 3)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 3,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "C"
+      )
+      scrollToPosition(position = 4)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 4,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "D"
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 5,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "E"
+      )
+      scrollToPosition(position = 6)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 6,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "F"
+      )
+      scrollToPosition(position = 7)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 7,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "G"
+      )
+      scrollToPosition(position = 8)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 8,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "H"
+      )
+      scrollToPosition(position = 9)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 9,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "I"
+      )
+      onView(withId(R.id.add_profile_button)).check(matches(not(isDisplayed())))
+      onView(withId(R.id.add_profile_prompt)).check(matches(not(isDisplayed())))
+    }
+  }
+  @Test
+  fun testFragment_enableOnboardingV2_addManyProfiles_checkProfilesSorted() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.initializeProfiles(autoLogIn = false)
     profileTestHelper.addMoreProfiles(8)
