@@ -202,7 +202,7 @@ class HomeFragmentPresenter @Inject constructor(
 
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      internalProfileId,
+      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
       topicSummary.classroomId,
       topicSummary.topicId,
       topicSummary.firstStoryId

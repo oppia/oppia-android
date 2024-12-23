@@ -28,7 +28,7 @@ jobs:
         os: [ubuntu-20.04]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: cache
         with:
           path: ~/.gradle
@@ -119,7 +119,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}-jars-{{ checksum "build.gradle" }}

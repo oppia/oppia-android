@@ -26,9 +26,7 @@ class TopicPracticeFragment : InjectableFragment() {
     const val TOPIC_PRACTICE_FRAGMENT_STATE_KEY = "TopicPracticeFragment.state"
 
     /** Returns a new [TopicPracticeFragment]. */
-    fun newInstance(internalProfileId: Int, topicId: String): TopicPracticeFragment {
-
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fun newInstance(profileId: ProfileId, topicId: String): TopicPracticeFragment {
       val args = TopicPracticeFragmentArguments.newBuilder().apply {
         this.topicId = topicId
       }.build()
@@ -70,7 +68,8 @@ class TopicPracticeFragment : InjectableFragment() {
       TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
       TopicPracticeFragmentArguments.getDefaultInstance()
     )
-    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.newBuilder()
+      .setInternalId(-1).build()
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicPracticeFragment."
     }
@@ -80,7 +79,7 @@ class TopicPracticeFragment : InjectableFragment() {
       container,
       selectedIdList,
       selectedSkillId,
-      internalProfileId,
+      profileId,
       topicId
     )
   }

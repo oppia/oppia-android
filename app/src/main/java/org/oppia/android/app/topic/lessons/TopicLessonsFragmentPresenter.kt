@@ -54,7 +54,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private var currentExpandedChapterListIndex: Int? = null
 
   private lateinit var binding: TopicLessonsFragmentBinding
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var classroomId: String
   private lateinit var topicId: String
   private lateinit var storyId: String
@@ -69,13 +69,13 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     currentExpandedChapterListIndex: Int?,
     expandedChapterListIndexListener: ExpandedChapterListIndexListener,
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
     isDefaultStoryExpanded: Boolean
   ): View? {
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
     this.classroomId = classroomId
     this.topicId = topicId
     this.storyId = storyId
@@ -93,7 +93,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       this.viewModel = topicLessonViewModel
     }
 
-    topicLessonViewModel.setInternalProfileId(internalProfileId)
+    topicLessonViewModel.setProfileId(profileId)
     topicLessonViewModel.setTopicId(topicId)
     topicLessonViewModel.setStoryId(storyId)
 
@@ -278,7 +278,12 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   }
 
   fun storySummaryClicked(storySummary: StorySummary) {
-    routeToStoryListener.routeToStory(internalProfileId, classroomId, topicId, storySummary.storyId)
+    routeToStoryListener.routeToStory(
+      internalProfileId = profileId.internalId,
+      classroomId = classroomId,
+      topicId = topicId,
+      storyId = storySummary.storyId
+    )
   }
 
   fun selectChapterSummary(
@@ -286,9 +291,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
     explorationId: String,
     chapterPlayState: ChapterPlayState
   ) {
-    val profileId = ProfileId.newBuilder().apply {
-      internalId = internalProfileId
-    }.build()
     val canHavePartialProgressSaved =
       when (chapterPlayState) {
         ChapterPlayState.IN_PROGRESS_SAVED, ChapterPlayState.IN_PROGRESS_NOT_SAVED,
@@ -373,21 +375,21 @@ class TopicLessonsFragmentPresenter @Inject constructor(
       !canHavePartialProgressSaved -> {
         // Only explorations that have been completed can't be saved, so replay the lesson.
         explorationDataController.replayExploration(
-          internalProfileId, classroomId, topicId, storyId, explorationId
+          profileId.internalId, classroomId, topicId, storyId, explorationId
         )
       }
       hadProgress -> {
         // If there was progress, either the checkpoint was never saved, failed to save, or failed
         // to be retrieved. In all cases, this is a restart.
         explorationDataController.restartExploration(
-          internalProfileId, classroomId, topicId, storyId, explorationId
+          profileId.internalId, classroomId, topicId, storyId, explorationId
         )
       }
       else -> {
         // If there's no progress and it was never completed, then it's a new play through (or the
         // user is very low on device memory).
         explorationDataController.startPlayingNewExploration(
-          internalProfileId, classroomId, topicId, storyId, explorationId
+          profileId.internalId, classroomId, topicId, storyId, explorationId
         )
       }
     }
