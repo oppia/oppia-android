@@ -25,7 +25,7 @@ class TopicLessonViewModel @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController
 ) {
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var topicStoryList: List<StorySummary>
@@ -42,10 +42,7 @@ class TopicLessonViewModel @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
-    topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicId
-    ).toLiveData()
+    topicController.getTopic(profileId, topicId).toLiveData()
   }
 
   private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
@@ -80,8 +77,8 @@ class TopicLessonViewModel @Inject constructor(
     return itemList
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   fun setTopicId(topicId: String) {
