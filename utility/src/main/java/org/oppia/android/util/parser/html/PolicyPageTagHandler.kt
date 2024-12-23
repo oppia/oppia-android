@@ -22,7 +22,7 @@ private const val TERMS_OF_SERVICE = "Terms of Service"
 class PolicyPageTagHandler(
   private val listener: PolicyPageLinkClickListener,
   private val consoleLogger: ConsoleLogger
-) : CustomHtmlContentHandler.CustomTagHandler {
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -82,5 +82,17 @@ class PolicyPageTagHandler(
      * specified policy link.
      */
     fun onPolicyPageLinkClicked(policyType: PolicyType)
+  }
+
+  override fun getContentDescription(attributes: Attributes): String? {
+    // Get the type of policy link from the attributes
+    val linkType = attributes.getJsonStringValue("link") ?: return null
+
+    // Return an accessibility-friendly description based on the link type
+    return when (linkType) {
+      TERMS_OF_SERVICE_PAGE -> "Link to "
+      PRIVACY_POLICY_PAGE -> "Link to "
+      else -> null // Return null for unknown link types
+    }
   }
 }

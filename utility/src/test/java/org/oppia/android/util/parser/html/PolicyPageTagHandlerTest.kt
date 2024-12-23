@@ -120,6 +120,18 @@ class PolicyPageTagHandlerTest {
 
     assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
   }
+  @Test
+  fun testParseHtml_contentDescription() {
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = POLICY_PAGE_LINK_MARKUP_1,
+        imageRetriever = null,
+        customTagHandlers = tagHandlersWithPolicyPageSupport
+      )
+
+   assertThat(contentDescription).isEqualTo("By using %s, you agree to our " +
+     " Link to Terms of Service and Link to Privacy Policy.")
+  }
 
   @Test
   fun testParseHtml_withPolicyPageMarkup_clickSpan_callsClickListenerForTermsOfService() {

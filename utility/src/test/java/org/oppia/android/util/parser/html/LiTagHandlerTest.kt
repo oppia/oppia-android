@@ -136,6 +136,32 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(4)
   }
+  @Test
+  fun testCustomListElement_contentDescription() {
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val htmlString = "<p>You should know the following before going on:<br></p>" +
+      "<oppia-ol><oppia-li>The counting numbers (1, 2, 3, 4, 5 ….)</oppia-li>" +
+      "<oppia-li>How to tell whether one counting number is bigger or " +
+      "smaller than another <oppia-ol><oppia-li>Item 1</oppia-li> <oppia-li>Item 2" +
+      "</oppia-li></oppia-ol></oppia-li></oppia-ol>"
+    val liTaghandler = LiTagHandler(context, displayLocale)
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = htmlString,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_LIST_LI_TAG to liTaghandler,
+          CUSTOM_LIST_OL_TAG to liTaghandler
+        )
+      )
+  assertThat(contentDescription).isEqualTo(
+    "\nYou should know the following before going on:\n" +
+      "The counting numbers (1, 2, 3, 4, 5 ….)\n" +
+      "How to tell whether one counting number is bigger or smaller than another \n" +
+      "Item 1 \n" +
+      "Item 2"
+  )
+  }
 
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)

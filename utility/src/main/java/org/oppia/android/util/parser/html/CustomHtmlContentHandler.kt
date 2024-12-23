@@ -27,9 +27,15 @@ class CustomHtmlContentHandler private constructor(
   private val currentTrackedCustomTags = ArrayDeque<TrackedCustomTag>()
   private val contentDescriptionBuilder = StringBuilder()
   private val tagContentDescriptions = mutableMapOf<Int, String>()
+  private var isInListItem = false
+  private var pendingNewline = false
+  private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
+    if (localName in blockTags) {
+      isInListItem = false
+    }
     currentTrackedTag = null
   }
 
@@ -47,6 +53,10 @@ class CustomHtmlContentHandler private constructor(
 
   override fun characters(ch: CharArray?, start: Int, length: Int) {
     originalContentHandler?.characters(ch, start, length)
+    if (pendingNewline) {
+      contentDescriptionBuilder.append('\n')
+      pendingNewline = false
+    }
     ch?.let { contentDescriptionBuilder.append(String(it, start, length)) }
   }
 
@@ -59,6 +69,10 @@ class CustomHtmlContentHandler private constructor(
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
     currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
+    if (localName in blockTags) {
+      pendingNewline = true
+      isInListItem = true
+    }
     originalContentHandler?.startElement(uri, localName, qName, atts)
   }
 
@@ -139,7 +153,7 @@ class CustomHtmlContentHandler private constructor(
    * from all custom tags.
    */
   private fun getContentDescription(): String {
-    return buildString {
+    val rawDesc = buildString {
       var lastIndex = 0
       tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
         if (index > lastIndex) {
@@ -151,7 +165,8 @@ class CustomHtmlContentHandler private constructor(
       if (lastIndex < contentDescriptionBuilder.length) {
         append(contentDescriptionBuilder.substring(lastIndex))
       }
-    }.trim()
+    }
+    return rawDesc.replace(Regex("\n+"), "\n")
   }
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {

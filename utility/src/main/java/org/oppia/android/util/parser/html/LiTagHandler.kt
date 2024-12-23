@@ -6,6 +6,7 @@ import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Stack
+import org.xml.sax.Attributes
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -23,7 +24,7 @@ const val CUSTOM_LIST_OL_TAG = "oppia-ol"
 class LiTagHandler(
   private val context: Context,
   private val displayLocale: OppiaLocale.DisplayLocale
-) : CustomHtmlContentHandler.CustomTagHandler {
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
   private val pendingLists = Stack<ListTag<*, *>>()
   private val latestPendingList: ListTag<*, *>?
     get() = pendingLists.lastOrNull()
@@ -72,7 +73,7 @@ class LiTagHandler(
      * this list.
      */
     var pendingStartMark: M? = null
-    private var itemCount = 0
+    var itemCount = 0
 
     /**
      * Called when an opening <li> tag is encountered.
@@ -159,7 +160,7 @@ class LiTagHandler(
     class Ul(
       parentList: ListTag<*, *>?,
       parentMark: Mark<*>?,
-      private val indentationLevel: Int
+      val indentationLevel: Int
     ) : ListTag<Mark.BulletListItem, ListItemLeadingMarginSpan.UlSpan>(
       parentList, parentMark, ::getLast
     ) {
@@ -291,4 +292,9 @@ class LiTagHandler(
     private fun <T : Mark<*>> Spannable.addMark(mark: T) =
       setSpan(mark, length, length, Spanned.SPAN_MARK_MARK)
   }
+
+  override fun getContentDescription(attributes: Attributes): String? {
+    return null
+  }
+
 }
