@@ -47,7 +47,7 @@ class RevisionCardViewModel private constructor(
   /** Called when the previous navigation card is clicked. */
   fun onPreviousCardClicked() {
     routeToReviewListener.routeToRevisionCard(
-      profileId.internalId,
+      profileId,
       topicId,
       subtopicId - 1,
       subtopicListSize
@@ -57,7 +57,7 @@ class RevisionCardViewModel private constructor(
   /** Called when the next navigation card is clicked. */
   fun onNextCardClicked() {
     routeToReviewListener.routeToRevisionCard(
-      profileId.internalId,
+      profileId,
       topicId,
       subtopicId + 1,
       subtopicListSize
