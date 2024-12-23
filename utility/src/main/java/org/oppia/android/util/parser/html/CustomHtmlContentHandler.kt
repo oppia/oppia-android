@@ -166,7 +166,7 @@ class CustomHtmlContentHandler private constructor(
         append(contentDescriptionBuilder.substring(lastIndex))
       }
     }
-    return rawDesc.replace(Regex("\n+"), "\n")
+    return rawDesc.replace(Regex("\n+"), "\n").trim()
   }
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {

@@ -330,6 +330,74 @@ class CustomHtmlContentHandlerTest {
 
     assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
   }
+  @Test
+  fun testGetContentDescription_whitespaceHandling_normalizedCorrectly() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+        <p>First    paragraph</p>
+        
+        <p>Second     paragraph</p>
+        
+        <p>Third    paragraph</p>
+        """.trimIndent(),
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "First    paragraph\n" +
+        "Second     paragraph\n" +
+        "Third    paragraph"
+    )
+  }
+  @Test
+  fun testGetContentDescription_blockElements_preserveStructure() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+        <header>Header text</header>
+        <article>Article content</article>
+        <section>Section text</section>
+        <aside>Aside content</aside>
+        <footer>Footer text</footer>
+        """.trimIndent(),
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "Header text\n" +
+        "Article content\n" +
+        "Section text\n" +
+        "Aside content\n" +
+        "Footer text"
+    )
+  }
+  @Test
+  fun testGetContentDescription_mixedContentTypes_handlesCorrectly() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+        <p>Regular paragraph</p>
+        <custom-tag>Custom content</custom-tag>
+        <ul><li>List item 1</li><li>List item 2</li></ul>
+        <custom-tag>More custom</custom-tag>
+        <p>Final paragraph</p>
+        """.trimIndent(),
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "Regular paragraph\n" +
+        "Custom content\n" +
+        "List item 1\n" +
+        "List item 2\n" +
+        "More custom\n" +
+        "Final paragraph"
+    )
+  }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)

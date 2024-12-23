@@ -117,7 +117,7 @@ class ConceptCardTagHandlerTest {
     assertThat(clickableSpans).hasLength(1)
   }
   @Test
-  fun testParseHtml_contentDescription() {
+  fun testGetContentDescription_withConceptCardTag() {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = CONCEPT_CARD_LINK_MARKUP_1,

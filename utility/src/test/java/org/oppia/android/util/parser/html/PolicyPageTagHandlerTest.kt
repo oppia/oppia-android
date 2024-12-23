@@ -121,7 +121,7 @@ class PolicyPageTagHandlerTest {
     assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
   }
   @Test
-  fun testParseHtml_contentDescription() {
+  fun testGetContentDescription_withPolicyPageTag() {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = POLICY_PAGE_LINK_MARKUP_1,

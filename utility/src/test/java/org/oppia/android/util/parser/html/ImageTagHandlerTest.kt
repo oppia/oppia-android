@@ -326,7 +326,7 @@ class ImageTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_contentDescription() {
+  fun testGetContentDescription_withImageTag() {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = IMAGE_TAG_MARKUP_1,

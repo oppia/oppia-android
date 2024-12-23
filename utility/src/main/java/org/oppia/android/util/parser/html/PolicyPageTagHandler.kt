@@ -85,14 +85,12 @@ class PolicyPageTagHandler(
   }
 
   override fun getContentDescription(attributes: Attributes): String? {
-    // Get the type of policy link from the attributes
     val linkType = attributes.getJsonStringValue("link") ?: return null
 
-    // Return an accessibility-friendly description based on the link type
     return when (linkType) {
       TERMS_OF_SERVICE_PAGE -> "Link to "
       PRIVACY_POLICY_PAGE -> "Link to "
-      else -> null // Return null for unknown link types
+      else -> null
     }
   }
 }

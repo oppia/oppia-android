@@ -302,7 +302,7 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testParseHtml_contentDescription() {
+  fun testGetContentDescription_withMathTag() {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = MATH_MARKUP_1,
