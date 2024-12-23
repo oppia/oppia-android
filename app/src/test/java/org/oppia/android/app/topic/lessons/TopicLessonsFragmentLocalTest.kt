@@ -23,6 +23,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
@@ -100,7 +101,7 @@ class TopicLessonsFragmentLocalTest {
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  private val internalProfileId = 0
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -110,7 +111,7 @@ class TopicLessonsFragmentLocalTest {
   @Test
   fun testTopicLessonsFragment_onLaunch_logsEvent() {
     launchTopicActivityIntent(
-      internalProfileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID, TEST_STORY_ID
+      profileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID, TEST_STORY_ID
     ).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -123,7 +124,7 @@ class TopicLessonsFragmentLocalTest {
   }
 
   private fun launchTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -131,7 +132,7 @@ class TopicLessonsFragmentLocalTest {
     val intent =
       TopicActivity.createTopicPlayStoryActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        profileId,
         classroomId,
         topicId,
         storyId
