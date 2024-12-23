@@ -5,8 +5,8 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import org.oppia.android.util.locale.OppiaLocale
-import org.xml.sax.Attributes
 import java.util.Stack
+import org.xml.sax.Attributes
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"
@@ -73,7 +73,7 @@ class LiTagHandler(
      * this list.
      */
     var pendingStartMark: M? = null
-    var itemCount = 0
+    private var itemCount = 0
 
     /**
      * Called when an opening <li> tag is encountered.
@@ -160,7 +160,7 @@ class LiTagHandler(
     class Ul(
       parentList: ListTag<*, *>?,
       parentMark: Mark<*>?,
-      val indentationLevel: Int
+      private val indentationLevel: Int
     ) : ListTag<Mark.BulletListItem, ListItemLeadingMarginSpan.UlSpan>(
       parentList, parentMark, ::getLast
     ) {
