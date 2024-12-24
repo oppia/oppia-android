@@ -172,7 +172,6 @@ dependencies {
       'androidx.navigation:navigation-ui:2.7.5',
       'androidx.navigation:navigation-ui-ktx:2.7.5',
       "androidx.fragment:fragment:$fragment_version",
-      'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03',
       'androidx.multidex:multidex:2.0.1',
       'androidx.recyclerview:recyclerview:1.4.0',
       'androidx.work:work-runtime-ktx:2.8.1',

@@ -1,8 +1,9 @@
 package org.oppia.android.util.extensions
 
+import android.annotation.TargetApi
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import androidx.core.app.BundleCompat
 import com.google.protobuf.ByteString
 import com.google.protobuf.InvalidProtocolBufferException
 import com.google.protobuf.MessageLite
@@ -33,12 +34,10 @@ fun <T : MessageLite> Bundle.putProto(name: String, message: T) {
  * return [defaultValue].
  */
 fun <T : MessageLite> Bundle.getProto(name: String, defaultValue: T): T {
-  return BundleCompat.getSerializable(
-    this,
-    name,
-    ByteString::class.java
-  )?.let { serializedByteString ->
-    try {
+  return getTypedSerializable<ByteString>(name)?.let { serializedByteString ->
+    // Type safety is *generally* guaranteed by newBuilderForType. If the bundle actually has an
+    // incorrect type, then the mergeFrom() call should fail.
+    return@let try {
       @Suppress("UNCHECKED_CAST")
       defaultValue.newBuilderForType().mergeFrom(serializedByteString).build() as T
     } catch (e: InvalidProtocolBufferException) {
@@ -74,6 +73,16 @@ fun <T : MessageLite> Intent.getProtoExtra(name: String, defaultValue: T): T {
 fun Bundle.getStringFromBundle(key: String): String? = getString(key)
 
 // TODO(#5405): Migrate this to BundleCompat.
-internal inline fun <reified T : Serializable> Bundle.getTypedSerializable(name: String): T? {
-  return BundleCompat.getSerializable(this, name, T::class.java)
+private inline fun <reified T : Serializable> Bundle.getTypedSerializable(name: String): T? {
+  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    getSerializableAboveApi32(name, T::class.java)
+  } else getSerializableBelowApi33(name)
 }
+
+@TargetApi(Build.VERSION_CODES.TIRAMISU)
+private fun <T : Serializable> Bundle.getSerializableAboveApi32(name: String, type: Class<T>): T? =
+  getSerializable(name, type)
+
+@Suppress("DEPRECATION") // This is needed for old devices. New devices use the new API per above.
+private inline fun <reified T : Serializable> Bundle.getSerializableBelowApi33(name: String): T? =
+  getSerializable(name) as? T
