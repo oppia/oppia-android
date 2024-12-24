@@ -142,6 +142,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -5206,6 +5207,110 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_contentDescription_replaceUnderscoresWithBlank() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughRatioExplorationState1()
+      playThroughRatioExplorationState2()
+      playThroughRatioExplorationState3()
+      playThroughRatioExplorationState4()
+      playThroughRatioExplorationState5()
+      playThroughRatioExplorationState6()
+      playThroughRatioExplorationState7()
+      playThroughRatioExplorationState8()
+      playThroughRatioExplorationState9()
+      playThroughRatioExplorationState10()
+      playThroughRatioExplorationState11()
+      playThroughRatioExplorationState12()
+      playThroughRatioExplorationState13()
+      playThroughRatioExplorationState14()
+
+      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie." +
+        " Yummy!\n\n2 cups of milk and 1 cup of banana puree \n\n“I can make this,” he said." +
+        " “We’ll need to mix milk and banana puree in the ratio Blank.”\n\nCan you complete" +
+        " James’s sentence? What is the ratio of milk to banana puree?”"
+
+      onView(withId(R.id.content_text_view))
+        .check(matches(withContentDescription(expectedDescription)))
+    }
+  }
+
+  private fun playThroughRatioExplorationState1() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState2() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState3() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState4() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState5() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState6() {
+    typeTextInput("2 to 5")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState7() {
+    typeTextInput("3 to 1")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState8() {
+    typeTextInput("2:3")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState9() {
+    typeTextInput("5:2")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState10() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState11() {
+    selectMultipleChoiceOption(
+      2,
+      "The relative relationship between the amounts of different things."
+    )
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState12() {
+    clickContinueInteractionButton()
+  }
+
+  private fun playThroughRatioExplorationState13() {
+    typeTextInput("1:4")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState14() {
+    typeTextInput("1:4")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")
@@ -5793,7 +5898,13 @@ class StateFragmentTest {
           explorationId = FRACTIONS_EXPLORATION_ID_1, audioFileName = "content-en-ouqm7j21vt8.mp3"
         )
       ) { "Failed to create audio data source." }
+      val dataSource2 = checkNotNull(
+        createAudioDataSource(
+          explorationId = RATIOS_EXPLORATION_ID_0, audioFileName = "content-en-057j51i2es.mp3"
+        )
+      ) { "Failed to create audio data source." }
       addShadowMediaPlayerException(dataSource, IOException("Test does not have networking"))
+      addShadowMediaPlayerException(dataSource2, IOException("Test does not have networking"))
     }
   }
 
