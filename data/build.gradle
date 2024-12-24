@@ -15,7 +15,6 @@ android {
     multiDexEnabled true
     javaCompileOptions {
       annotationProcessorOptions {
-        includeCompileClasspath true
       }
     }
   }
