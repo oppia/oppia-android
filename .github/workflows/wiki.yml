@@ -1,4 +1,5 @@
 name: Deploy to Wiki
+
 on:
   pull_request:
     paths:

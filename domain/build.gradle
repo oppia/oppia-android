@@ -83,7 +83,7 @@ android.sourceSets.test.kotlin.exclude(filesToExclude)
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation(
-      'androidx.appcompat:appcompat:1.0.2',
+      'androidx.appcompat:appcompat:1.6.0',
       'androidx.exifinterface:exifinterface:1.0.0-rc01',
       'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0-alpha03',
       'androidx.lifecycle:lifecycle-extensions:2.0.0',

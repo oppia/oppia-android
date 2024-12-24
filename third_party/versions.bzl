@@ -22,7 +22,7 @@ https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies
 MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.activity:activity-compose": "1.4.0",
     "androidx.annotation:annotation": "1.1.0",
-    "androidx.appcompat:appcompat": "1.3.1",
+    "androidx.appcompat:appcompat": "1.6.0",
     "androidx.compose.compiler:compiler": "1.1.1",
     "androidx.compose.foundation:foundation": "1.1.1",
     "androidx.compose.foundation:foundation-layout": "1.1.1",
