@@ -13,7 +13,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decora
 import javax.inject.Inject
 
 const val TOPIC_FRAGMENT_TAG = "TopicFragment"
-const val PROFILE_ID_ARGUMENT_KEY = "profile_id"
 const val TOPIC_FRAGMENT_ARGUMENTS_KEY = "TopicFragment.arguments"
 
 /** The presenter for [TopicActivity]. */
@@ -22,10 +21,8 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
   private lateinit var classroomId: String
   private lateinit var topicId: String
 
-  private lateinit var profileId: ProfileId
-
   fun handleOnCreate(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String?
@@ -33,7 +30,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     this.topicId = topicId
     this.classroomId = classroomId
     activity.setContentView(R.layout.topic_activity)
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     if (getTopicFragment() == null) {
       val topicFragment = TopicFragment()
       val arguments = Bundle().apply {
@@ -58,7 +55,7 @@ class TopicActivityPresenter @Inject constructor(private val activity: AppCompat
     if (getSpotlightFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.topic_spotlight_fragment_placeholder,
-        SpotlightFragment.newInstance(internalProfileId),
+        SpotlightFragment.newInstance(profileId.internalId),
         SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
       ).commitNow()
     }

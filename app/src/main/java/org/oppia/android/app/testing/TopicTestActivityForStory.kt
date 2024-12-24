@@ -37,9 +37,10 @@ class TopicTestActivityForStory :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
     (activityComponent as ActivityComponentImpl).inject(this)
     topicActivityPresenter.handleOnCreate(
-      internalProfileId = 0,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_0,
       topicId = TEST_TOPIC_ID_0,
       storyId = TEST_STORY_ID_0
@@ -118,14 +119,14 @@ class TopicTestActivityForStory :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
   ) {
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
-        this, internalProfileId, topicId, subtopicId, subtopicListSize
+        this, profileId, topicId, subtopicId, subtopicListSize
       )
     )
   }
