@@ -31,11 +31,6 @@ class ClassroomListActivityPresenter @Inject constructor(private val activity: A
     }
   }
 
-  /** Handles the activity restart. Re-initializes the navigation drawer. */
-  fun handleOnRestart() {
-    setUpNavigationDrawer()
-  }
-
   private fun setUpNavigationDrawer() {
     val toolbar = activity.findViewById<View>(R.id.classroom_list_activity_toolbar) as Toolbar
     activity.setSupportActionBar(toolbar)

@@ -23,8 +23,7 @@ class TopicInfoFragment : InjectableFragment() {
     const val TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY = "TopicInfoFragment.arguments"
 
     /** Returns a new [TopicInfoFragment]. */
-    fun newInstance(internalProfileId: Int, topicId: String): TopicInfoFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fun newInstance(profileId: ProfileId, topicId: String): TopicInfoFragment {
       val args = TopicInfoFragmentArguments.newBuilder().setTopicId(topicId).build()
 
       return TopicInfoFragment().apply {
@@ -54,14 +53,15 @@ class TopicInfoFragment : InjectableFragment() {
       TopicInfoFragmentArguments.getDefaultInstance()
     )
 
-    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+
     val topicId = checkNotNull(args?.topicId) {
       "Expected topic ID to be included in arguments for TopicInfoFragment."
     }
     return topicInfoFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
+      profileId,
       topicId
     )
   }

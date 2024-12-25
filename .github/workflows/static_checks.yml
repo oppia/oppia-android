@@ -115,7 +115,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}

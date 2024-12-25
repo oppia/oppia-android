@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -112,8 +113,11 @@ class MarginBindingAdaptersTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -290,6 +294,75 @@ class MarginBindingAdaptersTest {
      */
     assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
     assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
+  }
+
+  @Config(qualifiers = "port")
+  @Test
+  fun testMarginBindableAdapters_setLayoutParams_preservesMargins() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+
+      // Set initial margins
+      setLayoutMarginStart(textView, /* marginStart= */ 24f)
+      setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
+      setLayoutMarginTop(textView, /* marginTop= */ 16f)
+      setLayoutMarginBottom(textView, /* marginBottom= */ 32f)
+
+      return@runWithActivity textView
+    }
+
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
+
+    val layoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
+    assertThat(layoutParams.topMargin.toFloat()).isWithin(TOLERANCE).of(16f)
+    assertThat(layoutParams.bottomMargin.toFloat()).isWithin(TOLERANCE).of(32f)
+  }
+
+  @Config(qualifiers = "land")
+  @Test
+  fun testMarginBindableAdapters_landscapeMode_setLayoutParams_preservesMargins() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+
+      // Set initial margins
+      setLayoutMarginStart(textView, /* marginStart= */ 24f)
+      setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
+      setLayoutMarginTop(textView, /* marginTop= */ 16f)
+      setLayoutMarginBottom(textView, /* marginBottom= */ 32f)
+
+      return@runWithActivity textView
+    }
+
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
+
+    val layoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
+    assertThat(layoutParams.topMargin.toFloat()).isWithin(TOLERANCE).of(16f)
+    assertThat(layoutParams.bottomMargin.toFloat()).isWithin(TOLERANCE).of(32f)
+  }
+
+  @Config(qualifiers = "sw600dp-port")
+  @Test
+  fun testMarginBindableAdapters_tabletMode_setLayoutParams_preservesMargins() {
+    val textView = activityRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+
+      // Set initial margins
+      setLayoutMarginStart(textView, /* marginStart= */ 24f)
+      setLayoutMarginEnd(textView, /* marginEnd= */ 40f)
+      setLayoutMarginTop(textView, /* marginTop= */ 16f)
+      setLayoutMarginBottom(textView, /* marginBottom= */ 32f)
+
+      return@runWithActivity textView
+    }
+
+    assertThat(textView.marginStart.toFloat()).isWithin(TOLERANCE).of(24f)
+    assertThat(textView.marginEnd.toFloat()).isWithin(TOLERANCE).of(40f)
+
+    val layoutParams = textView.layoutParams as ViewGroup.MarginLayoutParams
+    assertThat(layoutParams.topMargin.toFloat()).isWithin(TOLERANCE).of(16f)
+    assertThat(layoutParams.bottomMargin.toFloat()).isWithin(TOLERANCE).of(32f)
   }
 
   private fun testMarginBindableAdapters_topAndBottomIsCorrect() {

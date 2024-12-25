@@ -125,7 +125,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ProfileEditFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ProfileEditFragmentTest {
-
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -167,49 +166,68 @@ class ProfileEditFragmentTest {
   }
 
   @Test
-  fun testProfileEdit_startWithUserProfile_clickProfileDeletionButton_checkOpensDeletionDialog() {
+  fun testProfileEdit_clickProfileDeletion_checkOpensDeletionDialog_checkOpensSuccessDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog()).check(matches(isDisplayed()))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_successful_message))
+        .inRoot(isDialog())
+        .check(matches(isCompletelyDisplayed()))
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testProfileEdit_configChange_startWithUserProfile_clickDelete_checkOpensDeletionDialog() {
+  fun testProfileEdit_configChange_clickDelete_checkOpensDeletionDialog_checkOpensSuccessDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog()).check(matches(isDisplayed()))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_successful_message))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testProfileEdit_startWithUserProfile_clickDelete_configChange_checkDeletionDialogIsVisible() {
+  fun testProfileEdit_clickDelete_landscapeMode_checkOpensDeletionDialog() {
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.profile_edit_delete_dialog_message))
-        .inRoot(isDialog()).check(matches(isCompletelyDisplayed()))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withText(R.string.profile_edit_delete_dialog_positive)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.profile_edit_delete_successful_message))
+        .inRoot(isDialog())
+        .check(matches(isCompletelyDisplayed()))
     }
   }
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    ).toLiveData()
+    profileManagementController
+      .addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+      ).toLiveData()
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -226,14 +244,15 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    ).toLiveData()
+    profileManagementController
+      .addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+      ).toLiveData()
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
     }
@@ -243,14 +262,15 @@ class ProfileEditFragmentTest {
   @Config(qualifiers = "land")
   fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
-    val addProfileProvider = profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
+    val addProfileProvider =
+      profileManagementController.addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+      )
     monitorFactory.waitForNextSuccessfulResult(addProfileProvider)
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -261,14 +281,15 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    ).toLiveData()
+    profileManagementController
+      .addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+      ).toLiveData()
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(isChecked()))
       onView(withId(R.id.profile_edit_allow_download_container)).perform(click())
@@ -279,14 +300,15 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = false,
-      colorRgb = -10710042,
-      isAdmin = false
-    ).toLiveData()
+    profileManagementController
+      .addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = false,
+        colorRgb = -10710042,
+        isAdmin = false,
+      ).toLiveData()
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(withId(R.id.profile_edit_allow_download_switch)).check(matches(not(isClickable())))
     }
@@ -295,14 +317,15 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    ).toLiveData()
+    profileManagementController
+      .addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+      ).toLiveData()
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(isFocusable()))
     }
@@ -311,14 +334,15 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
-    profileManagementController.addProfile(
-      name = "James",
-      pin = "123",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    ).toLiveData()
+    profileManagementController
+      .addProfile(
+        name = "James",
+        pin = "123",
+        avatarImagePath = null,
+        allowDownloadAccess = true,
+        colorRgb = -10710042,
+        isAdmin = false,
+      ).toLiveData()
     launchFragmentTestActivity(internalProfileId = 4).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(isDisplayed()))
     }
@@ -365,11 +389,13 @@ class ProfileEditFragmentTest {
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
-      val args = MarkChaptersCompletedActivityParams.newBuilder().apply {
-        this.internalProfileId = 0
-        this.showConfirmationNotice = true
-      }
-        .build()
+      val args =
+        MarkChaptersCompletedActivityParams
+          .newBuilder()
+          .apply {
+            this.internalProfileId = 0
+            this.showConfirmationNotice = true
+          }.build()
       intended(hasComponent(MarkChaptersCompletedActivity::class.java.name))
       intended(hasProtoExtra(MARK_CHAPTERS_COMPLETED_ACTIVITY_PARAMS, args))
     }
@@ -428,10 +454,11 @@ class ProfileEditFragmentTest {
   fun testProfileEdit_featureOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
 
-    val updateLangProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
-      profileId = ProfileId.newBuilder().apply { internalId = 0 }.build(),
-      allowInLessonQuickLanguageSwitching = true
-    )
+    val updateLangProvider =
+      profileManagementController.updateEnableInLessonQuickLanguageSwitching(
+        profileId = ProfileId.newBuilder().apply { internalId = 0 }.build(),
+        allowInLessonQuickLanguageSwitching = true,
+      )
     monitorFactory.waitForNextSuccessfulResult(updateLangProvider)
 
     // With the permission to switch languages, the setting should be on by default.
@@ -450,7 +477,7 @@ class ProfileEditFragmentTest {
     // The user should not have permission to switch languages (since the switch wasn't toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build()
+        ProfileId.newBuilder().apply { internalId = 0 }.build(),
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
 
@@ -470,7 +497,7 @@ class ProfileEditFragmentTest {
     // The user should have permission to switch languages (since the switch was toggled).
     val profileProvider =
       profileManagementController.getProfile(
-        ProfileId.newBuilder().apply { internalId = 0 }.build()
+        ProfileId.newBuilder().apply { internalId = 0 }.build(),
       )
     val profile = monitorFactory.waitForNextSuccessfulResult(profileProvider)
     assertThat(profile.allowInLessonQuickLanguageSwitching).isTrue()
@@ -481,22 +508,26 @@ class ProfileEditFragmentTest {
     launchFragmentTestActivity(internalProfileId = 1).use { scenario ->
       scenario.onActivity { activity ->
 
-        val activityArgs = activity.intent.getProtoExtra(
-          ProfileEditActivity.PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
-          ProfileEditActivityParams.getDefaultInstance()
-        )
+        val activityArgs =
+          activity.intent.getProtoExtra(
+            ProfileEditActivity.PROFILE_EDIT_ACTIVITY_PARAMS_KEY,
+            ProfileEditActivityParams.getDefaultInstance(),
+          )
         val isMultipane = activityArgs?.isMultipane ?: false
 
-        val fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_edit_fragment_placeholder) as ProfileEditFragment
+        val fragment =
+          activity.supportFragmentManager
+            .findFragmentById(R.id.profile_edit_fragment_placeholder) as ProfileEditFragment
 
-        val arguments = checkNotNull(fragment.arguments) {
-          "Expected variables to be passed to ProfileEditFragment"
-        }
-        val args = arguments.getProto(
-          ProfileEditFragment.PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
-          ProfileEditFragmentArguments.getDefaultInstance()
-        )
+        val arguments =
+          checkNotNull(fragment.arguments) {
+            "Expected variables to be passed to ProfileEditFragment"
+          }
+        val args =
+          arguments.getProto(
+            ProfileEditFragment.PROFILE_EDIT_FRAGMENT_ARGUMENTS_KEY,
+            ProfileEditFragmentArguments.getDefaultInstance(),
+          )
         val receivedInternalProfileId = args.internalProfileId
         val receivedIsMultipane = args.isMultipane
 
@@ -508,7 +539,7 @@ class ProfileEditFragmentTest {
 
   private fun launchFragmentTestActivity(internalProfileId: Int) =
     launch<ProfileEditFragmentTestActivity>(
-      createProfileEditFragmentTestActivity(context, internalProfileId)
+      createProfileEditFragmentTestActivity(context, internalProfileId),
     ).also { testCoroutineDispatchers.runCurrent() }
 
   @Singleton
@@ -539,10 +570,9 @@ class ProfileEditFragmentTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
-    ]
+      TestAuthenticationModule::class,
+    ],
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
@@ -552,9 +582,13 @@ class ProfileEditFragmentTest {
     fun inject(profileEditFragmentTest: ProfileEditFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileEditFragmentTest_TestApplicationComponent.builder()
+      DaggerProfileEditFragmentTest_TestApplicationComponent
+        .builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
@@ -562,9 +596,12 @@ class ProfileEditFragmentTest {
     fun inject(profileEditFragmentTest: ProfileEditFragmentTest) =
       component.inject(profileEditFragmentTest)
 
-    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
-      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
-    }
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent =
+      component
+        .getActivityComponentBuilderProvider()
+        .get()
+        .setActivity(activity)
+        .build()
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
