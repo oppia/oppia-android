@@ -75,7 +75,7 @@ class PoliciesFragmentPresenter @Inject constructor(
     }
 
     val spannableString = SpannableString(parsedHtmlDescription)
-    parsedHtmlDescription.split("\n").forEachIndexed { lineIndex, line ->
+    parsedHtmlDescription.split("\n").forEachIndexed { _, line ->
       val lineStart = parsedHtmlDescription.indexOf(line)
       if (line.trimStart().startsWith("•")) {
         val bulletIndex = lineStart + line.indexOf("•")
