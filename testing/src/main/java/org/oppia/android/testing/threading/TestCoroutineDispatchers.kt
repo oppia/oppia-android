@@ -22,7 +22,7 @@ package org.oppia.android.testing.threading
  * Robolectric-specific API methods (e.g. [runCurrent], [advanceTimeBy], and [advanceUntilIdle]).
  *
  * *NOTE TO DEVELOPERS*: This class is NOT yet ready for broad use in Espresso until after #89 is
- * fully resolved. Please ask in oppia-android-dev if you have a use case that you think requires
+ * fully resolved. Please ask on GitHub Discussions if you have a use case that you think requires
  * this class. Specific cases will be allowed to integrate with if other options are infeasible.
  * Other tests should rely on existing mechanisms until this utility is ready for broad use. All
  * Robolectric tests should use this class instead of manually creating their own test dispatchers.

@@ -9,7 +9,7 @@ Whenever you are debugging a problem, you may find it useful to keep a record of
   - [1. Begin with Describing What Goes Wrong](#1-begin-with-describing-what-goes-wrong)
   - [2. Describe Your Investigations](#2-describe-your-investigations)
   - [3. Document Your Guesses and Testing](#3-document-your-guesses-and-testing)
-  - [4. Continue/Review from Mentor](#4-continuereview-from-mentor)
+  - [4. Continue/Share on GitHub Discussions](#4-continueshare-on-github-discussions)
   - [5. Document Your Solution](#5-document-your-solution)
 - [Get Started](#get-started)
 
@@ -37,9 +37,9 @@ What did you try, and what happened when you tried it? You want to include enoug
 
 After some investigation, you might have some ideas for what might be going wrong. Document your guesses and describe how you go about testing them. Report the results of that testing and describe whether you think your guess was right. What's your reasoning?
 
-### 4. Continue/Review from Mentor
+### 4. Continue/Share on GitHub Discussions
 
-Keep going! Continue documenting your investigations, guesses, and tests of those guesses. You can share your debugging doc with your assigned onboarding mentor to review and help you in finding the root cause of the issue or the solution.
+Keep going! Continue documenting your investigations, guesses, and tests of those guesses. You can share your debugging doc on GitHub Discussions to review and help you in finding the root cause of the issue or the solution.
 
 ### 5. Document Your Solution
 
