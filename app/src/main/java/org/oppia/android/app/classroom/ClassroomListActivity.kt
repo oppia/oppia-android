@@ -103,14 +103,14 @@ class ClassroomListActivity :
     )
   }
 
-  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
     startActivity(
-      createTopicActivityIntent(this, internalProfileId, classroomId, topicId)
+      createTopicActivityIntent(this, profileId, classroomId, topicId)
     )
   }
 
   override fun routeToTopicPlayStory(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -118,7 +118,7 @@ class ClassroomListActivity :
     startActivity(
       createTopicPlayStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         classroomId,
         topicId,
         storyId
