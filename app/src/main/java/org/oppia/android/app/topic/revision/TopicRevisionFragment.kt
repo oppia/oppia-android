@@ -26,8 +26,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     const val TOPIC_REVISION_FRAGMENT_TAG = "TOPIC_REVISION_FRAGMENT_TAG"
 
     /** Returns a new [TopicRevisionFragment]. */
-    fun newInstance(internalProfileId: Int, topicId: String): TopicRevisionFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fun newInstance(profileId: ProfileId, topicId: String): TopicRevisionFragment {
       val args = TopicRevisionFragmentArguments.newBuilder().setTopicId(topicId).build()
       return TopicRevisionFragment().apply {
         arguments = Bundle().apply {
@@ -51,7 +50,8 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val internalProfileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+    val profileId = arguments?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+
     val args = arguments?.getProto(
       TOPIC_REVISION_FRAGMENT_ARGUMENTS_KEY,
       TopicRevisionFragmentArguments.getDefaultInstance()
@@ -63,7 +63,7 @@ class TopicRevisionFragment : InjectableFragment(), RevisionSubtopicSelector {
     return topicReviewFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId,
+      profileId,
       topicId
     )
   }

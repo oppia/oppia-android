@@ -43,7 +43,7 @@ class RevisionCardActivity :
         RevisionCardActivityParams.getDefaultInstance()
       )
 
-      val internalProfileId = intent.extractCurrentUserProfileId().internalId
+      val profileId = intent.extractCurrentUserProfileId()
       val topicId = checkNotNull(args.topicId) {
         "Expected topic ID to be included in intent for RevisionCardActivity."
       }
@@ -51,7 +51,7 @@ class RevisionCardActivity :
       val subtopicListSize = args?.subtopicListSize ?: -1
 
       revisionCardActivityPresenter.handleOnCreate(
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize
@@ -79,12 +79,11 @@ class RevisionCardActivity :
     /** Returns a new [Intent] to route to [RevisionCardActivity]. */
     fun createRevisionCardActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
       topicId: String,
       subtopicId: Int,
       subtopicListSize: Int
     ): Intent {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = RevisionCardActivityParams.newBuilder().apply {
         this.topicId = topicId
         this.subtopicId = subtopicId
@@ -99,7 +98,7 @@ class RevisionCardActivity :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -107,7 +106,7 @@ class RevisionCardActivity :
     startActivity(
       createRevisionCardActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize

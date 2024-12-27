@@ -51,7 +51,7 @@ class RevisionCardActivityPresenter @Inject constructor(
   private var subtopicListSize: Int = 0
 
   fun handleOnCreate(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -60,7 +60,7 @@ class RevisionCardActivityPresenter @Inject constructor(
       activity,
       R.layout.revision_card_activity
     )
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    this.profileId = profileId
     this.topicId = topicId
     this.subtopicId = subtopicId
     this.subtopicListSize = subtopicListSize

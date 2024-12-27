@@ -34,7 +34,7 @@ class TopicActivity :
   RouteToResumeLessonListener,
   RouteToRevisionCardListener {
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var classroomId: String
   private var storyId: String? = null
@@ -45,7 +45,8 @@ class TopicActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    internalProfileId = intent?.extractCurrentUserProfileId()?.internalId ?: -1
+    profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+
     val args = intent?.getProtoExtra(
       TOPIC_ACTIVITY_PARAMS_KEY,
       TopicActivityParams.getDefaultInstance()
@@ -57,7 +58,7 @@ class TopicActivity :
       "Expected topic ID to be included in intent for TopicActivity."
     }
     storyId = args?.storyId
-    topicActivityPresenter.handleOnCreate(internalProfileId, classroomId, topicId, storyId)
+    topicActivityPresenter.handleOnCreate(profileId, classroomId, topicId, storyId)
   }
 
   override fun routeToQuestionPlayer(skillIdList: ArrayList<String>) {
@@ -65,7 +66,7 @@ class TopicActivity :
       QuestionPlayerActivity.createQuestionPlayerActivityIntent(
         this,
         skillIdList,
-        ProfileId.newBuilder().setInternalId(internalProfileId).build()
+        profileId
       )
     )
   }
@@ -88,7 +89,7 @@ class TopicActivity :
   }
 
   override fun routeToRevisionCard(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int,
     subtopicListSize: Int
@@ -96,7 +97,7 @@ class TopicActivity :
     startActivity(
       RevisionCardActivity.createRevisionCardActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         topicId,
         subtopicId,
         subtopicListSize
@@ -158,7 +159,7 @@ class TopicActivity :
     private val activity: AppCompatActivity
   ) : ActivityIntentFactories.TopicActivityIntentFactory {
     override fun createIntent(profileId: ProfileId, classroomId: String, topicId: String): Intent =
-      createTopicActivityIntent(activity, profileId.internalId, classroomId, topicId)
+      createTopicActivityIntent(activity, profileId, classroomId, topicId)
 
     override fun createIntent(
       profileId: ProfileId,
@@ -168,7 +169,7 @@ class TopicActivity :
     ): Intent =
       createTopicPlayStoryActivityIntent(
         activity,
-        profileId.internalId,
+        profileId,
         classroomId,
         topicId,
         storyId
@@ -182,7 +183,7 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicActivity] for a specified topic ID. */
     fun createTopicActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
       classroomId: String,
       topicId: String
     ): Intent {
@@ -190,7 +191,6 @@ class TopicActivity :
         this.topicId = topicId
         this.classroomId = classroomId
       }.build()
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       return Intent(context, TopicActivity::class.java).apply {
         putProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
@@ -201,12 +201,12 @@ class TopicActivity :
     /** Returns a new [Intent] to route to [TopicLessonsFragment] for a specified story ID. */
     fun createTopicPlayStoryActivityIntent(
       context: Context,
-      internalProfileId: Int,
+      profileId: ProfileId,
       classroomId: String,
       topicId: String,
       storyId: String
     ): Intent {
-      return createTopicActivityIntent(context, internalProfileId, classroomId, topicId).apply {
+      return createTopicActivityIntent(context, profileId, classroomId, topicId).apply {
         val args =
           getProtoExtra(TOPIC_ACTIVITY_PARAMS_KEY, TopicActivityParams.getDefaultInstance())
         val updateArg = args.toBuilder().setStoryId(storyId).build()
