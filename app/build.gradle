@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
   compileSdkVersion 34
-  buildToolsVersion "30.0.2"
+  buildToolsVersion "30.0.0"
   defaultConfig {
     applicationId "org.oppia.android"
     minSdkVersion 21
