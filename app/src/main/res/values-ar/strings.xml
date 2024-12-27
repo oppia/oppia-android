@@ -68,7 +68,7 @@
   <string name="topic_revision_tab_spotlight_hint">راجع المفاهيم المكتسبة من الدروس المكتملة هنا.</string>
   <string name="first_chapter_spotlight_hint">انقر هنا لبدء تشغيل درس.</string>
   <string name="state_continue_button">استمرار</string>
-  <string name="state_continue_submit">تقديم</string>
+  <string name="state_continue_submit">إرسال</string>
   <string name="previous_state_description">التوجه إلى البطاقة السابقة</string>
   <string name="next_state_description">التوجه إلى البطاقة القادمة</string>
   <string name="state_submit_button">تقديم</string>
@@ -261,7 +261,7 @@
   <string name="admin_auth_pin">رقم التعريف الشخصي الخاص بالمشرف</string>
   <string name="admin_auth_incorrect">رقم التعريف الشخصي الخاص بالمشرف غير صحيح. من فضلك حاول مجددًا.</string>
   <string name="admin_auth_null">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
-  <string name="admin_auth_submit">تقديم</string>
+  <string name="admin_auth_submit">إرسال</string>
   <string name="admin_auth_close">إغلاق</string>
   <string name="admin_pin_requirement_description">قبل أن نضيف ملفات شخصية، نريد أن نحمي حسابك الشخصي عن طريق إنشاء رقم تعريف شخصي. هذا يمكنك من السماح بالتنزيلات وإدارة الملفات الشخصية على الجهاز.</string>
   <string name="admin_pin_pin_description">لا تستخدم رقم تعريف شخصي استخدمته من قبل لحسابات الشخصية مثل حساب البنك أو حساب الضمان الإجتماعي.</string>
@@ -331,7 +331,7 @@
   <string name="admin_settings_heading">الوصول إلى إعدادات المشرف</string>
   <string name="admin_settings_sub">رقم التعريف الشخصي الخاص بالمشرف مطلوب لتغيير رقم التعريف الشخصي الخاص بالمستخدم</string>
   <string name="admin_settings_cancel">إلغاء</string>
-  <string name="admin_settings_submit">تقديم</string>
+  <string name="admin_settings_submit">إرسال</string>
   <string name="admin_settings_incorrect">رقم التعريف الشخصي الخاص بالمشرف غير صحيح. من فضلك حاول مجددًا.</string>
   <string name="admin_settings_enter_user_new_pin">رقم التعريف الشخصي الجديد الخاص ب%1$s.</string>
   <string name="reset_pin_enter">أدخل رقم تعريف شخصي جديد</string>
