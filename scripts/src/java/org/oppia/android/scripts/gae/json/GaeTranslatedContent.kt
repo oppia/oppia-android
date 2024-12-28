@@ -47,23 +47,30 @@ data class GaeTranslatedContent(
 
   @JsonClass(generateAdapter = true)
   data class ParsableGaeTranslatedContent(
-    @Json(name = "content_value") val contentValue: Translation,
     @Json(name = "content_format") val contentFormat: GaeTranslatableContentFormat,
+    @Json(name = "content_value") val contentValue: Translation,
     @Json(name = "needs_update") val needsUpdate: Boolean
   ) {
     fun convertToGaeObject(): GaeTranslatedContent =
       GaeTranslatedContent(contentValue, contentFormat, needsUpdate)
   }
 
+  @JsonClass(generateAdapter = true)
+  data class PeekableGaeTranslatedContent(
+    @Json(name = "content_format") val contentFormat: GaeTranslatableContentFormat,
+    @Json(name = "content_value") val contentValue: Any,
+    @Json(name = "needs_update") val needsUpdate: Any
+  )
+
   class Adapter(private val typeResolutionContext: TypeResolutionContext) {
     @FromJson
     fun parseFromJson(
       jsonReader: JsonReader,
-      gaeTranslatableContentFormatAdapter: JsonAdapter<GaeTranslatableContentFormat>,
-      parsableGaeTranslatedContentAdapter: JsonAdapter<ParsableGaeTranslatedContent>
+      parsableGaeTranslatedContentAdapter: JsonAdapter<ParsableGaeTranslatedContent>,
+      peekableGaeTranslatedContentAdapter: JsonAdapter<PeekableGaeTranslatedContent>
     ): GaeTranslatedContent {
       typeResolutionContext.currentContentFormat =
-        jsonReader.peekTranslatableContentFormat(gaeTranslatableContentFormatAdapter)
+        jsonReader.peekTranslatableContentFormat(peekableGaeTranslatedContentAdapter)
       return jsonReader.nextCustomValue(
         parsableGaeTranslatedContentAdapter
       ).convertToGaeObject().also { typeResolutionContext.currentContentFormat = null }
@@ -86,14 +93,11 @@ data class GaeTranslatedContent(
 
   private companion object {
     private fun JsonReader.peekTranslatableContentFormat(
-      contentFormatAdapter: JsonAdapter<GaeTranslatableContentFormat>
+      peekableGaeTranslatedContentAdapter: JsonAdapter<PeekableGaeTranslatedContent>
     ): GaeTranslatableContentFormat {
       return peekJson().use { jsonReader ->
-        jsonReader.nextObject {
-          if (it == "content_format") contentFormatAdapter.fromJson(jsonReader) else null
-        }["content_format"]
-          ?: error("Missing translatable content format in translation JSON object.")
-      }
+        jsonReader.nextCustomValue(peekableGaeTranslatedContentAdapter)
+      }.contentFormat
     }
   }
 }

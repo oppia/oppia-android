@@ -11,5 +11,10 @@ data class GaeClassroom(
   @Json(name = "topic_id_to_prerequisite_topic_ids")
   val topicIdToPrereqTopicIds: Map<String, List<String>>,
   @Json(name = "course_details") val courseDetails: String,
-  @Json(name = "topic_list_intro") val topicListIntro: String
+  @Json(name = "topic_list_intro") val topicListIntro: String,
+  @Json(name = "teaser_text") val teaserText: String,
+  @Json(name = "is_published") val isPublished: Boolean,
+  @Json(name = "thumbnail_data") val thumbnailData: Any,
+  @Json(name = "banner_data") val bannerData: Any,
+  @Json(name = "index") val index: Int
 )

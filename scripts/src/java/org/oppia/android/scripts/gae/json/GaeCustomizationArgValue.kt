@@ -22,6 +22,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.N
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 
 // TODO: Mention parsing this requires setting customization key name & interaction type in the parsing context.
 sealed class GaeCustomizationArgValue {
@@ -181,7 +182,8 @@ sealed class GaeCustomizationArgValue {
           "recommendedExplorationIds" -> jsonReader.nextStringList()
           else -> null
         }
-        INTERACTIONTYPE_NOT_SET -> error("Interaction has no customization args: $interactionType.")
+        NUMBER_WITH_UNITS_INPUT, INTERACTIONTYPE_NOT_SET ->
+          error("Interaction has no customization args: $interactionType.")
       } ?: error(
         "${typeResolutionContext.currentInteractionType} interaction doesn't expect" +
           " customization arg with key: $key."

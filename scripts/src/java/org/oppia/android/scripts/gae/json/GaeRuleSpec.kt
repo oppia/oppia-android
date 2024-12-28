@@ -17,9 +17,10 @@ data class GaeRuleSpec(
     @FromJson
     fun parseFromJson(
       jsonReader: JsonReader,
-      parsableRuleSpecAdapter: JsonAdapter<ParsableRuleSpec>
+      parsableRuleSpecAdapter: JsonAdapter<ParsableRuleSpec>,
+      peekableRuleSpecAdapter: JsonAdapter<PeekableRuleSpec>
     ): GaeRuleSpec {
-      typeResolutionContext.currentRuleTypeName = jsonReader.peekRuleType()
+      typeResolutionContext.currentRuleTypeName = jsonReader.peekRuleType(peekableRuleSpecAdapter)
       return jsonReader.nextCustomValue(parsableRuleSpecAdapter).also {
         // Reset the rule type & input name.
         typeResolutionContext.currentRuleInputName = null
@@ -73,15 +74,21 @@ data class GaeRuleSpec(
     ) {
       fun convertToGaeObject(): GaeRuleSpec = GaeRuleSpec(ruleType, inputs)
     }
+
+    @JsonClass(generateAdapter = true)
+    data class PeekableRuleSpec(
+      @Json(name = "rule_type") val ruleType: String,
+      @Json(name = "inputs") val inputs: Any
+    )
   }
 
   private companion object {
-    private fun JsonReader.peekRuleType(): String {
+    private fun JsonReader.peekRuleType(
+      peekableRuleSpecAdapter: JsonAdapter<Adapter.PeekableRuleSpec>
+    ): String {
       return peekJson().use { jsonReader ->
-        jsonReader.nextObject {
-          if (it == "rule_type") jsonReader.nextString() else null
-        }["rule_type"] ?: error("Missing rule type in rule spec JSON object.")
-      }
+        jsonReader.nextCustomValue(peekableRuleSpecAdapter)
+      }.ruleType
     }
   }
 }

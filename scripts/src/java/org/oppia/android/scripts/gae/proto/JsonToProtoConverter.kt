@@ -22,6 +22,7 @@ import org.oppia.android.scripts.gae.json.GaeInteractionObject.SetsOfXlatableCon
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.SignedInt
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.TranslatableHtmlContentId
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.TranslatableSetOfNormalizedString
+import org.oppia.android.scripts.gae.json.GaeInteractionObject.NumberWithUnits
 import org.oppia.android.scripts.gae.json.GaeOutcome
 import org.oppia.android.scripts.gae.json.GaeRuleSpec
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -42,6 +43,7 @@ import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.TI
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.FRACTION
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.MATH_EXPRESSION
+import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.NUMBER_WITH_UNITS
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.NORMALIZED_STRING
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.RATIO_EXPRESSION
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.REAL
@@ -60,6 +62,7 @@ import org.oppia.proto.v1.structure.EndExplorationInstanceDto
 import org.oppia.proto.v1.structure.ExplorationDto
 import org.oppia.proto.v1.structure.ExplorationLanguagePackDto
 import org.oppia.proto.v1.structure.FractionDto
+import org.oppia.proto.v1.structure.NumberWithUnitsDto
 import org.oppia.proto.v1.structure.FractionInputInstanceDto
 import org.oppia.proto.v1.structure.HintDto
 import org.oppia.proto.v1.structure.ImageClickInputInstanceDto
@@ -82,6 +85,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.N
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto
@@ -89,6 +93,7 @@ import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
 import org.oppia.proto.v1.structure.LocalizedExplorationIdDto
 import org.oppia.proto.v1.structure.LocalizedRevisionCardIdDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto
 import org.oppia.proto.v1.structure.NormalizedPoint2dDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto
@@ -137,6 +142,10 @@ import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.Co
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.DoesNotContainAtLeastOneOfSpecDto as ItemSelectionDoesNotContainAtLeastOneOfSpec
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.EqualsSpecDto as ItemSelectionEqualsSpec
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.IsProperSubsetOfSpecDto as ItemSelectionIsProperSubsetOfSpec
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.AnswerGroupDto as NumberWithUnitsAnswerGroupDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto as NumberWithUnitsRuleSpecDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto.IsEqualToSpecDto as NumberWithUnitsIsEqualSpec
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto as NumberWithUnitsIsEquivalentSpec
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.AnswerGroupDto as MathEquationAnswerGroupDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.CustomizationArgsDto as MathEquationCustomizationArgsDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto as MathEquationRuleSpecDto
@@ -267,7 +276,7 @@ class JsonToProtoConverter(
                 // arguments.
                 is Fraction, is MathExpression, is NonNegativeInt, is NormalizedString,
                 is RatioExpression, is Real, is SignedInt, is SetOfXlatableContentIds,
-                is SetsOfXlatableContentIds, is TranslatableHtmlContentId -> null
+                is SetsOfXlatableContentIds, is TranslatableHtmlContentId, is NumberWithUnits -> null
                 is TranslatableSetOfNormalizedString ->
                   ruleInput.contentId?.let { it to ruleInput.normalizedStrSet }
               }
@@ -611,6 +620,7 @@ class JsonToProtoConverter(
         "AlgebraicExpressionInput" ->
           this.algebraicExpressionInput = toAlgebraicExpressionInputInstance(containerId)
         "MathEquationInput" -> this.mathEquationInput = toMathEquationInputInstance(containerId)
+        "NumberWithUnits" -> this.numberWithUnitsInput = toNumberWithUnitsInputInstance(containerId)
         "EndExploration" -> this.endExploration = EndExplorationInstanceDto.getDefaultInstance()
         else -> error("Unsupported interaction ID: $id.")
       }
@@ -892,6 +902,23 @@ class JsonToProtoConverter(
     }.build()
   }
 
+  private fun GaeInteractionInstance.toNumberWithUnitsInputInstance(
+    containerId: LocalizationTracker.ContainerId
+  ): NumberWithUnitsInputInstanceDto {
+    return NumberWithUnitsInputInstanceDto.newBuilder().apply {
+      this.addAllAnswerGroups(answerGroups.toNumberWithUnitsGroups(containerId))
+      this@toNumberWithUnitsInputInstance.defaultOutcome?.let {
+        this.defaultOutcome = it.toProto(containerId)
+      }
+
+      this.addAllHints(this@toNumberWithUnitsInputInstance.hints.toProto(containerId))
+      this@toNumberWithUnitsInputInstance.solution?.let {
+        this.solution =
+          it.toProto(containerId, NUMBER_WITH_UNITS_INPUT).numberWithUnitsInputInstanceSolution
+      }
+    }.build()
+  }
+
   private fun GaeOutcome.toProto(containerId: LocalizationTracker.ContainerId): OutcomeDto {
     return OutcomeDto.newBuilder().apply {
       this@toProto.dest?.let(this::setDestinationState)
@@ -980,6 +1007,12 @@ class JsonToProtoConverter(
     return map { it.toProto(containerId, MATH_EQUATION_INPUT).mathEquationInputInstanceAnswerGroup }
   }
 
+  private fun List<GaeAnswerGroup>.toNumberWithUnitsGroups(
+    containerId: LocalizationTracker.ContainerId
+  ): List<NumberWithUnitsInputInstanceDto.AnswerGroupDto> {
+    return map { it.toProto(containerId, NUMBER_WITH_UNITS_INPUT).numberWithUnitsInputInstanceAnswerGroup }
+  }
+
   // TODO: Simplify this & the other similar toProto() functions.
   private fun GaeAnswerGroup.toProto(
     containerId: LocalizationTracker.ContainerId,
@@ -1011,6 +1044,8 @@ class JsonToProtoConverter(
         }
         MATH_EQUATION_INPUT ->
           this.mathEquationInputInstanceAnswerGroup = toMathEquationAnswerGroup(containerId)
+        NUMBER_WITH_UNITS_INPUT ->
+          this.numberWithUnitsInputInstanceAnswerGroup = toNumberWithUnitsAnswerGroup(containerId)
         CONTINUE_INSTANCE, END_EXPLORATION, INTERACTIONTYPE_NOT_SET ->
           error("Interaction does not support answer groups: $interactionType.")
       }
@@ -1132,6 +1167,17 @@ class JsonToProtoConverter(
     }.build()
   }
 
+  private fun GaeAnswerGroup.toNumberWithUnitsAnswerGroup(
+    containerId: LocalizationTracker.ContainerId
+  ): NumberWithUnitsAnswerGroupDto {
+    return NumberWithUnitsAnswerGroupDto.newBuilder().apply {
+      this.baseAnswerGroup = toBaseProto(containerId)
+      this.addAllRuleSpecs(
+        this@toNumberWithUnitsAnswerGroup.ruleSpecs.toNumberWithUnitsProto(containerId)
+      )
+    }.build()
+  }
+
   private fun GaeAnswerGroup.toBaseProto(
     containerId: LocalizationTracker.ContainerId
   ): BaseAnswerGroupDto {
@@ -1196,6 +1242,9 @@ class JsonToProtoConverter(
   private fun List<GaeRuleSpec>.toMathEquationProtos(containerId: LocalizationTracker.ContainerId) =
     toProtos(MATH_EQUATION_INPUT, containerId).map { it.mathEquationInputInstanceRuleSpec }
 
+  private fun List<GaeRuleSpec>.toNumberWithUnitsProto(containerId: LocalizationTracker.ContainerId) =
+    toProtos(NUMBER_WITH_UNITS_INPUT, containerId).map { it.numberWithUnitsInputInstanceRuleSpec }
+
   private fun List<GaeRuleSpec>.toProtos(
     interactionType: InteractionTypeCase,
     containerId: LocalizationTracker.ContainerId
@@ -1228,6 +1277,8 @@ class JsonToProtoConverter(
           this.algebraicExpressionInputInstanceRuleSpec = toAlgebraicExpressionRuleSpec(containerId)
         MATH_EQUATION_INPUT ->
           this.mathEquationInputInstanceRuleSpec = toMathEquationRuleSpec(containerId)
+        NUMBER_WITH_UNITS_INPUT ->
+          this.numberWithUnitsInputInstanceRuleSpec = toNumberWithUnitsRuleSpec(containerId)
         CONTINUE_INSTANCE, END_EXPLORATION, INTERACTIONTYPE_NOT_SET ->
           error("Interaction does not support rule specs: $interType.")
       }
@@ -1586,6 +1637,27 @@ class JsonToProtoConverter(
     }.build()
   }
 
+  private fun GaeRuleSpec.toNumberWithUnitsRuleSpec(
+    containerId: LocalizationTracker.ContainerId
+  ): NumberWithUnitsInputInstanceDto.RuleSpecDto {
+    return NumberWithUnitsRuleSpecDto.newBuilder().apply {
+      val inputMap = this@toNumberWithUnitsRuleSpec.inputs
+      when (val ruleType = this@toNumberWithUnitsRuleSpec.ruleType) {
+        "IsEqualTo" -> {
+          this.isEqualTo = NumberWithUnitsIsEqualSpec.newBuilder().apply {
+            this.numberWithUnits = inputMap.getNumberWithUnits(name = "f", containerId)
+          }.build()
+        }
+        "IsEquivalentTo" -> {
+          this.isEquivalentTo = NumberWithUnitsIsEquivalentSpec.newBuilder().apply {
+            this.numberWithUnits = inputMap.getNumberWithUnits(name = "f", containerId)
+          }.build()
+        }
+        else -> error("Unknown rule type: $ruleType")
+      }
+    }.build()
+  }
+
   private fun List<GaeHint>.toProto(containerId: LocalizationTracker.ContainerId) =
     map { it.toProto(containerId) }
 
@@ -1618,6 +1690,8 @@ class JsonToProtoConverter(
         }
         MATH_EQUATION_INPUT ->
           this.mathEquationInputInstanceSolution = toMathEquationInputSolution(containerId)
+        NUMBER_WITH_UNITS_INPUT ->
+          this.numberWithUnitsInputInstanceSolution = toNumberWithUnitsInputSolution(containerId)
         // Interactions that do not support solutions.
         CONTINUE_INSTANCE, ITEM_SELECTION_INPUT, MULTIPLE_CHOICE_INPUT, IMAGE_CLICK_INPUT,
         END_EXPLORATION, INTERACTIONTYPE_NOT_SET ->
@@ -1718,6 +1792,18 @@ class JsonToProtoConverter(
         this@toMathEquationInputSolution.correctAnswer.toExpectedUserAnswer(
           expectedType = MATH_EXPRESSION, containerId
         ).mathExpression
+    }.build()
+  }
+
+  private fun GaeSolution.toNumberWithUnitsInputSolution(
+    containerId: LocalizationTracker.ContainerId
+  ): NumberWithUnitsInputInstanceDto.SolutionDto {
+    return NumberWithUnitsInputInstanceDto.SolutionDto.newBuilder().apply {
+      this.baseSolution = toBaseProto(containerId)
+      this.correctAnswer =
+        this@toNumberWithUnitsInputSolution.correctAnswer.toExpectedUserAnswer(
+          expectedType = NUMBER_WITH_UNITS, containerId
+        ).numberWithUnits
     }.build()
   }
 
@@ -1875,6 +1961,11 @@ class JsonToProtoConverter(
     containerId: LocalizationTracker.ContainerId
   ): String = getRuleInput(name, RuleInputTypeCase.MATH_EXPRESSION, containerId).mathExpression
 
+  private fun Map<String, GaeInteractionObject>.getNumberWithUnits(
+    name: String,
+    containerId: LocalizationTracker.ContainerId
+  ): NumberWithUnitsDto = getRuleInput(name, RuleInputTypeCase.NUMBER_WITH_UNITS, containerId).numberWithUnits
+
   private fun Map<String, GaeInteractionObject>.getRuleInput(
     name: String,
     expectedType: RuleInputTypeCase,
@@ -1919,6 +2010,7 @@ class JsonToProtoConverter(
         is RatioExpression -> this.ratioExpression = toProto()
         is Real -> this.real = this@toSolutionAnswerProto.value
         is SetOfXlatableContentIds -> this.setOfTranslatableHtmlContentIds = toProto(containerId)
+        is NumberWithUnits -> this.numberWithUnits = toProto()
         is SignedInt, is TranslatableHtmlContentId, is TranslatableSetOfNormalizedString ->
           error("Interaction object is not a supported solution answer: $this.")
       }
@@ -1942,6 +2034,7 @@ class JsonToProtoConverter(
         is TranslatableHtmlContentId -> translatableHtmlContentId = toProto(containerId)
         is TranslatableSetOfNormalizedString ->
           translatableSetOfNormalizedString = toProto(containerId)
+        is NumberWithUnits -> numberWithUnits = toProto()
       }
     }.build()
   }
@@ -1990,6 +2083,19 @@ class JsonToProtoConverter(
       }
     }.build()
   }
+
+  private fun NumberWithUnits.toProto() = NumberWithUnitsDto.newBuilder().apply {
+    addAllUnits(this@toProto.units.map { it.toProto() })
+    when (this@toProto) {
+      is NumberWithUnits.FractionWithUnits -> this.fraction = this@toProto.fraction.toProto()
+      is NumberWithUnits.RealWithUnits -> this.real = this@toProto.real
+    }
+  }.build()
+
+  private fun NumberWithUnits.Unit.toProto() = NumberWithUnitsDto.Unit.newBuilder().apply {
+    this.label = this@toProto.unit
+    this.exponent = this@toProto.exponent
+  }.build()
 
   private fun computeTopicDependencies(topicId: String): Set<String> {
     // Note that topics may have dependencies that won't be available until those topics are

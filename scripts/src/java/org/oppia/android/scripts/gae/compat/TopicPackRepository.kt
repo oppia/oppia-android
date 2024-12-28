@@ -876,7 +876,11 @@ private class VersionStructureMapManagerTakeLatestImpl(
       // If no version of this structure has been loaded yet, preload the latest version and pending
       // results for all previous versions.
       val versionedRef = createReference(structureId, VersionedStructureReference.INVALID_VERSION)
-      val (structure, result) = versionedRef.loadLatest(androidService, compatibilityChecker)
+      val (structure, result) = try {
+        versionedRef.loadLatest(androidService, compatibilityChecker)
+      } catch (e: Exception) {
+        throw IllegalStateException("Failed to download latest structure for ID: $structureId.", e)
+      }
       checkNotNull(structure) { "Failed to download latest structure for ID: $structureId." }
       val latestVersion = versionedRef.toNewVersion(retrieveStructureVersion(structure))
       val structureMap = mutableMapOf<GenericStructureReference, GenericLoadResult>()
@@ -963,7 +967,13 @@ private class VersionStructureMapManagerFixVersionsImpl(
     if (structureId !in lock.withLock { cachedStructures }) {
       // If the fixed version hasn't been loaded yet, ensure it's loaded.
       val versionedRef = createReference(structureId, fixedVersion)
-      val (_, result) = versionedRef.loadLatest(androidService, compatibilityChecker)
+      val (_, result) = try {
+        versionedRef.loadLatest(androidService, compatibilityChecker)
+      } catch (e: Exception) {
+        throw IllegalStateException(
+          "Expected loading structure by ID $structureId for version $fixedVersion to succeed.", e
+        )
+      }
       check(result is LoadResult.Success) {
         "Expected loading structure by ID $structureId for version $fixedVersion to succeed."
       }

@@ -22,6 +22,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.N
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 
 @JsonClass(generateAdapter = false)
 sealed class GaeInteractionObject {
@@ -98,6 +99,61 @@ sealed class GaeInteractionObject {
   ) : GaeInteractionObject()
 
   @JsonClass(generateAdapter = false)
+  sealed class NumberWithUnits : GaeInteractionObject() {
+    abstract val units: List<Unit>
+
+    data class FractionWithUnits(val fraction: Fraction, override val units: List<Unit>): NumberWithUnits()
+    data class RealWithUnits(val real: Double, override val units: List<Unit>): NumberWithUnits()
+
+    @JsonClass(generateAdapter = true)
+    data class Unit(
+      @Json(name = "unit") val unit: String,
+      @Json(name = "exponent") val exponent: Int
+    )
+
+    @JsonClass(generateAdapter = true)
+    data class ParsableNumberWithUnits(
+      @Json(name = "type") val type: String,
+      @Json(name = "real") val real: Double?,
+      @Json(name = "fraction") val fraction: Fraction?,
+      @Json(name = "units") val units: List<@JvmSuppressWildcards Unit>
+    )
+
+    class Adapter {
+      @FromJson
+      fun parseFromJson(
+        jsonReader: JsonReader,
+        parsableNumberWithUnitsAdapter: JsonAdapter<ParsableNumberWithUnits>
+      ): NumberWithUnits {
+        val parsableNumberWithUnits = jsonReader.nextCustomValue(parsableNumberWithUnitsAdapter)
+        return when (val type = parsableNumberWithUnits.type) {
+          "real" ->
+            RealWithUnits(checkNotNull(parsableNumberWithUnits.real), parsableNumberWithUnits.units)
+          "fraction" -> {
+            FractionWithUnits(
+              checkNotNull(parsableNumberWithUnits.fraction), parsableNumberWithUnits.units
+            )
+          }
+          else -> error("Invalid NumberWithUnits type: $type. Expected 'real' or 'fraction'.")
+        }
+      }
+
+      @ToJson
+      fun convertToJson(
+        jsonWriter: JsonWriter,
+        numberWithUnits: NumberWithUnits,
+        parsableNumberWithUnitsAdapter: JsonAdapter<ParsableNumberWithUnits>
+      ) {
+        val parsableNumberWithUnits = when (numberWithUnits) {
+          is FractionWithUnits -> ParsableNumberWithUnits(type = "real", real = null, numberWithUnits.fraction, numberWithUnits.units)
+          is RealWithUnits -> ParsableNumberWithUnits(type = "real", numberWithUnits.real, fraction = null, numberWithUnits.units)
+        }
+        parsableNumberWithUnitsAdapter.toJson(jsonWriter, parsableNumberWithUnits)
+      }
+    }
+  }
+
+  @JsonClass(generateAdapter = false)
   data class SetsOfXlatableContentIds(
     val sets: List<SetOfXlatableContentIds>
   ) : GaeInteractionObject() {
@@ -120,7 +176,7 @@ sealed class GaeInteractionObject {
         setOfXlatableContentIdsAdapter: JsonAdapter<SetOfXlatableContentIds>
       ) {
         jsonWriter.beginArray()
-        setsOfXlatableContentIds.sets.forEach {
+      setsOfXlatableContentIds.sets.forEach {
           setOfXlatableContentIdsAdapter.toJson(jsonWriter, it)
         }
         jsonWriter.endArray()
@@ -162,7 +218,8 @@ sealed class GaeInteractionObject {
       listSetsOfXlatableIdsAdapter: JsonAdapter<SetsOfXlatableContentIds>,
       ratioExpressionAdapter: JsonAdapter<RatioExpression>,
       translatableStrSetAdapter: JsonAdapter<TranslatableSetOfNormalizedString>,
-      translatableHtmlContentIdAdapter: JsonAdapter<TranslatableHtmlContentId>
+      translatableHtmlContentIdAdapter: JsonAdapter<TranslatableHtmlContentId>,
+      numberWithUnitsAdapter: JsonAdapter<NumberWithUnits>
     ): GaeInteractionObject {
       return when (val currentInteractionType = typeResolutionContext.expectedInteractionType) {
         FRACTION_INPUT -> parseFractionInputJson(jsonReader, fractionAdapter)
@@ -181,6 +238,7 @@ sealed class GaeInteractionObject {
         ALGEBRAIC_EXPRESSION_INPUT -> parseAlgebraicExpressionInputInputJson(jsonReader)
         MATH_EQUATION_INPUT -> parseMathEquationInputInputJson(jsonReader)
         NUMERIC_EXPRESSION_INPUT -> parseNumericExpressionInputJson(jsonReader)
+        NUMBER_WITH_UNITS_INPUT -> jsonReader.nextCustomValue(numberWithUnitsAdapter)
         END_EXPLORATION, CONTINUE_INSTANCE, INTERACTIONTYPE_NOT_SET ->
           error("Unsupported interaction: $currentInteractionType.")
       }
@@ -195,7 +253,8 @@ sealed class GaeInteractionObject {
       listSetsOfXlatableIdsAdapter: JsonAdapter<SetsOfXlatableContentIds>,
       ratioExpressionAdapter: JsonAdapter<RatioExpression>,
       translatableStrSetAdapter: JsonAdapter<TranslatableSetOfNormalizedString>,
-      translatableHtmlContentIdAdapter: JsonAdapter<TranslatableHtmlContentId>
+      translatableHtmlContentIdAdapter: JsonAdapter<TranslatableHtmlContentId>,
+      numberWithUnitsAdapter: JsonAdapter<NumberWithUnits>
     ) {
       when (gaeInteractionObject) {
         is Fraction -> fractionAdapter.toJson(jsonWriter, gaeInteractionObject)
@@ -213,6 +272,7 @@ sealed class GaeInteractionObject {
           translatableHtmlContentIdAdapter.toJson(jsonWriter, gaeInteractionObject)
         is TranslatableSetOfNormalizedString ->
           translatableStrSetAdapter.toJson(jsonWriter, gaeInteractionObject)
+        is NumberWithUnits -> numberWithUnitsAdapter.toJson(jsonWriter, gaeInteractionObject)
       }
     }
 
@@ -223,7 +283,8 @@ sealed class GaeInteractionObject {
       setOfXlatableHtmlContentIdsAdapter: JsonAdapter<SetOfXlatableContentIds>,
       fractionAdapter: JsonAdapter<Fraction>,
       listSetsOfXlatableIdsAdapter: JsonAdapter<SetsOfXlatableContentIds>,
-      ratioExpressionAdapter: JsonAdapter<RatioExpression>
+      ratioExpressionAdapter: JsonAdapter<RatioExpression>,
+      numberWithUnitsAdapter: JsonAdapter<NumberWithUnits>
     ): GaeInteractionObject {
       return when (val currentInteractionType = typeResolutionContext.expectedInteractionType) {
         FRACTION_INPUT -> jsonReader.nextCustomValue(fractionAdapter)
@@ -235,6 +296,7 @@ sealed class GaeInteractionObject {
         RATIO_EXPRESSION_INPUT -> jsonReader.nextCustomValue(ratioExpressionAdapter)
         ALGEBRAIC_EXPRESSION_INPUT, MATH_EQUATION_INPUT, NUMERIC_EXPRESSION_INPUT ->
           MathExpression(jsonReader.nextString())
+        NUMBER_WITH_UNITS_INPUT -> jsonReader.nextCustomValue(numberWithUnitsAdapter)
         IMAGE_CLICK_INPUT, END_EXPLORATION, CONTINUE_INSTANCE, INTERACTIONTYPE_NOT_SET ->
           error("Unsupported interaction: $currentInteractionType.")
       }

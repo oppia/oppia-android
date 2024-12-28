@@ -8,23 +8,9 @@ fun <T : Any> JsonReader.nextArray(readElement: () -> T): List<T> {
   return generateSequence { maybeReadElement(readElement) }.toList().also { endArray() }
 }
 
-// TODO: Document that a null return value skips the element for that key.
-fun <V : Any> JsonReader.nextObject(readElement: (String) -> V?): Map<String, V> {
+fun <V : Any> JsonReader.nextObject(readElement: (String) -> V): Map<String, V> {
   beginObject()
-  return generateSequence {
-    var nextElement = maybeReadObjectElement(readElement)
-    while (nextElement is JsonObjectElement.Unknown) {
-      // Skip the element and move to the next one.
-      skipValue()
-      nextElement = maybeReadObjectElement(readElement)
-    }
-    @Suppress("KotlinConstantConditions") // Branch must be present in this case.
-    when (nextElement) {
-      is JsonObjectElement.Pair -> nextElement.name to nextElement.value
-      null -> null // No more elements exist.
-      is JsonObjectElement.Unknown -> error("Impossible case occurred when reading object.")
-    }
-  }.toMap().also { endObject() }
+  return generateSequence { maybeReadObjectElement(readElement) }.toMap().also { endObject() }
 }
 
 inline fun <reified T : Any> JsonReader.nextCustomValue(adapter: JsonAdapter<T>): T {
@@ -37,20 +23,8 @@ inline fun <reified T : Any> JsonReader.nextCustomValue(adapter: JsonAdapter<T>)
 private fun <T : Any> JsonReader.maybeReadElement(readElement: () -> T) =
   if (hasNext()) readElement() else null
 
-private fun <V : Any> JsonReader.maybeReadObjectElement(
-  readElement: (String) -> V?
-): JsonObjectElement<V>? {
+private fun <V : Any> JsonReader.maybeReadObjectElement(readElement: (String) -> V): Pair<String, V>? {
   return maybeReadElement {
-    val name = nextName()
-    val value = readElement(name)
-    if (value != null) {
-      JsonObjectElement.Pair(name, value)
-    } else JsonObjectElement.Unknown()
+    nextName().let { name -> name to readElement(name) }
   }
-}
-
-private sealed class JsonObjectElement<T : Any> {
-  class Unknown<T : Any> : JsonObjectElement<T>()
-
-  data class Pair<T : Any>(val name: String, val value: T) : JsonObjectElement<T>()
 }

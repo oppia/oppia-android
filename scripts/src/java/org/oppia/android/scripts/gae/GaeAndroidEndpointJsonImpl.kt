@@ -145,6 +145,7 @@ class GaeAndroidEndpointJsonImpl(
       val missingTopicIds = topicIds - availableTopicPacks.keys
       val futureTopics = missingTopicIds.map { topicId ->
         CoroutineScope(coroutineDispatcher).async {
+          println("@@@@@ fetching topic $topicId")
           topicId to activityService.fetchLatestTopicAsync(topicId).await()
         }
       }.awaitAll().associate { (topicId, result) ->
@@ -254,11 +255,19 @@ class GaeAndroidEndpointJsonImpl(
   private fun GaeClassroom.filterTopics(): GaeClassroom {
     return copy(
       topicIdToPrereqTopicIds = topicIdToPrereqTopicIds.filterKeys {
+        // These are topics that use NumberWithUnits and require a bigger change to the script.
+        // TODO: finish for next release.
+        it !in listOf("never")
+      }
+
+      // TODO: finish for next release.
+      // These filters are topics that are known to be okay to ship with the app.
+      /*.filterKeys {
         it in listOf(
           "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm",
           "5g0nxGUmx5J5"
         )
-      }
+      }*/
     )
   }
 
@@ -829,7 +838,9 @@ class GaeAndroidEndpointJsonImpl(
         "Continue", "FractionInput", "ItemSelectionInput", "MultipleChoiceInput",
         "NumericInput", "TextInput", "DragAndDropSortInput", "ImageClickInput",
         "RatioExpressionInput", "EndExploration", "NumericExpressionInput",
-        "AlgebraicExpressionInput", "MathEquationInput"
+        "AlgebraicExpressionInput", "MathEquationInput",
+        // TODO: finish for next release.
+        // "NumberWithUnits" // TODO: Fix this. It should be able to be removed (since the app doesn't support it yet) without causing a JSON parsing failure.
       )
 
     // TODO: Remove gif.

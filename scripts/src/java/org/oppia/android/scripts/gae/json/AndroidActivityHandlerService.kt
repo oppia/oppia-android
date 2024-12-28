@@ -55,7 +55,7 @@ class AndroidActivityHandlerService(
       baseUrl(baseUrl)
       client(httpClient)
       addConverterFactory(MoshiRequestsStringConverterFactory(moshi))
-      addConverterFactory(MoshiConverterFactory.create(moshi))
+      addConverterFactory(MoshiConverterFactory.create(moshi).failOnUnknown())
     }.build()
   }
   private val apiService by lazy { retrofit.create(AndroidActivityEndpointApi::class.java) }
