@@ -1,8 +1,4 @@
-import com.android.build.gradle.internal.res.processResources
-import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.proto
+import com.google.protobuf.gradle.*
 import java.util.Properties
 
 plugins {
