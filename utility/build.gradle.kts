@@ -1,9 +1,3 @@
-java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -16,17 +10,15 @@ android {
   defaultConfig {
     minSdk = 21
     targetSdk = 33
-    versionCode = 1
-    versionName = "1.0"
   }
 
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
   }
 
   kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
   }
 
   testOptions {

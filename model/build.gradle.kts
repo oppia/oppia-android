@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.res.processResources
 import com.google.protobuf.gradle.protobuf
 import com.google.protobuf.gradle.protoc
 import com.google.protobuf.gradle.generateProtoTasks
@@ -33,6 +34,13 @@ protobuf {
   }
 }
 
+// Fix an issue that seems to arise in Gradle 7.2+ whereby the proto files are duplicated in the
+// source set (only noticeable when building :model:processResources).
+tasks.withType(Copy::class).all {
+  // See https://github.com/google/protobuf-gradle-plugin/issues/522#issuecomment-1195266995.
+  duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
   implementation("com.google.protobuf:protobuf-javalite:3.17.3")
 }
@@ -46,6 +54,6 @@ sourceSets {
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_1_8
-  targetCompatibility = JavaVersion.VERSION_1_8
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }
