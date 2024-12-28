@@ -26,7 +26,7 @@ android {
   }
   kotlinOptions {
     jvmTarget = "11"
-    useFir = true
+//    useFir = true
     freeCompilerArgs += listOf("-opt-in=kotlin.RequiresOptIn")
   }
   buildFeatures {
@@ -112,6 +112,8 @@ dependencies {
   implementation("androidx.constraintlayout:constraintlayout:1.1.3")
   implementation("androidx.core:core-ktx:1.0.2")
   implementation("androidx.legacy:legacy-support-v4:1.0.0")
+  implementation("androidx.lifecycle:lifecycle-viewmodel:2.4.0")
+  implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
   implementation("androidx.lifecycle:lifecycle-extensions:2.0.0")
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03")
   implementation("androidx.navigation:navigation-fragment:2.0.0")

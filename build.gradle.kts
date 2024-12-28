@@ -9,7 +9,7 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
-    classpath("com.android.tools.build:gradle:7.1.3")
+    classpath("com.android.tools.build:gradle:7.4.2")
     classpath(kotlin("gradle-plugin", version = project.extra["kotlin_version"] as? String))
     classpath("com.google.protobuf:protobuf-gradle-plugin:0.8.17")
     classpath("com.google.gms:google-services:4.3.10")
