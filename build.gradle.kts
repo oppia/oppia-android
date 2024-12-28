@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-  extra["kotlin_version"] = "1.6.10"
+  extra["kotlin_version"] = "1.9.24"
   extra["fragment_version"] = "1.2.0-rc01"
   extra["compose_version"] = "1.1.1"
   repositories {
@@ -9,7 +9,7 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
-    classpath("com.android.tools.build:gradle:7.4.2")
+    classpath("com.android.tools.build:gradle:8.7.3")
     classpath(kotlin("gradle-plugin", version = project.extra["kotlin_version"] as? String))
     classpath("com.google.protobuf:protobuf-gradle-plugin:0.9.4")
     classpath("com.google.gms:google-services:4.3.10")

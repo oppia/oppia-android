@@ -95,6 +95,7 @@ android {
 //      java.exclude("**/DataBinderMapperImpl.java") // Bazel-specific file used to run tests
     }
   }
+  namespace = "org.oppia.android"
 }
 
 // TODO: Re-add split stuff here.

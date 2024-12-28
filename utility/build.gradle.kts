@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+  namespace = "org.oppia.android.util"
   compileSdk = 33
 
   defaultConfig {

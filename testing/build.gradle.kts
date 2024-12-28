@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+  namespace = "org.oppia.android.testing"
   compileSdk = 33
 
   defaultConfig {
@@ -100,6 +101,6 @@ dependencies {
   testImplementation(project(":domain"))
   kapt("com.google.dagger:dagger-compiler:2.41")
   kaptTest("com.google.dagger:dagger-compiler:2.41")
-  annotationProcessor("com.google.auto.service:auto-service:1.0-rc4")
+  kapt("com.google.auto.service:auto-service:1.0-rc4")
   implementation(project(":model"))
 }
