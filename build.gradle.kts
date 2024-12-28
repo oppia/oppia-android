@@ -1,0 +1,32 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+  extra["kotlin_version"] = "1.6.10"
+  extra["fragment_version"] = "1.2.0-rc01"
+  extra["compose_version"] = "1.1.1"
+  repositories {
+    google()
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath("com.android.tools.build:gradle:4.2.2")
+    classpath(kotlin("gradle-plugin", version = project.extra["kotlin_version"] as? String))
+    classpath("com.google.protobuf:protobuf-gradle-plugin:0.8.17")
+    classpath("com.google.gms:google-services:4.3.3")
+    classpath("com.google.firebase:firebase-crashlytics-gradle:2.1.1")
+    // NOTE: Do not place your application dependencies here; they belong
+    // in the individual module build.gradle files
+  }
+}
+
+allprojects {
+  repositories {
+    google()
+    mavenCentral()
+    maven("https://jitpack.io")
+  }
+}
+
+tasks.register<Delete>("clean").configure {
+  delete(rootProject.buildDir)
+}
