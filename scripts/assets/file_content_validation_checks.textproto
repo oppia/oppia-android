@@ -124,7 +124,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "android.text.BidiFormatter"
-  failure_message: "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for KitKat compatibility."
+  failure_message: "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for better compatibility."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
@@ -232,7 +232,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "java.util.Optional"
-  failure_message: "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some incompatibilities between Bazel & KitKat builds."
+  failure_message: "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some incompatibilities between different SDK targeted builds."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
@@ -296,7 +296,7 @@ file_content_checks {
 file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "kotlin\\.properties\\.Delegates"
-  failure_message: "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to null, instead. Delegates uses reflection internally, have a non-trivial initialization cost, and can cause breakages on KitKat devices. See #3939 for more context."
+  failure_message: "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to null, instead. Delegates uses reflection internally, have a non-trivial initialization cost, and can cause breakages on some devices. See #3939 for more context."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {

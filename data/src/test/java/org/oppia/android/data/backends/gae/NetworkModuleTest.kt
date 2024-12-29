@@ -2,10 +2,8 @@ package org.oppia.android.data.backends.gae
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -35,24 +33,6 @@ class NetworkModuleTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-  fun testRetrofitInstance_lollipop_isProvided() {
-    assertThat(getTestApplication().getRetrofit()).isPresent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-  fun testFeedbackReportingService_lollipop_isProvided() {
-    assertThat(getTestApplication().getFeedbackReportingService()).isPresent()
-  }
-
-  @Test
-  @Config(sdk = [Build.VERSION_CODES.LOLLIPOP])
-  fun testPlatformParameterService_lollipop_isProvided() {
-    assertThat(getTestApplication().getPlatformParameterService()).isPresent()
   }
 
   @Test
@@ -93,9 +73,9 @@ class NetworkModuleTest {
     }
 
     fun inject(networkModuleTest: NetworkModuleTest)
-    @OppiaRetrofit fun getRetrofit(): Optional<Retrofit>
-    fun getFeedbackReportingService(): Optional<FeedbackReportingService>
-    fun getPlatformParameterService(): Optional<PlatformParameterService>
+    @OppiaRetrofit fun getRetrofit(): Retrofit
+    fun getFeedbackReportingService(): FeedbackReportingService
+    fun getPlatformParameterService(): PlatformParameterService
   }
 
   class TestApplication : Application() {

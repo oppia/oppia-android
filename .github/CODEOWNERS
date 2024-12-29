@@ -259,9 +259,6 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 # Proguard configurations for Bazel builds.
 /config/proguard/ @oppia/android-dev-workflow-reviewers
 
-# Configuration for KitKat-specific curated builds.
-/config/kitkat_main_dex_class_list.txt @oppia/android-dev-workflow-reviewers
-
 # Specific manifest files specifically required for Bazel builds.
 /app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/main/DatabindingAdaptersManifest.xml @oppia/android-dev-workflow-reviewers
