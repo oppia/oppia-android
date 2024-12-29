@@ -145,7 +145,6 @@ class GaeAndroidEndpointJsonImpl(
       val missingTopicIds = topicIds - availableTopicPacks.keys
       val futureTopics = missingTopicIds.map { topicId ->
         CoroutineScope(coroutineDispatcher).async {
-          println("@@@@@ fetching topic $topicId")
           topicId to activityService.fetchLatestTopicAsync(topicId).await()
         }
       }.awaitAll().associate { (topicId, result) ->
@@ -253,21 +252,14 @@ class GaeAndroidEndpointJsonImpl(
 
   // TODO: Remover this filter once downloading & checking all the other topics works correctly.
   private fun GaeClassroom.filterTopics(): GaeClassroom {
+    // These filters are topics that are known to be okay to ship with the app.
     return copy(
       topicIdToPrereqTopicIds = topicIdToPrereqTopicIds.filterKeys {
-        // These are topics that use NumberWithUnits and require a bigger change to the script.
-        // TODO: finish for next release.
-        it !in listOf("never")
-      }
-
-      // TODO: finish for next release.
-      // These filters are topics that are known to be okay to ship with the app.
-      /*.filterKeys {
         it in listOf(
           "iX9kYCjnouWN", "sWBXKH4PZcK6", "C4fqwrvqWpRm", "qW12maD4hiA8", "0abdeaJhmfPm",
           "5g0nxGUmx5J5"
         )
-      }*/
+      }
     )
   }
 
@@ -838,12 +830,10 @@ class GaeAndroidEndpointJsonImpl(
         "Continue", "FractionInput", "ItemSelectionInput", "MultipleChoiceInput",
         "NumericInput", "TextInput", "DragAndDropSortInput", "ImageClickInput",
         "RatioExpressionInput", "EndExploration", "NumericExpressionInput",
-        "AlgebraicExpressionInput", "MathEquationInput",
-        // TODO: finish for next release.
-        // "NumberWithUnits" // TODO: Fix this. It should be able to be removed (since the app doesn't support it yet) without causing a JSON parsing failure.
+        "AlgebraicExpressionInput", "MathEquationInput"//, "NumberWithUnits"
       )
 
-    // TODO: Remove gif.
+    // TODO: Remove gif and png since we only want to use svg(z) and webp moving forward.
     private val SUPPORTED_IMAGE_FORMATS = setOf("png", "webp", "svg", "svgz", "gif")
 
     private val SUPPORTED_AUDIO_FORMATS = setOf("mp3", "ogg")

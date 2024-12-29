@@ -183,9 +183,16 @@ class StructureCompatibilityChecker(
     stateName: String,
     gaeState: GaeState
   ): List<CompatibilityFailure> {
-    return gaeState.content.checkHasValidHtml(origin) +
-      checkInteractionInstanceCompatibility(origin, stateName, gaeState.interaction) +
+    val interaction = gaeState.interaction
+    val baseFailures = gaeState.content.checkHasValidHtml(origin) +
       checkRecordedVoiceoversCompatibility(origin, gaeState.recordedVoiceovers)
+    return if (interaction != null) {
+      baseFailures + checkInteractionInstanceCompatibility(origin, stateName, interaction)
+    } else {
+      baseFailures + listOf(
+        CompatibilityFailure.ExplorationStateHasIncompleteInteraction(stateName, origin)
+      )
+    }
   }
 
   private fun checkInteractionInstanceCompatibility(
@@ -472,6 +479,11 @@ class StructureCompatibilityChecker(
 
     data class StoryIsMissingExplorationId(
       val storyId: String,
+      override val origin: ContainerId
+    ) : CompatibilityFailure()
+
+    data class ExplorationStateHasIncompleteInteraction(
+      val stateName: String,
       override val origin: ContainerId
     ) : CompatibilityFailure()
   }

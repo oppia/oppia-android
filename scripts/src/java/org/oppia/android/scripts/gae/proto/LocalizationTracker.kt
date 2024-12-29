@@ -475,8 +475,7 @@ class LocalizationTracker private constructor(
           "ca_choices_224" -> 36
           "ca_choices_225" -> 37
           "ca_choices_226" -> 38
-          // TODO: finish for next release.
-          // "feedback_14" -> 45
+          "feedback_14" -> 45
           else -> 0
         }
         id.id == "OKxYhsWONHZV" && contentId == "ca_choices_128" -> 39
@@ -605,6 +604,14 @@ class LocalizationTracker private constructor(
         id.id == "ua7FTOXRaRjb" && contentId == "solution_139" -> true
         id.id == "sRqParMOyWWB" && contentId == "solution_121" -> true
         id.id == "Sl4TGJQhSjmk" && contentId == "solution_85" -> true
+        id.id == "rDJojPOc0KgJ" && contentId == "solution_148" -> true
+        id.id == "rwN3YPG9XWZa" && contentId == "solution_91" -> true
+        id.id == "ibeLZqbbjbKF" && contentId == "solution_141" -> true
+        id.id == "m1nvGABWeUoh" -> when (contentId) {
+          "solution_168" -> true
+          "solution_167" -> true
+          else -> false
+        }
         id.id == "2EOuIfQHljkN" -> when (contentId) {
           "solution_127" -> true
           "solution_130" -> true

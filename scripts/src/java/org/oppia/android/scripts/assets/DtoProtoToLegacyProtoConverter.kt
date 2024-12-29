@@ -19,6 +19,8 @@ import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.Misconception
+import org.oppia.android.app.model.NumberUnit
+import org.oppia.android.app.model.NumberWithUnits
 import org.oppia.android.app.model.Outcome
 import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.RatioExpression
@@ -110,10 +112,14 @@ import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.RuleSpec
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase as DragDropSortRuleSpecTypeCase
 import org.oppia.proto.v1.structure.FractionInputInstanceDto.RuleSpecDto as FractionRuleSpecDto
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto as MathEqRuleSpecDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as MathEqMatchesUpToTrivialManipulationsSpecDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.RuleSpecDto as MultChoiceRuleSpecDto
+import org.oppia.proto.v1.structure.NumberWithUnitsDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto as NumUnitsRuleSpecDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto as NumExpRuleSpecDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as NumExpMatchesUpToTrivialManipulationsSpecDto
 import org.oppia.proto.v1.structure.NumericInputInstanceDto.RuleSpecDto as NumInputRuleSpecDto
@@ -343,6 +349,7 @@ object DtoProtoToLegacyProtoConverter {
       ALGEBRAIC_EXPRESSION_INPUT -> algebraicExpressionInput.convertToInteraction(contentIdTracker)
       MATH_EQUATION_INPUT -> mathEquationInput.convertToInteraction(contentIdTracker)
       NUMERIC_EXPRESSION_INPUT -> numericExpressionInput.convertToInteraction(contentIdTracker)
+      NUMBER_WITH_UNITS_INPUT -> numberWithUnitsInput.convertToInteraction(contentIdTracker)
       END_EXPLORATION -> Interaction.newBuilder().setId("EndExploration").build()
       INTERACTIONTYPE_NOT_SET, null -> error("Invalid interaction instance: $this.")
     }
@@ -1346,6 +1353,72 @@ object DtoProtoToLegacyProtoConverter {
     "useFractionForDivision" to useFractionForDivision.wrap()
   )
 
+  private fun NumberWithUnitsInputInstanceDto.convertToInteraction(
+    contentIdTracker: ContentIdTracker
+  ): Interaction {
+    val dto = this
+    return Interaction.newBuilder().apply {
+      this.id = "NumericExpressionInput"
+      addAllAnswerGroups(dto.answerGroupsList.map { it.convertToAnswerGroup(contentIdTracker) })
+      dto.solution.takeIf {
+        dto.hasSolution()
+      }?.convertToSolution(contentIdTracker)?.let { this.solution = it }
+      addAllHint(dto.hintsList.map { it.convertToOutcome(contentIdTracker) })
+      this.defaultOutcome = dto.defaultOutcome.convertToOutcome(contentIdTracker)
+    }.build()
+  }
+
+  private fun NumberWithUnitsInputInstanceDto.SolutionDto.convertToSolution(
+    contentIdTracker: ContentIdTracker
+  ): Solution? {
+    val dto = this
+    return Solution.newBuilder().apply {
+      if (dto.baseSolution.hasExplanation()) {
+        this.explanation = contentIdTracker.extractSubtitledHtml(dto.baseSolution.explanation)
+      }
+      this.correctAnswer = dto.correctAnswer.convertToInteractionObject()
+      // Whether the answer is exclusive isn't used.
+    }.build().takeIf { it != Solution.getDefaultInstance() }
+  }
+
+  private fun NumberWithUnitsInputInstanceDto.AnswerGroupDto.convertToAnswerGroup(
+    contentIdTracker: ContentIdTracker
+  ): AnswerGroup {
+    val dto = this
+    return AnswerGroup.newBuilder().apply {
+      this.taggedSkillMisconception =
+        dto.baseAnswerGroup.taggedSkillMisconception.convertToMisconception()
+      this.outcome = dto.baseAnswerGroup.outcome.convertToOutcome(contentIdTracker)
+      addAllRuleSpecs(dto.ruleSpecsList.map { it.convertToRuleSpec() })
+      // Training data isn't used.
+    }.build()
+  }
+
+  private fun NumUnitsRuleSpecDto.convertToRuleSpec(): RuleSpec {
+    return when (ruleTypeCase) {
+      NumUnitsRuleSpecDto.RuleTypeCase.IS_EQUAL_TO -> isEqualTo.convertToRuleSpec()
+      NumUnitsRuleSpecDto.RuleTypeCase.IS_EQUIVALENT_TO -> isEquivalentTo.convertToRuleSpec()
+      NumUnitsRuleSpecDto.RuleTypeCase.RULETYPE_NOT_SET, null ->
+        error("Invalid rule spec: $this.")
+    }
+  }
+
+  private fun NumUnitsRuleSpecDto.IsEqualToSpecDto.convertToRuleSpec(): RuleSpec {
+    val dto = this
+    return RuleSpec.newBuilder().apply {
+      this.ruleType = "IsEqualTo"
+      putInput("x", dto.numberWithUnits.convertToInteractionObject())
+    }.build()
+  }
+
+  private fun NumUnitsRuleSpecDto.IsEquivalentToSpecDto.convertToRuleSpec(): RuleSpec {
+    val dto = this
+    return RuleSpec.newBuilder().apply {
+      this.ruleType = "IsEquivalentTo"
+      putInput("x", dto.numberWithUnits.convertToInteractionObject())
+    }.build()
+  }
+
   private fun OutcomeDto.convertToOutcome(contentIdTracker: ContentIdTracker): Outcome {
     val dto = this
     return Outcome.newBuilder().apply {
@@ -1587,6 +1660,9 @@ object DtoProtoToLegacyProtoConverter {
   private fun RatioExpressionDto.convertToInteractionObject(): InteractionObject =
     InteractionObject.newBuilder().setRatioExpression(convertToRatioExpression()).build()
 
+  private fun NumberWithUnitsDto.convertToInteractionObject(): InteractionObject =
+    InteractionObject.newBuilder().setNumberWithUnits(convertToNumberWithUnits()).build()
+
   private fun TranslatableSetOfNormalizedStringDto.convertToInteractionObject(
     contentIdTracker: ContentIdTracker
   ): InteractionObject {
@@ -1629,6 +1705,24 @@ object DtoProtoToLegacyProtoConverter {
 
   private fun RatioExpressionDto.convertToRatioExpression(): RatioExpression =
     RatioExpression.newBuilder().addAllRatioComponent(componentsList).build()
+
+  private fun NumberWithUnitsDto.convertToNumberWithUnits(): NumberWithUnits {
+    val dto = this
+    return NumberWithUnits.newBuilder().apply {
+      when (dto.typeCase) {
+        NumberWithUnitsDto.TypeCase.REAL -> this.real = dto.real
+        NumberWithUnitsDto.TypeCase.FRACTION -> this.fraction = dto.fraction.convertToFraction()
+        NumberWithUnitsDto.TypeCase.TYPE_NOT_SET, null -> error("Invalid unit type for: $dto.")
+      }
+      val units = dto.unitsList.map { unitDto ->
+        NumberUnit.newBuilder().apply {
+          this.unit = unitDto.label
+          this.exponent = unitDto.exponent
+        }.build()
+      }
+      this.addAllUnit(units)
+    }.build()
+  }
 
   private fun TranslatableSetOfNormalizedStringDto.convertToSetOfNormalizedString(
     contentIdTracker: ContentIdTracker

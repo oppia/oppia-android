@@ -30,9 +30,16 @@ data class GaeInteractionInstance(
       jsonReader: JsonReader,
       parsableInteractionInstanceAdapter: JsonAdapter<ParsableInteractionInstance>,
       peekableInteractionAdapter: JsonAdapter<PeekableInteractionInstance>
-    ): GaeInteractionInstance {
-      typeResolutionContext.currentInteractionType =
-        jsonReader.peekInteractionId(peekableInteractionAdapter)
+    ): GaeInteractionInstance? {
+      val interactionId = jsonReader.peekInteractionId(peekableInteractionAdapter)
+      typeResolutionContext.currentInteractionType = interactionId
+      if (interactionId == null) {
+        // Read the empty interaction object, but don't actually return it (since it isn't valid).
+        // It does need to be read, however, to ensure that strict mode doesn't choke on the skipped
+        // object.
+        jsonReader.nextCustomValue(parsableInteractionInstanceAdapter)
+        return null
+      }
       return jsonReader.nextCustomValue(parsableInteractionInstanceAdapter).also {
         // Reset the interaction type now that parsing has completed.
         typeResolutionContext.currentInteractionType = null
@@ -90,10 +97,13 @@ data class GaeInteractionInstance(
   )
 
   private companion object {
-    private fun JsonReader.peekInteractionId(peekableInteractionAdapter: JsonAdapter<PeekableInteractionInstance>): InteractionTypeCase {
+    private fun JsonReader.peekInteractionId(
+      peekableInteractionAdapter: JsonAdapter<PeekableInteractionInstance>
+    ): InteractionTypeCase? {
+      // Note that older versions of explorations may contain null interaction IDs.
       return peekJson().use { jsonReader ->
         jsonReader.nextCustomValue(peekableInteractionAdapter)
-      }.id?.let(::parseInteractionId) ?: error("Missing ID in interaction JSON object:\n${peekJson().nextSource().use { source -> source.inputStream().bufferedReader().use { it.readText() } }}")
+      }.id?.let(::parseInteractionId)
     }
 
     private fun parseInteractionId(id: String): InteractionTypeCase {

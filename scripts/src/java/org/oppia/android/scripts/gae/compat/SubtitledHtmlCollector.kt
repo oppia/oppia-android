@@ -98,7 +98,7 @@ class SubtitledHtmlCollector(private val localizationTracker: LocalizationTracke
   }
 
   private fun GaeState.collectSubtitles(): Set<SubtitledText> =
-    setOf(content.toSubtitle()) + interaction.collectSubtitles()
+    setOf(content.toSubtitle()) + (interaction?.collectSubtitles() ?: emptyList())
 
   private fun GaeInteractionInstance.collectSubtitles(): Set<SubtitledText> {
     val argTexts = customizationArgs.collectSubtitles()

@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 data class GaeState(
   @Json(name = "content") val content: GaeSubtitledHtml,
   @Json(name = "param_changes") val paramChanges: List<GaeParamChange>,
-  @Json(name = "interaction") val interaction: GaeInteractionInstance,
+  @Json(name = "interaction") val interaction: GaeInteractionInstance?,
   @Json(name = "classifier_model_id") val classifierModelId: String?,
   @Json(name = "linked_skill_id") val linkedSkillId: String?,
   @Json(name = "recorded_voiceovers") val recordedVoiceovers: GaeRecordedVoiceovers,
@@ -16,5 +16,5 @@ data class GaeState(
   @Json(name = "inapplicable_skill_misconception_ids") val inapplicableSkillMisconceptionIds: List<String>?
 ) {
   fun computeReferencedSkillIds(): List<String> =
-    listOfNotNull(linkedSkillId) + interaction.computeReferencedSkillIds()
+    listOfNotNull(linkedSkillId) + (interaction?.computeReferencedSkillIds() ?: emptyList())
 }

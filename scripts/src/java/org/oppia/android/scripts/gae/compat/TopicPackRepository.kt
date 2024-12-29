@@ -549,6 +549,12 @@ private interface VersionedStructureFetcher<I : StructureId, S> {
     service: AndroidActivityHandlerService
   ): Deferred<VersionedStructure<S>?>
 
+  fun fetchSingleFromRemoteAsync(
+    id: I,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ): Deferred<VersionedStructure<S>?>
+
   fun fetchMultiFromRemoteAsync(
     id: I,
     versions: List<Int>,
@@ -576,6 +582,14 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
     checker: StructureCompatibilityChecker
   ): Pair<S?, LoadResult<S>> {
     val result = fetcher.fetchLatestFromRemoteAsync(structureId, service)
+    return result.await()?.payload to result.toLoadResult(checker)
+  }
+
+  suspend fun loadVersion(
+    service: AndroidActivityHandlerService,
+    checker: StructureCompatibilityChecker
+  ): Pair<S?, LoadResult<S>> {
+    val result = fetcher.fetchSingleFromRemoteAsync(structureId, version, service)
     return result.await()?.payload to result.toLoadResult(checker)
   }
 
@@ -699,6 +713,12 @@ private class TopicFetcher : VersionedStructureFetcher<StructureId.Topic, GaeTop
     service: AndroidActivityHandlerService
   ) = service.fetchLatestTopicAsync(id.id)
 
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Topic,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleTopicAsync(id.id, version)
+
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Topic,
     versions: List<Int>,
@@ -711,6 +731,12 @@ private class StoryFetcher : VersionedStructureFetcher<StructureId.Story, GaeSto
     id: StructureId.Story,
     service: AndroidActivityHandlerService
   ) = service.fetchLatestStoryAsync(id.id)
+
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Story,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleStoryAsync(id.id, version)
 
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Story,
@@ -725,6 +751,12 @@ private class SubtopicFetcher : VersionedStructureFetcher<StructureId.Subtopic, 
     service: AndroidActivityHandlerService
   ) = service.fetchLatestRevisionCardAsync(id.topicId, id.subtopicIndex)
 
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Subtopic,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleRevisionCardAsync(id.topicId, id.subtopicIndex, version)
+
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Subtopic,
     versions: List<Int>,
@@ -737,6 +769,12 @@ private class SkillFetcher : VersionedStructureFetcher<StructureId.Skill, GaeSki
     id: StructureId.Skill,
     service: AndroidActivityHandlerService
   ) = service.fetchLatestConceptCardAsync(id.id)
+
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Skill,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ) = service.fetchSingleConceptCardAsync(id.id, version)
 
   override fun fetchMultiFromRemoteAsync(
     id: StructureId.Skill,
@@ -754,6 +792,17 @@ private class ExplorationFetcher(
   ): Deferred<VersionedStructure<CompleteExploration>?> {
     return CoroutineScope(coroutineDispatcher).async {
       val latestExp = service.fetchLatestExplorationAsync(id.id).await()
+      return@async latestExp?.let { it.copyWithNewPayload(service.downloadExploration(id, it.payload)) }
+    }
+  }
+
+  override fun fetchSingleFromRemoteAsync(
+    id: StructureId.Exploration,
+    version: Int,
+    service: AndroidActivityHandlerService
+  ): Deferred<VersionedStructure<CompleteExploration>?> {
+    return CoroutineScope(coroutineDispatcher).async {
+      val latestExp = service.fetchSingleExplorationAsync(id.id, version).await()
       return@async latestExp?.let { it.copyWithNewPayload(service.downloadExploration(id, it.payload)) }
     }
   }
@@ -968,7 +1017,7 @@ private class VersionStructureMapManagerFixVersionsImpl(
       // If the fixed version hasn't been loaded yet, ensure it's loaded.
       val versionedRef = createReference(structureId, fixedVersion)
       val (_, result) = try {
-        versionedRef.loadLatest(androidService, compatibilityChecker)
+        versionedRef.loadVersion(androidService, compatibilityChecker)
       } catch (e: Exception) {
         throw IllegalStateException(
           "Expected loading structure by ID $structureId for version $fixedVersion to succeed.", e

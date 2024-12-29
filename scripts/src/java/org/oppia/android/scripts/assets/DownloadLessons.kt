@@ -1176,18 +1176,23 @@ class LessonDownloader(
     }
 
     private fun scanForInvalidExtensions(): List<Issue.ImageHasInvalidExtension> {
+      return scanForInvalidExtensions(extension = "gif") +
+        scanForInvalidExtensions(extension = "png")
+    }
+
+    private fun scanForInvalidExtensions(extension: String): List<Issue.ImageHasInvalidExtension> {
       return localizations.filterIsInstance<Localizations.ImageReferences>().flatMap { images ->
-        images.filenames.filter { it.endsWith(".gif", ignoreCase = true) }.map { filename ->
+        images.filenames.filter { it.endsWith(".$extension", ignoreCase = true) }.map { filename ->
           Issue.ImageHasInvalidExtension(
-            images.container, images.language, filename, invalidExtension = "gif"
+            images.container, images.language, filename, invalidExtension = extension
           )
         }
       } + localizations.filterIsInstance<Localizations.Thumbnail>().mapNotNull { thumbnail ->
         thumbnail.thumbnailFilename.takeIf {
-          it.endsWith(".gif", ignoreCase = true)
+          it.endsWith(".$extension", ignoreCase = true)
         }?.let { filename ->
           Issue.ImageHasInvalidExtension(
-            thumbnail.container, thumbnail.language, filename, invalidExtension = "gif"
+            thumbnail.container, thumbnail.language, filename, invalidExtension = extension
           )
         }
       }
@@ -1643,6 +1648,20 @@ class LessonDownloader(
               container, args.placeholder.contentId
             )
           }
+          if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
+          if (interaction.hasSolution() && solution.hasBaseSolution()) {
+            track(container, solution.baseSolution)
+          }
+          interaction.hintsList.forEachIndexed { index, hint -> track(container, index, hint) }
+          interaction.answerGroupsList.forEachIndexed { index, answerGroup ->
+            if (answerGroup.hasBaseAnswerGroup()) {
+              track(container, index, answerGroup.baseAnswerGroup)
+            }
+          }
+        }
+        InteractionTypeCase.NUMBER_WITH_UNITS_INPUT -> {
+          val interaction = dto.interaction.numberWithUnitsInput
+          val solution = interaction.solution
           if (interaction.hasDefaultOutcome()) track(container, interaction.defaultOutcome)
           if (interaction.hasSolution() && solution.hasBaseSolution()) {
             track(container, solution.baseSolution)

@@ -240,23 +240,29 @@ class JsonToProtoConverter(
 
       // Track all subtitled text in each state of the exploration.
       exploration.states.values.flatMap { state ->
-        state.interaction.answerGroups.map { answerGroup ->
-          answerGroup.outcome.feedback
-        } + state.interaction.hints.map { hint ->
-          hint.hintContent
-        } + state.interaction.customizationArgs.customizationArgs.flatMap { (_, argVal) ->
-          when (argVal) {
-            is GaeImageWithRegions, is GaeCustomizationArgValue.SingleBoolean,
-            is GaeCustomizationArgValue.SingleInteger, is GaeCustomizationArgValue.StringList ->
-              emptyList()
-            is GaeCustomizationArgValue.SubtitledTextList -> argVal.value
-            is GaeCustomizationArgValue.SubtitledUnicode -> listOf(argVal.value)
+        val interaction = state.interaction
+        val baseSubtitles =
+          listOfNotNull(
+            state.content,
+            state.interaction?.defaultOutcome?.feedback,
+            state.interaction?.solution?.explanation
+          )
+        return@flatMap if (interaction != null) {
+          baseSubtitles + interaction.answerGroups.map { answerGroup ->
+            answerGroup.outcome.feedback
+          } + interaction.hints.map { hint ->
+            hint.hintContent
+          } + interaction.customizationArgs.customizationArgs.flatMap { (_, argVal) ->
+            when (argVal) {
+              is GaeImageWithRegions, is GaeCustomizationArgValue.SingleBoolean,
+              is GaeCustomizationArgValue.SingleInteger, is GaeCustomizationArgValue.StringList ->
+                emptyList()
+
+              is GaeCustomizationArgValue.SubtitledTextList -> argVal.value
+              is GaeCustomizationArgValue.SubtitledUnicode -> listOf(argVal.value)
+            }
           }
-        } + listOfNotNull(
-          state.content,
-          state.interaction.defaultOutcome?.feedback,
-          state.interaction.solution?.explanation
-        )
+        } else baseSubtitles
       }.forEach { localizationTracker.trackContainerText(containerId, it) }
 
       // Voiceovers are only tracked after their corresponding content IDs have already been
@@ -267,7 +273,7 @@ class JsonToProtoConverter(
 
       // Track all translatable answer inputs.
       exploration.states.values.flatMap { state ->
-        state.interaction.answerGroups.flatMap { answerGroup ->
+        state.interaction?.answerGroups?.flatMap { answerGroup ->
           answerGroup.ruleSpecs.flatMap { ruleSpec ->
             ruleSpec.inputs.values.mapNotNull { ruleInput ->
               when (ruleInput) {
@@ -282,7 +288,7 @@ class JsonToProtoConverter(
               }
             }
           }
-        }
+        } ?: emptyList()
       }.forEach { (contentId, strList) ->
         localizationTracker.trackContainerText(containerId, contentId, strList)
       }
@@ -594,7 +600,8 @@ class JsonToProtoConverter(
     return StateDto.newBuilder().apply {
       this.protoVersion = ProtoVersionProvider.createLatestStateProtoVersion()
       this.content = this@toProto.content.toProto(containerId)
-      this.interaction = this@toProto.interaction.toProto(containerId)
+      this.interaction = this@toProto.interaction?.toProto(containerId)
+        ?: error("State has invalid interaction: $containerId.")
     }.build()
   }
 
