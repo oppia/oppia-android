@@ -53,12 +53,6 @@ class PoliciesFragmentPresenter @Inject constructor(
     return binding.root
   }
 
-  /**
-   * This function handles saving the scroll position of the policy page.
-   * It stores the Y-coordinate of the scroll position in the savedInstanceState.
-   *
-   * @param outState The bundle to save the state.
-   */
   fun handleSaveInstanceState(outState: Bundle) {
     outState.putInt(KEY_SCROLL_Y, (binding.root as ScrollView).scrollY)
   }
