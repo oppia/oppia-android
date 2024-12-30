@@ -145,7 +145,7 @@ class TopicRevisionFragmentTest {
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
 
   private val subtopicThumbnail = R.drawable.topic_fractions_01
-  private val internalProfileId = 0
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -169,7 +169,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_displayRevisionTopics_isSuccessful() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
@@ -183,7 +183,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
@@ -203,7 +203,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
@@ -228,7 +228,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicPracticeFragment_loadFragment_configurationChange_revisionSubtopicsAreDisplayed() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
@@ -243,7 +243,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
@@ -269,7 +269,7 @@ class TopicRevisionFragmentTest {
   @Test
   fun testTopicRevisionFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use {
@@ -286,7 +286,6 @@ class TopicRevisionFragmentTest {
   }
 
   private fun markAllSpotlightsSeen() {
-    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_LESSON_TAB)
     testCoroutineDispatchers.runCurrent()
     spotlightStateController.markSpotlightViewed(profileId, TOPIC_REVISION_TAB)
@@ -296,26 +295,26 @@ class TopicRevisionFragmentTest {
   }
 
   private fun createTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String
   ): Intent {
     return TopicActivity.createTopicActivityIntent(
       context = ApplicationProvider.getApplicationContext(),
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = classroomId,
       topicId = topicId
     )
   }
 
   private fun launchTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     return launch(
       createTopicActivityIntent(
-        internalProfileId = internalProfileId,
+        profileId = profileId,
         classroomId = classroomId,
         topicId = topicId
       )

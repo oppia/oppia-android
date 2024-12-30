@@ -44,7 +44,7 @@ _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 34,
         "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
@@ -58,7 +58,7 @@ _FLAVOR_METADATA = {
     "dev_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 34,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],  # Developer builds are not optimized.
@@ -73,7 +73,7 @@ _FLAVOR_METADATA = {
     "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 34,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
@@ -87,7 +87,7 @@ _FLAVOR_METADATA = {
     "alpha_kitkat": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 34,
         "multidex": "manual_main_dex",
         "main_dex_list": _MAIN_DEX_LIST_TARGET_KITKAT,
         "proguard_specs": [],
@@ -102,7 +102,7 @@ _FLAVOR_METADATA = {
     "beta": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 34,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
@@ -116,7 +116,7 @@ _FLAVOR_METADATA = {
     "ga": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 33,
+        "target_sdk_version": 34,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,

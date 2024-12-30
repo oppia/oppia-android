@@ -40,7 +40,7 @@ class TopicFragmentPresenter @Inject constructor(
   lateinit var accessibilityService: AccessibilityService
 
   private lateinit var tabLayout: TabLayout
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
@@ -48,7 +48,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -63,7 +63,7 @@ class TopicFragmentPresenter @Inject constructor(
     this.storyId = storyId
     viewPager = binding.root.findViewById(R.id.topic_tabs_viewpager) as ViewPager2
     tabLayout = binding.root.findViewById(R.id.topic_tabs_container) as TabLayout
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
     this.topicId = topicId
 
     binding.topicToolbar.setNavigationOnClickListener {
@@ -74,7 +74,7 @@ class TopicFragmentPresenter @Inject constructor(
         binding.topicToolbarTitle.isSelected = true
       }
     }
-    viewModel.setInternalProfileId(internalProfileId)
+    viewModel.setProfileId(profileId)
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
@@ -134,7 +134,7 @@ class TopicFragmentPresenter @Inject constructor(
     val adapter =
       ViewPagerAdapter(
         fragment,
-        internalProfileId,
+        profileId,
         classroomId,
         topicId,
         storyId,
@@ -168,9 +168,6 @@ class TopicFragmentPresenter @Inject constructor(
       TopicTab.PRACTICE -> oppiaLogger.createOpenPracticeTabContext(topicId)
       TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
-    analyticsController.logImportantEvent(
-      eventContext,
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
-    )
+    analyticsController.logImportantEvent(eventContext, profileId)
   }
 }

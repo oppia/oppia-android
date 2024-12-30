@@ -174,7 +174,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   /** Routes to the play story view for the first story in the given topic summary. */
   fun onTopicSummaryClicked(topicSummary: TopicSummary) {
     routeToTopicPlayStoryListener.routeToTopicPlayStory(
-      profileId.internalId,
+      profileId,
       topicSummary.classroomId,
       topicSummary.topicId,
       topicSummary.firstStoryId
