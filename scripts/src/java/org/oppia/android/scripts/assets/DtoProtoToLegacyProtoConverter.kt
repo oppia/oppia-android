@@ -2,7 +2,7 @@ package org.oppia.android.scripts.assets
 
 import org.oppia.android.app.model.AnswerGroup
 import org.oppia.android.app.model.ChapterRecord
-import org.oppia.android.app.model.ClassroomList
+import org.oppia.android.app.model.ClassroomIdList
 import org.oppia.android.app.model.ClassroomRecord
 import org.oppia.android.app.model.ConceptCard
 import org.oppia.android.app.model.ConceptCardList
@@ -133,20 +133,10 @@ private typealias XlatableContentIdsSet = SetOfTranslatableHtmlContentIds
 private typealias XlatableContentIdsSetList = ListOfSetsOfTranslatableHtmlContentIds
 
 object DtoProtoToLegacyProtoConverter {
-  fun Iterable<ClassroomDto>.convertToClassroomList(
-    topicSummaries: Iterable<DownloadableTopicSummaryDto>,
-    allImageReferenceReplacements: Map<String, Map<String, String>>
-  ): ClassroomList {
+  fun Iterable<ClassroomDto>.convertToClassroomIdList(): ClassroomIdList {
     val dtos = this
-    val topicSummaryMap = topicSummaries.associateBy { it.id }
-    return ClassroomList.newBuilder().apply {
-      addAllClassrooms(
-        dtos.map {
-          it.convertToClassroomRecord(
-            topicSummaryMap, allImageReferenceReplacements.getValue(it.id)
-          )
-        }
-      )
+    return ClassroomIdList.newBuilder().apply {
+      addAllClassroomIds(dtos.map { it.id })
     }.build()
   }
 
@@ -253,7 +243,7 @@ object DtoProtoToLegacyProtoConverter {
     }.build()
   }
 
-  private fun ClassroomDto.convertToClassroomRecord(
+  fun ClassroomDto.convertToClassroomRecord(
     topicSummaryMap: Map<String, DownloadableTopicSummaryDto>,
     imageReferenceReplacements: Map<String, String>
   ): ClassroomRecord {

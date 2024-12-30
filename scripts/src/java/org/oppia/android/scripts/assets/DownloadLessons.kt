@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToConceptCardList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
@@ -96,6 +95,8 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomIdList
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomRecord
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
@@ -631,10 +632,16 @@ class LessonDownloader(
     } + writeProtosAsync(
       protoV1Dir,
       baseName = "classrooms",
-      listResponse.classroomsList.convertToClassroomList(
-        topicSummaries.values, classroomImageReplacements
+      listResponse.classroomsList.convertToClassroomIdList()
+    ) + listResponse.classroomsList.map { classroom ->
+      writeProtosAsync(
+        protoV1Dir,
+        classroom.id,
+        classroom.convertToClassroomRecord(
+          topicSummaries, classroomImageReplacements.getValue(classroom.id)
+        )
       )
-    )
+    }
 
     // Wait for all proto writes to finish.
     (writeProtoV2AsyncResults + writeProtoV1AsyncResults).awaitAll()

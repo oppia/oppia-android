@@ -25,6 +25,9 @@ message Topic {
   // A brief description of the topic.
   SubtitledHtml description = 11;
 
+  // The ID of the classroom to which the topic belongs to.
+  string classroom_id = 12;
+
   // A list of summarized stories contained within this topic.
   repeated StorySummary story = 4;
 
@@ -236,6 +239,9 @@ message CompletedStory {
   // The title of the story being completed.
   SubtitledHtml story_title = 8;
 
+  // The ID of the classroom which contains this story.
+  string classroom_id = 10;
+
   // The ID of the topic which contains this story.
   string topic_id = 3;
 
@@ -277,6 +283,9 @@ message PromotedStory {
   // The written translation context strings corresponding to the next chapter of this story.
   WrittenTranslationContext next_chapter_written_translation_context = 14;
 
+  // The written translation context for the story's classroom strings.
+  WrittenTranslationContext classroom_written_translation_context = 20;
+
   // The title of the story being promoted.
   SubtitledHtml story_title = 15;
 
@@ -288,6 +297,12 @@ message PromotedStory {
 
   // The title of the next chapter (exploration title) to complete.
   SubtitledHtml next_chapter_title = 17;
+
+  // The ID of the classroom this story is part of.
+  string classroom_id = 18;
+
+  // The title of the classroom this story is part of.
+  SubtitledHtml classroom_title = 19;
 
   // The exploration id next chapter to complete.
   string exploration_id = 6;
@@ -331,6 +346,9 @@ message TopicSummary {
   // The title of the topic.
   SubtitledHtml title = 8;
 
+  // The ID of the classroom this topic is part of.
+  string classroom_id = 10;
+
   // The structural version of the topic.
   int32 version = 3;
 
@@ -357,6 +375,12 @@ message EphemeralTopicSummary {
 
   // The translation context that should be used for this topic summary.
   WrittenTranslationContext written_translation_context = 2;
+
+  // The written translation context for the topic's classroom strings.
+  WrittenTranslationContext classroom_written_translation_context = 3;
+
+  // The title of the classroom this topic is part of.
+  SubtitledHtml classroom_title = 4;
 
   // The ID of the first story of this topic.
   string first_story_id = 7;
@@ -441,8 +465,17 @@ message UpcomingTopic {
   // The written translation context for this topic view.
   WrittenTranslationContext written_translation_context = 6;
 
+  // The written translation context for the topic's classroom strings.
+  WrittenTranslationContext classroom_written_translation_context = 10;
+
   // The title of the topic.
   SubtitledHtml title = 7;
+
+  // The ID of the classroom this topic is part of.
+  string classroom_id = 8;
+
+  // The title of the classroom this topic is part of.
+  SubtitledHtml classroom_title = 9;
 
   // The structural version of the topic.
   int32 version = 3;
@@ -547,10 +580,10 @@ message EphemeralRevisionCard {
   WrittenTranslationContext written_translation_context = 2;
 }
 
-// Corresponds to a local file cataloging all available classrooms in the app.
-message ClassroomList {
-  // The list of classrooms available to the app.
-  repeated ClassroomRecord classrooms = 1;
+// Corresponds to a local file cataloging all classrooms available to load.
+message ClassroomIdList {
+  // The list of IDs corresponding to classrooms available on the local filesystem.
+  repeated string classroom_ids = 1;
 }
 
 // Corresponds to a loadable classroom.
@@ -579,6 +612,40 @@ message ClassroomRecord {
     // A list of topics IDs.
     repeated string topic_ids = 1;
   }
+}
+
+// A summary of a classroom which contains a list of topic summaries.
+message ClassroomSummary {
+  // The ID of the classroom.
+  string classroom_id = 1;
+
+  // Mapping from content_id to a TranslationMapping for each SubtitledHtml in this classroom that
+  // has a corresponding translation.
+  map<string, TranslationMapping> written_translations = 2;
+
+  // The title of the classroom.
+  SubtitledHtml classroom_title = 3;
+
+  // The thumbnail corresponding to this classroom.
+  LessonThumbnail classroom_thumbnail = 4;
+
+  // A list of topic summaries contained within this classroom.
+  repeated TopicSummary topic_summary = 5;
+}
+
+// Corresponds to a classroom summary that is currently being viewed.
+message EphemeralClassroomSummary {
+  // The classroom summary to view.
+  ClassroomSummary classroom_summary = 1;
+
+  // The translation context that should be used for this classroom summary.
+  WrittenTranslationContext written_translation_context = 2;
+}
+
+// Corresponds to the list of classrooms that can be shown on the classroom list screen.
+message ClassroomList {
+  // All classrooms that are available to the player.
+  repeated EphemeralClassroomSummary classroom_summary = 1;
 }
 
 // Corresponds to a local file cataloging all concept cards available to load.
