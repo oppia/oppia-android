@@ -49,7 +49,7 @@ When you've found an issue you'd like to tackle:
 
 - Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you.
 - Submit a PR, following the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
-- If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community, or [request a mentor](https://forms.gle/udsRP4WQgLcez9Zm8) if you'd like individual support.
+- If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community.
 
 You are also welcome to tackle non-starter issues, but for those, you might need to be more independent, because we might not know how to solve them either!
 
@@ -106,5 +106,3 @@ For now, you generally won't need to do this, until the Android app supports on-
 ## Communication channels
 
 If you run into any problems (including non-coding ones), you can ask questions on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions). You can use this avenue for asking anything -- questions about any issue, who to contact for specific things, etc.
-
-You can also check out the [developer mailing list](https://groups.google.com/forum/?fromgroups#!forum/oppia-android-dev).
