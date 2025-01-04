@@ -147,20 +147,19 @@ class OppiaTestRule : TestRule {
       PlatformParameterModule.resetFeatureFlagToDefault(resetFeatureFlag.name)
     }
 
-    /*
-    overriddenBoolParameters?.forEach { overriddenValue ->
-      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    overriddenBoolParameters?.forEach { _ ->
+//      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
     }
-    overriddenIntParameters?.forEach { overriddenValue ->
-      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    overriddenIntParameters?.forEach { _ ->
+//      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
     }
-    overriddenStringParameters?.forEach { overriddenValue ->
-      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    overriddenStringParameters?.forEach { _ ->
+//      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
     }
 
-    resetParameterToDefault?.forEach { resetParameter ->
-      PlatformParameterModule.resetParameterToDefault(resetParameter.name)
-    }*/
+    resetParameterToDefault?.forEach { _ ->
+//      PlatformParameterModule.resetParameterToDefault(resetParameter.name)
+    }
   }
 
   private fun getCurrentPlatform(): TestPlatform {

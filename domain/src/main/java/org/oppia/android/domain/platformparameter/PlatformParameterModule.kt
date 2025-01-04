@@ -179,11 +179,12 @@ class PlatformParameterModule {
   fun provideEnablePerformanceMetricCollection(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
-    )
+    return overriddenFeatureFlags[FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(
+      ENABLE_PERFORMANCE_METRICS_COLLECTION)
+    ?: PlatformParameterValue.createDefaultParameter(
+      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE)
   }
 
   @Provides

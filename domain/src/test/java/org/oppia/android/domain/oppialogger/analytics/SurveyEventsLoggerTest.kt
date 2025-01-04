@@ -27,7 +27,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -45,6 +44,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /** Tests for [SurveyEventsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -190,7 +190,7 @@ class SurveyEventsLoggerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       ApplicationLifecycleModule::class, AssetModule::class, TestAuthenticationModule::class,
     ]

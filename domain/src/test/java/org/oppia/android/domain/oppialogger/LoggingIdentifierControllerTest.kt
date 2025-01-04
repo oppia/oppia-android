@@ -56,6 +56,7 @@ import java.io.FileOutputStream
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /** Tests for [LoggingIdentifierController]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -460,34 +461,6 @@ class LoggingIdentifierControllerTest {
     fun provideApplicationIdSeed(): Long = applicationIdSeed!! // Fail if not initialized.
   }
 
-  @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLearnerAnalyticsStudy: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -495,7 +468,7 @@ class LoggingIdentifierControllerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )

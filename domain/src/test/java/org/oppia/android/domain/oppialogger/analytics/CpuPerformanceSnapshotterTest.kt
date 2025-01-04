@@ -24,7 +24,6 @@ import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -47,6 +46,11 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 private const val TEST_CPU_USAGE_ONE = 0.07192
 private const val TEST_CPU_USAGE_TWO = 0.32192
@@ -57,7 +61,10 @@ private const val TEST_CPU_USAGE_TWO = 0.32192
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = CpuPerformanceSnapshotterTest.TestApplication::class)
+@EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
 class CpuPerformanceSnapshotterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
@@ -83,7 +90,6 @@ class CpuPerformanceSnapshotterTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
   }
 
@@ -485,7 +491,7 @@ class CpuPerformanceSnapshotterTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class
     ]

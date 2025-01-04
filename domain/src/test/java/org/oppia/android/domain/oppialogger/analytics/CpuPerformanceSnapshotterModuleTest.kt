@@ -19,7 +19,6 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -34,6 +33,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 /** Tests for [CpuPerformanceSnapshotter]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -95,7 +95,7 @@ class CpuPerformanceSnapshotterModuleTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class
     ]

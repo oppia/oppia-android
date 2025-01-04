@@ -34,7 +34,6 @@ import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -52,6 +51,12 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Before
+import org.junit.Rule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Double.MAX_VALUE
@@ -69,6 +74,8 @@ private const val TEST_STARTUP_LATENCY_IN_MILLISECONDS = 3000L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsLoggerTest.TestApplication::class)
 class PerformanceMetricsLoggerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var performanceMetricsLogger: PerformanceMetricsLogger
@@ -91,9 +98,9 @@ class PerformanceMetricsLoggerTest {
   private val testDeviceStorageTier = OppiaMetricLog.StorageTier.MEDIUM_STORAGE
   private val testDeviceMemoryTier = OppiaMetricLog.MemoryTier.MEDIUM_MEMORY_TIER
 
-  @After
-  fun tearDown() {
-    TestPlatformParameterModule.reset()
+  @Before
+  fun setUp() {
+    setUpApplicationInDefaultMode()
   }
 
   @Test
@@ -112,8 +119,8 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logApkSizePerformanceMetric_verifyLogsMetricCorrectly() {
-    setUpApplicationForPerformanceMetricsLogging()
     val apkSize = fakePerformanceMetricAssessor.getApkSize()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -132,8 +139,8 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logStorageUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    setUpApplicationForPerformanceMetricsLogging()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -154,8 +161,8 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logMemoryUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    setUpApplicationForPerformanceMetricsLogging()
     val memoryUsage = fakePerformanceMetricAssessor.getTotalPssUsed()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -174,8 +181,8 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logStartupLatencyPerformanceMetric_verifyLogsMetricCorrectly() {
-    setUpApplicationForPerformanceMetricsLogging()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -200,8 +207,8 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logCpuUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    setUpApplicationForPerformanceMetricsLogging()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
     val isAppInForeground = performanceMetricsController.getIsAppInForeground()
@@ -222,8 +229,8 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logNetworkUsagePerformanceMetric_verifyLogsMetricCorrectly() {
-    setUpApplicationForPerformanceMetricsLogging()
     val bytesSent = fakePerformanceMetricAssessor.getTotalSentBytes()
     val bytesReceived = fakePerformanceMetricAssessor.getTotalReceivedBytes()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
@@ -259,14 +266,6 @@ class PerformanceMetricsLoggerTest {
   }
 
   private fun setUpApplicationInDefaultMode() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    setUpFakePerformanceMetricsUtils()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
-    fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP)
-  }
-
-  private fun setUpApplicationForPerformanceMetricsLogging() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     setUpFakePerformanceMetricsUtils()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
@@ -336,7 +335,7 @@ class PerformanceMetricsLoggerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       ApplicationLifecycleModule::class
     ]

@@ -41,7 +41,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -64,6 +63,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 
@@ -73,7 +77,11 @@ private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MetricLogSchedulingWorkerTest.TestApplication::class)
+@EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
 class MetricLogSchedulingWorkerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
@@ -99,7 +107,6 @@ class MetricLogSchedulingWorkerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -268,7 +275,7 @@ class MetricLogSchedulingWorkerTest {
       TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, TestPlatformParameterModule::class, LoggingIdentifierModule::class,
+      AssetModule::class, PlatformParameterModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
