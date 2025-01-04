@@ -72,7 +72,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -95,6 +94,11 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.util.platformparameter.FeatureFlag
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -103,6 +107,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class HomeActivityLocalTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -132,13 +139,13 @@ class HomeActivityLocalTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onLaunch_logsOpenHomeEvent() {
-    setUpTestWithOnboardingV2Enabled(false)
+    setUpTestApplicationComponent()
 
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -150,8 +157,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_soleProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
       profileId = profileId,
@@ -168,8 +176,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_supervisorProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
       profileId = profileId,
@@ -186,8 +195,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_nonAdminProfile_onInitialLaunch_doesNotLogAppOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(1)
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
@@ -209,6 +219,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_adminProfile_onSubsequentLaunch_doesNotLogAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getProfileTestHelper().updateProfileType(profileId, ProfileType.SOLE_LEARNER)
@@ -218,7 +229,7 @@ class HomeActivityLocalTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(false)
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
@@ -231,13 +242,14 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(false)
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
@@ -250,8 +262,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -264,6 +277,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
@@ -271,18 +285,13 @@ class HomeActivityLocalTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
-  }
-
-  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingFlowV2: Boolean) {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
-    setUpTestApplicationComponent()
   }
 
   /**
@@ -319,7 +328,7 @@ class HomeActivityLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
