@@ -30,16 +30,16 @@ class TopicInfoFragmentPresenter @Inject constructor(
   @DefaultResourceBucketName private val resourceBucketName: String
 ) {
   private lateinit var binding: TopicInfoFragmentBinding
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
   private lateinit var topicId: String
 
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String
   ): View? {
-    this.internalProfileId = internalProfileId
+    this.profileId = profileId
     this.topicId = topicId
     binding = TopicInfoFragmentBinding.inflate(
       inflater,
@@ -68,10 +68,7 @@ class TopicInfoFragmentPresenter @Inject constructor(
   }
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
-    topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicId
-    ).toLiveData()
+    topicController.getTopic(profileId, topicId).toLiveData()
   }
 
   private fun getTopicList(): LiveData<EphemeralTopic> {

@@ -182,7 +182,6 @@ class TopicLessonsFragmentTest {
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUiValue: PlatformParameterValue<Boolean>
 
-  private val internalProfileId = 0
   private lateinit var profileId: ProfileId
 
   @Before
@@ -190,7 +189,7 @@ class TopicLessonsFragmentTest {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = ProfileId.newBuilder().setInternalId(0).build()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     markAllSpotlightsSeen()
   }
@@ -209,7 +208,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_storyName_isCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -221,7 +220,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_chapterCountTextMultiple_isCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -237,7 +236,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -253,7 +252,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -269,7 +268,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -289,7 +288,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -304,7 +303,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_noStoryProgress_contentDescriptionIsCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -324,7 +323,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -336,7 +335,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_configurationChange_storyName_isCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -350,7 +349,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_configurationLandscape_storyName_isCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -362,7 +361,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickStoryItem_opensStoryActivityWithCorrectIntent() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -382,7 +381,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_chapterListIsNotVisible() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       onView(withId(R.id.chapter_recycler_view)).check(doesNotExist())
@@ -393,7 +392,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_chapterNotStartedIsCorrectlyDisplayed() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -412,7 +411,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_chapterLockedIsCorrectlyDisplayed() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -431,7 +430,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_chapterIsLocked_contentDescriptionIsCorrect() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -463,7 +462,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -486,7 +485,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -518,7 +517,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -542,7 +541,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -569,7 +568,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_configChange_chapterLockedIsCorrectlyDisplayed() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -593,7 +592,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -618,7 +617,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -638,7 +637,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_configChange_chapterNotStartedIsCorrectlyDisplayed() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -658,7 +657,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_default_arrowDown() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -680,7 +679,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIcon_chapterListIsVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0
@@ -711,7 +710,7 @@ class TopicLessonsFragmentTest {
     testCoroutineDispatchers.runCurrent()
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -732,7 +731,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = profileId
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
         checkpoint = ExplorationCheckpoint.newBuilder().apply {
           explorationTitle = "What is a Fraction?"
@@ -767,7 +766,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -788,7 +787,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = profileId
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -805,7 +804,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadFractionsTopic_clickChap_chapterMarkedAsNotStarted_opensExpAct() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -826,7 +825,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = profileId
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -848,7 +847,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -869,7 +868,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = profileId
         isCheckpointingEnabled = true
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -891,7 +890,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -911,7 +910,7 @@ class TopicLessonsFragmentTest {
         storyId = FRACTIONS_STORY_ID_0
         topicId = FRACTIONS_TOPIC_ID
         classroomId = TEST_CLASSROOM_ID_1
-        profileId = ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+        profileId = profileId
         isCheckpointingEnabled = false
         parentScreen = ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB
       }.build()
@@ -928,7 +927,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_clickExpandListIconIndex2_chapterListForIndex1IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -953,7 +952,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex2_clickExpandListIconIndex1_chapterListForIndex2IsNotDisplayed() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -976,7 +975,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationChange_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -998,7 +997,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_clickExpandListIconIndex1_configurationLandscape_chapterListIsVisible() { // ktlint-disable max-line-length
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -1022,7 +1021,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -1041,7 +1040,7 @@ class TopicLessonsFragmentTest {
     )
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, RATIOS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -1057,7 +1056,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRecentStory_default_chapterListIsVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0
@@ -1078,7 +1077,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_chapterListIsNotVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0
@@ -1100,7 +1099,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRecentStory_clickExpandIcon_land_chapterListIsNotVisible() {
     launch<TopicActivity>(
       createTopicPlayStoryActivityIntent(
-        internalProfileId,
+        profileId,
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0
@@ -1124,7 +1123,7 @@ class TopicLessonsFragmentTest {
   fun testLessonsPlayFragment_loadRatiosTopic_checkDropDownIconWithScreenReader_isClickable() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       fakeAccessibilityService.setScreenReaderEnabled(true)
@@ -1146,7 +1145,7 @@ class TopicLessonsFragmentTest {
   fun testLessonPlayFragment_loadRatiosTopic_checkDropDownIconWithoutScreenReader_isNotClickable() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -1167,7 +1166,7 @@ class TopicLessonsFragmentTest {
   fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithScreenReader_isNotClickable() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       fakeAccessibilityService.setScreenReaderEnabled(true)
@@ -1189,7 +1188,7 @@ class TopicLessonsFragmentTest {
   fun testLessonPlayFragment_loadRatiosTopic_checkStoryContainerWithoutScreenReader_isClickable() {
     launch<TopicActivity>(
       createTopicActivityIntent(
-        internalProfileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
+        profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
       )
     ).use {
       clickLessonTab()
@@ -1216,27 +1215,27 @@ class TopicLessonsFragmentTest {
   }
 
   private fun createTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String
   ): Intent {
     return TopicActivity.createTopicActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       classroomId,
       topicId
     )
   }
 
   private fun createTopicPlayStoryActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
   ): Intent {
     return TopicActivity.createTopicPlayStoryActivityIntent(
       ApplicationProvider.getApplicationContext(),
-      internalProfileId,
+      profileId,
       classroomId,
       topicId,
       storyId

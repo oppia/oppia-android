@@ -48,6 +48,24 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     steps:
+      - name: Find the latest Code Coverage Report Comment 
+        uses: actions/github-script@v6
+        with:
+           script: |
+             const comments = await github.paginate(github.rest.issues.listComments, {
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               issue_number: ${{ github.event.pull_request.number }},
+             });            
+
+             for (let i = comments.length - 1; i >= 0; i--) {
+               if (comments[i].body.includes("## Coverage Report")) {
+                 const latestCodeCoverageComment = comments[i].body;
+                 require('fs').writeFileSync('latest_code_coverage_comment.md', latestCodeCoverageComment, 'utf8');
+                 return
+               }
+             }
+    
       - name: Find CI workflow run for PR
         id: find-workflow-run
         uses: actions/github-script@v7
@@ -82,8 +100,28 @@ jobs:
           name: final-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ steps.find-workflow-run.outputs.run-id }}
+      
+      - name: Compare Current Coverage Report with the Latest Coverage Report
+        run: |        
+          if [ -f latest_code_coverage_comment.md ]; then
+            sed -i -e '$a\' CoverageReport.md
+            sed -i -e '$a\' latest_code_coverage_comment.md
+          
+            if diff -B CoverageReport.md latest_code_coverage_comment.md > /dev/null; then
+              echo "No changes detected; skipping coverage comment."
+              echo "skip_coverage_comment=true" >> $GITHUB_ENV
+            else
+              echo "Changes detected; proceeding with the coverage comment."
+              diff CoverageReport.md latest_code_coverage_comment.md || true
+              echo "skip_coverage_comment=false" >> $GITHUB_ENV
+            fi
+          else
+            echo "No previous coverage comment found to compare; posting evaluated coverage comment."
+            echo "skip_coverage_comment=false" >> $GITHUB_ENV
+          fi
 
       - name: Upload Coverage Report as PR Comment
+        if: ${{ env.skip_coverage_comment == 'false' }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
