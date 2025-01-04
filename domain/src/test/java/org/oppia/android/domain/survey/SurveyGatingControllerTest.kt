@@ -46,7 +46,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 
 private const val SESSION_LENGTH_SHORT = 120000L
 private const val SESSION_LENGTH_LONG = 360000L
@@ -664,7 +663,7 @@ class SurveyGatingControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, PlatformParameterModule::class
+      TestLoggingIdentifierModule::class, TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
