@@ -15,6 +15,7 @@ import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -60,9 +61,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Rule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.testing.OppiaTestRule
 
 /** Tests for [FeatureFlagsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
