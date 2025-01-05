@@ -112,6 +112,7 @@ dependencies {
       'org.robolectric:robolectric:4.5',
       project(":data"),
       project(":testing"),
+      project(":domain")
   )
   kapt(
       'com.github.bumptech.glide:compiler:4.11.0',

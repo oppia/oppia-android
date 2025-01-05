@@ -15,7 +15,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,18 +30,21 @@ import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
+import org.oppia.android.testing.platformparameter.PlatformParameterTestConstantsModule
 import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -59,6 +62,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -137,6 +141,9 @@ class ApplicationLifecycleObserverTest {
   lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @get:Rule
   var activityRule =
     ActivityScenarioRule<TextInputActionTestActivity>(
       TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()).apply {
@@ -156,14 +163,13 @@ class ApplicationLifecycleObserverTest {
   private lateinit var mockWebServerUrl: HttpUrl
   private lateinit var request: Request
 
-  @After
-  fun tearDown() {
-    TestPlatformParameterModule.reset()
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
   }
 
   @Test
   fun testObserver_withDisabledMetricsCollection_doesNotLogAnyEvent() {
-    setUpTestApplicationComponent()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
@@ -171,7 +177,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
-    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionIdProvider = loggingIdentifierController.getSessionId()
     val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
@@ -184,7 +189,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
-    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionIdProvider = loggingIdentifierController.getSessionId()
     val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
@@ -196,8 +200,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInForeground_loggedIntoProfile_studyOn_logsForegroundEventWithBothIds() {
-    setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
 
     applicationLifecycleObserver.onAppInForeground()
@@ -212,9 +216,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInForeground_notLoggedIn_studyOn_logsForegroundEventWithoutLearnerId() {
-    setUpTestApplicationWithLearnerStudy()
-
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
@@ -227,8 +230,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInBackground_loggedIntoProfile_studyOn_logsBackgroundEventWithBothIds() {
-    setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
 
     applicationLifecycleObserver.onAppInBackground()
@@ -243,9 +246,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInBackground_notLoggedIn_studyOn_logsBackgroundEventWithoutLearnerId() {
-    setUpTestApplicationWithLearnerStudy()
-
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
@@ -260,7 +262,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_setsAppInForeground() {
-    setUpTestApplicationComponent()
     applicationLifecycleObserver.onAppInForeground()
 
     assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
@@ -268,7 +269,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInBackground_setsAppInBackground() {
-    setUpTestApplicationComponent()
     applicationLifecycleObserver.onAppInBackground()
 
     assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
@@ -276,14 +276,12 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
-    setUpTestApplicationComponent()
     assertThat(applicationLifecycleObserver.getCurrentScreen())
       .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
   }
 
   @Test
   fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
-    setUpTestApplicationComponent()
     activityRuleForUnspecifiedActivity.scenario.onActivity { activity ->
       applicationLifecycleObserver.onActivityResumed(activity)
       val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
@@ -292,8 +290,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onCreate_performanceMetricsLoggingWithCorrectDetailsOccurs() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
 
@@ -309,7 +307,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
-    setUpTestApplicationComponent()
     activityRule.scenario.onActivity { activity ->
       applicationLifecycleObserver.onActivityResumed(activity)
       val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
@@ -318,8 +315,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onFirstActivityResume_logsStartupLatency() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
@@ -341,8 +338,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
 
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
@@ -363,9 +360,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_activityResumed_logsMemoryUsage() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
-
     activityRule.scenario.onActivity { activity ->
       applicationLifecycleObserver.onActivityResumed(activity)
 
@@ -382,7 +378,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_activityResumed_activityPaused_currentScreenReturnsBackgroundValue() {
-    setUpTestApplicationComponent()
     activityRule.scenario.onActivity { activity ->
       applicationLifecycleObserver.onActivityResumed(activity)
       applicationLifecycleObserver.onActivityPaused(activity)
@@ -393,8 +388,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -406,8 +401,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
@@ -420,8 +415,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_logsAllFeatureFlags() {
-    setUpTestApplicationComponent()
-
     featureFlagsLogger.setFeatureFlagItemMap(
       mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
     )
@@ -448,7 +441,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_thenInBackground_logsAppInForegroundTime() {
-    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
     applicationLifecycleObserver.onCreate()
@@ -477,8 +469,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_onConsoleError_logsConsoleErrors() {
-    setUpTestApplicationComponent()
-
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -500,7 +490,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_onNetworkCall_logsNetworkCalls() {
-    setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
     applicationLifecycleObserver.onCreate()
@@ -525,7 +514,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_onNetworkCall_logsFailedNetworkCalls() {
-    setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
     applicationLifecycleObserver.onCreate()
@@ -575,16 +563,6 @@ class ApplicationLifecycleObserverTest {
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.loginToProfile(rootProfileId)
     )
-  }
-
-  private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
-    setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestApplicationWithPerformanceMetricsCollection() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -666,9 +644,10 @@ class ApplicationLifecycleObserverTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestConstantsModule::class, TestLoggingIdentifierModule::class,
+      ApplicationLifecycleModule::class, SyncStatusModule::class,
+      CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
