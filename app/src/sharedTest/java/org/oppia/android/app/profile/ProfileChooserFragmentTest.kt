@@ -119,6 +119,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.DisableFeatureFlag
 
 /** Tests for [ProfileChooserFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -160,7 +161,6 @@ class ProfileChooserFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
@@ -330,8 +330,8 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileChooserFragment_onboardingV1_clickAdminProfile_checkOpensPinPasswordActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -346,8 +346,8 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.initializeProfiles(autoLogIn = true)
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(
@@ -368,9 +368,9 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensIntroActivity() {
     profileTestHelper.initializeProfiles(autoLogIn = true)
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -385,9 +385,9 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testMigrateProfiles_onboardingV2_clickAdminWithoutPin_checkOpensIntroActivity() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -402,6 +402,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkOpensIntroActivity() {
     profileTestHelper.addOnlyAdminProfile()
     profileManagementController.addProfile(
@@ -412,7 +413,6 @@ class ProfileChooserFragmentTest {
       colorRgb = -10710042,
       isAdmin = false
     )
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
