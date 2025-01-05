@@ -23,6 +23,12 @@ class ComputeAabDifferencesTest {
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
 
+  private val briefSummaryOutputPath = "path/to/brief/summary/output/file.txt"
+  private val fullSummaryOutputPath = "path/to/full/summary/output/file.txt"
+  private val buildFlavor = "dev"
+  private val oldAabPath = "path/to/old/aab/file.aab"
+  private val newAabPath = "path/to/new/aab/file.aab"
+
   // TODO(#4971): Finish the tests for this suite.
 
   @After
@@ -58,6 +64,33 @@ class ComputeAabDifferencesTest {
     }
 
     assertThat(exception).hasMessageThat().contains("Index 0 out of bounds for length 0")
+  }
+
+  @Test
+  fun testMain_twoArguments_failsWithError() {
+    val exception = assertThrows<IllegalStateException> {
+      main(briefSummaryOutputPath, fullSummaryOutputPath)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected at least 1 triplet entry")
+  }
+
+  @Test
+  fun testMain_threeArguments_failsWithError() {
+    val exception = assertThrows<IllegalStateException> {
+      main(briefSummaryOutputPath, fullSummaryOutputPath, buildFlavor)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected at least 1 triplet entry")
+  }
+
+  @Test
+  fun testMain_fourArguments_failsWithError() {
+    val exception = assertThrows<IllegalStateException> {
+      main(briefSummaryOutputPath, fullSummaryOutputPath, buildFlavor, oldAabPath)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected at least 1 triplet entry")
   }
 
   private fun createComputeAabDifferences(): ComputeAabDifferences {
