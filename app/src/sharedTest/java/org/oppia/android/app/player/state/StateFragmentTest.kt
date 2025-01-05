@@ -62,6 +62,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -153,6 +154,8 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.OverrideBoolParameter
@@ -189,6 +192,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -196,10 +200,6 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.Before
-import org.oppia.android.testing.DisableFeatureFlag
-import org.oppia.android.testing.EnableFeatureFlag
-import org.oppia.android.util.platformparameter.FeatureFlag
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
