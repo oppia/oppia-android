@@ -135,6 +135,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -171,6 +172,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.io.IOException
@@ -472,6 +474,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_notSeen_checkSpotlightIsShown() {
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
@@ -503,6 +506,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testVoiceoverLangIconSpotlight_setToShowOnIconClick_alreadySeen_checkSpotlightIsNotShown() {
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
@@ -557,6 +561,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testBackButtonSpotlight_setToShowOnFirstLogin_notSeen_checkSpotlightIsShown() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
@@ -584,6 +589,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testBackButtonSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightIsNotShown() {
     markSpotlightSeen(Spotlight.FeatureCase.VOICEOVER_PLAY_ICON)
     setUpAudioForFractionLesson()
@@ -633,6 +639,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_notSeen_checkSpotlightShown() {
     logIntoAdminThrice()
     setUpAudioForFractionLesson()
@@ -662,6 +669,7 @@ class ExplorationActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testVoiceoverIconSpotlight_setToShowAfter3rdLogin_alreadySeen_checkSpotlightNotShown() {
     logIntoAdminThrice()
     setUpAudioForFractionLesson()

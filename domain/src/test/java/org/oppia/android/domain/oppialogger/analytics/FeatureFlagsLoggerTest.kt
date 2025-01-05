@@ -9,15 +9,16 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -30,6 +31,7 @@ import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
 import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -73,6 +75,9 @@ import javax.inject.Singleton
   sdk = [Build.VERSION_CODES.O]
 )
 class FeatureFlagsLoggerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
@@ -250,7 +255,7 @@ class FeatureFlagsLoggerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
     ]
   )
