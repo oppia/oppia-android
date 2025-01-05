@@ -20,41 +20,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "test_constants_old",
-    testonly = True,
-    srcs = [
-        "TestPlatformParameterConstants.kt",
-    ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
-    name = "test_module",
+    name = "test_constants_module",
     testonly = True,
     srcs = [
         "PlatformParameterTestConstantsModule.kt",
-    ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
-    deps = [
-        ":test_constants",
-        "//:dagger",
-        "//utility",
-        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
-    ],
-)
-
-kt_android_library(
-    name = "test_module_old",
-    testonly = True,
-    srcs = [
-        "TestPlatformParameterModule.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",

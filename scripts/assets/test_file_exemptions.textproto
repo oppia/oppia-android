@@ -4175,11 +4175,11 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterConstants.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/PlatformParameterTestConstants.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterModule.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/PlatformParameterTestConstantsModule.kt"
   test_file_not_required: true
 }
 test_file_exemption {
