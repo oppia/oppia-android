@@ -51,6 +51,15 @@ class ComputeAabDifferencesTest {
     assertThat(exception).hasMessageThat().contains("was not found")
   }
 
+  @Test
+  fun testMain_noArguments_failsWithError() {
+    val exception = assertThrows<ArrayIndexOutOfBoundsException> {
+      main()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Index 0 out of bounds for length 0")
+  }
+
   private fun createComputeAabDifferences(): ComputeAabDifferences {
     return ComputeAabDifferences(
       workingDirectoryPath = tempFolder.root.absoluteFile.normalize().path,
