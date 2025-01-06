@@ -20,9 +20,6 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class Aapt2ClientTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] var tempFolder = TemporaryFolder()
 
   private val sdkProperties = AndroidBuildSdkProperties()

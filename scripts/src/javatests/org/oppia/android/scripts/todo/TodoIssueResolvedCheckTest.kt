@@ -13,9 +13,6 @@ import java.io.PrintStream
 
 /** Tests for [TodoIssueResolvedCheck]. */
 class TodoIssueResolvedCheckTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val CLOSED_ISSUE_CHECK_PASSED_OUTPUT_INDICATOR: String =

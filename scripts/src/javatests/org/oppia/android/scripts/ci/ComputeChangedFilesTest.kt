@@ -25,9 +25,6 @@ import java.util.concurrent.TimeUnit
  * Tests for the compute_changed_files utility.
  */
 class ComputeChangedFilesTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }

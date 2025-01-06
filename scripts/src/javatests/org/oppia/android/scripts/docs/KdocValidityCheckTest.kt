@@ -17,9 +17,6 @@ private const val KDOC_CHECK_FAILED_OUTPUT_INDICATOR = "KDOC VALIDITY CHECK FAIL
 
 /** Tests for [KdocValidityCheck]. */
 class KdocValidityCheckTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val pathToProtoBinary = "scripts/assets/kdoc_validity_exemptions.pb"

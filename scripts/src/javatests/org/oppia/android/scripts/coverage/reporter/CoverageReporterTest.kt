@@ -19,9 +19,6 @@ import java.io.File
 import java.io.PrintStream
 
 class CoverageReporterTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField]
   val tempFolder = TemporaryFolder()
 

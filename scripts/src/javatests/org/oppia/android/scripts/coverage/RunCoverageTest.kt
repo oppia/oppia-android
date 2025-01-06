@@ -25,9 +25,6 @@ import java.util.concurrent.TimeUnit
 
 /** Tests for [RunCoverage]. */
 class RunCoverageTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }

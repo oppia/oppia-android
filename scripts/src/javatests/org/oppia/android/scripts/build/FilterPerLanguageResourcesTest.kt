@@ -36,9 +36,6 @@ import java.util.zip.ZipOutputStream
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
 @Suppress("PrivatePropertyName", "FunctionName", "SameParameterValue")
 class FilterPerLanguageResourcesTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private val USAGE_STRING =
     "Usage: bazel run //scripts:filter_per_language_resources --" +
       " </absolute/path/to/input_module.zip:Path>" +

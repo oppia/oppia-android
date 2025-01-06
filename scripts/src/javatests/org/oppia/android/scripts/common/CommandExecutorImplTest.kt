@@ -20,9 +20,6 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class CommandExecutorImplTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }

@@ -15,9 +15,6 @@ import org.junit.Test
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class AndroidBuildSdkPropertiesTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Test
   fun testBuildSdkVersion_isTheCorrectSdkVersion() {
     val properties = AndroidBuildSdkProperties()

@@ -18,9 +18,6 @@ import java.io.PrintStream
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class RetrieveAffectedTestsTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private lateinit var pendingOutputStream: ByteArrayOutputStream

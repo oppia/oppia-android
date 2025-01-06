@@ -42,9 +42,6 @@ class StringLanguageTranslationCheckTest {
       mapOf("nigerian_pidgin_only_string" to "Abeg select all di correct choices.")
   }
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val originalOut: PrintStream = System.out

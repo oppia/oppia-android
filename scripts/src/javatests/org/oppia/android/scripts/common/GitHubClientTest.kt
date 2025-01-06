@@ -21,9 +21,6 @@ class GitHubClientTest {
     private const val TEST_AUTH_TOKEN = "abcdef1234567890"
   }
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }

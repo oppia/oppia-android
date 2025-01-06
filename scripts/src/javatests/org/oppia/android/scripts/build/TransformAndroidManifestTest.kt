@@ -23,9 +23,6 @@ import java.io.File
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("PrivatePropertyName", "FunctionName")
 class TransformAndroidManifestTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private val USAGE_STRING =
     "Usage: bazel run //scripts:transform_android_manifest -- </absolute/path/to/repo/root:Path> " +
       "</absolute/path/to/input/AndroidManifest.xml:Path> " +

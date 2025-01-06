@@ -14,9 +14,6 @@ import java.io.PrintStream
 
 /** Tests for [TestFileCheck]. */
 class TestFileCheckTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR = "TEST FILE CHECK PASSED"

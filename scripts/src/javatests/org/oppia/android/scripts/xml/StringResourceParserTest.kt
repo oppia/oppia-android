@@ -24,9 +24,6 @@ import javax.xml.transform.stream.StreamResult
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class StringResourceParserTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private companion object {

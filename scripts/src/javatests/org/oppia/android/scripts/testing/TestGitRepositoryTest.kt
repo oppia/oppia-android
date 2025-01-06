@@ -33,9 +33,6 @@ import java.util.UUID
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class TestGitRepositoryTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
