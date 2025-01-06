@@ -607,6 +607,11 @@ file_content_checks {
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/espresso/TextInputActionTest.kt"
 }
 file_content_checks {
+  file_path_regex: ".+?Test\\.kt"
+  required_content_regex: "@get:Rule\\s+val\\s+oppiaTestRule\\s*=\\s*OppiaTestRule\\(\\)"
+  failure_message: "Missing `OppiaTestRule` declaration."
+}
+file_content_checks {
   file_path_regex: ".+?\\.kt"
   prohibited_content_regex: "computeIfAbsent\\("
   failure_message: "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic Kotlin-specific solution, instead."
