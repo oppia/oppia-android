@@ -34,9 +34,6 @@ import org.robolectric.annotation.LooperMode
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExpressionToComparableOperationConverterTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Parameter lateinit var op1: String
   @Parameter lateinit var op2: String
 

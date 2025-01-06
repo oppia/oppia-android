@@ -81,9 +81,6 @@ class RealExtensionsTest {
     private val NEGATIVE_PI_REAL = createIrrationalReal(-PI)
   }
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private val fractionParser by lazy { FractionParser() }
 
   @Parameter var lhsInt: Int = Int.MIN_VALUE

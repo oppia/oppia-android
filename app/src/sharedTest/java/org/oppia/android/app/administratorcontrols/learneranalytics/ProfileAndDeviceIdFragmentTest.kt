@@ -781,10 +781,7 @@ class ProfileAndDeviceIdFragmentTest {
     }
   }
 
-  // req learner study analytics + log learner study id
   @Test
-  /*@EnableFeatureFlag("android_enable_logging_learner_study_ids")
-  @EnableFeatureFlag("android_enable_learner_study_analytics")*/
   fun testFragment_multipleProfiles_clickShareIdsAndLogs_sendsIntentWithIdsAndLogsText() {
     // Use fake time so that the generated event logs are consistent across runs.
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)

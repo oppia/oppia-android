@@ -20,8 +20,6 @@ import org.robolectric.annotation.LooperMode
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathTokenizerTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Parameter lateinit var variableName: String
   @Parameter lateinit var funcName: String

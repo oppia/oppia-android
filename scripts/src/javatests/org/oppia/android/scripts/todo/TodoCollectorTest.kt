@@ -9,9 +9,6 @@ import org.oppia.android.scripts.todo.model.Todo
 
 /** Tests for [TodoCollector]. */
 class TodoCollectorTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before

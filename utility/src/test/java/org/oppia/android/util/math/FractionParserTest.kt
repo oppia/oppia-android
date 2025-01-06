@@ -19,9 +19,6 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config
 class FractionParserTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   private lateinit var fractionParser: FractionParser
 
   @Before

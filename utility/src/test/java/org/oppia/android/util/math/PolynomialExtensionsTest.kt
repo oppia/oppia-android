@@ -131,9 +131,6 @@ class PolynomialExtensionsTest {
       )
   }
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Parameter lateinit var var1: String
   @Parameter lateinit var var2: String
   @Parameter lateinit var var3: String

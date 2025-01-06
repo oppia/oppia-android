@@ -46,9 +46,6 @@ import org.robolectric.annotation.LooperMode
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class MathExpressionParserTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Parameter
   lateinit var lhsOp: String
   @Parameter

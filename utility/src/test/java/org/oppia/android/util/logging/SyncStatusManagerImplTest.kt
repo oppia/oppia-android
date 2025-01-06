@@ -39,9 +39,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SyncStatusManagerImplTest.TestApplication::class)
 class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Inject override lateinit var impl: SyncStatusManager
   @Inject override lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject override lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory
