@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
+import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.classroom.getDrawableResource
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 
@@ -41,7 +42,22 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
     Column(
       verticalArrangement = Arrangement.Center,
     ) {
-      Image(
+      ThumbnailImage(
+        entityId = topicSummaryViewModel.topicSummary.topicId,
+        entityType = topicSummaryViewModel.entityType,
+        lessonThumbnail = topicSummaryViewModel.topicSummary.topicThumbnail,
+        modifier = Modifier
+          .aspectRatio(4f / 3f)
+          .background(
+            Color(
+              (
+                0xff000000L or
+                  topicSummaryViewModel.topicSummary.topicThumbnail.backgroundColorRgb.toLong()
+                ).toInt()
+            )
+          )
+      )
+      /*Image(
         painter = painterResource(
           id = topicSummaryViewModel.topicSummary.topicThumbnail.getDrawableResource()
         ),
@@ -57,7 +73,7 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
                 ).toInt()
             )
           )
-      )
+      )*/
       TopicCardTextSection(topicSummaryViewModel)
     }
   }

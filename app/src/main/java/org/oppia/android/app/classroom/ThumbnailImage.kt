@@ -14,10 +14,10 @@ fun ThumbnailImage(
   lessonThumbnail: LessonThumbnail?,
   modifier: Modifier = Modifier,
 ) {
+  // TODO(#5422): Migrate to jetpack compose.
   AndroidView(
     modifier = modifier.fillMaxSize(),
     factory = { context ->
-      // Creates view
       LessonThumbnailImageView(context).apply {
         setLessonThumbnail(lessonThumbnail)
         setEntityId(entityId)
