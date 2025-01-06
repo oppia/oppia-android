@@ -23,6 +23,11 @@ fun ThumbnailImage(
         setEntityId(entityId)
         setEntityType(entityType)
       }
+    },
+    update = { view ->
+      view.setLessonThumbnail(lessonThumbnail)
+      view.setEntityId(entityId)
+      view.setEntityType(entityType)
     }
   )
 }

@@ -106,17 +106,7 @@ fun ComingSoonTopicCard(
           entityId = comingSoonTopicsViewModel.topicSummary.topicId,
           entityType = comingSoonTopicsViewModel.entityType,
           lessonThumbnail = comingSoonTopicsViewModel.topicSummary.lessonThumbnail,
-          modifier = Modifier
-            .aspectRatio(4f / 3f)
-            .background(
-              Color(
-                (
-                  0xff000000L or
-                    comingSoonTopicsViewModel
-                      .topicSummary.lessonThumbnail.backgroundColorRgb.toLong()
-                  ).toInt()
-              )
-            )
+          modifier = Modifier.aspectRatio(4f / 3f)
         )
         ComingSoonTopicCardTextSection(comingSoonTopicsViewModel)
       }

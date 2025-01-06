@@ -43,16 +43,7 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
         entityId = topicSummaryViewModel.topicSummary.topicId,
         entityType = topicSummaryViewModel.entityType,
         lessonThumbnail = topicSummaryViewModel.topicSummary.topicThumbnail,
-        modifier = Modifier
-          .aspectRatio(4f / 3f)
-          .background(
-            Color(
-              (
-                0xff000000L or
-                  topicSummaryViewModel.topicSummary.topicThumbnail.backgroundColorRgb.toLong()
-                ).toInt()
-            )
-          )
+        modifier = Modifier.aspectRatio(4f / 3f)
       )
       TopicCardTextSection(topicSummaryViewModel)
     }

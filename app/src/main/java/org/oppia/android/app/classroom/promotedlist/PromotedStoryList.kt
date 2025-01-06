@@ -143,16 +143,7 @@ fun PromotedStoryCard(
         entityId = promotedStoryViewModel.promotedStory.storyId,
         entityType = promotedStoryViewModel.entityType,
         lessonThumbnail = promotedStoryViewModel.promotedStory.lessonThumbnail,
-        modifier = Modifier
-          .aspectRatio(16f / 9f)
-          .background(
-            Color(
-              (
-                0xff000000L or
-                  promotedStoryViewModel.promotedStory.lessonThumbnail.backgroundColorRgb.toLong()
-                ).toInt()
-            )
-          )
+        modifier = Modifier.aspectRatio(16f / 9f)
       )
       Text(
         text = promotedStoryViewModel.nextChapterTitle,
