@@ -12,7 +12,6 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode.FLAVOR_NOTICE_MODE_UNSPECIFIED
@@ -44,7 +43,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -87,9 +85,6 @@ import javax.inject.Singleton
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(application = AppStartupStateControllerTest.TestApplication::class)
 class AppStartupStateControllerTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Inject lateinit var context: Context
   @Inject lateinit var appStartupStateController: AppStartupStateController
   @Inject lateinit var platformParameterController: PlatformParameterController

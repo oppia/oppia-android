@@ -3,11 +3,9 @@ package org.oppia.android.util.math
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Fraction
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode

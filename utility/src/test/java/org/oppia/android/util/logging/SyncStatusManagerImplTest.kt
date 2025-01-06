@@ -10,11 +10,9 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
-import org.junit.Rule
 import org.junit.runner.RunWith
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
