@@ -7,6 +7,19 @@ import androidx.compose.ui.viewinterop.AndroidView
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.model.LessonThumbnail
 
+/**
+ * A composable function that displays a lesson thumbnail image using a custom Android view.
+ *
+ * This function integrates the [LessonThumbnailImageView] within a Compose layout, allowing it
+ * to render a lesson thumbnail image based on the provided parameters. The implementation
+ * currently relies on a traditional Android View approach due to compatibility issues with the
+ * Glide Compose library.
+ *
+ * @param entityId The unique identifier for the entity associated with the thumbnail.
+ * @param entityType The type of the entity (e.g., classroom, topic, story).
+ * @param lessonThumbnail The [LessonThumbnail] containing metadata required to load the image.
+ * @param modifier The [Modifier] to be applied to the layout, defaulting to [Modifier].
+ */
 @Composable
 fun ThumbnailImage(
   entityId: String,
