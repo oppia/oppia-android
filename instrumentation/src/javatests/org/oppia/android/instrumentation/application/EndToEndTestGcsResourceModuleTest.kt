@@ -23,6 +23,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EndToEndTestGcsResourceModuleTest.TestApplication::class)
 class EndToEndTestGcsResourceModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Inject DefaultResourceBucketName]
   lateinit var defaultResourceBucketName: String

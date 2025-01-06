@@ -19,6 +19,9 @@ import java.lang.IllegalStateException
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 class ComputeAabDifferencesTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] var tempFolder = TemporaryFolder()
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }

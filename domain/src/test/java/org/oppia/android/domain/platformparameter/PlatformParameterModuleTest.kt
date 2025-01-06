@@ -11,9 +11,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.platformparameter.PlatformParameterTestConstantsModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_DEFAULT_VALUE
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
@@ -49,6 +51,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterModuleTest.TestApplication::class)
 class PlatformParameterModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton

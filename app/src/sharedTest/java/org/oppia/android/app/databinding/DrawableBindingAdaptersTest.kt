@@ -68,6 +68,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -99,6 +100,8 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class DrawableBindingAdaptersTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()

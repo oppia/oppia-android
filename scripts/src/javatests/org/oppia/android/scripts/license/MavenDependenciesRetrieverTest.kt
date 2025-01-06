@@ -32,6 +32,9 @@ import java.util.concurrent.TimeUnit
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class MavenDependenciesRetrieverTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
 

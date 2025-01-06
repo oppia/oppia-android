@@ -3,9 +3,11 @@ package org.oppia.android.util.logging
 import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.robolectric.annotation.LooperMode
@@ -16,6 +18,8 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CurrentAppScreenNameIntentDecoratorTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Test
   fun testDecorator_decorateWithScreenName_returnsIntentWithCorrectScreenName() {

@@ -10,11 +10,13 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -55,6 +57,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TestSyncStatusManagerTest.TestApplication::class)
 class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject override lateinit var impl: TestSyncStatusManager
   @Inject override lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject override lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory

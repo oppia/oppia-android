@@ -10,11 +10,13 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -48,6 +50,9 @@ private const val TEST_TIMESTAMP_IN_MILLIS_FOUR = 1556094000000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExceptionsControllerTest.TestApplication::class)
 class ExceptionsControllerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var dataProviders: DataProviders
   @Inject lateinit var exceptionsController: ExceptionsController
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil

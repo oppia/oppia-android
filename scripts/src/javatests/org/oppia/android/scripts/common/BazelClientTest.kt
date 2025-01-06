@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit
 // Function name: test names are conventionally named with underscores
 @Suppress("SameParameterValue", "FunctionName")
 class BazelClientTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 

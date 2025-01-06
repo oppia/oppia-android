@@ -13,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -63,6 +64,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -96,6 +98,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TextInputLayoutBindingAdaptersTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var context: Context
 

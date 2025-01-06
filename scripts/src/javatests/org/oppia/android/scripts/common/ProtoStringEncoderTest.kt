@@ -16,6 +16,9 @@ import java.util.zip.ZipException
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class ProtoStringEncoderTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Test

@@ -1,12 +1,14 @@
 package org.oppia.android.util.math
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.PRODUCT
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -32,6 +34,9 @@ import org.robolectric.annotation.LooperMode
 @SelectRunnerPlatform(ParameterizedJunitTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExpressionToComparableOperationConverterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Parameter lateinit var op1: String
   @Parameter lateinit var op2: String
 

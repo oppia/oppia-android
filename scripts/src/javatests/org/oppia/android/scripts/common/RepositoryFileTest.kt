@@ -9,6 +9,9 @@ import java.io.File
 
 /** Tests for [RepositoryFile]. */
 class RepositoryFileTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Before

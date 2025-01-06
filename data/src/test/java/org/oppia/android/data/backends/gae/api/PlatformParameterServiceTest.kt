@@ -13,10 +13,12 @@ import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.network.MockPlatformParameterService
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.appVersionForCorrectResponse
 import org.oppia.android.testing.network.RetrofitTestModule
@@ -43,6 +45,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class PlatformParameterServiceTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService

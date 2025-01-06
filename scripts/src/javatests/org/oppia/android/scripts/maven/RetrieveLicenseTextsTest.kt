@@ -27,6 +27,9 @@ import kotlin.random.Random
 
 /** Tests for [RetrieveLicenseTexts]. */
 class RetrieveLicenseTextsTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val TOO_FEW_ARGS_FAILURE = "Too few arguments passed"
   private val MAVEN_DEPENDENCY_LIST_NOT_UP_TO_DATE_FAILURE =
     "maven_dependencies.textproto is not up-to-date"

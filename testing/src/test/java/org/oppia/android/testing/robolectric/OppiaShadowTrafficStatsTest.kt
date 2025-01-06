@@ -13,8 +13,10 @@ import dagger.Module
 import dagger.Provides
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadow.api.Shadow
@@ -34,6 +36,8 @@ private const val ARBITRARY_UID = 0
   shadows = [OppiaShadowTrafficStats::class]
 )
 class OppiaShadowTrafficStatsTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context

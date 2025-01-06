@@ -86,6 +86,7 @@ import org.oppia.android.domain.question.WrongAnswerMasteryPenalty
 import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.KonfettiViewMatcher.Companion.hasActiveConfetti
@@ -126,6 +127,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class QuestionPlayerActivityLocalTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 

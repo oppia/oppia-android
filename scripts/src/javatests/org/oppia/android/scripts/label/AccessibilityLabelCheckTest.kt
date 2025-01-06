@@ -14,6 +14,9 @@ import java.io.PrintStream
 
 /** Tests for [AccessibilityLabelCheck]. */
 class AccessibilityLabelCheckTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val ACCESSIBILITY_LABEL_CHECK_PASSED_OUTPUT_INDICATOR = "ACCESSIBILITY LABEL CHECK PASSED"

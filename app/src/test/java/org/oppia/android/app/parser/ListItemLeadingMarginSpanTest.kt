@@ -82,6 +82,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -149,6 +150,9 @@ class ListItemLeadingMarginSpanTest {
   @Inject
   @field:DefaultResourceBucketName
   lateinit var resourceBucketName: String
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityScenarioRule: ActivityScenarioRule<ListItemLeadingMarginSpanTestActivity> =

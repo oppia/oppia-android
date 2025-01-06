@@ -12,6 +12,9 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 /** Tests for [XmlSyntaxErrorHandler]. */
 class XmlSyntaxErrorHandlerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val builderFactory = DocumentBuilderFactory.newInstance()
 
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()

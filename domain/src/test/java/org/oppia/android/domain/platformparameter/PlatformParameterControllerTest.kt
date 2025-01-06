@@ -9,10 +9,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -47,6 +49,9 @@ private const val BOOLEAN_PLATFORM_PARAMETER_VALUE = true
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterControllerTest.TestApplication::class)
 class PlatformParameterControllerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

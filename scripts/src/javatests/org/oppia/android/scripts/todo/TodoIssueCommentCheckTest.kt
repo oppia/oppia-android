@@ -12,6 +12,9 @@ import java.io.PrintStream
 
 /** Tests for [TodoIssueCommentCheck]. */
 class TodoIssueCommentCheckTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val permalinkPrefix = "https://github.com/oppia/oppia-android/blob"

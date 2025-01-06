@@ -12,8 +12,10 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
@@ -42,6 +44,9 @@ import kotlin.reflect.KClass
   qualifiers = "port-xxhdpi"
 )
 class TestCoroutineDispatcherTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   @field:BackgroundTestDispatcher
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher

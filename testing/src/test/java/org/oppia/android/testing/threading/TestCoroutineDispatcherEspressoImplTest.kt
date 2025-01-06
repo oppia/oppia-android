@@ -10,11 +10,13 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.timeout
 import org.mockito.Mockito.verify
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
@@ -45,6 +47,9 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   longTaskDelayMillis = 15000L,
   longTaskDelayDeltaCheckMillis = 1000L
 ) {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Before
   override fun setUp() {
     setUpTestApplicationComponent()

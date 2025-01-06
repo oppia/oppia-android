@@ -23,6 +23,9 @@ import java.lang.IllegalStateException
 // Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class TestBazelWorkspaceTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   @Test

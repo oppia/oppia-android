@@ -41,6 +41,9 @@ class StringResourceValidationCheckTest {
     private const val PCM_STRING_TWO_NEWLINES = "\\nPause di audio\\n"
   }
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
 
   private val originalOut: PrintStream = System.out

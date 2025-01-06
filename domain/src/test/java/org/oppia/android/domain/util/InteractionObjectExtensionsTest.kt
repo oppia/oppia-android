@@ -2,6 +2,7 @@ package org.oppia.android.domain.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ClickOnImage
@@ -15,6 +16,7 @@ import org.oppia.android.app.model.ListOfSetsOfHtmlStrings
 import org.oppia.android.app.model.Point2d
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.model.StringList
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -23,6 +25,8 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class InteractionObjectExtensionsTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Test
   fun testToAnswerStr_listOfSetsOfHtmlStrings_multipleLists_correctlyFormatsElements() {

@@ -12,6 +12,9 @@ import java.io.PrintStream
 
 /** Tests for [WikiTableOfContentsCheck]. */
 class WikiTableOfContentsCheckTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val WIKI_TOC_CHECK_PASSED_OUTPUT_INDICATOR = "WIKI TABLE OF CONTENTS CHECK PASSED"

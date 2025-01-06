@@ -66,6 +66,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -97,6 +98,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = RecentlyPlayedSpanTest.TestApplication::class)
 class RecentlyPlayedSpanTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 

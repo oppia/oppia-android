@@ -65,6 +65,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -112,6 +113,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AppLanguageResourceHandlerTest.TestApplication::class)
 class AppLanguageResourceHandlerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @get:Rule

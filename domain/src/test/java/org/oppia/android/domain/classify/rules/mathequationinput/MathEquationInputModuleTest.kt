@@ -10,10 +10,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.MathEquationInputRules
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -31,6 +33,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MathEquationInputModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Inject MathEquationInputRules]
   lateinit var mathEquationInputClassifiers: Map<
     String, @JvmSuppressWildcards RuleClassifier>

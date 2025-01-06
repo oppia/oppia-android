@@ -15,6 +15,9 @@ import org.oppia.android.instrumentation.testing.EndToEndTestHelper.waitForRes
 
 /** Tests for Explorations. */
 class ExplorationPlayerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private lateinit var device: UiDevice
 
   @Before

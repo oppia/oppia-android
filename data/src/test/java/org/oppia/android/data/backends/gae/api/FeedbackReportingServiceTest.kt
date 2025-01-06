@@ -12,11 +12,13 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.model.GaeFeedbackReport
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.network.ApiMockLoader
 import org.oppia.android.testing.network.MockFeedbackReportingService
 import org.oppia.android.testing.network.RetrofitTestModule
@@ -31,6 +33,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class FeedbackReportingServiceTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var mockRetrofit: MockRetrofit

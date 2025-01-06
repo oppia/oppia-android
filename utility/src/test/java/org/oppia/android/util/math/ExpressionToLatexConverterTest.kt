@@ -2,10 +2,12 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.util.math.ExpressionToLatexConverter.Companion.convertToLatex
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
@@ -18,6 +20,9 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExpressionToLatexConverterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Test
   fun testConvert_numericExp_number_returnsConstantLatex() {
     val exp = parseNumericExpressionWithAllErrors("1")

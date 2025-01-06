@@ -54,6 +54,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
@@ -95,6 +96,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioPlayerControllerTest.TestApplication::class)
 class AudioPlayerControllerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
   @Mock lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>

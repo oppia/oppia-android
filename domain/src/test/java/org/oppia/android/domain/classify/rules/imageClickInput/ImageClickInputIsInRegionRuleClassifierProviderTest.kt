@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ClickOnImage
@@ -14,6 +15,7 @@ import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.Point2d
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.assertThrows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -25,6 +27,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ImageClickInputIsInRegionRuleClassifierProviderTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 0)
   private val ITEM_REGION_A = "a"
   private val ITEM_REGION_B = "b"

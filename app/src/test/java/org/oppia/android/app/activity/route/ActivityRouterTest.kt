@@ -69,6 +69,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -102,6 +103,9 @@ private const val internalProfileId = 1
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityRouterTest.TestApplication::class)
 class ActivityRouterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 

@@ -13,6 +13,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.After
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppLanguageSelection
@@ -84,6 +85,7 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -153,6 +155,9 @@ class EventBundleCreatorTest {
     private const val TEST_NETWORK_USAGE = Long.MAX_VALUE
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
   }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
   @Inject lateinit var eventBundleCreator: EventBundleCreator

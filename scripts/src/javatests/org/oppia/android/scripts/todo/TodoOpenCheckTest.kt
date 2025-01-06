@@ -24,6 +24,9 @@ class TodoOpenCheckTest {
     private const val TEST_AUTH_TOKEN = "abcdef1234567890"
   }
 
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val outContent = ByteArrayOutputStream()
   private val originalOut = System.out
   private val TODO_CHECK_PASSED_OUTPUT_INDICATOR = "TODO CHECK PASSED"

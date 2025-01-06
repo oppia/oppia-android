@@ -10,6 +10,7 @@ import org.hamcrest.StringDescription
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasNoErrorText
@@ -18,6 +19,8 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class TextInputActionTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityRule =

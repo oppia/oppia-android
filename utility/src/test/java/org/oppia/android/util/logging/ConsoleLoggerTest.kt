@@ -15,8 +15,10 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
@@ -50,6 +52,9 @@ class ConsoleLoggerTest {
     private val testLogLevel: LogLevel = LogLevel.ERROR
     private const val testMessage = "test error message"
   }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var context: Context
   @Inject lateinit var consoleLogger: ConsoleLogger

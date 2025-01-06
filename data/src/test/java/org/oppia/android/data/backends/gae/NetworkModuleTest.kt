@@ -12,10 +12,12 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
@@ -29,6 +31,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = NetworkModuleTest.TestApplication::class)
 class NetworkModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Inject NetworkApiKey]
   lateinit var networkApiKey: String
 

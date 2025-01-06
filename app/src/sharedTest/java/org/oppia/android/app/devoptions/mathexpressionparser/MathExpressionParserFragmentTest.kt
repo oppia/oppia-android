@@ -73,6 +73,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -118,6 +119,9 @@ class MathExpressionParserFragmentTest {
       TestActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
   }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   // Note that the locale rule must be initialized first since the scenario rule can depend on the
   // locale being initialized.

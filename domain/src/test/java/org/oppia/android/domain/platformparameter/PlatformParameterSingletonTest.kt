@@ -9,9 +9,11 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
@@ -38,6 +40,8 @@ private const val INCORRECT_PLATFORM_PARAMETER_NAME = "incorrect_platform_parame
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterSingletonTest.TestApplication::class)
 class PlatformParameterSingletonTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton

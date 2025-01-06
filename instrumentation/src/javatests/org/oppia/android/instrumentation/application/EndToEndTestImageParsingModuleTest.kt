@@ -24,6 +24,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EndToEndTestImageParsingModuleTest.TestApplication::class)
 class EndToEndTestImageParsingModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Inject DefaultGcsPrefix]
   lateinit var defaultGcsPrefix: String

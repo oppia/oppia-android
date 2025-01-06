@@ -10,6 +10,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AnswerGroup
@@ -24,6 +25,7 @@ import org.oppia.android.app.model.SchemaObject.ObjectTypeCase.SUBTITLED_UNICODE
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.TranslatableHtmlContentId
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -57,6 +59,9 @@ class StateRetrieverTest {
     private val DRAG_DROP_CHOICE_CONTENT_ID_2 = createXlatableContentId(contentId = "ca_choices_2")
     private val DRAG_DROP_CHOICE_CONTENT_ID_3 = createXlatableContentId(contentId = "ca_choices_3")
   }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject lateinit var stateRetriever: StateRetriever
   @Inject lateinit var jsonAssetRetriever: JsonAssetRetriever

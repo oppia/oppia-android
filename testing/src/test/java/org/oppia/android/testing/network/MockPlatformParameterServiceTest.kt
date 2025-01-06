@@ -10,11 +10,13 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
@@ -35,6 +37,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class MockPlatformParameterServiceTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Inject MockPlatformParameterService]
   lateinit var mockPlatformParameterService: PlatformParameterService

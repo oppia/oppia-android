@@ -15,6 +15,9 @@ import java.io.PrintStream
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class RegexPatternValidationCheckTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val activitiesPlacementErrorMessage =

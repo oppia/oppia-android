@@ -23,6 +23,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EndToEndTestNetworkConfigModuleTest.TestApplication::class)
 class EndToEndTestNetworkConfigModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Inject BaseUrl]
   lateinit var baseUrl: String
