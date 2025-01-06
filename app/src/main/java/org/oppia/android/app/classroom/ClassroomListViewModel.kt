@@ -40,6 +40,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 
@@ -57,6 +58,7 @@ class ClassroomListViewModel(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val classroomController: ClassroomController,
+  @ClassroomHtmlParserEntityType private val classroomEntityType: String,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -270,6 +272,7 @@ class ClassroomListViewModel(
         ClassroomSummaryViewModel(
           fragment as ClassroomSummaryClickListener,
           ephemeralClassroomSummary,
+          classroomEntityType,
           translationController
         )
       }

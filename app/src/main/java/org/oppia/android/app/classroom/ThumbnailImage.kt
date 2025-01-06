@@ -14,7 +14,7 @@ fun ThumbnailImage(
   lessonThumbnail: LessonThumbnail?,
   modifier: Modifier = Modifier,
 ) {
-  // TODO(#5422): Migrate to jetpack compose.
+  // TODO(#5422): Migrate to Jetpack Compose once the Glide Compose library becomes compatible.
   AndroidView(
     modifier = modifier.fillMaxSize(),
     factory = { context ->

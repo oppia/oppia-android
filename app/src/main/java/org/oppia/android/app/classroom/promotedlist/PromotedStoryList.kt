@@ -2,7 +2,6 @@ package org.oppia.android.app.classroom.promotedlist
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
-import org.oppia.android.app.classroom.getDrawableResource
+import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
 import org.oppia.android.util.locale.OppiaLocale
@@ -141,11 +139,10 @@ fun PromotedStoryCard(
     Column(
       modifier = cardColumnModifier
     ) {
-      Image(
-        painter = painterResource(
-          id = promotedStoryViewModel.promotedStory.lessonThumbnail.getDrawableResource()
-        ),
-        contentDescription = promotedStoryViewModel.storyTitle,
+      ThumbnailImage(
+        entityId = promotedStoryViewModel.promotedStory.storyId,
+        entityType = promotedStoryViewModel.entityType,
+        lessonThumbnail = promotedStoryViewModel.promotedStory.lessonThumbnail,
         modifier = Modifier
           .aspectRatio(16f / 9f)
           .background(
