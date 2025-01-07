@@ -70,10 +70,6 @@ class OppiaTestRule : TestRule {
           description?.annotations, ResetFeatureFlagToDefault::class.java
         )
 
-        val resetParameterToDefault = extractParametersAndFeatureFlags(
-          description?.annotations, ResetParameterToDefault::class.java
-        )
-
         try {
           applyOverrides(
             enabledFeatureFlags,
@@ -81,8 +77,7 @@ class OppiaTestRule : TestRule {
             overriddenBoolParameters,
             overriddenIntParameters,
             overriddenStringParameters,
-            resetFeatureFlagToDefault,
-            resetParameterToDefault
+            resetFeatureFlagToDefault
           )
 
           when {
@@ -132,8 +127,7 @@ class OppiaTestRule : TestRule {
     overriddenBoolParameters: List<OverrideBoolParameter>?,
     overriddenIntParameters: List<OverrideIntParameter>?,
     overriddenStringParameters: List<OverrideStringParameter>?,
-    resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?,
-    resetParameterToDefault: List<ResetParameterToDefault>?
+    resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?
   ) {
     enabledFeatureFlags?.forEach { flag ->
       PlatformParameterModule.overrideFeatureFlags(flag.name, true)
@@ -155,10 +149,6 @@ class OppiaTestRule : TestRule {
     }
     overriddenStringParameters?.forEach { _ ->
 //      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
-    }
-
-    resetParameterToDefault?.forEach { _ ->
-//      PlatformParameterModule.resetParameterToDefault(resetParameter.name)
     }
   }
 

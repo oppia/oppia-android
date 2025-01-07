@@ -2,19 +2,45 @@ package org.oppia.android.util.platformparameter
 
 import javax.inject.Qualifier
 
+/** Represents all the feature flag names. */
 enum class FeatureFlag {
+  /** Corresponds to downloads support. */
   DOWNLOADS_SUPPORT,
+
+  /** Corresponds to extra topics tab UI. */
   EXTRA_TOPIC_TABS_UI,
+
+  /** Corresponds to learner study related analytics logging. */
   LEARNER_STUDY_ANALYTICS,
+
+  /** Corresponds to allow learners to quickly switch between content languages. */
   FAST_LANGUAGE_SWITCHING_IN_LESSON,
+
+  /** Corresponds to generating and logging learner study IDs. */
   LOGGING_LEARNER_STUDY_IDS,
+
+  /** Corresponds to edit accounts options. */
   EDIT_ACCOUNTS_OPTIONS_UI,
+
+  /** Corresponds to record performance metrics. */
   ENABLE_PERFORMANCE_METRICS_COLLECTION,
+
+  /** Corresponds to spotlight UI. */
   SPOTLIGHT_UI,
+
+  /** Corresponds to retaining input interaction state across configuration changes. */
   INTERACTION_CONFIG_CHANGE_STATE_RETENTION,
+
+  /** Corresponds to app and OS deprecation. */
   APP_AND_OS_DEPRECATION,
+
+  /** Corresponds to NPS survey. */
   ENABLE_NPS_SURVEY,
+
+  /** Corresponds to new onboarding flow. */
   ENABLE_ONBOARDING_FLOW_V2,
+
+  /** Corresponds to new multiple classrooms. */
   ENABLE_MULTIPLE_CLASSROOMS
 }
 

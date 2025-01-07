@@ -369,21 +369,38 @@ class PlatformParameterModule {
     private val overriddenFeatureFlags = mutableMapOf<FeatureFlag, Any>()
     private val overriddenPlatformParameters = mutableMapOf<PlatformParameter, Any>()
 
+    /**
+     * Overrides the value of the specified feature flag with a new value for testing.
+     *
+     * @param name The feature flag to override.
+     * @param value The new value to assign to the feature flag for testing.
+     */
     fun overrideFeatureFlags(name: FeatureFlag, value: Any) {
-      println("Name: $name, value: $value")
       overriddenFeatureFlags[name] = value
     }
 
+    /**
+     * Overrides the value of the specified platform parameter with a new value for testing.
+     *
+     * @param name The platform parameter to override.
+     * @param value The new value to assign to the platform parameter for testing.
+     */
     fun overridePlatformParameters(name: PlatformParameter, value: Any) {
-      println("Name: $name, value: $value")
       overriddenPlatformParameters[name] = value
     }
 
+    /**
+     * Resets the specified feature flag to its default value by removing it from the overridden map.
+     *
+     * @param name The feature flag to reset.
+     */
     fun resetFeatureFlagToDefault(name: FeatureFlag) {
-      println("Resetting $name")
       overriddenFeatureFlags.remove(name)
     }
 
+    /**
+     * Clears all overridden feature flags and platform parameters.
+     */
     fun clearAllParameterOverrides() {
       overriddenFeatureFlags.clear()
       overriddenPlatformParameters.clear()

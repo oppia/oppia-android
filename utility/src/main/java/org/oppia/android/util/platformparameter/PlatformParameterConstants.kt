@@ -2,18 +2,42 @@ package org.oppia.android.util.platformparameter
 
 import javax.inject.Qualifier
 
+/** Represents all the platform parameter names. */
 enum class PlatformParameter {
+  /** Corresponds to automatically updating topics. */
   AUTOMATIC_UPDATE_TOPIC_SETTING,
+
+  /** Corresponds to visibility of splash screen welcome message. */
   SPLASH_SCREEN_WELCOME_MSG,
+
+  /** Corresponds to time period in hours. */
   SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS,
+
+  /** Corresponds to cache LaTeX rendering using Glide. */
   CACHE_LATEX_RENDERING,
+
+  /** Corresponds to uploading time interval of previously recorded performance metrics in minutes. */
   PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES,
+
+  /** Corresponds to recording time interval of high frequent performance metrics collection in minutes. */
   PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES,
+
+  /** Corresponds to recording time interval of low frequent performance metrics collection in minutes. */
   PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES,
+
+  /** Corresponds to version code of latest app available soft update. */
   OPTIONAL_APP_UPDATE_VERSION_CODE,
+
+  /** Corresponds to version code of latest app available forced update. */
   FORCED_APP_UPDATE_VERSION_CODE,
+
+  /** Corresponds to integer indicating lowest supported Android API level. */
   LOWEST_SUPPORTED_API_LEVEL,
+
+  /** Corresponds to time interval of showing subsequent NPS surveys in days. */
   NPS_SURVEY_GRACE_PERIOD_IN_DAYS,
+
+  /** Corresponds to minimum learning time in a topic in minutes. */
   NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
 }
 
