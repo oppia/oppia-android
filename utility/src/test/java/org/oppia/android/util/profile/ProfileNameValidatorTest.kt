@@ -6,10 +6,8 @@ import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -27,9 +25,6 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ProfileNameValidatorTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
   @Inject
   lateinit var profileNameValidator: ProfileNameValidator
 

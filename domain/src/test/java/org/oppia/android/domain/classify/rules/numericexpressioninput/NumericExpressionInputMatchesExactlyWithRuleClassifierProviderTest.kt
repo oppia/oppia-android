@@ -9,13 +9,11 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.domain.classify.ClassificationContext
 import org.oppia.android.domain.classify.RuleClassifier
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -46,8 +44,6 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.DaggerNume
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NumericExpressionInputMatchesExactlyWithRuleClassifierProviderTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   internal lateinit var provider: NumericExpressionInputMatchesExactlyWithRuleClassifierProvider
