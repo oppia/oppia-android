@@ -110,11 +110,16 @@ class PlatformParameterModule {
   fun provideSyncUpWorkerTimePeriod(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
-    return overriddenPlatformParameters[PlatformParameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS]?.let {
+    return overriddenPlatformParameters[
+      PlatformParameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    ]?.let {
       PlatformParameterValue.createDefaultParameter(it as Int)
-    } ?: platformParameterSingleton.getIntegerPlatformParameter(SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+    } ?: platformParameterSingleton.getIntegerPlatformParameter(
+      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    )
       ?: PlatformParameterValue.createDefaultParameter(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE)
+        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+      )
   }
 
   @Provides
@@ -184,9 +189,11 @@ class PlatformParameterModule {
     return overriddenFeatureFlags[FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION)
+      ENABLE_PERFORMANCE_METRICS_COLLECTION
+    )
       ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE)
+        ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+      )
   }
 
   @Provides
@@ -199,9 +206,11 @@ class PlatformParameterModule {
     ]?.let {
       PlatformParameterValue.createDefaultParameter(it as Int)
     } ?: platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES)
+      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+    )
       ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL)
+        PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      )
   }
 
   @Provides
@@ -214,9 +223,11 @@ class PlatformParameterModule {
     ]?.let {
       PlatformParameterValue.createDefaultParameter(it as Int)
     } ?: platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES)
+      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    )
       ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL)
+        PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      )
   }
 
   @Provides
@@ -225,13 +236,15 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Int> {
     return overriddenPlatformParameters[
-        PlatformParameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+      PlatformParameter.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
     ]?.let {
       PlatformParameterValue.createDefaultParameter(it as Int)
     } ?: platformParameterSingleton.getIntegerPlatformParameter(
-      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES)
+      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+    )
       ?: PlatformParameterValue.createDefaultParameter(
-      PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL)
+        PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
+      )
   }
 
   @Provides
@@ -264,9 +277,11 @@ class PlatformParameterModule {
     return overriddenFeatureFlags[FeatureFlag.INTERACTION_CONFIG_CHANGE_STATE_RETENTION]?.let {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(
-      INTERACTION_CONFIG_CHANGE_STATE_RETENTION)
-    ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE)
+      INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+    )
+      ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
+      )
   }
 
   @Provides
@@ -278,7 +293,7 @@ class PlatformParameterModule {
       PlatformParameterValue.createDefaultParameter(it as Boolean)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
-    }
+  }
 
   @Provides
   @OptionalAppUpdateVersionCode
@@ -323,7 +338,9 @@ class PlatformParameterModule {
     return overriddenPlatformParameters[PlatformParameter.NPS_SURVEY_GRACE_PERIOD_IN_DAYS]?.let {
       PlatformParameterValue.createDefaultParameter(it as Int)
     } ?: platformParameterSingleton.getIntegerPlatformParameter(NPS_SURVEY_GRACE_PERIOD_IN_DAYS)
-      ?: PlatformParameterValue.createDefaultParameter(NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE)
+      ?: PlatformParameterValue.createDefaultParameter(
+        NPS_SURVEY_GRACE_PERIOD_IN_DAYS_DEFAULT_VALUE
+      )
   }
 
   @Provides
@@ -336,9 +353,11 @@ class PlatformParameterModule {
     ]?.let {
       PlatformParameterValue.createDefaultParameter(it as Int)
     } ?: platformParameterSingleton.getIntegerPlatformParameter(
-      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES)
+      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+    )
       ?: PlatformParameterValue.createDefaultParameter(
-      NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE)
+        NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES_DEFAULT_VALUE
+      )
   }
 
   @Provides

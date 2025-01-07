@@ -142,15 +142,21 @@ class OppiaTestRule : TestRule {
     }
 
     overriddenBoolParameters?.forEach { overriddenValue ->
-      PlatformParameterModule.overridePlatformParameters(overriddenValue.name, overriddenValue.value)
+      PlatformParameterModule.overridePlatformParameters(
+        overriddenValue.name, overriddenValue.value
+      )
     }
 
     overriddenIntParameters?.forEach { overriddenValue ->
-      PlatformParameterModule.overridePlatformParameters(overriddenValue.name, overriddenValue.value)
+      PlatformParameterModule.overridePlatformParameters(
+        overriddenValue.name, overriddenValue.value
+      )
     }
 
     overriddenStringParameters?.forEach { overriddenValue ->
-      PlatformParameterModule.overridePlatformParameters(overriddenValue.name, overriddenValue.value)
+      PlatformParameterModule.overridePlatformParameters(
+        overriddenValue.name, overriddenValue.value
+      )
     }
   }
 
