@@ -10,8 +10,10 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
 import org.oppia.android.util.parser.image.ThumbnailDownloadUrlTemplate
