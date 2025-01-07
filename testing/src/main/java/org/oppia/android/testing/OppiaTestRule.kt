@@ -163,7 +163,7 @@ class OppiaTestRule : TestRule {
   }
 
   private fun getCurrentPlatform(): TestPlatform {
-    /** To handle cases where Build.FINGERPRINT is unavailable */
+    /** To handle cases where Build.FINGERPRINT is unavailable. */
     val fingerprint = try {
       Build.FINGERPRINT
     } catch (e: Exception) {

@@ -8,11 +8,15 @@ import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.devoptions.RouteToMathExpressionParserTestListener
+import org.oppia.android.testing.OppiaTestRule
 
 /** Tests for [DeveloperOptionsTestParsersViewModel]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class DeveloperOptionsTestParsersViewModelTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Rule
   @JvmField
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
