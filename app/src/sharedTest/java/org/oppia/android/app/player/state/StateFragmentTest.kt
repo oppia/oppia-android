@@ -193,6 +193,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
 import org.oppia.android.util.platformparameter.FeatureFlag
+import org.oppia.android.util.platformparameter.PlatformParameter
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -3682,7 +3683,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @OverrideBoolParameter("cache_latex_rendering", true)
+  @OverrideBoolParameter(PlatformParameter.CACHE_LATEX_RENDERING, true)
   @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_validAns_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->

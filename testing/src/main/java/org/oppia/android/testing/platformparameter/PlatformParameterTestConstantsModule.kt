@@ -7,7 +7,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Singleton
 
-/* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
+/** Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
 class PlatformParameterTestConstantsModule {
   @Provides

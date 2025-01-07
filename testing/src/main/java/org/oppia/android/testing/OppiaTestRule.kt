@@ -141,19 +141,20 @@ class OppiaTestRule : TestRule {
       PlatformParameterModule.resetFeatureFlagToDefault(resetFeatureFlag.name)
     }
 
-    overriddenBoolParameters?.forEach { _ ->
-//      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+    overriddenBoolParameters?.forEach { overriddenValue ->
+      PlatformParameterModule.overridePlatformParameters(overriddenValue.name, overriddenValue.value)
     }
-    overriddenIntParameters?.forEach { _ ->
-//      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+
+    overriddenIntParameters?.forEach { overriddenValue ->
+      PlatformParameterModule.overridePlatformParameters(overriddenValue.name, overriddenValue.value)
     }
-    overriddenStringParameters?.forEach { _ ->
-//      PlatformParameterModule.overrideParameter(overriddenValue.name, overriddenValue.value)
+
+    overriddenStringParameters?.forEach { overriddenValue ->
+      PlatformParameterModule.overridePlatformParameters(overriddenValue.name, overriddenValue.value)
     }
   }
 
   private fun getCurrentPlatform(): TestPlatform {
-    /** To handle cases where Build.FINGERPRINT is unavailable. */
     val fingerprint = try {
       Build.FINGERPRINT
     } catch (e: Exception) {

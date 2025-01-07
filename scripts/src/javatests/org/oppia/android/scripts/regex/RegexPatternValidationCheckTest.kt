@@ -1650,8 +1650,6 @@ class RegexPatternValidationCheckTest {
       )
   }
 
-  /*Hot fix - Rules declaration for Parametrized tests yet to be figured out
-  * Fixing this to get past Unit Tests*/
   @Test
   fun testFileContent_kotlinTestUsesParameterizedTestRunner_fileContentIsNotCorrect() {
     val oppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()\n"
