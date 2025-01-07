@@ -1,10 +1,12 @@
 package org.oppia.android.util.math
 
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.Real
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -80,6 +82,9 @@ class RealExtensionsTest {
   }
 
   private val fractionParser by lazy { FractionParser() }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Parameter var lhsInt: Int = Int.MIN_VALUE
   @Parameter lateinit var lhsFrac: String

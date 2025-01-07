@@ -51,6 +51,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
+        "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

@@ -163,7 +163,14 @@ class OppiaTestRule : TestRule {
   }
 
   private fun getCurrentPlatform(): TestPlatform {
-    return if (Build.FINGERPRINT.contains("robolectric", ignoreCase = true)) {
+    /** To handle cases where Build.FINGERPRINT is unavailable */
+    val fingerprint = try {
+      Build.FINGERPRINT
+    } catch (e: Exception) {
+      null
+    } ?: return TestPlatform.ROBOLECTRIC
+
+    return if (fingerprint.contains("robolectric", ignoreCase = true)) {
       TestPlatform.ROBOLECTRIC
     } else {
       TestPlatform.ESPRESSO

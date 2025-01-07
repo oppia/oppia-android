@@ -610,6 +610,7 @@ file_content_checks {
   file_path_regex: ".+?Test\\.kt"
   required_content_regex: "@get:Rule\\s+val\\s+oppiaTestRule\\s*=\\s*OppiaTestRule\\(\\)"
   failure_message: "Missing `OppiaTestRule` declaration."
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/SyncStatusManagerImplTest.kt"
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt"
