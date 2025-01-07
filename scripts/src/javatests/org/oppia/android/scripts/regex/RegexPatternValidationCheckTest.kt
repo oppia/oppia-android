@@ -142,6 +142,7 @@ class RegexPatternValidationCheckTest {
     "presence of a screen name for this activity. To do this, add a test named " +
     "testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen " +
     "name has been added to the activity's intent."
+  private val missingOppiaTestRuleErrorMessage = "Missing `OppiaTestRule` declaration."
   private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
   private val parameterizedTestRunnerRequiresException =
     "To use OppiaParameterizedTestRunner, please add an exemption to" +
@@ -2400,6 +2401,58 @@ class RegexPatternValidationCheckTest {
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_oppiaTestRuleDeclared_fileContentIsCorrect() {
+    val requiredOppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/ExampleTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredOppiaTestRule)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_oppiaTestRuleNotDeclared_fileContentIsNotCorrect() {
+    val exampleTestRule = "@get:Rule\n" + "val exampleTestRule = ExampleTestRule()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/ExampleTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(exampleTestRule)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $missingOppiaTestRuleErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_noTestRuleIncluded_fileContentIsNotCorrect() {
+    val testFileContent = "testActivity_createIntent_verifyScreenNameInIntent()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/HomeActivityTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(testFileContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $missingOppiaTestRuleErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   @Test
