@@ -12,8 +12,8 @@ oppia_android_test(
     test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
-        "//testing",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
@@ -30,8 +30,8 @@ oppia_android_test(
     test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
-        "//testing",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",
@@ -48,8 +48,8 @@ oppia_android_test(
     test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
-        "//testing",
         "//instrumentation/src/java/org/oppia/android/instrumentation/application:oppia_test_application",
+        "//testing",
         "//third_party:androidx_test_ext_junit",
         "//third_party:androidx_test_runner",
         "//third_party:com_google_truth_truth",

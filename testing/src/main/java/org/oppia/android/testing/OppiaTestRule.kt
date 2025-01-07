@@ -228,6 +228,14 @@ class OppiaTestRule : TestRule {
       return getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
 
+    /**
+     * Extracts all feature flag annotations of the specified type from a collection of annotations.
+     *
+     * @param annotations a collection of annotations to be checked for feature flag annotations.
+     * @param featureFlagClass the class of the feature flag annotation type to extract.
+     * @return a list of feature flag annotations of the specified type,
+     *     including those found in container annotations.
+     */
     inline fun <reified T : Annotation> extractParametersAndFeatureFlags(
       annotations: Collection<Annotation>?,
       featureFlagClass: Class<T>

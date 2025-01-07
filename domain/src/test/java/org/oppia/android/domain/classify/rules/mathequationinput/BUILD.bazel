@@ -13,9 +13,9 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain",
-        "//testing",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput:math_equation_input_providers",
         "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -40,9 +40,9 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain",
-        "//testing",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput:math_equation_input_providers",
         "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -67,9 +67,9 @@ oppia_android_test(
     deps = [
         "//:dagger",
         "//domain",
-        "//testing",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput:math_equation_input_providers",
         "//model/src/main/proto:interaction_object_java_proto_lite",
+        "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
