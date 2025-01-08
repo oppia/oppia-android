@@ -1,9 +1,13 @@
 package org.oppia.android.util.parser.html
 
+import android.graphics.Typeface
 import android.text.Editable
+import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.text.style.AlignmentSpan
 import android.text.style.ImageSpan
+import android.text.style.StyleSpan
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
 
@@ -11,6 +15,7 @@ import org.xml.sax.Attributes
 const val CUSTOM_IMG_TAG = "oppia-noninteractive-image"
 private const val CUSTOM_IMG_FILE_PATH_ATTRIBUTE = "filepath-with-value"
 private const val CUSTOM_IMG_ALT_TEXT_ATTRIBUTE = "alt-with-value"
+private const val CUSTOM_IMG_CAPTION_ATTRIBUTE = "caption-with-value"
 
 /**
  * A custom tag handler for supporting custom Oppia images parsed with [CustomHtmlContentHandler].
@@ -27,6 +32,8 @@ class ImageTagHandler(
   ) {
     val source = attributes.getJsonStringValue(CUSTOM_IMG_FILE_PATH_ATTRIBUTE)
     val contentDescription = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
+    val caption = attributes.getJsonStringValue(CUSTOM_IMG_CAPTION_ATTRIBUTE)
+
     if (source != null) {
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
@@ -57,6 +64,41 @@ class ImageTagHandler(
         Spannable.SPAN_INCLUSIVE_EXCLUSIVE
       )
       output.replace(openIndex, output.length, spannableBuilder)
-    } else consoleLogger.w("ImageTagHandler", "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE")
+    } else consoleLogger.w(
+      "ImageTagHandler",
+      "Failed to parse $CUSTOM_IMG_ALT_TEXT_ATTRIBUTE"
+    )
+    if (!caption.isNullOrBlank()) {
+      output.append("\n")
+      val captionStart = output.length
+      output.append(caption)
+      val captionEnd = output.length
+      output.setSpan(
+        StyleSpan(Typeface.ITALIC),
+        captionStart,
+        captionEnd,
+        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+      )
+      output.setSpan(
+        AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+        captionStart,
+        captionEnd,
+        Spannable.SPAN_PARAGRAPH
+      )
+
+      // Insert a newline after the caption and reset alignment.
+      output.append("\n")
+      val resetStart = output.length
+      output.append(" ")
+      output.setSpan(
+        AlignmentSpan.Standard(Layout.Alignment.ALIGN_NORMAL),
+        resetStart,
+        output.length,
+        Spannable.SPAN_PARAGRAPH
+      )
+    } else consoleLogger.w(
+      "ImageTagHandler",
+      "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE"
+    )
   }
 }
