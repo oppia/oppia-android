@@ -35,6 +35,7 @@ import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
+import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
@@ -243,6 +244,31 @@ class PlatformParameterModuleTest {
     )
     assertThat(lowestSupportedApiLevelProvider.get().value)
       .isEqualTo(overridePlatformParameterValue)
+  }
+
+  @Test
+  fun testModule_injectEnableAppAndOsDeprecationClearOverride_resetsFeatureFlagValue() {
+    setUpTestApplicationComponentWithFeatureFlagOverrides(
+      platformParameterMapWithValues,
+      FeatureFlag.APP_AND_OS_DEPRECATION,
+      TEST_BOOLEAN_PARAM_SERVER_VALUE
+    )
+    PlatformParameterModule.clearAllParameterOverrides()
+    assertThat(enableAppAndOsDeprecationProvider.get().value)
+      .isEqualTo(TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
+  }
+
+  @Test
+  fun testModule_injectLowestSupportedApiLevelClearOverride_resetsPlatformParameterValue() {
+    val overridePlatformParameterValue = 18
+    setUpTestApplicationComponentWithPlatformParameterIntegerOverrides(
+      platformParameterMapWithValues,
+      org.oppia.android.util.platformparameter.PlatformParameter.LOWEST_SUPPORTED_API_LEVEL,
+      overridePlatformParameterValue
+    )
+    PlatformParameterModule.clearAllParameterOverrides()
+    assertThat(lowestSupportedApiLevelProvider.get().value)
+      .isEqualTo(TEST_LOWEST_SUPPORTED_API_LEVEL)
   }
 
   private fun registerTestApplication() {
