@@ -31,11 +31,11 @@ fun main(vararg args: String) {
     ?.flatMap { dir -> dir.walkTopDown().filter { it.extension == "xml" } }
     ?: emptyList()
 
-  val styleChecker = TextViewStyleChecker()
+  val styleChecker = TextViewStyleCheck()
   styleChecker.checkFiles(xmlFiles)
 }
 
-class TextViewStyleChecker {
+private class TextViewStyleCheck {
   private val errors = mutableListOf<String>()
   private val legacyDirectionalityWarnings = mutableListOf<String>()
   private val builderFactory = DocumentBuilderFactory.newInstance()
