@@ -58,59 +58,23 @@ private class TextViewStyleCheck {
   private fun validateTextViewElement(element: Element, filePath: String) {
     val styleAttribute = element.attributes.getNamedItem("style")?.nodeValue
     val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue ?: "No ID"
-    if (!isExemptFromStyleRequirement(element) && !isValidStyle(styleAttribute)) {
+    if (!isExemptFromStyleRequirement(element) && !(styleAttribute?.startsWith("@style/")==true)) {
       errors.add("$filePath: TextView ($idAttribute) requires central style.")
     }
 
     checkForLegacyDirectionality(element, filePath)
   }
 
-  private fun isValidStyle(styleAttribute: String?) =
-    styleAttribute?.startsWith("@style/") == true
-
   private fun isExemptFromStyleRequirement(element: Element): Boolean {
     if (element.getAttribute("android:gravity")?.contains("center") == true) return true
     if (hasDynamicVisibility(element)) return true
-    if (hasSufficientStyling(element)) return true
-    if (isEmptyTextView(element)) return true
-    if (element.getAttribute("android:visibility") == "gone") return true
-    if (hasTextAlignmentAttributes(element)) return true
+    if (element.hasAttribute("android:textSize")) return true
 
     return !hasDirectionalAttributes(element)
   }
 
-  private fun hasSufficientStyling(element: Element): Boolean {
-    val hasTextSize = element.hasAttribute("android:textSize")
-    val hasTextColor = element.hasAttribute("android:textColor")
-    val hasTextStyle = element.hasAttribute("android:textStyle")
-    val hasFontFamily = element.hasAttribute("android:fontFamily")
-    val hasDynamicAttributes = hasDynamicAttributes(element)
-
-    return (hasTextSize && hasTextColor) ||
-      (hasTextStyle && (hasTextSize || hasTextColor)) ||
-      (hasFontFamily && (hasTextSize || hasTextColor)) ||
-      (hasTextColor && hasDynamicAttributes)
-  }
-
-  private fun isEmptyTextView(element: Element) =
-    element.getAttribute("android:text").isEmpty() &&
-      element.getAttribute("android:hint").isEmpty() &&
-      !element.hasChildNodes()
-
   private fun hasDynamicVisibility(element: Element) =
     element.getAttribute("android:visibility").let { it.contains("{") && it.contains("}") }
-
-  private fun hasDynamicAttributes(element: Element): Boolean {
-    for (i in 0 until element.attributes.length) {
-      val value = element.attributes.item(i).nodeValue
-      if (value.contains("{") && value.contains("}")) return true
-    }
-    return false
-  }
-
-  private fun hasTextAlignmentAttributes(element: Element) =
-    element.getAttribute("android:textAlignment").isNotEmpty() ||
-      element.attributes.getNamedItem("android:textAlignment")?.nodeValue?.contains("{") == true
 
   private fun hasDirectionalAttributes(element: Element): Boolean {
     val directionAttributes = listOf(
