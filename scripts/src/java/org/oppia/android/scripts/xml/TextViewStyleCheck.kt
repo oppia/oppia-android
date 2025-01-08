@@ -31,14 +31,27 @@ fun main(vararg args: String) {
     ?.flatMap { dir -> dir.walkTopDown().filter { it.extension == "xml" } }
     ?: emptyList()
 
-  val styleChecker = TextViewStyleCheck()
+  val styleChecker = TextViewStyleCheck(repoRoot)
   styleChecker.checkFiles(xmlFiles)
 }
 
-private class TextViewStyleCheck {
+private class TextViewStyleCheck(private val repoRoot: File) {
   private val errors = mutableListOf<String>()
   private val legacyDirectionalityWarnings = mutableListOf<String>()
   private val builderFactory = DocumentBuilderFactory.newInstance()
+  private val styles: Map<String, Element> by lazy { loadStyles() }
+
+  private fun loadStyles(): Map<String, Element> {
+    val stylesFile = File(repoRoot, "app/src/main/res/values/styles.xml")
+    require(stylesFile.exists()) { "Styles file does not exist: ${stylesFile.path}" }
+
+    val document = builderFactory.newDocumentBuilder().parse(stylesFile)
+    val styleNodes = document.getElementsByTagName("style")
+    return (0 until styleNodes.length).associate { i ->
+      val element = styleNodes.item(i) as Element
+      element.getAttribute("name") to element
+    }
+  }
 
   fun checkFiles(xmlFiles: List<File>) {
     xmlFiles.forEach { file -> processXmlFile(file) }
@@ -58,11 +71,43 @@ private class TextViewStyleCheck {
   private fun validateTextViewElement(element: Element, filePath: String) {
     val styleAttribute = element.attributes.getNamedItem("style")?.nodeValue
     val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue ?: "No ID"
-    if (!isExemptFromStyleRequirement(element) && !(styleAttribute?.startsWith("@style/")==true)) {
-      errors.add("$filePath: TextView ($idAttribute) requires central style.")
+
+    if (!isExemptFromStyleRequirement(element)) {
+      if (styleAttribute?.startsWith("@style/") == true) {
+        validateStyle(styleAttribute, idAttribute, filePath)
+      } else {
+        errors.add("$filePath: TextView ($idAttribute) requires central style.")
+      }
     }
 
     checkForLegacyDirectionality(element, filePath)
+  }
+
+  private fun validateStyle(styleAttribute: String, idAttribute: String, filePath: String) {
+    val styleName = styleAttribute.removePrefix("@style/")
+    val styleElement = styles[styleName] ?: run {
+      errors.add("$filePath: TextView ($idAttribute) references non-existent style: $styleName")
+      return
+    }
+
+    val items = styleElement.getElementsByTagName("item")
+    val hasRtlProperties = (0 until items.length).any { i ->
+      val item = items.item(i) as Element
+      when (item.getAttribute("name")) {
+        "android:textAlignment",
+        "android:gravity",
+        "android:layoutDirection",
+        "android:textDirection",
+        "android:textSize" -> true
+        else -> false
+      }
+    }
+
+    if (!hasRtlProperties) {
+      errors.add(
+        "$filePath: TextView ($idAttribute) style '$styleName' lacks RTL/LTR properties"
+      )
+    }
   }
 
   private fun isExemptFromStyleRequirement(element: Element): Boolean {
