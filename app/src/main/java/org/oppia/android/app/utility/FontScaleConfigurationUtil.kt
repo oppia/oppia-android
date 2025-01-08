@@ -22,7 +22,9 @@ class FontScaleConfigurationUtil @Inject constructor() {
     // TODO (#3616): Migrate to the proper SDK 30+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     windowManager!!.defaultDisplay.getMetrics(metrics)
-    val scaledDensity = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, configuration.fontScale, metrics)
+    val scaledDensity = TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_SP, configuration.fontScale, metrics
+    )
     metrics.density = scaledDensity / configuration.fontScale
     context.createConfigurationContext(configuration)
     context.resources.displayMetrics.setTo(metrics)
@@ -30,7 +32,7 @@ class FontScaleConfigurationUtil @Inject constructor() {
 
   private fun getReadingTextSizeConfigurationUtil(readingTextSize: ReadingTextSize): Float {
     return when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE -> .8f
+      ReadingTextSize.SMALL_TEXT_SIZE -> 0.8f
       ReadingTextSize.MEDIUM_TEXT_SIZE -> 1.0f
       ReadingTextSize.LARGE_TEXT_SIZE -> 1.2f
       ReadingTextSize.EXTRA_LARGE_TEXT_SIZE -> 1.4f
