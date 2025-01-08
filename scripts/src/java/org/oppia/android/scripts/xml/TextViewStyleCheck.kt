@@ -52,7 +52,7 @@ private class TextViewStyleCheck(private val repoRoot: File) {
       element.getAttribute("name") to element
     }
   }
-
+  /** Checks XML files for TextView elements to ensure compliance with style requirements. */
   fun checkFiles(xmlFiles: List<File>) {
     xmlFiles.forEach { file -> processXmlFile(file) }
     printResults()
@@ -82,7 +82,7 @@ private class TextViewStyleCheck(private val repoRoot: File) {
 
     checkForLegacyDirectionality(element, filePath)
   }
-
+  // Validate if the referenced style exists and contains necessary RTL/LTR properties.
   private fun validateStyle(styleAttribute: String, idAttribute: String, filePath: String) {
     val styleName = styleAttribute.removePrefix("@style/")
     val styleElement = styles[styleName] ?: run {
@@ -109,7 +109,7 @@ private class TextViewStyleCheck(private val repoRoot: File) {
       )
     }
   }
-
+  // Determines if a TextView is exempt from requiring a centrally managed style.
   private fun isExemptFromStyleRequirement(element: Element): Boolean {
     if (element.getAttribute("android:gravity")?.contains("center") == true) return true
     if (hasDynamicVisibility(element)) return true
