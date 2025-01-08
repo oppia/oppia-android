@@ -16,7 +16,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +37,11 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -63,12 +67,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -87,6 +86,7 @@ import javax.inject.Singleton
 class ProfileManagementControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
@@ -123,10 +123,9 @@ class ProfileManagementControllerTest {
     private const val CURRENT_TIMESTAMP = 1556094120000
   }
 
-  @After
-  fun tearDown() {
-    TestModule.enableLearnerStudyAnalytics = false
-    TestModule.enableOnboardingFlowV2 = false
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
   }
 
   @Test
@@ -151,8 +150,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testAddProfile_addSoleLearnerProfile_onboardingV2Enabled_checkProfileIsAdded() {
-    setUpTestWithOnboardingV2Enabled(true)
     val dataProvider = addAdminProfile(name = "James", pin = "")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -171,8 +170,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testAddProfile_addSupervisorProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
-    setUpTestWithOnboardingV2Enabled(true)
     val dataProvider = addAdminProfile(name = "James")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -191,8 +190,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testAddProfile_addAdditionalLearnerProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
-    setUpTestWithOnboardingV2Enabled(true)
     val dataProvider = addNonAdminProfile(name = "James")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -211,8 +210,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testAddProfile_addProfile_withPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
-    setUpTestWithOnboardingV2Enabled(false)
     val dataProvider = addAdminProfile(name = "James")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -232,8 +231,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testAddProfile_addProfile_withoutPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
-    setUpTestWithOnboardingV2Enabled(false)
     val dataProvider = addAdminProfile(name = "James", pin = "")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -253,8 +252,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testAddProfile_addProfile_studyOff_checkProfileDoesNotIncludeLearnerId() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     val dataProvider = addAdminProfile(name = "James", pin = "123")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -266,8 +265,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testAddProfile_addProfile_studyOn_checkProfileDoesNotIncludeLearnerId() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     val dataProvider = addAdminProfile(name = "James", pin = "123")
 
     monitorFactory.waitForNextSuccessfulResult(dataProvider)
@@ -279,7 +278,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfileWithNotUniqueName_checkResultIsFailure() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val dataProvider = addAdminProfile(name = "JAMES", pin = "321")
@@ -290,7 +288,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddProfile_addProfileWithNumberInName_checkResultIsFailure() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val dataProvider = addAdminProfile(name = "James034", pin = "321")
@@ -301,7 +298,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testGetProfile_addManyProfiles_checkGetProfileIsCorrect() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val dataProvider = profileManagementController.getProfile(PROFILE_ID_3)
@@ -316,7 +312,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testGetProfiles_addManyProfiles_checkAllProfilesAreAdded() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val dataProvider = profileManagementController.getProfiles()
@@ -330,7 +325,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testGetProfiles_addManyProfiles_restartApplication_addProfile_checkAllProfilesAreAdded() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     setUpTestApplicationComponent()
@@ -345,8 +339,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_withoutStudy_learnerIdIsUnchanged() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
@@ -361,8 +355,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_withStudy_learnerIdIsUnchanged() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     testCoroutineDispatchers.runCurrent()
 
@@ -376,8 +370,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testGetCurrentProfileId_noProfileLoggedIn_returnsNull() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
 
     val currentProfileId = profileManagementController.getCurrentProfileId()
@@ -387,8 +381,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testGetCurrentProfileId_withProfileLoggedIn_returnsLoggedInProfileId() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -401,8 +395,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testGetCurrentProfileId_withProfileLoggedIn_thenAnother_returnsLatestLoggedInProfileId() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -419,7 +413,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchCurrentLearnerId_noLoggedInProfile_returnsNull() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val learnerId = fetchSuccessfulAsyncValue(profileManagementController::fetchCurrentLearnerId)
@@ -429,7 +422,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchContinueButtonAnimationStatus_logInProfile1_checkStatusForProfile2IsFalse() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -444,7 +436,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchContinueButtonAnimationStatus_realProfile_notSeen_returnsFalse() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -458,7 +449,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_returnsTrue() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -478,7 +468,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeenTwice_returnsTrue() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -502,7 +491,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchContinueButtonAnimationStatus_realProfile_markedAsSeen_inDiffProfile_returnsFalse() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -525,8 +513,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testFetchCurrentLearnerId_loggedInProfile_createdWithStudyOff_returnsEmptyString() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -538,8 +526,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testFetchCurrentLearnerId_loggedInProfile_createdWithStudyOn_returnsEmptyString() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -552,7 +540,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchLearnerId_nonExistentProfile_returnsNull() {
-    setUpTestApplicationComponent()
 
     val learnerId = fetchSuccessfulAsyncValue {
       profileManagementController.fetchLearnerId(PROFILE_ID_2)
@@ -562,8 +549,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
   fun testFetchLearnerId_createdProfileWithStudyOff_returnsEmptyString() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
     addTestProfiles()
 
     val learnerId = fetchSuccessfulAsyncValue {
@@ -574,8 +561,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testFetchLearnerId_createdProfileWithStudyOn_returnsEmptyString() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
 
     val learnerId = fetchSuccessfulAsyncValue {
@@ -587,7 +574,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateName_addProfiles_updateWithUniqueName_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updateName(PROFILE_ID_2, "John")
@@ -600,7 +586,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateName_addProfiles_updateWithNotUniqueName_checkUpdatedFailed() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updateName(PROFILE_ID_2, "James")
@@ -611,7 +596,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateName_addProfiles_updateWithBadProfileId_checkUpdatedFailed() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updateName(PROFILE_ID_6, "John")
@@ -622,7 +606,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateName_addProfiles_updateProfileAvatar_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController
@@ -640,7 +623,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdatePin_addProfiles_updatePin_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updatePin(PROFILE_ID_2, "321")
@@ -653,7 +635,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdatePin_addProfiles_updateWithBadProfileId_checkUpdateFailed() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updatePin(PROFILE_ID_6, "321")
@@ -665,7 +646,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateAllowDownloadAccess_addProfiles_updateDownloadAccess_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updateAllowDownloadAccess(PROFILE_ID_2, false)
@@ -678,7 +658,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateAllowDownloadAccess_addProfiles_updateWithBadProfileId_checkUpdatedFailed() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updateAllowDownloadAccess(PROFILE_ID_6, false)
@@ -690,7 +669,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_badProfileId_updateFails() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -703,7 +681,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_noPerm_enablePermission_updateSucceeds() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -717,7 +694,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_noPerm_enablePermission_profileCanNowSwitchLangs() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -732,7 +708,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_noPerm_disablePermission_updateSucceeds() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -746,7 +721,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_noPerm_disablePermission_profileCannotSwitchLangs() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = false)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -760,7 +734,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_withPerm_enablePermission_updateSucceeds() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -774,7 +747,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_withPerm_enablePermission_profileCanSwitchLangs() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -788,7 +760,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_withPerm_disablePermission_updateSucceeds() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -802,7 +773,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateEnableInLessonLangSwitching_withPerm_disablePerm_profileCannotNowSwitchLangs() {
-    setUpTestApplicationComponent()
     addProfileForLanguageSwitching(allowInLessonQuickLanguageSwitching = true)
 
     val updateProvider = profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -817,7 +787,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateReadingTextSize_addProfiles_updateWithFontSize18_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -833,7 +802,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testGetAudioLanguage_initialProfileCreation_defaultsToEnglish() {
-    setUpTestApplicationComponent()
 
     addTestProfiles()
 
@@ -844,7 +812,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateAudioLanguage_updateToHindi_updateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -857,7 +824,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -870,7 +836,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateAudioLanguage_updateToArabic_updateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -883,7 +848,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateAudioLanguage_updateToNigerianPidgin_updateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -898,7 +862,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToHindi_updateChangesAudioLanguage() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -914,7 +877,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateChangesAudioLanguage() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -930,7 +892,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabic_updateChangesAudioLanguage() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -946,7 +907,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToNigerianPidgin_updateChangesAudioLanguage() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -962,7 +922,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabicThenEnglish_updateChangesAudioLanguageToEnglish() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     val updateProvider1 =
       profileManagementController.updateAudioLanguage(PROFILE_ID_2, NIGERIAN_PIDGIN_LANGUAGE)
@@ -981,7 +940,6 @@ class ProfileManagementControllerTest {
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateProfile1ToArabic_profile2IsUnchanged() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val updateProvider =
@@ -995,7 +953,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeleteProfile_addProfiles_deleteProfile_checkDeletionIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val deleteProvider = profileManagementController.deleteProfile(PROFILE_ID_2)
@@ -1008,7 +965,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeleteProfile_addProfiles_deleteProfiles_addProfile_checkIdIsNotReused() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     profileManagementController.deleteProfile(PROFILE_ID_3).ensureExecutes()
@@ -1029,14 +985,12 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeleteProfile_addProfiles_deleteProfiles_restartApplication_checkDeletionIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     profileManagementController.deleteProfile(PROFILE_ID_1).ensureExecutes()
     profileManagementController.deleteProfile(PROFILE_ID_2).ensureExecutes()
     profileManagementController.deleteProfile(PROFILE_ID_3).ensureExecutes()
     testCoroutineDispatchers.runCurrent()
-    setUpTestApplicationComponent()
 
     val profilesProvider = profileManagementController.getProfiles()
     val profiles = monitorFactory.waitForNextSuccessfulResult(profilesProvider)
@@ -1050,7 +1004,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLoginProfile_addedProfile_profileIdTimestampAndNumberOfLoginsIsCorrectlyUpdated() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
@@ -1065,7 +1018,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLoginToProfile_addProfile_loginToProfileTwice_checkNumberOfLoginsIsTwo() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     var loginProvider = profileManagementController.loginToProfile(PROFILE_ID_2)
     monitorFactory.waitForNextSuccessfulResult(loginProvider)
@@ -1083,7 +1035,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLoginToProfile_addProfiles_loginToProfileWithBadProfileId_checkLoginFailed() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     val loginProvider = profileManagementController.loginToProfile(PROFILE_ID_6)
@@ -1099,7 +1050,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLogInToProfile_sessionIdHasChanged() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     val previousSessionId = retrieveCurrentSessionId()
 
@@ -1114,7 +1064,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLogInToProfile_thenToSameProfileAgain_sessionIdHasChangedAgain() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -1133,7 +1082,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLogInToProfile_thenToAnotherProfile_sessionIdHasChangedAgain() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_1)
@@ -1151,7 +1099,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testLogInToProfile_invalidProfile_sessionIdDoesNotChange() {
-    setUpTestApplicationComponent()
     addTestProfiles()
     val previousSessionId = retrieveCurrentSessionId()
 
@@ -1166,7 +1113,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testWasProfileEverAdded_addAdminProfile_checkIfProfileEverAdded() {
-    setUpTestApplicationComponent()
     val addProvider = addAdminProfile(name = "James", pin = "123")
 
     monitorFactory.waitForNextSuccessfulResult(addProvider)
@@ -1177,7 +1123,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testWasProfileEverAdded_addAdminProfile_getWasProfileEverAdded() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
 
     val wasProfileAddedProvider = profileManagementController.getWasProfileEverAdded()
@@ -1188,7 +1133,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testWasProfileEverAdded_addAdminProfile_addUserProfile_checkIfProfileEverAdded() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
@@ -1200,7 +1144,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testWasProfileEverAdded_addAdminProfile_addUserProfile_getWasProfileEverAdded() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
@@ -1213,7 +1156,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_profileIsAdded() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
@@ -1226,7 +1168,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testWasProfileEverAdded_addAdminProfile_addUserProfile_deleteUserProfile_profileWasAdded() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
     profileManagementController.deleteProfile(PROFILE_ID_1).ensureExecutes()
@@ -1240,8 +1181,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testDeleteProfile_logsDeleteProfileEvent() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
@@ -1258,7 +1199,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testAddAdminProfile_addAnotherAdminProfile_checkSecondAdminProfileWasNotAdded() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "Rohit")
 
     val addProfile2 = addAdminProfile(name = "Ben")
@@ -1269,7 +1209,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeviceSettings_addAdminProfile_getDefaultDeviceSettings_isSuccessful() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
 
     val deviceSettingsProvider = profileManagementController.getDeviceSettings()
@@ -1281,7 +1220,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeviceSettings_addAdminProfile_updateDeviceWifiSettings_getDeviceSettings_isSuccessful() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
 
     val updateProvider = profileManagementController.updateWifiPermissionDeviceSettings(
@@ -1298,7 +1236,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeviceSettings_addAdminProfile_updateTopicsAutoDeviceSettings_isSuccessful() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
 
     val updateProvider =
@@ -1315,7 +1252,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeviceSettings_addAdminProfile_updateDeviceWifiSettings_andTopicDevSettings_succeeds() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
 
     val updateProvider1 =
@@ -1337,7 +1273,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeviceSettings_updateDeviceWifiSettings_fromUserProfile_isFailure() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
@@ -1351,7 +1286,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testDeviceSettings_updateTopicsAutomaticallyDeviceSettings_fromUserProfile_isFailure() {
-    setUpTestApplicationComponent()
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
@@ -1365,7 +1299,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchSurveyLastShownTime_realProfile_beforeFirstSurveyShown_returnsDefaultTimestamp() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
@@ -1383,7 +1316,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchSurveyLastShownTime_updateLastShownTimeFunctionCalled_returnsCurrentTime() {
-    setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(CURRENT_TIMESTAMP)
     addTestProfiles()
@@ -1408,7 +1340,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchSurveyLastShownTime_updateLastShownTime_inOneProfile_doesNotUpdateOtherProfiles() {
-    setUpTestApplicationComponent()
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(CURRENT_TIMESTAMP)
     addTestProfiles()
@@ -1437,7 +1368,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchLastSelectedClassroomId_updateClassroomId_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
@@ -1460,7 +1390,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchLastSelectedClassroomId_updateClassroomIdTwice_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
@@ -1490,7 +1419,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchLastSelectedClassroomId_updateClassroomIds_checkUpdateIsSuccessfulPerProfile() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     // Login to profile 0 and update the last selected classroom to classroom 1.
@@ -1530,7 +1458,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testFetchLastSelectedClassroomId_withoutUpdatingClassroomId_returnEmptyClassroomId() {
-    setUpTestApplicationComponent()
     addTestProfiles()
 
     monitorFactory.ensureDataProviderExecutes(
@@ -1544,7 +1471,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateProfile_updateMultipleFields_checkUpdateIsSuccessful() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
@@ -1569,7 +1495,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateProfile_updateMultipleFields_invalidName_checkNameUpdateFailed() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
@@ -1587,7 +1512,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateProfile_updateMultipleFields_nullAvatarUri_setsAvatarColorSuccessfully() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
@@ -1612,7 +1536,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateProfile_updateMultipleFields_unspecifiedProfileType_returnsProfileTypeError() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
@@ -1630,7 +1553,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateProfile_updateMultipleFields_invalidProfileId_checkUpdateFailed() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateNewProfileDetails(
@@ -1649,7 +1571,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateExistingAdminProfile_updateProfileTypeToSupervisor_checkProfileTypeSupervisor() {
-    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
 
     val updateProvider = profileManagementController.updateProfileType(
@@ -1665,7 +1586,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateExistingPinlessAdmin_updateProfileTypeToSoleLearner_checkProfileTypeSoleLearner() {
-    setUpTestApplicationComponent()
     addAdminProfile(name = "Admin", pin = "")
 
     val updateProvider = profileManagementController.updateProfileType(
@@ -1681,7 +1601,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateExistingNonAdminProfile_updateProfileTypeToLearner_checkProfileTypeAddLearner() {
-    setUpTestApplicationComponent()
     addAdminProfile("Admin")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
 
@@ -1698,7 +1617,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateDefaultProfile_profileTypeToSoleLearner_checkProfileTypeSoleLearner() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateProfileType(
@@ -1714,7 +1632,6 @@ class ProfileManagementControllerTest {
 
   @Test
   fun testUpdateDefaultProfile_profileTypeUnspecified_returnsProfileTypeError() {
-    setUpTestApplicationComponent()
     profileTestHelper.createDefaultAdminProfile()
 
     val updateProvider = profileManagementController.updateProfileType(
@@ -1727,6 +1644,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileMigration_getExistingNonAdminProfile_checkProfileTypeIsAdditionalLearner() {
     // Simulate profiles already created in a previous app instance.
     executeInPreviousAppInstance { testComponent ->
@@ -1749,13 +1667,13 @@ class ProfileManagementControllerTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(true)
     val getProfileProvider = profileManagementController.getProfile(PROFILE_ID_1)
     val profile = monitorFactory.waitForNextSuccessfulResult(getProfileProvider)
     assertThat(profile.profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileMigration_getExistingAdminWithPin_checkProfileTypeIsSupervisor() {
     // Simulate profiles already created in a previous app instance.
     executeInPreviousAppInstance { testComponent ->
@@ -1778,13 +1696,13 @@ class ProfileManagementControllerTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(true)
     val getProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
     val profile = monitorFactory.waitForNextSuccessfulResult(getProfileProvider)
     assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileMigration_getExistingAdminWithoutPin_checkProfileTypeIsSoleLearner() {
     // Simulate profiles already created in a previous app instance.
     executeInPreviousAppInstance { testComponent ->
@@ -1799,15 +1717,14 @@ class ProfileManagementControllerTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(true)
     val getProfileProvider = profileManagementController.getProfile(PROFILE_ID_0)
     val profile = monitorFactory.waitForNextSuccessfulResult(getProfileProvider)
     assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
 
     val updateProfileProvider =
@@ -1824,8 +1741,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyMode() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
 
     val updateProfileProvider =
@@ -1840,8 +1757,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_multipleProfiles_returnsMultipleProfilesTypeMode() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
     addNonAdminProfileAndWait(name = "Rajat", pin = "01234")
     addNonAdminProfileAndWait(name = "Rohit", pin = "")
@@ -1854,8 +1771,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_noProfilesFound_returnsNewInstallTypeMode() {
-    setUpTestWithOnboardingV2Enabled(true)
 
     val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
     val profileOnboardingModeResult =
@@ -1865,8 +1782,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_existingProfilesV1_returnsUnknownProfileTypeMode() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
 
     val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
@@ -1877,24 +1794,24 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testGetProfile_createAdmin_returnsSupervisorType() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James")
     val profile = retrieveProfile(PROFILE_ID_0)
     assertThat(profile.profileType).isEqualTo(ProfileType.SUPERVISOR)
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testGetProfile_createSoleLearner_returnsSoleLearnerType() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James", pin = "")
     val profile = retrieveProfile(PROFILE_ID_0)
     assertThat(profile.profileType).isEqualTo(ProfileType.SOLE_LEARNER)
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testGetProfile_createAdditionalLearner_returnsAdditionalLearnerType() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James")
     addNonAdminProfile(name = "Rajat")
     val profile = retrieveProfile(PROFILE_ID_1)
@@ -1902,8 +1819,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboarding_markOnboardingStarted_logsStartProfileOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James", pin = "")
     val onboardingProvider = profileManagementController.markProfileOnboardingStarted(PROFILE_ID_0)
     monitorFactory.ensureDataProviderExecutes(onboardingProvider)
@@ -1914,8 +1831,8 @@ class ProfileManagementControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testProfileOnboarding_markOnboardingCompleted_logsEndProfileOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
     addAdminProfile(name = "James", pin = "")
     val onboardingProvider = profileManagementController.markProfileOnboardingEnded(PROFILE_ID_0)
     monitorFactory.ensureDataProviderExecutes(onboardingProvider)
@@ -2062,21 +1979,6 @@ class ProfileManagementControllerTest {
 
   private fun <T> DataProvider<T>.ensureExecutes() = monitorFactory.ensureDataProviderExecutes(this)
 
-  private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = false
-    setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
-    setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingV2: Boolean) {
-    TestModule.enableOnboardingFlowV2 = enableOnboardingV2
-    setUpTestApplicationComponent()
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -2097,13 +1999,6 @@ class ProfileManagementControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-      var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -2123,40 +2018,6 @@ class ProfileManagementControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableOnboardingFlowV2
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
   }
 
   @Module
@@ -2178,7 +2039,8 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class, PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

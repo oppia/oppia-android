@@ -5,6 +5,9 @@ import dagger.Module
 import dagger.Provides
 import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING
 import org.oppia.android.util.platformparameter.CACHE_LATEX_RENDERING_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.CacheLatexRendering
@@ -89,7 +92,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.DOWNLOADS_SUPPORT]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(DOWNLOADS_SUPPORT)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE)
   }
@@ -128,7 +131,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(EDIT_ACCOUNTS_OPTIONS_UI)
       ?: PlatformParameterValue.createDefaultParameter(
         ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
@@ -141,7 +144,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.LEARNER_STUDY_ANALYTICS]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(LEARNER_STUDY_ANALYTICS)
       ?: PlatformParameterValue.createDefaultParameter(LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE)
   }
@@ -152,7 +155,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(FAST_LANGUAGE_SWITCHING_IN_LESSON)
       ?: PlatformParameterValue.createDefaultParameter(
         FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
@@ -165,7 +168,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.LOGGING_LEARNER_STUDY_IDS]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(LOGGING_LEARNER_STUDY_IDS)
       ?: PlatformParameterValue.createDefaultParameter(LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE)
   }
@@ -182,12 +185,23 @@ class PlatformParameterModule {
   }
 
   @Provides
+  @AutomaticUpdateTopicSetting
+  fun provideAutomaticUpdateTopicSetting(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return overriddenPlatformParameters[PlatformParameter.AUTOMATIC_UPDATE_TOPIC_SETTING]?.let {
+      PlatformParameterValue.createDefaultParameter(it as Boolean)
+    } ?: platformParameterSingleton.getBooleanPlatformParameter(AUTOMATIC_UPDATE_TOPIC_SETTING)
+      ?: PlatformParameterValue.createDefaultParameter(AUTOMATIC_UPDATE_TOPIC_SETTING_DEFAULT_VALUE)
+  }
+
+  @Provides
   @EnablePerformanceMetricsCollection
   fun provideEnablePerformanceMetricCollection(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(
       ENABLE_PERFORMANCE_METRICS_COLLECTION
     )
@@ -253,7 +267,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.SPOTLIGHT_UI]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE)
   }
@@ -264,7 +278,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.EXTRA_TOPIC_TABS_UI]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(EXTRA_TOPIC_TABS_UI)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE)
   }
@@ -275,7 +289,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.INTERACTION_CONFIG_CHANGE_STATE_RETENTION]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(
       INTERACTION_CONFIG_CHANGE_STATE_RETENTION
     )
@@ -290,7 +304,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.APP_AND_OS_DEPRECATION]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(APP_AND_OS_DEPRECATION)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
   }
@@ -366,7 +380,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.ENABLE_NPS_SURVEY]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(ENABLE_NPS_SURVEY)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_NPS_SURVEY_DEFAULT_VALUE)
   }
@@ -377,7 +391,7 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.ENABLE_ONBOARDING_FLOW_V2]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(ENABLE_ONBOARDING_FLOW_V2)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE)
   }
@@ -388,13 +402,13 @@ class PlatformParameterModule {
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
     return overriddenFeatureFlags[FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS]?.let {
-      PlatformParameterValue.createDefaultParameter(it as Boolean)
+      PlatformParameterValue.createDefaultParameter(it)
     } ?: platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE)
   }
 
   companion object {
-    private val overriddenFeatureFlags = mutableMapOf<FeatureFlag, Any>()
+    private val overriddenFeatureFlags = mutableMapOf<FeatureFlag, Boolean>()
     private val overriddenPlatformParameters = mutableMapOf<PlatformParameter, Any>()
 
     /**
@@ -403,7 +417,7 @@ class PlatformParameterModule {
      * @param name The feature flag to override.
      * @param value The new value to assign to the feature flag for testing.
      */
-    fun overrideFeatureFlags(name: FeatureFlag, value: Any) {
+    fun overrideFeatureFlags(name: FeatureFlag, value: Boolean) {
       overriddenFeatureFlags[name] = value
     }
 

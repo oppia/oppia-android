@@ -23,6 +23,8 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
@@ -45,9 +47,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -521,10 +520,6 @@ class SurveyProgressControllerTest {
 
   @Module
   class TestModule {
-    internal companion object {
-      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -543,13 +538,6 @@ class SurveyProgressControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Enable the study by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
   }
 
   @Module
@@ -572,6 +560,7 @@ class SurveyProgressControllerTest {
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
+      PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )
 

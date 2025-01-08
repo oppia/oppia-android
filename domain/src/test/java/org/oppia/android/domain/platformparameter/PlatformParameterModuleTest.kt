@@ -30,7 +30,10 @@ import org.oppia.android.testing.platformparameter.TestBooleanParam
 import org.oppia.android.testing.platformparameter.TestIntegerParam
 import org.oppia.android.testing.platformparameter.TestStringParam
 import org.oppia.android.util.extensions.getVersionCode
+import org.oppia.android.util.platformparameter.AUTOMATIC_UPDATE_TOPIC_SETTING_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.AutomaticUpdateTopicSetting
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
@@ -80,6 +83,9 @@ class PlatformParameterModuleTest {
 
   @field:[Inject LowestSupportedApiLevel]
   lateinit var lowestSupportedApiLevelProvider: Provider<PlatformParameterValue<Int>>
+
+  @field:[Inject AutomaticUpdateTopicSetting]
+  lateinit var automaticUpdateTopicSettingProvider: Provider<PlatformParameterValue<Boolean>>
 
   private val platformParameterMapWithValues by lazy {
     val mockStringPlatformParameter = PlatformParameter.newBuilder()
@@ -166,10 +172,40 @@ class PlatformParameterModuleTest {
   }
 
   @Test
+  fun testModule_injectAutomaticUpdateTopicSetting_hasCorrectDefaultValue() {
+    setUpTestApplicationComponent(platformParameterMapWithValues)
+    assertThat(automaticUpdateTopicSettingProvider.get().value)
+      .isEqualTo(AUTOMATIC_UPDATE_TOPIC_SETTING_DEFAULT_VALUE)
+  }
+
+  @Test
+  fun testModule_injectAutomaticUpdateTopicSettingWithOverride_overriddenPlatformParameterValue() {
+    val overridePlatformParameterValue = !AUTOMATIC_UPDATE_TOPIC_SETTING_DEFAULT_VALUE
+    setUpTestApplicationComponentWithPlatformParameterBooleanOverrides(
+      platformParameterMapWithValues,
+      org.oppia.android.util.platformparameter.PlatformParameter.AUTOMATIC_UPDATE_TOPIC_SETTING,
+      overridePlatformParameterValue
+    )
+    assertThat(automaticUpdateTopicSettingProvider.get().value)
+      .isEqualTo(!AUTOMATIC_UPDATE_TOPIC_SETTING_DEFAULT_VALUE)
+  }
+
+  @Test
   fun testModule_injectEnableAppAndOsDeprecation_hasCorrectDefaultValue() {
     setUpTestApplicationComponent(platformParameterMapWithValues)
     assertThat(enableAppAndOsDeprecationProvider.get().value)
       .isEqualTo(TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
+  }
+
+  @Test
+  fun testModule_injectEnableAppAndOsDeprecationWithOverride_overriddenFeatureFlagValue() {
+    setUpTestApplicationComponentWithFeatureFlagOverrides(
+      platformParameterMapWithValues,
+      FeatureFlag.APP_AND_OS_DEPRECATION,
+      TEST_BOOLEAN_PARAM_SERVER_VALUE
+    )
+    assertThat(enableAppAndOsDeprecationProvider.get().value)
+      .isEqualTo(!TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE)
   }
 
   @Test
@@ -197,6 +233,18 @@ class PlatformParameterModuleTest {
       .isEqualTo(TEST_LOWEST_SUPPORTED_API_LEVEL)
   }
 
+  @Test
+  fun testModule_injectLowestSupportedApiLevelWithOverride_overriddenPlatformParameterValue() {
+    val overridePlatformParameterValue = 18
+    setUpTestApplicationComponentWithPlatformParameterIntegerOverrides(
+      platformParameterMapWithValues,
+      org.oppia.android.util.platformparameter.PlatformParameter.LOWEST_SUPPORTED_API_LEVEL,
+      overridePlatformParameterValue
+    )
+    assertThat(lowestSupportedApiLevelProvider.get().value)
+      .isEqualTo(overridePlatformParameterValue)
+  }
+
   private fun registerTestApplication() {
     val packageManager = Shadows.shadowOf(context.packageManager)
     val applicationInfo =
@@ -216,6 +264,45 @@ class PlatformParameterModuleTest {
   private fun setUpTestApplicationComponent(platformParameterMap: Map<String, PlatformParameter>) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+    registerTestApplication()
+  }
+
+  private fun setUpTestApplicationComponentWithFeatureFlagOverrides(
+    platformParameterMap: Map<String, PlatformParameter>,
+    featureFlagName: FeatureFlag,
+    featureFlagValue: Boolean
+  ) {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+    PlatformParameterModule.overrideFeatureFlags(featureFlagName, featureFlagValue)
+    registerTestApplication()
+  }
+
+  private fun setUpTestApplicationComponentWithPlatformParameterIntegerOverrides(
+    platformParameterMap: Map<String, PlatformParameter>,
+    platformParameterName: org.oppia.android.util.platformparameter.PlatformParameter,
+    platformParameterValue: Int
+  ) {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+    PlatformParameterModule.overridePlatformParameters(
+      platformParameterName,
+      platformParameterValue
+    )
+    registerTestApplication()
+  }
+
+  private fun setUpTestApplicationComponentWithPlatformParameterBooleanOverrides(
+    platformParameterMap: Map<String, PlatformParameter>,
+    platformParameterName: org.oppia.android.util.platformparameter.PlatformParameter,
+    platformParameterValue: Boolean
+  ) {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
+    PlatformParameterModule.overridePlatformParameters(
+      platformParameterName,
+      platformParameterValue
+    )
     registerTestApplication()
   }
 

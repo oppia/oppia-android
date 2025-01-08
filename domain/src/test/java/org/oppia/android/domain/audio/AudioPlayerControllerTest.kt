@@ -49,9 +49,11 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -74,11 +76,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -516,6 +514,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_reloadingMainContent_notAutoPlaying_studyOn_logsPlayEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     val explorationId = TEST_EXPLORATION_ID_5
@@ -554,6 +553,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_notReloadingMainContent_autoPlaying_studyOn_logsPlayEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     val explorationId = TEST_EXPLORATION_ID_5
@@ -592,6 +592,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_notReloadingMainContent_notAutoPlaying_studyOn_logsPlayEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     val explorationId = TEST_EXPLORATION_ID_5
@@ -665,6 +666,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPause_playing_explicitUserAction_studyOn_logsPauseEvent() {
     setUpMediaReadyApplicationWithLearnerStudy()
     val explorationId = TEST_EXPLORATION_ID_5
@@ -899,50 +901,10 @@ class AudioPlayerControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    companion object {
-      var enableLearnerStudyAnalytics: Boolean = false
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
 
@@ -962,7 +924,7 @@ class AudioPlayerControllerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
       HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class, PlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
