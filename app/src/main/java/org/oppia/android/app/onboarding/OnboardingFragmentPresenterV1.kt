@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import org.oppia.android.R
@@ -81,6 +82,17 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
           positionOffset: Float,
           positionOffsetPixels: Int
         ) {
+          if (positionOffsetPixels == 0 && position > 0) {
+            binding.onboardingSlideViewPager.apply {
+              contentDescription = getViewPagerContentAndDescription(position)
+              announceForAccessibility(contentDescription)
+
+              performAccessibilityAction(
+                AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS,
+                null
+              )
+            }
+          }
         }
 
         override fun onPageSelected(position: Int) {
@@ -94,6 +106,24 @@ class OnboardingFragmentPresenterV1 @Inject constructor(
           onboardingStatusBarColorUpdate(position)
         }
       })
+  }
+
+  private fun getViewPagerContentAndDescription(position: Int): String {
+    val slideTitle = when (position) {
+      1 -> resourceHandler.getStringInLocale(R.string.onboarding_slide_1_title)
+      2 -> resourceHandler.getStringInLocale(R.string.onboarding_slide_2_title)
+      3 -> resourceHandler.getStringInLocale(R.string.onboarding_slide_3_title)
+      else -> ""
+    }
+
+    val slideDescription = when (position) {
+      1 -> resourceHandler.getStringInLocale(R.string.onboarding_slide_1_description)
+      2 -> resourceHandler.getStringInLocale(R.string.onboarding_slide_2_description)
+      3 -> resourceHandler.getStringInLocale(R.string.onboarding_slide_3_description)
+      else -> ""
+    }
+
+    return "$slideTitle, $slideDescription"
   }
 
   private fun createViewPagerAdapter(): BindableAdapter<OnboardingViewPagerViewModel> {
