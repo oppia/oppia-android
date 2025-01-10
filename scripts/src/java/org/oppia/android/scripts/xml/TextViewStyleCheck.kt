@@ -3,8 +3,6 @@ package org.oppia.android.scripts.xml
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.xml.sax.Attributes
-import org.xml.sax.InputSource
-import org.xml.sax.Locator
 import org.xml.sax.helpers.DefaultHandler
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
@@ -225,15 +223,19 @@ private class TextViewStyleCheck(private val repoRoot: File) {
   private fun printResults() {
     if (legacyDirectionalityWarnings.isNotEmpty()) {
       legacyDirectionalityWarnings.forEach { violation ->
-        println("WARNING: ${violation.message} in file: ${violation.filePath}," +
-          " line ${violation.lineNumber}")
+        println(
+          "WARNING: ${violation.message} in file: ${violation.filePath}," +
+            " line ${violation.lineNumber}"
+        )
       }
     }
 
     if (styleViolations.isNotEmpty()) {
       styleViolations.forEach { violation ->
-        println("ERROR: ${violation.message} in file: ${violation.filePath}," +
-          " line ${violation.lineNumber}")
+        println(
+          "ERROR: ${violation.message} in file: ${violation.filePath}," +
+            " line ${violation.lineNumber}"
+        )
       }
       throw Exception("TEXTVIEW STYLE CHECK FAILED")
     } else {
