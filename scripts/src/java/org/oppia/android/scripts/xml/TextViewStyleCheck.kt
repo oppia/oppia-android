@@ -50,6 +50,7 @@ private class TextViewStyleCheck(private val repoRoot: File) {
   private val legacyDirectionalityWarnings = mutableListOf<StyleViolation>()
   private val builderFactory = DocumentBuilderFactory.newInstance()
   private val styles: Map<String, Element> by lazy { loadStyles() }
+  private val validatedStyles = mutableMapOf<String, Boolean>()
 
   private fun loadStyles(): Map<String, Element> {
     val stylesFile = File(repoRoot, "app/src/main/res/values/styles.xml")
@@ -136,6 +137,18 @@ private class TextViewStyleCheck(private val repoRoot: File) {
 
   private fun validateStyle(styleAttribute: String, filePath: String, lineNumber: Int) {
     val styleName = styleAttribute.removePrefix("@style/")
+    validatedStyles[styleName]?.let { isValid ->
+      if (!isValid) {
+        styleViolations.add(
+          StyleViolation(
+            filePath,
+            lineNumber,
+            "References style with missing RTL/LTR properties: $styleName"
+          )
+        )
+      }
+      return
+    }
     val styleElement = styles[styleName] ?: run {
       styleViolations.add(
         StyleViolation(
@@ -147,18 +160,8 @@ private class TextViewStyleCheck(private val repoRoot: File) {
       return
     }
 
-    val items = styleElement.getElementsByTagName("item")
-    val hasRtlProperties = (0 until items.length).any { i ->
-      val item = items.item(i) as Element
-      when (item.getAttribute("name")) {
-        "android:textAlignment",
-        "android:gravity",
-        "android:layoutDirection",
-        "android:textDirection",
-        "android:textSize" -> true
-        else -> false
-      }
-    }
+    val hasRtlProperties = validateStyleProperties(styleElement)
+    validatedStyles[styleName] = hasRtlProperties
 
     if (!hasRtlProperties) {
       styleViolations.add(
@@ -168,6 +171,21 @@ private class TextViewStyleCheck(private val repoRoot: File) {
           "Style '$styleName' lacks RTL/LTR properties"
         )
       )
+    }
+  }
+  private fun validateStyleProperties(styleElement: Element): Boolean {
+    val rtlProperties = setOf(
+      "android:textAlignment",
+      "android:gravity",
+      "android:layoutDirection",
+      "android:textDirection",
+      "android:textSize"
+    )
+
+    val items = styleElement.getElementsByTagName("item")
+    return (0 until items.length).any { i ->
+      val item = items.item(i) as Element
+      item.getAttribute("name") in rtlProperties
     }
   }
   // Determines if a TextView is exempt from requiring a centrally managed style.
