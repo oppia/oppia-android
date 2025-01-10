@@ -139,10 +139,9 @@ class MathTagHandler(
     }
   }
 
-  override fun getContentDescription(attributes: Attributes): String? {
+  override fun getContentDescription(attributes: Attributes): String {
     val mathVal = attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
-    return if (mathVal != null) {
-      "Math content $mathVal"
-    } else ""
+    return mathVal?.let { "Math content $it" } ?: ""
+
   }
 }
