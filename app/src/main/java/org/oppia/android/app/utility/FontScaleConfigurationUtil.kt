@@ -40,3 +40,5 @@ class FontScaleConfigurationUtil @Inject constructor() {
     }
   }
 }
+
+
