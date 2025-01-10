@@ -1,8 +1,14 @@
 package org.oppia.android.scripts.xml
 
+import org.w3c.dom.Document
 import org.w3c.dom.Element
+import org.xml.sax.Attributes
+import org.xml.sax.InputSource
+import org.xml.sax.Locator
+import org.xml.sax.helpers.DefaultHandler
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.parsers.SAXParserFactory
 
 /**
  * Script to ensure all TextView elements in layout XML files use centrally managed styles.
@@ -35,9 +41,15 @@ fun main(vararg args: String) {
   styleChecker.checkFiles(xmlFiles)
 }
 
+private data class StyleViolation(
+  val filePath: String,
+  val lineNumber: Int,
+  val message: String
+)
+
 private class TextViewStyleCheck(private val repoRoot: File) {
-  private val errors = mutableListOf<String>()
-  private val legacyDirectionalityWarnings = mutableListOf<String>()
+  private val styleViolations = mutableListOf<StyleViolation>()
+  private val legacyDirectionalityWarnings = mutableListOf<StyleViolation>()
   private val builderFactory = DocumentBuilderFactory.newInstance()
   private val styles: Map<String, Element> by lazy { loadStyles() }
 
@@ -59,34 +71,81 @@ private class TextViewStyleCheck(private val repoRoot: File) {
   }
 
   private fun processXmlFile(file: File) {
-    val document = builderFactory.newDocumentBuilder().parse(file)
-    val textViewNodes = document.getElementsByTagName("TextView")
+    val handler = TextViewLocationHandler(file.path) { element, lineNumber ->
+      validateTextViewElement(element, file.path, lineNumber)
+    }
 
-    for (i in 0 until textViewNodes.length) {
-      val element = textViewNodes.item(i) as Element
-      validateTextViewElement(element, file.path)
+    val parser = SAXParserFactory.newInstance().newSAXParser()
+    parser.parse(file, handler)
+  }
+
+  private class TextViewLocationHandler(
+    private val filePath: String,
+    private val onTextViewFound: (Element, Int) -> Unit
+  ) : DefaultHandler() {
+    private val document: Document = DocumentBuilderFactory.newInstance()
+      .newDocumentBuilder()
+      .newDocument()
+
+    override fun startElement(
+      uri: String,
+      localName: String,
+      qName: String,
+      attributes: Attributes
+    ) {
+      if (qName == "TextView") {
+        // Get the actual content of the file to verify the line number
+        val fileContent = File(filePath).readLines()
+
+        // Find the actual line number by searching for the TextView tag
+        val actualLine = fileContent.indexOfFirst { line ->
+          line.trim().startsWith("<TextView")
+        } + 1 // Add 1 because line numbers are 1-based
+
+        val element = document.createElement("TextView")
+
+        // Convert SAX attributes to DOM attributes
+        for (i in 0 until attributes.length) {
+          val attrQName = attributes.getQName(i)
+          val attrValue = attributes.getValue(i)
+          element.setAttribute(attrQName, attrValue)
+        }
+
+        onTextViewFound(element, actualLine)
+      }
     }
   }
 
-  private fun validateTextViewElement(element: Element, filePath: String) {
+  private fun validateTextViewElement(element: Element, filePath: String, lineNumber: Int) {
     val styleAttribute = element.attributes.getNamedItem("style")?.nodeValue
-    val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue ?: "No ID"
 
     if (!isExemptFromStyleRequirement(element)) {
       if (styleAttribute?.startsWith("@style/") == true) {
-        validateStyle(styleAttribute, idAttribute, filePath)
+        validateStyle(styleAttribute, filePath, lineNumber)
       } else {
-        errors.add("$filePath: TextView ($idAttribute) requires central style.")
+        styleViolations.add(
+          StyleViolation(
+            filePath,
+            lineNumber,
+            "Missing style attribute"
+          )
+        )
       }
     }
 
-    checkForLegacyDirectionality(element, filePath)
+    checkForLegacyDirectionality(element, filePath, lineNumber)
   }
-  // Validate if the referenced style exists and contains necessary RTL/LTR properties.
-  private fun validateStyle(styleAttribute: String, idAttribute: String, filePath: String) {
+
+  private fun validateStyle(styleAttribute: String, filePath: String, lineNumber: Int) {
     val styleName = styleAttribute.removePrefix("@style/")
     val styleElement = styles[styleName] ?: run {
-      errors.add("$filePath: TextView ($idAttribute) references non-existent style: $styleName")
+      styleViolations.add(
+        StyleViolation(
+          filePath,
+          lineNumber,
+          "References non-existent style: $styleName"
+        )
+      )
       return
     }
 
@@ -104,8 +163,12 @@ private class TextViewStyleCheck(private val repoRoot: File) {
     }
 
     if (!hasRtlProperties) {
-      errors.add(
-        "$filePath: TextView ($idAttribute) style '$styleName' lacks RTL/LTR properties"
+      styleViolations.add(
+        StyleViolation(
+          filePath,
+          lineNumber,
+          "Style '$styleName' lacks RTL/LTR properties"
+        )
       )
     }
   }
@@ -135,7 +198,7 @@ private class TextViewStyleCheck(private val repoRoot: File) {
     return directionAttributes.any { element.hasAttribute(it) }
   }
 
-  private fun checkForLegacyDirectionality(element: Element, filePath: String) {
+  private fun checkForLegacyDirectionality(element: Element, filePath: String, lineNumber: Int) {
     val legacyAttributes = listOf(
       "android:paddingLeft",
       "android:paddingRight",
@@ -150,24 +213,31 @@ private class TextViewStyleCheck(private val repoRoot: File) {
     val foundLegacyAttributes = legacyAttributes.filter { element.hasAttribute(it) }
     if (foundLegacyAttributes.isNotEmpty()) {
       legacyDirectionalityWarnings.add(
-        "$filePath: TextView uses legacy" +
-          " directional attributes: ${foundLegacyAttributes.joinToString(", ")}"
+        StyleViolation(
+          filePath,
+          lineNumber,
+          "Uses legacy directional attributes: ${foundLegacyAttributes.joinToString(", ")}"
+        )
       )
     }
   }
 
   private fun printResults() {
     if (legacyDirectionalityWarnings.isNotEmpty()) {
-      println("\nWarnings - Legacy directionality attributes found:")
-      legacyDirectionalityWarnings.forEach { println(it) }
+      legacyDirectionalityWarnings.forEach { violation ->
+        println("WARNING: ${violation.message} in file: ${violation.filePath}," +
+          " line ${violation.lineNumber}")
+      }
     }
 
-    if (errors.isNotEmpty()) {
-      println("\nTextView Style Check FAILED:")
-      errors.forEach { println(it) }
-      throw Exception("Some TextView elements do not have centrally managed styles.")
+    if (styleViolations.isNotEmpty()) {
+      styleViolations.forEach { violation ->
+        println("ERROR: ${violation.message} in file: ${violation.filePath}," +
+          " line ${violation.lineNumber}")
+      }
+      throw Exception("TEXTVIEW STYLE CHECK FAILED")
     } else {
-      println("\nTextView Style Check PASSED.")
+      println("TEXTVIEW STYLE CHECK PASSED.")
     }
   }
 }
