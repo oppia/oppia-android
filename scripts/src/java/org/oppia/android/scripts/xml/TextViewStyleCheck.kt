@@ -239,7 +239,7 @@ private class TextViewStyleCheck(private val repoRoot: File) {
       }
       throw Exception("TEXTVIEW STYLE CHECK FAILED")
     } else {
-      println("TEXTVIEW STYLE CHECK PASSED.")
+      println("TEXTVIEW STYLE CHECK PASSED")
     }
   }
 }
