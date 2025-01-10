@@ -10,8 +10,8 @@ import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [ConceptCardTagHandler]. */
 const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
-const val CUSTOM_CONCEPT_CARD_SKILL_ID="skill_id-with-value"
-const val CUSTOM_CONCEPT_CARD_TEXT_VALUE="text-with-value"
+const val CUSTOM_CONCEPT_CARD_SKILL_ID = "skill_id-with-value"
+const val CUSTOM_CONCEPT_CARD_TEXT_VALUE = "text-with-value"
 
 // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
 class ConceptCardTagHandler(
