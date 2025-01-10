@@ -38,5 +38,6 @@ class FontScaleConfigurationUtil @Inject constructor() {
       ReadingTextSize.EXTRA_LARGE_TEXT_SIZE -> 1.4f
       else -> 1.0f
     }
+    
   }
 } 
