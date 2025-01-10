@@ -39,4 +39,4 @@ class FontScaleConfigurationUtil @Inject constructor() {
       else -> 1.0f
     }
   }
-}
+} 
