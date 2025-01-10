@@ -351,6 +351,7 @@ class CustomHtmlContentHandlerTest {
         "Third    paragraph"
     )
   }
+
   @Test
   fun testGetContentDescription_blockElements_preserveStructure() {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(

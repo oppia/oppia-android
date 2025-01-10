@@ -120,6 +120,7 @@ class PolicyPageTagHandlerTest {
 
     assertThat(policyTypeCaptor.value).isEqualTo(PolicyType.PRIVACY_POLICY)
   }
+
   @Test
   fun testGetContentDescription_withPolicyPageTag() {
     val contentDescription =

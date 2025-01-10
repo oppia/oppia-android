@@ -293,7 +293,7 @@ class LiTagHandler(
       setSpan(mark, length, length, Spanned.SPAN_MARK_MARK)
   }
 
-  override fun getContentDescription(attributes: Attributes): String? {
-    return null
+  override fun getContentDescription(attributes: Attributes): String {
+    return ""
   }
 }

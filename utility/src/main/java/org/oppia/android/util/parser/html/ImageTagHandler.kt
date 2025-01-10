@@ -103,9 +103,9 @@ class ImageTagHandler(
   }
 
   override fun getContentDescription(attributes: Attributes): String? {
-    val altValue = attributes.getJsonStringValue("alt-with-value")
-    return if (altValue != null) {
+    val altValue = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
+    return if (!altValue.isNullOrBlank()) {
       "Image illustrating $altValue"
-    } else null
+    } else ""
   }
 }

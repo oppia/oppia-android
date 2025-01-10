@@ -85,12 +85,9 @@ class PolicyPageTagHandler(
   }
 
   override fun getContentDescription(attributes: Attributes): String? {
-    val linkType = attributes.getJsonStringValue("link") ?: return null
-
-    return when (linkType) {
-      TERMS_OF_SERVICE_PAGE -> "Link to "
-      PRIVACY_POLICY_PAGE -> "Link to "
-      else -> null
+    return when (attributes.getJsonStringValue("link")) {
+      TERMS_OF_SERVICE_PAGE, PRIVACY_POLICY_PAGE -> "Link to "
+      else -> ""
     }
   }
 }
