@@ -330,6 +330,7 @@ class CustomHtmlContentHandlerTest {
 
     assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
   }
+
   @Test
   fun testGetContentDescription_whitespaceHandling_normalizedCorrectly() {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
@@ -375,6 +376,7 @@ class CustomHtmlContentHandlerTest {
         "Footer text"
     )
   }
+
   @Test
   fun testGetContentDescription_mixedContentTypes_handlesCorrectly() {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
@@ -417,6 +419,7 @@ class CustomHtmlContentHandlerTest {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
   }
+
   private class FakeContentDescriptionTagHandler(
     private val contentDesc: String
   ) : CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
@@ -426,8 +429,7 @@ class CustomHtmlContentHandlerTest {
       closeIndex: Int,
       output: Editable,
       imageRetriever: CustomHtmlContentHandler.ImageRetriever?
-    ) {
-    }
+    ) {}
 
     override fun getContentDescription(attributes: Attributes): String {
       return contentDesc
