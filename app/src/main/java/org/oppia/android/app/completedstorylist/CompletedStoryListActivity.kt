@@ -21,8 +21,8 @@ class CompletedStoryListActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val internalProfileId: Int = intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    completedStoryListActivityPresenter.handleOnCreate(internalProfileId)
+    val profileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    completedStoryListActivityPresenter.handleOnCreate(profileId)
   }
 
   companion object {
