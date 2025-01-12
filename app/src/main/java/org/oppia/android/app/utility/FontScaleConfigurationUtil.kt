@@ -23,9 +23,10 @@ class FontScaleConfigurationUtil @Inject constructor() {
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     windowManager!!.defaultDisplay.getMetrics(metrics)
     val scaledDensity = TypedValue.applyDimension(
-      TypedValue.COMPLEX_UNIT_SP, configuration.fontScale, metrics
-    )
-    metrics.density = scaledDensity / configuration.fontScale
+      TypedValue.COMPLEX_UNIT_SP, 1.0f, metrics
+    ) * configuration.fontScale
+    @Suppress("DEPRECATION")
+    metrics.scaledDensity = scaledDensity
     context.createConfigurationContext(configuration)
     context.resources.displayMetrics.setTo(metrics)
   }
@@ -39,4 +40,4 @@ class FontScaleConfigurationUtil @Inject constructor() {
       else -> 1.0f
     }
   }
-} 
+}
