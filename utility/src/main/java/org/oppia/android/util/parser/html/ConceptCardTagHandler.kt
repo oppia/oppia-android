@@ -10,12 +10,14 @@ import org.xml.sax.Attributes
 
 /** The custom tag corresponding to [ConceptCardTagHandler]. */
 const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
+const val CUSTOM_CONCEPT_CARD_SKILL_ID = "skill_id-with-value"
+const val CUSTOM_CONCEPT_CARD_TEXT_VALUE = "text-with-value"
 
 // https://mohammedlakkadshaw.com/blog/handling-custom-tags-in-android-using-html-taghandler.html/
 class ConceptCardTagHandler(
   private val listener: ConceptCardLinkClickListener,
   private val consoleLogger: ConsoleLogger
-) : CustomHtmlContentHandler.CustomTagHandler {
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -24,8 +26,8 @@ class ConceptCardTagHandler(
     imageRetriever: CustomHtmlContentHandler.ImageRetriever?
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
-    val skillId = attributes.getJsonStringValue("skill_id-with-value")
-    val text = attributes.getJsonStringValue("text-with-value")
+    val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
+    val text = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_TEXT_VALUE)
     if (skillId != null && text != null) {
       val spannableBuilder = SpannableStringBuilder(text)
       spannableBuilder.setSpan(
@@ -47,5 +49,13 @@ class ConceptCardTagHandler(
      * specified skill ID.
      */
     fun onConceptCardLinkClicked(view: View, skillId: String)
+  }
+
+  override fun getContentDescription(attributes: Attributes): String? {
+    val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
+    val text = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_TEXT_VALUE)
+    return if (!skillId.isNullOrBlank() && !text.isNullOrBlank()) {
+      "$text concept card $skillId"
+    } else ""
   }
 }
