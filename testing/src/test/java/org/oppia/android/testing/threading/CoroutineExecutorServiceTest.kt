@@ -56,8 +56,8 @@ import javax.inject.Singleton
  * as expected.
  *
  * Many of these tests also depend on real time, which means different performing machines may
- * introduce flakes when running these tests. Please reach out to oppia-android-dev@googlegroups.com
- * if you find yourself in this situation.
+ * introduce flakes when running these tests. Please reach out on GitHub Discussions if you find
+ * yourself in this situation.
  *
  * For developers changing this suite: note that an n-threaded real dispatcher is used to test
  * blocking operations since coordinating multiple co-dependent test dispatchers creates a circular

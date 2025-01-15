@@ -15,7 +15,7 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       MarginLayoutParamsCompat.setMarginStart(params, (int) marginStart);
-      view.requestLayout();
+      view.setLayoutParams(params);
     }
   }
 
@@ -25,7 +25,7 @@ public final class MarginBindingAdapters {
     if (view.getLayoutParams() instanceof MarginLayoutParams) {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       MarginLayoutParamsCompat.setMarginEnd(params, (int) marginEnd);
-      view.requestLayout();
+      view.setLayoutParams(params);
     }
   }
 
@@ -36,7 +36,6 @@ public final class MarginBindingAdapters {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       params.topMargin = (int) marginTop;
       view.setLayoutParams(params);
-      view.requestLayout();
     }
   }
 
@@ -47,22 +46,6 @@ public final class MarginBindingAdapters {
       MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
       params.bottomMargin = (int) marginBottom;
       view.setLayoutParams(params);
-      view.requestLayout();
-    }
-  }
-
-  /** Used to set a margin for views. */
-  @BindingAdapter("layoutMargin")
-  public static void setLayoutMargin(@NonNull View view, float margin) {
-    if (view.getLayoutParams() instanceof MarginLayoutParams) {
-      MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-      params.setMargins(
-          (int) margin,
-          (int) margin,
-          (int) margin,
-          (int) margin
-      );
-      view.requestLayout();
     }
   }
 }

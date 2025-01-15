@@ -3,6 +3,7 @@ package org.oppia.android.app.completedstorylist
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.CompletedStory
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.shim.IntentFactoryShim
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.translation.TranslationController
@@ -10,7 +11,7 @@ import org.oppia.android.domain.translation.TranslationController
 /** Completed story view model for the recycler view in [CompletedStoryListFragment]. */
 class CompletedStoryItemViewModel(
   private val activity: AppCompatActivity,
-  private val internalProfileId: Int,
+  private val profileId: ProfileId,
   val completedStory: CompletedStory,
   val entityType: String,
   private val intentFactoryShim: IntentFactoryShim,
@@ -32,7 +33,7 @@ class CompletedStoryItemViewModel(
   /** Called when user clicks on CompletedStoryItem. */
   fun onCompletedStoryItemClicked() {
     routeToTopicPlayStory(
-      internalProfileId,
+      profileId,
       completedStory.classroomId,
       completedStory.topicId,
       completedStory.storyId
@@ -40,14 +41,14 @@ class CompletedStoryItemViewModel(
   }
 
   override fun routeToTopicPlayStory(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
   ) {
     val intent = intentFactoryShim.createTopicPlayStoryActivityIntent(
       activity.applicationContext,
-      internalProfileId,
+      profileId.internalId,
       classroomId,
       topicId,
       storyId

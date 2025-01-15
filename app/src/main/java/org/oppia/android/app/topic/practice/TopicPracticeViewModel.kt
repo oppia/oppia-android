@@ -26,13 +26,10 @@ class TopicPracticeViewModel @Inject constructor(
 ) : ObservableViewModel() {
   private val itemViewModelList: MutableList<TopicPracticeItemViewModel> = ArrayList()
   private lateinit var topicId: String
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   private val topicResultLiveData: LiveData<AsyncResult<EphemeralTopic>> by lazy {
-    topicController.getTopic(
-      ProfileId.newBuilder().setInternalId(internalProfileId).build(),
-      topicId
-    ).toLiveData()
+    topicController.getTopic(profileId, topicId).toLiveData()
   }
 
   private val topicLiveData: LiveData<EphemeralTopic> by lazy { getTopicList() }
@@ -49,8 +46,8 @@ class TopicPracticeViewModel @Inject constructor(
     this.topicId = topicId
   }
 
-  fun setInternalProfileId(internalProfileId: Int) {
-    this.internalProfileId = internalProfileId
+  fun setInternalProfileId(profileId: ProfileId) {
+    this.profileId = profileId
   }
 
   private fun processTopicResult(ephemeralResult: AsyncResult<EphemeralTopic>): EphemeralTopic {
