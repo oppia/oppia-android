@@ -16,7 +16,7 @@ interface IntentFactoryShim {
   /**
    * Creates a [TopicActivity] intent for [PromotedStoryViewModel] and passes necessary string
    * data.
-   * */
+   */
   fun createTopicPlayStoryActivityIntent(
     context: Context,
     internalProfileId: Int,
@@ -27,7 +27,7 @@ interface IntentFactoryShim {
 
   /**
    * Creates a [TopicActivity] intent which opens info-tab.
-   * */
+   */
   fun createTopicActivityIntent(
     context: Context,
     internalProfileId: Int,
