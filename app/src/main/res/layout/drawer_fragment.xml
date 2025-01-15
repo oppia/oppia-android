@@ -71,6 +71,7 @@
             android:contentDescription="@string/developer_options_icon_content_description" />
 
           <TextView
+            android:id="@+id/developer_options_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -103,6 +104,7 @@
             android:contentDescription="@string/administrator_controls_icon_content_description" />
 
           <TextView
+            android:id="@+id/administrator_controls_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

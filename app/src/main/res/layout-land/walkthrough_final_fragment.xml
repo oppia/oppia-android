@@ -52,6 +52,7 @@
         app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
 
         <TextView
+          android:id="@+id/walkthrough_final_no_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
@@ -85,6 +86,7 @@
         app:contentPadding="@dimen/walkthrough_final_fragment_card_content_padding">
 
         <TextView
+          android:id="@+id/walkthrough_final_yes_text_view"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
