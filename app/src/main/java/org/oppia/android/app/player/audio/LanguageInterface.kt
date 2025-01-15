@@ -11,7 +11,7 @@ interface LanguageInterface {
   /**
    * Returns whether the user is actively seeking a new audio position, that is, dragging the
    * knob to a new position in the audio track.
-   * */
+   */
   fun getUserIsSeeking(): Boolean
 
   /** Returns the position of the knob on the audio track. */
