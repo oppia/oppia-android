@@ -102,7 +102,7 @@ class TextViewStyleCheckTest {
         <item name="android:textSize">16sp</item>
       </style>
     </resources>
-    """.trimIndent()
+      """.trimIndent()
 
     val layoutWithLegacyAttributes =
       """
@@ -118,7 +118,7 @@ class TextViewStyleCheckTest {
         android:paddingLeft="16dp"
         android:layout_marginRight="8dp"/>
     </LinearLayout>
-    """.trimIndent()
+      """.trimIndent()
 
     createStylesFile(validStyle)
     createLayoutFile(layoutWithLegacyAttributes)
@@ -127,7 +127,10 @@ class TextViewStyleCheckTest {
 
     val output = outContent.toString()
     assertThat(output).contains("WARNING: Hardcoded left/right attribute 'android:paddingLeft'")
-    assertThat(output).contains("WARNING: Hardcoded left/right attribute 'android:layout_marginRight'")
+    assertThat(output).contains(
+      "WARNING: Hardcoded left/right attribute" +
+        " 'android:layout_marginRight'"
+    )
     assertThat(output).doesNotContain(TEXTVIEW_STYLE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
 

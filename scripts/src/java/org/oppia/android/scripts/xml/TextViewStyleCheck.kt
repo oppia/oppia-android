@@ -60,13 +60,13 @@ private class TextViewStyleCheck {
     val styleAttribute = element.attributes.getNamedItem("style")?.nodeValue
     val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue ?: "NO ID"
 
-    if(idAttribute in attributeIds) return
+    if (idAttribute in attributeIds) return
 
     if (styleAttribute.isNullOrBlank()) {
-        styleValidationIssues.add(
-          "ERROR: Missing style attribute in file:" +
-            " $filePath for TextView ($idAttribute)"
-        )
+      styleValidationIssues.add(
+        "ERROR: Missing style attribute in file:" +
+          " $filePath for TextView ($idAttribute)"
+      )
     }
 
     checkForLegacyDirectionality(element, filePath, idAttribute)
@@ -215,4 +215,4 @@ private val attributeIds = listOf(
   "@+id/chapter_title",
   "@+id/options_activity_selected_options_title",
   "@+id/view_all_text_view"
-  )
+)
