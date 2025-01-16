@@ -165,6 +165,7 @@ kt_android_library(
     visibility = [
         "//app/src/main/java/org/oppia/android/app/activity:__pkg__",
         "//app/src/main/java/org/oppia/android/app/application:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing/junit:__pkg__",
     ],
     deps = [
         ":app_language_application_injector",

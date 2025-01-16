@@ -5690,11 +5690,12 @@ class StateFragmentTest {
 
   private fun waitForImageViewInteractionToFullyLoad() {
     // TODO(#1523): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
-    waitForTheView(
-      allOf(
-        withId(R.id.image_click_interaction_image_view),
-        WithNonZeroDimensionsMatcher()
-      )
+    onView(isRoot()).perform(
+      waitForMatch(
+        allOf(
+          withId(R.id.image_click_interaction_image_view),
+          WithNonZeroDimensionsMatcher()
+      ), 30000L)
     )
   }
 
@@ -5832,10 +5833,6 @@ class StateFragmentTest {
     verifySubmitAnswerButtonIsDisabled()
   }
 
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
@@ -5901,12 +5898,6 @@ class StateFragmentTest {
     return ApplicationProvider.getApplicationContext<TestApplication>().isOnRobolectric()
   }
 
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
   /**
    * Perform action of waiting for a specific matcher to finish. Adapted from:
    * https://stackoverflow.com/a/22563297/3689782.

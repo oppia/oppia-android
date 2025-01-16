@@ -22,6 +22,7 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":define_app_language_locale_context",
+        "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
         "//model/src/main/proto:languages_java_proto_lite",

@@ -1150,7 +1150,6 @@ class ExplorationActivityTest {
       onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
 
-      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
@@ -1380,7 +1379,6 @@ class ExplorationActivityTest {
       onView(withId(R.id.audio_bar_container)).check(matches(isDisplayed()))
       onView(withId(R.id.audio_fragment_voiceover_progressbar)).check(matches(isDisplayed()))
 
-      waitForTheView(withDrawable(R.drawable.ic_pause_circle_filled_white_24dp))
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withDrawable(R.drawable.ic_pause_circle_filled_white_24dp)
@@ -2750,10 +2748,6 @@ class ExplorationActivityTest {
       "exploration/$explorationId/assets/audio/$audioFileName"
   }
 
-  private fun waitForTheView(viewMatcher: Matcher<View>): ViewInteraction {
-    return onView(isRoot()).perform(waitForMatch(viewMatcher, 30000L))
-  }
-
   private fun updateContentLanguage(profileId: ProfileId, language: OppiaLanguage) {
     val updateProvider = translationController.updateWrittenTranslationContentLanguage(
       profileId,
@@ -2813,49 +2807,6 @@ class ExplorationActivityTest {
       scrollToHolder(StateViewHolderTypeMatcher(viewType))
     )
     testCoroutineDispatchers.runCurrent()
-  }
-
-  // TODO(#59): Remove these waits once we can ensure that the production executors are not depended on in tests.
-  //  Sleeping is really bad practice in Espresso tests, and can lead to test flakiness. It shouldn't be necessary if we
-  //  use a test executor service with a counting idle resource, but right now Gradle mixes dependencies such that both
-  //  the test and production blocking executors are being used. The latter cannot be updated to notify Espresso of any
-  //  active coroutines, so the test attempts to assert state before it's ready. This artificial delay in the Espresso
-  //  thread helps to counter that.
-  /**
-   * Perform action of waiting for a specific matcher to finish. Adapted from:
-   * https://stackoverflow.com/a/22563297/3689782.
-   */
-  private fun waitForMatch(viewMatcher: Matcher<View>, millis: Long): ViewAction {
-    return object : ViewAction {
-      override fun getDescription(): String {
-        return "wait for a specific view with matcher <$viewMatcher> during $millis millis."
-      }
-
-      override fun getConstraints(): Matcher<View> {
-        return isRoot()
-      }
-
-      override fun perform(uiController: UiController?, view: View?) {
-        checkNotNull(uiController)
-        uiController.loopMainThreadUntilIdle()
-        val startTime = System.currentTimeMillis()
-        val endTime = startTime + millis
-
-        do {
-          if (TreeIterables.breadthFirstViewTraversal(view).any { viewMatcher.matches(it) }) {
-            return
-          }
-          uiController.loopMainThreadForAtLeast(50)
-        } while (System.currentTimeMillis() < endTime)
-
-        // Couldn't match in time.
-        throw PerformException.Builder()
-          .withActionDescription(description)
-          .withViewDescription(HumanReadables.describe(view))
-          .withCause(TimeoutException())
-          .build()
-      }
-    }
   }
 
   /**
