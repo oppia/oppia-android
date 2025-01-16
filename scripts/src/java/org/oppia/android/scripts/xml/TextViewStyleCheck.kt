@@ -99,23 +99,20 @@ private class TextViewStyleCheck {
   }
 
   private fun printResults() {
-    // Print warnings first
     directionalityWarnings.forEach { println(it) }
 
-    // Then print any validation issues and determine if the check passed
     if (styleValidationIssues.isNotEmpty()) {
       styleValidationIssues.forEach { println(it) }
       throw Exception("TEXTVIEW STYLE CHECK FAILED")
     } else if (directionalityWarnings.isEmpty()) {
-      // Only print success if there are no warnings or errors
       println("TEXTVIEW STYLE CHECK PASSED")
     }
   }
 }
 
+// Known exceptions that currently lack a style and are being tracked for fixes.
 private val attributeIds = listOf(
   "@+id/developer_options_text_view",
-  "@+id/administrator_controls_text_view",
   "@+id/onboarding_language_text_view",
   "@+id/walkthrough_final_no_text_view",
   "@+id/walkthrough_final_yes_text_view",
