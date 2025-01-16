@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library provides data to the rest of the application.
 """

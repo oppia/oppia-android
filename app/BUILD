@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains the app's core source files and functionality.
 Note that:

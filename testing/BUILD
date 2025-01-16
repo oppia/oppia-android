@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains fake objects used for testing as well as tests for these objects.
 """

@@ -1,5 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
-
 load("@dagger//:workspace_defs.bzl", "dagger_rules")
 load("//:build_flavors.bzl", "AVAILABLE_FLAVORS", "define_oppia_aab_binary_flavor", "transform_android_manifest")
 load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE")

@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Library for providing test-only HTTP mocks for the app's networking layer.
 """

@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains utilities that all other modules, minus model, depend on.
 """

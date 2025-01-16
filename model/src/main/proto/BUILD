@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 This library contains all protos used in the app and is a dependency for all other modules.
 In Bazel, proto files are built using the oppia_proto_library() and java_lite_proto_library() rules.

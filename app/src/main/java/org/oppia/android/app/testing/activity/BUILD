@@ -1,4 +1,3 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Package for test-only utilities to simplify accessing the activity & fragment parts of the Dagger
 graph, and to simplify UI arrangement for tests that require an activity (such as fragments) or
