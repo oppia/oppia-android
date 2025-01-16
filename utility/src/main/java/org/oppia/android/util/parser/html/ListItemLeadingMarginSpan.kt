@@ -7,10 +7,8 @@ import android.graphics.RectF
 import android.text.Layout
 import android.text.Spanned
 import android.text.style.LeadingMarginSpan
-import androidx.core.view.ViewCompat
 import org.oppia.android.util.R
 import org.oppia.android.util.R.dimen.spacing_before_bullet
-import org.oppia.android.util.locale.OppiaLocale
 
 // TODO(#562): Add screenshot tests to check whether the drawing logic works correctly on all devices.
 
@@ -34,17 +32,12 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     override val parent: ListItemLeadingMarginSpan?,
     context: Context,
     private val indentationLevel: Int,
-    private val displayLocale: OppiaLocale.DisplayLocale,
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val bulletRadius = resources.getDimensionPixelSize(R.dimen.bullet_radius)
 
     private val bulletDiameter by lazy { bulletRadius * 2 }
     private val baseMargin = context.resources.getDimensionPixelSize((spacing_before_bullet))
-
-    private val isRtl by lazy {
-      displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
-    }
 
     override fun drawLeadingMargin(
       canvas: Canvas,
@@ -114,17 +107,10 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
   class OlSpan(
     override val parent: ListItemLeadingMarginSpan?,
     context: Context,
-    private val numberedItemPrefix: String,
-    private val longestNumberedItemPrefix: String,
-    private val displayLocale: OppiaLocale.DisplayLocale
+    private val numberedItemPrefix: String
   ) : ListItemLeadingMarginSpan() {
-    private val resources = context.resources
     private val baseMargin =
       context.resources.getDimensionPixelSize((R.dimen.spacing_before_number_prefix))
-
-    // Try to use a computed margin, but otherwise guess if there's no guaranteed spacing.
-    private var computedLeadingMargin =
-      2 * longestNumberedItemPrefix.length + baseMargin
 
     override fun drawLeadingMargin(
       canvas: Canvas,
