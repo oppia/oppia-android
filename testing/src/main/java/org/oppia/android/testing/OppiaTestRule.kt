@@ -25,10 +25,9 @@ class OppiaTestRule : TestRule {
         val targetPlatforms = description.getTargetPlatforms()
         val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
-        val currentEnvironment = getCurrentBuildEnvironment()
 
         when {
-          currentPlatform in targetPlatforms && currentEnvironment in targetEnvironments -> {
+          currentPlatform in targetPlatforms -> {
             // Only run this test if it's targeting the current platform & environment.
             if (currentPlatform == TestPlatform.ESPRESSO && areAccessibilityChecksEnabled) {
               AccessibilityChecks.enable().apply {
@@ -53,12 +52,6 @@ class OppiaTestRule : TestRule {
                 " $currentPlatform"
             )
           }
-          currentEnvironment !in targetEnvironments -> {
-            throw AssumptionViolatedException(
-              "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
-                " $currentEnvironment"
-            )
-          }
           else -> throw AssertionError("Reached impossible state in test rule")
         }
       }
@@ -70,15 +63,6 @@ class OppiaTestRule : TestRule {
       TestPlatform.ROBOLECTRIC
     } else {
       TestPlatform.ESPRESSO
-    }
-  }
-
-  private fun getCurrentBuildEnvironment(): BuildEnvironment {
-    val command = System.getProperty("sun.java.command") ?: ""
-    return if (command.contains("bazel", ignoreCase = true)) {
-      BuildEnvironment.BAZEL
-    } else {
-      BuildEnvironment.GRADLE
     }
   }
 
@@ -99,24 +83,6 @@ class OppiaTestRule : TestRule {
 
     private fun <T> Class<T>.getTargetTestPlatforms(): List<TestPlatform>? {
       return getAnnotation(RunOn::class.java)?.testPlatforms?.toList()
-    }
-
-    private fun List<BuildEnvironment>.toPluralEnvironmentDescription(): String {
-      return if (size > 1) "environments ${this.joinToString()}" else "environment ${this.first()}"
-    }
-
-    private fun Description?.getTargetEnvironments(): List<BuildEnvironment> {
-      val methodBuildEnvironments = this?.getTargetBuildEnvironments()
-      val classBuildEnvironments = this?.testClass?.getTargetBuildEnvironments()
-      return methodBuildEnvironments ?: classBuildEnvironments ?: BuildEnvironment.values().toList()
-    }
-
-    private fun Description.getTargetBuildEnvironments(): List<BuildEnvironment>? {
-      return getAnnotation(RunOn::class.java)?.buildEnvironments?.toList()
-    }
-
-    private fun <T> Class<T>.getTargetBuildEnvironments(): List<BuildEnvironment>? {
-      return getAnnotation(RunOn::class.java)?.buildEnvironments?.toList()
     }
 
     private fun Description?.areAccessibilityChecksEnabled(): Boolean {

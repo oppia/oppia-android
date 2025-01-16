@@ -37,7 +37,6 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -829,9 +828,7 @@ class ProfileManagementControllerTest {
     assertThat(profile.readingTextSize).isEqualTo(MEDIUM_TEXT_SIZE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testGetAudioLanguage_initialProfileCreation_defaultsToEnglish() {
     setUpTestApplicationComponent()
 
@@ -894,9 +891,7 @@ class ProfileManagementControllerTest {
     monitor.ensureNextResultIsSuccess()
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToHindi_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -910,9 +905,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(HINDI_AUDIO_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToBrazilianPortuguese_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -926,9 +919,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(BRAZILIAN_PORTUGUESE_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabic_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -942,9 +933,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(ARABIC_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToNigerianPidgin_updateChangesAudioLanguage() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -958,9 +947,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(NIGERIAN_PIDGIN_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateToArabicThenEnglish_updateChangesAudioLanguageToEnglish() {
     setUpTestApplicationComponent()
     addTestProfiles()
@@ -977,9 +964,7 @@ class ProfileManagementControllerTest {
     assertThat(audioLanguage).isEqualTo(ENGLISH_AUDIO_LANGUAGE)
   }
 
-  // Requires language configurations.
   @Test
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testUpdateAudioLanguage_updateProfile1ToArabic_profile2IsUnchanged() {
     setUpTestApplicationComponent()
     addTestProfiles()

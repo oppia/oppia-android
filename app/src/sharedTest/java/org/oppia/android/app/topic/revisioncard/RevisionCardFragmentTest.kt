@@ -106,7 +106,6 @@ import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
@@ -769,7 +768,7 @@ class RevisionCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_englishContentLang_switchToArabic_pageContentsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launch<RevisionCardActivity>(
@@ -794,7 +793,7 @@ class RevisionCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testRevisionCard_withArabicContentLang_pageContentsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launch<RevisionCardActivity>(

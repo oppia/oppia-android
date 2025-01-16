@@ -122,7 +122,6 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -1735,7 +1734,7 @@ class HomeActivityTest {
 
   // TODO(#3840): Make this test work on Espresso & Robolectric.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_defaultState_hasEnglishDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
@@ -1843,7 +1842,7 @@ class HomeActivityTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_initialArabicContext_hasArabicDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
@@ -1918,7 +1917,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_initialBrazilianPortugueseContext_hasPortugueseDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.
@@ -1966,7 +1965,7 @@ class HomeActivityTest {
     appStringAndroidLanguageId = "pcm",
     appStringAndroidRegionId = "NG"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testHomeActivity_initialNigerianPidginContext_hasNaijaDisplayLocale() {
     setUpTestWithOnboardingV2Disabled()
     // Ensure the system locale matches the initial locale context.

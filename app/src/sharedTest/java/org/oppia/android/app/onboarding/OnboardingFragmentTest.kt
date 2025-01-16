@@ -93,7 +93,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -797,7 +796,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_englishLocale_englishIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
 
@@ -834,7 +833,7 @@ class OnboardingFragmentTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_arabicLocale_arabicIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -879,7 +878,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_portugueseLocale_portugueseIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -925,7 +924,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "pcm",
     appStringAndroidRegionId = "NG"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_nigeriaLocale_naijaIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
@@ -971,7 +970,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "fr-CA",
     appStringAndroidRegionId = "CA"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_unsupportedLocale_englishIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(CANADA_FRENCH_LOCALE)
@@ -1004,7 +1003,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_languageSelectionChanged_languageIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1032,7 +1031,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_languageSelectionChanged_configChange_languageIsUpdated() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1059,7 +1058,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_onboardingV2_orientationChange_languageSelectionIsRestored() {
     setUpTestWithOnboardingV2Enabled()
     launch(OnboardingActivity::class.java).use { scenario ->

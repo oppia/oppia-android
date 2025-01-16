@@ -99,7 +99,6 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RichTextViewMatcher.Companion.containsRichText
 import org.oppia.android.testing.RunOn
@@ -339,7 +338,7 @@ class ConceptCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testConceptCardFragment_englishContentLang_switchToArabic_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchTestActivity().use {
@@ -358,7 +357,7 @@ class ConceptCardFragmentTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testConceptCardFragment_profileWithArabicContentLang_explanationIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchTestActivity().use {

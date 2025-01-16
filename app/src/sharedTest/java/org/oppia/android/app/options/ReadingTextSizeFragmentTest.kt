@@ -76,7 +76,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -183,10 +182,8 @@ class ReadingTextSizeFragmentTest {
     }
   }
 
-  // Requires language configurations.
   @Test
   @Config(qualifiers = "sw600dp")
-  @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
   fun testTextSize_changeTextSizeToMedium_mediumItemIsSelected() {
     launch<OptionsActivity>(createOptionActivityIntent(0, true)).use {
       testCoroutineDispatchers.runCurrent()

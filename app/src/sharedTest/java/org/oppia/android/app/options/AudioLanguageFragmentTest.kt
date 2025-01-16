@@ -86,7 +86,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -387,7 +386,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_languageSelectionChanged_selectionIsUpdated() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
@@ -417,7 +416,7 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)

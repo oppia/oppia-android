@@ -81,7 +81,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -470,7 +469,7 @@ class ListItemLeadingMarginSpanTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testDrawLeadingMargin_forNestedBulletItems_inRtl_isDrawnCorrectlyWithIndentation() {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
@@ -581,7 +580,7 @@ class ListItemLeadingMarginSpanTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = "en"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testDrawLeadingMargin_forNestedBulletItems_inLtr_isDrawnCorrectlyWithIndentation() {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
@@ -693,7 +692,7 @@ class ListItemLeadingMarginSpanTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testDrawLeadingMargin_forNestedNumberedListItems_inRtl_isDrawnCorrectlyWithIndentation() {
     val displayLocale = createDisplayLocaleImpl(EGYPT_ARABIC_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels
@@ -811,7 +810,7 @@ class ListItemLeadingMarginSpanTest {
     appStringIetfTag = "en",
     appStringAndroidLanguageId = "en"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testDrawLeadingMargin_forNestedNumberedListItems_inLtr_isDrawnCorrectlyWithIndentation() {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val width: Int = context.resources.displayMetrics.widthPixels

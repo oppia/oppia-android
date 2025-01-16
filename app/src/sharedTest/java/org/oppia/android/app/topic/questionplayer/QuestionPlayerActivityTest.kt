@@ -123,7 +123,6 @@ import org.oppia.android.domain.question.WrongAnswerScorePenalty
 import org.oppia.android.domain.topic.FRACTIONS_SKILL_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -411,7 +410,7 @@ class QuestionPlayerActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_profileWithArabicContentLang_contentIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
@@ -500,7 +499,7 @@ class QuestionPlayerActivityTest {
 
   // TODO(#3858): Enable for Espresso.
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testQuestionPlayer_profileWithArabicContentLang_showHint_explanationInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForSkillList(SKILL_ID_LIST).use {
