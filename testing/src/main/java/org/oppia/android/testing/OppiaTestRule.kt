@@ -23,7 +23,6 @@ class OppiaTestRule : TestRule {
       override fun evaluate() {
         val areAccessibilityChecksEnabled = description.areAccessibilityChecksEnabled()
         val targetPlatforms = description.getTargetPlatforms()
-        val targetEnvironments = description.getTargetEnvironments()
         val currentPlatform = getCurrentPlatform()
 
         when {
