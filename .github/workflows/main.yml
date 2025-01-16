@@ -6,11 +6,6 @@ name: Unit Tests (Robolectric -- Gradle)
 # events or push events in the develop branch.
 on:
   workflow_dispatch:
-  pull_request:
-  push:
-    branches:
-      # Push events on develop branch
-      - develop
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
