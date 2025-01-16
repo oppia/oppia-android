@@ -56,7 +56,6 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_2
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor

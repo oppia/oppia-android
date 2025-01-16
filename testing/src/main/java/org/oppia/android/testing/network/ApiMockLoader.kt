@@ -2,7 +2,6 @@ package org.oppia.android.testing.network
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import java.io.InputStream
 
 /** Utility for loading mock data for tests. */
 class ApiMockLoader {

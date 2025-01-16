@@ -57,7 +57,7 @@ private const val USAGE_STRING =
  *
  * Example:
  *   bazel run //scripts:transform_android_manifest -- $(pwd) \\
- *     $(pwd)/app/src/main/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 6 \\
+ *     $(pwd)/AndroidManifest.xml $(pwd)/TransformedAndroidManifest.xml alpha 0 6 6 \\
  *     .app.application.alpha.AlphaOppiaApplication origin/develop
  */
 fun main(args: Array<String>) {

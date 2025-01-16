@@ -15,13 +15,11 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleController
-import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
-import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
-import org.oppia.android.app.translation.AppLanguageApplicationInjector
-import org.oppia.android.app.translation.AppLanguageLocaleHandler
 
 /**
  * JUnit rule for automatically initializing the application's locale in app layer tests. Note that

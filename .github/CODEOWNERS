@@ -303,7 +303,7 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 
 # Primary app manifest. Eventually, this will be split up so that only the
 # sensitive portions require owners approval.
-/app/src/main/AndroidManifest.xml @oppia/owners
+AndroidManifest.xml @oppia/owners
 
 # Top-level user-facing major/minor versions, and the version codes used to
 # ensure users receive the correct build when installing it from Play Store.

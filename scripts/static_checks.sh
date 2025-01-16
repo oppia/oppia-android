@@ -69,7 +69,7 @@ echo ""
 echo "********************************"
 echo "Running Accessibility label checks"
 echo "********************************"
-bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
+bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb AndroidManifest.xml
 echo ""
 
 # Run KDoc Validation Check

@@ -1443,8 +1443,7 @@ class RegexPatternValidationCheckTest {
           </application>
         </manifest>
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main")
-    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    val stringFilePath = "AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows<Exception>() { runScript() }
@@ -1471,8 +1470,7 @@ class RegexPatternValidationCheckTest {
           </application>
         </manifest>
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main")
-    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    val stringFilePath = "AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows<Exception>() { runScript() }
@@ -1499,8 +1497,7 @@ class RegexPatternValidationCheckTest {
           </application>
         </manifest>
       """.trimIndent()
-    tempFolder.newFolder("testfiles", "app", "src", "main")
-    val stringFilePath = "app/src/main/AndroidManifest.xml"
+    val stringFilePath = "AndroidManifest.xml"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
 
     val exception = assertThrows<Exception>() { runScript() }

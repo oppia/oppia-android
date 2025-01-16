@@ -106,7 +106,7 @@ class AccessibilityLabelCheckTest {
       """
       Accessibility label missing for Activities:
       - $activityRelativePath
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -148,7 +148,7 @@ class AccessibilityLabelCheckTest {
       """
       Accessibility label missing for Activities:
       - $activityRelativePath
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -186,7 +186,7 @@ class AccessibilityLabelCheckTest {
     tempFolder.newFolder(
       "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
     )
-    val appManifestPath = "app/src/main/AndroidManifest.xml"
+    val appManifestPath = "AndroidManifest.xml"
     val splashManifestPath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
     val appManifestFile = tempFolder.newFile("testfiles/$appManifestPath")
     val splashManifestFile = tempFolder.newFile("testfiles/$splashManifestPath")
@@ -235,7 +235,7 @@ class AccessibilityLabelCheckTest {
     tempFolder.newFolder(
       "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
     )
-    val appManifestPath = "app/src/main/AndroidManifest.xml"
+    val appManifestPath = "AndroidManifest.xml"
     val splashManifestPath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
     val appManifestFile = tempFolder.newFile("testfiles/$appManifestPath")
     val splashManifestFile = tempFolder.newFile("testfiles/$splashManifestPath")
@@ -261,7 +261,7 @@ class AccessibilityLabelCheckTest {
       Accessibility label missing for Activities:
       - $appActivityPath
       - $splashActivityPath
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -299,7 +299,7 @@ class AccessibilityLabelCheckTest {
     tempFolder.newFolder(
       "testfiles", "app", "src", "main", "java", "org", "oppia", "android", "splash"
     )
-    val appManifestPath = "app/src/main/AndroidManifest.xml"
+    val appManifestPath = "AndroidManifest.xml"
     val splashManifestPath = "app/src/main/java/org/oppia/android/splash/AndroidManifest.xml"
     val appManifestFile = tempFolder.newFile("testfiles/$appManifestPath")
     val splashManifestFile = tempFolder.newFile("testfiles/$splashManifestPath")
@@ -329,7 +329,7 @@ class AccessibilityLabelCheckTest {
       - $fourthAppActivityPath
       - $thirdAppActivityPath
       - $splashActivityPath
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)
@@ -346,7 +346,7 @@ class AccessibilityLabelCheckTest {
       </manifest>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main")
-    val tempFileRelativePath = "app/src/main/AndroidManifest.xml"
+    val tempFileRelativePath = "AndroidManifest.xml"
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
@@ -380,7 +380,7 @@ class AccessibilityLabelCheckTest {
       </manifest>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main")
-    val tempFileRelativePath = "app/src/main/AndroidManifest.xml"
+    val tempFileRelativePath = "AndroidManifest.xml"
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
     val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
@@ -422,7 +422,7 @@ class AccessibilityLabelCheckTest {
       </manifest>
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main")
-    val tempFileRelativePath = "app/src/main/AndroidManifest.xml"
+    val tempFileRelativePath = "AndroidManifest.xml"
     val manifestFile = tempFolder.newFile("testfiles/$tempFileRelativePath")
     manifestFile.writeText(testContent)
     val activityPath = "app/src/main/java/org/oppia/android/app/home/SplashActivity"
@@ -450,10 +450,10 @@ class AccessibilityLabelCheckTest {
       Redundant exemptions:
       - app/src/main/java/org/oppia/android/app/home/HomeActivity
       Please remove them from scripts/assets/accessibility_label_exemptions.textproto
-      
+
       Accessibility label missing for Activities:
       - $activityPath
-      
+
       $wikiReferenceNote
       """.trimIndent()
     assertThat(outContent.toString().trim()).isEqualTo(failureMessage)

@@ -17,7 +17,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
@@ -5695,7 +5694,9 @@ class StateFragmentTest {
         allOf(
           withId(R.id.image_click_interaction_image_view),
           WithNonZeroDimensionsMatcher()
-      ), 30000L)
+        ),
+        30000L
+      )
     )
   }
 
