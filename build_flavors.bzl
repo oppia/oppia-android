@@ -42,7 +42,7 @@ _PRODUCTION_PROGUARD_SPECS = [
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
 _FLAVOR_METADATA = {
     "dev": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 34,
         "multidex": "native",
@@ -56,7 +56,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "dev_kitkat": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 34,
         "multidex": "manual_main_dex",
@@ -71,7 +71,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "alpha": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 34,
         "multidex": "native",
@@ -85,7 +85,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
     "alpha_kitkat": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 34,
         "multidex": "manual_main_dex",
@@ -100,7 +100,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
     "beta": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 34,
         "multidex": "native",
@@ -114,7 +114,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.beta.BetaOppiaApplication",
     },
     "ga": {
-        "manifest": "//app:src/main/AndroidManifest.xml",
+        "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 34,
         "multidex": "native",

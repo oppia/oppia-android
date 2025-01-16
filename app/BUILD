@@ -20,8 +20,6 @@ package(default_visibility = [
     "//utility:__subpackages__",
 ])
 
-exports_files(["src/main/AndroidManifest.xml"])
-
 # Corresponds to being accessible to all app layer targets.
 package_group(
     name = "app_visibility",
@@ -568,7 +566,7 @@ android_library(
     name = "resources",
     custom_package = "org.oppia.android.app",
     exports_manifest = True,
-    manifest = "src/main/AndroidManifest.xml",
+    manifest = "//:AndroidManifest.xml",
     resource_files = glob(
         ["src/main/res/**"],
         exclude = DATABINDING_LAYOUTS,

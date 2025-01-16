@@ -5,6 +5,9 @@ load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_DEV_KITKAT_VERSI
 # This is exported here since config/ isn't a Bazel package.
 exports_files(["config/kitkat_main_dex_class_list.txt"])
 
+# TODO(#1607): Ensure app module libraries don't require directly depending on AndroidManifest.xml.
+exports_files(["AndroidManifest.xml"])
+
 # Corresponds to being accessible to all Oppia targets. This should be used for production APIs &
 # modules that may be used both in production targets and in tests.
 package_group(
@@ -70,13 +73,12 @@ package_group(
     ],
 )
 
-# TODO(#1640): Move binary manifest to top-level package post-Gradle.
 [
     transform_android_manifest(
         name = "oppia_apk_%s_transformed_manifest" % apk_flavor_metadata["flavor"],
         application_relative_qualified_class = ".app.application.dev.DeveloperOppiaApplication",
         build_flavor = apk_flavor_metadata["flavor"],
-        input_file = "//app:src/main/AndroidManifest.xml",
+        input_file = "AndroidManifest.xml",
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
         output_file = "AndroidManifest_transformed_%s.xml" % apk_flavor_metadata["flavor"],
