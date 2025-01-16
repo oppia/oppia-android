@@ -78,7 +78,6 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.GenericViewMatchers.Companion.withOpaqueBackground
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -122,8 +121,6 @@ class WalkthroughTopicListFragmentTest {
   lateinit var context: Context
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var testEnvironmentConfig: TestEnvironmentConfig
 
   @Before
   fun setUp() {
@@ -219,38 +216,6 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
-  fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
-    // TODO(#59): Remove if-check & disable test.
-    if (!testEnvironmentConfig.isUsingBazel()) {
-      // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
-      //  thumbnail is being loaded through Glide.
-      launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
-        testCoroutineDispatchers.runCurrent()
-        onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
-          scrollToPosition<RecyclerView.ViewHolder>(
-            /* position= */ 4
-          )
-        )
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.walkthrough_topic_recycler_view,
-            position = 4,
-            targetViewId = R.id.walkthrough_topic_thumbnail_image_view
-          )
-        ).check(
-          matches(
-            withDrawable(
-              R.drawable.lesson_thumbnail_graphic_duck_and_chicken
-            )
-          )
-        )
-      }
-    }
-  }
-
-  @Test
   fun testWalkthroughTopicListFragment_topicCard_lessonBackgroundColorIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -279,8 +244,7 @@ class WalkthroughTopicListFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
-      testEnvironmentConfig.isUsingBazel()
+    fun provideLoadLessonProtosFromAssets(): Boolean = true
 
     @Provides
     @LoadImagesFromAssets
