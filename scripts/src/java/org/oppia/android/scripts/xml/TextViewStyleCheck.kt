@@ -40,6 +40,7 @@ private class TextViewStyleCheck {
   private val directionalityWarnings = mutableListOf<String>()
   private val builderFactory = DocumentBuilderFactory.newInstance()
 
+  /** Checks XML files for TextView elements to ensure compliance with style requirements. */
   fun checkFiles(xmlFiles: List<File>) {
     xmlFiles.forEach { file -> processXmlFile(file) }
     printResults()
