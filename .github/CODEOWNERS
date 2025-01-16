@@ -278,25 +278,6 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 /utility/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                             Gradle infrastructure                            #
-################################################################################
-
-# Gradle build files.
-*.gradle @oppia/android-app-infrastructure-reviewers
-gradle.properties @oppia/android-app-infrastructure-reviewers
-/gradlew @oppia/android-app-infrastructure-reviewers
-/gradlew.bat @oppia/android-app-infrastructure-reviewers
-/gradle/ @oppia/android-app-infrastructure-reviewers
-
-# Configuration files only used by Gradle builds.
-/app/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-/data/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-/domain/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-/utility/proguard-rules.pro @oppia/android-app-infrastructure-reviewers
-*.properties @oppia/android-app-infrastructure-reviewers
-/data/src/main/AndroidManifest.xml @oppia/android-app-infrastructure-reviewers
-
-################################################################################
 #                           Sensitive file ownership                           #
 ################################################################################
 

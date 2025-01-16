@@ -22,7 +22,7 @@ import org.oppia.android.util.extensions.putProto
 class ExitProfileDialogFragment : InjectableDialogFragment() {
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     const val EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO = "EXIT_PROFILE_DIALOG_ARGUMENT_PROTO"
 
     /**

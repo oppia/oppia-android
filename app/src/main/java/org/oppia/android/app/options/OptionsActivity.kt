@@ -61,7 +61,7 @@ class OptionsActivity :
   private lateinit var audioLanguageLauncher: ActivityResultLauncher<Intent>
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     /** Params key for OptionsActivity. */
     const val OPTIONS_ACTIVITY_PARAMS_KEY = "OptionsActivity.params"
 

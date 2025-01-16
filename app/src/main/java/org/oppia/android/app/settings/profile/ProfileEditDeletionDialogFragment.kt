@@ -16,7 +16,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 class ProfileEditDeletionDialogFragment : InjectableDialogFragment() {
 
   companion object {
-    // TODO(#1655): Re-restrict access to fields in tests post-Gradle.
+    // TODO(#1655): Re-restrict access to fields in tests.
     /** Argument key for pop up of Profile Deletion Dialog in [ProfileEditActivity]. */
     const val PROFILE_DELETION_DIALOG_INTERNAL_PROFILE_ID_EXTRA_KEY =
       "ProfileEditDeletionDialogFragment.profile_deletion_dialog_internal_profile_id"
