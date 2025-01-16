@@ -71,6 +71,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
         paint.textAlign = Paint.Align.LEFT
 
         // Positioning calculation
+
         val bulletCenterLtrX = x.toFloat() + baseMargin * (indentationLevel + 1)
         val bulletCenterX = bulletCenterLtrX
         val bulletCenterY = (top + bottom) / 2f
