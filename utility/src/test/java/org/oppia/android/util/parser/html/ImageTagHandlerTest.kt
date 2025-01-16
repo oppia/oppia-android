@@ -325,6 +325,17 @@ class ImageTagHandlerTest {
       .inOrder()
   }
 
+  @Test
+  fun testGetContentDescription_withImageTag() {
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = IMAGE_TAG_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithImageTagSupport
+      )
+    assertThat(contentDescription).isEqualTo("Image illustrating alt text 1")
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
