@@ -45,7 +45,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -130,7 +130,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -178,7 +178,7 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: test_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -285,7 +285,7 @@ jobs:
         with:
           version: 6.5.0
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         id: scripts_cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}

@@ -347,7 +347,9 @@
   <string name="profile_edit_delete_dialog_message">All progress will be deleted and cannot be recovered.</string>
   <string name="profile_edit_delete_dialog_positive">Delete</string>
   <string name="profile_edit_delete_dialog_negative">Cancel</string>
+  <string name="profile_edit_delete_successful_message">Profile deleted successfully.</string>
   <string name="profile_edit_allow_download_heading">Allow Download Access</string>
+  <string name="profile_edit_delete_success_dialog_positive_button">OK</string>
   <string name="profile_edit_allow_download_sub">User is able to download and delete content without Administrator password</string>
   <!-- ProfilePictureActivity -->
   <string name="profile_picture_activity_title">Profile Picture</string>

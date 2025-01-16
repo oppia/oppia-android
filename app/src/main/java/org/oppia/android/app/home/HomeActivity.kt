@@ -69,19 +69,14 @@ class HomeActivity :
     title = resourceHandler.getStringInLocale(R.string.home_activity_title)
   }
 
-  override fun onRestart() {
-    super.onRestart()
-    homeActivityPresenter.handleOnRestart()
-  }
-
-  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
     startActivity(
-      TopicActivity.createTopicActivityIntent(this, internalProfileId, classroomId, topicId)
+      TopicActivity.createTopicActivityIntent(this, profileId, classroomId, topicId)
     )
   }
 
   override fun routeToTopicPlayStory(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -89,7 +84,7 @@ class HomeActivity :
     startActivity(
       TopicActivity.createTopicPlayStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         classroomId,
         topicId,
         storyId

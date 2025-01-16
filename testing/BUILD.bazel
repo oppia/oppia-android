@@ -42,6 +42,7 @@ kt_android_library(
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/time:fake_oppia_clock",
         "//third_party:androidx_core_core-ktx",
+        "//third_party:androidx_fragment_fragment",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:androidx_test_espresso_espresso-accessibility",
         "//third_party:androidx_test_espresso_espresso-contrib",

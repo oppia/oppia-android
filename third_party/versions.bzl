@@ -37,6 +37,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.databinding:databinding-compiler": "3.4.2",
     "androidx.databinding:databinding-runtime": "3.4.2",
     "androidx.drawerlayout:drawerlayout": "1.1.0",
+    "androidx.fragment:fragment": "1.1.0",
     "androidx.lifecycle:lifecycle-extensions": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-core": "2.2.0",
     "androidx.lifecycle:lifecycle-livedata-ktx": "2.2.0",

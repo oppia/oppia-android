@@ -47,7 +47,7 @@ class ClassroomListActivity :
   @Inject
   lateinit var activityRouter: ActivityRouter
 
-  private var internalProfileId: Int = -1
+  private lateinit var profileId: ProfileId
 
   @Inject
   @field:EnableOnboardingFlowV2
@@ -67,21 +67,32 @@ class ClassroomListActivity :
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    internalProfileId = intent.extractCurrentUserProfileId().internalId
+    profileId = intent.extractCurrentUserProfileId()
     classroomListActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
   }
 
-  override fun onRestart() {
-    super.onRestart()
-    classroomListActivityPresenter.handleOnRestart()
+  override fun onBackPressed() {
+    val previousFragment =
+      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+    }
+    val exitProfileDialogArguments =
+      ExitProfileDialogArguments
+        .newBuilder()
+        .setHighlightItem(HighlightItem.NONE)
+        .build()
+    val dialogFragment = ExitProfileDialogFragment
+      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
+    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+        .setProfileId(profileId)
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(
@@ -92,14 +103,14 @@ class ClassroomListActivity :
     )
   }
 
-  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {
+  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {
     startActivity(
-      createTopicActivityIntent(this, internalProfileId, classroomId, topicId)
+      createTopicActivityIntent(this, profileId, classroomId, topicId)
     )
   }
 
   override fun routeToTopicPlayStory(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String
@@ -107,7 +118,7 @@ class ClassroomListActivity :
     startActivity(
       createTopicPlayStoryActivityIntent(
         this,
-        internalProfileId,
+        profileId,
         classroomId,
         topicId,
         storyId

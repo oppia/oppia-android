@@ -42,13 +42,65 @@ jobs:
       ENABLE_CACHING: false
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
+      - name: Find the latest APK & AAB Analysis Comment 
+        uses: actions/github-script@v6
+        id: find_latest_apk_aab_comment
+        with:
+           script: |
+             const comments = await github.paginate(github.rest.issues.listComments, {
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               issue_number: ${{ matrix.prInfo.number }},
+             });            
+
+             for (let i = comments.length - 1; i >= 0; i--) {
+               if (comments[i].body.includes("# APK & AAB differences analysis")) {
+                 const latestComment = comments[i];
+                 const commentBody = latestComment.body;
+                 const commentDate = latestComment.created_at;
+
+                 require('fs').writeFileSync('latest_aab_comment_body.log', commentBody, 'utf8');
+                 core.setOutput("latest_aab_comment_created_at", commentDate);
+                
+                 return
+               }
+             }
+
+      - name: Track Commits following the latest APK & AAB Analysis Comment
+        uses: actions/github-script@v6
+        id: track_commits
+        with:
+           script: |
+             const commits = await github.paginate(github.rest.pulls.listCommits, {
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               pull_number: ${{ matrix.prInfo.number }},
+             });
+            
+             const latestCommentDate = "${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}";
+             const recentCommits = commits.filter(commit => {
+               const commitDate = new Date(commit.commit.committer.date);
+               return commitDate > new Date("${{ steps.find_latest_apk_aab_comment.outputs.latest_aab_comment_created_at }}");
+             });
+            
+             const recentCommitsCount = recentCommits.length;
+             if(recentCommitsCount > 0 || !latestCommentDate) {
+               core.setOutput("new_commits", "true");
+             } else {
+               console.log("No new commits since the last APK & AAB report; Skipping redundant analysis.");
+               core.setOutput("new_commits", "false");
+             }
+          
       - name: Compute PR head owner/repo reference
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_HEAD_REPO: ${{ matrix.prInfo.headRepository.name }}
           PR_HEAD_REPO_OWNER: ${{ matrix.prInfo.headRepositoryOwner.login }}
         run: |
           echo "PR_HEAD=$PR_HEAD_REPO_OWNER/$PR_HEAD_REPO" >> "$GITHUB_ENV"
+         
       - name: Print PR information for this run
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
           PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
@@ -57,11 +109,13 @@ jobs:
           echo "PR $PR_NUMBER is merging into $PR_BASE_REF_NAME from https://github.com/$PR_HEAD branch $PR_HEAD_REF_NAME."
 
       - name: Set up JDK 11
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: actions/setup-java@v1
         with:
           java-version: 11
 
       - name: Set up Bazel
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: abhinavsingh/setup-bazel@v3
         with:
           version: 6.5.0
@@ -72,7 +126,8 @@ jobs:
       # with Bazel since Bazel can share the most recent cache from an unrelated build and still
       # benefit from incremental build performance (assuming that actions/cache aggressively removes
       # older caches due to the 5GB cache limit size & Bazel's large cache size).
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         id: cache
         with:
           path: ${{ env.CACHE_DIRECTORY }}
@@ -87,6 +142,7 @@ jobs:
       # few slower CI actions around the time cache is detected to be too large, but it should
       # incrementally improve thereafter.
       - name: Ensure cache size
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -105,6 +161,7 @@ jobs:
           fi
 
       - name: Configure Bazel to use a local cache
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           BAZEL_CACHE_DIR: ${{ env.CACHE_DIRECTORY }}
         run: |
@@ -117,19 +174,23 @@ jobs:
       # run from the latest develop rather than the base branch (which might be different for
       # chained PRs).
       - name: Check out develop repository
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: actions/checkout@v4
         with:
           path: develop
 
       - name: Set up build environment
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: ./develop/.github/actions/set-up-android-bazel-build-environment
 
       - name: Check Bazel environment
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd develop
           bazel info
 
       - name: Check out base repository and branch
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_BASE_REF_NAME: ${{ matrix.prInfo.baseRefName }}
         uses: actions/checkout@v4
@@ -139,6 +200,7 @@ jobs:
           path: base
 
       - name: Check out head repository and branch
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_HEAD_REF_NAME: ${{ matrix.prInfo.headRefName }}
         uses: actions/checkout@v4
@@ -152,6 +214,7 @@ jobs:
       # up being active (due to multiple repositories being used) and this can quickly overwhelm CI
       # worker resources.
       - name: Build Oppia dev, alpha, beta, and GA (feature branch)
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd head
           git log -n 1
@@ -163,6 +226,7 @@ jobs:
           bazel shutdown
 
       - name: Build Oppia dev, alpha, beta, and GA (base branch)
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd base
           git log -n 1
@@ -174,6 +238,7 @@ jobs:
           bazel shutdown
 
       - name: Run stats analysis tool (develop branch)
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         run: |
           cd develop
           git log -n 1
@@ -184,66 +249,10 @@ jobs:
             beta $(pwd)/oppia_beta_without_changes.aab $(pwd)/oppia_beta_with_changes.aab \
             ga $(pwd)/oppia_ga_without_changes.aab $(pwd)/oppia_ga_with_changes.aab
 
-      - name: Find CI workflow run for PR
-        id: find-workflow-run
-        uses: actions/github-script@v7
-        continue-on-error: true
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const runsResponse = await github.rest.actions.listWorkflowRuns({
-              owner,
-              repo,
-              workflow_id: 'stats.yml',
-            });
-
-            const runs = runsResponse.data.workflow_runs;
-            runs.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-            const run = runs[1];
-            if(!run) {
-              core.setFailed('Could not find a succesful workflow run');
-              return;
-            }
-            console.log(run.id);
-
-            core.setOutput('run-id', run.id);
-
-      - name: Download previous build summary
-        uses: actions/download-artifact@v4
-        with:
-          name: brief_build_summary_${{ matrix.prInfo.number }}
-          path: ./previous_build_logs
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.find-workflow-run.outputs.run-id }}
-        continue-on-error: true # Ignore errors if the file doesn't exist (first run)
-
-      - name: Compare current build summary with the previous one
-        id: build-comparison
-        run: |
-          if [ -f ./develop/brief_build_summary.log ]; then
-            echo "Comparing current and previous build summaries..."
-            if diff ./develop/brief_build_summary.log ./previous_build_logs/brief_build_summary.log > /dev/null; then
-              echo "No changes detected; skipping comment."
-              echo "skip_comment=true" >> $GITHUB_ENV
-            else
-              echo "Changes detected; proceeding with the comment."
-              echo "skip_comment=false" >> $GITHUB_ENV
-            fi
-          else
-            echo "No previous summary found; proceeding with the comment."
-            echo "skip_comment=false" >> $GITHUB_ENV
-          fi
-
-      - name: Upload current build summary for future comparison
-        uses: actions/upload-artifact@v4
-        with:
-          name: brief_build_summary_${{ matrix.prInfo.number }}
-          path: ./develop/brief_build_summary.log
-
       # Reference: https://github.com/peter-evans/create-or-update-comment#setting-the-comment-body-from-a-file.
       # Also, for multi-line env values, see: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings.
       - name: Extract reports for uploading & commenting
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         id: compute-comment-body
@@ -260,7 +269,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/develop/full_build_summary.log" "$FULL_BUILD_SUMMARY_FILE_PATH"
 
       - name: Add build stats summary comment
-        if: ${{ env.skip_comment == 'false' }}
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         env:
           PR_NUMBER: ${{ matrix.prInfo.number }}
         uses: peter-evans/create-or-update-comment@v1
@@ -269,6 +278,7 @@ jobs:
           body: ${{ steps.compute-comment-body.outputs.comment_body }}
 
       - uses: actions/upload-artifact@v4
+        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         with:
           name: ${{ env.FULL_BUILD_SUMMARY_FILE_NAME }}
           path: ${{ env.FULL_BUILD_SUMMARY_FILE_PATH }}
