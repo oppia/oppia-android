@@ -116,33 +116,6 @@ We strongly recommend running tests on Robolectric which is faster because it do
    - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
    ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
 
-### Configure Emulator Tests
-
-**Espresso is slower for running tests, so we recommend using Robolectric.**
-
-1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
-2. In the Android Studio toolbar, click on the `Available Devices` option. Select an emulator that has between API 28-30.
-
-   **Note**: If you don't have any available devices in this list, please follow [these instructions](#run-the-app-from-android-studio) to create one.
-
-3. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'HomeActivityTest'**.
-   ![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
-
-4. An "**Edit Configuration**" dialog will show up, and you should add the following settings under the general tab:
-   - For module, select **oppia-android.app**
-   - For Test, select **Class**
-   - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
-   - For target, select the **Use the device/snapshot dropdown** option.
-   - Verify that your setup looks like below:
-
-     ![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
-- Finally, Click the "Apply" and "Okay" buttons.
-- You may need to repeat step (3) above to run the test with the new configuration.
-- Subsequent runs of any app module tests will not require editing the configuration.
-- This configuration will run all the tests in that class.
-5. To run only a specific test in a file:
-   - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
-
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
 

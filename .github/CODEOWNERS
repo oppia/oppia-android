@@ -80,7 +80,6 @@
 /testing/src/main/java/org/oppia/android/testing/AssertionHelpers.kt @oppia/android-dev-workflow-reviewers
 /testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt @oppia/android-dev-workflow-reviewers
 /testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt @oppia/android-dev-workflow-reviewers
-/testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/data/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/environment/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/junit/ @oppia/android-dev-workflow-reviewers

@@ -144,7 +144,6 @@ file_content_checks {
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/JsonExtensions.kt"
   exempted_file_name: "domain/src/main/java/org/oppia/android/domain/util/WorkDataExtensions.kt"
   exempted_file_name: "domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt"
-  exempted_file_name: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedMethod.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/time/FakeOppiaClock.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/extensions/BundleExtensions.kt"
