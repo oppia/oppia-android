@@ -503,8 +503,8 @@ file_content_checks {
 }
 file_content_checks {
   file_path_regex: ".+?\\.kt$"
-  prohibited_content_regex: "\\*\\*/"
-  failure_message: "Badly formatted KDoc or block comment. KDocs and block comments should only end with \"*/\"."
+  prohibited_content_regex: "\\*(\\s*\\*|\\*)/"
+  failure_message: "Badly formatted KDoc or block comment. KDocs and block comments should only end with \"*/\". Multiple asterisks or whitespace between asterisks are not allowed."
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
 }
 file_content_checks {
