@@ -14,6 +14,7 @@ android_sdk_repository(
     name = "androidsdk",
     api_level = BUILD_SDK_VERSION,
     build_tools_version = BUILD_TOOLS_VERSION,
+    path="/home/manas-yu/Android/Sdk"
 )
 
 # Oppia's backend proto API definitions.

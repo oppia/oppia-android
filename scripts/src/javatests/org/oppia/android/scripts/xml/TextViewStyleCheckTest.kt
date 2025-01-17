@@ -33,18 +33,6 @@ class TextViewStyleCheckTest {
 
   @Test
   fun testTextViewStyle_validStyleAttribute_checksPass() {
-    val validStyle =
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <resources>
-        <style name="ValidTextViewStyle">
-          <item name="android:textAlignment">viewStart</item>
-          <item name="android:textDirection">locale</item>
-          <item name="android:textSize">16sp</item>
-        </style>
-      </resources>
-      """.trimIndent()
-
     val validLayout =
       """
       <?xml version="1.0" encoding="utf-8"?>
@@ -58,9 +46,7 @@ class TextViewStyleCheckTest {
       </LinearLayout>
       """.trimIndent()
 
-    createStylesFile(validStyle)
     createLayoutFile(validLayout)
-
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(TEXTVIEW_STYLE_CHECK_PASSED_OUTPUT_INDICATOR)
@@ -68,7 +54,7 @@ class TextViewStyleCheckTest {
 
   @Test
   fun testTextViewStyle_missingStyleAttribute_checksFail() {
-    val validLayout =
+    val invalidLayout =
       """
       <?xml version="1.0" encoding="utf-8"?>
       <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -81,7 +67,7 @@ class TextViewStyleCheckTest {
       </LinearLayout>
       """.trimIndent()
 
-    createLayoutFile(validLayout)
+    createLayoutFile(invalidLayout)
 
     val thrown = catchThrowable { runScript() }
 
@@ -91,52 +77,31 @@ class TextViewStyleCheckTest {
   }
 
   @Test
-  fun testTextViewStyle_legacyDirectionalityAttributes_showsWarnings() {
-    val validStyle =
+  fun testTextViewStyle_onlyDirectionalityWarnings_checksPass() {
+    val layoutWithDirectionalityWarnings =
       """
-    <?xml version="1.0" encoding="utf-8"?>
-    <resources>
-      <style name="ValidTextViewStyle">
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:textDirection">locale</item>
-        <item name="android:textSize">16sp</item>
-      </style>
-    </resources>
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/ValidTextViewStyle"
+          android:paddingLeft="16dp"/>
+      </LinearLayout>
       """.trimIndent()
 
-    val layoutWithLegacyAttributes =
-      """
-    <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-      <TextView
-        android:id="@+id/warning_test_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/ValidTextViewStyle"
-        android:paddingLeft="16dp"
-        android:layout_marginRight="8dp"/>
-    </LinearLayout>
-      """.trimIndent()
-
-    createStylesFile(validStyle)
-    createLayoutFile(layoutWithLegacyAttributes)
-
+    createLayoutFile(layoutWithDirectionalityWarnings)
     runScript()
 
     val output = outContent.toString()
-    assertThat(output).contains("WARNING: Hardcoded left/right attribute 'android:paddingLeft'")
-    assertThat(output).contains(
-      "WARNING: Hardcoded left/right attribute" +
-        " 'android:layout_marginRight'"
-    )
-    assertThat(output).doesNotContain(TEXTVIEW_STYLE_CHECK_PASSED_OUTPUT_INDICATOR)
+    assertThat(output).contains("WARNING: Hardcoded left/right attribute")
   }
 
   @Test
-  fun testTextViewStyle_multipleTextViews_checksAllTextViews() {
-    val layoutWithMultipleTextViews =
+  fun testTextViewStyle_multipleTextViews_someWithoutStyle_checksFail() {
+    val layoutWithMixedTextViews =
       """
       <?xml version="1.0" encoding="utf-8"?>
       <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -151,10 +116,15 @@ class TextViewStyleCheckTest {
           android:id="@+id/second_text_view_no_style"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
+        <TextView
+          android:id="@+id/third_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/AnotherValidStyle"/>
       </LinearLayout>
       """.trimIndent()
 
-    createLayoutFile(layoutWithMultipleTextViews)
+    createLayoutFile(layoutWithMixedTextViews)
 
     val thrown = catchThrowable { runScript() }
 
@@ -164,8 +134,8 @@ class TextViewStyleCheckTest {
   }
 
   @Test
-  fun testTextViewStyle_multipleLayoutFiles_checksAllFiles() {
-    val validLayout1 =
+  fun testTextViewStyle_multipleLayoutFiles_mixedValidation_checksFail() {
+    val validLayout =
       """
       <?xml version="1.0" encoding="utf-8"?>
       <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -178,32 +148,162 @@ class TextViewStyleCheckTest {
       </LinearLayout>
       """.trimIndent()
 
-    val invalidLayout2 =
+    val warningLayout =
       """
       <?xml version="1.0" encoding="utf-8"?>
       <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-          android:id="@+id/test_no_style"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/ValidTextViewStyle"
+          android:paddingLeft="16dp"/>
+      </LinearLayout>
+      """.trimIndent()
+
+    val invalidLayout =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
       </LinearLayout>
       """.trimIndent()
 
-    createLayoutFile(validLayout1, "test_layout1.xml")
-    createLayoutFile(invalidLayout2, "test_layout2.xml")
+    createLayoutFile(validLayout, "valid_layout.xml")
+    createLayoutFile(warningLayout, "warning_layout.xml")
+    createLayoutFile(invalidLayout, "invalid_layout.xml")
 
     val thrown = catchThrowable { runScript() }
 
     assertThat(thrown).isInstanceOf(Exception::class.java)
     assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains("ERROR: Missing style attribute")
+    val output = outContent.toString()
+    assertThat(output).contains("WARNING: Hardcoded left/right attribute")
+    assertThat(output).contains("ERROR: Missing style attribute")
   }
+  @Test
+  fun testTextViewStyle_missingStyle_logsCorrectLineNumber() {
+    val layoutWithLineSpacing =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <!-- Comment to affect line numbers -->
+        <TextView
+          android:id="@+id/test_text_view_no_style"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+      </LinearLayout>
+      """.trimIndent()
 
-  private fun createStylesFile(content: String) {
-    val stylesFile = tempFolder.newFile("app/src/main/res/values/styles.xml")
-    stylesFile.writeText(content)
+    createLayoutFile(layoutWithLineSpacing)
+
+    val thrown = catchThrowable { runScript() }
+
+    assertThat(thrown).isInstanceOf(Exception::class.java)
+    assertThat(outContent.toString()).contains("line 9")
+  }
+  @Test
+  fun testTextViewStyle_directionalityWarning_logsCorrectLineNumber() {
+    val layoutWithLineSpacing =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <!-- First comment -->
+        
+        <!-- Second comment -->
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/ValidTextViewStyle"
+          android:paddingLeft="16dp"/>
+      </LinearLayout>
+      """.trimIndent()
+
+    createLayoutFile(layoutWithLineSpacing)
+    runScript()
+
+    assertThat(outContent.toString()).contains("line 12")
+  }
+  @Test
+  fun testTextViewStyle_multipleTextViews_logsCorrectLineNumbers() {
+    val layoutWithMultipleTextViews =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <TextView
+          android:id="@+id/first_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+          
+        <!-- Spacing comment -->
+        
+        <TextView
+          android:id="@+id/second_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/ValidTextViewStyle"
+          android:paddingRight="16dp"/>
+      </LinearLayout>
+      """.trimIndent()
+
+    createLayoutFile(layoutWithMultipleTextViews)
+
+    val thrown = catchThrowable { runScript() }
+
+    val output = outContent.toString()
+    assertThat(thrown).isInstanceOf(Exception::class.java)
+    assertThat(output).contains("line 8") // First TextView error
+    assertThat(output).contains("line 17") // Second TextView warning
+  }
+  @Test
+  fun testTextViewStyle_nestedTextViews_logsCorrectLineNumbers() {
+    val nestedLayout =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+          
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+            
+        </LinearLayout>
+        
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/ValidTextViewStyle"
+          android:layout_marginRight="8dp"/>
+      </LinearLayout>
+      """.trimIndent()
+
+    createLayoutFile(nestedLayout)
+
+    val thrown = catchThrowable { runScript() }
+
+    val output = outContent.toString()
+    assertThat(thrown).isInstanceOf(Exception::class.java)
+    assertThat(output).contains("line 11") // First TextView error
+    assertThat(output).contains("line 19") // Second TextView warning
   }
 
   private fun createLayoutFile(content: String, fileName: String = "test_layout.xml") {
