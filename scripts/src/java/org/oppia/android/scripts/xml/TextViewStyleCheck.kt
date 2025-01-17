@@ -2,15 +2,12 @@ package org.oppia.android.scripts.xml
 
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import org.w3c.dom.Node
 import org.xml.sax.Attributes
 import org.xml.sax.Locator
-import org.xml.sax.SAXException
 import org.xml.sax.helpers.DefaultHandler
 import java.io.File
 import java.io.FileInputStream
 import java.util.Stack
-import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
@@ -106,69 +103,70 @@ private class TextViewStyleCheck {
     }
   }
 
-  private fun readXMLWithLineNumbers(inputStream: FileInputStream, lineNumAttribName: String): Document {
-    val doc: Document
-    val parser: SAXParser
-    try {
-      val factory = SAXParserFactory.newInstance()
-      parser = factory.newSAXParser()
-      val docBuilderFactory = DocumentBuilderFactory.newInstance()
-      val docBuilder = docBuilderFactory.newDocumentBuilder()
-      doc = docBuilder.newDocument()
-    } catch (e: Exception) {
-      throw RuntimeException("Can't create SAX parser / DOM builder.", e)
+  private fun readXMLWithLineNumbers(inputStream: FileInputStream, lineNumAttribName: String):
+    Document {
+      val doc: Document
+      val parser: SAXParser
+      try {
+        val factory = SAXParserFactory.newInstance()
+        parser = factory.newSAXParser()
+        val docBuilderFactory = DocumentBuilderFactory.newInstance()
+        val docBuilder = docBuilderFactory.newDocumentBuilder()
+        doc = docBuilder.newDocument()
+      } catch (e: Exception) {
+        throw RuntimeException("Can't create SAX parser / DOM builder.", e)
+      }
+
+      val elementStack = Stack<Element>()
+      val textBuffer = StringBuilder()
+
+      val handler = object : DefaultHandler() {
+        private lateinit var locator: Locator
+
+        override fun setDocumentLocator(locator: Locator) {
+          this.locator = locator
+        }
+
+        override fun startElement(
+          uri: String,
+          localName: String,
+          qName: String,
+          attributes: Attributes
+        ) {
+          addTextIfNeeded()
+          val el = doc.createElement(qName)
+          for (i in 0 until attributes.length) {
+            el.setAttribute(attributes.getQName(i), attributes.getValue(i))
+          }
+          el.setAttribute(lineNumAttribName, locator.lineNumber.toString())
+          elementStack.push(el)
+        }
+
+        override fun endElement(uri: String, localName: String, qName: String) {
+          addTextIfNeeded()
+          val closedEl = elementStack.pop()
+          if (elementStack.isEmpty()) {
+            doc.appendChild(closedEl)
+          } else {
+            elementStack.peek().appendChild(closedEl)
+          }
+        }
+
+        override fun characters(ch: CharArray, start: Int, length: Int) {
+          textBuffer.append(ch, start, length)
+        }
+
+        private fun addTextIfNeeded() {
+          if (textBuffer.isNotEmpty()) {
+            val el = elementStack.peek()
+            val textNode = doc.createTextNode(textBuffer.toString())
+            el.appendChild(textNode)
+            textBuffer.clear()
+          }
+        }
+      }
+
+      parser.parse(inputStream, handler)
+      return doc
     }
-
-    val elementStack = Stack<Element>()
-    val textBuffer = StringBuilder()
-
-    val handler = object : DefaultHandler() {
-      private lateinit var locator: Locator
-
-      override fun setDocumentLocator(locator: Locator) {
-        this.locator = locator
-      }
-
-      override fun startElement(
-        uri: String,
-        localName: String,
-        qName: String,
-        attributes: Attributes
-      ) {
-        addTextIfNeeded()
-        val el = doc.createElement(qName)
-        for (i in 0 until attributes.length) {
-          el.setAttribute(attributes.getQName(i), attributes.getValue(i))
-        }
-        el.setAttribute(lineNumAttribName, locator.lineNumber.toString())
-        elementStack.push(el)
-      }
-
-      override fun endElement(uri: String, localName: String, qName: String) {
-        addTextIfNeeded()
-        val closedEl = elementStack.pop()
-        if (elementStack.isEmpty()) {
-          doc.appendChild(closedEl)
-        } else {
-          elementStack.peek().appendChild(closedEl)
-        }
-      }
-
-      override fun characters(ch: CharArray, start: Int, length: Int) {
-        textBuffer.append(ch, start, length)
-      }
-
-      private fun addTextIfNeeded() {
-        if (textBuffer.isNotEmpty()) {
-          val el = elementStack.peek()
-          val textNode = doc.createTextNode(textBuffer.toString())
-          el.appendChild(textNode)
-          textBuffer.clear()
-        }
-      }
-    }
-
-    parser.parse(inputStream, handler)
-    return doc
-  }
 }
