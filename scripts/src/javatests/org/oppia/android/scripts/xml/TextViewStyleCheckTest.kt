@@ -266,8 +266,8 @@ class TextViewStyleCheckTest {
 
     val output = outContent.toString()
     assertThat(thrown).isInstanceOf(Exception::class.java)
-    assertThat(output).contains("line 8") // First TextView error
-    assertThat(output).contains("line 17") // Second TextView warning
+    assertThat(output).contains("line 8")
+    assertThat(output).contains("line 17")
   }
   @Test
   fun testTextViewStyle_nestedTextViews_logsCorrectLineNumbers() {
@@ -302,8 +302,8 @@ class TextViewStyleCheckTest {
 
     val output = outContent.toString()
     assertThat(thrown).isInstanceOf(Exception::class.java)
-    assertThat(output).contains("line 11") // First TextView error
-    assertThat(output).contains("line 19") // Second TextView warning
+    assertThat(output).contains("line 11")
+    assertThat(output).contains("line 19")
   }
 
   private fun createLayoutFile(content: String, fileName: String = "test_layout.xml") {
