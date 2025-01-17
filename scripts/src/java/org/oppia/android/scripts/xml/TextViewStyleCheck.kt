@@ -12,6 +12,18 @@ import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
 
+/**
+ * Script to ensure all TextView elements in layout XML files use centrally managed styles.
+ *
+ * Usage:
+ *   bazel run //scripts:check_textview_styles -- <path_to_repository_root>
+ *
+ * Arguments:
+ * - path_to_repository_root: The root path of the repository.
+ *
+ * Example:
+ *   bazel run //scripts:check_textview_styles -- $(pwd)
+ */
 fun main(vararg args: String) {
   require(args.isNotEmpty()) {
     "Usage: bazel run //scripts:check_textview_styles -- <path_to_repository_root>"
