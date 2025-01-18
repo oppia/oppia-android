@@ -121,7 +121,6 @@ import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -426,6 +425,57 @@ class HtmlParserTest {
     // Verify that the image span is prefixed & suffixed with a space to work around an AOSP bug.
     assertThat(htmlResult.toString()).startsWith(" ")
     assertThat(htmlResult.toString()).endsWith(" ")
+  }
+
+  @Test
+  fun testHtmlContentParsing_removesUnwantedNewlines() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val (_, htmlResult) = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      val htmlResult = htmlParser.parseOppiaHtml(
+        "<ul><li>\n\tThe counting numbers (1, 2, 3, 4, 5 ….)\n\n</li><li>\n\tHow to tell" +
+          " whether one counting number is bigger or smaller than another.\n\n</li></ul>",
+        textView
+      )
+      textView.text = htmlResult
+      return@runWithActivity textView to htmlResult
+    }
+
+    assertThat(htmlResult.toString()).isEqualTo(
+      "The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
+        "number is bigger or smaller than another"
+    )
+  }
+
+  @Test
+  fun testHtmlContentParsing_withImageTag_trimsLeadingAndTrailingNewlines() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    val htmlResult = activityScenarioRule.scenario.runWithActivity {
+      val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+      return@runWithActivity htmlParser.parseOppiaHtml(
+        "\n<oppia-noninteractive-image filepath-with-value=\"test.png\">" +
+          "</oppia-noninteractive-image>\n",
+        textView
+      )
+    }
+    val imageSpans = htmlResult.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+    assertThat(imageSpans.first().source).isEqualTo("test.png")
+
+    assertThat(htmlResult.toString().startsWith("\n")).isFalse()
+    assertThat(htmlResult.toString().endsWith("\n")).isFalse()
   }
 
   @Test
@@ -914,7 +964,7 @@ class HtmlParserTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

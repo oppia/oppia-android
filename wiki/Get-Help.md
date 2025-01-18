@@ -1,10 +1,10 @@
 ## Table of Contents
 
 * [Communication channels](#communication-channels)
-  * [Email](#email)
   * [GitHub Discussions](#github-discussions)
-  * [Google Chat or Hangouts](#google-chat-or-hangouts)
   * [GitHub](#github)
+  * [Google Chat](#google-chat)
+  * [Email](#email)
 * [How to Ask Good Questions](#how-to-ask-good-questions)
   * [Setup-related questions](#setup-related-questions)
     * [Before you ask a setup question](#before-you-ask-a-setup-question)
@@ -20,15 +20,6 @@ Here we document Oppia's main communication channels and how to ask good questio
 
 If you need help, there are a few communication channels you can use. Developers usually respond within 24 hours so long as you use a channel they actually check.
 
-### Email
-
-We have several mailing lists in the form of Google Groups that you can join:
-
-* [oppia-announce](https://groups.google.com/forum/#!forum/oppia-announce) is for announcements of new releases or blog posts. It's not for asking questions though.
-* [oppia-android-dev](https://groups.google.com/g/oppia-android-dev) is the main mailing list for communication between developers and for technical questions. You can post to it even if you're not a member of the group. This is where you can ask questions, solicit feedback, or make developer-specific announcements (e.g. a temporary GitHub outage).
-
-You can also email your mentor with any questions. If you don't have a mentor, complete the steps on the [wiki page for contributing code to Oppia](https://github.com/oppia/oppia-android/wiki/Contributing-to-Oppia-android) and you'll be assigned one.
-
 ### GitHub Discussions
 
 If you have questions regarding Oppia Android, you can create a discussion on [GitHub Discussions](https://github.com/oppia/oppia-android/discussions/) where other developers will assist you in resolving the issue. Oppia's Welfare team monitors this chat to help out new contributors, so it's the best place to ask questions about Oppia or getting started. You can create a discussion in any of the following categories based on the question:
@@ -39,15 +30,21 @@ If you have questions regarding Oppia Android, you can create a discussion on [G
 
 Feel free to drop in and [say hi](https://github.com/oppia/oppia-android/discussions/4788)! You can also refer to [this guide](https://docs.github.com/en/discussions/quickstart#creating-a-new-discussion) on how to create a new discussion.
 
-### Google Chat or Hangouts
+### Google Chat
 
-Most Oppia developers and teams use Google Chat as their primary means of communication, and they usually respond quickly.  However, invites often get lost in spam folders, and some developers use a non-public email address for Google Chat. You can ask your mentor to put you in touch with a developer if you don't know their address or if they haven't acted on your invite.
+Most Oppia developers and teams use Google Chat as their primary means of communication, and they usually respond quickly. However, invites often get lost in spam folders, and some developers use a non-public email address for Google Chat. You can ask in GitHub Discussions if you need to get in touch with a particular developer.
 
 ### GitHub
 
 If you have a question about a pull request or issue, you can also reach out to developers by at-mentioning them (e.g. `@developer-username`) in a comment and assigning them to the issue. Be sure you both at-mention and assign them! Some developers only look at their GitHub notifications (which at-mentions trigger), while others only look at what they're assigned to.
 
 You can even mention whole teams of people! For example, if you find an issue that is destabilizing the project, you could notify all the core maintainers by including `@oppia/core-maintainers` in your issue. The teams are all listed [here](https://github.com/orgs/oppia/teams).
+
+### Email
+
+We have an announcement mailing list in the form of Google Groups that you can join:
+
+* [oppia-announce](https://groups.google.com/forum/#!forum/oppia-announce) is for announcements of new releases or blog posts. It's not for asking questions though.
 
 ## How to Ask Good Questions
 
@@ -109,7 +106,7 @@ paste a screenshot
 Follow the template below for asking questions (fill in the values inside {{}} brackets and mark x inside checkboxes to tick them) to leave a comment on a pull request. Adapt the template as needed if you are using another channel.
 
 ```md
-@{{PR reviewer or Mentor username}} PTAL!
+@{{PR reviewer}} PTAL!
 
 **Checklist**
 - [ ] I have filled the [CLA](https://goo.gl/forms/AttNH80OV0) and the [Oppia Contributor Survey](https://goo.gl/forms/otv30JV3Ihv0dT3C3)
@@ -136,7 +133,7 @@ Follow the template below for asking questions (fill in the values inside {{}} b
 
 * If you are unable to push changes due to some reason, you can create a [patch file](https://docs.gitlab.com/omnibus/development/creating-patches.html) and share it with the person you're asking for help.
 
-* If you are facing issues in completing the assigned task, you can create a PR on your fork of the oppia-android repository, troubleshoot your problem on that pull request with help from your mentor, and then create a new PR on the original oppia-android repository.
+* If you are facing issues in completing the assigned task, you can create a PR on your fork of the oppia-android repository, troubleshoot your problem on that pull request, and then create a new PR on the original oppia-android repository.
 
 * If you have not made a PR yet, because you are not sure:
 
@@ -148,7 +145,7 @@ Follow the template below for asking questions (fill in the values inside {{}} b
 
 * If you want to have a discussion on your approach, but aren’t ready to make a PR yet, you can create a [public gist](https://docs.github.com/en/get-started/writing-on-github/editing-and-sharing-content-with-gists/creating-gists) and include the link to it in your question. It’s always better to see the code you are talking about!
 
-* **Avoid asking for help from people via emails or direct messaging.** We encourage everyone to ask for help on a common channel so that whoever sees your query first can help you or guide you how to take your query forward. Note that directing questions to your mentor is fine.
+* **Avoid asking for help from people via emails or direct messaging.** We encourage everyone to ask for help on a common channel like GitHub Discussions so that whoever sees your query first can help you or guide you how to take your query forward.
 
   * Comment on the issue page or the PR if your question is very specific.
 

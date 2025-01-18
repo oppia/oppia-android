@@ -118,6 +118,17 @@ class ConceptCardTagHandlerTest {
   }
 
   @Test
+  fun testGetContentDescription_withConceptCardTag() {
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = CONCEPT_CARD_LINK_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithConceptCardSupport
+      )
+    assertThat(contentDescription).isEqualTo("refresher lesson concept card skill_id_1")
+  }
+
+  @Test
   fun testParseHtml_withConceptCardMarkup_addsLinkText() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(

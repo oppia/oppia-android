@@ -1151,6 +1151,32 @@ class AnalyticsControllerTest {
     assertThat(fakeAnalyticsEventLogger.getEventListCount()).isEqualTo(3)
   }
 
+  @Test
+  fun testController_lowPriorityEvent_withProfileOnboardingStartedContext_checkLogsEvent() {
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    analyticsController.logProfileOnboardingStartedContext(profileId = profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasStartProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(profileId)
+    }
+  }
+
+  @Test
+  fun testController_lowPriorityEvent_withProfileOnboardingEndedContext_checkLogsEvent() {
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    analyticsController.logProfileOnboardingEndedContext(profileId = profileId)
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).hasEndProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(profileId)
+    }
+  }
+
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)

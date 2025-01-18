@@ -98,7 +98,6 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
-import org.oppia.android.util.logging.EventLoggingConfigurationModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -163,9 +162,10 @@ class RevisionCardActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
       context,
-      1,
+      profileId,
       FRACTIONS_TOPIC_ID,
       1,
       FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -425,19 +425,19 @@ class RevisionCardActivityTest {
     subtopicId: Int
   ): ActivityScenario<RevisionCardActivity> {
     val scenario = ActivityScenario.launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(profileId.internalId, topicId, subtopicId)
+      createRevisionCardActivityIntent(profileId, topicId, subtopicId)
     )
     testCoroutineDispatchers.runCurrent()
     return scenario
   }
 
   private fun createRevisionCardActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
     context,
-    internalProfileId,
+    profileId,
     topicId,
     subtopicId,
     FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -480,7 +480,7 @@ class RevisionCardActivityTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
-      EventLoggingConfigurationModule::class, ActivityRouterModule::class,
+      ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class
     ]

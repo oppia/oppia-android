@@ -20,8 +20,7 @@ class CompletedStoryListFragment : InjectableFragment() {
     const val COMPLETED_STORY_LIST_FRAGMENT_TAG = "COMPLETED_STORY_LIST_FRAGMENT_TAG"
 
     /** Returns a new [CompletedStoryListFragment] to display corresponding to the specified profile ID. */
-    fun newInstance(internalProfileId: Int): CompletedStoryListFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fun newInstance(profileId: ProfileId): CompletedStoryListFragment {
       return CompletedStoryListFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)
@@ -47,11 +46,10 @@ class CompletedStoryListFragment : InjectableFragment() {
       "Expected arguments to be passed to CompletedStoryListFragment"
     }
     val profileId = arguments.extractCurrentUserProfileId()
-    val internalProfileId = profileId.internalId
     return completedStoryListFragmentPresenter.handleCreateView(
       inflater,
       container,
-      internalProfileId
+      profileId
     )
   }
 }

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source scripts/formatting.sh
+
 jar_file_path=$?
 config_file_path=$?
 os_type=$?
@@ -15,11 +17,11 @@ lint_protobuf_files() {
   status=$?
 
   if [ "$status" = 0 ] ; then
-    echo "Protobuf lint check completed successfully"
+    echo_success "Protobuf lint check completed successfully"
     exit 0
   else
     echo "********************************"
-    echo "Protobuf lint check issues found. Please fix them before pushing your code."
+    echo_error "Protobuf lint check issues found. Please fix them before pushing your code."
     echo "********************************"
     exit 1
   fi
@@ -57,7 +59,7 @@ check_os_type() {
   elif [[ "$OSTYPE" == "darwin"* ]]; then
     os_type="Darwin"
   else
-    echo "Protobuf lint check not available on $OSTYPE"
+    echo_error "Protobuf lint check not available on $OSTYPE"
     exit 0
   fi
 }
