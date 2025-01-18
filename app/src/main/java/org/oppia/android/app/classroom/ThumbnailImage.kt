@@ -15,10 +15,10 @@ import org.oppia.android.app.model.LessonThumbnail
  * currently relies on a traditional Android View approach due to compatibility issues with the
  * Glide Compose library.
  *
- * @param entityId The unique identifier for the entity associated with the thumbnail.
- * @param entityType The type of the entity (e.g., classroom, topic, story).
- * @param lessonThumbnail The [LessonThumbnail] containing metadata required to load the image.
- * @param modifier The [Modifier] to be applied to the layout, defaulting to [Modifier].
+ * @param entityId the unique identifier for the entity associated with the thumbnail
+ * @param entityType the type of the entity (e.g., classroom, topic, story)
+ * @param lessonThumbnail the [LessonThumbnail] containing metadata required to load the image
+ * @param modifier the [Modifier] to be applied to the layout, defaulting to [Modifier]
  */
 @Composable
 fun ThumbnailImage(
