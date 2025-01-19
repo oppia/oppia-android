@@ -208,7 +208,7 @@ class TextViewStyleCheckTest {
     val thrown = catchThrowable { runScript() }
 
     assertThat(thrown).isInstanceOf(Exception::class.java)
-    assertThat(outContent.toString()).contains("line 9")
+    assertThat(outContent.toString()).contains("line 7")
   }
   @Test
   fun testTextViewStyle_directionalityWarning_logsCorrectLineNumber() {
@@ -233,7 +233,7 @@ class TextViewStyleCheckTest {
     createLayoutFile(layoutWithLineSpacing)
     runScript()
 
-    assertThat(outContent.toString()).contains("line 12")
+    assertThat(outContent.toString()).contains("line 9")
   }
   @Test
   fun testTextViewStyle_multipleTextViews_logsCorrectLineNumbers() {
@@ -266,8 +266,8 @@ class TextViewStyleCheckTest {
 
     val output = outContent.toString()
     assertThat(thrown).isInstanceOf(Exception::class.java)
-    assertThat(output).contains("line 8")
-    assertThat(output).contains("line 17")
+    assertThat(output).contains("line 6")
+    assertThat(output).contains("line 13")
   }
   @Test
   fun testTextViewStyle_nestedTextViews_logsCorrectLineNumbers() {
@@ -302,8 +302,8 @@ class TextViewStyleCheckTest {
 
     val output = outContent.toString()
     assertThat(thrown).isInstanceOf(Exception::class.java)
-    assertThat(output).contains("line 11")
-    assertThat(output).contains("line 19")
+    assertThat(output).contains("line 10")
+    assertThat(output).contains("line 16")
   }
 
   private fun createLayoutFile(content: String, fileName: String = "test_layout.xml") {

@@ -7,7 +7,7 @@ import org.xml.sax.Locator
 import org.xml.sax.helpers.DefaultHandler
 import java.io.File
 import java.io.FileInputStream
-import java.util.Stack
+import java.util.ArrayDeque
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
@@ -66,7 +66,7 @@ private class TextViewStyleCheck {
   }
 
   private fun validateTextViewElement(element: Element, filePath: String) {
-    val lineNumber = element.getAttribute(LINE_NUMBER_ATTRIBUTE).toInt().minus(1).toString()
+    val lineNumber = element.getAttribute(LINE_NUMBER_ATTRIBUTE).toString()
     val styleAttribute = element.attributes.getNamedItem("style")?.nodeValue
     val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue ?: "NO ID"
 
@@ -111,77 +111,79 @@ private class TextViewStyleCheck {
     if (styleValidationIssues.isNotEmpty()) {
       styleValidationIssues.forEach { println(it) }
       throw Exception("TEXTVIEW STYLE CHECK FAILED")
-    } else if (directionalityWarnings.isEmpty()) {
+    } else {
       println("TEXTVIEW STYLE CHECK PASSED")
     }
   }
 
   private fun readXMLWithLineNumbers(inputStream: FileInputStream, lineNumAttribName: String):
     Document {
-      val doc: Document
-      val parser: SAXParser
-      try {
-        val factory = SAXParserFactory.newInstance()
-        parser = factory.newSAXParser()
-        val docBuilderFactory = DocumentBuilderFactory.newInstance()
-        val docBuilder = docBuilderFactory.newDocumentBuilder()
-        doc = docBuilder.newDocument()
-      } catch (e: Exception) {
-        throw RuntimeException("Can't create SAX parser / DOM builder.", e)
-      }
-
-      val elementStack = Stack<Element>()
-      val textBuffer = StringBuilder()
-
-      val handler = object : DefaultHandler() {
-        private lateinit var locator: Locator
-
-        override fun setDocumentLocator(locator: Locator) {
-          this.locator = locator
-        }
-
-        override fun startElement(
-          uri: String,
-          localName: String,
-          qName: String,
-          attributes: Attributes
-        ) {
-          addTextIfNeeded()
-          val el = doc.createElement(qName)
-          for (i in 0 until attributes.length) {
-            el.setAttribute(attributes.getQName(i), attributes.getValue(i))
-          }
-          el.setAttribute(lineNumAttribName, locator.lineNumber.toString())
-          elementStack.push(el)
-        }
-
-        override fun endElement(uri: String, localName: String, qName: String) {
-          addTextIfNeeded()
-          val closedEl = elementStack.pop()
-          if (elementStack.isEmpty()) {
-            doc.appendChild(closedEl)
-          } else {
-            elementStack.peek().appendChild(closedEl)
-          }
-        }
-
-        override fun characters(ch: CharArray, start: Int, length: Int) {
-          textBuffer.append(ch, start, length)
-        }
-
-        private fun addTextIfNeeded() {
-          if (textBuffer.isNotEmpty()) {
-            val el = elementStack.peek()
-            val textNode = doc.createTextNode(textBuffer.toString())
-            el.appendChild(textNode)
-            textBuffer.clear()
-          }
-        }
-      }
-
-      parser.parse(inputStream, handler)
-      return doc
+    val document: Document
+    val parser: SAXParser
+    try {
+      val factory = SAXParserFactory.newInstance()
+      parser = factory.newSAXParser()
+      val docBuilderFactory = DocumentBuilderFactory.newInstance()
+      val docBuilder = docBuilderFactory.newDocumentBuilder()
+      document = docBuilder.newDocument()
+    } catch (e: Exception) {
+       error("Can't create SAX parser / DOM builder.")
     }
+
+    val elementStack = ArrayDeque<Element>()
+    val textBuffer = StringBuilder()
+
+    val handler = object : DefaultHandler() {
+      private lateinit var locator: Locator
+
+      override fun setDocumentLocator(locator: Locator) {
+        this.locator = locator
+      }
+
+      override fun startElement(
+        uri: String,
+        localName: String,
+        qName: String,
+        attributes: Attributes
+      ) {
+        addTextIfNeeded()
+        val element = document.createElement(qName)
+        val openingTagLine = locator.lineNumber - attributes.length
+
+        for (i in 0 until attributes.length) {
+          element.setAttribute(attributes.getQName(i), attributes.getValue(i))
+        }
+        element.setAttribute(lineNumAttribName, openingTagLine.toString())
+        elementStack.addLast(element)
+      }
+
+      override fun endElement(uri: String, localName: String, qName: String) {
+        addTextIfNeeded()
+        val closedElement = elementStack.removeLast()
+        if (elementStack.isEmpty()) {
+          document.appendChild(closedElement)
+        } else {
+          elementStack.last().appendChild(closedElement)
+        }
+      }
+
+      override fun characters(ch: CharArray, start: Int, length: Int) {
+        textBuffer.append(ch, start, length)
+      }
+
+      private fun addTextIfNeeded() {
+        if (textBuffer.isNotEmpty()) {
+          val element = elementStack.last()
+          val textNode = document.createTextNode(textBuffer.toString())
+          element.appendChild(textNode)
+          textBuffer.clear()
+        }
+      }
+    }
+
+    parser.parse(inputStream, handler)
+    return document
+  }
 }
 
 // Known exceptions that currently lack a style and are being tracked for fixes.
