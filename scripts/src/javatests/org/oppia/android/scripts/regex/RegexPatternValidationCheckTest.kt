@@ -206,7 +206,8 @@ class RegexPatternValidationCheckTest {
     "Badly formatted KDoc. Single-line KDocs should always end with exactly one space before the" +
       " final \"*/\"."
   private val badKdocOrBlockCommentShouldEndWithCorrectEnding =
-    "Badly formatted KDoc or block comment. KDocs and block comments should only end with \"*/\"."
+    "Badly formatted KDoc or block comment. KDocs and block comments should only" +
+      " end with \"*/\". Multiple asterisks or whitespace between asterisks are not allowed."
   private val badKdocParamsAndPropertiesShouldHaveNameFollowing =
     "Badly formatted KDoc param or property at-clause: the name of the parameter or property" +
       " should immediately follow the at-clause without any additional linking with brackets."
@@ -2603,6 +2604,37 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:13: $badKdocOrBlockCommentShouldEndWithCorrectEnding
         $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
         $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kdocWithInvalidEndingSequences_failsValidation() {
+    val prohibitedContent =
+      """
+      /**
+       * Incorrect KDoc comment.
+       * */
+       /**
+       * Incorrect KDoc comment.
+       **/
+       /**
+         * Correct KDoc comment.
+         */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+      $stringFilePath:3: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $stringFilePath:6: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $wikiReferenceNote
         """.trimIndent()
       )
   }
