@@ -52,7 +52,10 @@ class PoliciesFragmentPresenter @Inject constructor(
 
     return binding.root
   }
-
+  /**
+   * Saves the current scroll position of the policies page into the given [outState].
+   * This helps in restoring the scroll position after orientation changes.
+   */
   fun handleSaveInstanceState(outState: Bundle) {
     outState.putInt(KEY_SCROLL_Y, (binding.root as ScrollView).scrollY)
   }
