@@ -52,6 +52,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.PoliciesActivityParams
+import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -101,6 +103,8 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -320,6 +324,44 @@ class PoliciesFragmentTest {
         intending(expectingIntent).respondWith(ActivityResult(0, null))
         onView(withId(R.id.policy_web_link_text_view)).perform(openLinkWithText("this page"))
         intended(expectingIntent)
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launch<PoliciesFragmentTestActivity>(
+      createPoliciesFragmentTestIntent(
+        getApplicationContext(),
+        PolicyPage.TERMS_OF_SERVICE
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val policiesFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.policies_fragment_placeholder) as PoliciesFragment
+
+        val policiesActivityParams = activity.intent.getProtoExtra(
+          PoliciesFragmentTestActivity.POLICIES_FRAGMENT_TEST_POLICY_PAGE_PARAMS_PROTO,
+          PoliciesActivityParams.getDefaultInstance()
+        )
+        val policiesFragmentArguments =
+          PoliciesFragmentArguments
+            .newBuilder()
+            .setPolicyPage(policiesActivityParams.policyPage)
+            .build()
+
+        val args = checkNotNull(policiesFragment.arguments) {
+          "Expected arguments to be passed to PoliciesFragment"
+        }
+        val receivedPolicies =
+          args.getProto(
+            POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
+            PoliciesFragmentArguments.getDefaultInstance()
+          )
+
+        assertThat(receivedPolicies.policyPage).isEqualTo(policiesFragmentArguments.policyPage)
       }
     }
   }
