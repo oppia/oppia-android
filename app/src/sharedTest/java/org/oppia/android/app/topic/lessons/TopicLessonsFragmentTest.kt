@@ -26,6 +26,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.viewpager2.widget.ViewPager2
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
@@ -55,6 +57,7 @@ import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.model.StoryActivityParams
+import org.oppia.android.app.model.TopicLessonsFragmentArguments
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
@@ -64,6 +67,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.story.StoryActivity
 import org.oppia.android.app.story.StoryActivity.Companion.STORY_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
@@ -124,6 +128,7 @@ import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -136,6 +141,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -1200,6 +1206,78 @@ class TopicLessonsFragmentTest {
       ).check(
         matches(isClickable())
       )
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use { scenario ->
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicLessonsFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicLessonsFragment
+
+        val receivedInternalProfileId = topicLessonsFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val args = topicLessonsFragment.arguments?.getProto(
+          TopicLessonsFragment.TOPIC_LESSONS_FRAGMENT_ARGUMENTS_KEY,
+          TopicLessonsFragmentArguments.getDefaultInstance()
+        )
+        val receivedClassroomId = checkNotNull(args?.classroomId) {
+          "Expected classroom ID to be included in arguments for TopicLessonsFragment."
+        }
+        val receivedTopicId = checkNotNull(args?.topicId) {
+          "Expected topic ID to be included in arguments for TopicLessonsFragment."
+        }
+        val receivedStoryId = args?.storyId ?: ""
+
+        assertThat(receivedInternalProfileId).isEqualTo(profileId.internalId)
+        assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
+        assertThat(receivedTopicId).isEqualTo(RATIOS_TOPIC_ID)
+        assertThat(receivedStoryId).isEqualTo(RATIOS_STORY_ID_0)
+      }
+    }
+  }
+
+  @Test
+  fun testTopicLessonsFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launch<TopicActivity>(
+      createTopicPlayStoryActivityIntent(
+        profileId,
+        TEST_CLASSROOM_ID_1,
+        RATIOS_TOPIC_ID,
+        RATIOS_STORY_ID_0
+      )
+    ).use { scenario ->
+      clickLessonTab()
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 2)
+      clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
+
+      scenario.recreate()
+
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.story_summary_recycler_view,
+          position = 2,
+          targetViewId = R.id.chapter_recycler_view
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
