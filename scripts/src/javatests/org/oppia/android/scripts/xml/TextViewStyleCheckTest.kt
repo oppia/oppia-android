@@ -8,6 +8,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import org.oppia.android.testing.assertThrows
 
 /** Tests for [TextViewStyleCheck]. */
 class TextViewStyleCheckTest {
@@ -69,10 +70,9 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(invalidLayout)
 
-    val thrown = catchThrowable { runScript() }
-
-    assertThat(thrown).isInstanceOf(Exception::class.java)
+    val thrown = assertThrows<Exception>() { runScript() }
     assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
+
     assertThat(outContent.toString()).contains("ERROR: Missing style attribute")
   }
 
@@ -126,11 +126,13 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(layoutWithMixedTextViews)
 
-    val thrown = catchThrowable { runScript() }
-
-    assertThat(thrown).isInstanceOf(Exception::class.java)
+    val thrown = assertThrows<Exception>() { runScript() }
     assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString()).contains("ERROR: Missing style attribute")
+
+    val output = outContent.toString()
+    assertThat(output).contains("@+id/second_text_view_no_style")
+    assertThat(output).contains("line 10")
   }
 
   @Test
@@ -178,14 +180,14 @@ class TextViewStyleCheckTest {
     createLayoutFile(warningLayout, "warning_layout.xml")
     createLayoutFile(invalidLayout, "invalid_layout.xml")
 
-    val thrown = catchThrowable { runScript() }
-
-    assertThat(thrown).isInstanceOf(Exception::class.java)
+    val thrown = assertThrows<Exception>() { runScript() }
     assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
+
     val output = outContent.toString()
     assertThat(output).contains("WARNING: Hardcoded left/right attribute")
     assertThat(output).contains("ERROR: Missing style attribute")
   }
+
   @Test
   fun testTextViewStyle_missingStyle_logsCorrectLineNumber() {
     val layoutWithLineSpacing =
@@ -205,11 +207,11 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(layoutWithLineSpacing)
 
-    val thrown = catchThrowable { runScript() }
-
-    assertThat(thrown).isInstanceOf(Exception::class.java)
+    val thrown = assertThrows<Exception>() { runScript() }
+    assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString()).contains("line 7")
   }
+
   @Test
   fun testTextViewStyle_directionalityWarning_logsCorrectLineNumber() {
     val layoutWithLineSpacing =
@@ -235,6 +237,7 @@ class TextViewStyleCheckTest {
 
     assertThat(outContent.toString()).contains("line 9")
   }
+
   @Test
   fun testTextViewStyle_multipleTextViews_logsCorrectLineNumbers() {
     val layoutWithMultipleTextViews =
@@ -262,13 +265,15 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(layoutWithMultipleTextViews)
 
-    val thrown = catchThrowable { runScript() }
+    val thrown = assertThrows<Exception>() { runScript() }
+    assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     val output = outContent.toString()
-    assertThat(thrown).isInstanceOf(Exception::class.java)
+    assertThat(output).contains("@+id/first_text_view")
     assertThat(output).contains("line 6")
     assertThat(output).contains("line 13")
   }
+
   @Test
   fun testTextViewStyle_nestedTextViews_logsCorrectLineNumbers() {
     val nestedLayout =
@@ -298,10 +303,10 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(nestedLayout)
 
-    val thrown = catchThrowable { runScript() }
+    val thrown = assertThrows<Exception>() { runScript() }
+    assertThat(thrown).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     val output = outContent.toString()
-    assertThat(thrown).isInstanceOf(Exception::class.java)
     assertThat(output).contains("line 10")
     assertThat(output).contains("line 16")
   }

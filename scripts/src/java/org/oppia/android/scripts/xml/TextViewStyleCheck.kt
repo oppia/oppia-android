@@ -68,13 +68,14 @@ private class TextViewStyleCheck {
   private fun validateTextViewElement(element: Element, filePath: String) {
     val lineNumber = element.getAttribute(LINE_NUMBER_ATTRIBUTE).toString()
     val styleAttribute = element.attributes.getNamedItem("style")?.nodeValue
-    val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue ?: "NO ID"
+    val idAttribute = element.attributes.getNamedItem("android:id")?.nodeValue
 
     if (idAttribute in attributeIds) return
 
     if (styleAttribute.isNullOrBlank()) {
+      val idInformation= idAttribute?.let { "ID: $it" } ?: ""
       styleValidationIssues.add(
-        "ERROR: Missing style attribute in file: $filePath, line $lineNumber."
+        "ERROR: Missing style attribute in file: $filePath, ${idInformation}, line $lineNumber."
       )
     }
 
@@ -168,7 +169,7 @@ private class TextViewStyleCheck {
         }
 
         override fun characters(ch: CharArray, start: Int, length: Int) {
-          textBuffer.append(ch, start, length)
+          textBuffer.appendRange(ch, start, start + length)
         }
 
         private fun addTextIfNeeded() {
@@ -186,7 +187,7 @@ private class TextViewStyleCheck {
     }
 }
 
-// Known exceptions that currently lack a style and are being tracked for fixes.
+// TODO(#5661): Add missing styles for TextView IDs.
 private val attributeIds = listOf(
   "@+id/developer_options_text_view",
   "@+id/onboarding_language_text_view",
