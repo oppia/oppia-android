@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
+import java.lang.IllegalStateException
 
 /** Tests for [TextViewStyleCheck]. */
 class TextViewStyleCheckTest {
@@ -70,7 +71,7 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(invalidLayout)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
     assertThat(exception).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     assertThat(outContent.toString()).contains("ERROR: Missing style attribute")
@@ -126,7 +127,7 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(layoutWithMixedTextViews)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
     assertThat(exception).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString()).contains("ERROR: Missing style attribute")
 
@@ -180,7 +181,7 @@ class TextViewStyleCheckTest {
     createLayoutFile(warningLayout, "warning_layout.xml")
     createLayoutFile(invalidLayout, "invalid_layout.xml")
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
     assertThat(exception).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     val output = outContent.toString()
@@ -207,7 +208,7 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(layoutWithLineSpacing)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
     assertThat(exception).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
     assertThat(outContent.toString()).contains("line 7")
   }
@@ -265,7 +266,7 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(layoutWithMultipleTextViews)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
     assertThat(exception).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     val output = outContent.toString()
@@ -303,7 +304,7 @@ class TextViewStyleCheckTest {
 
     createLayoutFile(nestedLayout)
 
-    val exception = assertThrows<Exception>() { runScript() }
+    val exception = assertThrows<IllegalStateException>() { runScript() }
     assertThat(exception).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     val output = outContent.toString()
@@ -318,14 +319,5 @@ class TextViewStyleCheckTest {
 
   private fun runScript() {
     main(tempFolder.root.absolutePath)
-  }
-
-  private fun catchThrowable(executable: () -> Unit): Throwable {
-    try {
-      executable()
-      throw AssertionError("Expected to throw, but did not")
-    } catch (e: Throwable) {
-      return e
-    }
   }
 }

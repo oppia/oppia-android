@@ -111,7 +111,7 @@ private class TextViewStyleCheck {
 
     if (styleValidationIssues.isNotEmpty()) {
       styleValidationIssues.forEach { println(it) }
-      throw Exception("TEXTVIEW STYLE CHECK FAILED")
+      error("TEXTVIEW STYLE CHECK FAILED")
     } else {
       println("TEXTVIEW STYLE CHECK PASSED")
     }
