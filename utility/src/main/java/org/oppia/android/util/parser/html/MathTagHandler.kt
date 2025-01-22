@@ -151,6 +151,7 @@ class MathTagHandler(
 /** An [ImageSpan] that vertically centers a LaTeX drawable within the surrounding text. */
 private class LatexImageSpan(drawable: Drawable?) :
   ImageSpan(drawable ?: createEmptyDrawable()) {
+
   override fun getSize(
     paint: Paint,
     text: CharSequence,
@@ -158,23 +159,23 @@ private class LatexImageSpan(drawable: Drawable?) :
     end: Int,
     fontMetricsInt: Paint.FontMetricsInt?
   ): Int {
-    val d = drawable
-    val bounds = d.bounds
+    val latexDrawable = drawable
+    val drawableBounds = latexDrawable.bounds
 
-    fontMetricsInt?.let {
-      val paintFm = paint.fontMetricsInt
-      val textHeight = paintFm.descent - paintFm.ascent
-      val latexHeight = bounds.height()
+    fontMetricsInt?.let { metrics ->
+      val paintFontMetrics = paint.fontMetricsInt
+      val textHeight = paintFontMetrics.descent - paintFontMetrics.ascent
+      val latexHeight = drawableBounds.height()
 
       val centeringOffset = (textHeight - latexHeight) / 2
 
-      it.ascent = paintFm.ascent + centeringOffset
-      it.top = paintFm.top + centeringOffset
-      it.descent = it.ascent + latexHeight
-      it.bottom = it.top + latexHeight
+      metrics.ascent = paintFontMetrics.ascent + centeringOffset
+      metrics.top = paintFontMetrics.top + centeringOffset
+      metrics.descent = metrics.ascent + latexHeight
+      metrics.bottom = metrics.top + latexHeight
     }
 
-    return bounds.right
+    return drawableBounds.right
   }
 
   override fun draw(
@@ -188,17 +189,17 @@ private class LatexImageSpan(drawable: Drawable?) :
     bottom: Int,
     paint: Paint
   ) {
-    val d = drawable
+    val latexDrawable = drawable
     canvas.save()
 
     val fontMetrics = paint.fontMetricsInt
-    val latexHeight = d.bounds.height()
+    val latexHeight = latexDrawable.bounds.height()
 
     val centerY = y + (fontMetrics.descent + fontMetrics.ascent) / 2
     val drawableY = centerY - (latexHeight / 2)
 
     canvas.translate(x, drawableY.toFloat())
-    d.draw(canvas)
+    latexDrawable.draw(canvas)
     canvas.restore()
   }
 
