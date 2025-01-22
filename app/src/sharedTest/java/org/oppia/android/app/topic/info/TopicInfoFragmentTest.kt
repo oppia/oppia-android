@@ -23,11 +23,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import androidx.viewpager2.widget.ViewPager2
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
@@ -47,10 +49,14 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.TopicInfoFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIntent
+import org.oppia.android.app.topic.TopicFragment
+import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -101,6 +107,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -110,6 +117,9 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -153,13 +163,16 @@ class TopicInfoFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @field:[Inject EnableExtraTopicTabsUi]
+  lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
+
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
     TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
   )
 
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
-  private val internalProfileId = 0
+  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
@@ -180,7 +193,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -192,7 +205,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescription_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -214,7 +227,7 @@ class TopicInfoFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         context = context,
-        internalProfileId = internalProfileId,
+        profileId = profileId,
         classroomId = TEST_CLASSROOM_ID,
         topicId = TEST_TOPIC_ID
       )
@@ -234,7 +247,7 @@ class TopicInfoFragmentTest {
     activityTestRule.launchActivity(
       createTopicActivityIntent(
         context = context,
-        internalProfileId = internalProfileId,
+        profileId = profileId,
         classroomId = TEST_CLASSROOM_ID,
         topicId = TEST_TOPIC_ID
       )
@@ -252,7 +265,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicThumbnail_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -264,7 +277,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_checkTopicThumbnail_hasCorrectScaleType() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -280,7 +293,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationChange_checkTopicName_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -302,7 +315,7 @@ class TopicInfoFragmentTest {
   @Test
   fun testTopicInfoFragment_loadFragment_configurationLandscape_isCorrect() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -316,7 +329,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_configurationLandscape_imageViewNotDisplayed() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use {
@@ -329,7 +342,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_checkDefaultTopicDescriptionLines_fiveLinesVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
@@ -348,7 +361,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_moreThanFiveLines_seeMoreIsVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
@@ -367,7 +380,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible_and_fiveLinesVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
@@ -393,7 +406,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_seeLessVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
@@ -413,7 +426,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_seeMoreIsVisible() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
@@ -427,7 +440,7 @@ class TopicInfoFragmentTest {
   @RunOn(TestPlatform.ESPRESSO) // TODO(#2057): Enable for Robolectric.
   fun testTopicInfoFragment_loadFragment_clickSeeMore_textChangesToSeeLess() {
     launchTopicActivityIntent(
-      internalProfileId = internalProfileId,
+      profileId = profileId,
       classroomId = TEST_CLASSROOM_ID,
       topicId = RATIOS_TOPIC_ID
     ).use {
@@ -438,19 +451,68 @@ class TopicInfoFragmentTest {
     }
   }
 
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launchTopicActivityIntent(
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID,
+      topicId = TEST_TOPIC_ID
+    ).use { scenario ->
+      clickInfoTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicInfoFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicInfoFragment
+
+        val args = topicInfoFragment.arguments?.getProto(
+          TopicInfoFragment.TOPIC_INFO_FRAGMENT_ARGUMENTS_KEY,
+          TopicInfoFragmentArguments.getDefaultInstance()
+        )
+        val receivedInternalProfileId = topicInfoFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val receivedTopicId = checkNotNull(args?.topicId) {
+          "Expected topic ID to be included in arguments for TopicInfoFragment."
+        }
+
+        assertThat(receivedInternalProfileId).isEqualTo(profileId.internalId)
+        assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID)
+      }
+    }
+  }
+
   private fun launchTopicActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String
   ): ActivityScenario<TopicActivity> {
     val intent =
       TopicActivity.createTopicActivityIntent(
         ApplicationProvider.getApplicationContext(),
-        internalProfileId,
+        profileId,
         classroomId,
         topicId
       )
     return ActivityScenario.launch(intent)
+  }
+
+  private fun clickInfoTab() {
+    onView(
+      allOf(
+        withText(
+          TopicTab.getTabForPosition(
+            position = 0,
+            enableExtraTopicTabsUi = enableExtraTopicTabsUi.value
+          ).name
+        ),
+        ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
+      )
+    ).perform(click())
+    testCoroutineDispatchers.runCurrent()
   }
 
   /** Custom function to set dummy text in the TextView. */
