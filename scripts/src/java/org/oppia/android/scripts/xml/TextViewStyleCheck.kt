@@ -73,9 +73,9 @@ private class TextViewStyleCheck {
     if (idAttribute in attributeIds) return
 
     if (styleAttribute.isNullOrBlank()) {
-      val idInformation = idAttribute?.let { "ID: $it" } ?: ""
+      val idInformation = idAttribute?.let { " ID: $it," } ?: ""
       styleValidationIssues.add(
-        "ERROR: Missing style attribute in file: $filePath, $idInformation, line $lineNumber."
+        "ERROR: Missing style attribute in file: $filePath,$idInformation line $lineNumber."
       )
     }
 
