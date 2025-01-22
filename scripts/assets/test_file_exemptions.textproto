@@ -299,6 +299,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ThumbnailImage.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/topiclist/AllTopicsHeaderText.kt"
   test_file_not_required: true
 }

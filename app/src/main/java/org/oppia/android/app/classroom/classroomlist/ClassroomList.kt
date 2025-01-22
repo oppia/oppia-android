@@ -2,7 +2,6 @@ package org.oppia.android.app.classroom.classroomlist
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,14 +22,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
-import org.oppia.android.app.classroom.getDrawableResource
+import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 
 /** Test tag for the classroom list. */
@@ -103,14 +101,10 @@ fun ClassroomCard(
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
       AnimatedVisibility(visible = !isSticky) {
-        Image(
-          painter = painterResource(
-            id = classroomSummaryViewModel
-              .classroomSummary
-              .classroomThumbnail
-              .getDrawableResource()
-          ),
-          contentDescription = classroomSummaryViewModel.title,
+        ThumbnailImage(
+          entityId = classroomSummaryViewModel.classroomSummary.classroomId,
+          entityType = classroomSummaryViewModel.entityType,
+          lessonThumbnail = classroomSummaryViewModel.classroomSummary.classroomThumbnail,
           modifier = Modifier
             .testTag("${CLASSROOM_CARD_ICON_TEST_TAG}_${classroomSummaryViewModel.title}")
             .padding(bottom = dimensionResource(id = R.dimen.classrooms_card_icon_padding_bottom))
