@@ -4,8 +4,10 @@ import android.app.Application
 import android.app.Instrumentation.ActivityResult
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
@@ -300,6 +302,34 @@ class PoliciesFragmentTest {
         onView(withId(R.id.policy_web_link_text_view)).check(matches(isCompletelyDisplayed()))
         assertThat(textView.text.toString())
           .isEqualTo("Please visit this page for the latest version of these terms.")
+      }
+    }
+  }
+
+  @Test
+  fun testPoliciesFragment_privacyPolicy_retainsScrollPositionAfterOrientationChange() {
+    launch<PoliciesFragmentTestActivity>(
+      createPoliciesFragmentTestActivity(
+        getApplicationContext(),
+        PolicyPage.PRIVACY_POLICY
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val scrollView = activity.findViewById<ScrollView>(R.id.policy_scroll_view)
+        scrollView.scrollTo(0, 500)
+        testCoroutineDispatchers.runCurrent()
+
+        // Capture the current scroll position.
+        val initialScrollPosition = scrollView.scrollY
+        assertThat(initialScrollPosition).isEqualTo(500)
+
+        // Rotate the screen (simulate an orientation change).
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        testCoroutineDispatchers.runCurrent()
+
+        // Verify that the scroll position is retained after the orientation change.
+        val newScrollPosition = scrollView.scrollY
+        assertThat(newScrollPosition).isEqualTo(initialScrollPosition)
       }
     }
   }
