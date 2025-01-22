@@ -10,6 +10,10 @@ annotation class ExplorationHtmlParserEntityType
 @Qualifier
 annotation class ConceptCardHtmlParserEntityType
 
+/** Qualifier for injecting the entity type for classroom card. */
+@Qualifier
+annotation class ClassroomHtmlParserEntityType
+
 /** Qualifier for injecting the entity type for review card. */
 @Qualifier
 annotation class TopicHtmlParserEntityType
