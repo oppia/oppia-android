@@ -49,6 +49,12 @@ class PoliciesFragment : InjectableFragment() {
         POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
         PoliciesFragmentArguments.getDefaultInstance()
       )
-    return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
+    return policiesFragmentPresenter
+      .handleCreateView(inflater, container, policies, savedInstanceState)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    policiesFragmentPresenter.handleSaveInstanceState(outState)
   }
 }
