@@ -307,8 +307,7 @@ class TextViewStyleCheckTest {
     assertThat(execption).hasMessageThat().contains(TEXTVIEW_STYLE_CHECK_FAILED_OUTPUT_INDICATOR)
 
     val output = outContent.toString()
-    assertThat(output).contains("line 10")us
-
+    assertThat(output).contains("line 10")
     assertThat(output).contains("line 16")
   }
 
