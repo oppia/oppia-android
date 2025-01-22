@@ -686,4 +686,8 @@
   <string name="audio_language_fragment_text">In %s, you can listen to lessons!</string>
   <string name="audio_language_fragment_subtitle">Select the audio language to listen to lessons</string>
   <string name="onboarding_step_count_five">STEP 5 OF 5</string>
+
+  <!-- AudioLanguageFragment -->
+  <string name="arabic_language_display_name_content_description">Arabic</string>
+
 </resources>
