@@ -81,7 +81,6 @@
 /testing/src/main/java/org/oppia/android/testing/OppiaTestAnnotations.kt @oppia/android-dev-workflow-reviewers
 /testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/data/ @oppia/android-dev-workflow-reviewers
-/testing/src/*/java/org/oppia/android/testing/environment/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/junit/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/mockito/ @oppia/android-dev-workflow-reviewers
 /testing/src/*/java/org/oppia/android/testing/platformparameter/ @oppia/android-dev-workflow-reviewers
@@ -246,7 +245,7 @@
 # Broad Bazel files used throughout the codebase.
 WORKSPACE @oppia/android-app-infrastructure-reviewers
 *.bzl @oppia/android-app-infrastructure-reviewers
-*.bazel @oppia/android-app-infrastructure-reviewers
+BUILD @oppia/android-app-infrastructure-reviewers
 .bazelrc @oppia/android-app-infrastructure-reviewers
 .bazelversion @oppia/android-app-infrastructure-reviewers
 /tools/android/ @oppia/android-app-infrastructure-reviewers
