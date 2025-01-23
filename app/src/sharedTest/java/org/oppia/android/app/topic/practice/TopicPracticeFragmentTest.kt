@@ -20,6 +20,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.viewpager2.widget.ViewPager2
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -45,10 +47,12 @@ import org.oppia.android.app.model.QuestionPlayerActivityParams
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
+import org.oppia.android.app.model.TopicPracticeFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.topic.TopicActivity
+import org.oppia.android.app.topic.TopicFragment
 import org.oppia.android.app.topic.TopicTab
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerActivity.Companion.QUESTION_PLAYER_ACTIVITY_PARAMS_KEY
@@ -100,6 +104,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -112,6 +117,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -379,6 +385,74 @@ class TopicPracticeFragmentTest {
           )
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launchTopicActivityIntent(
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID_1,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use { scenario ->
+      clickPracticeTab()
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val topicFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.topic_fragment_placeholder) as TopicFragment
+        val viewPager = topicFragment.requireView()
+          .findViewById<ViewPager2>(R.id.topic_tabs_viewpager)
+        val topicPracticeFragment = topicFragment.childFragmentManager
+          .findFragmentByTag("f${viewPager.currentItem}") as TopicPracticeFragment
+
+        val args = topicPracticeFragment.arguments?.getProto(
+          TopicPracticeFragment.TOPIC_PRACTICE_FRAGMENT_ARGUMENTS_KEY,
+          TopicPracticeFragmentArguments.getDefaultInstance()
+        )
+        val receivedInternalProfileId = topicPracticeFragment
+          .arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+        val receivedTopicId = checkNotNull(args?.topicId) {
+          "Expected topic ID to be included in arguments for TopicPracticeFragment."
+        }
+
+        assertThat(receivedInternalProfileId).isEqualTo(profileId.internalId)
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      }
+    }
+  }
+
+  @Test
+  fun testTopicPracticeFragment_saveInstanceState_verifyCorrectStateRestored() {
+    launchTopicActivityIntent(
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID_1,
+      topicId = FRACTIONS_TOPIC_ID
+    ).use { scenario ->
+      clickPracticeTab()
+      testCoroutineDispatchers.runCurrent()
+
+      clickPracticeItem(position = 1, targetViewId = R.id.subtopic_check_box)
+      clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
+
+      scenario.recreate()
+
+      scrollToPosition(position = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 1,
+          targetViewId = R.id.subtopic_check_box
+        )
+      ).check(matches(isChecked()))
+      scrollToPosition(position = 2)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.topic_practice_skill_list,
+          position = 2,
+          targetViewId = R.id.subtopic_check_box
+        )
+      ).check(matches(isChecked()))
     }
   }
 

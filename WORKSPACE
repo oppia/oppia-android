@@ -16,6 +16,19 @@ android_sdk_repository(
     build_tools_version = BUILD_TOOLS_VERSION,
 )
 
+# The rules_java contains the java_lite_proto_library rule used in the model module.
+http_archive(
+    name = "rules_java",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
+    url = "https://github.com/bazelbuild/rules_java/releases/download/{0}/rules_java-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_java"]["version"]),
+)
+
+load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
+
+rules_java_dependencies()
+
+rules_java_toolchains()
+
 # Oppia's backend proto API definitions.
 git_repository(
     name = "oppia_proto_api",
@@ -74,19 +87,6 @@ bind(
     name = "proto_java_toolchain",
     actual = "//tools:java_toolchain",
 )
-
-# The rules_java contains the java_lite_proto_library rule used in the model module.
-http_archive(
-    name = "rules_java",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_java"]["sha"],
-    url = "https://github.com/bazelbuild/rules_java/releases/download/{0}/rules_java-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["rules_java"]["version"]),
-)
-
-load("@rules_java//java:repositories.bzl", "rules_java_dependencies", "rules_java_toolchains")
-
-rules_java_dependencies()
-
-rules_java_toolchains()
 
 # The rules_proto contains the proto_library rule used in the model module.
 http_archive(
