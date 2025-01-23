@@ -42,6 +42,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -215,6 +216,35 @@ class WalkthroughTopicListFragmentTest {
   }
 
   @Test
+  fun testWalkthroughTopicListFragment_topicCard_lessonThumbnailIsCorrect() {
+    // TODO(#1523): Add support for orchestrating Glide so that this test can verify the correct
+    //  thumbnail is being loaded through Glide.
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_welcome_next_button)).perform(scrollTo(), click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.walkthrough_topic_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(
+          /* position= */ 4
+        )
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.walkthrough_topic_recycler_view,
+          position = 4,
+          targetViewId = R.id.walkthrough_topic_thumbnail_image_view
+        )
+      ).check(
+        matches(
+          withDrawable(
+            R.drawable.lesson_thumbnail_graphic_duck_and_chicken
+          )
+        )
+      )
+    }
+  }
+
+  @Test
   fun testWalkthroughTopicListFragment_topicCard_lessonBackgroundColorIsCorrect() {
     launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use {
       testCoroutineDispatchers.runCurrent()
@@ -243,7 +273,8 @@ class WalkthroughTopicListFragmentTest {
   class TestModule {
     @Provides
     @LoadLessonProtosFromAssets
-    fun provideLoadLessonProtosFromAssets(): Boolean = true
+    // TODO(#5663): Use proto assets in this test once thumbnails load correctly.
+    fun provideLoadLessonProtosFromAssets(): Boolean = false
 
     @Provides
     @LoadImagesFromAssets
