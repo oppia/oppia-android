@@ -149,8 +149,7 @@ class MathTagHandler(
 }
 
 /** An [ImageSpan] that vertically centers a LaTeX drawable within the surrounding text. */
-private class LatexImageSpan(drawable: Drawable?) :
-  ImageSpan(drawable ?: createEmptyDrawable()) {
+private class LatexImageSpan(drawable: Drawable) : ImageSpan(drawable) {
 
   override fun getSize(
     paint: Paint,
@@ -159,23 +158,23 @@ private class LatexImageSpan(drawable: Drawable?) :
     end: Int,
     fontMetricsInt: Paint.FontMetricsInt?
   ): Int {
-    val latexDrawable = drawable
-    val drawableBounds = latexDrawable.bounds
+    val drawable = drawable
+    val rect = drawable.bounds
 
-    fontMetricsInt?.let { metrics ->
-      val paintFontMetrics = paint.fontMetricsInt
-      val textHeight = paintFontMetrics.descent - paintFontMetrics.ascent
-      val latexHeight = drawableBounds.height()
+    fontMetricsInt?.let { fm ->
+      val paintMetrics = paint.fontMetricsInt
+      val fontHeight = paintMetrics.descent - paintMetrics.ascent
+      val drawableHeight = rect.bottom - rect.top
+      val centerY = paintMetrics.ascent + fontHeight / 2
 
-      val centeringOffset = (textHeight - latexHeight) / 2
-
-      metrics.ascent = paintFontMetrics.ascent + centeringOffset
-      metrics.top = paintFontMetrics.top + centeringOffset
-      metrics.descent = metrics.ascent + latexHeight
-      metrics.bottom = metrics.top + latexHeight
+      // Adjust font metrics to center the drawable vertically
+      fm.ascent = centerY - drawableHeight / 2
+      fm.top = fm.ascent
+      fm.bottom = centerY + drawableHeight / 2
+      fm.descent = fm.bottom
     }
 
-    return drawableBounds.right
+    return rect.right
   }
 
   override fun draw(
@@ -189,32 +188,17 @@ private class LatexImageSpan(drawable: Drawable?) :
     bottom: Int,
     paint: Paint
   ) {
-    val latexDrawable = drawable
+    val drawable = drawable
     canvas.save()
 
-    val fontMetrics = paint.fontMetricsInt
-    val latexHeight = latexDrawable.bounds.height()
+    // Calculate vertical centering
+    val paintMetrics = paint.fontMetricsInt
+    val fontHeight = paintMetrics.descent - paintMetrics.ascent
+    val centerY = y + paintMetrics.descent - fontHeight / 2
+    val transY = centerY - (drawable.bounds.bottom - drawable.bounds.top) / 2
 
-    val centerY = y + (fontMetrics.descent + fontMetrics.ascent) / 2
-    val drawableY = centerY - (latexHeight / 2)
-
-    canvas.translate(x, drawableY.toFloat())
-    latexDrawable.draw(canvas)
+    canvas.translate(x, transY.toFloat())
+    drawable.draw(canvas)
     canvas.restore()
-  }
-
-  companion object {
-    private fun createEmptyDrawable(): Drawable {
-      return object : Drawable() {
-        override fun draw(canvas: Canvas) {}
-        override fun setAlpha(alpha: Int) {}
-        override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {}
-        override fun getOpacity(): Int = android.graphics.PixelFormat.TRANSPARENT
-
-        init {
-          setBounds(0, 0, 1, 1)
-        }
-      }
-    }
   }
 }
