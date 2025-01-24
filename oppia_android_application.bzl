@@ -398,7 +398,8 @@ def generate_universal_apk(name, aab_target):
     """
     Creates a new installable universal APK target for the provided AAB target.
 
-    This new target is expected to be installable via 'bazel mobile-install' or directly with ADB.
+    This new target is installable via 'adb install'. This should generally never be used for direct
+    development installs as it will be far less performant than 'bazel mobile-install'.
 
     Example:
         generate_universal_apk(
