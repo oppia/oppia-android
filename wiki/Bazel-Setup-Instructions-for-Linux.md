@@ -42,5 +42,7 @@ INFO: Build completed successfully, ...
 Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the following Bazel command:
 
 ```sh
-bazel run //:install_oppia_dev
+bazel mobile-install //:oppia_dev_binary
 ```
+
+``mobile-install`` is much faster for local development (especially for the developer flavor of the app) because it does more sophisticated dex regeneration detection for faster incremental installs. See https://bazel.build/docs/mobile-install for details.
