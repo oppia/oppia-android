@@ -644,7 +644,7 @@ class StateRetrieverTest {
   }
 
   @Test
-  fun testParseState_withFractionInputInteraction_parsesRuleWithHasIntegerPartEqualToWithValueAtX() {
+  fun testParseState_withFractionInput_parsesRuleHasIntegerPartEqualToValueAtX() {
     val state = loadStateFromJson(
       stateName = "Fractions",
       explorationName = TEST_EXPLORATION_ID_2
