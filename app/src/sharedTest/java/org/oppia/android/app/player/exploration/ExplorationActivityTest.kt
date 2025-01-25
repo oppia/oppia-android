@@ -2293,7 +2293,7 @@ class ExplorationActivityTest {
           matches(
             withContentDescription(
               "Remember that two halves, when added together, make one whole." +
-                "\nClick on this lesson concept card test_skill_id_1."
+                "\nClick on this test_skill_id_1 concept card."
             )
           )
         )
