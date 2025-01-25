@@ -155,7 +155,6 @@ class MathTagHandlerTest {
 
     val metrics = paint.fontMetricsInt
     val y = 100
-    val expectedCenterY = y + (metrics.descent + metrics.ascent) / 2f
 
     imageSpans[0].draw(
       mockCanvas,
@@ -168,17 +167,20 @@ class MathTagHandlerTest {
       200,
       paint
     )
-    // The canvas should be translated to center the drawable vertically
+
+    val textHeight = (metrics.descent - metrics.ascent).toFloat()
+    val textMidline = y.toFloat() - (textHeight / 2f)
+    val verticalShift = metrics.descent * 0.9f
+    val drawable = imageSpans[0].drawable
+    val expectedTranslation = textMidline + verticalShift - (drawable.bounds.height() / 2f)
+
+    // The translation should position the drawable centered around the text baseline
     verify(mockCanvas).save()
     verify(mockCanvas).translate(
       eq(0f),
       capture(floatCaptor)
     )
-    // The translation should position the drawable centered around the text baseline
-    val drawable = imageSpans[0].drawable
-    val expectedTranslation = expectedCenterY - (drawable.bounds.height() / 2)
     assertThat(floatCaptor.value).isWithin(1f).of(expectedTranslation)
-
     verify(mockCanvas).restore()
   }
 
@@ -233,6 +235,7 @@ class MathTagHandlerTest {
     val lineHeight = paint.textSize * 1.2f
     assertThat(totalHeight.toFloat()).isLessThan(lineHeight)
   }
+
   @Test
   fun testParseHtml_emptyString_doesNotIncludeImageSpan() {
     val parsedHtml =

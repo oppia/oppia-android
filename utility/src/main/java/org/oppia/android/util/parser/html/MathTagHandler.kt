@@ -7,12 +7,9 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Spannable
-import android.text.style.DynamicDrawableSpan
 import android.text.style.ImageSpan
-import android.text.style.ReplacementSpan
 import androidx.core.content.res.ResourcesCompat
 import io.github.karino2.kotlitex.view.MathExpressionSpan
-import java.lang.ref.WeakReference
 import org.json.JSONObject
 import org.oppia.android.util.R
 import org.oppia.android.util.logging.ConsoleLogger
@@ -154,11 +151,25 @@ class MathTagHandler(
 
 /** An [ImageSpan] that vertically centers a LaTeX drawable within the surrounding text. */
 private class LatexImageSpan(
-  private val drawable: Drawable,
-  private val isInline: Boolean
-) : ReplacementSpan() {
+  imageDrawable: Drawable?,
+  private val isInlineMode: Boolean
+) : ImageSpan(imageDrawable ?: createEmptyDrawable()) {
+
   companion object {
-    private const val INLINE_SHIFT_FACTOR = 0.9f // Adjust this value (0.2-0.4) as needed
+    private const val INLINE_VERTICAL_SHIFT_RATIO = 0.9f
+
+    private fun createEmptyDrawable(): Drawable {
+      return object : Drawable() {
+        override fun draw(canvas: Canvas) {}
+        override fun setAlpha(alpha: Int) {}
+        override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {}
+        override fun getOpacity(): Int = android.graphics.PixelFormat.TRANSPARENT
+
+        init {
+          setBounds(0, 0, 1, 1)
+        }
+      }
+    }
   }
 
   override fun getSize(
@@ -166,24 +177,22 @@ private class LatexImageSpan(
     text: CharSequence,
     start: Int,
     end: Int,
-    fm: Paint.FontMetricsInt?
+    fontMetrics: Paint.FontMetricsInt?
   ): Int {
-    val bounds = drawable.bounds
-    val imageHeight = bounds.height()
-    val paintMetrics = paint.fontMetricsInt
-    val textHeight = paintMetrics.descent - paintMetrics.ascent
+    val drawableBounds = drawable.bounds
+    val imageHeight = drawableBounds.height()
+    val textMetrics = paint.fontMetricsInt
+    val textHeight = textMetrics.descent - textMetrics.ascent
 
-    fm?.let { metrics ->
-      if (isInline) {
-        // Reserve space for inline shift
+    fontMetrics?.let { metrics ->
+      if (isInlineMode) {
         val verticalShift = (imageHeight - textHeight) / 2 +
-          (paintMetrics.descent * INLINE_SHIFT_FACTOR).toInt()
-        metrics.ascent = paintMetrics.ascent - verticalShift
+          (textMetrics.descent * INLINE_VERTICAL_SHIFT_RATIO).toInt()
+        metrics.ascent = textMetrics.ascent - verticalShift
         metrics.top = metrics.ascent
-        metrics.descent = paintMetrics.descent + verticalShift
+        metrics.descent = textMetrics.descent + verticalShift
         metrics.bottom = metrics.descent
       } else {
-        // Block mode calculations remain unchanged
         val totalHeight = (imageHeight * 1.2).toInt()
         metrics.ascent = -totalHeight / 2
         metrics.top = metrics.ascent
@@ -191,7 +200,7 @@ private class LatexImageSpan(
         metrics.bottom = metrics.descent
       }
     }
-    return bounds.right
+    return drawableBounds.right
   }
 
   override fun draw(
@@ -208,20 +217,17 @@ private class LatexImageSpan(
     canvas.save()
 
     val imageHeight = drawable.bounds.height()
-    val yPosition = when {
-      isInline -> {
-        // Apply downward shift for inline equations
-        val textMidline = baseline - (paint.fontMetrics.descent - paint.fontMetrics.ascent) / 2
-        val shiftOffset = (paint.fontMetricsInt.descent * INLINE_SHIFT_FACTOR).toInt()
-        textMidline - (imageHeight / 2) + shiftOffset
-      }
-      else -> {
-        // Block mode remains centered
-        lineTop + (lineBottom - lineTop - imageHeight) / 2
-      }
+    val yOffset = if (isInlineMode) {
+      val metrics = paint.fontMetricsInt
+      val ascent = metrics.ascent.toFloat()
+      val descent = metrics.descent.toFloat()
+      val expectedCenterY = baseline.toFloat() + (ascent + descent) / 2f
+      expectedCenterY - (imageHeight / 2f)
+    } else {
+      lineTop.toFloat() + (lineBottom - lineTop - imageHeight) / 2f
     }
 
-    canvas.translate(x, yPosition.toFloat())
+    canvas.translate(x, yOffset)
     drawable.draw(canvas)
     canvas.restore()
   }
