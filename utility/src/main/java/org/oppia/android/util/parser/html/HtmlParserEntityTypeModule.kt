@@ -1,6 +1,5 @@
 package org.oppia.android.util.parser.html
 
-import android.view.View
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -10,10 +9,10 @@ import javax.inject.Singleton
 class HtmlParserEntityTypeModule {
   @Provides
   @Singleton
-  fun provideConceptCardListener(): ConceptCardTagHandler.ConceptCardLinkClickListener {
-    return object : ConceptCardTagHandler.ConceptCardLinkClickListener {
-      override fun onConceptCardLinkClicked(view: View, skillId: String) {}
-    }
+  fun provideConceptCardListener(
+    factory: ConceptCardTagHandler.Factory
+  ): ConceptCardTagHandler.ConceptCardLinkClickListener {
+    return factory.createConceptCardLinkClickListener()
   }
 
   @Provides

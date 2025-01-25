@@ -30,7 +30,7 @@ class HintsAndSolutionViewModel private constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
   private val solutionViewModelFactory: SolutionViewModel.Factory,
-  private val conceptCardListener: ConceptCardTagHandler.ConceptCardLinkClickListener,
+  private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
   private val consoleLogger: ConsoleLogger
 ) : ObservableViewModel() {
   private val hintList by lazy { helpIndex.dropLastUnavailable(state.interaction.hintList) }
@@ -83,7 +83,7 @@ class HintsAndSolutionViewModel private constructor(
         writtenTranslationContext
       ),
       isHintRevealed = isHintRevealed,
-      conceptCardListener = conceptCardListener,
+      conceptCardListener = conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
       consoleLogger = consoleLogger
     )
   }
@@ -107,7 +107,7 @@ class HintsAndSolutionViewModel private constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
     private val solutionViewModelFactory: SolutionViewModel.Factory,
-    private val conceptCardListener: ConceptCardTagHandler.ConceptCardLinkClickListener,
+    private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
     private val consoleLogger: ConsoleLogger
   ) {
     /**
@@ -127,7 +127,7 @@ class HintsAndSolutionViewModel private constructor(
         resourceHandler,
         translationController,
         solutionViewModelFactory,
-        conceptCardListener,
+        conceptCardTagHandlerFactory,
         consoleLogger
       )
     }

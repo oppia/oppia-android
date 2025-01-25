@@ -7,6 +7,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
+import javax.inject.Inject
 
 /** The custom tag corresponding to [ConceptCardTagHandler]. */
 const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
@@ -56,5 +57,12 @@ class ConceptCardTagHandler(
     return if (!text.isNullOrBlank()) {
       text
     } else ""
+  }
+  class Factory @Inject constructor() {
+    fun createConceptCardLinkClickListener(): ConceptCardLinkClickListener {
+      return object : ConceptCardLinkClickListener {
+        override fun onConceptCardLinkClicked(view: View, skillId: String) {}
+      }
+    }
   }
 }
