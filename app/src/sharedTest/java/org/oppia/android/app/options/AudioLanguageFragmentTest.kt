@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -496,6 +497,32 @@ class AudioLanguageFragmentTest {
 
         assertThat(restoredAudioLanguage).isEqualTo(language)
       }
+    }
+  }
+
+  @Test
+  fun testFragment_withEnglish_verifyContentDescriptionReadsArabicLanguage() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      verifyEnglishIsSelected()
+
+      onView(
+        atPositionOnView(
+          R.id.audio_language_recycler_view,
+          3,
+          R.id.language_text_view
+        )
+      ).check(matches(withText(R.string.arabic_localized_language_name)))
+
+      onView(
+        atPositionOnView(
+          R.id.audio_language_recycler_view,
+          3,
+          R.id.language_text_view
+        )
+      ).check(
+        matches(withContentDescription(R.string.arabic_language_display_name_content_description))
+      )
     }
   }
 
