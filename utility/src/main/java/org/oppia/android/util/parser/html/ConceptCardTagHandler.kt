@@ -58,6 +58,8 @@ class ConceptCardTagHandler(
       text
     } else ""
   }
+
+  /** Application-injectable factory for creating [ConceptCardTagHandler]s). */
   class Factory @Inject constructor() {
     fun createConceptCardLinkClickListener(): ConceptCardLinkClickListener {
       return object : ConceptCardLinkClickListener {

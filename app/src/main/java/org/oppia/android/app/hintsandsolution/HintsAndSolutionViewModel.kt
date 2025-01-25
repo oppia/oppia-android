@@ -83,7 +83,7 @@ class HintsAndSolutionViewModel private constructor(
         writtenTranslationContext
       ),
       isHintRevealed = isHintRevealed,
-      conceptCardListener = conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+      conceptCardLinkClickListener = conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
       consoleLogger = consoleLogger
     )
   }

@@ -9,7 +9,7 @@ import javax.inject.Singleton
 class HtmlParserEntityTypeModule {
   @Provides
   @Singleton
-  fun provideConceptCardListener(
+  fun provideConceptCardLinkClickListener(
     factory: ConceptCardTagHandler.Factory
   ): ConceptCardTagHandler.ConceptCardLinkClickListener {
     return factory.createConceptCardLinkClickListener()
