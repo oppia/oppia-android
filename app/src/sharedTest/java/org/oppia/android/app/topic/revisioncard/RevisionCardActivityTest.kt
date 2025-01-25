@@ -162,9 +162,10 @@ class RevisionCardActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val profileId = ProfileId.newBuilder().setInternalId(1).build()
     val currentScreenName = RevisionCardActivity.createRevisionCardActivityIntent(
       context,
-      1,
+      profileId,
       FRACTIONS_TOPIC_ID,
       1,
       FRACTIONS_SUBTOPIC_LIST_SIZE
@@ -424,19 +425,19 @@ class RevisionCardActivityTest {
     subtopicId: Int
   ): ActivityScenario<RevisionCardActivity> {
     val scenario = ActivityScenario.launch<RevisionCardActivity>(
-      createRevisionCardActivityIntent(profileId.internalId, topicId, subtopicId)
+      createRevisionCardActivityIntent(profileId, topicId, subtopicId)
     )
     testCoroutineDispatchers.runCurrent()
     return scenario
   }
 
   private fun createRevisionCardActivityIntent(
-    internalProfileId: Int,
+    profileId: ProfileId,
     topicId: String,
     subtopicId: Int
   ) = RevisionCardActivity.createRevisionCardActivityIntent(
     context,
-    internalProfileId,
+    profileId,
     topicId,
     subtopicId,
     FRACTIONS_SUBTOPIC_LIST_SIZE

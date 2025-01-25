@@ -9,6 +9,7 @@ import org.oppia.android.app.home.HomeFragment
 import org.oppia.android.app.home.RouteToRecentlyPlayedListener
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.testing.activity.TestActivity
@@ -36,9 +37,9 @@ class HomeFragmentTestActivity :
   }
 
   // Override functions are needed to fulfill listener definitions.
-  override fun routeToTopic(internalProfileId: Int, classroomId: String, topicId: String) {}
+  override fun routeToTopic(profileId: ProfileId, classroomId: String, topicId: String) {}
   override fun routeToTopicPlayStory(
-    internalProfileId: Int,
+    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String

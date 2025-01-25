@@ -302,6 +302,21 @@ class MathTagHandlerTest {
   }
 
   @Test
+  fun testGetContentDescription_withMathTag() {
+    val contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        html = MATH_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithCachedMathSupport
+      )
+
+    assertThat(contentDescription).isEqualTo(
+      "Math content" +
+        " {\"raw_latex\":\"\\\\frac{2}{5}\",\"svg_filename\":\"math_image1.svg\"}"
+    )
+  }
+
+  @Test
   fun testParseHtml_withMathMarkup_loadsInlineImageForFilename() {
     CustomHtmlContentHandler.fromHtml(
       html = MATH_MARKUP_1,
