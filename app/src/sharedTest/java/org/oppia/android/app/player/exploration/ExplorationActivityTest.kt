@@ -2901,7 +2901,7 @@ class ExplorationActivityTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class,
+      TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
