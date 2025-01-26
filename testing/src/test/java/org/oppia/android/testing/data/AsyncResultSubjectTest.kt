@@ -1,8 +1,5 @@
 package org.oppia.android.testing.data
 
-import com.google.common.truth.FailureMetadata
-import com.google.common.truth.StringSubject
-import com.google.common.truth.Subject
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -268,10 +265,12 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testIsIterableSuccessThat_withNonIterableSuccessResult_fails() {
+  fun testIsIterable_withNonIterableResult_fails() {
     val result = AsyncResult.Success("value")
 
-    val failure = assertThrows(AssertionError::class) { assertThat(result).isIterableSuccessThat<String>() }
+    val failure = assertThrows(AssertionError::class) {
+      assertThat(result).isIterableSuccessThat<String>()
+    }
 
     assertThat(failure).hasMessageThat().contains("expected to be an instance of")
   }
@@ -287,7 +286,9 @@ class AsyncResultSubjectTest {
   fun testAsMapSuccessThat_withNonMapSuccessResult_fails() {
     val result = AsyncResult.Success("value")
 
-    val failure = assertThrows(AssertionError::class) { assertThat(result).asMapSuccessThat<String, String>() }
+    val failure = assertThrows(AssertionError::class) {
+      assertThat(result).asMapSuccessThat<String, String>()
+    }
 
     assertThat(failure).hasMessageThat().contains("expected to be an instance of")
   }
@@ -300,10 +301,12 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsThrowableSuccessThat_withNonThrowableSuccessResult_fails() {
+  fun testIsIterable_withNonIterableResult_fails() {
     val result = AsyncResult.Success("value")
 
-    val failure = assertThrows(AssertionError::class) { assertThat(result).asThrowableSuccessThat() }
+    val failure = assertThrows(AssertionError::class) {
+      assertThat(result).asThrowableSuccessThat()
+    }
 
     assertThat(failure).hasMessageThat().contains("expected to be an instance of")
   }
@@ -339,7 +342,9 @@ class AsyncResultSubjectTest {
     Thread.sleep(10)
     val result2 = AsyncResult.Success("value")
 
-    val failure = assertThrows(AssertionError::class) { assertThat(result1).isNewerOrSameAgeAs(result2) }
+    val failure = assertThrows(AssertionError::class) {
+      assertThat(result1).isNewerOrSameAgeAs(result2)
+    }
 
     assertThat(failure).hasMessageThat().contains("expected to be true")
   }
@@ -377,7 +382,9 @@ class AsyncResultSubjectTest {
     val result1 = AsyncResult.Success("value")
     val result2 = AsyncResult.Success("different value")
 
-    val failure = assertThrows(AssertionError::class) { assertThat(result1).hasSameEffectiveValueAs(result2) }
+    val failure = assertThrows(AssertionError::class) {
+      assertThat(result1).hasSameEffectiveValueAs(result2)
+    }
 
     assertThat(failure).hasMessageThat().contains("expected to be true")
   }
