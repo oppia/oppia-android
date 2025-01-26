@@ -1,8 +1,12 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.ViewConfiguration
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -21,6 +25,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * A custom [RecyclerView] for displaying a list of items that can be re-ordered using
@@ -45,10 +50,55 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   private lateinit var dataList: List<DragDropInteractionContentViewModel>
   private lateinit var onDragEnd: OnDragEndedListener
   private lateinit var onItemDrag: OnItemDragListener
+  private var itemTouchHelper: ItemTouchHelper? = null
+  private val longPressHandler = Handler(Looper.getMainLooper())
+  private var pendingLongPress: Runnable? = null
+  private val longPressTimeout = 10L
+
+  private val touchListener = object : RecyclerView.OnItemTouchListener {
+    private var startX = 0f
+    private var startY = 0f
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+
+    override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+      when (e.action) {
+        MotionEvent.ACTION_DOWN -> {
+          startX = e.x
+          startY = e.y
+          // Schedule long press detection
+          pendingLongPress = Runnable {
+            findChildViewUnder(startX, startY)?.let { childView ->
+              findContainingViewHolder(childView)?.let { viewHolder ->
+                itemTouchHelper?.startDrag(viewHolder)
+              }
+            }
+          }.also { longPressHandler.postDelayed(it, longPressTimeout) }
+        }
+        MotionEvent.ACTION_MOVE -> {
+          // Cancel if moved beyond touch slop
+          if (abs(e.x - startX) > touchSlop || abs(e.y - startY) > touchSlop) {
+            cancelLongPress()
+          }
+        }
+        MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+          cancelLongPress()
+        }
+      }
+      return false
+    }
+
+    private fun cancelLongPress() {
+      pendingLongPress?.let { longPressHandler.removeCallbacks(it) }
+      pendingLongPress = null
+    }
+
+    override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+    override fun onRequestDisallowInterceptTouchEvent(disallow: Boolean) {}
+  }
 
   override fun onAttachedToWindow() {
     super.onAttachedToWindow()
-
+    addOnItemTouchListener(touchListener)
     val viewComponentFactory = FragmentManager.findFragment<Fragment>(this) as ViewComponentFactory
     val viewComponent = viewComponentFactory.createViewComponent(this) as ViewComponentImpl
     viewComponent.inject(this)
@@ -103,9 +153,14 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   }
 
   private fun maybeAttachItemTouchHelper() {
-    if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized) {
-      val itemTouchHelper = ItemTouchHelper(DragAndDropItemFacilitator(onItemDrag, onDragEnd))
-      itemTouchHelper.attachToRecyclerView(this)
+    if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized && itemTouchHelper == null) {
+      itemTouchHelper = ItemTouchHelper(
+        DragAndDropItemFacilitator(onItemDrag, onDragEnd).apply {
+          // Set custom drag flags
+          ItemTouchHelper.UP or ItemTouchHelper.DOWN
+        }
+      )
+      itemTouchHelper?.attachToRecyclerView(this)
     }
   }
 
