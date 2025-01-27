@@ -2,7 +2,9 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -21,6 +23,8 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito.eq
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
@@ -39,6 +43,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 private const val MATH_MARKUP_1 =
@@ -107,6 +112,129 @@ class MathTagHandlerTest {
   }
 
   // TODO(#3085): Introduce test for verifying that the error log scenario is logged correctly.
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOn_imageSpanHasCorrectMetrics() {
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = MATH_WITHOUT_FILENAME_MARKUP,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+
+    val paint = Paint()
+    paint.textSize = 20f
+    val originalMetrics = Paint.FontMetricsInt()
+    paint.getFontMetricsInt(originalMetrics)
+
+    val spanMetrics = Paint.FontMetricsInt()
+    imageSpans[0].getSize(paint, parsedHtml, 0, parsedHtml.length, spanMetrics)
+
+    // The span's center should align with the text's center
+    val originalCenter = (originalMetrics.descent + originalMetrics.ascent) / 2
+    val spanCenter = (spanMetrics.descent + spanMetrics.ascent) / 2
+    assertThat(abs(originalCenter - spanCenter)).isLessThan(2)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOn_drawsAtCorrectVerticalPosition() {
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = MATH_WITHOUT_FILENAME_MARKUP,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+
+    val mockCanvas = mock(Canvas::class.java)
+    val paint = Paint()
+    paint.textSize = 20f
+
+    val metrics = paint.fontMetricsInt
+    val y = 100
+
+    imageSpans[0].draw(
+      mockCanvas,
+      parsedHtml,
+      0,
+      parsedHtml.length,
+      0f,
+      0,
+      y,
+      200,
+      paint
+    )
+
+    val textHeight = (metrics.descent - metrics.ascent).toFloat()
+    val textMidline = y.toFloat() - (textHeight / 2f)
+    val verticalShift = metrics.descent * 0.9f
+    val drawable = imageSpans[0].drawable
+    val expectedTranslation = textMidline + verticalShift - (drawable.bounds.height() / 2f)
+
+    // The translation should position the drawable centered around the text baseline
+    verify(mockCanvas).save()
+    verify(mockCanvas).translate(
+      eq(0f),
+      capture(floatCaptor)
+    )
+    assertThat(floatCaptor.value).isWithin(1f).of(expectedTranslation)
+    verify(mockCanvas).restore()
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOn_maintainsConsistentHeight() {
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = MATH_WITHOUT_FILENAME_MARKUP,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+
+    val paint = Paint()
+    paint.textSize = 20f
+
+    val metrics1 = Paint.FontMetricsInt()
+    val metrics2 = Paint.FontMetricsInt()
+
+    val size1 = imageSpans[0].getSize(paint, parsedHtml, 0, parsedHtml.length, metrics1)
+    val size2 = imageSpans[0].getSize(paint, parsedHtml, 0, parsedHtml.length, metrics2)
+
+    assertThat(size1).isEqualTo(size2)
+    assertThat(metrics1.ascent).isEqualTo(metrics2.ascent)
+    assertThat(metrics1.descent).isEqualTo(metrics2.descent)
+    assertThat(metrics1.top).isEqualTo(metrics2.top)
+    assertThat(metrics1.bottom).isEqualTo(metrics2.bottom)
+  }
+
+  @Test
+  fun testParseHtml_withMathMarkup_cachingOn_respectsLineHeight() {
+
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = MATH_WITHOUT_FILENAME_MARKUP,
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+
+    val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
+    assertThat(imageSpans).hasLength(1)
+
+    val paint = Paint()
+    paint.textSize = 20f
+
+    val metrics = Paint.FontMetricsInt()
+    imageSpans[0].getSize(paint, parsedHtml, 0, parsedHtml.length, metrics)
+
+    // Verify that the total height does not exceed the line height
+    val totalHeight = metrics.bottom - metrics.top
+    val lineHeight = paint.textSize * 1.2f
+    assertThat(totalHeight.toFloat()).isLessThan(lineHeight)
+  }
 
   @Test
   fun testParseHtml_emptyString_doesNotIncludeImageSpan() {

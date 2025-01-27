@@ -19,8 +19,7 @@ class LicenseTextViewerFragment : InjectableFragment() {
 
   companion object {
     /** Argument key for LicenseTextViewerFragment. */
-    private const val LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY =
-      "LicenseTextViewerFragment.arguments"
+    const val LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY = "LicenseTextViewerFragment.arguments"
 
     /** Returns an instance of [LicenseTextViewerFragment]. */
     fun newInstance(dependencyIndex: Int, licenseIndex: Int): LicenseTextViewerFragment {
