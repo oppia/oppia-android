@@ -8,7 +8,7 @@ source scripts/formatting.sh
 # - buf
 # - buildifier
 
-if bash scripts/ktlint_lint_check.sh && bash scripts/checkstyle_lint_check.sh && bash scripts/buf_lint_check.sh && bash scripts/buildifier_lint_check.sh ; then
+if bash scripts/ktlint_lint_check.sh && bash scripts/checkstyle_lint_check.sh && bash scripts/buf_lint_check.sh && bash scripts/buildifier_lint_check.sh; then
   echo_success "All checks passed successfully"
   exit 0
 else
