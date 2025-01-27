@@ -45,8 +45,8 @@ kt_android_library(
 kt_android_library(
     name = "list_item_leading_margin_span",
     srcs = [
-        "ListItemLeadingMarginSpan.kt",
         "LeftAlignedSymbolsSpan.kt",
+        "ListItemLeadingMarginSpan.kt",
     ],
     visibility = [
         "//app:__subpackages__",
