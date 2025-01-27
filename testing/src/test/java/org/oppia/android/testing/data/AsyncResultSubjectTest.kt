@@ -3,8 +3,8 @@ package org.oppia.android.testing.data
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.oppia.android.util.data.AsyncResult
+import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class AsyncResultSubjectTest {
