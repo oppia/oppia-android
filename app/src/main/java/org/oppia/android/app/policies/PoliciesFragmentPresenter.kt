@@ -1,11 +1,8 @@
 package org.oppia.android.app.policies
 
-<<<<<<< HEAD
+import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
-=======
-import android.os.Bundle
->>>>>>> upstream/develop
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
