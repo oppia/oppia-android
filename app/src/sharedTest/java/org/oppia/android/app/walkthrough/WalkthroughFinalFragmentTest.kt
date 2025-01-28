@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.After
@@ -37,12 +38,14 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.WalkthroughFinalFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.ProgressMatcher.Companion.withProgress
+import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -73,6 +76,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -85,6 +89,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -264,6 +269,33 @@ class WalkthroughFinalFragmentTest {
       onView(withId(R.id.walkthrough_final_no_button)).perform(scrollTo())
         .perform(click())
       onView(withId(R.id.walkthrough_progress_bar)).check(matches(withProgress(2)))
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launch<WalkthroughActivity>(createWalkthroughActivityIntent(0)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        activity.pageWithTopicId(WalkthroughPages.FINAL.value, FRACTIONS_TOPIC_ID)
+
+        val walkthroughFinalFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.walkthrough_fragment_placeholder) as WalkthroughFinalFragment
+
+        val arguments =
+          checkNotNull(walkthroughFinalFragment.arguments) {
+            "Expected arguments to be passed to WalkthroughFinalFragment"
+          }
+        val args = arguments.getProto(
+          WalkthroughFinalFragment.WALKTHROUGH_FINAL_FRAGMENT_ARGUMENTS_KEY,
+          WalkthroughFinalFragmentArguments.getDefaultInstance()
+        )
+        val receivedTopicId = checkNotNull(args.topicId) {
+          "Expected topicId to be passed to WalkthroughFinalFragment"
+        }
+
+        assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
+      }
     }
   }
 

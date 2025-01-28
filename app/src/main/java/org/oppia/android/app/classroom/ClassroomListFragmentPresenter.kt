@@ -66,6 +66,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
@@ -84,6 +85,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val classroomController: ClassroomController,
   private val oppiaLogger: OppiaLogger,
+  @ClassroomHtmlParserEntityType private val classroomEntityType: String,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -120,6 +122,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
       profileManagementController,
       topicListController,
       classroomController,
+      classroomEntityType,
       topicEntityType,
       storyEntityType,
       resourceHandler,

@@ -22,7 +22,7 @@ private const val CUSTOM_IMG_CAPTION_ATTRIBUTE = "caption-with-value"
  */
 class ImageTagHandler(
   private val consoleLogger: ConsoleLogger
-) : CustomHtmlContentHandler.CustomTagHandler {
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -100,5 +100,12 @@ class ImageTagHandler(
       "ImageTagHandler",
       "Failed to parse $CUSTOM_IMG_CAPTION_ATTRIBUTE"
     )
+  }
+
+  override fun getContentDescription(attributes: Attributes): String {
+    val altValue = attributes.getJsonStringValue(CUSTOM_IMG_ALT_TEXT_ATTRIBUTE)
+    return if (!altValue.isNullOrBlank()) {
+      "Image illustrating $altValue"
+    } else ""
   }
 }
