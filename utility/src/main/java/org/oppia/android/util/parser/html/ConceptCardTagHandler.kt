@@ -7,6 +7,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import org.oppia.android.util.logging.ConsoleLogger
 import org.xml.sax.Attributes
+import javax.inject.Inject
 
 /** The custom tag corresponding to [ConceptCardTagHandler]. */
 const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
@@ -52,10 +53,25 @@ class ConceptCardTagHandler(
   }
 
   override fun getContentDescription(attributes: Attributes): String? {
-    val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
     val text = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_TEXT_VALUE)
-    return if (!skillId.isNullOrBlank() && !text.isNullOrBlank()) {
-      "$text concept card $skillId"
+    return if (!text.isNullOrBlank()) {
+      text
     } else ""
+  }
+
+  /** Application-injectable factory for creating [ConceptCardTagHandler]s). */
+  class Factory @Inject constructor() {
+    /**
+     * Creates a new [ConceptCardLinkClickListener] for handling concept card link click events.
+     *
+     * This [ConceptCardLinkClickListener] defines behavior for handling user interactions with links
+     * displayed in concept cards. The `onConceptCardLinkClicked` method provides the clicked [View]
+     * and the associated skill ID to enable further action handling.
+     */
+    fun createConceptCardLinkClickListener(): ConceptCardLinkClickListener {
+      return object : ConceptCardLinkClickListener {
+        override fun onConceptCardLinkClicked(view: View, skillId: String) {}
+      }
+    }
   }
 }

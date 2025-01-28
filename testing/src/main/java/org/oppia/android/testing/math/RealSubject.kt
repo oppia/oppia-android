@@ -10,8 +10,6 @@ import com.google.common.truth.extensions.proto.LiteProtoSubject
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.FractionSubject.Companion.assertThat
 
-// TODO(#4097): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [Real]s.
  *
