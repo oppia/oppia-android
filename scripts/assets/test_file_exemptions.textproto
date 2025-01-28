@@ -4103,27 +4103,11 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/FractionSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/MathEquationSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/MathExpressionSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/MathParsingErrorSubject.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/PolynomialSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/RealSubject.kt"
   test_file_not_required: true
 }
 test_file_exemption {
