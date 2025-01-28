@@ -61,6 +61,13 @@ class ConceptCardTagHandler(
 
   /** Application-injectable factory for creating [ConceptCardTagHandler]s). */
   class Factory @Inject constructor() {
+    /**
+     * Creates a new [ConceptCardLinkClickListener] for handling concept card link click events.
+     *
+     * This [ConceptCardLinkClickListener] defines behavior for handling user interactions with links
+     * displayed in concept cards. The `onConceptCardLinkClicked` method provides the clicked [View]
+     * and the associated skill ID to enable further action handling.
+     */
     fun createConceptCardLinkClickListener(): ConceptCardLinkClickListener {
       return object : ConceptCardLinkClickListener {
         override fun onConceptCardLinkClicked(view: View, skillId: String) {}
