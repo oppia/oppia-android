@@ -55,7 +55,7 @@ private class TextViewStyleCheck {
   }
 
   private fun processXmlFile(file: File) {
-    val document = readXMLWithLineNumbers(FileInputStream(file), LINE_NUMBER_ATTRIBUTE)
+    val document = readXmlWithLineNumbers(FileInputStream(file), LINE_NUMBER_ATTRIBUTE)
     val textViewNodes = document.getElementsByTagName("TextView")
     val relativePath = file.path.substringAfter("main/res/")
 
@@ -75,7 +75,7 @@ private class TextViewStyleCheck {
     if (styleAttribute.isNullOrBlank()) {
       val idInformation = idAttribute?.let { " ID: $it," } ?: ""
       styleValidationIssues.add(
-        "ERROR: Missing style attribute in file: $filePath,$idInformation line $lineNumber."
+        "ERROR: Missing style attribute in file: $filePath, $idInformation line $lineNumber."
       )
     }
 
@@ -117,7 +117,7 @@ private class TextViewStyleCheck {
     }
   }
 
-  private fun readXMLWithLineNumbers(inputStream: FileInputStream, lineNumAttribName: String):
+  private fun readXmlWithLineNumbers(inputStream: FileInputStream, lineNumAttribName: String):
     Document {
       val document: Document
       val parser: SAXParser
