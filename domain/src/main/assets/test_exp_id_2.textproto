@@ -806,6 +806,15 @@ states {
           }
           rule_type: "IsExactlyEqualTo"
         }
+        rule_specs {
+         input {
+          key: "x"
+            value {
+             signed_int: 1
+              }
+             }
+           rule_type: "HasIntegerPartEqualTo"
+         }
       }
       solution {
         answer_is_exclusive: true
