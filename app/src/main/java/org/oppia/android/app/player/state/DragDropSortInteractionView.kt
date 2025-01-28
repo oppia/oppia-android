@@ -55,7 +55,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   private var pendingLongPress: Runnable? = null
   private val longPressTimeout = 10L
 
-  private val touchListener = object : RecyclerView.OnItemTouchListener {
+  private val touchListener = object : OnItemTouchListener {
     private var startX = 0f
     private var startY = 0f
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
@@ -65,7 +65,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
         MotionEvent.ACTION_DOWN -> {
           startX = e.x
           startY = e.y
-          // Schedule long press detection
           pendingLongPress = Runnable {
             findChildViewUnder(startX, startY)?.let { childView ->
               findContainingViewHolder(childView)?.let { viewHolder ->
@@ -75,7 +74,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           }.also { longPressHandler.postDelayed(it, longPressTimeout) }
         }
         MotionEvent.ACTION_MOVE -> {
-          // Cancel if moved beyond touch slop
           if (abs(e.x - startX) > touchSlop || abs(e.y - startY) > touchSlop) {
             cancelLongPress()
           }
@@ -156,7 +154,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized && itemTouchHelper == null) {
       itemTouchHelper = ItemTouchHelper(
         DragAndDropItemFacilitator(onItemDrag, onDragEnd).apply {
-          // Set custom drag flags
           ItemTouchHelper.UP or ItemTouchHelper.DOWN
         }
       )
