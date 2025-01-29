@@ -1,5 +1,7 @@
 package org.oppia.android.app.recyclerview
 
+import android.view.ViewTreeObserver
+import androidx.core.view.doOnNextLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -47,16 +49,23 @@ class DragAndDropItemFacilitator(
   override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
     super.clearView(recyclerView, viewHolder)
     viewHolder.itemView.alpha = ALPHA_FULL
-    recyclerView.post {
-      recyclerView.adapter?.let { adapter ->
+    recyclerView.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+      override fun onPreDraw(): Boolean {
+        recyclerView.viewTreeObserver.removeOnPreDrawListener(this)
+
         if (!recyclerView.isComputingLayout) {
-          onDragEndedListener.onDragEnded(adapter)
-        } else {
-          recyclerView.post {
+          recyclerView.adapter?.let { adapter ->
             onDragEndedListener.onDragEnded(adapter)
           }
+        } else {
+          recyclerView.doOnNextLayout {
+            recyclerView.adapter?.let { adapter ->
+              onDragEndedListener.onDragEnded(adapter)
+            }
+          }
         }
+        return true
       }
-    }
+    })
   }
 }

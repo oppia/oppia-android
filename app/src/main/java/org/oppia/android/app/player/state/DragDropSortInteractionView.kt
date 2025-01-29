@@ -1,8 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -10,6 +8,7 @@ import android.view.ViewConfiguration
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
@@ -18,6 +17,7 @@ import org.oppia.android.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
 import org.oppia.android.util.accessibility.AccessibilityService
@@ -39,6 +39,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   @field:[Inject ExplorationHtmlParserEntityType] lateinit var entityType: String
   @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
+  @Inject lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
   @Inject lateinit var htmlParserFactory: HtmlParser.Factory
   @Inject lateinit var accessibilityService: AccessibilityService
   @Inject lateinit var viewBindingShim: ViewBindingShim
@@ -51,43 +52,58 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   private lateinit var onDragEnd: OnDragEndedListener
   private lateinit var onItemDrag: OnItemDragListener
   private var itemTouchHelper: ItemTouchHelper? = null
-  private val longPressHandler = Handler(Looper.getMainLooper())
-  private var pendingLongPress: Runnable? = null
-  private val longPressTimeout = 100L
+  companion object {
+    private const val LONG_PRESS_TIMEOUT_MS = 30L
+  }
 
   private val touchListener = object : OnItemTouchListener {
     private var startX = 0f
     private var startY = 0f
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private var currentTimer: LiveData<Any>? = null
 
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+      val fragment = FragmentManager.findFragment<Fragment>(this@DragDropSortInteractionView)
+
       when (e.action) {
         MotionEvent.ACTION_DOWN -> {
           startX = e.x
           startY = e.y
-          pendingLongPress = Runnable {
-            findChildViewUnder(startX, startY)?.let { childView ->
-              findContainingViewHolder(childView)?.let { viewHolder ->
-                itemTouchHelper?.startDrag(viewHolder)
+          cancelCurrentTimer()
+
+          fragment.let { fragmentOwner ->
+            currentTimer = lifecycleSafeTimerFactory.createTimer(LONG_PRESS_TIMEOUT_MS).apply {
+              observe(fragmentOwner.viewLifecycleOwner) {
+                findChildViewUnder(startX, startY)?.let { childView ->
+                  findContainingViewHolder(childView)?.let { viewHolder ->
+                    itemTouchHelper?.startDrag(viewHolder)
+                  }
+                }
+                removeObservers(fragmentOwner.viewLifecycleOwner)
               }
             }
-          }.also { longPressHandler.postDelayed(it, longPressTimeout) }
+          }
         }
         MotionEvent.ACTION_MOVE -> {
           if (abs(e.x - startX) > touchSlop || abs(e.y - startY) > touchSlop) {
-            cancelLongPress()
+            cancelCurrentTimer()
           }
         }
         MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-          cancelLongPress()
+          cancelCurrentTimer()
         }
       }
       return false
     }
 
-    private fun cancelLongPress() {
-      pendingLongPress?.let { longPressHandler.removeCallbacks(it) }
-      pendingLongPress = null
+    private fun cancelCurrentTimer() {
+      val fragment = FragmentManager.findFragment<Fragment>(this@DragDropSortInteractionView)
+      currentTimer?.let { timer ->
+        fragment.viewLifecycleOwner.let { lifecycleOwner ->
+          timer.removeObservers(lifecycleOwner)
+        }
+      }
+      currentTimer = null
     }
 
     override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
