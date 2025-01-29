@@ -7,7 +7,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
-import java.util.Collections
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
@@ -33,6 +32,7 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.Collections
 import javax.inject.Inject
 
 /** Represents the type of errors that can be thrown by drag and drop sort interaction. */
