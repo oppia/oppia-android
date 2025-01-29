@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
+import java.util.Collections
 import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
@@ -149,16 +150,14 @@ class DragAndDropSortInteractionViewModel private constructor(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    val item = _choiceItems[indexFrom]
-    _choiceItems.removeAt(indexFrom)
-    _choiceItems.add(indexTo, item)
+    if (indexFrom == indexTo) return
+    Collections.swap(_choiceItems, indexFrom, indexTo)
 
     _choiceItems[indexFrom].itemIndex = indexFrom
     _choiceItems[indexTo].itemIndex = indexTo
 
+    adapter.notifyItemMoved(indexFrom, indexTo)
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
-
-    checkPendingAnswerError(AnswerErrorCategory.REAL_TIME)
   }
 
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
