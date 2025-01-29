@@ -71,6 +71,7 @@
             android:contentDescription="@string/developer_options_icon_content_description" />
 
           <TextView
+            android:id="@+id/developer_options_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -103,14 +104,10 @@
             android:contentDescription="@string/administrator_controls_icon_content_description" />
 
           <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="12dp"
-            android:fontFamily="sans-serif-medium"
+            android:id="@+id/administrator_controls_text_view"
+            style="@style/AdministratorControlsText"
             android:text="@string/administrator_controls"
-            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_shared_primary_dark_text_color}"
-            android:textSize="14sp" />
+            android:textColor="@{footerViewModel.isAdministratorControlsSelected ? @color/component_color_drawer_fragment_admin_controls_selected_text_color : @color/component_color_shared_primary_dark_text_color}" />
         </LinearLayout>
       </LinearLayout>
     </androidx.core.widget.NestedScrollView>

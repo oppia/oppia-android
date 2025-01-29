@@ -10,8 +10,6 @@ import com.google.common.truth.extensions.proto.LiteProtoSubject
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.util.math.toDouble
 
-// TODO(#4097): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [Fraction]s.
  *
