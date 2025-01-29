@@ -53,7 +53,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   private var itemTouchHelper: ItemTouchHelper? = null
   private val longPressHandler = Handler(Looper.getMainLooper())
   private var pendingLongPress: Runnable? = null
-  private val longPressTimeout = 10L
+  private val longPressTimeout = 100L
 
   private val touchListener = object : OnItemTouchListener {
     private var startX = 0f

@@ -38,7 +38,7 @@ class DragAndDropItemFacilitator(
         viewHolder?.itemView?.isPressed = true
       }
       ItemTouchHelper.ACTION_STATE_IDLE -> {
-        viewHolder?.itemView?.alpha = 1.0f
+        viewHolder?.itemView?.alpha = ALPHA_FULL
         viewHolder?.itemView?.isPressed = false
       }
     }
@@ -47,5 +47,6 @@ class DragAndDropItemFacilitator(
   override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
     super.clearView(recyclerView, viewHolder)
     viewHolder.itemView.alpha = ALPHA_FULL
+    onDragEndedListener.onDragEnded(recyclerView.adapter!!)
   }
 }
