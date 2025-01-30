@@ -8,7 +8,9 @@ import android.view.ViewConfiguration
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
@@ -52,8 +54,11 @@ class DragDropSortInteractionView @JvmOverloads constructor(
   private lateinit var onDragEnd: OnDragEndedListener
   private lateinit var onItemDrag: OnItemDragListener
   private var itemTouchHelper: ItemTouchHelper? = null
+  private val fragment: Fragment by lazy {
+    FragmentManager.findFragment<Fragment>(this@DragDropSortInteractionView)
+  }
   companion object {
-    private const val LONG_PRESS_TIMEOUT_MS = 30L
+    private const val LONG_PRESS_TIMEOUT_MS = 300L
   }
 
   private val touchListener = object : OnItemTouchListener {
@@ -63,8 +68,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     private var currentTimer: LiveData<Any>? = null
 
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-      val fragment = FragmentManager.findFragment<Fragment>(this@DragDropSortInteractionView)
-
       when (e.action) {
         MotionEvent.ACTION_DOWN -> {
           startX = e.x
@@ -73,13 +76,12 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
           fragment.let { fragmentOwner ->
             currentTimer = lifecycleSafeTimerFactory.createTimer(LONG_PRESS_TIMEOUT_MS).apply {
-              observe(fragmentOwner.viewLifecycleOwner) {
+              observeOnce(fragmentOwner.viewLifecycleOwner) {
                 findChildViewUnder(startX, startY)?.let { childView ->
                   findContainingViewHolder(childView)?.let { viewHolder ->
                     itemTouchHelper?.startDrag(viewHolder)
                   }
                 }
-                removeObservers(fragmentOwner.viewLifecycleOwner)
               }
             }
           }
@@ -95,9 +97,18 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       }
       return false
     }
-
+    private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
+      observe(
+        owner,
+        object : Observer<T> {
+          override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
+          }
+        }
+      )
+    }
     private fun cancelCurrentTimer() {
-      val fragment = FragmentManager.findFragment<Fragment>(this@DragDropSortInteractionView)
       currentTimer?.let { timer ->
         fragment.viewLifecycleOwner.let { lifecycleOwner ->
           timer.removeObservers(lifecycleOwner)
