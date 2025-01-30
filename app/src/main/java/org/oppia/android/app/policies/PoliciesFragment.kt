@@ -12,7 +12,8 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-private const val POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesFragment.policy_page"
+/** Argument key for PoliciesFragment. */
+const val POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO = "PoliciesFragment.policy_page"
 
 /** Fragment that contains policies flow of the app. */
 class PoliciesFragment : InjectableFragment() {
@@ -48,6 +49,12 @@ class PoliciesFragment : InjectableFragment() {
         POLICIES_FRAGMENT_POLICY_PAGE_ARGUMENT_PROTO,
         PoliciesFragmentArguments.getDefaultInstance()
       )
-    return policiesFragmentPresenter.handleCreateView(inflater, container, policies)
+    return policiesFragmentPresenter
+      .handleCreateView(inflater, container, policies, savedInstanceState)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    policiesFragmentPresenter.handleSaveInstanceState(outState)
   }
 }

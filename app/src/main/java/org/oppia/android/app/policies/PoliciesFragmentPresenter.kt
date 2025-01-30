@@ -1,8 +1,10 @@
 package org.oppia.android.app.policies
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
@@ -22,20 +24,40 @@ class PoliciesFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) : HtmlParser.PolicyOppiaTagActionListener {
 
+  private lateinit var binding: PoliciesFragmentBinding
+  private var scrollPosition = 0
+
   /** Handles onCreate() method of the [PoliciesFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    policiesFragmentArguments: PoliciesFragmentArguments
+    policiesFragmentArguments: PoliciesFragmentArguments,
+    savedInstanceState: Bundle?
   ): View {
-    val binding = PoliciesFragmentBinding.inflate(
+    binding = PoliciesFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
+
+    savedInstanceState?.let {
+      scrollPosition = it.getInt(KEY_SCROLL_Y, 0)
+    }
+
     setUpContentForTextViews(policiesFragmentArguments.policyPage, binding)
 
+    (binding.root as ScrollView).viewTreeObserver.addOnGlobalLayoutListener {
+      binding.root.scrollTo(0, scrollPosition)
+    }
+
     return binding.root
+  }
+  /**
+   * Saves the current scroll position of the policies page into the given [outState].
+   * This helps in restoring the scroll position after orientation changes.
+   */
+  fun handleSaveInstanceState(outState: Bundle) {
+    outState.putInt(KEY_SCROLL_Y, (binding.root as ScrollView).scrollY)
   }
 
   private fun setUpContentForTextViews(
@@ -85,5 +107,9 @@ class PoliciesFragmentPresenter @Inject constructor(
       PolicyType.TERMS_OF_SERVICE ->
         (activity as RouteToPoliciesListener).onRouteToPolicies(PolicyPage.TERMS_OF_SERVICE)
     }
+  }
+
+  companion object {
+    private const val KEY_SCROLL_Y = "policies_scroll_y"
   }
 }

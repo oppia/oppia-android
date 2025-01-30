@@ -193,6 +193,12 @@ class LessonThumbnailImageView @JvmOverloads constructor(
         R.drawable.topic_fractions_03
       LessonThumbnailGraphic.MIXED_NUMBERS ->
         R.drawable.topic_fractions_04
+      LessonThumbnailGraphic.SCIENCE_CLASSROOM ->
+        R.drawable.ic_science
+      LessonThumbnailGraphic.MATHS_CLASSROOM ->
+        R.drawable.ic_maths
+      LessonThumbnailGraphic.ENGLISH_CLASSROOM ->
+        R.drawable.ic_english
       else ->
         R.drawable.topic_fractions_01
     }
