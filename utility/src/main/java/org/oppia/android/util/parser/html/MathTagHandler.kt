@@ -2,6 +2,9 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.res.AssetManager
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -41,7 +44,6 @@ class MathTagHandler(
     val content = MathContent.parseMathContent(
       attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     )
-    // TODO(#4170): Fix vertical alignment centering for inline cached LaTeX.
     val useInlineRendering = when (attributes.getValue(CUSTOM_MATH_RENDER_TYPE_ATTRIBUTE)) {
       "inline" -> true
       "block" -> false
@@ -60,12 +62,13 @@ class MathTagHandler(
       }
       is MathContent.MathAsLatex -> {
         if (cacheLatexRendering) {
-          ImageSpan(
+          LatexImageSpan(
             imageRetriever.loadMathDrawable(
               content.rawLatex,
               lineHeight,
               type = if (useInlineRendering) INLINE_TEXT_IMAGE else BLOCK_IMAGE
-            )
+            ),
+            useInlineRendering
           )
         } else {
           MathExpressionSpan(
@@ -142,5 +145,89 @@ class MathTagHandler(
   override fun getContentDescription(attributes: Attributes): String {
     val mathVal = attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
     return mathVal?.let { "Math content $it" } ?: ""
+  }
+}
+
+/** An [ImageSpan] that vertically centers a LaTeX drawable within the surrounding text. */
+private class LatexImageSpan(
+  imageDrawable: Drawable?,
+  private val isInlineMode: Boolean
+) : ImageSpan(imageDrawable ?: createEmptyDrawable()) {
+
+  companion object {
+    private const val INLINE_VERTICAL_SHIFT_RATIO = 0.9f
+
+    private fun createEmptyDrawable(): Drawable {
+      return object : Drawable() {
+        override fun draw(canvas: Canvas) {}
+        override fun setAlpha(alpha: Int) {}
+        override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {}
+        override fun getOpacity(): Int = android.graphics.PixelFormat.TRANSPARENT
+
+        init {
+          setBounds(0, 0, 1, 1)
+        }
+      }
+    }
+  }
+
+  override fun getSize(
+    paint: Paint,
+    text: CharSequence,
+    start: Int,
+    end: Int,
+    fontMetrics: Paint.FontMetricsInt?
+  ): Int {
+    val drawableBounds = drawable.bounds
+    val imageHeight = drawableBounds.height()
+    val textMetrics = paint.fontMetricsInt
+    val textHeight = textMetrics.descent - textMetrics.ascent
+
+    fontMetrics?.let { metrics ->
+      if (isInlineMode) {
+        val verticalShift = (imageHeight - textHeight) / 2 +
+          (textMetrics.descent * INLINE_VERTICAL_SHIFT_RATIO).toInt()
+        metrics.ascent = textMetrics.ascent - verticalShift
+        metrics.top = metrics.ascent
+        metrics.descent = textMetrics.descent + verticalShift
+        metrics.bottom = metrics.descent
+      } else {
+        val totalHeight = (imageHeight * 1.2).toInt()
+        metrics.ascent = -totalHeight / 2
+        metrics.top = metrics.ascent
+        metrics.descent = totalHeight / 2
+        metrics.bottom = metrics.descent
+      }
+    }
+    return drawableBounds.right
+  }
+
+  override fun draw(
+    canvas: Canvas,
+    text: CharSequence,
+    start: Int,
+    end: Int,
+    x: Float,
+    lineTop: Int,
+    baseline: Int,
+    lineBottom: Int,
+    paint: Paint
+  ) {
+    canvas.save()
+
+    val imageHeight = drawable.bounds.height()
+    val yOffset = if (isInlineMode) {
+      val metrics = paint.fontMetricsInt
+      val ascent = metrics.ascent.toFloat()
+      val descent = metrics.descent.toFloat()
+      val expectedCenterY = baseline.toFloat() + (ascent + descent) / 2f
+      expectedCenterY - (imageHeight / 2f)
+    } else {
+      lineTop.toFloat() + (lineBottom - lineTop - imageHeight) / 2f
+    }
+
+    canvas.translate(x, yOffset)
+    drawable.draw(canvas)
+    canvas.restore()
   }
 }
