@@ -180,4 +180,29 @@ class AsyncResultSubjectTest {
       .isSuccessThat()
       .isEqualTo("Some string")
   }
+
+  @Test
+  fun testAsyncResultSubject_failureResult_checkErrorMessageMatchesExact() {
+    AsyncResultSubject.assertThat(failureResult)
+      .isFailureThat()
+      .hasMessageThat()
+      .isEqualTo("Error message")
+  }
+
+  @Test
+  fun testAsyncResultSubject_pendingResult_checkHasNullEffectiveValue() {
+    val nullPending: AsyncResult<String> = AsyncResult.Pending()
+    AsyncResultSubject.assertThat(pendingResult)
+      .hasSameEffectiveValueAs(nullPending)
+      .isTrue()
+  }
+
+  @Test
+  fun testAsyncResultSubject_pendingResult_checkIsNotSameEffectiveValue() {
+    val pending1: AsyncResult<String> = AsyncResult.Pending()
+    val pending2: AsyncResult<String> = AsyncResult.Pending()
+    AsyncResultSubject.assertThat(pending1)
+      .hasSameEffectiveValueAs(pending2)
+      .isTrue()
+  }
 }
