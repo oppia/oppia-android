@@ -70,7 +70,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           if (extraControlsTitle != null) {
             activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
-            if (isProfileDeletionDialogVisible) {
+            if (isProfileDeletionDialogVisible && profileId.internalId != 0) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
               )
