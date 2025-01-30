@@ -13,7 +13,8 @@ import org.robolectric.shadows.ShadowSystemClock
 class AsyncResultSubjectTest {
   private val pendingResult: AsyncResult<String> = AsyncResult.Pending()
   private val successResult: AsyncResult<String> = AsyncResult.Success("Some string")
-  private val failureResult: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error message"))
+  private val failureResult: AsyncResult<String> =
+    AsyncResult.Failure(RuntimeException("Error message"))
 
   @Test
   fun testAsyncResultSubject_pendingResult_checkIsPending() {
