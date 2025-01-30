@@ -67,11 +67,11 @@ class DragDropSortInteractionView @JvmOverloads constructor(
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     private var currentTimer: LiveData<Any>? = null
 
-    override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-      when (e.action) {
+    override fun onInterceptTouchEvent(recyclerView: RecyclerView, event: MotionEvent): Boolean {
+      when (event.action) {
         MotionEvent.ACTION_DOWN -> {
-          startX = e.x
-          startY = e.y
+          startX = event.x
+          startY = event.y
           cancelCurrentTimer()
 
           fragment.let { fragmentOwner ->
@@ -87,7 +87,7 @@ class DragDropSortInteractionView @JvmOverloads constructor(
           }
         }
         MotionEvent.ACTION_MOVE -> {
-          if (abs(e.x - startX) > touchSlop || abs(e.y - startY) > touchSlop) {
+          if (abs(event.x - startX) > touchSlop || abs(event.y - startY) > touchSlop) {
             cancelCurrentTimer()
           }
         }
@@ -97,6 +97,10 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       }
       return false
     }
+
+    override fun onTouchEvent(recyclerView: RecyclerView, event: MotionEvent) {}
+    override fun onRequestDisallowInterceptTouchEvent(disallow: Boolean) {}
+
     private fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
       observe(
         owner,
@@ -116,9 +120,6 @@ class DragDropSortInteractionView @JvmOverloads constructor(
       }
       currentTimer = null
     }
-
-    override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
-    override fun onRequestDisallowInterceptTouchEvent(disallow: Boolean) {}
   }
 
   override fun onAttachedToWindow() {
