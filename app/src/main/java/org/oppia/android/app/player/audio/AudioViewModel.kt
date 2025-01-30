@@ -20,7 +20,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
 import javax.inject.Inject
-import org.oppia.android.app.model.OppiaLogger
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
