@@ -132,4 +132,52 @@ class AsyncResultSubjectTest {
       .hasSameEffectiveValueAs(failureResult2)
       .isFalse()
   }
+
+  @Test
+  fun testAsyncResultSubject_pendingResult_checkIsNotSuccessOrFailure() {
+    AsyncResultSubject.assertThat(pendingResult).isNotSuccess()
+    AsyncResultSubject.assertThat(pendingResult).isNotFailure()
+  }
+
+  @Test
+  fun testAsyncResultSubject_successResult_checkIsSuccessThat() {
+    AsyncResultSubject.assertThat(successResult).isSuccessThat().isEqualTo("Some string")
+  }
+
+  @Test
+  fun testAsyncResultSubject_failureResult_checkIsFailureThatError() {
+    AsyncResultSubject.assertThat(failureResult)
+      .isFailureThat()
+      .hasMessageThat()
+      .contains("Error message")
+  }
+
+  @Test
+  fun testAsyncResultSubject_pendingResult_checkHasSameEffectiveValueAs() {
+    val anotherPending: AsyncResult<String> = AsyncResult.Pending()
+    AsyncResultSubject.assertThat(pendingResult).hasSameEffectiveValueAs(anotherPending)
+  }
+
+  @Test
+  fun testAsyncResultSubject_pendingResult_checkHasDifferentEffectiveValue() {
+    val successResult: AsyncResult<String> = AsyncResult.Success("Some string")
+    AsyncResultSubject.assertThat(pendingResult)
+      .hasSameEffectiveValueAs(successResult)
+      .isFalse()
+  }
+
+  @Test
+  fun testAsyncResultSubject_isComparableSuccessThat_checkIntValue() {
+    val intResult: AsyncResult<Int> = AsyncResult.Success(100)
+    AsyncResultSubject.assertThat(intResult)
+      .isComparableSuccessThat<Int>()
+      .isEqualTo(100)
+  }
+
+  @Test
+  fun testAsyncResultSubject_successResult_checkStringSuccessValue() {
+    AsyncResultSubject.assertThat(successResult)
+      .isSuccessThat()
+      .isEqualTo("Some string")
+  }
 }
