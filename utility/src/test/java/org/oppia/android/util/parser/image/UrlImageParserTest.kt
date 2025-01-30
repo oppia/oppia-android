@@ -2,6 +2,7 @@ package org.oppia.android.util.parser.image
 
 import android.app.Application
 import android.content.Context
+import android.os.Looper
 import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,6 +27,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
+import org.robolectric.Shadows
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,9 +60,6 @@ class UrlImageParserTest {
     )
   }
 
-  // TODO(#277): Add more test cases for loading images. The below doesn't include layout or
-  //  sizing/positioning.
-
   @Test
   fun testGetDrawable_bitmap_loadsBitmapImage() {
     urlImageParser.getDrawable("test_image.png")
@@ -77,6 +76,82 @@ class UrlImageParserTest {
     val loadedBitmaps = testGlideImageLoader.getLoadedBlockSvgs()
     assertThat(loadedBitmaps).hasSize(1)
     assertThat(loadedBitmaps.first()).contains("test_image.svg")
+  }
+
+  @Test
+  fun testLoadDrawable_bitmap_fromUrl() {
+    val imageUrl = "https://example.com/test_image.png"
+    urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
+
+    // Wait for Glide to finish loading
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    val loadedBitmaps = testGlideImageLoader.getLoadedBitmaps()
+    assertThat(loadedBitmaps).hasSize(1)
+    assertThat(loadedBitmaps.first()).contains("test_image.png")
+  }
+
+  @Test
+  fun testLoadDrawable_svg_fromUrl_blockType() {
+    val imageUrl = "https://example.com/test_image.svg"
+    urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
+
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    val loadedSvgs = testGlideImageLoader.getLoadedBlockSvgs()
+    assertThat(loadedSvgs).hasSize(1)
+    assertThat(loadedSvgs.first()).contains("test_image.svg")
+  }
+
+  @Test
+  fun testLoadDrawable_svgz_fromUrl_blockType() {
+    val imageUrl = "https://example.com/test_image.svgz"
+    urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
+
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    val loadedSvgs = testGlideImageLoader.getLoadedBlockSvgs()
+    assertThat(loadedSvgs).hasSize(1)
+    assertThat(loadedSvgs.first()).contains("test_image.svgz")
+  }
+
+  @Test
+  fun testLoadDrawable_latex_inlineType_fromUrl() {
+    val rawLatex = "\\frac{2}{6}"
+    urlImageParser.loadMathDrawable(
+      rawLatex = rawLatex,
+      lineHeight = 20f,
+      type = INLINE_TEXT_IMAGE
+    )
+
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    val loadedMathDrawables = testGlideImageLoader.getLoadedMathDrawables()
+    assertThat(loadedMathDrawables).hasSize(1)
+    assertThat(loadedMathDrawables.first().rawLatex).isEqualTo("\\frac{2}{6}")
+    assertThat(loadedMathDrawables.first().useInlineRendering).isTrue()
+  }
+
+  @Test
+  fun testLoadMultipleImages() {
+    val imageUrl1 = "https://example.com/test_image1.png"
+    val imageUrl2 = "https://example.com/test_image2.svg"
+    val imageUrl3 = "https://example.com/test_image3.svgz"
+
+    urlImageParser.loadDrawable(imageUrl1, BLOCK_IMAGE)
+    urlImageParser.loadDrawable(imageUrl2, BLOCK_IMAGE)
+    urlImageParser.loadDrawable(imageUrl3, BLOCK_IMAGE)
+
+    Shadows.shadowOf(Looper.getMainLooper()).idle()
+
+    val loadedBitmaps = testGlideImageLoader.getLoadedBitmaps()
+    val loadedBlockSvgs = testGlideImageLoader.getLoadedBlockSvgs()
+
+    assertThat(loadedBitmaps).hasSize(1)
+    assertThat(loadedBlockSvgs).hasSize(2)
+    assertThat(loadedBitmaps.first()).contains("test_image1.png")
+    assertThat(loadedBlockSvgs.first()).contains("test_image2.svg")
+    assertThat(loadedBlockSvgs[1]).contains("test_image3.svgz")
   }
 
   @Test
