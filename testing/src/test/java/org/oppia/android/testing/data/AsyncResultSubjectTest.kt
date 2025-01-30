@@ -31,6 +31,7 @@ class AsyncResultSubjectTest {
     AsyncResultSubject.assertThat(pendingResult).isNotFailure()
   }
 
+
   @Test
   fun testAsyncResultSubject_successResult_checkIsNotPending() {
     AsyncResultSubject.assertThat(successResult).isNotPending()
