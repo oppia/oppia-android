@@ -1,6 +1,5 @@
 package org.oppia.android.app.classroom.topiclist
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,10 +11,8 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
-import org.oppia.android.app.classroom.getDrawableResource
+import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.topiclist.TopicSummaryViewModel
 
 /** Displays a card with the topic summary information. */
@@ -41,22 +38,11 @@ fun TopicCard(topicSummaryViewModel: TopicSummaryViewModel) {
     Column(
       verticalArrangement = Arrangement.Center,
     ) {
-      Image(
-        painter = painterResource(
-          id = topicSummaryViewModel.topicSummary.topicThumbnail.getDrawableResource()
-        ),
-        contentDescription = "Picture of a " +
-          "${topicSummaryViewModel.topicSummary.topicThumbnail.thumbnailGraphic.name}.",
-        modifier = Modifier
-          .aspectRatio(4f / 3f)
-          .background(
-            Color(
-              (
-                0xff000000L or
-                  topicSummaryViewModel.topicSummary.topicThumbnail.backgroundColorRgb.toLong()
-                ).toInt()
-            )
-          )
+      ThumbnailImage(
+        entityId = topicSummaryViewModel.topicSummary.topicId,
+        entityType = topicSummaryViewModel.entityType,
+        lessonThumbnail = topicSummaryViewModel.topicSummary.topicThumbnail,
+        modifier = Modifier.aspectRatio(4f / 3f)
       )
       TopicCardTextSection(topicSummaryViewModel)
     }

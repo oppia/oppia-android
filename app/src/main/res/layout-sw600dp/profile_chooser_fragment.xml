@@ -44,6 +44,7 @@
           android:contentDescription="@string/language_icon_content_description" />
 
         <TextView
+          android:id="@+id/profile_chooser_language_text_view"
           style="@style/Subtitle1ViewCenter"
           android:minHeight="48dp"
           android:paddingTop="20dp"
@@ -108,6 +109,7 @@
       app:layout_constraintEnd_toEndOf="parent">
 
       <TextView
+        android:id="@+id/administrator_controls_text_view"
         style="@style/Heading1ViewCenter"
         android:layout_marginBottom="@dimen/profile_chooser_administrator_controls_margin_bottom"
         android:minHeight="48dp"
