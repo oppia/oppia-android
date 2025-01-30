@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.audio
 
+import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
@@ -19,6 +20,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Locale
 import javax.inject.Inject
+import org.oppia.android.app.model.OppiaLogger
 
 /** [ObservableViewModel] for audio-player state. */
 @FragmentScope
@@ -72,6 +74,11 @@ class AudioViewModel @Inject constructor(
   }
 
   fun loadMainContentAudio(allowAutoPlay: Boolean, reloadingContent: Boolean) {
+
+    if (!this::state.isInitialized) {
+      Log.e("AudioViewModel", "State is not initialized before loading audio.")
+      return // Avoid proceeding if the state is uninitialized.
+    }
     setStateAndExplorationId(state, explorationId)
     hasFeedback = false
     loadAudio(contentId = null, allowAutoPlay, reloadingContent)
