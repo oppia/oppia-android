@@ -5,75 +5,130 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.util.data.AsyncResult
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowSystemClock
 
 @RunWith(RobolectricTestRunner::class)
+@Config(shadows = [ShadowSystemClock::class])
 class AsyncResultSubjectTest {
+  private val pendingResult: AsyncResult<String> = AsyncResult.Pending()
+  private val successResult: AsyncResult<String> = AsyncResult.Success("Some string")
+  private val failureResult: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error message"))
 
   @Test
-  fun testAsyncResultPending_isPending() {
-    val pendingResult: AsyncResult<String> = AsyncResult.Pending()
-
+  fun testAsyncResultSubject_pendingResult_checkIsPending() {
     AsyncResultSubject.assertThat(pendingResult).isPending()
   }
 
   @Test
-  fun testAsyncResultPending_isNotSuccess() {
-    val pendingResult: AsyncResult<String> = AsyncResult.Pending()
-
+  fun testAsyncResultSubject_pendingResult_checkIsNotSuccess() {
     AsyncResultSubject.assertThat(pendingResult).isNotSuccess()
   }
 
   @Test
-  fun testAsyncResultSuccess_isSuccess() {
-    val successResult: AsyncResult<String> = AsyncResult.Success("Success value")
+  fun testAsyncResultSubject_pendingResult_checkIsNotFailure() {
+    AsyncResultSubject.assertThat(pendingResult).isNotFailure()
+  }
 
+  @Test
+  fun testAsyncResultSubject_successResult_checkIsNotPending() {
+    AsyncResultSubject.assertThat(successResult).isNotPending()
+  }
+
+  @Test
+  fun testAsyncResultSubject_successResult_checkIsSuccess() {
     AsyncResultSubject.assertThat(successResult).isSuccess()
   }
 
   @Test
-  fun testAsyncResultSuccess_hasSuccessValueWhere_matchesExpected() {
-    val successResult: AsyncResult<String> = AsyncResult.Success("Success value")
+  fun testAsyncResultSubject_successResult_checkIsNotFailure() {
+    AsyncResultSubject.assertThat(successResult).isNotFailure()
+  }
 
+  @Test
+  fun testAsyncResultSubject_successResult_checkSuccessValueMatches() {
     AsyncResultSubject.assertThat(successResult).hasSuccessValueWhere {
-      // Here we are verifying that the value is "Success value"
-      assertThat(this).isEqualTo("Success value")
+      assertThat(this).isEqualTo("Some string")
     }
   }
 
   @Test
-  fun testAsyncResultSuccess_isStringSuccessThat() {
-    val successResult: AsyncResult<String> = AsyncResult.Success("Success value")
-
-    AsyncResultSubject.assertThat(successResult).isStringSuccessThat().isEqualTo("Success value")
+  fun testAsyncResultSubject_successResult_checkIsStringSuccessThat() {
+    AsyncResultSubject.assertThat(successResult)
+      .isStringSuccessThat()
+      .isEqualTo("Some string")
   }
 
   @Test
-  fun testAsyncResultFailure_isFailure() {
-    val failureResult: AsyncResult<String> = AsyncResult.Failure(Throwable("Error"))
-
+  fun testAsyncResultSubject_failureResult_checkIsFailure() {
     AsyncResultSubject.assertThat(failureResult).isFailure()
   }
 
   @Test
-  fun testAsyncResultFailure_isFailureThat_matchesExpectedError() {
-    val failureResult: AsyncResult<String> = AsyncResult.Failure(Throwable("Error"))
-
-    AsyncResultSubject.assertThat(failureResult).isFailureThat().hasMessageThat().contains("Error")
+  fun testAsyncResultSubject_failureResult_checkIsNotSuccess() {
+    AsyncResultSubject.assertThat(failureResult).isNotSuccess()
   }
 
   @Test
-  fun testAsyncResultSuccess_isNewerOrSameAgeAs() {
+  fun testAsyncResultSubject_failureResult_checkIsNotPending() {
+    AsyncResultSubject.assertThat(failureResult).isNotPending()
+  }
+
+  @Test
+  fun testAsyncResultSubject_failureResult_checkErrorMessageMatches() {
+    AsyncResultSubject.assertThat(failureResult)
+      .isFailureThat()
+      .hasMessageThat()
+      .contains("Error message")
+  }
+
+  @Test
+  fun testAsyncResultSubject_twoSuccessResults_checkNewerOrSameAge() {
     val successResult1: AsyncResult<String> = AsyncResult.Success("First")
     val successResult2: AsyncResult<String> = AsyncResult.Success("Second")
-
     AsyncResultSubject.assertThat(successResult1).isNewerOrSameAgeAs(successResult2)
   }
 
   @Test
-  fun testAsyncResultFailure_hasSameEffectiveValueAs_differentError() {
-    val failureResult1: AsyncResult<String> = AsyncResult.Failure(Throwable("Error"))
-    val failureResult2: AsyncResult<String> = AsyncResult.Failure(Throwable("Different Error"))
+  fun testAsyncResultSubject_sameSuccessValue_checkHasSameEffectiveValue() {
+    val successResult1: AsyncResult<String> = AsyncResult.Success("Same value")
+    val successResult2: AsyncResult<String> = AsyncResult.Success("Same value")
+    AsyncResultSubject.assertThat(successResult1)
+      .hasSameEffectiveValueAs(successResult2)
+      .isTrue()
+  }
 
-    AsyncResultSubject.assertThat(failureResult1).hasSameEffectiveValueAs(failureResult2).isFalse()
+  @Test
+  fun testAsyncResultSubject_differentSuccessValues_checkHasDifferentEffectiveValue() {
+    val successResult1: AsyncResult<String> = AsyncResult.Success("First value")
+    val successResult2: AsyncResult<String> = AsyncResult.Success("Second value")
+    AsyncResultSubject.assertThat(successResult1)
+      .hasSameEffectiveValueAs(successResult2)
+      .isFalse()
+  }
+
+  @Test
+  fun testAsyncResultSubject_intSuccess_checkIsIntSuccessThat() {
+    val intResult: AsyncResult<Int> = AsyncResult.Success(42)
+    AsyncResultSubject.assertThat(intResult)
+      .isIntSuccessThat()
+      .isEqualTo(42)
+  }
+
+  @Test
+  fun testAsyncResultSubject_booleanSuccess_checkIsBooleanSuccessThat() {
+    val boolResult: AsyncResult<Boolean> = AsyncResult.Success(true)
+    AsyncResultSubject.assertThat(boolResult)
+      .isBooleanSuccessThat()
+      .isTrue()
+  }
+
+  @Test
+  fun testAsyncResultSubject_differentFailureMessages_checkHasDifferentEffectiveValue() {
+    val failureResult1: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error 1"))
+    val failureResult2: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error 2"))
+    AsyncResultSubject.assertThat(failureResult1)
+      .hasSameEffectiveValueAs(failureResult2)
+      .isFalse()
   }
 }

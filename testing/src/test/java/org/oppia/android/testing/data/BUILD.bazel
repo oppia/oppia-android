@@ -34,7 +34,6 @@ oppia_android_test(
     ],
 )
 
-# Adding test for AsyncResultSubject
 oppia_android_test(
     name = "AsyncResultSubjectTest",
     srcs = ["AsyncResultSubjectTest.kt"],
