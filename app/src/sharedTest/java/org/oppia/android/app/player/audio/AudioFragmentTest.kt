@@ -452,7 +452,6 @@ class AudioFragmentTest {
           .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
         audioFragment.loadMainContentAudio(allowAutoPlay = false)
         testCoroutineDispatchers.runCurrent()
-        // Verify that the app does not crash after calling loadMainContentAudio.
         assertThat(activity.isFinishing).isFalse()
       }
     }
