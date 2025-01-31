@@ -19,6 +19,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Argument key used to identify [ProfileListFragment] in the backstack. */
@@ -75,7 +76,7 @@ class AdministratorControlsActivity :
       // TODO(#661): Change the default fragment in the right hand side to be EditAccount fragment in the case of multipane controls.
       PROFILE_LIST_FRAGMENT
     }
-    val selectedProfileId = args?.selectedProfileId ?: -1
+    val selectedProfileId = intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
 
     administratorControlsActivityPresenter.handleOnCreate(
       extraControlsTitle,
@@ -107,7 +108,7 @@ class AdministratorControlsActivity :
     startActivity(ProfileAndDeviceIdActivity.createIntent(this))
   }
 
-  override fun loadProfileEdit(profileId: Int, profileName: String) {
+  override fun loadProfileEdit(profileId: ProfileId, profileName: String) {
     lastLoadedFragment = PROFILE_EDIT_FRAGMENT
     administratorControlsActivityPresenter.loadProfileEdit(profileId, profileName)
   }
