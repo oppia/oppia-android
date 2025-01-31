@@ -38,6 +38,7 @@
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:fontFamily="sans-serif"
+      android:contentDescription="@{viewModel.languageContentDescription()}"
       android:text="@{viewModel.languageDisplayName}"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textSize="16sp" />
