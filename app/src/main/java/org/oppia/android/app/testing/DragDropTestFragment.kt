@@ -52,7 +52,6 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
       container
     )
 
-    // After view is created, we can set up the listeners
     dragDropTestFragmentPresenter.addListener(
       requireContext(),
       this,

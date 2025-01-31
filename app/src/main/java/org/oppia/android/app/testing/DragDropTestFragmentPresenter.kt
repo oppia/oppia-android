@@ -54,7 +54,6 @@ class DragDropTestFragmentPresenter @Inject constructor(
     lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
     itemTouchHelper: ItemTouchHelper?
   ) {
-    check(::binding.isInitialized) { "Binding must be initialized before adding listeners" }
 
     binding.dragDropRecyclerView.apply {
       itemTouchHelper?.attachToRecyclerView(this)
