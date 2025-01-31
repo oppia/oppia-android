@@ -52,7 +52,7 @@ class AdministratorControlsFragmentTestActivity :
 
   override fun loadAppVersion() {}
 
-  override fun loadProfileEdit(profileId: Int, profileName: String) {}
+  override fun loadProfileEdit(profileId: ProfileId, profileName: String) {}
 
   override fun showLogoutDialog() {}
 
