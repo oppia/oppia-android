@@ -18,7 +18,6 @@ import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import org.oppia.android.databinding.DragDropTestFragmentBinding
-import java.util.Collections
 import javax.inject.Inject
 import kotlin.math.abs
 
