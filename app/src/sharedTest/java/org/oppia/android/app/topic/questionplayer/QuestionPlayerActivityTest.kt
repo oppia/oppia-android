@@ -439,6 +439,55 @@ class QuestionPlayerActivityTest {
   }
 
   @Test
+  fun testQuestionPlayer_forHintsAndSolution_incorrectInput_hintBulbContainerIsNotVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit one incorrect answer.
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Verify that the hint bulb container is not visible.
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_forHintsAndSolution_incorrectInputTwice_hintBulbContainerIsVisible() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Submit two incorrect answers.
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Verify that the hint bulb container is visible.
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_showHintsAndSolutionBulb_dotHasCorrectContentDescription() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      // Simulate two incorrect answers to make the hint bulb visible
+      selectMultipleChoiceOption(optionPosition = 3)
+      selectMultipleChoiceOption(optionPosition = 3)
+
+      // Verify the dot's content description
+      onView(withId(R.id.dot_hint))
+        .check(matches(withContentDescription("New hint available")))
+    }
+  }
+
+  @Test
+  fun testQuestionPlayer_showHintsAndSolutionBulb_bulbHasCorrectContentDescription() {
+    launchForSkillList(SKILL_ID_LIST).use {
+      //  Simulate two incorrect answers to make the hint bulb visible
+      selectMultipleChoiceOption(optionPosition = 3) // Select first incorrect answer
+      selectMultipleChoiceOption(optionPosition = 3) // Select second incorrect answer
+
+      // Verify the hint bulb has the correct content description
+      onView(withId(R.id.hint_bulb))
+        .check(matches(withContentDescription("Show hints and solution")))
+    }
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testQuestionPlayer_showHint_hasCorrectContentDescription() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
