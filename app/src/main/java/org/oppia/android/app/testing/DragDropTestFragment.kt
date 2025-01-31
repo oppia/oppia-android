@@ -35,11 +35,6 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    itemTouchHelper = ItemTouchHelper(
-      DragAndDropItemFacilitator(this, this).apply {
-        ItemTouchHelper.UP or ItemTouchHelper.DOWN
-      }
-    )
   }
 
   override fun onCreateView(
@@ -51,7 +46,9 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
       inflater,
       container
     )
-
+    itemTouchHelper = ItemTouchHelper(
+      DragAndDropItemFacilitator(this, this)
+    )
     dragDropTestFragmentPresenter.addListener(
       requireContext(),
       this,
