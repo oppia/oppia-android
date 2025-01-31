@@ -438,6 +438,26 @@ class AudioFragmentTest {
     }
   }
 
+  @Test
+  fun testAudioFragment_loadMainContentAudio_doesNotCrash() {
+    addMediaInfo()
+    launch<AudioFragmentTestActivity>(
+      createAudioFragmentTestIntent(
+        internalProfileId
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+        val audioFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.audio_fragment_placeholder) as AudioFragment
+        audioFragment.loadMainContentAudio(allowAutoPlay = false)
+        testCoroutineDispatchers.runCurrent()
+        // Verify that the app does not crash after calling loadMainContentAudio.
+        assertThat(activity.isFinishing).isFalse()
+      }
+    }
+  }
+
   private fun withSeekBarPosition(position: Int) = object : TypeSafeMatcher<View>() {
     override fun describeTo(description: Description) {
       description.appendText("SeekBar with progress same as $position")
