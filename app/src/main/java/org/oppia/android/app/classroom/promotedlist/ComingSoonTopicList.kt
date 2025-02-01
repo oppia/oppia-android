@@ -1,6 +1,5 @@
 package org.oppia.android.app.classroom.promotedlist
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,11 +17,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -31,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.oppia.android.R
-import org.oppia.android.app.classroom.getDrawableResource
+import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicListViewModel
 import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
 import org.oppia.android.util.locale.OppiaLocale
@@ -104,23 +101,11 @@ fun ComingSoonTopicCard(
       Column(
         verticalArrangement = Arrangement.Center,
       ) {
-        Image(
-          painter = painterResource(
-            id = comingSoonTopicsViewModel.topicSummary.lessonThumbnail.getDrawableResource()
-          ),
-          contentDescription = "Picture of a " +
-            "${comingSoonTopicsViewModel.topicSummary.lessonThumbnail.thumbnailGraphic.name}.",
-          modifier = Modifier
-            .aspectRatio(4f / 3f)
-            .background(
-              Color(
-                (
-                  0xff000000L or
-                    comingSoonTopicsViewModel
-                      .topicSummary.lessonThumbnail.backgroundColorRgb.toLong()
-                  ).toInt()
-              )
-            )
+        ThumbnailImage(
+          entityId = comingSoonTopicsViewModel.topicSummary.topicId,
+          entityType = comingSoonTopicsViewModel.entityType,
+          lessonThumbnail = comingSoonTopicsViewModel.topicSummary.lessonThumbnail,
+          modifier = Modifier.aspectRatio(4f / 3f)
         )
         ComingSoonTopicCardTextSection(comingSoonTopicsViewModel)
       }

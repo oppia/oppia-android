@@ -8,6 +8,7 @@ import android.view.ViewParent
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -23,6 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.util.HumanReadables
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -44,6 +46,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AdministratorControlsFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.scrollToPosition
@@ -98,6 +101,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -430,6 +434,35 @@ class AdministratorControlsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 2, recyclerViewId = administratorControlsListRecyclerViewId)
       checkAutoUpdateTopicSwitchNotClickable()
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launch<AdministratorControlsFragmentTestActivity>(
+      createAdministratorControlsFragmentTestActivityIntent(
+        profileId = internalProfileId
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val administratorControlsFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.administrator_controls_fragment_test_activity_fragment_container)
+          as AdministratorControlsFragment
+        val isMultipane = activity
+          .findViewById<DrawerLayout>(R.id.administrator_controls_activity_drawer_layout) != null
+
+        val arguments = checkNotNull(administratorControlsFragment.arguments) {
+          "Expected arguments to be passed to AdministratorControlsFragment"
+        }.getProto(
+          ADMINISTRATOR_CONTROLS_FRAGMENT_ARGUMENTS_KEY,
+          AdministratorControlsFragmentArguments.getDefaultInstance()
+        )
+        val receivedIsMultipane = arguments.isMultipane
+
+        assertThat(receivedIsMultipane).isEqualTo(isMultipane)
+      }
     }
   }
 

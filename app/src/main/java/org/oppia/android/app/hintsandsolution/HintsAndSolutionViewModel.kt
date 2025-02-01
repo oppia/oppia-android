@@ -14,6 +14,8 @@ import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionAvailable
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import javax.inject.Inject
 
 /**
@@ -27,7 +29,9 @@ class HintsAndSolutionViewModel private constructor(
   private val writtenTranslationContext: WrittenTranslationContext,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private val solutionViewModelFactory: SolutionViewModel.Factory
+  private val solutionViewModelFactory: SolutionViewModel.Factory,
+  private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+  private val consoleLogger: ConsoleLogger
 ) : ObservableViewModel() {
   private val hintList by lazy { helpIndex.dropLastUnavailable(state.interaction.hintList) }
   private val solution by lazy {
@@ -57,7 +61,9 @@ class HintsAndSolutionViewModel private constructor(
   private fun createViewModels(): List<HintsAndSolutionItemViewModel> {
     return hintList.mapIndexed { index, hint ->
       createHintViewModel(
-        index, hint, isHintRevealed = ObservableBoolean(helpIndex.isHintRevealed(index, hintList))
+        index,
+        hint,
+        isHintRevealed = ObservableBoolean(helpIndex.isHintRevealed(index, hintList))
       )
     } + listOfNotNull(solution?.let(this::createSolutionViewModel)) + ReturnToLessonViewModel
   }
@@ -73,16 +79,21 @@ class HintsAndSolutionViewModel private constructor(
         resourceHandler.toHumanReadableString(hintIndex + 1)
       ),
       hintSummary = translationController.extractString(
-        hint.hintContent, writtenTranslationContext
+        hint.hintContent,
+        writtenTranslationContext
       ),
-      isHintRevealed = isHintRevealed
+      isHintRevealed = isHintRevealed,
+      conceptCardLinkClickListener =
+        conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+      consoleLogger = consoleLogger
     )
   }
 
   private fun createSolutionViewModel(solution: Solution): SolutionViewModel {
     return solutionViewModelFactory.create(
       solutionSummary = translationController.extractString(
-        solution.explanation, writtenTranslationContext
+        solution.explanation,
+        writtenTranslationContext
       ),
       isSolutionRevealed = isSolutionRevealed,
       isSolutionExclusive = solution.answerIsExclusive,
@@ -96,7 +107,9 @@ class HintsAndSolutionViewModel private constructor(
   class Factory @Inject constructor(
     private val resourceHandler: AppLanguageResourceHandler,
     private val translationController: TranslationController,
-    private val solutionViewModelFactory: SolutionViewModel.Factory
+    private val solutionViewModelFactory: SolutionViewModel.Factory,
+    private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+    private val consoleLogger: ConsoleLogger
   ) {
     /**
      * Returns a new [HintsAndSolutionViewModel] that populates a list of item view models (to be
@@ -114,7 +127,9 @@ class HintsAndSolutionViewModel private constructor(
         writtenTranslationContext,
         resourceHandler,
         translationController,
-        solutionViewModelFactory
+        solutionViewModelFactory,
+        conceptCardTagHandlerFactory,
+        consoleLogger
       )
     }
   }

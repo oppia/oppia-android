@@ -113,7 +113,7 @@ class ExceptionsController @Inject constructor(
    * At first, it checks if the size of the store isn't exceeding [exceptionLogStorageCacheSize].
    * If the limit is exceeded then the least recent exception is removed from the [exceptionLogStore].
    * After this, the [exceptionLog] is added to the store.
-   * */
+   */
   private fun cacheExceptionLog(exceptionLog: ExceptionLog) {
     exceptionLogStore.storeDataAsync(true) { oppiaExceptionLogs ->
       val storeSize = oppiaExceptionLogs.exceptionLogList.size
