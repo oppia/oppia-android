@@ -170,5 +170,11 @@ class StateFragment :
       STATE_FRAGMENT_STATE_KEY,
       stateFragmentPresenter.getUserAnswerState()
     )
+    stateFragmentPresenter.saveExpandedState(outState)
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    stateFragmentPresenter.restoreExpandedState(savedInstanceState)
   }
 }
