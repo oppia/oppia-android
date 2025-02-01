@@ -1508,10 +1508,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  /** Saves the expanded state to a Bundle. */
   fun saveExpandedState(outState: Bundle) {
     outState.putBoolean("hasPreviousResponsesExpanded", hasPreviousResponsesExpanded)
   }
 
+  /** Restores the expanded state from a Bundle. */
   fun restoreExpandedState(savedInstanceState: Bundle?) {
     hasPreviousResponsesExpanded =
       savedInstanceState?.getBoolean("hasPreviousResponsesExpanded", false) ?: false
