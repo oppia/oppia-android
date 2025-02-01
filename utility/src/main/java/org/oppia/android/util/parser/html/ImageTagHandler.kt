@@ -35,8 +35,6 @@ class ImageTagHandler(
     val caption = attributes.getJsonStringValue(CUSTOM_IMG_CAPTION_ATTRIBUTE)
 
     if (source != null) {
-      val blockStart = output.length
-      output.append('\n')
       val (startIndex, endIndex) = output.run {
         // Use a control character to ensure that there's at least 1 character on which to "attach"
         // the image when rendering the HTML. Note that this approach is based on Android's Html
@@ -45,13 +43,6 @@ class ImageTagHandler(
         append('\uFFFC')
         return@run startIndex to length
       }
-      val imageEnd = output.length
-      output.setSpan(
-        AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-        blockStart,
-        imageEnd,
-        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-      )
       imageRetriever?.let {
         val drawable = imageRetriever.loadDrawable(
           source, CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
@@ -63,8 +54,6 @@ class ImageTagHandler(
           Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
       }
-
-      output.append('\n') // Newline after image
     } else consoleLogger.e("ImageTagHandler", "Failed to parse image tag")
     if (!contentDescription.isNullOrBlank()) {
       val spannableBuilder = SpannableStringBuilder(contentDescription)
