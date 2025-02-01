@@ -47,7 +47,8 @@ class DragDropTestFragmentPresenter @Inject constructor(
     }
     return binding.root
   }
-  fun addListener(
+
+  fun addDragDropTouchListener(
     context: Context,
     fragment: Fragment,
     lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
@@ -66,6 +67,7 @@ class DragDropTestFragmentPresenter @Inject constructor(
       )
     }
   }
+
   private fun createTouchListener(
     context: Context,
     fragment: Fragment,
