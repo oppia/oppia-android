@@ -3,7 +3,9 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -27,7 +29,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -163,7 +169,6 @@ class ProfileChooserFragmentTest {
   fun tearDown() {
     TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
-    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
@@ -713,6 +718,191 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
+  fun testFragment_enableOnboardingV2_ltr_checkListIsAlphabetical() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 0,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("Admin"), isDisplayed())
+          )
+        )
+
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testFragment_enableOnboardingV2_ltr_checkRightArrowScrollBehaviourIscorrect() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Click twice to scroll to the end of the list.
+      onView(withId(R.id.profile_list_scroll_right)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_list_scroll_right)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 9,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("I"), isDisplayed())
+          )
+        )
+
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testFragment_enableOnboardingV2_ltr_checkLeftArrowScrollBehaviourIscorrect() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Click twice to scroll to the end of the list.
+      onView(withId(R.id.profile_list_scroll_right)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_list_scroll_right)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Click twice to scroll to the beginning of the list.
+      onView(withId(R.id.profile_list_scroll_left)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_list_scroll_left)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 0,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("Admin"), isDisplayed())
+          )
+        )
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testFragment_enableOnboardingV2_rtl_checkListIsAlphabetical() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+
+    launch(ProfileChooserActivity::class.java).use {
+      it.onActivity { activity ->
+        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
+        testCoroutineDispatchers.runCurrent()
+
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 0,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("Admin"), isDisplayed())
+          )
+        )
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testFragment_enableOnboardingV2_rtl_checkLeftArrowScrollBehaviourIscorrect() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Click twice to scroll to the end of the list.
+      onView(withId(R.id.profile_list_scroll_left)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_list_scroll_left)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 0,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("I"), isDisplayed())
+          )
+        )
+
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  fun testFragment_enableOnboardingV2_rtl_checkRightArrowScrollBehaviourIscorrect() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Click twice to scroll to the end of the list.
+      onView(withId(R.id.profile_list_scroll_left)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_list_scroll_left)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Click twice to scroll to the beginning of the list.
+      onView(withId(R.id.profile_list_scroll_right)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.profile_list_scroll_right)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      it.onActivity {
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 0,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("Admin"), isDisplayed())
+          )
+        )
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+  }
+
+  @Test
   fun testProfileChooserFragment_enableOnboardingV2_clickAddProfileButton_opensAdminAuthActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
@@ -880,6 +1070,7 @@ class ProfileChooserFragmentTest {
       onView(withId(R.id.add_profile_prompt)).check(matches(not(isDisplayed())))
     }
   }
+
   @Test
   fun testFragment_enableOnboardingV2_addManyProfiles_checkProfilesSorted() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
@@ -964,6 +1155,28 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
+    }
+  }
+
+  private fun withViewAtPosition(
+    recyclerViewId: Int,
+    position: Int,
+    targetViewId: Int,
+    itemMatcher: Matcher<View?>
+  ): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+      override fun describeTo(description: Description) {
+        description.appendText("View at position $position in RecyclerView with ID $recyclerViewId")
+        itemMatcher.describeTo(description)
+      }
+
+      override fun matchesSafely(view: View): Boolean {
+        val recyclerView = view.rootView.findViewById<RecyclerView>(recyclerViewId) ?: return false
+        val viewHolder = recyclerView.findViewHolderForAdapterPosition(position) ?: return false
+        val targetView = viewHolder.itemView.findViewById<View>(targetViewId) ?: return false
+
+        return itemMatcher.matches(targetView)
+      }
     }
   }
 

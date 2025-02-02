@@ -280,6 +280,8 @@
   <dimen name="profile_selection_fragment_settings_icon_margin_bottom">16dp</dimen>
   <dimen name="profile_selection_fragment_prompt_margin_bottom">12dp</dimen>
   <dimen name="profile_selection_fragment_recyclerview_margin">8dp</dimen>
+  <dimen name="profile_selection_fragment_scrollview_margin">64dp</dimen>
+  <dimen name="profile_selection_fragment_header_margin">72dp</dimen>
 
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">72dp</dimen>

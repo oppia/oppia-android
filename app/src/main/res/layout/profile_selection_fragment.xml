@@ -19,7 +19,7 @@
     <androidx.core.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_marginBottom="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_scrollview_margin"
       android:overScrollMode="never"
       android:scrollbars="none"
       app:layout_constraintBottom_toTopOf="@id/profile_selection_setting_icon">
@@ -33,7 +33,7 @@
           android:id="@+id/profile_selection_header"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+          android:layout_marginTop="@dimen/profile_selection_fragment_header_margin"
           android:fontFamily="sans-serif-medium"
           android:gravity="center"
           android:text="@string/profile_selection_header"
@@ -100,7 +100,8 @@
       android:layout_width="@dimen/profile_selection_fragment_icon_size"
       android:layout_height="@dimen/profile_selection_fragment_icon_size"
       android:layout_marginEnd="@dimen/profile_selection_fragment_add_profile_button_margin_end"
-      android:contentDescription="@string/profile_selection_profile_icon_description"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_add_button_margin_bottom"
+        android:contentDescription="@string/profile_selection_profile_icon_description"
       android:paddingStart="@dimen/profile_selection_fragment_icon_padding"
       android:paddingEnd="@dimen/profile_selection_fragment_icon_padding"
       android:paddingBottom="@dimen/profile_selection_fragment_icon_padding"

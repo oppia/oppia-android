@@ -21,10 +21,7 @@
       android:id="@+id/profile_selection_header"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
-      android:layout_marginTop="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
-      android:layout_marginEnd="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
-      android:layout_marginBottom="@dimen/profile_chooser_fragment_profile_select_text_margin_top"
+      android:layout_margin="@dimen/profile_selection_fragment_header_margin"
       android:fontFamily="sans-serif-medium"
       android:gravity="center"
       android:text="@string/profile_selection_header"
@@ -75,6 +72,7 @@
       app:layout_constraintEnd_toStartOf="@id/profile_list_scroll_right"
       app:layout_constraintStart_toEndOf="@id/profile_list_scroll_left"
       app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintWidth_percent="0.70"
       app:profileList="@{viewModel.profilesList}" />
 
     <ImageView

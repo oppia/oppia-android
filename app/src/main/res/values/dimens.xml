@@ -664,6 +664,8 @@
   <dimen name="profile_selection_fragment_add_profile_button_margin_end">16dp</dimen>
   <dimen name="profile_selection_fragment_add_button_margin_bottom">4dp</dimen>
   <dimen name="profile_selection_fragment_prompt_margin_bottom">12dp</dimen>
+  <dimen name="profile_selection_fragment_scrollview_margin">72dp</dimen>
+  <dimen name="profile_selection_fragment_header_margin">64dp</dimen>
 
   <dimen name="profile_item_profile_icon_size">72dp</dimen>
   <dimen name="profile_item_profile_picture_stroke_width">2dp</dimen>

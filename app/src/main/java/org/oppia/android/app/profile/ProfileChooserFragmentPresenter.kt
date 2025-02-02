@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
+import org.oppia.android.app.databinding.databinding.ProfileItemBinding
+import org.oppia.android.app.databinding.databinding.ProfileSelectionFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
@@ -27,8 +29,7 @@ import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
-import org.oppia.android.databinding.ProfileItemBinding
-import org.oppia.android.databinding.ProfileSelectionFragmentBinding
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -83,6 +84,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
 
+  /**
+   * Used to retrieve the layout direction that should be used to mirror the direction of the
+   * list based on locale.
+   */
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
+
+  private val isRtl by lazy {
+    resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+  }
+
   /** Binds ViewModel and sets up RecyclerView Adapter. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     StatusBarColor.statusBarColorUpdate(
@@ -123,6 +134,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun ProfileSelectionFragmentBinding.setUpLandscapeMode() {
     val snapHelper = StartSnapHelper()
     val layoutManager = profilesListLandscape?.layoutManager as LinearLayoutManager?
+
+    if (isRtl) { layoutManager?.reverseLayout = true }
 
     profilesListLandscape?.onFlingListener = null
 
@@ -170,10 +183,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         it.width - (it.paddingStart + it.paddingEnd)
       } ?: 0
 
-      // Check layout direction.
-      val isRtl = binding.profilesListLandscape?.let { ViewCompat.getLayoutDirection(it) } ==
-        ViewCompat.LAYOUT_DIRECTION_RTL
-
       val scrollLeftInRtl = isRtl && isLeft
       val scrollRightInRtl = isRtl && !isLeft
       val scrollLeftInLtr = !isRtl && isLeft
@@ -182,8 +191,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       // Adjust offset based on layout direction and intent.
       val offset = when {
         scrollLeftInRtl -> scrollableWidth - scrollDistance
-        scrollRightInRtl -> scrollDistance - scrollableWidth
-        scrollLeftInLtr -> scrollDistance - scrollableWidth
+        scrollRightInRtl -> scrollDistance - scrollableWidth / 2
+        scrollLeftInLtr -> scrollDistance - scrollableWidth / 2
         scrollRightInLtr -> scrollableWidth - scrollDistance
         else -> 0 // Fallback, though this shouldn't occur.
       }
