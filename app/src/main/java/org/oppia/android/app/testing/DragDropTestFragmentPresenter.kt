@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.R
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.databinding.DragDropTestFragmentBinding
-import java.util.Collections
 import javax.inject.Inject
 
 /** The presenter for [DragDropTestFragment]. */
@@ -65,10 +64,10 @@ class DragDropTestFragmentPresenter @Inject constructor(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    if (indexFrom == indexTo) return
-    Collections.swap(dataList, indexFrom, indexTo)
+    val item = dataList[indexFrom]
+    dataList.removeAt(indexFrom)
+    dataList.add(indexTo, item)
     adapter.notifyItemMoved(indexFrom, indexTo)
-    (adapter as BindableAdapter<*>).setDataUnchecked(dataList)
   }
 
   /** This receives dragEndedEvent and unchecks data list in [DragDropTestFragment]. */
