@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
+import android.text.style.ImageSpan
 import org.oppia.android.util.locale.OppiaLocale
 import org.xml.sax.Attributes
 import java.util.Stack
@@ -56,6 +57,25 @@ class LiTagHandler(
         if (pendingLists.isEmpty()) closingList.finishListTree(output, context, displayLocale)
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.closeItem(output)
+    }
+    formatImageSpans(output)
+  }
+
+  private fun formatImageSpans(output: Editable) {
+    val imageSpans = output.getSpans(0, output.length, ImageSpan::class.java)
+
+    imageSpans.sortedByDescending { output.getSpanStart(it) }.forEach { span ->
+      val start = output.getSpanStart(span)
+      val end = output.getSpanEnd(span)
+
+      if (start >= 0 && end <= output.length) {
+        if (end < output.length && output[end] != '\n') {
+          output.insert(end, "\n")
+        }
+        if (start > 0 && output[start - 1] != '\n') {
+          output.insert(start, "\n")
+        }
+      }
     }
   }
 
