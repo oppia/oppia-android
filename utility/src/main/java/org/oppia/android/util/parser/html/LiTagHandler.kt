@@ -61,19 +61,20 @@ class LiTagHandler(
     formatImageSpans(output)
   }
 
+  /** Formats ImageSpans to ensure they render as block images with line breaks. */
   private fun formatImageSpans(output: Editable) {
     val imageSpans = output.getSpans(0, output.length, ImageSpan::class.java)
 
     imageSpans.sortedByDescending { output.getSpanStart(it) }.forEach { span ->
-      val start = output.getSpanStart(span)
-      val end = output.getSpanEnd(span)
+      val startIndex = output.getSpanStart(span)
+      val endIndex = output.getSpanEnd(span)
 
-      if (start >= 0 && end <= output.length) {
-        if (end < output.length && output[end] != '\n') {
-          output.insert(end, "\n")
+      if (startIndex >= 0 && endIndex <= output.length) {
+        if (endIndex < output.length && output[endIndex] != '\n') {
+          output.insert(endIndex, "\n")
         }
-        if (start > 0 && output[start - 1] != '\n') {
-          output.insert(start, "\n")
+        if (startIndex > 0 && output[startIndex - 1] != '\n') {
+          output.insert(startIndex, "\n")
         }
       }
     }
