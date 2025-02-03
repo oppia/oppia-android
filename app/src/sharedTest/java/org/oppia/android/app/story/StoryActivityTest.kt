@@ -80,7 +80,6 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -176,8 +175,7 @@ class StoryActivityTest {
     assertThat(title).isEqualTo(context.getString(R.string.story_activity_title))
   }
 
-  @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
-  @DisableAccessibilityChecks
+  @Test
   fun clickOnStory_intentsToExplorationActivity() {
     launch<StoryActivity>(
       createStoryActivityIntent(

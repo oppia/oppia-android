@@ -68,7 +68,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -132,8 +131,6 @@ class TextInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testTextInput_withNoInput_hasCorrectPendingAnswerType() {
     val activityScenario = ActivityScenario.launch(
       TextInputInteractionViewTestActivity::class.java
@@ -146,8 +143,6 @@ class TextInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testTextInput_withChar_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       TextInputInteractionViewTestActivity::class.java
@@ -191,8 +186,6 @@ class TextInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @DisableAccessibilityChecks // Disabled, as TextInputInteractionViewTestActivity is a test file and
-  // will not be used by user
   fun testTextInput_withBlankInput_submit_emptyInputErrorIsDisplayed() {
     ActivityScenario.launch(TextInputInteractionViewTestActivity::class.java).use {
       scrollToSubmitButton()

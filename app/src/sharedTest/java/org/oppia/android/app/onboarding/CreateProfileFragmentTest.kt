@@ -89,7 +89,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -226,7 +225,6 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
   fun testFragment_continueButtonClicked_filledNickname_doesNotShowErrorText() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
