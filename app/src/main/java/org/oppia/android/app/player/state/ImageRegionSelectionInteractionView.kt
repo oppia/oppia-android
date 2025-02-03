@@ -64,8 +64,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     maybeInitializeClickableAreas()
   }
 
-  fun setUserAnswerState(userAnswerrState: UserAnswerState) {
-    this.userAnswerState = userAnswerrState
+  fun setUserAnswerState(userAnswerState: UserAnswerState) {
+    this.userAnswerState = userAnswerState
   }
 
   fun setEntityId(entityId: String) {

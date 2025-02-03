@@ -151,8 +151,7 @@ class ClickableAreasImage(
     clickableArea: LabeledRegion,
     isSelected: Boolean
   ): String {
-    val regionType = clickableArea.region.regionType.name.lowercase()
-      .replaceFirstChar { it.uppercaseChar() }
+    val regionType = clickableArea.region.regionType.name
     val selectionState = if (isSelected) "Unselect" else "Select"
 
     return "$selectionState $regionType region: ${clickableArea.label}."
