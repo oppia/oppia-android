@@ -227,6 +227,16 @@ class ImageRegionSelectionInteractionViewTest {
   @Test
   // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
   @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_initialContentDescriptionRegion3_isCorrect() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(allOf(withTagValue(`is`("Region 3"))))
+        .check(matches(withContentDescription("Select rectangle region: Region 3.")))
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_clickOnDefaultRegion_defaultRegionClicked() {
     launch(ImageRegionSelectionTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
