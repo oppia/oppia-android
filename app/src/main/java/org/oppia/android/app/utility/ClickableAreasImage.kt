@@ -112,8 +112,13 @@ class ClickableAreasImage(
       newView.isFocusable = true
       newView.isFocusableInTouchMode = true
       newView.tag = clickableArea.label
+
+      val isInitiallySelected = clickableArea.label.equals(imageLabel)
+      updateRegionContentDescription(newView, clickableArea, isInitiallySelected)
+
       newView.initializeToggleRegionTouchListener(clickableArea)
-      if (clickableArea.label.equals(imageLabel)) {
+
+      if (isInitiallySelected) {
         showOrHideRegion(newView = newView, clickableArea = clickableArea)
       }
       if (isAccessibilityEnabled) {
@@ -123,7 +128,7 @@ class ClickableAreasImage(
           showOrHideRegion(newView, clickableArea)
         }
       }
-      newView.contentDescription = clickableArea.contentDescription
+
       parentView.addView(newView)
     }
 
@@ -142,12 +147,33 @@ class ClickableAreasImage(
     }
   }
 
+  private fun generateContentDescription(
+    clickableArea: LabeledRegion,
+    isSelected: Boolean
+  ): String {
+    val regionType = clickableArea.region.regionType.name.lowercase()
+      .replaceFirstChar { it.uppercaseChar() }
+    val selectionState = if (isSelected) "Unselect" else "Select"
+
+    return "$selectionState $regionType region: ${clickableArea.label}."
+  }
+
+  private fun updateRegionContentDescription(
+    view: View,
+    clickableArea: LabeledRegion,
+    isSelected: Boolean
+  ) {
+    view.contentDescription = generateContentDescription(clickableArea, isSelected)
+  }
+
   private fun showOrHideRegion(newView: View, clickableArea: LabeledRegion) {
+    val isBecomingSelected = newView.background == null
     resetRegionSelectionViews()
+
     listener.onClickableAreaTouched(
       NamedRegionClickedEvent(
         clickableArea.label,
-        clickableArea.contentDescription
+        generateContentDescription(clickableArea, isBecomingSelected)
       )
     )
     newView.setBackgroundResource(R.drawable.selected_region_background)

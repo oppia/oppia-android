@@ -177,7 +177,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+            regionLabel = "Region 3", contentDescription = "Unselect rectangle region: Region 3."
           )
         )
     }
@@ -218,7 +218,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+            regionLabel = "Region 2", contentDescription = "Unselect rectangle region: Region 2."
           )
         )
     }
@@ -280,7 +280,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+            regionLabel = "Region 2", contentDescription = "Unselect rectangle region: Region 2."
           )
         )
     }
@@ -308,7 +308,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+            regionLabel = "Region 3", contentDescription = "Unselect rectangle region: Region 3."
           )
         )
     }
@@ -352,7 +352,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+            regionLabel = "Region 3", contentDescription = "Unselect rectangle region: Region 3."
           )
         )
     }
@@ -394,7 +394,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+            regionLabel = "Region 2", contentDescription = "Unselect rectangle region: Region 2."
           )
         )
     }
