@@ -196,11 +196,10 @@ class ClickableAreasImage(
     clickableArea: LabeledRegion,
     isSelected: Boolean
   ): String {
-    val regionType = clickableArea.region.regionType.name
     if (isSelected) {
-      return "This is a ${regionType.lowercase()} region ${clickableArea.label}."
+      return "This is a ${clickableArea.label} image."
     }
-    return "Select ${regionType.lowercase()} region ${clickableArea.label}."
+    return "Select ${clickableArea.label} image."
   }
 
   private fun updateRegionContentDescription(

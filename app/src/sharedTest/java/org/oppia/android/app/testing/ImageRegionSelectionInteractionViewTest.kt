@@ -178,7 +178,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "This is a rectangle region Region 3."
+            regionLabel = "Region 3", contentDescription = "This is a Region 3 image."
           )
         )
     }
@@ -219,7 +219,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "This is a rectangle region Region 2."
+            regionLabel = "Region 2", contentDescription = "This is a Region 2 image."
           )
         )
     }
@@ -233,7 +233,7 @@ class ImageRegionSelectionInteractionViewTest {
       onView(
         allOf(
           withTagValue(`is`("Region 3")),
-          withContentDescription("Select rectangle region Region 3.")
+          withContentDescription("Select Region 3 image.")
         )
       ).check(matches(isDisplayed()))
     }
@@ -295,7 +295,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "This is a rectangle region Region 2."
+            regionLabel = "Region 2", contentDescription = "This is a Region 2 image."
           )
         )
     }
@@ -323,7 +323,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "This is a rectangle region Region 3."
+            regionLabel = "Region 3", contentDescription = "This is a Region 3 image."
           )
         )
     }
@@ -367,7 +367,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "This is a rectangle region Region 3."
+            regionLabel = "Region 3", contentDescription = "This is a Region 3 image."
           )
         )
     }
@@ -409,7 +409,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "This is a rectangle region Region 2."
+            regionLabel = "Region 2", contentDescription = "This is a Region 2 image."
           )
         )
     }
