@@ -113,6 +113,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -229,8 +230,12 @@ class ImageRegionSelectionInteractionViewTest {
   @RunOn(TestPlatform.ESPRESSO)
   fun testImageRegionSelectionInteractionView_initialContentDescriptionRegion3_isCorrect() {
     launch(ImageRegionSelectionTestActivity::class.java).use {
-      onView(allOf(withTagValue(`is`("Region 3"))))
-        .check(matches(withContentDescription("Select Rectangle region: Region 3.")))
+      onView(
+        allOf(
+          withTagValue(`is`("Region 3")),
+          withContentDescription("Select Rectangle region: Region 3.")
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
