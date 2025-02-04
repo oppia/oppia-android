@@ -58,3 +58,14 @@ kt_jvm_test(
         "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
     ],
 )
+
+kt_jvm_test(
+    name = "TextViewStyleCheckTest",
+    srcs = ["TextViewStyleCheckTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/xml:check_textview_styles",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_jetbrains_kotlin_kotlin-test-junit",
+    ],
+)
