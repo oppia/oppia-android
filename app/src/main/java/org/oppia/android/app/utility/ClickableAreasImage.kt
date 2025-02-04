@@ -60,6 +60,16 @@ class ClickableAreasImage(
       // Remove any previously selected region excluding 0th index(image view)
       if (index > 0) {
         childView.setBackgroundResource(0)
+        if (childView.tag != null) {
+          val regionLabel = childView.tag as String
+          clickableAreas.find { it.label == regionLabel }?.let { clickableArea ->
+            updateRegionContentDescription(
+              childView,
+              clickableArea,
+              regionLabel == imageLabel
+            )
+          }
+        }
       }
     }
   }
@@ -147,35 +157,19 @@ class ClickableAreasImage(
     }
   }
 
-  private fun generateContentDescription(
-    clickableArea: LabeledRegion,
-    isSelected: Boolean
-  ): String {
-    val regionType = clickableArea.region.regionType.name
-    val selectionState = if (isSelected) "Unselect" else "Select"
-
-    return "$selectionState $regionType region: ${clickableArea.label}."
-  }
-
-  private fun updateRegionContentDescription(
-    view: View,
-    clickableArea: LabeledRegion,
-    isSelected: Boolean
-  ) {
-    view.contentDescription = generateContentDescription(clickableArea, isSelected)
-  }
-
   private fun showOrHideRegion(newView: View, clickableArea: LabeledRegion) {
-    val isBecomingSelected = newView.background == null
-    resetRegionSelectionViews()
+    if (clickableArea.label != imageLabel) {
+      imageLabel = clickableArea.label
+      resetRegionSelectionViews()
+      newView.setBackgroundResource(R.drawable.selected_region_background)
 
-    listener.onClickableAreaTouched(
-      NamedRegionClickedEvent(
-        clickableArea.label,
-        generateContentDescription(clickableArea, isBecomingSelected)
+      listener.onClickableAreaTouched(
+        NamedRegionClickedEvent(
+          clickableArea.label,
+          generateContentDescription(clickableArea, true)
+        )
       )
-    )
-    newView.setBackgroundResource(R.drawable.selected_region_background)
+    }
   }
 
   private fun View.initializeShowRegionTouchListener() {
@@ -196,5 +190,24 @@ class ClickableAreasImage(
       view.performClick()
       return@setOnTouchListener true
     }
+  }
+
+  private fun generateContentDescription(
+    clickableArea: LabeledRegion,
+    isSelected: Boolean
+  ): String {
+    val regionType = clickableArea.region.regionType.name
+    if (isSelected) {
+      return "This is a ${regionType.lowercase()} region ${clickableArea.label}."
+    }
+    return "Select ${regionType.lowercase()} region ${clickableArea.label}."
+  }
+
+  private fun updateRegionContentDescription(
+    view: View,
+    clickableArea: LabeledRegion,
+    isSelected: Boolean
+  ) {
+    view.contentDescription = generateContentDescription(clickableArea, isSelected)
   }
 }
