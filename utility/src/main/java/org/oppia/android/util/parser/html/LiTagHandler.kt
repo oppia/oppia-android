@@ -1,10 +1,13 @@
 package org.oppia.android.util.parser.html
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import android.text.style.ImageSpan
+import androidx.core.view.ViewCompat
 import org.oppia.android.util.locale.OppiaLocale
 import org.xml.sax.Attributes
 import java.util.Stack
@@ -76,7 +79,57 @@ class LiTagHandler(
         if (startIndex > 0 && output[startIndex - 1] != '\n') {
           output.insert(startIndex, "\n")
         }
+
+        val currentStart = output.getSpanStart(span)
+        val currentEnd = output.getSpanEnd(span)
+        val leadingMargins = output.getSpans(
+          currentStart,
+          currentStart,
+          ListItemLeadingMarginSpan::class.java
+        )
+        val totalMargin = leadingMargins.sumOf { it.getLeadingMargin(true) }
+        val isRtl by lazy {
+          displayLocale.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
+        }
+
+        output.removeSpan(span)
+        val customSpan = CustomImageSpan(span, totalMargin, isRtl)
+        output.setSpan(
+          customSpan,
+          currentStart,
+          currentEnd,
+          output.getSpanFlags(span)
+        )
       }
+    }
+  }
+
+  /**
+   * Custom [ImageSpan] that shifts the drawing position by the total margin of parent list items.
+   */
+  private class CustomImageSpan(
+    originalSpan: ImageSpan,
+    private val totalMargin: Int,
+    private val isRtl: Boolean
+  ) : ImageSpan(originalSpan.drawable, originalSpan.verticalAlignment) {
+
+    override fun draw(
+      canvas: Canvas,
+      text: CharSequence,
+      start: Int,
+      end: Int,
+      x: Float,
+      top: Int,
+      baseline: Int,
+      bottom: Int,
+      paint: Paint
+    ) {
+      val adjustedX = if (isRtl) {
+        x + totalMargin
+      } else {
+        x - totalMargin
+      }
+      super.draw(canvas, text, start, end, adjustedX, top, baseline, bottom, paint)
     }
   }
 
