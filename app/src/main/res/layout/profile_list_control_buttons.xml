@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -52,6 +53,7 @@
       android:layout_height="wrap_content"
       android:max="@{viewModel.forceUploadProgress.totalEventsToUpload}"
       android:min="0"
+      tools:targetApi="26"
       app:animatedProgress="@{viewModel.forceUploadProgress.eventsUploaded}"
       android:visibility="@{viewModel.forceUploadProgress.hasEventsToUpload() ? View.VISIBLE : View.GONE, default=gone}"
       app:layout_constraintBottom_toBottomOf="@+id/learner_analytics_upload_logs_now_button"

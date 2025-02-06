@@ -457,7 +457,7 @@ class QuestionPlayerActivityTest {
           matches(
             withContentDescription(
               "To write a fraction, you need to know its denominator, which is the total " +
-                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
+                "number of pieces in the whole. All of these pieces should be the same size."
             )
           )
         )

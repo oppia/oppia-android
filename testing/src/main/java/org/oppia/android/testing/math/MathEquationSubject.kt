@@ -10,8 +10,6 @@ import org.oppia.android.testing.math.MathEquationSubject.Companion.assertThat
 import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 import org.oppia.android.util.math.toRawLatex
 
-// TODO(#4097): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [MathEquation]s.
  *
