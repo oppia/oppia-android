@@ -236,14 +236,6 @@ class StateFragmentTest {
   //  2. Verifying the button visibility state based on whether text is missing, then
   //     present/missing for text input or numeric input.
   //  3. Testing providing the wrong answer and showing feedback and the same question again.
-  //  4. Configuration change with typed text (e.g. for numeric or text input) retains that
-  //     temporary
-  //     text and you can continue with the exploration after rotating.
-  //  5. Configuration change after submitting the wrong answer to show that the old answer & re-ask
-  //     of the question stay the same.
-  //  6. Backward/forward navigation along with configuration changes to verify that you stay on the
-  //     navigated state.
-  //  7. Verifying that old answers were present when navigation backward/forward.
   //  8. Testing providing the wrong answer and showing hints.
   //  9. Testing all possible invalid/error input cases for each interaction.
   //  10. Testing interactions with custom Oppia tags (including images) render correctly (when
@@ -5132,6 +5124,105 @@ class StateFragmentTest {
           )
         )
       )
+    }
+  }
+
+  //4.
+  @Test
+  fun testStateFragment_textInput_temporaryTextIsRetainedAfterRotation() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use { _ ->
+      startPlayingExploration()
+      // Navigate to the text input state (eighth state in the prototype exploration)
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+
+      typeTextInput("temporary text")
+      rotateToLandscape()
+
+      // Verify the text input still contains the temporary text after rotation
+      onView(withId(R.id.text_input_interaction_view))
+        .check(matches(withText("temporary text")))
+    }
+  }
+
+  //5.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_wrongAnswerError_retainedAfterRotation() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use { _ ->
+      startPlayingExploration()
+      playThroughPrototypeState1()
+
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
+      verifySubmitAnswerButtonIsDisabled()
+
+      rotateToLandscape()
+      testCoroutineDispatchers.runCurrent()
+
+      // Confirm retention after rotation
+      onView(withId(R.id.fraction_input_error)).check(matches(isDisplayed()))
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  //6.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_navigationWithConfigChange_currentStateRetained() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      onView(withId(R.id.selection_interaction_recyclerview)).check(matches(isDisplayed()))
+
+      rotateToLandscape()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.selection_interaction_recyclerview)).check(matches(isDisplayed()))
+      clickPreviousNavigationButton()
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
+
+      rotateToLandscape()
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.fraction_input_interaction_view)).check(matches(isDisplayed()))
+
+      clickNextNavigationButton()
+      onView(withId(R.id.selection_interaction_recyclerview)).check(matches(isDisplayed()))
+    }
+  }
+
+  //7.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testStateFragment_navigateBackShowsPreviousFeedback() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
+      startPlayingExploration()
+
+      playThroughPrototypeState1()
+      typeFractionText("1/4")
+      clickSubmitAnswerButton()
+      verifySubmitAnswerButtonIsDisabled()
+
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      clickPreviousNavigationButton()
+
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText("Correct!")))
     }
   }
 
