@@ -5127,7 +5127,7 @@ class StateFragmentTest {
     }
   }
 
-  //4.
+  // 4.
   @Test
   fun testStateFragment_textInput_temporaryTextIsRetainedAfterRotation() {
     setUpTestWithLanguageSwitchingFeatureOff()
@@ -5151,7 +5151,7 @@ class StateFragmentTest {
     }
   }
 
-  //5.
+  // 5.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_wrongAnswerError_retainedAfterRotation() {
@@ -5175,7 +5175,7 @@ class StateFragmentTest {
     }
   }
 
-  //6.
+  // 6.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_navigationWithConfigChange_currentStateRetained() {
@@ -5203,7 +5203,7 @@ class StateFragmentTest {
     }
   }
 
-  //7.
+  // 7.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_navigateBackShowsPreviousFeedback() {
