@@ -200,7 +200,6 @@ class ClickableAreasImage(
   else
     "Select ${clickableArea.label} image."
 
-
   private fun updateRegionContentDescription(
     view: View,
     clickableArea: LabeledRegion,
