@@ -57,7 +57,7 @@ class CustomHtmlContentHandler private constructor(
       contentDescriptionBuilder.append('\n')
       pendingNewline = false
     }
-    ch?.let { contentDescriptionBuilder.append(String(it, start, length)) }
+    ch?.let { contentDescriptionBuilder.appendRange(it, start, start + length) }
   }
 
   override fun endDocument() {
@@ -148,6 +148,7 @@ class CustomHtmlContentHandler private constructor(
     val attributes: Attributes,
     val openTagIndex: Int
   )
+
   /**
    * Returns the complete content description for the processed HTML, including descriptions
    * from all custom tags.
@@ -168,6 +169,7 @@ class CustomHtmlContentHandler private constructor(
     }
     return rawDesc.replace(Regex("\n+"), "\n").trim()
   }
+
   /** Handler interface for a custom tag and its attributes. */
   interface CustomTagHandler {
     /**
