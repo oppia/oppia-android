@@ -673,4 +673,5 @@
   <string name="audio_language_fragment_text">في %s ، يمكنك الاستماع إلى الدروس!</string>
   <string name="audio_language_fragment_subtitle">اختر لغة المقاطع الصوتية للاستماع إلى الدروس</string>
   <string name="onboarding_step_count_five">الخطوة 5 من 5</string>
+  <string name="arabic_language_display_name_content_description">العربية</string>
 </resources>
