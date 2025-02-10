@@ -195,12 +195,11 @@ class ClickableAreasImage(
   private fun generateContentDescription(
     clickableArea: LabeledRegion,
     isSelected: Boolean
-  ): String {
-    if (isSelected) {
-      return "This is a ${clickableArea.label} image."
-    }
-    return "Select ${clickableArea.label} image."
-  }
+  ): String = if (isSelected)
+    "This is a ${clickableArea.label} image."
+  else
+    "Select ${clickableArea.label} image."
+
 
   private fun updateRegionContentDescription(
     view: View,
