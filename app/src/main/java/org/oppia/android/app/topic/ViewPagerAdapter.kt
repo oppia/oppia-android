@@ -25,13 +25,13 @@ class ViewPagerAdapter(
       TopicTab.INFO -> {
         TopicInfoFragment.newInstance(profileId, topicId)
       }
-      TopicTab.LESSONS -> {
+      TopicTab.LEARN -> {
         TopicLessonsFragment.newInstance(profileId, classroomId, topicId, storyId)
       }
       TopicTab.PRACTICE -> {
         TopicPracticeFragment.newInstance(profileId, topicId)
       }
-      TopicTab.REVISION -> {
+      TopicTab.STUDY -> {
         TopicRevisionFragment.newInstance(profileId, topicId)
       }
     }

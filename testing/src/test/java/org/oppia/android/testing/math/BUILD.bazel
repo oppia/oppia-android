@@ -67,3 +67,18 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
+
+oppia_android_test(
+    name = "PolynomialSubjectTest",
+    srcs = ["PolynomialSubjectTest.kt"],
+    custom_package = "org.oppia.android.testing.math",
+    test_class = "org.oppia.android.testing.math.PolynomialSubjectTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//model/src/main/proto:math_java_proto_lite",
+        "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+    ],
+)
