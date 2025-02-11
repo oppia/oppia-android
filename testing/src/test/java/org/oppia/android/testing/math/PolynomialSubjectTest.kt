@@ -11,7 +11,7 @@ import org.oppia.android.app.model.Real
 @RunWith(JUnit4::class)
 class PolynomialSubjectTest {
 
-  /** Helper function to create a polynomial term */
+  /** Helper function to create a polynomial term. */
   fun createTerm(coefficient: Int, vararg variables: Pair<String, Int>): Polynomial.Term {
     return Polynomial.Term.newBuilder()
       .setCoefficient(Real.newBuilder().setInteger(coefficient))
@@ -23,7 +23,7 @@ class PolynomialSubjectTest {
       .build()
   }
 
-  /** Helper function to create a polynomial from multiple terms */
+  /** Helper function to create a polynomial from multiple terms. */
   fun createPolynomial(vararg terms: Polynomial.Term): Polynomial {
     return Polynomial.newBuilder().apply {
       terms.forEach { addTerm(it) }
