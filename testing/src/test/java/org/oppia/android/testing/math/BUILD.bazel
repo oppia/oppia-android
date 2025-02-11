@@ -69,15 +69,14 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "MathParsingErrorSubjectTest",
-    srcs = ["MathParsingErrorSubjectTest.kt"],
+    name = "PolynomialSubjectTest",
+    srcs = ["PolynomialSubjectTest.kt"],
     custom_package = "org.oppia.android.testing.math",
-    test_class = "org.oppia.android.testing.math.MathParsingErrorSubjectTest",
+    test_class = "org.oppia.android.testing.math.PolynomialSubjectTest",
     test_manifest = "//testing:test_manifest",
     deps = [
         "//model/src/main/proto:math_java_proto_lite",
-        "//testing/src/main/java/org/oppia/android/testing/math:math_parsing_error_subject",
-        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/math:polynomial_subject",
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:robolectric_android-all",
