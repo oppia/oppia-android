@@ -72,7 +72,7 @@ class TokenSubjectTest {
   }
 
   @Test
-  fun testTokenSubject_failsWithIncorrectVariableWhoseName() {
+  fun testTokenSubject_isVariableWhoseName_incorrectName_fails() {
     val token = Token.VariableName("x", 10, 15)
     assertThrows(AssertionError::class.java) {
       TokenSubject.assertThat(token).isVariableWhoseName().isEqualTo("y")
