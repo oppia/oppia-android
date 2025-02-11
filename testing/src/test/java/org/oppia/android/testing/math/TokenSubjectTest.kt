@@ -11,13 +11,13 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token
 class TokenSubjectTest {
 
   @Test
-  fun testTokenSubject_hasStartIndexThat_correctIndex_passes() {
+  fun testTokenSubject_passesWithCorrectStartIndex() {
     val token = Token.PositiveInteger(42, 10, 15)
     TokenSubject.assertThat(token).hasStartIndexThat().isEqualTo(10)
   }
 
   @Test
-  fun testTokenSubject_hasStartIndexThat_incorrectIndex_fails() {
+  fun testTokenSubject_failsWithIncorrectStartIndex() {
     val token = Token.PositiveInteger(42, 10, 15)
     assertThrows(AssertionError::class.java) {
       TokenSubject.assertThat(token).hasStartIndexThat().isEqualTo(11)
@@ -25,13 +25,13 @@ class TokenSubjectTest {
   }
 
   @Test
-  fun testTokenSubject_hasEndIndexThat_correctIndex_passes() {
+  fun testTokenSubject_passesWithCorrectEndIndex() {
     val token = Token.PositiveInteger(42, 10, 15)
     TokenSubject.assertThat(token).hasEndIndexThat().isEqualTo(15)
   }
 
   @Test
-  fun testTokenSubject_hasEndIndexThat_incorrectIndex_fails() {
+  fun testTokenSubject_failsWithIncorrectEndIndex() {
     val token = Token.PositiveInteger(42, 10, 15)
     assertThrows(AssertionError::class.java) {
       TokenSubject.assertThat(token).hasEndIndexThat().isEqualTo(14)
@@ -39,50 +39,62 @@ class TokenSubjectTest {
   }
 
   @Test
-  fun testTokenSubject_isPositiveIntegerWhoseValue_correctValue_passes() {
+  fun testTokenSubject_passesWithCorrectPositiveIntegerValue() {
     val token = Token.PositiveInteger(42, 10, 15)
     TokenSubject.assertThat(token).isPositiveIntegerWhoseValue().isEqualTo(42)
   }
 
   @Test
-  fun testTokenSubject_isPositiveIntegerWhoseValue_incorrectType_fails() {
-    val token = Token.VariableName("x", 10, 15)
+  fun testTokenSubject_failsWithIncorrectPositiveIntegerValue() {
+    val token = Token.PositiveInteger(42, 10, 15)
     assertThrows(AssertionError::class.java) {
-      TokenSubject.assertThat(token).isPositiveIntegerWhoseValue()
+      TokenSubject.assertThat(token).isPositiveIntegerWhoseValue().isEqualTo(45)
     }
   }
 
   @Test
-  fun testTokenSubject_isPositiveRealNumberWhoseValue_correctValue_passes() {
+  fun testTokenSubject_passesWithCoreectPositiveRealNumberValue() {
     val token = Token.PositiveRealNumber(3.14, 10, 15)
     TokenSubject.assertThat(token).isPositiveRealNumberWhoseValue().isEqualTo(3.14)
   }
 
-  fun testTokenSubject_isPositiveRealNumberWhoseValue_incorrectType_fails() {
-    val token = Token.PositiveInteger(42, 10, 15)
-    TokenSubject.assertThat(token).isPositiveRealNumberWhoseValue().isNotEqualTo(25)
+  fun testTokenSubject_failsWithIncorrectPositiveRealNumberValue() {
+    val token = Token.PositiveRealNumber(3.14, 10, 15)
+    assertThrows(AssertionError::class.java) {
+      TokenSubject.assertThat(token).isPositiveRealNumberWhoseValue().isEqualTo(25)
+    }
   }
 
   @Test
-  fun testTokenSubject_isVariableWhoseName_correctName_passes() {
+  fun testTokenSubject_passesWithCorrectVariableName() {
     val token = Token.VariableName("x", 10, 15)
     TokenSubject.assertThat(token).isVariableWhoseName().isEqualTo("x")
   }
 
   @Test
-  fun testTokenSubject_isVariableWhoseName_incorrectType_fails() {
-    val token = Token.PositiveInteger(42, 10, 15)
+  fun testTokenSubject_failsWithIncorrectVariableWhoseName() {
+    val token = Token.VariableName("x", 10, 15)
     assertThrows(AssertionError::class.java) {
-      TokenSubject.assertThat(token).isVariableWhoseName()
+      TokenSubject.assertThat(token).isVariableWhoseName().isEqualTo("y")
     }
   }
 
   @Test
-  fun testTokenSubject_isFunctionNameThat_correctNameAndAllowedStatus_passes() {
+  fun testTokenSubject_passesWithCorrectFunctionNameAndAllowedStatus() {
     val token = Token.FunctionName("sqrt", true, 10, 15)
     TokenSubject.assertThat(token)
       .isFunctionNameThat()
       .hasNameThat().isEqualTo("sqrt")
+  }
+
+  @Test
+  fun testTokenSubject_failsWithIncorrectFunctionNameAndAllowedStatus() {
+    val token = Token.FunctionName("sqrt", true, 10, 15)
+    assertThrows(AssertionError::class.java) {
+      TokenSubject.assertThat(token)
+        .isFunctionNameThat()
+        .hasNameThat().isEqualTo("sine")
+    }
   }
 
   @Test
@@ -140,24 +152,31 @@ class TokenSubjectTest {
   }
 
   @Test
-  fun testTokenSubject_symbolMethodsWithIncorrectType_fails() {
+  fun testTokenSubject_failsWithIncorrectSymbol() {
+    val token = Token.RightParenthesisSymbol(10, 11)
     assertThrows(AssertionError::class.java) {
-      TokenSubject.assertThat(Token.PositiveInteger(10, 11, 42)).isMinusSymbol()
+      TokenSubject.assertThat(token).isMinusSymbol()
     }
   }
 
   @Test
-  fun testTokenSubject_invalidTokenMethods_correctTypes_pass() {
-    TokenSubject.assertThat(Token.InvalidToken(10, 11)).isInvalidToken()
-    TokenSubject.assertThat(Token.IncompleteFunctionName(10, 11)).isIncompleteFunctionName()
+  fun testTokenSubject_checkIsInvalidToken_passes() {
+    val token = Token.InvalidToken(10, 11)
+    TokenSubject.assertThat(token).isInvalidToken()
   }
 
   @Test
-  fun testTokenSubject_invalidTokenMethods_incorrectType_fails() {
+  fun testTokenSubject_checkIsInvalidToken_fails() {
     val token = Token.PositiveInteger(10, 11, 42)
     assertThrows(AssertionError::class.java) {
       TokenSubject.assertThat(token).isInvalidToken()
     }
+  }
+
+  @Test
+  fun testTokenSubject_checkIsIncompleteFunctionName() {
+    val token = Token.IncompleteFunctionName(10, 11)
+    TokenSubject.assertThat(token).isIncompleteFunctionName()
   }
 
   @Test
