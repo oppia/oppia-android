@@ -14,8 +14,6 @@ import org.oppia.android.util.math.getConstant
 import org.oppia.android.util.math.isConstant
 import org.oppia.android.util.math.toPlainText
 
-// TODO(#4100): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [Polynomial]s.
  *
