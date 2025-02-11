@@ -96,4 +96,3 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
-
