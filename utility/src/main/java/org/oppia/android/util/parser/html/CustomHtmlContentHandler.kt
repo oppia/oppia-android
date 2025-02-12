@@ -202,7 +202,7 @@ class CustomHtmlContentHandler private constructor(
      * Called when the closing of a custom tag is encountered. This does not support processing
      * attributes of the tag--[handleTag] should be used, instead.
      *
-     * This function will always be called before [handleClosingTag].
+     * This function will always be called before [handleTag].
      *
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
