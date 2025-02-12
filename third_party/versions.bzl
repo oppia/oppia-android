@@ -102,7 +102,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.compose.ui:ui-test-junit4": "1.1.1",
     "androidx.test.espresso:espresso-accessibility": "3.1.0",
     "androidx.test.espresso:espresso-contrib": "3.1.0",
-    "androidx.test.espresso:espresso-core": "3.5.0",
+    "androidx.test.espresso:espresso-core": "3.5.0-alpha07",
     "androidx.test.espresso:espresso-intents": "3.1.0",
     "androidx.test.ext:junit": "1.1.1",
     "androidx.test.ext:truth": "1.4.0",
