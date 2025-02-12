@@ -33,7 +33,8 @@ class CustomHtmlContentHandler private constructor(
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
-    if (localName in blockTags) {
+    val tagName = qName ?: localName
+    if (tagName in blockTags) {
       isInListItem = false
     }
     currentTrackedTag = null
@@ -69,7 +70,8 @@ class CustomHtmlContentHandler private constructor(
     // Defer custom tag management to the tag handler so that Android's element parsing takes
     // precedence.
     currentTrackedTag = TrackedTag(checkNotNull(localName), checkNotNull(atts))
-    if (localName in blockTags) {
+    val tagName = qName ?: localName
+    if (tagName in blockTags) {
       pendingNewline = true
       isInListItem = true
     }
