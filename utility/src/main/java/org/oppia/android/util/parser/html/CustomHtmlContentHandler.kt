@@ -33,8 +33,7 @@ class CustomHtmlContentHandler private constructor(
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
-    val tagName = qName ?: localName // Fallback to localName if qName is null
-    if (tagName in blockTags) {
+    if (localName in blockTags) {
       isInListItem = false
     }
     currentTrackedTag = null
