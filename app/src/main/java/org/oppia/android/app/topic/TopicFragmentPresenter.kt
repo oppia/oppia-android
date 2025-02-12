@@ -86,7 +86,7 @@ class TopicFragmentPresenter @Inject constructor(
   fun startSpotlight() {
     viewModel.numberOfChaptersCompletedLiveData.observe(fragment) { numberOfChaptersCompleted ->
       if (numberOfChaptersCompleted != null) {
-        val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LESSONS))?.view
+        val lessonsTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.LEARN))?.view
         lessonsTabView?.let {
           val lessonsTabSpotlightTarget = SpotlightTarget(
             lessonsTabView,
@@ -97,7 +97,7 @@ class TopicFragmentPresenter @Inject constructor(
           checkNotNull(getSpotlightManager()).requestSpotlight(lessonsTabSpotlightTarget)
 
           if (numberOfChaptersCompleted > 2) {
-            val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.REVISION))?.view
+            val revisionTabView = tabLayout.getTabAt(computeTabPosition(TopicTab.STUDY))?.view
             val revisionTabSpotlightTarget = SpotlightTarget(
               revisionTabView!!,
               resourceHandler.getStringInLocale(R.string.topic_revision_tab_spotlight_hint),
@@ -149,9 +149,9 @@ class TopicFragmentPresenter @Inject constructor(
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
       if (enableExtraTopicTabsUi.value) {
-        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LESSONS else TopicTab.INFO)
+        setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LEARN else TopicTab.INFO)
       } else {
-        setCurrentTab(TopicTab.LESSONS)
+        setCurrentTab(TopicTab.LEARN)
       }
     }
     viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -164,9 +164,9 @@ class TopicFragmentPresenter @Inject constructor(
   private fun logTopicEvents(tab: TopicTab) {
     val eventContext = when (tab) {
       TopicTab.INFO -> oppiaLogger.createOpenInfoTabContext(topicId)
-      TopicTab.LESSONS -> oppiaLogger.createOpenLessonsTabContext(topicId)
+      TopicTab.LEARN -> oppiaLogger.createOpenLessonsTabContext(topicId)
       TopicTab.PRACTICE -> oppiaLogger.createOpenPracticeTabContext(topicId)
-      TopicTab.REVISION -> oppiaLogger.createOpenRevisionTabContext(topicId)
+      TopicTab.STUDY -> oppiaLogger.createOpenRevisionTabContext(topicId)
     }
     analyticsController.logImportantEvent(eventContext, profileId)
   }
