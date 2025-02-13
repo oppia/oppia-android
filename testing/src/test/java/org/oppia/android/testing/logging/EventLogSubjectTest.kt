@@ -2,19 +2,22 @@ package org.oppia.android.testing.logging
 
 import org.junit.Assert.assertThrows
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.EventLog.CardContext
+import org.oppia.android.app.model.EventLog.ConceptCardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.HintContext
+import org.oppia.android.app.model.EventLog.QuestionContext
+import org.oppia.android.app.model.EventLog.RevisionCardContext
+import org.oppia.android.app.model.EventLog.StoryContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 
 /** Tests for [EventLogSubject]. */
-@RunWith(JUnit4::class)
 class EventLogSubjectTest {
   @Test
   fun testEventLogSubject_matchesCorrectTimeStamp() {
@@ -247,7 +250,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_missingExplorationActivityContext_fails()  {
+  fun testEventLogSubject_missingExplorationActivityContext_fails() {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
@@ -306,5 +309,874 @@ class EventLogSubjectTest {
 
     EventLogSubject.assertThat(eventLog)
       .hasOpenRevisionTabContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionTabContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenRevisionTabContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionTabContext_hasTopicContext() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionTab(topicContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionTabContextThat()
+      .isEqualTo(topicContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionTabContext_failsWithDifferentTopicContext() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val differentTopicContext = TopicContext.newBuilder()
+      .setTopicId("differentTopicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionTab(topicContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenRevisionTabContextThat()
+        .isEqualTo(differentTopicContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionTabContext_withTopicIdEquals() {
+    // give code
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionTab(topicContext)
+      )
+      .build()
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionTabContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionTabContext_failsWithDifferentTopicId() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionTab(topicContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenRevisionTabContextThat {
+          hasTopicIdThat().isEqualTo("differentTopicId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenQuestionPlayerContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenQuestionPlayer(QuestionContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenQuestionPlayerContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenQuestionPlayerContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenQuestionPlayerContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenQuestionPlayerContext_hasQuestionContext() {
+    val questionContext = QuestionContext.newBuilder()
+      .setQuestionId("questionId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenQuestionPlayer(questionContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenQuestionPlayerContextThat()
+      .isEqualTo(questionContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenQuestionPlayerContext_failsWithDifferentQuestionContext() {
+    val questionContext = QuestionContext.newBuilder()
+      .setQuestionId("questionId")
+      .build()
+    val differentQuestionContext = QuestionContext.newBuilder()
+      .setQuestionId("differentQuestionId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenQuestionPlayer(questionContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenQuestionPlayerContextThat()
+        .isEqualTo(differentQuestionContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenQuestionPlayerContext_withQuestionIdEquals() {
+    val questionContext = QuestionContext.newBuilder()
+      .setQuestionId("questionId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenQuestionPlayer(questionContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenQuestionPlayerContextThat {
+        hasQuestionIdThat().isEqualTo("questionId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenQuestionPlayerContext_failsWithDifferentQuestionId() {
+    val questionContext = QuestionContext.newBuilder()
+      .setQuestionId("questionId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenQuestionPlayer(questionContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenQuestionPlayerContextThat {
+          hasQuestionIdThat().isEqualTo("differentQuestionId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenStoryActivityContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenStoryActivity(StoryContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenStoryActivityContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenStoryActivityContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenStoryActivityContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenStoryActivityContext_hasStoryContext() {
+    val storyContext = StoryContext.newBuilder()
+      .setStoryId("storyId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenStoryActivity(storyContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenStoryActivityContextThat()
+      .isEqualTo(storyContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenStoryActivityContext_failsWithDifferentStoryContext() {
+    val storyContext = StoryContext.newBuilder()
+      .setStoryId("storyId")
+      .build()
+    val differentStoryContext = StoryContext.newBuilder()
+      .setStoryId("differentStoryId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenStoryActivity(storyContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenStoryActivityContextThat()
+        .isEqualTo(differentStoryContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenStoryActivityContext_withStoryIdEquals() {
+    val storyContext = StoryContext.newBuilder()
+      .setStoryId("storyId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenStoryActivity(storyContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenStoryActivityContextThat {
+        hasStoryIdThat().isEqualTo("storyId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenStoryActivityContext_failsWithDifferentStoryId() {
+    val storyContext = StoryContext.newBuilder()
+      .setStoryId("storyId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenStoryActivity(storyContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenStoryActivityContextThat {
+          hasStoryIdThat().isEqualTo("differentStoryId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenConceptCardContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenConceptCard(ConceptCardContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenConceptCardContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenConceptCardContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenConceptCardContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenConceptCardContext_hasConceptCardContext() {
+    val conceptCardContext = ConceptCardContext.newBuilder()
+      .setSkillId("skillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenConceptCard(conceptCardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenConceptCardContextThat()
+      .isEqualTo(conceptCardContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenConceptCardContext_failsWithDifferentConceptCardContext() {
+    val conceptCardContext = ConceptCardContext.newBuilder()
+      .setSkillId("skillId")
+      .build()
+    val differentConceptCardContext = ConceptCardContext.newBuilder()
+      .setSkillId("differentSkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenConceptCard(conceptCardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenConceptCardContextThat()
+        .isEqualTo(differentConceptCardContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenConceptCardContext_passesWithSameSkillId() {
+    val conceptCardContext = ConceptCardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenConceptCard(conceptCardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenConceptCardContextThat {
+        hasSkillIdThat().isEqualTo("SkillId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenConceptCardContext_failsWithDifferentSkillId() {
+    val conceptCardContext = ConceptCardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenConceptCard(conceptCardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenConceptCardContextThat {
+          hasSkillIdThat().isEqualTo("differentSkillId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionCardContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionCard(RevisionCardContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionCardContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionCardContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenRevisionCardContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionCardContext_hasRevisionCardContext() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionCard(revisionCardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionCardContextThat()
+      .isEqualTo(revisionCardContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionCardContext_failsWithDifferentRevisionCardContext() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val differentRevisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("differentTopicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionCard(revisionCardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenRevisionCardContextThat()
+        .isEqualTo(differentRevisionCardContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionCardContext_withTopicIdIdEquals() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionCard(revisionCardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionCardContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenRevisionCardContext_failsWithDifferentTopicId() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionCard(revisionCardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo("differentTopicId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseRevisionCardContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseRevisionCard(RevisionCardContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasCloseRevisionCardContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseRevisionCardContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasCloseRevisionCardContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseRevisionCardContext_passesWithSameRevisionCardContext() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseRevisionCard(revisionCardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasCloseRevisionCardContextThat()
+      .isEqualTo(revisionCardContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseRevisionCardContext_failsWithDifferentRevisionCardContext() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val differentRevisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("differentTopicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseRevisionCard(revisionCardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasCloseRevisionCardContextThat()
+        .isEqualTo(differentRevisionCardContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseRevisionCardContext_passesWithEqualTopicId() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseRevisionCard(revisionCardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasCloseRevisionCardContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseRevisionCardContext_failsWithDifferentTopicId() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseRevisionCard(revisionCardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasCloseRevisionCardContextThat {
+          hasTopicIdThat().isEqualTo("differentTopicId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartCardContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartCardContext(CardContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartCardContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartCardContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasStartCardContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartCardContext_hasSameCardContext() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartCardContext(cardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartCardContextThat()
+      .isEqualTo(cardContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartCardContext_failsWithDifferentCardContext() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val differentCardContext = CardContext.newBuilder()
+      .setSkillId("differentSkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartCardContext(cardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasStartCardContextThat()
+        .isEqualTo(differentCardContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartCardContext_withEqualSkillId() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartCardContext(cardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartCardContextThat {
+        hasSkillIdThat().isEqualTo("SkillId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartCardContext_failsWithDifferentSkillId() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartCardContext(cardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasStartCardContextThat {
+          hasSkillIdThat().isEqualTo("differentSkillId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndCardContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndCardContext(CardContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasEndCardContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndCardContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasEndCardContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndCardContext_hasCardContext() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndCardContext(cardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasEndCardContextThat()
+      .isEqualTo(cardContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndCardContext_failsWithDifferentCardContext() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val differentCardContext = CardContext.newBuilder()
+      .setSkillId("differentSkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndCardContext(cardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasEndCardContextThat()
+        .isEqualTo(differentCardContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndCardContext_withEqualSkillId() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndCardContext(cardContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasEndCardContextThat {
+        hasSkillIdThat().isEqualTo("SkillId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndCardContext_failsWithDifferentSkillId() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndCardContext(cardContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasEndCardContextThat {
+          hasSkillIdThat().isEqualTo("differentSkillId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasHintUnlockedContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setHintUnlockedContext(HintContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasHintUnlockedContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasHintUnlockedContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasHintUnlockedContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasHintUnlockedContext_hasHintContext() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setHintUnlockedContext(hintContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasHintUnlockedContextThat()
+      .isEqualTo(hintContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasHintUnlockedContext_failsWithDifferentHintContext() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val differentHintContext = HintContext.newBuilder()
+      .setHintIndex(2)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setHintUnlockedContext(hintContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasHintUnlockedContextThat()
+        .isEqualTo(differentHintContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasHintUnlockedContext_withEqualHintIndex() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setHintUnlockedContext(hintContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasHintUnlockedContextThat {
+        hasHintIndexThat().isEqualTo(1)
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasHintUnlockedContext_failsWithDifferentHintIndex() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setHintUnlockedContext(hintContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasHintUnlockedContextThat {
+          hasHintIndexThat().isEqualTo(2)
+        }
+    }
   }
 }
