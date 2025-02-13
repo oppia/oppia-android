@@ -20,9 +20,9 @@ class NetworkModule {
   @Provides
   @Singleton
   fun provideRetrofitInstance(
-    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     networkLoggingInterceptor: NetworkLoggingInterceptor,
+    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     @BaseUrl baseUrl: String
   ): Retrofit {
     return Retrofit.Builder().apply {
@@ -30,9 +30,13 @@ class NetworkModule {
       addConverterFactory(MoshiConverterFactory.create())
       client(
         OkHttpClient.Builder().apply {
-          addInterceptor(jsonPrefixNetworkInterceptor)
+          // This is in a specific order. The auth modifies a request, so it happens first. The
+          // prefix remover executes other interceptors before changing the response, so it's
+          // registered last so that the network logging interceptor receives a response with the
+          // XSSI prefix correctly removed.
           addInterceptor(remoteAuthNetworkInterceptor)
           addInterceptor(networkLoggingInterceptor)
+          addInterceptor(jsonPrefixNetworkInterceptor)
         }.build()
       )
     }.build()
