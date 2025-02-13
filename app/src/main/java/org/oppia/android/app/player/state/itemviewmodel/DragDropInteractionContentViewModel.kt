@@ -1,7 +1,7 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.translation.AppLanguageResourceHandler

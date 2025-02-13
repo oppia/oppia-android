@@ -3,7 +3,7 @@ package org.oppia.android.app.notice
 import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel

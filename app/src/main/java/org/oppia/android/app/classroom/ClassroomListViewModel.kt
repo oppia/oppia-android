@@ -7,7 +7,7 @@ import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.AllClassroomsViewModel

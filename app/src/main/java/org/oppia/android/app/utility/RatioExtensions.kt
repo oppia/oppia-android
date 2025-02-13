@@ -1,6 +1,6 @@
 package org.oppia.android.app.utility
 
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 

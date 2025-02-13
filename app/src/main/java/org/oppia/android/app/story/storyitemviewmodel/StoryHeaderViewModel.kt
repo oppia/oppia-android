@@ -1,6 +1,6 @@
 package org.oppia.android.app.story.storyitemviewmodel
 
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 
 /** Header view model for the recycler view in [StoryFragment]. */

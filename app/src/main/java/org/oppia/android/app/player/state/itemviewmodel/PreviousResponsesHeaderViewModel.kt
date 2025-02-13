@@ -1,7 +1,7 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
 import androidx.databinding.ObservableBoolean
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 

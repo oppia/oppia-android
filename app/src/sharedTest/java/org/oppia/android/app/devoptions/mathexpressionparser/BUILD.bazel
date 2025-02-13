@@ -2,12 +2,17 @@
 Tests for the math expression parser developer options UI flows.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "MathExpressionParserActivityTest",
-    processed_src = test_with_resources("MathExpressionParserActivityTest.kt"),
+    srcs = [
+        "MathExpressionParserActivityTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivityTest",
     deps = [
         "//:dagger",
@@ -36,9 +41,15 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "MathExpressionParserFragmentTest",
-    processed_src = test_with_resources("MathExpressionParserFragmentTest.kt"),
+    srcs = [
+        "MathExpressionParserFragmentTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragmentTest",
     deps = [
         "//:dagger",

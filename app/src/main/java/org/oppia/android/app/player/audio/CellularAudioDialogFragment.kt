@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 

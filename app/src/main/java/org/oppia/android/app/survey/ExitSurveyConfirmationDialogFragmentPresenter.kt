@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.databinding.SurveyExitConfirmationDialogBinding
+import org.oppia.android.app.databinding.databinding.SurveyExitConfirmationDialogBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.survey.SurveyController
 import org.oppia.android.util.data.AsyncResult

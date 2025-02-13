@@ -13,7 +13,7 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.topic.revisioncard.RevisionCardFragment.Companion.REVISION_CARD_FRAGMENT_ARGUMENTS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.databinding.RevisionCardFragmentBinding
+import org.oppia.android.app.databinding.databinding.RevisionCardFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController

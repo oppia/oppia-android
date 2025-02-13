@@ -4,7 +4,7 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.SurveySelectedAnswer

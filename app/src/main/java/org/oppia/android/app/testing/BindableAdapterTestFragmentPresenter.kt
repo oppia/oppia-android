@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.TestFragmentBinding
+import org.oppia.android.app.databinding.databinding.TestFragmentBinding
 import javax.inject.Inject
 
 /** The test-only fragment presenter corresponding to [BindableAdapterTestFragment]. */

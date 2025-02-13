@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.LicenseTextViewerFragmentBinding
+import org.oppia.android.app.databinding.databinding.LicenseTextViewerFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [LicenseListFragment]. */

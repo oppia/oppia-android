@@ -1,7 +1,7 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 
 // TODO(#59): Make this activity only included in relevant tests instead of all prod builds.

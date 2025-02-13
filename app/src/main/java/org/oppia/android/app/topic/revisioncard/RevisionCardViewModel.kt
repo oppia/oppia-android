@@ -3,7 +3,7 @@ package org.oppia.android.app.topic.revisioncard
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.EphemeralRevisionCard
 import org.oppia.android.app.model.EphemeralSubtopic
 import org.oppia.android.app.model.EphemeralTopic

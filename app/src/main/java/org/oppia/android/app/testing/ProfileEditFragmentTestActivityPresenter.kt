@@ -1,7 +1,7 @@
 package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId

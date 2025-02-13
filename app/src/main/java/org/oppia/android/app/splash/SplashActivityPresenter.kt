@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
@@ -35,7 +35,7 @@ import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
-import org.oppia.android.databinding.SplashActivityBinding
+import org.oppia.android.app.databinding.databinding.SplashActivityBinding
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.DeprecationController

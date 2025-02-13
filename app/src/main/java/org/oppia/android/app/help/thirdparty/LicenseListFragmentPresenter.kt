@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.LicenseItemBinding
-import org.oppia.android.databinding.LicenseListFragmentBinding
+import org.oppia.android.app.databinding.databinding.LicenseItemBinding
+import org.oppia.android.app.databinding.databinding.LicenseListFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [LicenseListFragment]. */

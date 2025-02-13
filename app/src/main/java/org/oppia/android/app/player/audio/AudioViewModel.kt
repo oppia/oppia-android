@@ -4,7 +4,7 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.Voiceover

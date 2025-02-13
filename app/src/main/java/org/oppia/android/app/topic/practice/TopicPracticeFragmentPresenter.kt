@@ -14,10 +14,10 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeF
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.android.databinding.TopicPracticeFooterViewBinding
-import org.oppia.android.databinding.TopicPracticeFragmentBinding
-import org.oppia.android.databinding.TopicPracticeHeaderViewBinding
-import org.oppia.android.databinding.TopicPracticeSubtopicBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeFooterViewBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeFragmentBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeHeaderViewBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeSubtopicBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 

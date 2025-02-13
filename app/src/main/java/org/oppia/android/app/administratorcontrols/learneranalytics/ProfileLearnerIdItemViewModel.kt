@@ -3,7 +3,7 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs

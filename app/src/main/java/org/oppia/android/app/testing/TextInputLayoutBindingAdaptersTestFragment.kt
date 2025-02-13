@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.databinding.TextInputLayoutBindingAdaptersTestFragmentBinding
+import org.oppia.android.app.databinding.databinding.TextInputLayoutBindingAdaptersTestFragmentBinding
 
 /** Test-only fragment for verifying behaviors of [TextInputLayoutBindingAdapters]. */
 class TextInputLayoutBindingAdaptersTestFragment : InjectableFragment() {

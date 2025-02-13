@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.ViewEventLogsEventLogItemViewBinding
-import org.oppia.android.databinding.ViewEventLogsFragmentBinding
+import org.oppia.android.app.databinding.databinding.ViewEventLogsEventLogItemViewBinding
+import org.oppia.android.app.databinding.databinding.ViewEventLogsFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [ViewEventLogsFragment]. */

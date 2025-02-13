@@ -2,7 +2,7 @@ package org.oppia.android.app.devoptions.mathexpressionparser
 
 import android.widget.TextView
 import androidx.databinding.ObservableField
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression

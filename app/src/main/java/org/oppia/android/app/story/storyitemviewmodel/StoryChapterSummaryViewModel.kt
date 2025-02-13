@@ -2,7 +2,7 @@ package org.oppia.android.app.story.storyitemviewmodel
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams

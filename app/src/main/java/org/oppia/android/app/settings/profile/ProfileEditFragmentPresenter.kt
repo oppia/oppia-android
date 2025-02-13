@@ -11,7 +11,7 @@ import org.oppia.android.app.administratorcontrols.ProfileEditDeletionDialogList
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.databinding.ProfileEditFragmentBinding
+import org.oppia.android.app.databinding.databinding.ProfileEditFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult

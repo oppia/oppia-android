@@ -10,7 +10,7 @@ import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
-import org.oppia.android.databinding.OnboardingProfileTypeFragmentBinding
+import org.oppia.android.app.databinding.databinding.OnboardingProfileTypeFragmentBinding
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId

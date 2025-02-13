@@ -1,7 +1,7 @@
 package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableBoolean
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.Solution

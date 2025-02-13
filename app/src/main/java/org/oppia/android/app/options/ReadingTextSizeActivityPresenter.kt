@@ -2,7 +2,7 @@ package org.oppia.android.app.options
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject

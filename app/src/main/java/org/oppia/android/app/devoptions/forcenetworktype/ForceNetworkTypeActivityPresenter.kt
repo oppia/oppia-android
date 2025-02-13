@@ -1,7 +1,7 @@
 package org.oppia.android.app.devoptions.forcenetworktype
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.ActivityScope
 import javax.inject.Inject
 

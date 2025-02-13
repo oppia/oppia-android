@@ -2,7 +2,7 @@ package org.oppia.android.app.ongoingtopiclist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.home.RouteToTopicListener
 import org.oppia.android.app.model.EphemeralTopic
 import org.oppia.android.app.model.ProfileId

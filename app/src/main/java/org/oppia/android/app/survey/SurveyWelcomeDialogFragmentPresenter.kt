@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
-import org.oppia.android.databinding.SurveyWelcomeDialogFragmentBinding
+import org.oppia.android.app.databinding.databinding.SurveyWelcomeDialogFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController

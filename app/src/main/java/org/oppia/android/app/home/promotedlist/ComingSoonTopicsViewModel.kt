@@ -2,7 +2,7 @@ package org.oppia.android.app.home.promotedlist
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.model.ComingSoonTopicList
 import org.oppia.android.app.model.UpcomingTopic

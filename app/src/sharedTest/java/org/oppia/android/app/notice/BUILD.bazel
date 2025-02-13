@@ -2,12 +2,17 @@
 Tests for notices shown in the app.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "BetaNoticeDialogFragmentTest",
-    processed_src = test_with_resources("BetaNoticeDialogFragmentTest.kt"),
+    srcs = [
+        "BetaNoticeDialogFragmentTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.notice.BetaNoticeDialogFragmentTest",
     deps = [
         "//:dagger",
@@ -41,9 +46,15 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "GeneralAvailabilityUpgradeNoticeDialogFragmentTest",
-    processed_src = test_with_resources("GeneralAvailabilityUpgradeNoticeDialogFragmentTest.kt"),
+    srcs = [
+        "GeneralAvailabilityUpgradeNoticeDialogFragmentTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragmentTest",
     deps = [
         "//:dagger",
@@ -77,9 +88,15 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "ForcedAppDeprecationNoticeDialogFragmentTest",
-    processed_src = test_with_resources("ForcedAppDeprecationNoticeDialogFragmentTest.kt"),
+    srcs = [
+        "ForcedAppDeprecationNoticeDialogFragmentTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragmentTest",
     deps = [
         "//:dagger",
@@ -105,9 +122,15 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "OptionalAppDeprecationNoticeDialogFragmentTest",
-    processed_src = test_with_resources("OptionalAppDeprecationNoticeDialogFragmentTest.kt"),
+    srcs = [
+        "OptionalAppDeprecationNoticeDialogFragmentTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragmentTest",
     deps = [
         "//:dagger",
@@ -133,9 +156,15 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "OsDeprecationNoticeDialogFragmentTest",
-    processed_src = test_with_resources("OsDeprecationNoticeDialogFragmentTest.kt"),
+    srcs = [
+        "OsDeprecationNoticeDialogFragmentTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.notice.OsDeprecationNoticeDialogFragmentTest",
     deps = [
         "//:dagger",

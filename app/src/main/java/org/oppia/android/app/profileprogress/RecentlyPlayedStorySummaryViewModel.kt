@@ -1,7 +1,7 @@
 package org.oppia.android.app.profileprogress
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory

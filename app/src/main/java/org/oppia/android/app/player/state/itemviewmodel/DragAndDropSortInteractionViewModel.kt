@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.Interaction

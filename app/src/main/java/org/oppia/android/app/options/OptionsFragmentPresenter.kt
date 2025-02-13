@@ -13,10 +13,10 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.OptionAppLanguageBinding
-import org.oppia.android.databinding.OptionAudioLanguageBinding
-import org.oppia.android.databinding.OptionStoryTextSizeBinding
-import org.oppia.android.databinding.OptionsFragmentBinding
+import org.oppia.android.app.databinding.databinding.OptionAppLanguageBinding
+import org.oppia.android.app.databinding.databinding.OptionAudioLanguageBinding
+import org.oppia.android.app.databinding.databinding.OptionStoryTextSizeBinding
+import org.oppia.android.app.databinding.databinding.OptionsFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController

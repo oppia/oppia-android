@@ -3,7 +3,7 @@ package org.oppia.android.app.topic.questionplayer
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.databinding.ObservableList
-import org.oppia.android.R
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState

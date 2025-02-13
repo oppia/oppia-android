@@ -3,7 +3,7 @@ package org.oppia.android.app.testing.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
+import org.oppia.android.app.databinding.R
 import org.oppia.android.app.activity.ActivityIntentFactories
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter

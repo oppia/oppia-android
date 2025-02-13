@@ -3,7 +3,7 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.help.faq.FAQListActivity

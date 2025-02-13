@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
 

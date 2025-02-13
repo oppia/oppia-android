@@ -3,7 +3,7 @@ package org.oppia.android.app.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 
 /** Test activity for ColorBindingAdapters. */

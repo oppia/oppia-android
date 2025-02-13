@@ -14,7 +14,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.google.android.material.navigation.NavigationView
 import com.google.common.base.Optional
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsStarter
@@ -31,8 +31,8 @@ import org.oppia.android.app.mydownloads.MyDownloadsActivity
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.profileprogress.ProfileProgressActivity
 import org.oppia.android.app.topic.TopicActivity
-import org.oppia.android.databinding.DrawerFragmentBinding
-import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
+import org.oppia.android.app.databinding.databinding.DrawerFragmentBinding
+import org.oppia.android.app.databinding.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
