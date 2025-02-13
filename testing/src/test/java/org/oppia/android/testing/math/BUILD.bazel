@@ -82,3 +82,17 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
     ],
 )
+
+oppia_android_test(
+    name = "TokenSubjectTest",
+    srcs = ["TokenSubjectTest.kt"],
+    custom_package = "org.oppia.android.testing.math",
+    test_class = "org.oppia.android.testing.math.TokenSubjectTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/math:token_subject",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+    ],
+)
