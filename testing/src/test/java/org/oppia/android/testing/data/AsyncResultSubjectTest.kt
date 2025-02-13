@@ -1,5 +1,6 @@
 package org.oppia.android.testing.data
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -8,8 +9,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowSystemClock
 
-@RunWith(RobolectricTestRunner::class)
-@Config(shadows = [ShadowSystemClock::class])
+/** Tests for [AsyncResultSubject]. */
+@RunWith(AndroidJUnit4::class)
 class AsyncResultSubjectTest {
   private val pendingResult: AsyncResult<String> = AsyncResult.Pending()
   private val successResult: AsyncResult<String> = AsyncResult.Success("Some string")
