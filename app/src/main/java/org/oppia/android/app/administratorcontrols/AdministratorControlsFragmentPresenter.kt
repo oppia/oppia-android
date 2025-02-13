@@ -13,9 +13,6 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
-import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.databinding.databinding.AdministratorControlsAccountActionsViewBinding
 import org.oppia.android.app.databinding.databinding.AdministratorControlsAppInformationViewBinding
 import org.oppia.android.app.databinding.databinding.AdministratorControlsDownloadPermissionsViewBinding
@@ -23,6 +20,9 @@ import org.oppia.android.app.databinding.databinding.AdministratorControlsFragme
 import org.oppia.android.app.databinding.databinding.AdministratorControlsGeneralViewBinding
 import org.oppia.android.app.databinding.databinding.AdministratorControlsLearnerAnalyticsViewBinding
 import org.oppia.android.app.databinding.databinding.AdministratorControlsProfileViewBinding
+import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject

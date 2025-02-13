@@ -9,13 +9,6 @@ import android.widget.LinearLayout
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.databinding.R
-import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
-import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
-import org.oppia.android.app.model.WrittenTranslationContext
-import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
-import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
-import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
-import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.databinding.databinding.ComingSoonTopicViewBinding
 import org.oppia.android.app.databinding.databinding.DragDropInteractionItemsBinding
 import org.oppia.android.app.databinding.databinding.DragDropSingleItemBinding
@@ -24,6 +17,13 @@ import org.oppia.android.app.databinding.databinding.MultipleChoiceInteractionIt
 import org.oppia.android.app.databinding.databinding.PromotedStoryCardBinding
 import org.oppia.android.app.databinding.databinding.SurveyMultipleChoiceItemBinding
 import org.oppia.android.app.databinding.databinding.SurveyNpsItemBinding
+import org.oppia.android.app.home.promotedlist.ComingSoonTopicsViewModel
+import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.model.WrittenTranslationContext
+import org.oppia.android.app.player.state.itemviewmodel.DragDropInteractionContentViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionContentViewModel
+import org.oppia.android.app.survey.surveyitemviewmodel.MultipleChoiceOptionContentViewModel
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject

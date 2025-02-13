@@ -8,12 +8,12 @@ oppia_android_test(
     name = "AppCompatCheckBoxBindingAdaptersTest",
     srcs = [
         "AppCompatCheckBoxBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -49,12 +49,12 @@ oppia_android_test(
     name = "CircularProgressIndicatorAdaptersTest",
     srcs = [
         "CircularProgressIndicatorAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.CircularProgressIndicatorAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -90,12 +90,12 @@ oppia_android_test(
     name = "DrawableBindingAdaptersTest",
     srcs = [
         "DrawableBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.DrawableBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -131,12 +131,12 @@ oppia_android_test(
     name = "ImageViewBindingAdaptersTest",
     srcs = [
         "ImageViewBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.ImageViewBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -172,12 +172,12 @@ oppia_android_test(
     name = "MarginBindingAdaptersTest",
     srcs = [
         "MarginBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.MarginBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -213,12 +213,12 @@ oppia_android_test(
     name = "StateAssemblerMarginBindingAdaptersTest",
     srcs = [
         "StateAssemblerMarginBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.StateAssemblerMarginBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -254,12 +254,12 @@ oppia_android_test(
     name = "StateAssemblerPaddingBindingAdaptersTest",
     srcs = [
         "StateAssemblerPaddingBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.StateAssemblerPaddingBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -295,12 +295,12 @@ oppia_android_test(
     name = "TextViewBindingAdaptersTest",
     srcs = [
         "TextViewBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.TextViewBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -336,12 +336,12 @@ oppia_android_test(
     name = "ViewBindingAdaptersTest",
     srcs = [
         "ViewBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.ViewBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -377,12 +377,12 @@ oppia_android_test(
     name = "ColorBindingAdaptersTest",
     srcs = [
         "ColorBindingAdaptersTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.databinding.ColorBindingAdaptersTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",

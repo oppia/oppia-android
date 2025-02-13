@@ -8,12 +8,12 @@ oppia_android_test(
     name = "MathExpressionParserActivityTest",
     srcs = [
         "MathExpressionParserActivityTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivityTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -45,12 +45,12 @@ oppia_android_test(
     name = "MathExpressionParserFragmentTest",
     srcs = [
         "MathExpressionParserFragmentTest.kt",
-        "//app:data_binder_mapper_impl"
+        "//app:data_binder_mapper_impl",
     ],
     custom_package = "org.oppia.android.app.test",
-    test_manifest = "//app:test_manifest",
     enable_data_binding = True,
     test_class = "org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragmentTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
