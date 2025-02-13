@@ -80,15 +80,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
+  private val resourceHandler: AppLanguageResourceHandler,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
   private lateinit var binding: ProfileSelectionFragmentBinding
-
-  /**
-   * Used to retrieve the layout direction that should be used to mirror the direction of the
-   * list based on locale.
-   */
-  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
   private val isRtl by lazy {
     resourceHandler.getLayoutDirection() == ViewCompat.LAYOUT_DIRECTION_RTL
@@ -134,8 +129,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private fun ProfileSelectionFragmentBinding.setUpLandscapeMode() {
     val snapHelper = StartSnapHelper()
     val layoutManager = profilesListLandscape?.layoutManager as LinearLayoutManager?
-
-    if (isRtl) { layoutManager?.reverseLayout = true }
 
     profilesListLandscape?.onFlingListener = null
 
