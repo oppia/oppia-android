@@ -496,7 +496,14 @@
                   "denominator": 2
                 }
               }
-            }],
+            },
+              {
+                "rule_type": "HasIntegerPartEqualTo",
+                "inputs": {
+                  "x": 1
+                }
+              }
+            ],
             "outcome": {
               "dest": "MultipleChoice",
               "feedback": {

@@ -341,7 +341,7 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "scripts/static_checks.sh"
-  line_number: 114
+  line_number: 121
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Coding-style-guide.md"

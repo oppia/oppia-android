@@ -79,6 +79,7 @@
             </FrameLayout>
 
             <TextView
+              android:id="@+id/story_progress_percentage_text_view"
               style="@style/TextViewCenterHorizontal"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
