@@ -619,10 +619,12 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
+  /** Save the state of the header */
   fun saveExpandedState(outState: Bundle) {
     recyclerViewAssembler.saveExpandedState(outState)
   }
 
+  /** Restore the state of the header */
   fun restoreExpandedState(savedInstanceState: Bundle?) {
     recyclerViewAssembler.restoreExpandedState(savedInstanceState)
   }
