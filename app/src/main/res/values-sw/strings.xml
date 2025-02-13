@@ -31,7 +31,7 @@
   <string name="cellular_data_alert_dialog_description">Kutiririsha sauti kunaweza kutumia data nyingi ya mtandao wa simu.</string>
   <string name="cellular_data_alert_dialog_checkbox">Usionyeshe ujumbe huu tena</string>
   <string name="concept_card_toolbar_title">Kadi ya Dhana</string>
-  <string name="revision_card_toolbar_title">Kadi ya Marudio</string>
+  <string name="revision_card_toolbar_title" fuzzy="true">Kadi ya Marudio</string>
   <string name="unsaved_exploration_dialog_title">Je, ungependa kwenda kwenye Ukurasa wa Mada?</string>
   <string name="unsaved_exploration_dialog_description">Maendeleo yako hayatahifadhiwa.</string>
   <string name="unsaved_exploration_dialog_leave_button">Toka</string>
@@ -69,9 +69,7 @@
   <string name="onboarding_activity_title">Utangulizi</string>
   <string name="frequently_asked_questions_FAQ">maswali yanayoulizwa mara kwa mara</string>
   <string name="info">habari</string>
-  <string name="lessons">Masomo</string>
   <string name="practice">Mazoezi</string>
-  <string name="revision">Mazoezi</string>
   <string name="administrator_controls_title">Vidhibiti vya Msimamizi</string>
   <string name="topic_page">Ukurasa wa mada</string>
   <string name="topic_name">mada: %s</string>
