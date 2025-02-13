@@ -100,6 +100,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
+private const val HAS_PREVIOUS_RESPONSES_EXPANDED_KEY = "hasPreviousResponsesExpanded"
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
@@ -1510,12 +1511,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   /** Saves the expanded state to a Bundle. */
   fun saveExpandedState(outState: Bundle) {
-    outState.putBoolean("hasPreviousResponsesExpanded", hasPreviousResponsesExpanded)
+    outState.putBoolean(HAS_PREVIOUS_RESPONSES_EXPANDED_KEY, hasPreviousResponsesExpanded)
   }
 
   /** Restores the expanded state from a Bundle. */
   fun restoreExpandedState(savedInstanceState: Bundle?) {
     hasPreviousResponsesExpanded =
-      savedInstanceState?.getBoolean("hasPreviousResponsesExpanded", false) ?: false
+      savedInstanceState?.getBoolean(HAS_PREVIOUS_RESPONSES_EXPANDED_KEY, false) ?: false
   }
 }
