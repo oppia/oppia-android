@@ -36,7 +36,7 @@
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_one_button_text">Concept Card 1</string>
   <string name="concept_card_two_button_text">Concept Card 2</string>
-  <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="revision_card_toolbar_title" fuzzy="true">Revision Card</string>
   <string name="unsaved_exploration_dialog_title">Comot go the topic page?</string>
   <string name="unsaved_exploration_dialog_description">Wetin you don do before no go save</string>
   <string name="unsaved_exploration_dialog_leave_button">Comot</string>
@@ -86,9 +86,7 @@
   <string name="onboarding_activity_title">Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
-  <string name="lessons">Lessons</string>
   <string name="practice">Practice</string>
-  <string name="revision">Revision</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>

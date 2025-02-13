@@ -45,7 +45,7 @@
   <string name="concept_card_toolbar_title">Cartão de Conceito</string>
   <string name="concept_card_one_button_text">Cartão Conceitual 1</string>
   <string name="concept_card_two_button_text">Cartão Conceitual 2</string>
-  <string name="revision_card_toolbar_title">Cartão de Revisão</string>
+  <string name="revision_card_toolbar_title" fuzzy="true">Cartão de Revisão</string>
   <string name="unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
   <string name="unsaved_exploration_dialog_leave_button">Sair</string>
@@ -96,9 +96,7 @@
   <string name="onboarding_activity_title">Introdução</string>
   <string name="frequently_asked_questions_FAQ">Perguntas Frequentes (FAQs)</string>
   <string name="info">Info</string>
-  <string name="lessons">Lições</string>
   <string name="practice">Prática</string>
-  <string name="revision">Revisão</string>
   <string name="administrator_controls_title">Controles do administrador</string>
   <string name="topic_page">Página do tópico</string>
   <string name="topic_name">Tópico: %s</string>
