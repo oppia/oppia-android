@@ -39,7 +39,7 @@
   <string name="concept_card_toolbar_title">بطاقة المفهوم</string>
   <string name="concept_card_one_button_text">بطاقة المفاهيم 1</string>
   <string name="concept_card_two_button_text">بطاقة المفاهيم 2</string>
-  <string name="revision_card_toolbar_title">بطاقة المراجعة</string>
+  <string name="revision_card_toolbar_title">دليل الدراسة</string>
   <string name="unsaved_exploration_dialog_title">هل تريد المغادرة إلى صفحة الموضوع؟</string>
   <string name="unsaved_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="unsaved_exploration_dialog_leave_button">مغادرة</string>
@@ -90,9 +90,9 @@
   <string name="onboarding_activity_title">مقدمة</string>
   <string name="frequently_asked_questions_FAQ">الأسئلة الأكثر تكرارا</string>
   <string name="info">معلومات</string>
-  <string name="lessons">الدروس</string>
+  <string name="learn">تعلم</string>
   <string name="practice">ممارسة</string>
-  <string name="revision">مراجعة</string>
+  <string name="study">يذاكر</string>
   <string name="administrator_controls_title">أدوات تحكم المشرف</string>
   <string name="topic_page">صفحة الموضوع</string>
   <string name="topic_name">الموضوع: %s</string>
