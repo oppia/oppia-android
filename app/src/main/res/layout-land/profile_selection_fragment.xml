@@ -19,14 +19,11 @@
 
     <TextView
       android:id="@+id/profile_selection_header"
+      style="@style/ProfileSelectionHeaderStyle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_margin="@dimen/profile_selection_fragment_header_margin"
-      android:fontFamily="sans-serif-medium"
-      android:gravity="center"
       android:text="@string/profile_selection_header"
-      android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="@dimen/profile_selection_fragment_header_text_size"
       app:layout_constraintBottom_toTopOf="@id/profiles_list_landscape"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
@@ -91,18 +88,15 @@
       app:tint="@color/component_color_profile_selection_settings_icon_background_color" />
 
     <TextView
+      android:id="@+id/profile_selection_admin_controls_text"
+      style="@style/AdministratorControlsLabelStyle"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/profile_selection_fragment_settings_icon_margin_bottom"
-      android:fontFamily="sans-serif"
-      android:gravity="center"
-      android:minHeight="@dimen/profile_selection_fragment_view_min_size"
       android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
       android:paddingStart="@dimen/profile_selection_fragment_icon_padding"
       android:paddingEnd="@dimen/profile_selection_fragment_icon_padding"
       android:text="@string/profile_chooser_administrator_controls"
-      android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="@dimen/profile_selection_fragment_profile_settings_size"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toEndOf="@id/profile_selection_setting_icon" />
 
@@ -124,17 +118,11 @@
 
     <TextView
       android:id="@+id/add_profile_prompt"
+      style="@style/AddProfilePromptStyle"
       android:layout_width="@dimen/profile_selection_fragment_prompt_width"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
       android:layout_marginEnd="@dimen/profile_selection_fragment_add_profile_button_margin_end"
       android:layout_marginBottom="@dimen/profile_selection_fragment_prompt_margin_bottom"
-      android:fontFamily="sans-serif-medium"
-      android:gravity="center"
-      android:minHeight="@dimen/profile_selection_fragment_view_min_size"
       android:text="@string/profile_selection_add_profile_text"
-      android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="@dimen/profile_selection_fragment_profile_prompt_size"
       android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
