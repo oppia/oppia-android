@@ -1,8 +1,5 @@
 name: Deploy to Wiki
 
-permissions:
-  contents: write
-
 on:
   pull_request:
     paths:
@@ -39,6 +36,8 @@ jobs:
           bazel run //scripts:wiki_table_of_contents_check -- ${GITHUB_WORKSPACE}
 
   wiki-deploy:
+    permissions:
+      contents: write
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
