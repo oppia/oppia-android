@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -54,6 +53,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
@@ -63,6 +63,7 @@ import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVI
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -99,6 +100,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -123,6 +125,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -155,6 +158,9 @@ class ProfileChooserFragmentTest {
 
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -708,18 +714,14 @@ class ProfileChooserFragmentTest {
         matches(withEffectiveVisibility(Visibility.GONE))
       )
       onView(withId(R.id.profile_list_scroll_right)).check(
-        matches(
-          withEffectiveVisibility(
-            Visibility.GONE
-          )
-        )
+        matches(withEffectiveVisibility(Visibility.GONE))
       )
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testFragment_enableOnboardingV2_ltr_checkListIsAlphabetical() {
+  fun testFragment_enableOnboardingV2_ltr_checkListIsSortedAlphabetically() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(9)
@@ -727,23 +729,83 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       it.onActivity {
-        onView(
-          withViewAtPosition(
-            recyclerViewId = R.id.profiles_list_landscape,
-            position = 0,
-            targetViewId = R.id.profile_name_text,
-            itemMatcher = allOf(withText("Admin"), isDisplayed())
-          )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 0)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 0,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "Admin",
+          recyclerViewId = R.id.profiles_list_landscape
         )
-
-        testCoroutineDispatchers.runCurrent()
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 1)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 1,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "A",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 2)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 2,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "B",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 3)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 3,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "C",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 4)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 4,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "D",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 5)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 5,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "E",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 6)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 6,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "F",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 7)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 7,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "G",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 8)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 8,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "H",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 9)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 9,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "I",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
       }
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testFragment_enableOnboardingV2_ltr_checkRightArrowScrollBehaviourIscorrect() {
+  fun testFragment_enableOnboardingV2_ltr_checkRightArrowScrollsListToTheRight() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(9)
@@ -758,6 +820,15 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       it.onActivity {
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 8,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("H"), isDisplayed())
+          )
+        )
+
         onView(
           withViewAtPosition(
             recyclerViewId = R.id.profiles_list_landscape,
@@ -766,15 +837,13 @@ class ProfileChooserFragmentTest {
             itemMatcher = allOf(withText("I"), isDisplayed())
           )
         )
-
-        testCoroutineDispatchers.runCurrent()
       }
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testFragment_enableOnboardingV2_ltr_checkLeftArrowScrollBehaviourIscorrect() {
+  fun testFragment_enableOnboardingV2_ltr_checkLeftArrowScrollsListToTheLeft() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(9)
@@ -804,44 +873,145 @@ class ProfileChooserFragmentTest {
             itemMatcher = allOf(withText("Admin"), isDisplayed())
           )
         )
-        testCoroutineDispatchers.runCurrent()
-      }
-    }
-  }
-
-  @Test
-  @Config(qualifiers = "land")
-  fun testFragment_enableOnboardingV2_rtl_checkListIsAlphabetical() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    profileTestHelper.addOnlyAdminProfile()
-    profileTestHelper.addMoreProfiles(9)
-
-    launch(ProfileChooserActivity::class.java).use {
-      it.onActivity { activity ->
-        activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-        testCoroutineDispatchers.runCurrent()
 
         onView(
           withViewAtPosition(
             recyclerViewId = R.id.profiles_list_landscape,
-            position = 0,
+            position = 1,
             targetViewId = R.id.profile_name_text,
-            itemMatcher = allOf(withText("Admin"), isDisplayed())
+            itemMatcher = allOf(withText("A"), isDisplayed())
           )
         )
-        testCoroutineDispatchers.runCurrent()
+
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 2,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("B"), isDisplayed())
+          )
+        )
       }
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testFragment_enableOnboardingV2_rtl_checkLeftArrowScrollBehaviourIscorrect() {
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testFragment_enableOnboardingV2_rtl_checkListIsSortedAlphabetically() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(9)
+
+    launch(ProfileChooserActivity::class.java).use {
+      it.onActivity {
+        testCoroutineDispatchers.runCurrent()
+
+        // Verify that the display locale is set up correctly (for string formatting).
+        val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        val localeContext = displayLocale.localeContext
+        assertThat(localeContext.languageDefinition.language)
+          .isEqualTo(OppiaLanguage.ARABIC)
+
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 0)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 0,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "Admin",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 1)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 1,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "A",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 2)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 2,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "B",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 3)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 3,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "C",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 4)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 4,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "D",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 5)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 5,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "E",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 6)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 6,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "F",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 7)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 7,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "G",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 8)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 8,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "H",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 9)
+        verifyTextOnProfileListItemAtPosition(
+          itemPosition = 9,
+          targetView = R.id.profile_name_text,
+          stringToMatch = "I",
+          recyclerViewId = R.id.profiles_list_landscape
+        )
+      }
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "land")
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testFragment_enableOnboardingV2_rtl_checkLeftArrowScrollsListToTheRight() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(9)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language)
+        .isEqualTo(OppiaLanguage.ARABIC)
 
       // Click twice to scroll to the end of the list.
       onView(withId(R.id.profile_list_scroll_left)).perform(click())
@@ -851,28 +1021,57 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       it.onActivity {
+        // Verify that the list has scrolled away from the beginning.
         onView(
           withViewAtPosition(
             recyclerViewId = R.id.profiles_list_landscape,
             position = 0,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("Admin"), not(isDisplayed()))
+          )
+        )
+
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 8,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("H"), isDisplayed())
+          )
+        )
+
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 9,
             targetViewId = R.id.profile_name_text,
             itemMatcher = allOf(withText("I"), isDisplayed())
           )
         )
-
-        testCoroutineDispatchers.runCurrent()
       }
     }
   }
 
   @Test
   @Config(qualifiers = "land")
-  fun testFragment_enableOnboardingV2_rtl_checkRightArrowScrollBehaviourIscorrect() {
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
+    appStringIetfTag = "ar",
+    appStringAndroidLanguageId = "ar"
+  )
+  fun testFragment_enableOnboardingV2_rtl_checkRightArrowScrollsListToTheLeft() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    forceDefaultLocale(EGYPT_ARABIC_LOCALE)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(9)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+
+      // Verify that the display locale is set up correctly (for string formatting).
+      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+      val localeContext = displayLocale.localeContext
+      assertThat(localeContext.languageDefinition.language)
+        .isEqualTo(OppiaLanguage.ARABIC)
 
       // Click twice to scroll to the end of the list.
       onView(withId(R.id.profile_list_scroll_left)).perform(click())
@@ -897,7 +1096,24 @@ class ProfileChooserFragmentTest {
             itemMatcher = allOf(withText("Admin"), isDisplayed())
           )
         )
-        testCoroutineDispatchers.runCurrent()
+
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 1,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("A"), isDisplayed())
+          )
+        )
+
+        onView(
+          withViewAtPosition(
+            recyclerViewId = R.id.profiles_list_landscape,
+            position = 2,
+            targetViewId = R.id.profile_name_text,
+            itemMatcher = allOf(withText("B"), isDisplayed())
+          )
+        )
       }
     }
   }
@@ -1072,7 +1288,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_addManyProfiles_checkProfilesSorted() {
+  fun testFragment_enableOnboardingV2_addManyProfiles_checkProfilesSortedAlphabetically() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.initializeProfiles(autoLogIn = false)
     profileTestHelper.addMoreProfiles(8)
@@ -1156,6 +1372,11 @@ class ProfileChooserFragmentTest {
       ).perform(click())
       intended(hasComponent(PinPasswordActivity::class.java.name))
     }
+  }
+
+  private fun forceDefaultLocale(locale: Locale) {
+    context.applicationContext.resources.configuration.setLocale(locale)
+    Locale.setDefault(locale)
   }
 
   private fun withViewAtPosition(
@@ -1265,5 +1486,12 @@ class ProfileChooserFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+  }
+
+  private companion object {
+    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
+    private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
+    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
+    private val CANADA_FRENCH_LOCALE = Locale("fr", "CA")
   }
 }
