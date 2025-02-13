@@ -177,7 +177,7 @@ def _generate_universal_apk_impl(ctx):
         "--mode=universal",
     ]
 
-    # bundletool only generats an APKs file, so the universal APK still needs to be extracted.
+    # bundletool only generates an APKs file, so the universal APK still needs to be extracted.
 
     # Reference: https://docs.bazel.build/versions/master/skylark/lib/actions.html#run.
     ctx.actions.run(
@@ -186,7 +186,7 @@ def _generate_universal_apk_impl(ctx):
         tools = [ctx.executable._bundletool_tool],
         executable = ctx.executable._bundletool_tool.path,
         arguments = generate_universal_apk_arguments,
-        mnemonic = "GenerateUniversalAPk",
+        mnemonic = "GenerateUniversalAPK",
         progress_message = "Generating universal APK from AAB",
     )
 
@@ -202,7 +202,7 @@ def _generate_universal_apk_impl(ctx):
         inputs = [apks_file],
         tools = [],
         command = command,
-        mnemonic = "ExtractUniversalAPk",
+        mnemonic = "ExtractUniversalAPK",
         progress_message = "Extracting universal APK from .apks file",
     )
 
@@ -396,18 +396,22 @@ def oppia_android_application(name, config_file, proguard_generate_mapping, **kw
 
 def generate_universal_apk(name, aab_target):
     """
-    Creates a new installable universal APK target for the provided AAB target.
+    Creates a new 'bazel mobile-install'-able universal APK target for the provided AAB target.
 
-    This new target is installable via 'adb install'. This should generally never be used for direct
-    development installs as it will be far less performant than 'bazel mobile-install'.
-
-    Example:
+    Example usage in a top-level BUILD.bazel file and CLI:
         generate_universal_apk(
             name = "oppia_prod_universal_apk",
             aab_target = "//:oppia_prod",
         )
 
         $ bazel mobile-install //:oppia_prod_universal_apk
+
+    Note that, sometimes, you may not want to use mobile-install such as for production builds that
+    may have functional disparity from incremental installations of the app. In those cases, it's
+    best to uninstall the app from the target device and install the APK directly using
+    'adb install' as so (per the above example):
+
+        $ adb install bazel-bin/oppia_prod_universal_apk.apk
 
     Args:
         name: str. The name of the runnable target to install an AAB file on a local device.
