@@ -28,8 +28,9 @@ class CustomHtmlContentHandler private constructor(
   private val contentDescriptionBuilder = StringBuilder()
   private val tagContentDescriptions = mutableMapOf<Int, String>()
   private var isInListItem = false
-  private var pendingNewline = false
   private val blockTags = setOf("p", "ol", "ul", "li", "oppia-ul", "oppia-ol", "oppia-li", "div")
+  // Indicates if a newline should be added before the next text content for block elements.
+  private var pendingNewline = false
 
   override fun endElement(uri: String?, localName: String?, qName: String?) {
     originalContentHandler?.endElement(uri, localName, qName)
@@ -263,6 +264,9 @@ class CustomHtmlContentHandler private constructor(
       customTagHandlers: Map<String, CustomTagHandler>
     ): String where T : Html.ImageGetter, T : ImageRetriever {
       val handler = CustomHtmlContentHandler(customTagHandlers, imageRetriever)
+
+      // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
+      // intercept and populate the contentDescriptionBuilder.
       HtmlCompat.fromHtml(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
@@ -271,6 +275,7 @@ class CustomHtmlContentHandler private constructor(
       )
       return handler.getContentDescription()
     }
+
     /**
      * Returns a new [Spannable] with HTML parsed from [html] using the specified [imageRetriever]
      * for handling image retrieval, and map of tags to [CustomTagHandler]s for handling custom
