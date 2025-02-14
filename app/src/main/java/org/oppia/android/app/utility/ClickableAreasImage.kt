@@ -13,6 +13,7 @@ import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import kotlin.math.roundToInt
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */
@@ -23,7 +24,8 @@ class ClickableAreasImage(
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
   private val clickableAreas: List<LabeledRegion>,
-  userAnswerState: UserAnswerState
+  userAnswerState: UserAnswerState,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var imageLabel: String? = null
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
@@ -195,10 +197,17 @@ class ClickableAreasImage(
   private fun generateContentDescription(
     clickableArea: LabeledRegion,
     isSelected: Boolean
-  ): String = if (isSelected)
-    "This is a ${clickableArea.label} image."
-  else
-    "Select ${clickableArea.label} image."
+  ): String = if (isSelected) {
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.selected_image_region_selection_content_description,
+      clickableArea.label
+    )
+  } else {
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.unselected_image_region_selection_content_description,
+      clickableArea.label
+    )
+  }
 
   private fun updateRegionContentDescription(
     view: View,
