@@ -1,16 +1,12 @@
 package org.oppia.android.testing.data
 
-import android.os.Looper
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.annotation.Config
-import org.robolectric.util.ReflectionHelpers
-import java.io.FileNotFoundException
-import java.util.concurrent.TimeUnit
 import org.oppia.android.util.data.AsyncResult
+import org.robolectric.annotation.Config
+import java.io.FileNotFoundException
 
 /** Tests for [AsyncResultSubject]. */
 @RunWith(AndroidJUnit4::class)
@@ -98,7 +94,8 @@ class AsyncResultSubjectTest {
 
   @Test
   fun testAsyncResultSubject_throwableSuccess_checkIsThrowableSuccessThat() {
-    val throwableResult: AsyncResult<Throwable> = AsyncResult.Success(RuntimeException("Error"))
+    val throwableResult: AsyncResult<Throwable> =
+      AsyncResult.Success(RuntimeException("Error"))
     AsyncResultSubject.assertThat(throwableResult)
       .asThrowableSuccessThat()
       .hasMessageThat()
@@ -107,7 +104,8 @@ class AsyncResultSubjectTest {
 
   @Test
   fun testAsyncResultSubject_failureResult_checkCause() {
-    val failureResult: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Root error", FileNotFoundException("Cause")))
+    val failureResult: AsyncResult<String> =
+      AsyncResult.Failure(RuntimeException("Root error", FileNotFoundException("Cause")))
     AsyncResultSubject.assertThat(failureResult)
       .isFailureThat()
       .hasCauseThat()
