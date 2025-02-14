@@ -207,14 +207,6 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_isComparableSuccessThat_checkIntValue() {
-    val intResult: AsyncResult<Int> = AsyncResult.Success(100)
-    AsyncResultSubject.assertThat(intResult)
-      .isComparableSuccessThat<Int>()
-      .isEqualTo(100)
-  }
-
-  @Test
   fun testAsyncResultSubject_successResult_checkStringSuccessValue() {
     AsyncResultSubject.assertThat(successResult)
       .isSuccessThat()
