@@ -9,10 +9,13 @@ import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.HintContext
+import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.QuestionContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
+import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.TopicContext
+import org.oppia.android.app.model.EventLog.VoiceoverActionContext
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -1176,6 +1179,1109 @@ class EventLogSubjectTest {
       EventLogSubject.assertThat(eventLog)
         .hasHintUnlockedContextThat {
           hasHintIndexThat().isEqualTo(2)
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealHintContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealHintContext(HintContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasRevealHintContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealHintContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasRevealHintContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealHintContext_hasHintContext() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealHintContext(hintContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasRevealHintContextThat()
+      .isEqualTo(hintContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealHintContext_failsWithDifferentHintContext() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val differentHintContext = HintContext.newBuilder()
+      .setHintIndex(2)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealHintContext(hintContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasRevealHintContextThat()
+        .isEqualTo(differentHintContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealHintContext_withHintIndexEquals() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealHintContext(hintContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasRevealHintContextThat {
+        hasHintIndexThat().isEqualTo(1)
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealHintContext_failsWithDifferentHintIndex() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealHintContext(hintContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasRevealHintContextThat {
+          hasHintIndexThat().isEqualTo(2)
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingHintContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingHintContext(HintContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasViewExistingHintContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingHintContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasViewExistingHintContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingHintContext_hasHintContext() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingHintContext(hintContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasViewExistingHintContextThat()
+      .isEqualTo(hintContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingHintContext_failsWithDifferentHintContext() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val differentHintContext = HintContext.newBuilder()
+      .setHintIndex(2)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingHintContext(hintContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasViewExistingHintContextThat()
+        .isEqualTo(differentHintContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingHintContext_withHintIndexEquals() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingHintContext(hintContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasViewExistingHintContextThat {
+        hasHintIndexThat().isEqualTo(1)
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingHintContext_failsWithDifferentHintIndex() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(1)
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingHintContext(hintContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasViewExistingHintContextThat {
+          hasHintIndexThat().isEqualTo(2)
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasSolutionUnlockedContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSolutionUnlockedContext(ExplorationContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasSolutionUnlockedContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasSolutionUnlockedContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasSolutionUnlockedContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasSolutionUnlockedContext_hasExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSolutionUnlockedContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasSolutionUnlockedContextThat()
+      .isEqualTo(explorationContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasSolutionUnlockedContext_failsWithDifferentExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val differentExplorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("differentExplorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSolutionUnlockedContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasSolutionUnlockedContextThat()
+        .isEqualTo(differentExplorationContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasSolutionUnlockedContext_withExplorationIdEquals() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSolutionUnlockedContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasSolutionUnlockedContextThat {
+        hasExplorationIdThat().isEqualTo("explorationId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasSolutionUnlockedContext_failsWithDifferentExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSolutionUnlockedContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasSolutionUnlockedContextThat {
+          hasExplorationIdThat().isEqualTo("differentExplorationId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealSolutionContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealSolutionContext(ExplorationContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasRevealSolutionContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealSolutionContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasRevealSolutionContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealSolutionContext_hasExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealSolutionContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasRevealSolutionContextThat()
+      .isEqualTo(explorationContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealSolutionContext_failsWithDifferentExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val differentExplorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("differentExplorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealSolutionContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasRevealSolutionContextThat()
+        .isEqualTo(differentExplorationContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealSolutionContext_withExplorationIdEquals() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealSolutionContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasRevealSolutionContextThat {
+        hasExplorationIdThat().isEqualTo("explorationId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasRevealSolutionContext_failsWithDifferentExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setRevealSolutionContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasRevealSolutionContextThat {
+          hasExplorationIdThat().isEqualTo("differentExplorationId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingSolutionContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingSolutionContext(ExplorationContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasViewExistingSolutionContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingSolutionContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasViewExistingSolutionContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingSolutionContext_hasExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingSolutionContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasViewExistingSolutionContextThat()
+      .isEqualTo(explorationContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingSolutionContext_passesWithSameExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingSolutionContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasViewExistingSolutionContextThat {
+        hasExplorationIdThat().isEqualTo("explorationId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasViewExistingSolutionContext_failsWithDifferentExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setViewExistingSolutionContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasViewExistingSolutionContextThat {
+          hasExplorationIdThat().isEqualTo("differentExplorationId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasSubmitAnswerContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSubmitAnswerContext(SubmitAnswerContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasSubmitAnswerContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasSubmitAnswerContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasSubmitAnswerContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasSubmitAnswerContext_hasSubmitAnswerDetails() {
+    val submitAnswerContext = SubmitAnswerContext.newBuilder()
+      .setStringifiedAnswer("sampleAnswer")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSubmitAnswerContext(submitAnswerContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasSubmitAnswerContextThat()
+      .isEqualTo(submitAnswerContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasPlayVoiceOverContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPlayVoiceOverContext(VoiceoverActionContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasPlayVoiceOverContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasPlayVoiceOverContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasPlayVoiceOverContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPlayVoiceOverContext_hasSameVoiceoverContext() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPlayVoiceOverContext(voiceoverContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasPlayVoiceOverContextThat()
+      .isEqualTo(voiceoverContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasPlayVoiceOverContext_failsWithDifferentVoiceoverContext() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+
+    val differentVoiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("differentContentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPlayVoiceOverContext(voiceoverContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasPlayVoiceOverContextThat()
+        .isEqualTo(differentVoiceoverContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPlayVoiceOverContext_passesWithSameContentId() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPlayVoiceOverContext(voiceoverContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasPlayVoiceOverContextThat {
+        hasContentIdThat().isEqualTo("contentId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPlayVoiceOverContext_failsWithDifferentContentId() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPlayVoiceOverContext(voiceoverContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasPlayVoiceOverContextThat {
+          hasContentIdThat().isEqualTo("differentContentId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPauseVoiceOverContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPauseVoiceOverContext(VoiceoverActionContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasPauseVoiceOverContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasPauseVoiceOverContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasPauseVoiceOverContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPauseVoiceOverContext_hasSameVoiceoverContext() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPauseVoiceOverContext(voiceoverContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasPauseVoiceOverContextThat()
+      .isEqualTo(voiceoverContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasPauseVoiceOverContext_failsWithDifferentVoiceoverContext() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+
+    val differentVoiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("differentContentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPauseVoiceOverContext(voiceoverContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasPauseVoiceOverContextThat()
+        .isEqualTo(differentVoiceoverContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPauseVoiceOverContext_passesWithSameContentId() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPauseVoiceOverContext(voiceoverContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasPauseVoiceOverContextThat {
+        hasContentIdThat().isEqualTo("contentId")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasPauseVoiceOverContext_failsWithDifferentContentId() {
+    val voiceoverContext = VoiceoverActionContext.newBuilder()
+      .setContentId("contentId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setPauseVoiceOverContext(voiceoverContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasPauseVoiceOverContextThat {
+          hasContentIdThat().isEqualTo("differentContentId")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInBackgroundContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInBackgroundContext(LearnerDetailsContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasAppInBackgroundContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInBackgroundContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasAppInBackgroundContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInBackgroundContext_hasSameLearnerDetailsContext() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInBackgroundContext(learnerContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasAppInBackgroundContextThat()
+      .isEqualTo(learnerContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInBackgroundContext_failsWithDifferentLearnerDetailsContext() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+
+    val differentLearnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner456")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInBackgroundContext(learnerContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasAppInBackgroundContextThat()
+        .isEqualTo(differentLearnerContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInBackgroundContext_passesWithSameLearnerId() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInBackgroundContext(learnerContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasAppInBackgroundContextThat {
+        hasLearnerIdThat().isEqualTo("learner123")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInBackgroundContext_failsWithDifferentLearnerId() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInBackgroundContext(learnerContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasAppInBackgroundContextThat {
+          hasLearnerIdThat().isEqualTo("learner456")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInForegroundContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInForegroundContext(LearnerDetailsContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasAppInForegroundContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInForegroundContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasAppInForegroundContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInForegroundContext_hasSameLearnerDetailsContext() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInForegroundContext(learnerContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasAppInForegroundContextThat()
+      .isEqualTo(learnerContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInForegroundContext_failsWithDifferentLearnerDetailsContext() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+
+    val differentLearnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner456")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInForegroundContext(learnerContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasAppInForegroundContextThat()
+        .isEqualTo(differentLearnerContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInForegroundContext_passesWithSameLearnerId() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInForegroundContext(learnerContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasAppInForegroundContextThat {
+        hasLearnerIdThat().isEqualTo("learner123")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasAppInForegroundContext_failsWithDifferentLearnerId() {
+    val learnerContext = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setAppInForegroundContext(learnerContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasAppInForegroundContextThat {
+          hasLearnerIdThat().isEqualTo("learner456")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartExplorationContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartExplorationContext(ExplorationContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartExplorationContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartExplorationContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasStartExplorationContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartExplorationContext_hasSameExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartExplorationContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartExplorationContextThat()
+      .isEqualTo(explorationContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartExplorationContext_failsWithDifferentExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+
+    val differentExplorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration456")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartExplorationContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasStartExplorationContextThat()
+        .isEqualTo(differentExplorationContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartExplorationContext_passesWithSameExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartExplorationContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartExplorationContextThat {
+        hasExplorationIdThat().isEqualTo("exploration123")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasStartExplorationContext_failsWithDifferentExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartExplorationContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasStartExplorationContextThat {
+          hasExplorationIdThat().isEqualTo("exploration456")
+        }
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasExitExplorationContext() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setExitExplorationContext(ExplorationContext.newBuilder())
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasExitExplorationContext()
+  }
+
+  @Test
+  fun testEventLogSubject_hasExitExplorationContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasExitExplorationContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasExitExplorationContext_hasSameExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setExitExplorationContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasExitExplorationContextThat()
+      .isEqualTo(explorationContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasExitExplorationContext_failsWithDifferentExplorationContext() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+
+    val differentExplorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration456")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setExitExplorationContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasExitExplorationContextThat()
+        .isEqualTo(differentExplorationContext)
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_hasExitExplorationContext_passesWithSameExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setExitExplorationContext(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasExitExplorationContextThat {
+        hasExplorationIdThat().isEqualTo("exploration123")
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasExitExplorationContext_failsWithDifferentExplorationId() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("exploration123")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setExitExplorationContext(explorationContext)
+      )
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasExitExplorationContextThat {
+          hasExplorationIdThat().isEqualTo("exploration456")
         }
     }
   }
