@@ -1456,6 +1456,32 @@ class StateFragmentLocalTest {
   }
 
   @Test
+  fun testStateFragment_previousResponsesExpanded_retainedOnRotation() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { _ ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 2))
+
+      // Rotate device to trigger configuration change
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify expanded state is retained after rotation
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 2))
+    }
+  }
+
+  @Test
   fun testStateFragment_stateWithoutHints_wait60s_noHintIsAvailable() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1).use {
       startPlayingExploration()
