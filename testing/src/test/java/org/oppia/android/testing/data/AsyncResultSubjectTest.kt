@@ -1,13 +1,20 @@
 package org.oppia.android.testing.data
 
+import android.os.Looper
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.annotation.Config
+import org.robolectric.util.ReflectionHelpers
+import java.io.FileNotFoundException
+import java.util.concurrent.TimeUnit
 import org.oppia.android.util.data.AsyncResult
 
 /** Tests for [AsyncResultSubject]. */
 @RunWith(AndroidJUnit4::class)
+@Config(manifest = Config.NONE)
 class AsyncResultSubjectTest {
   private val pendingResult: AsyncResult<String> = AsyncResult.Pending()
   private val successResult: AsyncResult<String> = AsyncResult.Success("Some string")
@@ -82,10 +89,47 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_twoSuccessResults_checkNewerOrSameAge() {
-    val successResult1: AsyncResult<String> = AsyncResult.Success("First")
-    val successResult2: AsyncResult<String> = AsyncResult.Success("Second")
-    AsyncResultSubject.assertThat(successResult1).isNewerOrSameAgeAs(successResult2)
+  fun testAsyncResultSubject_newerResult_checkIsNewerOrSameAge() {
+    val olderResult: AsyncResult<String> = AsyncResult.Success("Older")
+    Thread.sleep(50)
+    val newerResult: AsyncResult<String> = AsyncResult.Success("Newer")
+    AsyncResultSubject.assertThat(newerResult).isNewerOrSameAgeAs(olderResult)
+  }
+
+  @Test
+  fun testAsyncResultSubject_throwableSuccess_checkIsThrowableSuccessThat() {
+    val throwableResult: AsyncResult<Throwable> = AsyncResult.Success(RuntimeException("Error"))
+    AsyncResultSubject.assertThat(throwableResult)
+      .asThrowableSuccessThat()
+      .hasMessageThat()
+      .contains("Error")
+  }
+
+  @Test
+  fun testAsyncResultSubject_failureResult_checkCause() {
+    val failureResult: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Root error", FileNotFoundException("Cause")))
+    AsyncResultSubject.assertThat(failureResult)
+      .isFailureThat()
+      .hasCauseThat()
+      .hasMessageThat()
+      .contains("Cause")
+  }
+
+  @Test
+  fun testAsyncResultSubject_nullSuccessValue_checkIsNull() {
+    val nullSuccessResult: AsyncResult<String?> = AsyncResult.Success(null)
+    AsyncResultSubject.assertThat(nullSuccessResult)
+      .isSuccessThat()
+      .isNull()
+  }
+
+  @Test
+  fun testAsyncResultSubject_pendingAndSuccess_checkHasDifferentEffectiveValue() {
+    val pendingResult: AsyncResult<String> = AsyncResult.Pending()
+    val successResult: AsyncResult<String> = AsyncResult.Success("Value")
+    AsyncResultSubject.assertThat(pendingResult)
+      .hasSameEffectiveValueAs(successResult)
+      .isFalse()
   }
 
   @Test
