@@ -16,7 +16,7 @@ class ContentViewModel(
   private val underscoreRegex = Regex("(?<=\\s|[,.;?!])_{3,}(?=\\s|[,.;?!])")
   private val replacementText = "Blank"
 
-  /** Returns content description by extracting text from [htmlContent] */
+  /** Returns content description by extracting text from [htmlContent]. */
   fun getContentDescription(): String {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       htmlContent.toString(),
