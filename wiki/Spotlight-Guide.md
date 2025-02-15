@@ -48,10 +48,10 @@ message Spotlight {
     // Corresponds to the onboarding screen's next button.
     SpotlightViewState onboarding_next_button = 1;
 
-    // Corresponds to the topic fragment's lessons tab.
+    // Corresponds to the topic fragment's Learn tab.
     SpotlightViewState topic_lesson_tab = 2;
 
-    // Corresponds to the topic fragment's revision tab.
+    // Corresponds to the topic fragment's Study tab.
     SpotlightViewState topic_revision_tab = 3;
 
     // Add and describe your new spotlit feature here.
@@ -65,10 +65,10 @@ message SpotlightStateDatabase {
   // Corresponds to the onboarding screen's next button.
   SpotlightViewState onboarding_next_button = 1;
 
-  // Corresponds to the topic fragment's lessons tab.
+  // Corresponds to the topic fragment's Learn tab.
   SpotlightViewState topic_lesson_tab = 2;
 
-  // Corresponds to the topic fragment's revision tab.
+  // Corresponds to the topic fragment's Study tab.
   SpotlightViewState topic_revision_tab = 3;
 
   // Similarly, add storage for your new feature here.
