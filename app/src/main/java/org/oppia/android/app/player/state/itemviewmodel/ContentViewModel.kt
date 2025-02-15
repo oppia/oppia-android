@@ -31,19 +31,6 @@ class ContentViewModel(
    * replacement string "blank", returning a Spannable.
    * Adjusts offsets to handle text length changes during replacements.
    */
-  private fun replaceRegexWithBlank(inputText: CharSequence): String {
-    val spannableStringBuilder = SpannableStringBuilder(inputText)
-    val matches = underscoreRegex.findAll(inputText)
-    var lengthOffset = 0
-
-    for (match in matches) {
-      val matchStart = match.range.first + lengthOffset
-      val matchEnd = match.range.last + 1 + lengthOffset
-      spannableStringBuilder.replace(matchStart, matchEnd, replacementText)
-
-      // Adjust offset due to change in length (difference between old and new text length)
-      lengthOffset += replacementText.length - (matchEnd - matchStart)
-    }
-    return spannableStringBuilder.toString()
-  }
+  private fun replaceRegexWithBlank(inputText: CharSequence): String =
+    underscoreRegex.replace(inputText, replacementText)
 }

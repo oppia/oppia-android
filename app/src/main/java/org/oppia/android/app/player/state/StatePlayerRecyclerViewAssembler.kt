@@ -379,7 +379,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           CUSTOM_MATH_TAG to MathTagHandler(
             consoleLogger,
             context.assets,
-            0f,
+            10.0f,
             false,
             context.applicationContext as Application,
           )
