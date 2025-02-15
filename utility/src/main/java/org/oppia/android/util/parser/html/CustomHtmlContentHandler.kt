@@ -76,6 +76,12 @@ class CustomHtmlContentHandler private constructor(
       pendingNewline = true
       isInListItem = true
     }
+    if (tagName == "a") {
+      val href = atts.getValue("href")
+      if (href != null) {
+        tagContentDescriptions[contentDescriptionBuilder.length] = "$href "
+      }
+    }
     originalContentHandler?.startElement(uri, localName, qName, atts)
   }
 
