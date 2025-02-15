@@ -160,11 +160,16 @@ class CustomHtmlContentHandler private constructor(
     val rawDesc = buildString {
       var lastIndex = 0
       tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
-        if (index > lastIndex) {
-          append(contentDescriptionBuilder.substring(lastIndex, index))
+        if (index > lastIndex && index <= contentDescriptionBuilder.length) {
+          append(
+            contentDescriptionBuilder.substring(
+              lastIndex,
+              minOf(index, contentDescriptionBuilder.length)
+            )
+          )
         }
         append(description)
-        lastIndex = index
+        lastIndex = minOf(index, contentDescriptionBuilder.length)
       }
       if (lastIndex < contentDescriptionBuilder.length) {
         append(contentDescriptionBuilder.substring(lastIndex))

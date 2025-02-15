@@ -5230,10 +5230,10 @@ class StateFragmentTest {
       playThroughRatioExplorationState13()
       playThroughRatioExplorationState14()
 
-      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie." +
-        " Yummy!\n\n2 cups of milk and 1 cup of banana puree \n\n“I can make this,” he said." +
-        " “We’ll need to mix milk and banana puree in the ratio Blank.”\n\nCan you complete" +
-        " James’s sentence? What is the ratio of milk to banana puree?”"
+      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie. " +
+        "Yummy!\nImage illustrating 2 cups of milk and 1 cup of banana puree\n“I can make this," +
+        "” he said. “We’ll need to mix milk and banana puree in the ratio Blank.”\nCan you " +
+        "complete James’s sentence? What is the ratio of milk to banana puree?”"
 
       onView(withId(R.id.content_text_view))
         .check(matches(withContentDescription(expectedDescription)))
