@@ -92,21 +92,20 @@ import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
 import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
 import org.oppia.android.util.parser.html.CUSTOM_LIST_LI_TAG
 import org.oppia.android.util.parser.html.CUSTOM_LIST_OL_TAG
 import org.oppia.android.util.parser.html.CUSTOM_LIST_UL_TAG
+import org.oppia.android.util.parser.html.CUSTOM_MATH_TAG
 import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.ImageTagHandler
 import org.oppia.android.util.parser.html.LiTagHandler
+import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.util.parser.html.CUSTOM_MATH_TAG
-import org.oppia.android.util.parser.html.MathTagHandler
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -360,7 +359,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         ephemeralState.state.content, ephemeralState.writtenTranslationContext
       )
     if (contentSubtitledHtml.isNotEmpty()) {
-      val displayLocale=resourceHandler.getDisplayLocale()
+      val displayLocale = resourceHandler.getDisplayLocale()
       pendingItemList += ContentViewModel(
         contentSubtitledHtml,
         gcsEntityId,
