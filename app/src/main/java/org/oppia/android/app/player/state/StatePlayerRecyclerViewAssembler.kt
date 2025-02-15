@@ -1,5 +1,6 @@
 package org.oppia.android.app.player.state
 
+import android.app.Application
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -91,9 +92,21 @@ import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
+import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
+import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
+import org.oppia.android.util.parser.html.CUSTOM_LIST_LI_TAG
+import org.oppia.android.util.parser.html.CUSTOM_LIST_OL_TAG
+import org.oppia.android.util.parser.html.CUSTOM_LIST_UL_TAG
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.parser.html.ImageTagHandler
+import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.util.parser.html.CUSTOM_MATH_TAG
+import org.oppia.android.util.parser.html.MathTagHandler
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -145,7 +158,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val hasConversationView: Boolean,
   private val resourceHandler: AppLanguageResourceHandler,
   private val translationController: TranslationController,
-  private var userAnswerState: UserAnswerState
+  private var userAnswerState: UserAnswerState,
+  private val consoleLogger: ConsoleLogger,
+  private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -345,12 +360,31 @@ class StatePlayerRecyclerViewAssembler private constructor(
         ephemeralState.state.content, ephemeralState.writtenTranslationContext
       )
     if (contentSubtitledHtml.isNotEmpty()) {
+      val displayLocale=resourceHandler.getDisplayLocale()
       pendingItemList += ContentViewModel(
         contentSubtitledHtml,
         gcsEntityId,
         hasConversationView,
         isSplitView.get()!!,
-        playerFeatureSet.conceptCardSupport
+        playerFeatureSet.conceptCardSupport,
+        mapOf(
+          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
+          CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale),
+          CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale),
+          CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger),
+          CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+            conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+            consoleLogger
+          ),
+          // Pick an arbitrary line height since rendering doesn't actually happen.
+          CUSTOM_MATH_TAG to MathTagHandler(
+            consoleLogger,
+            context.assets,
+            0f,
+            false,
+            context.applicationContext as Application,
+          )
+        )
       )
     }
   }
@@ -913,7 +947,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val translationController: TranslationController,
     private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
     private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
-    private val userAnswerState: UserAnswerState
+    private val userAnswerState: UserAnswerState,
+    private val consoleLogger: ConsoleLogger,
+    private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1400,7 +1436,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasConversationView,
         resourceHandler,
         translationController,
-        userAnswerState
+        userAnswerState,
+        consoleLogger,
+        conceptCardTagHandlerFactory
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1420,7 +1458,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val resourceHandler: AppLanguageResourceHandler,
       private val translationController: TranslationController,
       private val multiAdapterBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory
+      private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
+      private val consoleLogger: ConsoleLogger,
+      private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1446,7 +1486,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           translationController,
           multiAdapterBuilderFactory,
           singleAdapterFactory,
-          userAnswerState
+          userAnswerState,
+          consoleLogger,
+          conceptCardTagHandlerFactory
         )
       }
     }
