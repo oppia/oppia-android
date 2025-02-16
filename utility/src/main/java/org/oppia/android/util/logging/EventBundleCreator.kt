@@ -688,15 +688,28 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagListEventContext
     ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
-        val featureFlagNames = featureFlagsList.map { it.flagName }
-        val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus }
-        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
+//        val featureFlagNames = featureFlagsList.map { it.flagName }
+//        val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus }
+//        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
 
         store.putNonSensitiveValue("uuid", uniqueUserUuid)
         store.putNonSensitiveValue("app_session_id", appSessionId)
-        store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
-        store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
-        store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)
+
+        val limit = 11
+        var eventCount = 0
+        featureFlagsList.forEach {
+          val paramValue = "flagSyncStatus: ${it.flagSyncStatus}," +
+            " flagEnabledState: ${it.flagEnabledState}"
+
+          if (eventCount <= limit) {
+            store.putNonSensitiveValue(it.flagName, paramValue)
+            eventCount += 1
+          }
+        }
+
+//        store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
+//        store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
+//        store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)
       }
     }
 
