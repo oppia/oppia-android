@@ -19,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
@@ -106,6 +107,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.translation.AppLanguageLocaleHandler
+import org.oppia.android.app.translation.AppLanguageLocaleModule
+import org.oppia.android.domain.locale.LocaleController
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -115,16 +119,14 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AppVersionActivityTest {
-  @get:Rule
+  @get:Rule(order = 0)
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
+  @get:Rule(order = 1)
   val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
-    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
+  @get:Rule(order = 2)
+  val activityScenarioRule = ActivityScenarioRule(AppVersionActivity::class.java)
 
   @Inject
   lateinit var context: Context
@@ -132,21 +134,23 @@ class AppVersionActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  @Inject
+  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
+
   }
 
   @Test
   fun testAppVersionActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createAppVersionActivityIntent())
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
+    val scenario = activityScenarioRule.scenario
+    scenario.onActivity { activity ->
+      val title = activity.title
+      assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
+    }
   }
 
   private fun createAppVersionActivityIntent(): Intent {
@@ -159,6 +163,11 @@ class AppVersionActivityTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
+    // Reset locale after each test
+    if (::appLanguageLocaleHandler.isInitialized) {
+      appLanguageLocaleHandler.resetLocale()
+    }
+
   }
 
   private fun setUpTestApplicationComponent() {
@@ -174,7 +183,8 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
-    launchAppVersionActivityIntent().use { scenario ->
+    val scenario = activityScenarioRule.scenario
+    scenario.onActivity { activity ->
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
         withText(
@@ -199,7 +209,8 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
-    launchAppVersionActivityIntent().use { scenario ->
+    val scenario = activityScenarioRule.scenario
+    scenario.onActivity { activity ->
       onView(isRoot()).perform(orientationLandscape())
       val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
       onView(
@@ -264,12 +275,12 @@ class AppVersionActivityTest {
     return dateTimeString
   }
 
-  private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-    val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-    return ActivityScenario.launch(intent)
-  }
+//  private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
+//    val intent = AppVersionActivity.createAppVersionActivityIntent(
+//      ApplicationProvider.getApplicationContext()
+//    )
+//    return ActivityScenario.launch(intent)
+//  }
 
   private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -308,7 +319,8 @@ class AppVersionActivityTest {
       SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class,
+      AppLanguageLocaleModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

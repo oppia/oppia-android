@@ -1,6 +1,7 @@
 package org.oppia.android.app.translation
 
 import android.content.res.Configuration
+import dagger.Module
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -17,6 +18,7 @@ import javax.inject.Singleton
  * This class should never be used directly. Instead of accessing the locale directly, use
  * [AppLanguageResourceHandler].
  */
+
 @Singleton
 class AppLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController
@@ -76,6 +78,24 @@ class AppLanguageLocaleHandler @Inject constructor(
     verifyDisplayLocaleIsInitialized()
     return displayLocale
   }
+  fun resetLocale() {
+    if (!isInitialized()) {
+      // Initialize with system default locale if not already set
+      initializeLocale(
+        localeController.reconstituteDisplayLocale(
+          localeController.getLikelyDefaultAppStringLocaleContext()
+        )
+      )
+    } else {
+      // If already initialized, just update the locale
+      displayLocale = localeController.reconstituteDisplayLocale(
+        localeController.getLikelyDefaultAppStringLocaleContext()
+      )
+    }
+  }
+
+
+
 
   private fun verifyDisplayLocaleIsInitialized() {
     check(isInitialized()) {
