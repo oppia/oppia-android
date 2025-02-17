@@ -1,6 +1,8 @@
 package org.oppia.android.app.administratorcontrols
 
+import android.app.Activity
 import android.app.Application
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +23,10 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -247,21 +252,48 @@ class AppVersionActivityTest {
   @Test
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
     ActivityScenario.launch<AdministratorControlsActivity>(
-      launchAdministratorControlsActivityIntent(
-        internalProfileId = 0
-      )
-    ).use {
+      launchAdministratorControlsActivityIntent(internalProfileId = 0)
+    ).use { scenario ->
+
       testCoroutineDispatchers.runCurrent()
+
+      // Scroll to the item in the RecyclerView
       onView(withId(R.id.administrator_controls_list)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(
-          3
-        )
+        scrollToPosition<RecyclerView.ViewHolder>(3)
       )
+
+      // Click on the app version option
       onView(withText(R.string.administrator_controls_app_version)).perform(click())
-      intended(hasComponent(AppVersionActivity::class.java.name))
-      onView(isRoot()).perform(pressBack())
+
+      // Wait for UI update
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify if the AppVersionActivity is running
+      var currentActivity: Activity? = null
+      scenario.onActivity { activity ->
+        currentActivity = getCurrentActivity()
+        assertThat(currentActivity).isInstanceOf(AppVersionActivity::class.java)
+      }
+
+      // Simulate pressing back via activity rather than Espresso
+      (currentActivity as? AppVersionActivity)?.onBackPressed()
+
+      // Wait for UI update
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify that AdministratorControlsActivity is visible again
       onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
     }
+  }
+
+  fun getCurrentActivity(): Activity? {
+    val activity = arrayOfNulls<Activity>(1)
+    InstrumentationRegistry.getInstrumentation().runOnMainSync {
+      activity[0] = ActivityLifecycleMonitorRegistry.getInstance()
+        .getActivitiesInStage(Stage.RESUMED)
+        .firstOrNull()
+    }
+    return activity[0]
   }
 
   private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
