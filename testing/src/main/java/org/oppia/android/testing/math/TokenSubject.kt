@@ -26,8 +26,6 @@ import org.oppia.android.util.math.MathTokenizer.Companion.Token.RightParenthesi
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.SquareRootSymbol
 import org.oppia.android.util.math.MathTokenizer.Companion.Token.VariableName
 
-// TODO(#4121): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [Token]s.
  *
