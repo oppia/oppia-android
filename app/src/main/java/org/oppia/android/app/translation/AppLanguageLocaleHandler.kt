@@ -1,7 +1,6 @@
 package org.oppia.android.app.translation
 
 import android.content.res.Configuration
-import dagger.Module
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -93,9 +92,6 @@ class AppLanguageLocaleHandler @Inject constructor(
       )
     }
   }
-
-
-
 
   private fun verifyDisplayLocaleIsInitialized() {
     check(isInitialized()) {
