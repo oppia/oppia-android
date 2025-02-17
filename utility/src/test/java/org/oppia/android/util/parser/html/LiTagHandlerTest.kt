@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.text.Html
 import android.text.Spannable
+import android.text.style.ImageSpan
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -111,6 +112,33 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.toString()).isNotEmpty()
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(2)
+  }
+
+  @Test
+  fun testFromHtml_withImageSpanInsideList_insertsNewlinesAroundImage() {
+    val html = "<oppia-ul><oppia-li>Test<img src=\"test_source.png\"/>Image</oppia-li></oppia-ul>"
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val liTaghandler = LiTagHandler(context, displayLocale)
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = html,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_LIST_LI_TAG to liTaghandler,
+          CUSTOM_LIST_UL_TAG to liTaghandler
+        )
+      )
+
+    val imageSpans = parsedHtml.getSpans(0, parsedHtml.length, ImageSpan::class.java)
+    assertThat(imageSpans).hasLength(1)
+    val imageSpan = imageSpans[0]
+    val start = parsedHtml.getSpanStart(imageSpan)
+    val end = parsedHtml.getSpanEnd(imageSpan)
+
+    assertThat(parsedHtml[start - 1]).isEqualTo('\n')
+    assertThat(parsedHtml[end]).isEqualTo('\n')
+    assertThat(parsedHtml.toString()).contains("Test")
+    assertThat(parsedHtml.toString()).contains("Image")
   }
 
   @Test
