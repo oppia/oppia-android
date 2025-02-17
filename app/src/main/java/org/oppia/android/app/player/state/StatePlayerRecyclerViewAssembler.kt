@@ -194,6 +194,25 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
+  private val displayLocale = resourceHandler.getDisplayLocale()
+  private val customTagHandlers=mapOf(
+    CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
+    CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale),
+    CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale),
+    CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger),
+    CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+      conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+      consoleLogger
+    ),
+    // Pick an arbitrary line height since rendering doesn't actually happen.
+    CUSTOM_MATH_TAG to MathTagHandler(
+      consoleLogger,
+      context.assets,
+      10.0f,
+      false,
+      context.applicationContext as Application,
+    )
+  )
   private val isSplitView = ObservableField<Boolean>(false)
 
   override fun onConceptCardLinkClicked(view: View, skillId: String) {
@@ -359,31 +378,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
         ephemeralState.state.content, ephemeralState.writtenTranslationContext
       )
     if (contentSubtitledHtml.isNotEmpty()) {
-      val displayLocale = resourceHandler.getDisplayLocale()
       pendingItemList += ContentViewModel(
         contentSubtitledHtml,
         gcsEntityId,
         hasConversationView,
         isSplitView.get()!!,
         playerFeatureSet.conceptCardSupport,
-        mapOf(
-          CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
-          CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale),
-          CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale),
-          CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger),
-          CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
-            conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
-            consoleLogger
-          ),
-          // Pick an arbitrary line height since rendering doesn't actually happen.
-          CUSTOM_MATH_TAG to MathTagHandler(
-            consoleLogger,
-            context.assets,
-            10.0f,
-            false,
-            context.applicationContext as Application,
-          )
-        )
+        customTagHandlers
       )
     }
   }
