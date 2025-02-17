@@ -178,7 +178,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "This is a Region 3 image."
+            regionLabel = "Region 3", contentDescription = "Image showing Region 3."
           )
         )
     }
@@ -219,7 +219,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "This is a Region 2 image."
+            regionLabel = "Region 2", contentDescription = "Image showing Region 2."
           )
         )
     }
@@ -295,7 +295,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "This is a Region 2 image."
+            regionLabel = "Region 2", contentDescription = "Image showing Region 2."
           )
         )
     }
@@ -323,7 +323,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "This is a Region 3 image."
+            regionLabel = "Region 3", contentDescription = "Image showing Region 3."
           )
         )
     }
@@ -367,7 +367,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "This is a Region 3 image."
+            regionLabel = "Region 3", contentDescription = "Image showing Region 3."
           )
         )
     }
@@ -409,7 +409,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "This is a Region 2 image."
+            regionLabel = "Region 2", contentDescription = "Image showing Region 2."
           )
         )
     }
