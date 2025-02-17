@@ -195,7 +195,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private val displayLocale = resourceHandler.getDisplayLocale()
-  private val customTagHandlers=mapOf(
+  private val customTagHandlers = mapOf(
     CUSTOM_LIST_LI_TAG to LiTagHandler(context, displayLocale),
     CUSTOM_LIST_UL_TAG to LiTagHandler(context, displayLocale),
     CUSTOM_LIST_OL_TAG to LiTagHandler(context, displayLocale),
