@@ -6,6 +6,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.Real
+import org.oppia.android.testing.math.ComparableOperationSubject.Companion.assertThat
 
 /** Tests for [ComparableOperationSubject]. */
 @RunWith(JUnit4::class)
@@ -39,7 +40,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_hasStructureThatMatches() {
     val operation = createConstantOperation(42)
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       constantTerm {
         withValueThat().isIntegerThat().isEqualTo(42)
       }
@@ -50,7 +51,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_failsWithInvalidStructure() {
     val operation = createConstantOperation(42)
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         variableTerm {
           withNameThat().isEqualTo("x")
         }
@@ -62,7 +63,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_hasNegatedProperty_matchesFalse() {
     val operation = createConstantOperation(42)
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       hasNegatedPropertyThat().isFalse()
     }
   }
@@ -74,7 +75,7 @@ class ComparableOperationSubjectTest {
       .setIsNegated(true)
       .build()
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       hasNegatedPropertyThat().isTrue()
     }
   }
@@ -83,7 +84,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_hasInvertedProperty_matchesFalse() {
     val operation = createConstantOperation(42)
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       hasInvertedPropertyThat().isFalse()
     }
   }
@@ -95,7 +96,7 @@ class ComparableOperationSubjectTest {
       .setIsInverted(true)
       .build()
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       hasInvertedPropertyThat().isTrue()
     }
   }
@@ -108,7 +109,7 @@ class ComparableOperationSubjectTest {
       createConstantOperation(2)
     )
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       commutativeAccumulationWithType(
         ComparableOperation.CommutativeAccumulation
           .AccumulationType.SUMMATION
@@ -134,7 +135,7 @@ class ComparableOperationSubjectTest {
       ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
     )
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       commutativeAccumulationWithType(
         ComparableOperation.CommutativeAccumulation
           .AccumulationType.SUMMATION
@@ -148,7 +149,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_commutativeAccumulationFailsWithInvalidType() {
     val operation = createConstantOperation(42)
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         commutativeAccumulationWithType(
           ComparableOperation.CommutativeAccumulation
             .AccumulationType.SUMMATION
@@ -166,7 +167,7 @@ class ComparableOperationSubjectTest {
       createConstantOperation(1)
     )
     assertThrows(IndexOutOfBoundsException::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         commutativeAccumulationWithType(
           ComparableOperation.CommutativeAccumulation
             .AccumulationType.SUMMATION
@@ -190,7 +191,7 @@ class ComparableOperationSubjectTest {
       )
       .build()
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       nonCommutativeOperation {
         exponentiation {
           leftOperand {
@@ -217,7 +218,7 @@ class ComparableOperationSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         nonCommutativeOperation {
           exponentiation { }
         }
@@ -234,7 +235,7 @@ class ComparableOperationSubjectTest {
       )
       .build()
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       nonCommutativeOperation {
         squareRootWithArgument {
           constantTerm {
@@ -258,7 +259,7 @@ class ComparableOperationSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         nonCommutativeOperation {
           squareRootWithArgument { }
         }
@@ -278,7 +279,7 @@ class ComparableOperationSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         nonCommutativeOperation {
           exponentiation {
             leftOperand {
@@ -304,7 +305,7 @@ class ComparableOperationSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         nonCommutativeOperation {
           exponentiation {
             rightOperand {
@@ -322,7 +323,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_checksConstantTerm_withValidValue() {
     val operation = createConstantOperation(42)
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       constantTerm {
         withValueThat().isIntegerThat().isEqualTo(42)
       }
@@ -333,7 +334,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_constantTerm_failsWithInvalidType() {
     val operation = createVariableOperation("x")
     assertThrows(AssertionError::class.java) {
-      ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+      assertThat(operation).hasStructureThatMatches {
         constantTerm {
           withValueThat().isIntegerThat().isEqualTo(42)
         }
@@ -345,7 +346,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_validatesVariableTerm() {
     val operation = createVariableOperation("x")
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       variableTerm {
         withNameThat().isEqualTo("x")
       }
@@ -356,7 +357,7 @@ class ComparableOperationSubjectTest {
   fun testComparableOperationSubject_variableTerm_failWithInvalidType() {
     val operation = createConstantOperation(42)
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       variableTerm {
         withNameThat().isEqualTo("x")
       }
@@ -386,7 +387,7 @@ class ComparableOperationSubjectTest {
       createVariableOperation("x")
     )
 
-    ComparableOperationSubject.assertThat(operation).hasStructureThatMatches {
+    assertThat(operation).hasStructureThatMatches {
       commutativeAccumulationWithType(
         ComparableOperation.CommutativeAccumulation
           .AccumulationType.PRODUCT
