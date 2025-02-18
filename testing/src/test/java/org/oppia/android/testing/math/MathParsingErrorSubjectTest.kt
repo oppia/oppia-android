@@ -65,7 +65,7 @@ class MathParsingErrorSubjectTest {
   }
 
   @Test
-  fun testMathParsingErrorSubject_hasSingleRedundantParentheses() {
+  fun testMathParsingErrorSubject_hasSingleRedundantParenthesesWitDetails() {
     val constant = Real.newBuilder().setInteger(5).build()
     val expression = MathExpression.newBuilder().setConstant(constant).build()
     val group = MathExpression.newBuilder().setGroup(expression).build()
