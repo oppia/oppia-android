@@ -191,6 +191,8 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%1$s %2$s!</string>
+  <string name="selected_image_region_selection_content_description">Image showing %1$s.</string>
+  <string name="unselected_image_region_selection_content_description">Select %1$s image.</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
