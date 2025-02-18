@@ -30,7 +30,7 @@
   <string name="concept_card_toolbar_title">Concept Card</string>
   <string name="concept_card_one_button_text">Concept Card 1</string>
   <string name="concept_card_two_button_text">Concept Card 2</string>
-  <string name="revision_card_toolbar_title">Revision Card</string>
+  <string name="revision_card_toolbar_title">Study Guide</string>
   <string name="unsaved_exploration_dialog_title">Leave to Topic Page?</string>
   <string name="unsaved_exploration_dialog_description">Your progress will not be saved.</string>
   <string name="unsaved_exploration_dialog_leave_button">Leave</string>
@@ -82,9 +82,9 @@
   <string name="onboarding_activity_title">Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
-  <string name="lessons">Lessons</string>
+  <string name="learn">Learn</string>
   <string name="practice">Practice</string>
-  <string name="revision">Revision</string>
+  <string name="study">Study</string>
   <string name="administrator_controls_title">Administrator Controls</string>
   <string name="topic_page">Topic page</string>
   <string name="topic_name">Topic: %s</string>
@@ -191,6 +191,8 @@
   <string name="correct">Correct!</string>
   <string name="topic_prefix">Topic: %s</string>
   <string name="welcome_profile_name">%1$s %2$s!</string>
+  <string name="selected_image_region_selection_content_description">Image showing %1$s.</string>
+  <string name="unselected_image_region_selection_content_description">Select %1$s image.</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
