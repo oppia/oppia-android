@@ -190,7 +190,6 @@ class MathParsingErrorSubjectTest {
     }
   }
 
-
   @Test
   fun testMathParsingErrorSubject_isNoVariableOrNumberAfterBinaryOperator() {
     val operator = MathBinaryOperation.Operator.ADD
@@ -274,7 +273,6 @@ class MathParsingErrorSubjectTest {
     val error = EquationHasTooManyEqualsError
     assertThat(error).isEquationHasTooManyEquals()
   }
-
 
   @Test
   fun testMathParsingErrorSubject_isEquationMissingLhsOrRhsError() {
