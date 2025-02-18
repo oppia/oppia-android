@@ -74,3 +74,30 @@ bazel mobile-install //:oppia_dev_binary
 ```
 
 ``mobile-install`` is much faster for local development (especially for the developer flavor of the app) because it does more sophisticated dex regeneration detection for faster incremental installs. See https://bazel.build/docs/mobile-install for details.
+
+**Note**: If you run into a failure like the following when trying to use `mobile-install` to a device running SDK 34 or newer:
+
+```
+FATAL EXCEPTION: main
+ Process: org.oppia.android, PID: 9508
+    java.lang.RuntimeException: Unable to instantiate application com.google.devtools.build.android.incrementaldeployment.StubApplication package org.oppia.android: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
+     at android.app.LoadedApk.makeApplicationInner(LoadedApk.java:1466)
+     at android.app.LoadedApk.makeApplicationInner(LoadedApk.java:1395)
+     at android.app.ActivityThread.handleBindApplication(ActivityThread.java:6959)
+     at android.app.ActivityThread.-$$Nest$mhandleBindApplication(Unknown Source:0)
+     at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2236)
+     at android.os.Handler.dispatchMessage(Handler.java:106)
+     at android.os.Looper.loopOnce(Looper.java:205)
+     at android.os.Looper.loop(Looper.java:294)
+     at android.app.ActivityThread.main(ActivityThread.java:8177)
+     at java.lang.reflect.Method.invoke(Native Method)
+     at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+    Caused by: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
+```
+
+Then you will need to use `adb install` directly:
+
+```sh
+adb install bazel-bin/oppia_dev_binary.apk
+```
