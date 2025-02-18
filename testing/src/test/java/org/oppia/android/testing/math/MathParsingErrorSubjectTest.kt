@@ -7,6 +7,7 @@ import org.junit.runners.JUnit4
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.Real
+import org.oppia.android.testing.math.MathParsingErrorSubject.Companion.assertThat
 import org.oppia.android.util.math.MathParsingError.DisabledVariablesInUseError
 import org.oppia.android.util.math.MathParsingError.EquationHasTooManyEqualsError
 import org.oppia.android.util.math.MathParsingError.EquationIsMissingEqualsError
@@ -38,79 +39,83 @@ class MathParsingErrorSubjectTest {
   @Test
   fun testMathParsingErrorSubject_hasSpaceBetweenNumbersError() {
     val error = SpacesBetweenNumbersError
-    MathParsingErrorSubject.assertThat(error).isSpacesBetweenNumbers()
+    assertThat(error).isSpacesBetweenNumbers()
   }
 
   @Test
   fun testMathParsingErrorSubject_hasSpaceBetweenNumbersError_fails() {
     val error = UnbalancedParenthesesError
     assertThrows(AssertionError::class.java) {
-      MathParsingErrorSubject.assertThat(error).isSpacesBetweenNumbers()
+      assertThat(error).isSpacesBetweenNumbers()
     }
   }
 
   @Test
   fun testMathParsingErrorSubject_hasUnbalancedParenthesesError() {
     val error = UnbalancedParenthesesError
-    MathParsingErrorSubject.assertThat(error).isUnbalancedParentheses()
+    assertThat(error).isUnbalancedParentheses()
   }
 
   @Test
   fun testMathParsingErrorSubject_hasUnbalancedParenthesesError_fails() {
     val error = SpacesBetweenNumbersError
     assertThrows(AssertionError::class.java) {
-      MathParsingErrorSubject.assertThat(error).isUnbalancedParentheses()
+      assertThat(error).isUnbalancedParentheses()
     }
   }
 
   @Test
   fun testMathParsingErrorSubject_hasSingleRedundantParentheses() {
-    val constant = Real.newBuilder()
-      .setInteger(5)
-      .build()
-    val expression = MathExpression.newBuilder()
-      .setConstant(constant)
-      .build()
-    val group = MathExpression.newBuilder()
-      .setGroup(expression)
-      .build()
+    val constant = Real.newBuilder().setInteger(5).build()
+    val expression = MathExpression.newBuilder().setConstant(constant).build()
+    val group = MathExpression.newBuilder().setGroup(expression).build()
     val error = SingleRedundantParenthesesError("(5)", group)
-    val subject = MathParsingErrorSubject.assertThat(error).isSingleRedundantParenthesesThat()
-    subject.hasExpressionThat().evaluatesToIntegerThat().isEqualTo(5)
-    subject.hasRawExpressionThat().isEqualTo("(5)")
+
+    assertThat(error).isSingleRedundantParenthesesThat().apply {
+      hasRawExpressionThat().isEqualTo("(5)")
+      hasExpressionThat().hasStructureThatMatches {
+        group {
+          constant {
+            hasExpressionThat().evaluatesToIntegerThat().isEqualTo(5)
+          }
+        }
+      }
+    }
   }
 
   @Test
-  fun testMathParsingErrorSubject_hasMultipleRedundantParentheses() {
-    val constant = Real.newBuilder()
-      .setInteger(5)
-      .build()
-    val expression = MathExpression.newBuilder()
-      .setConstant(constant)
-      .build()
-    val groupOne = MathExpression.newBuilder()
-      .setGroup(expression)
-      .build()
-    val groupTwo = MathExpression.newBuilder()
-      .setGroup(groupOne)
-      .build()
+  fun testMathParsingErrorSubject_hasMultipleRedundantParenthesesWithDetails() {
+    val constant = Real.newBuilder().setInteger(5).build()
+    val expression = MathExpression.newBuilder().setConstant(constant).build()
+    val groupOne = MathExpression.newBuilder().setGroup(expression).build()
+    val groupTwo = MathExpression.newBuilder().setGroup(groupOne).build()
     val error = MultipleRedundantParenthesesError("((5))", groupTwo)
-    val subject = MathParsingErrorSubject.assertThat(error).isMultipleRedundantParenthesesThat()
-    subject.hasExpressionThat().evaluatesToIntegerThat().isEqualTo(5)
-    subject.hasRawExpressionThat().isEqualTo("((5))")
+
+    assertThat(error).isMultipleRedundantParenthesesThat().apply {
+      hasRawExpressionThat().isEqualTo("((5))")
+      hasExpressionThat().hasStructureThatMatches {
+        group {
+          group {
+            constant {
+              hasExpressionThat().evaluatesToIntegerThat().isEqualTo(5)
+            }
+          }
+        }
+      }
+    }
   }
 
   @Test
   fun testMathParsingErrorSubject_matchesUnnecessarySymbol() {
     val error = UnnecessarySymbolsError("@")
-    MathParsingErrorSubject.assertThat(error).isUnnecessarySymbolWithSymbolThat().isEqualTo("@")
+    assertThat(error).isUnnecessarySymbolWithSymbolThat().isEqualTo("@")
   }
 
   @Test
   fun testMathParsingErrorSubject_matchesUnnecessarySymbol_fails() {
     val error = UnnecessarySymbolsError("@")
     assertThrows(AssertionError::class.java) {
-      MathParsingErrorSubject.assertThat(error).isUnnecessarySymbolWithSymbolThat().isEqualTo("#")
+      assertThat(error).isUnnecessarySymbolWithSymbolThat().isEqualTo("#")
     }
   }
 
@@ -118,9 +123,11 @@ class MathParsingErrorSubjectTest {
   fun testMathParsingErrorSubject_isNumberAfterVariableError() {
     val number = Real.newBuilder().setInteger(5).build()
     val error = NumberAfterVariableError(number, "x")
-    val subject = MathParsingErrorSubject.assertThat(error).isNumberAfterVariableThat()
-    subject.hasNumberThat().isIntegerThat().isEqualTo(5)
-    subject.hasVariableThat().isEqualTo("x")
+
+    assertThat(error).isNumberAfterVariableThat().apply {
+      hasNumberThat().isIntegerThat().isEqualTo(5)
+      hasVariableThat().isEqualTo("x")
+    }
   }
 
   @Test
@@ -128,43 +135,47 @@ class MathParsingErrorSubjectTest {
     val number = Real.newBuilder().setInteger(5).build()
     val error = NumberAfterVariableError(number, "x")
     assertThrows(AssertionError::class.java) {
-      val subject = MathParsingErrorSubject.assertThat(error).isNumberAfterVariableThat()
-      subject.hasNumberThat().isIntegerThat().isEqualTo(6)
-      subject.hasVariableThat().isEqualTo("y")
+      assertThat(error).isNumberAfterVariableThat().apply {
+        hasNumberThat().isIntegerThat().isEqualTo(5)
+        hasVariableThat().isEqualTo("y")
+      }
     }
   }
 
   @Test
   fun testMathParsingErrorSubject_isSubsequentBinaryOperatorsError() {
     val error = SubsequentBinaryOperatorsError("x", "+")
-    val subject = MathParsingErrorSubject.assertThat(error).isSubsequentBinaryOperatorsThat()
-    subject.hasFirstOperatorThat().isEqualTo("x")
-    subject.hasSecondOperatorThat().isEqualTo("+")
+    assertThat(error).isSubsequentBinaryOperatorsThat().apply {
+      hasFirstOperatorThat().isEqualTo("x")
+      hasSecondOperatorThat().isEqualTo("+")
+    }
   }
 
   @Test
   fun testMathParsingErrorSubject_isSubsequentBinaryOperatorsError_fails() {
     val error = SubsequentBinaryOperatorsError("x", "+")
     assertThrows(AssertionError::class.java) {
-      val subject = MathParsingErrorSubject.assertThat(error).isSubsequentBinaryOperatorsThat()
-      subject.hasFirstOperatorThat().isEqualTo("y")
-      subject.hasSecondOperatorThat().isEqualTo("-")
+      assertThat(error).isSubsequentBinaryOperatorsThat().apply {
+        hasFirstOperatorThat().isEqualTo("y")
+        hasSecondOperatorThat().isEqualTo("-")
+      }
     }
   }
 
   @Test
   fun testMathParsingErrorSubject_isSubsequentUnaryOperatorsError() {
     val error = SubsequentUnaryOperatorsError
-    MathParsingErrorSubject.assertThat(error).isSubsequentUnaryOperators()
+    assertThat(error).isSubsequentUnaryOperators()
   }
 
   @Test
   fun testMathParsingErrorSubject_isNoVarOrNumBeforeBinaryOperator() {
     val operator = MathBinaryOperation.Operator.ADD
     val error = NoVariableOrNumberBeforeBinaryOperatorError(operator, "+")
-    val subject = MathParsingErrorSubject.assertThat(error).isNoVarOrNumBeforeBinaryOperatorThat()
-    subject.hasOperatorThat().isEqualTo(operator)
-    subject.hasOperatorSymbolThat().isEqualTo("+")
+    assertThat(error).isNoVarOrNumBeforeBinaryOperatorThat().apply {
+      hasOperatorThat().isEqualTo(operator)
+      hasOperatorSymbolThat().isEqualTo("+")
+    }
   }
 
   @Test
@@ -172,20 +183,22 @@ class MathParsingErrorSubjectTest {
     val operator = MathBinaryOperation.Operator.ADD
     val error = NoVariableOrNumberBeforeBinaryOperatorError(operator, "+")
     assertThrows(AssertionError::class.java) {
-      val subject = MathParsingErrorSubject.assertThat(error).isNoVarOrNumBeforeBinaryOperatorThat()
-      subject.hasOperatorThat().isEqualTo(MathBinaryOperation.Operator.SUBTRACT)
-      subject.hasOperatorSymbolThat().isEqualTo("-")
+      assertThat(error).isNoVarOrNumBeforeBinaryOperatorThat().apply {
+        hasOperatorThat().isEqualTo(MathBinaryOperation.Operator.SUBTRACT)
+        hasOperatorSymbolThat().isEqualTo("-")
+      }
     }
   }
+
 
   @Test
   fun testMathParsingErrorSubject_isNoVariableOrNumberAfterBinaryOperator() {
     val operator = MathBinaryOperation.Operator.ADD
     val error = NoVariableOrNumberAfterBinaryOperatorError(operator, "+")
-    val subject = MathParsingErrorSubject.assertThat(error)
-      .isNoVariableOrNumberAfterBinaryOperatorThat()
-    subject.hasOperatorThat().isEqualTo(operator)
-    subject.hasOperatorSymbolThat().isEqualTo("+")
+    assertThat(error).isNoVariableOrNumberAfterBinaryOperatorThat().apply {
+      hasOperatorThat().isEqualTo(operator)
+      hasOperatorSymbolThat().isEqualTo("+")
+    }
   }
 
   @Test
@@ -193,101 +206,97 @@ class MathParsingErrorSubjectTest {
     val operator = MathBinaryOperation.Operator.ADD
     val error = NoVariableOrNumberAfterBinaryOperatorError(operator, "+")
     assertThrows(AssertionError::class.java) {
-      val subject = MathParsingErrorSubject.assertThat(error)
-        .isNoVariableOrNumberAfterBinaryOperatorThat()
-      subject.hasOperatorThat().isEqualTo(MathBinaryOperation.Operator.SUBTRACT)
-      subject.hasOperatorSymbolThat().isEqualTo("-")
+      assertThat(error).isNoVariableOrNumberAfterBinaryOperatorThat().apply {
+        hasOperatorThat().isEqualTo(MathBinaryOperation.Operator.SUBTRACT)
+        hasOperatorSymbolThat().isEqualTo("-")
+      }
     }
   }
 
   @Test
   fun testMathParsingErrorSubject_isExponentIsVariableExpressionError() {
     val error = ExponentIsVariableExpressionError
-    MathParsingErrorSubject.assertThat(error).isExponentIsVariableExpression()
+    assertThat(error).isExponentIsVariableExpression()
   }
 
   @Test
   fun testMathParsingErrorSubject_isExponentTooLargeError() {
     val error = ExponentTooLargeError
-    MathParsingErrorSubject.assertThat(error).isExponentTooLarge()
+    assertThat(error).isExponentTooLarge()
   }
 
   @Test
   fun testMathParsingErrorSubject_isNestedExponentsError() {
     val error = NestedExponentsError
-    MathParsingErrorSubject.assertThat(error).isNestedExponents()
+    assertThat(error).isNestedExponents()
   }
 
   @Test
   fun testMathParsingErrorSubject_isHangingSquareRootError() {
     val error = HangingSquareRootError
-    MathParsingErrorSubject.assertThat(error).isHangingSquareRoot()
+    assertThat(error).isHangingSquareRoot()
   }
 
   @Test
   fun testMathParsingErrorSubject_isTermDividedByZeroError() {
     val error = TermDividedByZeroError
-    MathParsingErrorSubject.assertThat(error).isTermDividedByZero()
+    assertThat(error).isTermDividedByZero()
   }
 
   @Test
   fun testMathParsingErrorSubject_isVariableInNumericExpressionError() {
     val error = VariableInNumericExpressionError
-    MathParsingErrorSubject.assertThat(error).isVariableInNumericExpression()
+    assertThat(error).isVariableInNumericExpression()
   }
 
   @Test
   fun testMathParsingErrorSubject_isDisabledVariablesInUseWithVariablesError() {
     val error = DisabledVariablesInUseError(listOf("x", "y"))
-    val subject = MathParsingErrorSubject.assertThat(error)
-      .isDisabledVariablesInUseWithVariablesThat()
-    subject.containsExactly("x", "y")
+    assertThat(error).isDisabledVariablesInUseWithVariablesThat().containsExactly("x", "y")
   }
 
   @Test
   fun testMathParsingErrorSubject_isDisabledVariablesInUseWithVariablesError_fails() {
     val error = DisabledVariablesInUseError(listOf("x", "y"))
     assertThrows(AssertionError::class.java) {
-      val subject = MathParsingErrorSubject.assertThat(error)
-        .isDisabledVariablesInUseWithVariablesThat()
-      subject.containsExactly("x", "z")
+      assertThat(error).isDisabledVariablesInUseWithVariablesThat().containsExactly("x", "z")
     }
   }
 
   @Test
   fun testMathParsingErrorSubject_isEquationIsMissingEqualsError() {
     val error = EquationIsMissingEqualsError
-    MathParsingErrorSubject.assertThat(error).isEquationIsMissingEquals()
+    assertThat(error).isEquationIsMissingEquals()
   }
 
   @Test
   fun testMathParsingErrorSubject_isEquationHasTooManyEqualsError() {
     val error = EquationHasTooManyEqualsError
-    MathParsingErrorSubject.assertThat(error).isEquationHasTooManyEquals()
+    assertThat(error).isEquationHasTooManyEquals()
   }
+
 
   @Test
   fun testMathParsingErrorSubject_isEquationMissingLhsOrRhsError() {
     val error = EquationMissingLhsOrRhsError
-    MathParsingErrorSubject.assertThat(error).isEquationMissingLhsOrRhs()
+    assertThat(error).isEquationMissingLhsOrRhs()
   }
 
   @Test
   fun testMathParsingErrorSubject_isInvalidFunctionInUseWithNameError() {
     val error = InvalidFunctionInUseError("sin")
-    val subject = MathParsingErrorSubject.assertThat(error).isInvalidFunctionInUseWithNameThat()
-    subject.isEqualTo("sin")
+    assertThat(error).isInvalidFunctionInUseWithNameThat().isEqualTo("sin")
   }
 
   @Test
   fun testMathParsingErrorSubject_isFunctionNameIncompleteError() {
     val error = FunctionNameIncompleteError
-    MathParsingErrorSubject.assertThat(error).isFunctionNameIncomplete()
+    assertThat(error).isFunctionNameIncomplete()
   }
 
   @Test
   fun testMathParsingErrorSubject_isGenericError() {
     val error = GenericError
-    MathParsingErrorSubject.assertThat(error).isGenericError()
+    assertThat(error).isGenericError()
   }
 }
