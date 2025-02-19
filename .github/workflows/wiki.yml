@@ -1,6 +1,7 @@
 name: Deploy to Wiki
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'wiki/**'
