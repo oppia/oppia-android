@@ -151,11 +151,23 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun RecyclerView.shouldShowScrollArrows(): Boolean {
-    val layoutManager = this.layoutManager as? LinearLayoutManager ?: return false
-
-    val visibleItemCount = layoutManager.childCount
+    val visibleItemCount = getVisibleItemCount(this)
     val totalItemCount = this.adapter?.itemCount
     return totalItemCount != null && totalItemCount > visibleItemCount
+  }
+
+  private fun getVisibleItemCount(recyclerView: RecyclerView): Int {
+    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return 0
+
+    val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+    val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
+
+    return if (firstVisiblePosition == RecyclerView.NO_POSITION ||
+      lastVisiblePosition == RecyclerView.NO_POSITION) {
+      0 // No visible items
+    } else {
+      lastVisiblePosition - firstVisiblePosition + 1
+    }
   }
 
   private fun snapRecyclerView(
