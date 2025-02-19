@@ -131,9 +131,9 @@ package_group(
     ]
 ]
 
-# Define all binary flavors that can be built. Note that these are AABs, not APKs, and can be
-# be installed on a local device or emulator using a 'bazel run' command like so:
-#  bazel run //:install_oppia_dev
+# Define all binary flavors that can be built. Note that these are AABs and thus cannot be installed
+# directly. However, their binaries can be installed using mobile-install like so:
+#  bazel mobile-install //:oppia_dev_binary
 [
     define_oppia_aab_binary_flavor(flavor = flavor)
     for flavor in AVAILABLE_FLAVORS
