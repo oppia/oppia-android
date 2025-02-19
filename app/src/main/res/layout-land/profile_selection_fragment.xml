@@ -26,6 +26,7 @@
       android:text="@string/profile_selection_header"
       app:layout_constraintBottom_toTopOf="@id/profiles_list_landscape"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
@@ -120,6 +121,7 @@
       android:id="@+id/add_profile_prompt"
       style="@style/AddProfilePromptStyle"
       android:layout_width="@dimen/profile_selection_fragment_prompt_width"
+      android:layout_height="wrap_content"
       android:layout_marginEnd="@dimen/profile_selection_fragment_add_profile_button_margin_end"
       android:layout_marginBottom="@dimen/profile_selection_fragment_prompt_margin_bottom"
       android:text="@string/profile_selection_add_profile_text"

@@ -892,11 +892,8 @@ message IntroActivityParams {
   // The nickname associated with a newly created profile.
   string profile_nickname = 1;
 
-  // The internal Id associated with the newly created profile.
-  int32 profile_id = 2;
-
   // The screen from which the introduction activity was opened.
-  ParentScreen parent_screen = 3;
+  ParentScreen parent_screen = 2;
 
   // Different parent screens that can open a new onboarding introduction activity instance.
   enum ParentScreen {

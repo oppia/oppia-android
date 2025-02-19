@@ -33,11 +33,11 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     fun newInstance(
       exitProfileDialogArguments: ExitProfileDialogArguments
     ): ExitProfileDialogFragment {
-      val exitProfileDialogFragment = ExitProfileDialogFragment()
-      val args = Bundle()
-      args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
-      exitProfileDialogFragment.arguments = args
-      return exitProfileDialogFragment
+      return ExitProfileDialogFragment().apply {
+        arguments = Bundle().apply {
+          putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
+        }
+      }
     }
   }
 
@@ -50,7 +50,7 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args =
-      checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
+      checkNotNull(arguments) { "Expected arguments to be passed to ExitProfileDialogFragment" }
 
     val exitProfileDialogArguments = args.getProto(
       EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,
