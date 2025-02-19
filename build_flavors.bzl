@@ -2,7 +2,7 @@
 Macros & definitions corresponding to Oppia binary build flavors.
 """
 
-load("//:oppia_android_application.bzl", "declare_deployable_application", "oppia_android_application")
+load("//:oppia_android_application.bzl", "generate_universal_apk", "oppia_android_application")
 load("//:version.bzl", "MAJOR_VERSION", "MINOR_VERSION", "OPPIA_ALPHA_KITKAT_VERSION_CODE", "OPPIA_ALPHA_VERSION_CODE", "OPPIA_BETA_VERSION_CODE", "OPPIA_DEV_KITKAT_VERSION_CODE", "OPPIA_DEV_VERSION_CODE", "OPPIA_GA_VERSION_CODE")
 
 # Defines the list of flavors available to build the Oppia app in. Note to developers: this list
@@ -242,7 +242,7 @@ def define_oppia_aab_binary_flavor(flavor):
 
     This will define two targets:
     - //:oppia_<flavor> (the AAB)
-    - //:install_oppia_<flavor> (the installable binary target--see declare_deployable_application
+    - //:oppia_<flavor>_universal_apk (the installable binary target--see generate_universal_apk
       for details)
 
     Args:
@@ -278,7 +278,7 @@ def define_oppia_aab_binary_flavor(flavor):
         shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
         deps = _FLAVOR_METADATA[flavor]["deps"],
     )
-    declare_deployable_application(
-        name = "install_oppia_%s" % flavor,
+    generate_universal_apk(
+        name = "oppia_%s_universal_apk" % flavor,
         aab_target = ":oppia_%s" % flavor,
     )
