@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -118,7 +116,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ProfileSelectionFragmentBinding.setUpPortraitMode() {
-    subscribeToWasProfileEverAdded()
+    setListSpanCount()
 
     profilesList?.apply {
       isNestedScrollingEnabled = false
@@ -194,40 +192,19 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private val wasProfileEverAdded: LiveData<Boolean> by lazy {
-    Transformations.map(
-      profileManagementController.getWasProfileEverAdded().toLiveData(),
-      ::processWasProfileEverAddedResult
+  private fun setListSpanCount() {
+    chooserViewModel.profilesList.observe(
+      fragment,
+      { profilesList ->
+        val spanCount = if (profilesList.size > 1) {
+          activity.resources.getInteger(R.integer.profile_chooser_span_count)
+        } else {
+          activity.resources.getInteger(R.integer.profile_chooser_first_time_span_count)
+        }
+        val layoutManager = GridLayoutManager(activity, spanCount)
+        binding.profilesList?.layoutManager = layoutManager
+      }
     )
-  }
-
-  private fun subscribeToWasProfileEverAdded() {
-    wasProfileEverAdded.observe(activity) {
-      val spanCount = if (it) {
-        activity.resources.getInteger(R.integer.profile_chooser_span_count)
-      } else {
-        activity.resources.getInteger(R.integer.profile_chooser_first_time_span_count)
-      }
-      val layoutManager = GridLayoutManager(activity, spanCount)
-      binding.profilesList?.layoutManager = layoutManager
-    }
-  }
-
-  private fun processWasProfileEverAddedResult(
-    wasProfileEverAddedResult: AsyncResult<Boolean>
-  ): Boolean {
-    return when (wasProfileEverAddedResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e(
-          "ProfileChooserFragment",
-          "Failed to retrieve the information on wasProfileEverAdded",
-          wasProfileEverAddedResult.error
-        )
-        false
-      }
-      is AsyncResult.Pending -> false
-      is AsyncResult.Success -> wasProfileEverAddedResult.value
-    }
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */
