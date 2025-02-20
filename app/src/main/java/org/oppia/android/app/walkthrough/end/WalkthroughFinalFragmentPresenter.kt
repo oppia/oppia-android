@@ -45,8 +45,7 @@ class WalkthroughFinalFragmentPresenter @Inject constructor(
         /* attachToRoot= */ false
       )
     this.topicId = topicId
-    val internalProfileId = activity.intent?.extractCurrentUserProfileId()?.internalId ?: -1
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
 
     walkthroughFinalViewModel = WalkthroughFinalViewModel()
 
