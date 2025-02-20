@@ -64,9 +64,9 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 1. No matching toolchains (sdk_toolchain_type)
     ```
-    ERROR: While resolving toolchains for target //:oppia: no matching toolchains found for types
+    ERROR: While resolving toolchains for target //:oppia_dev: no matching toolchains found for types
     @bazel_tools//tools/android:sdk_toolchain_type
-    ERROR: Analysis of target '//:oppia' failed; build aborted: no matching toolchains found for types
+    ERROR: Analysis of target '//:oppia_dev' failed; build aborted: no matching toolchains found for types
     @bazel_tools//tools/android:sdk_toolchain_type
     INFO: Elapsed time: 12.805s
     INFO: 0 processes.
@@ -119,7 +119,7 @@ After successfully running the above commands, build the app using Bazel by runn
 
       ```
       bazel clean --expunge
-      bazel build //:oppia --noexperimental_check_desugar_deps
+      bazel build //:oppia_dev --noexperimental_check_desugar_deps
       ```
 The `--noexperimental_check_desugar_deps` flag is explained in the [bazel blog](https://blog.bazel.build/2018/12/19/bazel-0.21.html#android).
 
