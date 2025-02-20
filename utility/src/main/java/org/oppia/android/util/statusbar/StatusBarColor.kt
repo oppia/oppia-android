@@ -15,14 +15,12 @@ class StatusBarColor {
      * @param statusBarLight passed Boolean true if the status bar theme is light, else passed Boolean false
      */
     fun statusBarColorUpdate(colorId: Int, activity: AppCompatActivity, statusBarLight: Boolean) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        if (statusBarLight && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          // TODO(#3616): Migrate to the proper SDK 30+ APIs.
-          @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
-          activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        activity.window.statusBarColor = ContextCompat.getColor(activity, colorId)
+      if (statusBarLight && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        // TODO(#3616): Migrate to the proper SDK 30+ APIs.
+        @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
+        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
       }
+      activity.window.statusBarColor = ContextCompat.getColor(activity, colorId)
     }
   }
 }
