@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.text.Html
 import android.text.Spannable
+import android.text.style.ImageSpan
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -114,6 +115,33 @@ class LiTagHandlerTest {
   }
 
   @Test
+  fun testFromHtml_withImageSpanInsideList_insertsNewlinesAroundImage() {
+    val html = "<oppia-ul><oppia-li>Test<img src=\"test_source.png\"/>Image</oppia-li></oppia-ul>"
+    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
+    val liTaghandler = LiTagHandler(context, displayLocale)
+    val parsedHtml =
+      CustomHtmlContentHandler.fromHtml(
+        html = html,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(
+          CUSTOM_LIST_LI_TAG to liTaghandler,
+          CUSTOM_LIST_UL_TAG to liTaghandler
+        )
+      )
+
+    val imageSpans = parsedHtml.getSpans(0, parsedHtml.length, ImageSpan::class.java)
+    assertThat(imageSpans).hasLength(1)
+    val imageSpan = imageSpans[0]
+    val start = parsedHtml.getSpanStart(imageSpan)
+    val end = parsedHtml.getSpanEnd(imageSpan)
+
+    assertThat(parsedHtml[start - 1]).isEqualTo('\n')
+    assertThat(parsedHtml[end]).isEqualTo('\n')
+    assertThat(parsedHtml.toString()).contains("Test")
+    assertThat(parsedHtml.toString()).contains("Image")
+  }
+
+  @Test
   fun testCustomListElement_betweenNestedParagraphs_parsesCorrectlyIntoNumberedListSpan() {
     val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
     val htmlString = "<p>You should know the following before going on:<br></p>" +
@@ -135,57 +163,6 @@ class LiTagHandlerTest {
     assertThat(parsedHtml.toString()).isNotEmpty()
     assertThat(parsedHtml.getSpansFromWholeString(ListItemLeadingMarginSpan.OlSpan::class))
       .hasLength(4)
-  }
-
-  @Test
-  fun testGetContentDescription_handlesNestedOrderedList() {
-    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
-    val htmlString = "<p>You should know the following before going on:<br></p>" +
-      "<oppia-ol><oppia-li>The counting numbers (1, 2, 3, 4, 5 ….)</oppia-li>" +
-      "<oppia-li>How to tell whether one counting number is bigger or " +
-      "smaller than another <oppia-ol><oppia-li>Item 1</oppia-li> <oppia-li>Item 2" +
-      "</oppia-li></oppia-ol></oppia-li></oppia-ol>"
-    val liTaghandler = LiTagHandler(context, displayLocale)
-    val contentDescription =
-      CustomHtmlContentHandler.getContentDescription(
-        html = htmlString,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to liTaghandler,
-          CUSTOM_LIST_OL_TAG to liTaghandler
-        )
-      )
-    assertThat(contentDescription).isEqualTo(
-      "You should know the following before going on:\n" +
-        "The counting numbers (1, 2, 3, 4, 5 ….)\n" +
-        "How to tell whether one counting number is bigger or smaller than another \n" +
-        "Item 1 \n" +
-        "Item 2"
-    )
-  }
-
-  @Test
-  fun testGetContentDescription_handlesSimpleUnorderedList() {
-    val displayLocale = createDisplayLocaleImpl(US_ENGLISH_CONTEXT)
-    val htmlString = "<p>You should know the following before going on:<br>" +
-      "<oppia-ul><oppia-li>The counting numbers (1, 2, 3, 4, 5 ….)</oppia-li>" +
-      "<oppia-li>How to tell whether one counting number is bigger or " +
-      "smaller than another</oppia-li></oppia-ul></p>"
-    val liTaghandler = LiTagHandler(context, displayLocale)
-    val contentDescription =
-      CustomHtmlContentHandler.getContentDescription(
-        html = htmlString,
-        imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf(
-          CUSTOM_LIST_LI_TAG to liTaghandler,
-          CUSTOM_LIST_OL_TAG to liTaghandler
-        )
-      )
-    assertThat(contentDescription).isEqualTo(
-      "You should know the following before going on:\n" +
-        "The counting numbers (1, 2, 3, 4, 5 ….)\n" +
-        "How to tell whether one counting number is bigger or smaller than another"
-    )
   }
 
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {

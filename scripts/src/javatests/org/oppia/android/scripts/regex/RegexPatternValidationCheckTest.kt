@@ -70,7 +70,7 @@ class RegexPatternValidationCheckTest {
     "All plurals outside strings.xml must be marked as not translatable, or moved to strings.xml."
   private val importingAndroidBidiFormatterErrorMessage =
     "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for" +
-      " KitKat compatibility."
+      " better compatibility."
   private val importingAndroidXBidiFormatterErrorMessage =
     "Do not use AndroidX's BidiFormatter directly. Instead, use the wrapper utility" +
       " OppiaBidiFormatter so that tests can verify that formatting actually occurs on select" +
@@ -120,7 +120,7 @@ class RegexPatternValidationCheckTest {
       " properly in SDK <21 environments."
   private val useJava8OptionalErrorMessage =
     "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some" +
-      " incompatibilities between Bazel & KitKat builds."
+      " incompatibilities between different SDK targeted builds."
   private val useJavaCalendarErrorMessage =
     "Don't use Calendar directly. Instead, use OppiaClock and/or OppiaLocale for" +
       " calendar-specific operations."
@@ -133,7 +133,7 @@ class RegexPatternValidationCheckTest {
   private val doNotUseKotlinDelegatesErrorMessage =
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
-      " cost, and can cause breakages on KitKat devices. See #3939 for more context."
+      " cost, and can cause breakages on some devices. See #3939 for more context."
   private val screenNameNotPresentErrorMessage =
     "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum " +
       "of screens.proto and add that name to your activity using " +

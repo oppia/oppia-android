@@ -58,6 +58,13 @@ echo "********************************"
 bazel run //scripts:xml_syntax_check -- $(pwd)
 echo ""
 
+# Run TextView Style check
+echo "********************************"
+echo "Running TextView style validation checks"
+echo "********************************"
+bazel run //scripts:check_textview_styles -- $(pwd)
+echo ""
+
 # Run Testfile Presence Check
 echo "********************************"
 echo "Running Testfile presence checks"
