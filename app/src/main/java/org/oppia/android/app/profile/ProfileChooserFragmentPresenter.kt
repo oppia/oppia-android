@@ -132,6 +132,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
     profilesListLandscape?.viewTreeObserver?.addOnGlobalLayoutListener {
       val landscapeList = profilesListLandscape as RecyclerView
+
       if (landscapeList.shouldShowScrollArrows()) {
         profileListScrollLeft?.visibility = View.VISIBLE
         profileListScrollRight?.visibility = View.VISIBLE
@@ -163,7 +164,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
 
     return if (firstVisiblePosition == RecyclerView.NO_POSITION ||
-      lastVisiblePosition == RecyclerView.NO_POSITION) {
+      lastVisiblePosition == RecyclerView.NO_POSITION
+    ) {
       0 // No visible items
     } else {
       lastVisiblePosition - firstVisiblePosition + 1
@@ -193,10 +195,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
       // Adjust offset based on layout direction and intent.
       val offset = when {
-        scrollLeftInRtl -> scrollableWidth - scrollDistance
+        scrollLeftInRtl -> scrollableWidth / 2 - scrollDistance
         scrollRightInRtl -> scrollDistance - scrollableWidth / 2
         scrollLeftInLtr -> scrollDistance - scrollableWidth / 2
-        scrollRightInLtr -> scrollableWidth - scrollDistance
+        scrollRightInLtr -> scrollableWidth / 2 - scrollDistance
         else -> 0 // Fallback, though this shouldn't occur.
       }
 
