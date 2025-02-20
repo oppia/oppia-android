@@ -41,7 +41,7 @@
     <TextView
       android:id="@+id/profile_name_text"
       style="@style/Caption"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:layout_marginTop="@dimen/profile_chooser_profile_view_name_margin_top_profile_already_added"
