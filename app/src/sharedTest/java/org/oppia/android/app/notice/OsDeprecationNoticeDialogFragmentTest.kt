@@ -168,7 +168,7 @@ class OsDeprecationNoticeDialogFragmentTest {
         .onActionButtonClicked(
           DeprecationNoticeActionResponse.Dismiss(
             deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION,
-            deprecatedVersion = 19,
+            deprecatedVersion = 21,
           )
         )
     }

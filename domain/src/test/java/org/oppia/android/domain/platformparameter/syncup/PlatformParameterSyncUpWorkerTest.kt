@@ -14,7 +14,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
-import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -464,19 +463,17 @@ class PlatformParameterSyncUpWorkerTest {
       jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
       remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
       @BaseUrl baseUrl: String
-    ): Optional<Retrofit> {
+    ): Retrofit {
       val client = OkHttpClient.Builder()
         .addInterceptor(jsonPrefixNetworkInterceptor)
         .addInterceptor(remoteAuthNetworkInterceptor)
         .build()
 
-      return Optional.of(
-        Retrofit.Builder()
-          .baseUrl(baseUrl)
-          .addConverterFactory(MoshiConverterFactory.create())
-          .client(client)
-          .build()
-      )
+      return Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .client(client)
+        .build()
     }
 
     @Provides
@@ -486,9 +483,8 @@ class PlatformParameterSyncUpWorkerTest {
     @Provides
     fun provideMockPlatformParameterService(
       mockRetrofit: MockRetrofit
-    ): Optional<PlatformParameterService> {
-      val delegate = mockRetrofit.create(PlatformParameterService::class.java)
-      return Optional.of(MockPlatformParameterService(delegate))
+    ): PlatformParameterService {
+      return MockPlatformParameterService(mockRetrofit.create(PlatformParameterService::class.java))
     }
   }
 
