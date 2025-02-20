@@ -24,7 +24,7 @@ This is not always possible, since there might be other files relying on the sam
 - Look at other BUILD.bazel files in the codebase for an idea on how to lay out packages.
 - Migrating files will always involve introducing new libraries, and then hooking those up to the top-level module libraries. There are ways of making this a bit easier:
   - While performing the migration, focus on making sure the new library builds first, e.g.: ``bazel build //<module>/src/main/java/org/oppia/app/<module>/<subdirectory>:all``.
-  - After the new libraries contain all of the files they need to, their dependencies are correct, and they build, make sure the app also builds by running: ``bazel build //:oppia``.
+  - After the new libraries contain all of the files they need to, their dependencies are correct, and they build, make sure the app also builds by running: ``bazel build //:oppia_dev``.
 
 
 ## FAQ

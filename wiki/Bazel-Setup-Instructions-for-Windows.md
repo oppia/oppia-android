@@ -174,7 +174,7 @@ scripts/setup.sh
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this & all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
 ```sh
-bazel build //:oppia
+bazel build //:oppia_dev
 ```
 
 (Note that this command may take 10-20 minutes to complete depending on the performance of your machine).
@@ -182,10 +182,8 @@ bazel build //:oppia
 If everything is working, you should see output like the following:
 
 ```
-Target //:oppia up-to-date:
-  bazel-bin/oppia_deploy.jar
-  bazel-bin/oppia_unsigned/apk
-  bazel-bin/oppia/apk
+Target //:oppia_dev up-to-date:
+  bazel-bin/oppia_dev.aab
 INFO: Elapsed time: ...
 INFO: 1 process...
 INFO: Build completed successfully, ...
