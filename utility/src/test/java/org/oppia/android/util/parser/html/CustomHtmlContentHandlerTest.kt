@@ -402,6 +402,24 @@ class CustomHtmlContentHandlerTest {
     )
   }
 
+  @Test
+  fun testGetContentDescription_anchorTag_handlesCorrectly() {
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html =
+        """
+        <p>Visit <a href="https://example.com">Example</a> for more info.</p>
+        <a href="https://another.com">Another Link</a>
+        """.trimIndent(),
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf()
+    )
+
+    assertThat(contentDescription).isEqualTo(
+      "Visit https://example.com Example for more info.\n" +
+        "https://another.com Another Link"
+    )
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
