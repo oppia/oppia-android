@@ -859,7 +859,7 @@
     <item name="android:textSize">24sp</item>
     <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
     <item name="android:fontFamily">sans-serif</item>
-    <item name="android:text">@string/great"</item>
+    <item name="android:text">@string/great</item>
   </style>
 
   <style name="ChapterIndexTextViewStyle" parent="TextView.Common1">
