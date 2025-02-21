@@ -216,7 +216,6 @@ class CreateProfileFragmentTest {
 
       val expectedParams = IntroActivityParams.newBuilder()
         .setProfileNickname("John")
-        .setProfileId(0)
         .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
         .build()
 
@@ -285,7 +284,6 @@ class CreateProfileFragmentTest {
       val expectedParams =
         IntroActivityParams.newBuilder()
           .setProfileNickname("John")
-          .setProfileId(0)
           .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
           .build()
 
@@ -337,7 +335,6 @@ class CreateProfileFragmentTest {
 
       val expectedParams = IntroActivityParams.newBuilder()
         .setProfileNickname("John")
-        .setProfileId(0)
         .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
         .build()
       intended(
@@ -403,7 +400,6 @@ class CreateProfileFragmentTest {
 
       val expectedParams = IntroActivityParams.newBuilder()
         .setProfileNickname("John")
-        .setProfileId(0)
         .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
         .build()
 
