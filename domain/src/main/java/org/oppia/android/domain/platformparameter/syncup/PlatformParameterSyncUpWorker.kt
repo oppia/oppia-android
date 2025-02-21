@@ -3,7 +3,6 @@ package org.oppia.android.domain.platformparameter.syncup
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import com.google.common.base.Optional
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +28,7 @@ class PlatformParameterSyncUpWorker private constructor(
   context: Context,
   params: WorkerParameters,
   private val platformParameterController: PlatformParameterController,
-  private val platformParameterService: Optional<PlatformParameterService>,
+  private val platformParameterService: PlatformParameterService,
   private val oppiaLogger: OppiaLogger,
   private val exceptionsController: ExceptionsController,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
@@ -85,19 +84,16 @@ class PlatformParameterSyncUpWorker private constructor(
   /**
    * Synchronously executes the network request to get platform parameters from the Oppia backend.
    */
-  private fun makeNetworkCallForPlatformParameters(): Optional<Response<Map<String, Any>>?> {
-    return platformParameterService.transform { service ->
-      service?.getPlatformParametersByVersion(
-        applicationContext.getVersionName()
-      )?.execute()
-    }
+  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>>? {
+    return platformParameterService.getPlatformParametersByVersion(
+      applicationContext.getVersionName()
+    ).execute()
   }
 
   /** Extracts platform parameters from the remote service and stores them in the cache store. */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
-      val optionalResponse = makeNetworkCallForPlatformParameters()
-      val response = optionalResponse.orNull()
+      val response = makeNetworkCallForPlatformParameters()
       if (response != null) {
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)
@@ -126,7 +122,7 @@ class PlatformParameterSyncUpWorker private constructor(
   /** Creates an instance of [PlatformParameterSyncUpWorker] by properly injecting dependencies. */
   class Factory @Inject constructor(
     private val platformParameterController: PlatformParameterController,
-    private val platformParameterService: Optional<PlatformParameterService>,
+    private val platformParameterService: PlatformParameterService,
     private val oppiaLogger: OppiaLogger,
     private val exceptionsController: ExceptionsController,
     @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher
