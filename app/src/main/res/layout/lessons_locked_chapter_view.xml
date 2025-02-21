@@ -30,18 +30,14 @@
 
       <TextView
         android:id="@+id/chapter_index"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ChapterIndexTextViewStyle"
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
-        android:fontFamily="sans-serif"
         android:importantForAccessibility="no"
         android:minWidth="20dp"
         android:minHeight="20dp"
         android:text="@{viewModel.computePlayChapterIndexText()}"
-        android:textAlignment="center"
-        android:textColor="@color/component_color_shared_secondary_4_text_color"
-        android:textSize="16sp" />
+        android:textAlignment="center" />
 
       <ImageView
         android:id="@+id/chapter_play_state_icon"

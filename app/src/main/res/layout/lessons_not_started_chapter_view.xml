@@ -24,20 +24,13 @@
 
     <TextView
       android:id="@+id/chapter_index"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      style="@style/ChapterIndexTextViewStyle"
       android:layout_marginStart="0dp"
       android:background="@drawable/chapter_dark_green_bg_with_bright_green_border"
-      android:fontFamily="sans-serif"
-      android:gravity="center"
       android:importantForAccessibility="no"
+      android:text="@{viewModel.computePlayChapterIndexText()}"
       android:minWidth="60dp"
       android:minHeight="48dp"
-      android:paddingStart="8dp"
-      android:paddingEnd="8dp"
-      android:text="@{viewModel.computePlayChapterIndexText()}"
-      android:textColor="@color/component_color_shared_secondary_4_text_color"
-      android:textSize="20sp"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 

@@ -6,12 +6,7 @@
 
   <TextView
     android:id="@+id/onboarding_language_text_view"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:fontFamily="sans-serif"
-    android:padding="@dimen/onboarding_shared_padding_medium"
-    android:textColor="@color/component_color_onboarding_shared_text_color"
-    android:textSize="@dimen/onboarding_shared_text_size_medium"
+    style="@style/OnboardingLanguageTextViewStyle"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 </FrameLayout>

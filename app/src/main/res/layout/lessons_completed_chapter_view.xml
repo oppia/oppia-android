@@ -22,21 +22,12 @@
 
     <TextView
       android:id="@+id/chapter_index"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      style="@style/ChapterIndexTextViewStyle"
       android:background="@color/component_color_lessons_tab_activity_lessons_completed_chapter_index_background_color"
-      android:fontFamily="sans-serif"
-      android:gravity="center"
       android:importantForAccessibility="yes"
-      android:minWidth="60dp"
-      android:minHeight="48dp"
-      android:paddingStart="8dp"
       android:paddingTop="12dp"
-      android:paddingEnd="8dp"
       android:paddingBottom="12dp"
       android:text="@{viewModel.computePlayChapterIndexText()}"
-      android:textColor="@color/component_color_shared_secondary_4_text_color"
-      android:textSize="20sp"
       android:contentDescription="@{viewModel.computeChapterPlayStateIconContentDescription()}"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />

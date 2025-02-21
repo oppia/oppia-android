@@ -53,13 +53,11 @@
 
         <TextView
           android:id="@+id/walkthrough_final_no_text_view"
+          style="@style/WalkthroughFinalNoTextViewStyle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:fontFamily="sans-serif"
-          android:text="@string/no"
-          android:textColor="@color/component_color_shared_primary_text_color"
-          android:textSize="20sp" />
+          android:text="@string/no" />
 
         <TextView
           android:id="@+id/walkthrough_final_no_center_text_view"
@@ -88,13 +86,11 @@
 
         <TextView
           android:id="@+id/walkthrough_final_yes_text_view"
+          style="@style/WalkthroughFinalYesTextViewStyle"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
-          android:fontFamily="sans-serif"
-          android:text="@string/yes"
-          android:textColor="@color/component_color_shared_secondary_6_text_color"
-          android:textSize="20sp" />
+          android:text="@string/yes" />
 
         <TextView
           android:id="@+id/walkthrough_final_yes_center_text_view"
@@ -127,12 +123,7 @@
 
     <TextView
       android:id="@+id/walkthrough_final_title_text_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:fontFamily="sans-serif"
-      android:text="@string/great"
-      android:textColor="@color/component_color_shared_primary_text_color"
-      android:textSize="24sp"
+      style="@style/WalkthroughFinalTitleTextViewStyle"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/walkthrough_final_image_view"
       app:layout_constraintTop_toTopOf="@+id/walkthrough_final_image_view" />

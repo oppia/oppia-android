@@ -9,9 +9,6 @@
 
   <TextView
     android:id="@+id/learner_analytics_sync_status_text_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom"
-    android:text="@{viewModel.syncStatus}"
-    android:textSize="16sp" />
+    style="@style/LearnerAnalyticsSyncStatusTextViewStyle"
+    android:text="@{viewModel.syncStatus}" />
 </layout>
