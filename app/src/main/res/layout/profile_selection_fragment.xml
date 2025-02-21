@@ -22,7 +22,7 @@
       android:layout_marginBottom="@dimen/profile_selection_fragment_scrollview_margin"
       android:overScrollMode="never"
       android:scrollbars="none"
-      app:layout_constraintBottom_toTopOf="@id/profile_selection_setting_icon">
+      app:layout_constraintBottom_toTopOf="@id/add_profile_button">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profile_selection_container"
@@ -103,7 +103,6 @@
       android:paddingBottom="@dimen/profile_selection_fragment_icon_padding"
       android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
       app:backgroundTint="@color/component_color_drawer_fragment_admin_controls_selected_text_color"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintBottom_toTopOf="@id/add_profile_prompt"
       app:layout_constraintEnd_toEndOf="parent"
       app:srcCompat="@drawable/ic_add" />
