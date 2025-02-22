@@ -145,10 +145,6 @@ class AppVersionActivityTest {
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-    // Reset locale after each test.
-    if (::appLanguageLocaleHandler.isInitialized) {
-      appLanguageLocaleHandler.resetLocale()
-    }
   }
 
   private fun setUpTestApplicationComponent() {

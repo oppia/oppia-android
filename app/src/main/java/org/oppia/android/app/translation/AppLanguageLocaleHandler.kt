@@ -76,21 +76,6 @@ class AppLanguageLocaleHandler @Inject constructor(
     verifyDisplayLocaleIsInitialized()
     return displayLocale
   }
-  fun resetLocale() {
-    if (!isInitialized()) {
-      // Initialize with system default locale if not already set
-      initializeLocale(
-        localeController.reconstituteDisplayLocale(
-          localeController.getLikelyDefaultAppStringLocaleContext()
-        )
-      )
-    } else {
-      // If already initialized, just update the locale
-      displayLocale = localeController.reconstituteDisplayLocale(
-        localeController.getLikelyDefaultAppStringLocaleContext()
-      )
-    }
-  }
 
   private fun verifyDisplayLocaleIsInitialized() {
     check(isInitialized()) {
