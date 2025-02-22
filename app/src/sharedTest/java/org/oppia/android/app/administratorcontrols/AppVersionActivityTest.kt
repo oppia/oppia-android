@@ -10,14 +10,15 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
@@ -26,7 +27,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.R
@@ -109,6 +109,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.Rule
 
 /** Tests for [AppVersionActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -124,9 +125,6 @@ class AppVersionActivityTest {
   @get:Rule(order = 1)
   val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule(order = 2)
-  val activityScenarioRule = ActivityScenarioRule(AppVersionActivity::class.java)
-
   @Inject
   lateinit var context: Context
 
@@ -135,6 +133,7 @@ class AppVersionActivityTest {
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Before
   fun setUp() {
     Intents.init()
@@ -142,26 +141,11 @@ class AppVersionActivityTest {
     testCoroutineDispatchers.registerIdlingResource()
   }
 
-  @Test
-  fun testAppVersionActivity_hasCorrectActivityLabel() {
-    val scenario = activityScenarioRule.scenario
-    scenario.onActivity { activity ->
-      val title = activity.title
-      assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
-    }
-  }
-
-  private fun createAppVersionActivityIntent(): Intent {
-    return AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-  }
-
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
-    // Reset locale after each test
+    // Reset locale after each test.
     if (::appLanguageLocaleHandler.isInitialized) {
       appLanguageLocaleHandler.resetLocale()
     }
@@ -171,109 +155,116 @@ class AppVersionActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun createAppVersionActivityIntent(): Intent {
+    return AppVersionActivity.createAppVersionActivityIntent(
+      ApplicationProvider.getApplicationContext()
+    )
+  }
+
+  @Test
+  fun testAppVersionActivity_hasCorrectActivityLabel() {
+    ActivityScenario.launch(AppVersionActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
+      }
+    }
+  }
+
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createAppVersionActivityIntent().extractCurrentAppScreenName()
-
     assertThat(screenName).isEqualTo(ScreenName.APP_VERSION_ACTIVITY)
   }
 
   @Test
   fun testAppVersionActivity_loadFragment_displaysAppVersion() {
-    val scenario = activityScenarioRule.scenario
-    scenario.onActivity { activity ->
-      val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
-      onView(
-        withText(
-          String.format(
-            context.resources.getString(R.string.app_version_name),
-            context.getVersionName()
-          )
-        )
-      ).check(matches(isDisplayed()))
-      onView(
-        withText(
-          String.format(
-            context.resources.getString(R.string.app_last_update_date),
-            lastUpdateDate
-          )
-        )
-      ).check(
-        matches(isDisplayed())
-      )
-    }
-  }
-
-  @Test
-  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
-    val scenario = activityScenarioRule.scenario
-    scenario.onActivity { activity ->
-      onView(isRoot()).perform(orientationLandscape())
-      val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
-      onView(
-        withId(
-          R.id.app_version_text_view
-        )
-      ).check(
-        matches(
+    ActivityScenario.launch(AppVersionActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
+        onView(
           withText(
             String.format(
               context.resources.getString(R.string.app_version_name),
               context.getVersionName()
             )
           )
-        )
-      )
-      onView(
-        withId(
-          R.id.app_last_update_date_text_view
-        )
-      ).check(
-        matches(
+        ).check(matches(isDisplayed()))
+        onView(
           withText(
             String.format(
               context.resources.getString(R.string.app_last_update_date),
               lastUpdateDate
             )
           )
-        )
-      )
+        ).check(matches(isDisplayed()))
+      }
     }
   }
 
   @Test
+  fun testAppVersionActivity_configurationChange_appVersionIsDisplayedCorrectly() {
+    ActivityScenario.launch(AppVersionActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        onView(isRoot()).perform(orientationLandscape())
+        val lastUpdateDate = scenario.convertTimeStampToDate(context.getLastUpdateTime())
+        onView(
+          withId(R.id.app_version_text_view)
+        ).check(
+          matches(
+            withText(
+              String.format(
+                context.resources.getString(R.string.app_version_name),
+                context.getVersionName()
+              )
+            )
+          )
+        )
+        onView(
+          withId(R.id.app_last_update_date_text_view)
+        ).check(
+          matches(
+            withText(
+              String.format(
+                context.resources.getString(R.string.app_last_update_date),
+                lastUpdateDate
+              )
+            )
+          )
+        )
+      }
+    }
+  }
+  @Test
   fun testAppVersionActivity_loadFragment_onBackPressed_displaysAdministratorControlsActivity() {
+
     ActivityScenario.launch<AdministratorControlsActivity>(
       launchAdministratorControlsActivityIntent(internalProfileId = 0)
-    ).use { scenario ->
-
+    ).use { adminScenario ->
       testCoroutineDispatchers.runCurrent()
 
-      // Scroll to the item in the RecyclerView
+
       onView(withId(R.id.administrator_controls_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(3)
       )
 
-      // Click on the app version option
-      onView(withText(R.string.administrator_controls_app_version)).perform(click())
 
-      // Wait for UI update
+      onView(withText(R.string.administrator_controls_app_version)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      // Verify if the AppVersionActivity is running
-      var currentActivity: Activity? = null
-      scenario.onActivity { activity ->
-        currentActivity = getCurrentActivity()
-        assertThat(currentActivity).isInstanceOf(AppVersionActivity::class.java)
+
+      Intents.intended(hasComponent(AppVersionActivity::class.java.name))
+
+
+      ActivityScenario.launch(AppVersionActivity::class.java).use { appVersionScenario ->
+        appVersionScenario.onActivity { activity ->
+
+          activity.onBackPressed()
+        }
+        testCoroutineDispatchers.runCurrent()
       }
 
-      // Simulate pressing back via activity rather than Espresso
-      (currentActivity as? AppVersionActivity)?.onBackPressed()
 
-      // Wait for UI update
-      testCoroutineDispatchers.runCurrent()
-
-      // Verify that AdministratorControlsActivity is visible again
       onView(withId(R.id.administrator_controls_list)).check(matches(isDisplayed()))
     }
   }
@@ -288,23 +279,17 @@ class AppVersionActivityTest {
     return activity[0]
   }
 
+  // Extension function to convert a timestamp to a date string.
   private fun ActivityScenario<AppVersionActivity>.convertTimeStampToDate(
     timestampMillis: Long
   ): String {
     lateinit var dateTimeString: String
-    onActivity { activity ->
+    this.onActivity { activity ->
       val resourceHandler = activity.activityComponent.getAppLanguageResourceHandler()
       dateTimeString = resourceHandler.computeDateString(timestampMillis)
     }
     return dateTimeString
   }
-
-//  private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-//    val intent = AppVersionActivity.createAppVersionActivityIntent(
-//      ApplicationProvider.getApplicationContext()
-//    )
-//    return ActivityScenario.launch(intent)
-//  }
 
   private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
@@ -314,7 +299,7 @@ class AppVersionActivityTest {
     )
   }
 
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
+
   @Singleton
   @Component(
     modules = [

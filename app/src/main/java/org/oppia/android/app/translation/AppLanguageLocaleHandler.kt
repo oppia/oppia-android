@@ -17,7 +17,6 @@ import javax.inject.Singleton
  * This class should never be used directly. Instead of accessing the locale directly, use
  * [AppLanguageResourceHandler].
  */
-
 @Singleton
 class AppLanguageLocaleHandler @Inject constructor(
   private val localeController: LocaleController
