@@ -117,10 +117,10 @@ import org.junit.Rule
   qualifiers = "port-xxhdpi"
 )
 class AppVersionActivityTest {
-  @get:Rule(order = 0)
+  @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule(order = 1)
+  @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
   @Inject
