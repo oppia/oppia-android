@@ -29,15 +29,21 @@ class OppiaTestRule : TestRule {
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
 
-        val enabledFeatureFlags = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), EnableFeatureFlag::class.java
-        ) +
-          extractParametersAndFeatureFlags(description?.annotations, EnableFeatureFlag::class.java)
+        val enabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(description?.testClass?.annotations?.toList(), EnableFeatureFlag::class.java)
+        val enabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(description?.annotations, EnableFeatureFlag::class.java)
 
-        val disabledFeatureFlags = extractParametersAndFeatureFlags(
-          description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java
-        ) +
-          extractParametersAndFeatureFlags(description?.annotations, DisableFeatureFlag::class.java)
+        println("Enabled Feature Flags Class level - $enabledClassLevelFeatureFlags")
+        println("Enabled Feature Flags Method level - $enabledMethodLevelFeatureFlags")
+
+        val disabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java)
+        val disabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(description?.annotations, DisableFeatureFlag::class.java)
+
+        println("Disabled Feature Flags Class level - $disabledClassLevelFeatureFlags")
+        println("Disabled Feature Flags Method level - $disabledMethodLevelFeatureFlags")
+
+        val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(
+          description?.annotations, ResetFeatureFlagToDefault::class.java
+        )
 
         val overriddenBoolParameters = extractParametersAndFeatureFlags(
           description?.testClass?.annotations?.toList(),
@@ -66,18 +72,16 @@ class OppiaTestRule : TestRule {
             OverrideStringParameter::class.java
           )
 
-        val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(
-          description?.annotations, ResetFeatureFlagToDefault::class.java
-        )
-
         try {
           applyOverrides(
-            enabledFeatureFlags,
-            disabledFeatureFlags,
+            enabledClassLevelFeatureFlags,
+            disabledClassLevelFeatureFlags,
+            enabledMethodLevelFeatureFlags,
+            disabledMethodLevelFeatureFlags,
+            resetFeatureFlagToDefault,
             overriddenBoolParameters,
             overriddenIntParameters,
             overriddenStringParameters,
-            resetFeatureFlagToDefault
           )
 
           when {
@@ -122,18 +126,28 @@ class OppiaTestRule : TestRule {
   }
 
   private fun applyOverrides(
-    enabledFeatureFlags: List<EnableFeatureFlag>?,
-    disabledFeatureFlags: List<DisableFeatureFlag>?,
+    enabledClassLevelFeatureFlags: List<EnableFeatureFlag>?,
+    disabledClassLevelFeatureFlags: List<DisableFeatureFlag>?,
+    enabledMethodLevelFeatureFlags: List<EnableFeatureFlag>?,
+    disabledMethodLevelFeatureFlags: List<DisableFeatureFlag>?,
+    resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?,
     overriddenBoolParameters: List<OverrideBoolParameter>?,
     overriddenIntParameters: List<OverrideIntParameter>?,
     overriddenStringParameters: List<OverrideStringParameter>?,
-    resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?
   ) {
-    enabledFeatureFlags?.forEach { flag ->
+    enabledClassLevelFeatureFlags?.forEach { flag ->
       PlatformParameterModule.overrideFeatureFlags(flag.name, true)
     }
 
-    disabledFeatureFlags?.forEach { flag ->
+    disabledClassLevelFeatureFlags?.forEach { flag ->
+      PlatformParameterModule.overrideFeatureFlags(flag.name, false)
+    }
+
+    enabledMethodLevelFeatureFlags?.forEach { flag ->
+      PlatformParameterModule.overrideFeatureFlags(flag.name, true)
+    }
+
+    disabledMethodLevelFeatureFlags?.forEach { flag ->
       PlatformParameterModule.overrideFeatureFlags(flag.name, false)
     }
 
@@ -158,6 +172,7 @@ class OppiaTestRule : TestRule {
         overriddenValue.name, overriddenValue.value
       )
     }
+
   }
 
   private fun getCurrentPlatform(): TestPlatform {

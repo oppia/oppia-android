@@ -93,6 +93,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableFeatureFlag
 import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
@@ -133,7 +134,7 @@ import javax.inject.Singleton
   application = TopicRevisionFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-@EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+@DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
 class TopicRevisionFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
@@ -188,6 +189,7 @@ class TopicRevisionFragmentTest {
     }
   }
 
+  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(
