@@ -197,6 +197,11 @@ class OppiaTestRule : TestRule {
         overriddenIntParameters = overriddenClassLevelIntParameters,
         overriddenStringParameters = overriddenClassLevelStringParameters
       )
+      validateResetFeatureFlagConfiguration(
+        enabledClassLevelFeatureFlags = enabledClassLevelFeatureFlags,
+        disabledClassLevelFeatureFlags = disabledClassLevelFeatureFlags,
+        resetFeatureFlags = resetFeatureFlagToDefault
+      )
 
       val overriddenMethodLevelBoolParameters = extractParametersAndFeatureFlags(
           description?.annotations,
@@ -291,7 +296,7 @@ class OppiaTestRule : TestRule {
       overriddenIntParameters: List<OverrideIntParameter> = emptyList(),
       overriddenStringParameters: List<OverrideStringParameter> = emptyList(),
     ) {
-      val combinedFeatureFlags = (
+      val combinedPlatformParameters = (
         enabledFeatureFlags.map {it.name} +
           disabledFeatureFlags.map {it.name} +
           resetFeatureFlags.map {it.name} +
@@ -301,11 +306,32 @@ class OppiaTestRule : TestRule {
         ).groupingBy { it }
         .eachCount()
 
-      val conflictingFeatureFlags = combinedFeatureFlags.filter { it.value > 1 }.keys
-      if (conflictingFeatureFlags.isNotEmpty()) {
+      val conflictingPlatformParameters = combinedPlatformParameters.filter { it.value > 1 }.keys
+      if (conflictingPlatformParameters.isNotEmpty()) {
         error(
-          "Conflicting feature flag annotations found: $conflictingFeatureFlags. " +
-            "A test class or method cannot have multiple annotations for the same feature flag."
+          "Conflicting feature flag annotations found: $conflictingPlatformParameters. " +
+          "A test class or method cannot have multiple annotations for the same feature flag."
+        )
+      }
+    }
+
+    private fun validateResetFeatureFlagConfiguration(
+      enabledClassLevelFeatureFlags: List<EnableFeatureFlag>,
+      disabledClassLevelFeatureFlags: List<DisableFeatureFlag>,
+      resetFeatureFlags: List<ResetFeatureFlagToDefault>
+    ) {
+      val classLevelFeatureFlags = (
+        enabledClassLevelFeatureFlags.map {it.name} +
+        disabledClassLevelFeatureFlags.map {it.name}
+      )
+      println("class lev - $classLevelFeatureFlags")
+      println("reset name - ${resetFeatureFlags.map {it.name}}")
+      val invalidResets = resetFeatureFlags.map {it.name}.filterNot {it in classLevelFeatureFlags}
+      println("reset inv - $invalidResets")
+      if (invalidResets.isNotEmpty()) {
+        error(
+          "Invalid reset feature flag annotations found: $invalidResets. " +
+          "A reset annotation must have a corresponding class-level declaration."
         )
       }
     }

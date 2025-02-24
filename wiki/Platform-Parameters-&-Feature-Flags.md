@@ -222,7 +222,7 @@ To facilitate this, specific annotations can be used:
 - **Feature Flags**:
    - `@EnableFeatureFlag`
    - `@DisableFeatureFlag`
-   - `@ResetFeatureFlag`
+   - `@ResetFeatureFlagToDefault`
 
 - **Platform Parameters**:
    - `@OverrideBoolParameter`
@@ -267,7 +267,7 @@ fun testWhenFeatureFlagIsDisabled() {
 }
 
 @Test
-@ResetFeatureFlag(FeatureFlag.TEST_FEATURE)
+@ResetFeatureFlagToDefault(FeatureFlag.TEST_FEATURE)
 fun testWithDefaultFeatureFlagState() {
     // Test logic with default feature flag state
 }
@@ -305,7 +305,7 @@ Use these annotations to simulate specific runtime conditions by overriding the 
 
 - Scope of Annotations
    - `@EnableFeatureFlag`, `@DisableFeatureFlag`, `@OverrideBoolParameter`, `@OverrideIntParameter` and `@OverrideStringParameter` can be used at both class and method levels.
-   - `@ResetFeatureFlag` is specific to method level
+   - `@ResetFeatureFlagToDefault` is specific to method level
 
 ```kotlin
 @EnableFeatureFlag(FeatureFlag.TEST_FEATURE)
@@ -314,7 +314,7 @@ class FeatureFlagPlatformParameterTest {
 
     @Test
     @DisableFeatureFlag(FeatureFlag.TEST_FEATURE)
-    @ResetFeatureFlag(FeatureFlag.TEST_FEATURE)
+    @ResetFeatureFlagToDefault(FeatureFlag.TEST_FEATURE)
     fun testWithMethodLevelOverrides() {
         // Test logic
     }
