@@ -204,17 +204,17 @@ class OppiaTestRule : TestRule {
       )
 
       val overriddenMethodLevelBoolParameters = extractParametersAndFeatureFlags(
-          description?.annotations,
-          OverrideBoolParameter::class.java
-        )
+        description?.annotations,
+        OverrideBoolParameter::class.java
+      )
       val overriddenMethodLevelIntParameters = extractParametersAndFeatureFlags(
-          description?.annotations,
-          OverrideIntParameter::class.java
-        )
+        description?.annotations,
+        OverrideIntParameter::class.java
+      )
       val overriddenMethodLevelStringParameters = extractParametersAndFeatureFlags(
-          description?.annotations,
-          OverrideStringParameter::class.java
-        )
+        description?.annotations,
+        OverrideStringParameter::class.java
+      )
       validatePlatformParameterConflicts(
         overriddenBoolParameters = overriddenMethodLevelBoolParameters,
         overriddenIntParameters = overriddenMethodLevelIntParameters,
@@ -297,12 +297,12 @@ class OppiaTestRule : TestRule {
       overriddenStringParameters: List<OverrideStringParameter> = emptyList(),
     ) {
       val combinedPlatformParameters = (
-        enabledFeatureFlags.map {it.name} +
-          disabledFeatureFlags.map {it.name} +
-          resetFeatureFlags.map {it.name} +
-          overriddenBoolParameters.map {it.name} +
-          overriddenIntParameters.map {it.name} +
-          overriddenStringParameters.map {it.name}
+        enabledFeatureFlags.map { it.name } +
+          disabledFeatureFlags.map { it.name } +
+          resetFeatureFlags.map { it.name } +
+          overriddenBoolParameters.map { it.name } +
+          overriddenIntParameters.map { it.name } +
+          overriddenStringParameters.map { it.name }
         ).groupingBy { it }
         .eachCount()
 
@@ -310,7 +310,7 @@ class OppiaTestRule : TestRule {
       if (conflictingPlatformParameters.isNotEmpty()) {
         error(
           "Conflicting feature flag annotations found: $conflictingPlatformParameters. " +
-          "A test class or method cannot have multiple annotations for the same feature flag."
+            "A test class or method cannot have multiple annotations for the same feature flag."
         )
       }
     }
@@ -321,14 +321,15 @@ class OppiaTestRule : TestRule {
       resetFeatureFlags: List<ResetFeatureFlagToDefault>
     ) {
       val classLevelFeatureFlags = (
-        enabledClassLevelFeatureFlags.map {it.name} +
-        disabledClassLevelFeatureFlags.map {it.name}
-      )
-      val invalidResets = resetFeatureFlags.map {it.name}.filterNot {it in classLevelFeatureFlags}
+        enabledClassLevelFeatureFlags.map { it.name } +
+          disabledClassLevelFeatureFlags.map { it.name }
+        )
+      val invalidResets = resetFeatureFlags.map { it.name }
+        .filterNot { it in classLevelFeatureFlags }
       if (invalidResets.isNotEmpty()) {
         error(
           "Invalid reset feature flag annotations found: $invalidResets. " +
-          "A reset annotation must have a corresponding class-level declaration."
+            "A reset annotation must have a corresponding class-level declaration."
         )
       }
     }
