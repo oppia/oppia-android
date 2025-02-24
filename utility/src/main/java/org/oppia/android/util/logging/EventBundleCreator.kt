@@ -696,7 +696,7 @@ class EventBundleCreator @Inject constructor(
         }
 
         val featureFlagSyncStatuses = featureFlagsList.map {
-          featureFlagSyncStatusConverter.convertToInteger(it.flagSyncStatus.toString())
+          featureFlagSyncStatusConverter.convertToInteger(it.flagSyncStatus)
         }
 
         val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
