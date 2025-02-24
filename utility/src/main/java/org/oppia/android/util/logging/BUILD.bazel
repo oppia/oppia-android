@@ -196,6 +196,7 @@ kt_android_library(
         "FeatureFlagNameToIntegerConverter.kt",
     ],
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:controller",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
     ],

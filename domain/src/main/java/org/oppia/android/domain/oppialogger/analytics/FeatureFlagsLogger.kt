@@ -3,6 +3,14 @@ package org.oppia.android.domain.oppialogger.analytics
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext
+import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
+import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
+import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
+import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
+import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
@@ -16,7 +24,12 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -63,19 +76,19 @@ class FeatureFlagsLogger @Inject constructor(
    * @return a list of key-value pairs of [String] and [PlatformParameterValue]
    */
   private var featureFlagItemMap: Map<String, PlatformParameterValue<Boolean>> = mapOf(
-    "DOWNLOADS_SUPPORT" to enableDownloadsSupport,
-    "EXTRA_TOPIC_TABS_UI" to enableExtraTopicTabsUi,
-    "LEARNER_STUDY_ANALYTICS" to enableLearnerStudyAnalytics,
-    "FAST_LANGUAGE_SWITCHING_IN_LESSON" to enableFastLanguageSwitchingInLesson,
-    "LOGGING_LEARNER_STUDY_IDS" to enableLoggingLearnerStudyIds,
-    "EDIT_ACCOUNTS_OPTIONS_UI" to enableEditAccountsOptionsUi,
-    "ENABLE_PERFORMANCE_METRICS_COLLECTION" to enablePerformanceMetricsCollection,
-    "SPOTLIGHT_UI" to enableSpotlightUi,
-    "INTERACTION_CONFIG_CHANGE_STATE_RETEN" to enableInteractionConfigChangeStateRetention,
-    "APP_AND_OS_DEPRECATION" to enableAppAndOsDeprecation,
-    "ENABLE_NPS_SURVEY" to enableNpsSurvey,
-    "ENABLE_ONBOARDING_FLOW_V2" to enableOnboardingFlowV2,
-    "ENABLE_MULTIPLE_CLASSROOMS" to enableMultipleClassrooms,
+    DOWNLOADS_SUPPORT to enableDownloadsSupport,
+    EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
+    LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,
+    FAST_LANGUAGE_SWITCHING_IN_LESSON to enableFastLanguageSwitchingInLesson,
+    LOGGING_LEARNER_STUDY_IDS to enableLoggingLearnerStudyIds,
+    EDIT_ACCOUNTS_OPTIONS_UI to enableEditAccountsOptionsUi,
+    ENABLE_PERFORMANCE_METRICS_COLLECTION to enablePerformanceMetricsCollection,
+    SPOTLIGHT_UI to enableSpotlightUi,
+    INTERACTION_CONFIG_CHANGE_STATE_RETENTION to enableInteractionConfigChangeStateRetention,
+    APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
+    ENABLE_NPS_SURVEY to enableNpsSurvey,
+    ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
+    ENABLE_MULTIPLE_CLASSROOMS to enableMultipleClassrooms,
   )
 
   /**
