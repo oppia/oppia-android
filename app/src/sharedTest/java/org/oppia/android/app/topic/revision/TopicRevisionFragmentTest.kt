@@ -95,6 +95,7 @@ import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.DisableFeatureFlag
 import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.ResetFeatureFlagToDefault
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -134,6 +135,12 @@ import javax.inject.Singleton
   application = TopicRevisionFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
+//@EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+//@EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
+//@DisableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
+//@DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+//@DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+//@DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
 @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
 class TopicRevisionFragmentTest {
   @get:Rule
@@ -190,6 +197,9 @@ class TopicRevisionFragmentTest {
   }
 
   @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  //@EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  //@EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
+  @ResetFeatureFlagToDefault(FeatureFlag.SPOTLIGHT_UI)
   @Test
   fun testTopicRevisionFragment_loadFragment_selectRevisionTopics_opensRevisionCardActivity() {
     launchTopicActivityIntent(

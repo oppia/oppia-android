@@ -30,20 +30,22 @@ class OppiaTestRule : TestRule {
         val currentEnvironment = getCurrentBuildEnvironment()
 
         val enabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(description?.testClass?.annotations?.toList(), EnableFeatureFlag::class.java)
-        val enabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(description?.annotations, EnableFeatureFlag::class.java)
+        val disabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java)
+
+        validateFeatureFlagConflicts(enabledClassLevelFeatureFlags, disabledClassLevelFeatureFlags)
 
         println("Enabled Feature Flags Class level - $enabledClassLevelFeatureFlags")
-        println("Enabled Feature Flags Method level - $enabledMethodLevelFeatureFlags")
-
-        val disabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(description?.testClass?.annotations?.toList(), DisableFeatureFlag::class.java)
-        val disabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(description?.annotations, DisableFeatureFlag::class.java)
-
         println("Disabled Feature Flags Class level - $disabledClassLevelFeatureFlags")
-        println("Disabled Feature Flags Method level - $disabledMethodLevelFeatureFlags")
 
-        val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(
-          description?.annotations, ResetFeatureFlagToDefault::class.java
-        )
+        val enabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(description?.annotations, EnableFeatureFlag::class.java)
+        val disabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(description?.annotations, DisableFeatureFlag::class.java)
+        val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(description?.annotations, ResetFeatureFlagToDefault::class.java)
+
+        validateFeatureFlagConflicts(enabledMethodLevelFeatureFlags, disabledMethodLevelFeatureFlags, resetFeatureFlagToDefault)
+
+        println("Enabled Feature Flags Method level - $enabledMethodLevelFeatureFlags")
+        println("Disabled Feature Flags Method level - $disabledMethodLevelFeatureFlags")
+        println("Reset Feature Flags Method level - $resetFeatureFlagToDefault")
 
         val overriddenBoolParameters = extractParametersAndFeatureFlags(
           description?.testClass?.annotations?.toList(),
@@ -175,6 +177,57 @@ class OppiaTestRule : TestRule {
 
   }
 
+  private fun validateFeatureFlagConflicts(
+    enabledFeatureFlags: List<EnableFeatureFlag> = emptyList(),
+    disabledFeatureFlags: List<DisableFeatureFlag> = emptyList(),
+    resetFeatureFlags: List<ResetFeatureFlagToDefault> = emptyList()
+  ) {
+    /*val enFeatureFlagNames = enabledFlags.map {it.name}
+    println("enFFn: - ${enFeatureFlagNames}.")
+    val disFeatureFlagNames = disabledFlags.map {it.name}
+    println("disFFn: - ${disFeatureFlagNames}.")
+
+    val grdisFeatureFlagNames = disabledFlags.map {it.name}.groupingBy {it}
+    println("grsFFn: - ${grdisFeatureFlagNames}.")
+
+    val featureFlagNames = enFeatureFlagNames + disFeatureFlagNames
+    println("ffnames - $featureFlagNames")
+
+    val countgrdisFeatureFlagNames = disabledFlags.map {it.name}.groupingBy {it}.eachCount()
+    println("countgrsFFn: - ${countgrdisFeatureFlagNames}.")
+
+    //println("En: - ${enabledFlags[0].name}.")
+    //println("En: - ${disabledFlags[0].name}.")
+    //val combinedFlags = (enabledFlags + disabledFlags)
+    //println("combined flags - ${combinedFlags[0].name}")
+    //combinedFlags.forEach { println("combined flags it name - ${it}") }
+
+    val erroredffns = countgrdisFeatureFlagNames.filter { it.value > 1 }.keys
+    println("errored ffns: $erroredffns")
+
+    *//*val duplicateFlags = combinedFlags.filter {it.value.size > 1}.keys
+    if (duplicateFlags.isNotEmpty()) {
+      println("Conflicting feature flag annotations found: ${duplicateFlags.joinToString()}. " +
+        "A feature flag must have at most one annotation (either enabled or disabled) per level.")
+    }*/
+
+    val combinedFeatureFlags = (
+        enabledFeatureFlags.map {it.name} +
+        disabledFeatureFlags.map {it.name} +
+        resetFeatureFlags.map{it.name}
+      ).groupingBy { it }
+       .eachCount()
+
+    val conflictingFeatureFlags = combinedFeatureFlags.filter { it.value > 1 }.keys
+
+    if (conflictingFeatureFlags.isNotEmpty()) {
+      error(
+        "Conflicting feature flag annotations found: $conflictingFeatureFlags. " +
+        "A test class or method cannot have multiple annotations for the same feature flag."
+      )
+    }
+  }
+
   private fun getCurrentPlatform(): TestPlatform {
     val fingerprint = try {
       Build.FINGERPRINT
@@ -250,15 +303,7 @@ class OppiaTestRule : TestRule {
       return getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
 
-    /**
-     * Extracts all feature flag annotations of the specified type from a collection of annotations.
-     *
-     * @param annotations a collection of annotations to be checked for feature flag annotations.
-     * @param featureFlagClass the class of the feature flag annotation type to extract.
-     * @return a list of feature flag annotations of the specified type,
-     *     including those found in container annotations.
-     */
-    inline fun <reified T : Annotation> extractParametersAndFeatureFlags(
+    private inline fun <reified T : Annotation> extractParametersAndFeatureFlags(
       annotations: Collection<Annotation>?,
       featureFlagClass: Class<T>
     ): List<T> {
