@@ -324,10 +324,7 @@ class OppiaTestRule : TestRule {
         enabledClassLevelFeatureFlags.map {it.name} +
         disabledClassLevelFeatureFlags.map {it.name}
       )
-      println("class lev - $classLevelFeatureFlags")
-      println("reset name - ${resetFeatureFlags.map {it.name}}")
       val invalidResets = resetFeatureFlags.map {it.name}.filterNot {it in classLevelFeatureFlags}
-      println("reset inv - $invalidResets")
       if (invalidResets.isNotEmpty()) {
         error(
           "Invalid reset feature flag annotations found: $invalidResets. " +

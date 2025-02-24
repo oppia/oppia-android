@@ -339,7 +339,7 @@ class TopicFragmentTest {
 
   @Test
   @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkNotShown() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
