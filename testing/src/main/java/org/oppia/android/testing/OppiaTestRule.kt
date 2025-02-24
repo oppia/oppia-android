@@ -157,9 +157,9 @@ class OppiaTestRule : TestRule {
         description?.testClass?.annotations?.toList(),
         DisableFeatureFlag::class.java
       )
-      validateFeatureFlagConflicts(
-        enabledClassLevelFeatureFlags,
-        disabledClassLevelFeatureFlags
+      validatePlatformParameterConflicts(
+        enabledFeatureFlags = enabledClassLevelFeatureFlags,
+        disabledFeatureFlags = disabledClassLevelFeatureFlags
       )
 
       val enabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(
@@ -174,38 +174,47 @@ class OppiaTestRule : TestRule {
         description?.annotations,
         ResetFeatureFlagToDefault::class.java
       )
-      validateFeatureFlagConflicts(
-        enabledMethodLevelFeatureFlags,
-        disabledMethodLevelFeatureFlags,
-        resetFeatureFlagToDefault
+      validatePlatformParameterConflicts(
+        enabledFeatureFlags = enabledMethodLevelFeatureFlags,
+        disabledFeatureFlags = disabledMethodLevelFeatureFlags,
+        resetFeatureFlags = resetFeatureFlagToDefault
       )
 
-      val overriddenBoolParameters = extractParametersAndFeatureFlags(
+      val overriddenClassLevelBoolParameters = extractParametersAndFeatureFlags(
         description?.testClass?.annotations?.toList(),
         OverrideBoolParameter::class.java
-      ) +
-        extractParametersAndFeatureFlags(
+      )
+      val overriddenClassLevelIntParameters = extractParametersAndFeatureFlags(
+        description?.testClass?.annotations?.toList(),
+        OverrideIntParameter::class.java
+      )
+      val overriddenClassLevelStringParameters = extractParametersAndFeatureFlags(
+        description?.testClass?.annotations?.toList(),
+        OverrideStringParameter::class.java
+      )
+      validatePlatformParameterConflicts(
+        overriddenBoolParameters = overriddenClassLevelBoolParameters,
+        overriddenIntParameters = overriddenClassLevelIntParameters,
+        overriddenStringParameters = overriddenClassLevelStringParameters
+      )
+
+      val overriddenMethodLevelBoolParameters = extractParametersAndFeatureFlags(
           description?.annotations,
           OverrideBoolParameter::class.java
         )
-
-      val overriddenIntParameters = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
-        OverrideIntParameter::class.java
-      ) +
-        extractParametersAndFeatureFlags(
+      val overriddenMethodLevelIntParameters = extractParametersAndFeatureFlags(
           description?.annotations,
           OverrideIntParameter::class.java
         )
-
-      val overriddenStringParameters = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
-        OverrideStringParameter::class.java
-      ) +
-        extractParametersAndFeatureFlags(
+      val overriddenMethodLevelStringParameters = extractParametersAndFeatureFlags(
           description?.annotations,
           OverrideStringParameter::class.java
         )
+      validatePlatformParameterConflicts(
+        overriddenBoolParameters = overriddenMethodLevelBoolParameters,
+        overriddenIntParameters = overriddenMethodLevelIntParameters,
+        overriddenStringParameters = overriddenMethodLevelStringParameters
+      )
 
       applyPlatformParameterOverrides(
         enabledClassLevelFeatureFlags,
@@ -213,9 +222,12 @@ class OppiaTestRule : TestRule {
         enabledMethodLevelFeatureFlags,
         disabledMethodLevelFeatureFlags,
         resetFeatureFlagToDefault,
-        overriddenBoolParameters,
-        overriddenIntParameters,
-        overriddenStringParameters,
+        overriddenClassLevelBoolParameters,
+        overriddenClassLevelIntParameters,
+        overriddenClassLevelStringParameters,
+        overriddenMethodLevelBoolParameters,
+        overriddenMethodLevelIntParameters,
+        overriddenMethodLevelStringParameters
       )
     }
 
@@ -225,58 +237,67 @@ class OppiaTestRule : TestRule {
       enabledMethodLevelFeatureFlags: List<EnableFeatureFlag>?,
       disabledMethodLevelFeatureFlags: List<DisableFeatureFlag>?,
       resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?,
-      overriddenBoolParameters: List<OverrideBoolParameter>?,
-      overriddenIntParameters: List<OverrideIntParameter>?,
-      overriddenStringParameters: List<OverrideStringParameter>?,
+      overriddenClassLevelBoolParameters: List<OverrideBoolParameter>?,
+      overriddenClassLevelIntParameters: List<OverrideIntParameter>?,
+      overriddenClassLevelStringParameters: List<OverrideStringParameter>?,
+      overriddenMethodLevelBoolParameters: List<OverrideBoolParameter>?,
+      overriddenMethodLevelIntParameters: List<OverrideIntParameter>?,
+      overriddenMethodLevelStringParameters: List<OverrideStringParameter>?,
     ) {
-      enabledClassLevelFeatureFlags?.forEach { flag ->
-        PlatformParameterModule.overrideFeatureFlags(flag.name, true)
+      enabledClassLevelFeatureFlags?.forEach {
+        PlatformParameterModule.overrideFeatureFlags(it.name, true)
+      }
+      disabledClassLevelFeatureFlags?.forEach {
+        PlatformParameterModule.overrideFeatureFlags(it.name, false)
       }
 
-      disabledClassLevelFeatureFlags?.forEach { flag ->
-        PlatformParameterModule.overrideFeatureFlags(flag.name, false)
+      enabledMethodLevelFeatureFlags?.forEach {
+        PlatformParameterModule.overrideFeatureFlags(it.name, true)
+      }
+      disabledMethodLevelFeatureFlags?.forEach {
+        PlatformParameterModule.overrideFeatureFlags(it.name, false)
       }
 
-      enabledMethodLevelFeatureFlags?.forEach { flag ->
-        PlatformParameterModule.overrideFeatureFlags(flag.name, true)
+      resetFeatureFlagToDefault?.forEach {
+        PlatformParameterModule.resetFeatureFlagToDefault(it.name)
       }
 
-      disabledMethodLevelFeatureFlags?.forEach { flag ->
-        PlatformParameterModule.overrideFeatureFlags(flag.name, false)
+      overriddenClassLevelBoolParameters?.forEach {
+        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
+      }
+      overriddenClassLevelIntParameters?.forEach {
+        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
+      }
+      overriddenClassLevelStringParameters?.forEach {
+        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
       }
 
-      resetFeatureFlagToDefault?.forEach { flag ->
-        PlatformParameterModule.resetFeatureFlagToDefault(flag.name)
+      overriddenMethodLevelBoolParameters?.forEach {
+        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
       }
-
-      overriddenBoolParameters?.forEach { overriddenValue ->
-        PlatformParameterModule.overridePlatformParameters(
-          overriddenValue.name, overriddenValue.value
-        )
+      overriddenMethodLevelIntParameters?.forEach {
+        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
       }
-
-      overriddenIntParameters?.forEach { overriddenValue ->
-        PlatformParameterModule.overridePlatformParameters(
-          overriddenValue.name, overriddenValue.value
-        )
-      }
-
-      overriddenStringParameters?.forEach { overriddenValue ->
-        PlatformParameterModule.overridePlatformParameters(
-          overriddenValue.name, overriddenValue.value
-        )
+      overriddenMethodLevelStringParameters?.forEach {
+        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
       }
     }
 
-    private fun validateFeatureFlagConflicts(
+    private fun validatePlatformParameterConflicts(
       enabledFeatureFlags: List<EnableFeatureFlag> = emptyList(),
       disabledFeatureFlags: List<DisableFeatureFlag> = emptyList(),
-      resetFeatureFlags: List<ResetFeatureFlagToDefault> = emptyList()
+      resetFeatureFlags: List<ResetFeatureFlagToDefault> = emptyList(),
+      overriddenBoolParameters: List<OverrideBoolParameter> = emptyList(),
+      overriddenIntParameters: List<OverrideIntParameter> = emptyList(),
+      overriddenStringParameters: List<OverrideStringParameter> = emptyList(),
     ) {
       val combinedFeatureFlags = (
         enabledFeatureFlags.map {it.name} +
           disabledFeatureFlags.map {it.name} +
-          resetFeatureFlags.map{it.name}
+          resetFeatureFlags.map {it.name} +
+          overriddenBoolParameters.map {it.name} +
+          overriddenIntParameters.map {it.name} +
+          overriddenStringParameters.map {it.name}
         ).groupingBy { it }
         .eachCount()
 

@@ -5253,8 +5253,8 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_contentDescription_itemSelectionInteraction() {
-    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
       playThroughPrototypeState1()
@@ -5282,8 +5282,8 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_contentDescription_multipleChoiceInteraction() {
-    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -5317,8 +5317,8 @@ class StateFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testFragment_argumentsAreCorrect() {
-    setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(
       FRACTIONS_EXPLORATION_ID_1,
       shouldSavePartialProgress = false
