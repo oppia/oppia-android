@@ -75,6 +75,8 @@ kt_android_library(
     visibility = ["//:oppia_api_visibility"],
     deps = [
         ":event_type_to_human_readable_name_converter",
+        ":feature_flag_name_to_integer_converter",
+        ":feature_flag_sync_status_to_integer_converter",
         "//model/src/main/proto:event_logger_java_proto_lite",
         "//model/src/main/proto:performance_metrics_event_logger_java_proto_lite",
         "//third_party:javax_inject_javax_inject",
@@ -185,5 +187,27 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/data:async_data_subscription_manager",
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_util",
+    ],
+)
+
+kt_android_library(
+    name = "feature_flag_name_to_integer_converter",
+    srcs = [
+        "FeatureFlagNameToIntegerConverter.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)
+
+kt_android_library(
+    name = "feature_flag_sync_status_to_integer_converter",
+    srcs = [
+        "FeatureFlagSyncStatusToIntegerConverter.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:event_logger_java_proto_lite",
+        "//third_party:javax_inject_javax_inject",
     ],
 )

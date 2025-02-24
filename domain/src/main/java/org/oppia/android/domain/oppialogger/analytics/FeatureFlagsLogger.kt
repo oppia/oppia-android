@@ -101,22 +101,18 @@ class FeatureFlagsLogger @Inject constructor(
       )
     }
 
-    val chunkedFlags = featureFlagItemList.chunked(10)
+    // TODO(#5341): Set the UUID value for this context
+    val featureFlagContext = FeatureFlagListContext.newBuilder()
+      .setAppSessionId(appSessionId)
+      .addAllFeatureFlags(featureFlagItemList)
+      .build()
 
-    chunkedFlags.forEach { list ->
-      // TODO(#5341): Set the UUID value for this context
-      val featureFlagContext = FeatureFlagListContext.newBuilder()
-        .setAppSessionId(appSessionId)
-        .addAllFeatureFlags(list)
-        .build()
-
-      analyticsController.logLowPriorityEvent(
-        EventLog.Context.newBuilder()
-          .setFeatureFlagListContext(featureFlagContext)
-          .build(),
-        profileId = null
-      )
-    }
+    analyticsController.logLowPriorityEvent(
+      EventLog.Context.newBuilder()
+        .setFeatureFlagListContext(featureFlagContext)
+        .build(),
+      profileId = null
+    )
   }
 
   /**
