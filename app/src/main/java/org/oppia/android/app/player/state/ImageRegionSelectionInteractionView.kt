@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import org.oppia.android.app.model.ImageWithRegions
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.ClickableAreasImage
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.view.ViewComponentFactory
@@ -46,6 +47,7 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
   @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @Inject lateinit var accessibilityService: AccessibilityService
   @Inject lateinit var imageLoader: ImageLoader
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
 
   private lateinit var entityId: String
   private lateinit var overlayView: FrameLayout
@@ -64,8 +66,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
     maybeInitializeClickableAreas()
   }
 
-  fun setUserAnswerState(userAnswerrState: UserAnswerState) {
-    this.userAnswerState = userAnswerrState
+  fun setUserAnswerState(userAnswerState: UserAnswerState) {
+    this.userAnswerState = userAnswerState
   }
 
   fun setEntityId(entityId: String) {
@@ -118,7 +120,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
       ::entityId.isInitialized &&
       ::imageUrl.isInitialized &&
       ::onRegionClicked.isInitialized &&
-      ::overlayView.isInitialized
+      ::overlayView.isInitialized &&
+      ::resourceHandler.isInitialized
     ) {
       loadImage()
 
@@ -129,7 +132,8 @@ class ImageRegionSelectionInteractionView @JvmOverloads constructor(
         bindingInterface,
         isAccessibilityEnabled = accessibilityService.isScreenReaderEnabled(),
         clickableAreas,
-        userAnswerState
+        userAnswerState,
+        resourceHandler
       )
       areasImage.addRegionViews()
       performAttachment(areasImage)

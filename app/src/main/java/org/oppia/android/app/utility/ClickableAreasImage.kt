@@ -13,6 +13,7 @@ import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import kotlin.math.roundToInt
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */
@@ -23,7 +24,8 @@ class ClickableAreasImage(
   bindingInterface: ViewBindingShim,
   private val isAccessibilityEnabled: Boolean,
   private val clickableAreas: List<LabeledRegion>,
-  userAnswerState: UserAnswerState
+  userAnswerState: UserAnswerState,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   private var imageLabel: String? = null
   private val defaultRegionView by lazy { bindingInterface.getDefaultRegion(parentView) }
@@ -60,6 +62,16 @@ class ClickableAreasImage(
       // Remove any previously selected region excluding 0th index(image view)
       if (index > 0) {
         childView.setBackgroundResource(0)
+        if (childView.tag != null) {
+          val regionLabel = childView.tag as String
+          clickableAreas.find { it.label == regionLabel }?.let { clickableArea ->
+            updateRegionContentDescription(
+              childView,
+              clickableArea,
+              regionLabel == imageLabel
+            )
+          }
+        }
       }
     }
   }
@@ -112,8 +124,13 @@ class ClickableAreasImage(
       newView.isFocusable = true
       newView.isFocusableInTouchMode = true
       newView.tag = clickableArea.label
+
+      val isInitiallySelected = clickableArea.label.equals(imageLabel)
+      updateRegionContentDescription(newView, clickableArea, isInitiallySelected)
+
       newView.initializeToggleRegionTouchListener(clickableArea)
-      if (clickableArea.label.equals(imageLabel)) {
+
+      if (isInitiallySelected) {
         showOrHideRegion(newView = newView, clickableArea = clickableArea)
       }
       if (isAccessibilityEnabled) {
@@ -123,7 +140,7 @@ class ClickableAreasImage(
           showOrHideRegion(newView, clickableArea)
         }
       }
-      newView.contentDescription = clickableArea.contentDescription
+
       parentView.addView(newView)
     }
 
@@ -143,14 +160,18 @@ class ClickableAreasImage(
   }
 
   private fun showOrHideRegion(newView: View, clickableArea: LabeledRegion) {
-    resetRegionSelectionViews()
-    listener.onClickableAreaTouched(
-      NamedRegionClickedEvent(
-        clickableArea.label,
-        clickableArea.contentDescription
+    if (clickableArea.label != imageLabel) {
+      imageLabel = clickableArea.label
+      resetRegionSelectionViews()
+      newView.setBackgroundResource(R.drawable.selected_region_background)
+
+      listener.onClickableAreaTouched(
+        NamedRegionClickedEvent(
+          clickableArea.label,
+          generateContentDescription(clickableArea, true)
+        )
       )
-    )
-    newView.setBackgroundResource(R.drawable.selected_region_background)
+    }
   }
 
   private fun View.initializeShowRegionTouchListener() {
@@ -171,5 +192,28 @@ class ClickableAreasImage(
       view.performClick()
       return@setOnTouchListener true
     }
+  }
+
+  private fun generateContentDescription(
+    clickableArea: LabeledRegion,
+    isSelected: Boolean
+  ): String = if (isSelected) {
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.selected_image_region_selection_content_description,
+      clickableArea.label
+    )
+  } else {
+    resourceHandler.getStringInLocaleWithWrapping(
+      R.string.unselected_image_region_selection_content_description,
+      clickableArea.label
+    )
+  }
+
+  private fun updateRegionContentDescription(
+    view: View,
+    clickableArea: LabeledRegion,
+    isSelected: Boolean
+  ) {
+    view.contentDescription = generateContentDescription(clickableArea, isSelected)
   }
 }

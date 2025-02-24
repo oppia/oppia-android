@@ -5230,13 +5230,77 @@ class StateFragmentTest {
       playThroughRatioExplorationState13()
       playThroughRatioExplorationState14()
 
-      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie." +
-        " Yummy!\n\n2 cups of milk and 1 cup of banana puree \n\n“I can make this,” he said." +
-        " “We’ll need to mix milk and banana puree in the ratio Blank.”\n\nCan you complete" +
-        " James’s sentence? What is the ratio of milk to banana puree?”"
+      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie. " +
+        "Yummy!\nImage illustrating 2 cups of milk and 1 cup of banana puree\n“I can make this," +
+        "” he said. “We’ll need to mix milk and banana puree in the ratio Blank.”\nCan you " +
+        "complete James’s sentence? What is the ratio of milk to banana puree?”"
 
       onView(withId(R.id.content_text_view))
         .check(matches(withContentDescription(expectedDescription)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_contentDescription_itemSelectionInteraction() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_contents_text_view
+        )
+      ).check(matches(withContentDescription("Green")))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_contents_text_view
+        )
+      ).check(matches(withContentDescription("Blue")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_contentDescription_multipleChoiceInteraction() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughRatioExplorationState1()
+      playThroughRatioExplorationState2()
+      playThroughRatioExplorationState3()
+      playThroughRatioExplorationState4()
+      playThroughRatioExplorationState5()
+      playThroughRatioExplorationState6()
+      playThroughRatioExplorationState7()
+      playThroughRatioExplorationState8()
+      playThroughRatioExplorationState9()
+      playThroughRatioExplorationState10()
+      playThroughRatioExplorationState11()
+      playThroughRatioExplorationState12()
+      playThroughRatioExplorationState13()
+      playThroughRatioExplorationState14()
+      playThroughRatioExplorationState15()
+
+      val expectedDescription = "Image illustrating On the left, there is 1-unit wide glass " +
+        "filled with apple puree. On the right, there is 2-unit wide glass filled with milk."
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withContentDescription(expectedDescription)))
     }
   }
 
@@ -5341,6 +5405,12 @@ class StateFragmentTest {
 
   private fun playThroughRatioExplorationState14() {
     typeTextInput("1:4")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState15() {
+    typeTextInput("2:1")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
