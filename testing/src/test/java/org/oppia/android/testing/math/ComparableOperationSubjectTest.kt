@@ -90,7 +90,7 @@ class ComparableOperationSubjectTest {
   }
 
   @Test
-  fun testComparableOperationSubject_hasInvertedProperty() {
+  fun testComparableOperationSubject_hasInvertedProperty_matchesTrue() {
     val operation = ComparableOperation.newBuilder()
       .setConstantTerm(Real.newBuilder().setInteger(42))
       .setIsInverted(true)
@@ -130,7 +130,7 @@ class ComparableOperationSubjectTest {
   }
 
   @Test
-  fun testComparableOperationSubject_commutativeAccumulation_withEmptyAccumulation() {
+  fun testComparableOperationSubject_withEmpty_commutativeAccumulation_hasCorrectStructre() {
     val operation = createCommutativeAccumulation(
       ComparableOperation.CommutativeAccumulation.AccumulationType.SUMMATION
     )
@@ -146,7 +146,7 @@ class ComparableOperationSubjectTest {
   }
 
   @Test
-  fun testComparableOperationSubject_commutativeAccumulationFailsWithInvalidType() {
+  fun testComparableOperationSubject_commutativeAccumulation_failsWithInvalidType() {
     val operation = createConstantOperation(42)
     assertThrows(AssertionError::class.java) {
       assertThat(operation).hasStructureThatMatches {
@@ -210,7 +210,7 @@ class ComparableOperationSubjectTest {
   }
 
   @Test
-  fun testComparableOperationSubject_exponentiationFailsWithInvalidOperation() {
+  fun testComparableOperationSubject_exponentiation_failsWithInvalidOperation() {
     val operation = ComparableOperation.newBuilder()
       .setNonCommutativeOperation(
         ComparableOperation.NonCommutativeOperation.newBuilder()
@@ -227,7 +227,7 @@ class ComparableOperationSubjectTest {
   }
 
   @Test
-  fun testComparableOperationSubject_squareRoot_withValidOperation() {
+  fun testComparableOperationSubject_squareRoot_withValidOperation_hasCorrectStructure() {
     val operation = ComparableOperation.newBuilder()
       .setNonCommutativeOperation(
         ComparableOperation.NonCommutativeOperation.newBuilder()
@@ -343,7 +343,7 @@ class ComparableOperationSubjectTest {
   }
 
   @Test
-  fun testComparableOperationSubject_validatesVariableTerm() {
+  fun testComparableOperationSubject_withVariableTerm_hasExpectedName() {
     val operation = createVariableOperation("x")
 
     assertThat(operation).hasStructureThatMatches {
@@ -353,19 +353,21 @@ class ComparableOperationSubjectTest {
     }
   }
 
-  @Test(expected = AssertionError::class)
+  @Test
   fun testComparableOperationSubject_variableTerm_failWithInvalidType() {
     val operation = createConstantOperation(42)
 
-    assertThat(operation).hasStructureThatMatches {
-      variableTerm {
-        withNameThat().isEqualTo("x")
+    assertThrows(AssertionError::class.java) {
+      assertThat(operation).hasStructureThatMatches {
+        variableTerm {
+          withNameThat().isEqualTo("x")
+        }
       }
     }
   }
 
   @Test
-  fun testComparableOperationSubject_complexExpression_withNestedOperations() {
+  fun testComparableOperationSubject_complexExpression_withNestedOperations_hasCorrectStructure() {
     val operation = createCommutativeAccumulation(
       ComparableOperation.CommutativeAccumulation.AccumulationType.PRODUCT,
       ComparableOperation.newBuilder()
