@@ -182,9 +182,9 @@ const val LOWEST_SUPPORTED_API_LEVEL = "lowest_supported_api_level"
  * Default value for the platform parameter that contains an integer indicating the lowest
  * supported Android API Level.
  *
- * The current minimum supported API level is 19 (KitKat).
+ * The current minimum supported API level is 21 (Lollipop).
  */
-const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 19
+const val LOWEST_SUPPORTED_API_LEVEL_DEFAULT_VALUE = 21
 
 /**
  * Qualifier for the platform parameter that controls the time interval in days between showing
