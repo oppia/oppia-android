@@ -193,14 +193,12 @@ class RecentlyPlayedFragmentTest {
   }
 
   private fun createRecentlyPlayedActivityIntent(
-    internalProfileId: Int,
     recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle =
       RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES
   ): Intent {
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
     return RecentlyPlayedActivity.createRecentlyPlayedActivityIntent(
@@ -211,7 +209,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createRecentlyPlayedActivityIntent(internalProfileId)
+    val screenName = createRecentlyPlayedActivityIntent()
       .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.RECENTLY_PLAYED_ACTIVITY)
@@ -220,9 +218,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testRecentlyPlayedTestActivity_clickOnToolbarNavigationButton_closeActivity() {
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     onView(withContentDescription(R.string.navigate_up)).perform(click())
     assertThat(activityTestRule.activity.isFinishing).isTrue()
@@ -240,9 +236,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -268,9 +262,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -296,9 +288,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -330,9 +320,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -356,7 +344,6 @@ class RecentlyPlayedFragmentTest {
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId,
         RecentlyPlayedActivityTitle.STORIES_FOR_YOU
       )
     ).use {
@@ -380,9 +367,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -410,9 +395,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(
@@ -435,9 +418,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -466,9 +447,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -495,9 +474,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -530,9 +507,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
     testCoroutineDispatchers.runCurrent()
@@ -571,9 +546,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
     testCoroutineDispatchers.runCurrent()
@@ -619,9 +592,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
     testCoroutineDispatchers.runCurrent()
@@ -673,9 +644,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
     testCoroutineDispatchers.runCurrent()
@@ -724,9 +693,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     testCoroutineDispatchers.runCurrent()
     val recycler: RecyclerView =
@@ -750,9 +717,7 @@ class RecentlyPlayedFragmentTest {
     )
 
     activityTestRule.launchActivity(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = profileId.internalId
-      )
+      createRecentlyPlayedActivityIntent()
     )
     activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
     testCoroutineDispatchers.runCurrent()
@@ -778,9 +743,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -812,9 +775,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -847,9 +808,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -880,9 +839,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -914,9 +871,7 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -948,9 +903,7 @@ class RecentlyPlayedFragmentTest {
       FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1006,9 +959,8 @@ class RecentlyPlayedFragmentTest {
       version = 1 // Old version, but it doesn't matter since the new version is incompatible.
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1046,9 +998,8 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testRecentlyPlayedTestAct_clickStory_chapterAsNotStarted_opensExplorationLessonActivity() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1091,9 +1042,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1140,9 +1090,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1174,9 +1123,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1206,9 +1154,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = false
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1232,9 +1179,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1258,9 +1204,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1291,9 +1236,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1326,9 +1270,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1361,9 +1304,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1397,9 +1339,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1431,9 +1372,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1466,9 +1406,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
@@ -1501,9 +1440,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1536,9 +1474,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1567,9 +1504,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
@@ -1598,9 +1534,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1630,9 +1565,8 @@ class RecentlyPlayedFragmentTest {
       timestampOlderThanOneWeek = true
     )
     ActivityScenario.launch<RecentlyPlayedActivity>(
-      createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId
-      )
+      createRecentlyPlayedActivityIntent()
+
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -1654,7 +1588,6 @@ class RecentlyPlayedFragmentTest {
   fun testFragment_argumentsAreCorrect() {
     ActivityScenario.launch<RecentlyPlayedActivity>(
       createRecentlyPlayedActivityIntent(
-        internalProfileId = internalProfileId,
         RecentlyPlayedActivityTitle.STORIES_FOR_YOU
       )
     ).use { scenario ->

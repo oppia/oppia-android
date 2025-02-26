@@ -106,8 +106,6 @@ class SurveyActivityTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  private val profileId = ProfileId.newBuilder().setInternalId(0).build()
-
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -136,7 +134,7 @@ class SurveyActivityTest {
 
   @Test
   fun testSurveyActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createSurveyActivityIntent(profileId))
+    activityTestRule.launchActivity(createSurveyActivityIntent())
     val title = activityTestRule.activity.title
 
     // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
@@ -158,7 +156,7 @@ class SurveyActivityTest {
       .inject(this)
   }
 
-  private fun createSurveyActivityIntent(profileId: ProfileId): Intent {
+  private fun createSurveyActivityIntent(): Intent {
     return SurveyActivity.createSurveyActivityIntent(
       context, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
     )

@@ -288,7 +288,6 @@ class ResumeLessonFragmentTest {
           ResumeLessonFragment.RESUME_LESSON_FRAGMENT_ARGUMENTS_KEY,
           ResumeLessonFragmentArguments.getDefaultInstance()
         )
-        val receivedProfileId = args.profileId
         val receivedClassroomId = args.classroomId
         val receivedTopicId = args.topicId
         val receivedStoryId = args.storyId
@@ -296,8 +295,6 @@ class ResumeLessonFragmentTest {
         val receivedParentScreen = args.parentScreen
         val receivedCheckpoint = args.checkpoint
 
-        assertThat(receivedProfileId)
-          .isEqualTo(ProfileId.newBuilder().apply { internalId = 1 }.build())
         assertThat(receivedClassroomId).isEqualTo(TEST_CLASSROOM_ID_1)
         assertThat(receivedTopicId).isEqualTo(FRACTIONS_TOPIC_ID)
         assertThat(receivedStoryId).isEqualTo(FRACTIONS_STORY_ID_0)
