@@ -328,6 +328,7 @@ file_content_checks {
   exempted_file_name: "testing/src/test/java/org/oppia/android/testing/logging/TestSyncStatusManagerTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/ConsoleLoggerTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/EventBundleCreatorTest.kt"
+  exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/FeatureFlagNameToIntegerNameConverterTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/logging/performancemetrics/PerformanceMetricsAssessorImplTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/ExpressionToComparableOperationConverterTest.kt"
   exempted_file_name: "utility/src/test/java/org/oppia/android/util/math/MathExpressionExtensionsTest.kt"
