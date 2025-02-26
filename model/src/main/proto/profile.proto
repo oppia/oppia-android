@@ -34,9 +34,6 @@ message Profile {
   // Unique ID given to each profile.
   ProfileId id = 1;
 
-  // Unique 64-bit UUID assigned to each profile
-  string uuid = 20;
-
   // Name of the user.
   string name = 2;
 
@@ -102,6 +99,9 @@ message Profile {
 
   // Indicates that this profile has reached the home screen for the first time.
   bool completed_profile_onboarding = 22;
+
+  // Unique 64-bit UUID assigned to each profile
+  string uuid = 23;
 }
 
 // Represents the type of user using the app.
