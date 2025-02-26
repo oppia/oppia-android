@@ -7,16 +7,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
+import org.junit.runner.Description
 import org.junit.runner.RunWith
+import org.junit.runners.model.Statement
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
-import org.oppia.android.app.application.ApplicationInjector
-import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
@@ -27,6 +27,8 @@ import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.translation.AppLanguageApplicationInjector
+import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -49,6 +51,8 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.locale.LocaleApplicationInjector
+import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
 import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -90,19 +94,15 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = InitializeDefaultLocaleRuleTest.TestApplication::class)
 class InitializeDefaultLocaleRuleTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  private val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Before
-  fun setUp() {
-    setUpTestApplicationComponent()
-  }
+  @get:Rule val catchingRule = CatchingTestRule(initializeDefaultLocaleRule)
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   @Test
   fun testRule_defaultContext_initializesLocaleHandlerWithDefaultContext() {
+    setUpTestApplicationComponent()
+
     // Rule is automatically run as part of JUnit.
 
     // Verify that the locale context is initialized correctly.
@@ -119,8 +119,152 @@ class InitializeDefaultLocaleRuleTest {
     assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
   }
 
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE,
+    appStringIetfTag = "pt-BR",
+    appStringAndroidLanguageId = "pt",
+    appStringAndroidRegionId = "BR",
+    oppiaRegionEnumId = OppiaRegion.BRAZIL_VALUE,
+    regionLanguageEnumIds = [OppiaLanguage.BRAZILIAN_PORTUGUESE_VALUE],
+    regionIetfTag = "BR"
+  )
+  fun testRule_defineAppLanguageLocaleContext_ptBr_initializesLocaleHandlerWithPtBrContext() {
+    setUpTestApplicationComponent()
+
+    // Rule is automatically run as part of JUnit.
+
+    // Verify that the locale context is initialized correctly.
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    val languageDefinition = context.languageDefinition
+    val regionDefinition = context.regionDefinition
+    assertThat(languageDefinition.language).isEqualTo(OppiaLanguage.BRAZILIAN_PORTUGUESE)
+    assertThat(languageDefinition.minAndroidSdkVersion).isEqualTo(1)
+    assertThat(languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("pt-BR")
+    // Content and audio language defaults to English when using DefineAppLanguageLocaleContext.
+    assertThat(languageDefinition.contentStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
+    assertThat(languageDefinition.audioTranslationId.ietfBcp47Id.ietfLanguageTag).isEqualTo("en")
+    // DefineAppLanguageLocaleContext does not specify a fallback language.
+    assertThat(context.hasFallbackLanguageDefinition()).isFalse()
+    assertThat(regionDefinition.region).isEqualTo(OppiaRegion.BRAZIL)
+    assertThat(regionDefinition.regionId.ietfRegionTag).isEqualTo("BR")
+    assertThat(regionDefinition.languagesList).containsExactly(OppiaLanguage.BRAZILIAN_PORTUGUESE)
+    assertThat(context.usageMode).isEqualTo(OppiaLocaleContext.LanguageUsageMode.APP_STRINGS)
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.HINGLISH_VALUE,
+    appStringIetfTag = "hi",
+    appStringMacaronicId = "hi-en"
+  )
+  fun testRule_defineAppLanguageLocaleContext_hinglish_ietfAndMacaronicLanguage_initsWithIetfTag() {
+    setUpTestApplicationComponent()
+
+    // Rule is automatically run as part of JUnit.
+
+    // Verify that the locale context is initialized correctly.
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    assertThat(context.languageDefinition.language).isEqualTo(OppiaLanguage.HINGLISH)
+    // The IETF tag takes priority over a provided macaronic ID.
+    assertThat(context.languageDefinition.appStringId.ietfBcp47Id.ietfLanguageTag).isEqualTo("hi")
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(
+    oppiaLanguageEnumId = OppiaLanguage.HINGLISH_VALUE,
+    appStringMacaronicId = "hi-en"
+  )
+  fun testRule_defineAppLanguageLocaleContext_hinglish_macaronicLanguage_initsWithMacaronicTag() {
+    setUpTestApplicationComponent()
+
+    // Rule is automatically run as part of JUnit.
+
+    // Verify that the locale context is initialized correctly.
+    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    val context = displayLocale.localeContext
+    val languageDefinition = context.languageDefinition
+    assertThat(languageDefinition.language).isEqualTo(OppiaLanguage.HINGLISH)
+    assertThat(languageDefinition.appStringId.macaronicId.combinedLanguageCode).isEqualTo("hi-en")
+  }
+
+  @Test
+  @DefineAppLanguageLocaleContext(oppiaLanguageEnumId = OppiaLanguage.HINGLISH_VALUE)
+  fun testRule_defineAppLanguageLocaleContext_hinglish_noLangDefined_throwsException() {
+    setUpTestApplicationComponent()
+
+    // Rule is automatically run as part of JUnit.
+
+    // The rule should fail due to missing an ID in the DefineAppLanguageLocaleContext declaration.
+    val exception = catchingRule.caughtExceptions.singleOrNull()
+    assertThat(catchingRule.caughtExceptions).hasSize(1)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception)
+      .hasMessageThat()
+      .contains("Must define app string ID either through IETF tag or macaronic ID")
+  }
+
+  @Test
+  @Config(application = InitializeDefaultLocaleRuleTest.TestAppWithNoAppLanguageAppInjector::class)
+  fun testRule_testApplicationMissingAppLanguageAppInjector_throwsException() {
+    ApplicationProvider.getApplicationContext<TestAppWithNoAppLanguageAppInjector>().inject(this)
+
+    // Rule is automatically run as part of JUnit.
+
+    // The rule should fail since it isn't able to retrieve an AppLanguageLocaleHandler.
+    val exception = catchingRule.caughtExceptions.singleOrNull()
+    assertThat(catchingRule.caughtExceptions).hasSize(1)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().startsWith("Failed to retrieve language handler")
+    assertThat(exception)
+      .hasMessageThat()
+      .endsWith("(something is misconfigured in the test application)")
+  }
+
+  @Test
+  @Config(application = InitializeDefaultLocaleRuleTest.TestAppWithNoLocaleAppInjector::class)
+  fun testRule_testApplicationMissingLocaleAppInjector_throwsException() {
+    ApplicationProvider.getApplicationContext<TestAppWithNoLocaleAppInjector>().inject(this)
+
+    // Rule is automatically run as part of JUnit.
+
+    // The rule should fail since it isn't able to retrieve a LocaleController.
+    val exception = catchingRule.caughtExceptions.singleOrNull()
+    assertThat(catchingRule.caughtExceptions).hasSize(1)
+    assertThat(exception).isInstanceOf(IllegalStateException::class.java)
+    assertThat(exception).hasMessageThat().startsWith("Failed to retrieve locale controller")
+    assertThat(exception)
+      .hasMessageThat()
+      .endsWith("(something is misconfigured in the test application)")
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  /**
+   * Custom JUnit [TestRule] that allows attempting a provided [TestRule] and catching any failures
+   * that it may throw (and continuing the test in such cases so that the test may verify these
+   * failures).
+   */
+  class CatchingTestRule(private val wrapped: TestRule) : TestRule {
+    val caughtExceptions = mutableListOf<Exception>()
+
+    override fun apply(base: Statement?, description: Description?): Statement {
+      val wrappedStatement = wrapped.apply(base, description)
+      return object : Statement() {
+        override fun evaluate() {
+          try {
+            wrappedStatement.evaluate()
+          } catch (e: Exception) {
+            caughtExceptions += e
+            base?.evaluate()
+          }
+        }
+      }
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -166,7 +310,12 @@ class InitializeDefaultLocaleRuleTest {
     fun inject(initializeDefaultLocaleRuleTest: InitializeDefaultLocaleRuleTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    AppLanguageApplicationInjectorProvider,
+    LocaleApplicationInjectorProvider {
+
     private val component: TestApplicationComponent by lazy {
       DaggerInitializeDefaultLocaleRuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -181,6 +330,52 @@ class InitializeDefaultLocaleRuleTest {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
 
-    override fun getApplicationInjector(): ApplicationInjector = component
+    override fun getAppLanguageApplicationInjector(): AppLanguageApplicationInjector = component
+
+    override fun getLocaleApplicationInjector(): LocaleApplicationInjector = component
+  }
+
+  class TestAppWithNoAppLanguageAppInjector :
+    Application(),
+    ActivityComponentFactory,
+    LocaleApplicationInjectorProvider {
+
+    private val component: TestApplicationComponent by lazy {
+      DaggerInitializeDefaultLocaleRuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(initializeDefaultLocaleRuleTest: InitializeDefaultLocaleRuleTest) {
+      component.inject(initializeDefaultLocaleRuleTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getLocaleApplicationInjector(): LocaleApplicationInjector = component
+  }
+
+  class TestAppWithNoLocaleAppInjector :
+    Application(),
+    ActivityComponentFactory,
+    AppLanguageApplicationInjectorProvider {
+
+    private val component: TestApplicationComponent by lazy {
+      DaggerInitializeDefaultLocaleRuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(initializeDefaultLocaleRuleTest: InitializeDefaultLocaleRuleTest) {
+      component.inject(initializeDefaultLocaleRuleTest)
+    }
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getAppLanguageApplicationInjector(): AppLanguageApplicationInjector = component
   }
 }

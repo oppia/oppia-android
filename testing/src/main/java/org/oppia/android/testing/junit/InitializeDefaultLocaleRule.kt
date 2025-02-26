@@ -67,7 +67,7 @@ class InitializeDefaultLocaleRule : TestRule {
 
     private fun Context.getAppLanguageLocaleHandler(): AppLanguageLocaleHandler {
       return checkNotNull(getAppLanguageApplicationInjector()?.getAppLanguageHandler()) {
-        "Failed to retrieve locale controller (something is misconfigured in the test application)"
+        "Failed to retrieve language handler (something is misconfigured in the test application)"
       }
     }
 
