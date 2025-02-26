@@ -28,7 +28,7 @@ Reformat all edited files automatically in android studio using the following co
 - macOS: `Option + Command + L`
 - Ubuntu users might face issue because `Ctrl + Alt + L` locks the screen by default nature. Refer to this [stackoverflow-link](https://stackoverflow.com/questions/16580171/code-formatting-shortcut-in-android-studio) on how to solve this.
 
-Alternatively, you can also use the in-built Android Studio option to reformat by selecting to `Code -> Reformat Code/File`. 
+Alternatively, you can also use the in-built Android Studio option to reformat by selecting to `Code -> Reformat Code/File`.
 
 <img width="1440" alt="Screenshot 2021-11-09 at 6 25 26 PM" src="https://user-images.githubusercontent.com/53938155/140928159-854ee05d-a358-4fab-a5f2-318937198aef.png">
 
@@ -37,27 +37,27 @@ NOTE: This does not guarantee 100% formatting of code as per guidelines but will
 ## Comments
 - Ensure that comments have correct grammar, spelling and capitalization.
 - Vertically align the `*`s on the left side of a multi-line comment.
-- Wrap Javadoc comments to the 120 character limit. 
+- Wrap Javadoc comments to the 120 character limit.
 - Put new lines between Javadoc paragraphs.
 - Do not leave any spaces between a Javadoc and the class/method/field that it's documenting.
 - When writing TODOs, refer to an issue number on the GitHub issue tracker. E.g. `TODO(#1234): Do X, Y and Z.`
 
 ## XML files
-- Do not declare values directly in the XML file. Declare them in the corresponding resource file and use that variable. 
+- Do not declare values directly in the XML file. Declare them in the corresponding resource file and use that variable.
 
-For example: 
-- For a dimension, declare it in dimens.xml file. 
-- For a string, declare it in strings.xml file. 
-- For a color, declare it in colors.xml file. 
+For example:
+- For a dimension, declare it in dimens.xml file.
+- For a string, declare it in strings.xml file.
+- For a color, declare it in colors.xml file.
 
 In general, avoid using hard-coded strings.
 
 ## Java/Kotlin files
 - Separate adjacent functions or blocks of code by a single blank line.
-- Do not use "magic numbers" in code. Declare constants instead (typically at the module level).
+- Do not use "magic numbers" in code. Declare constants instead (typically in a companion object).
 - Order imports alphabetically. Remove unused imports. You can make use of the in-built Android Studio option to optimise imports by selecting `Code -> Optimise Imports`.
 
-<img width="1440" alt="Screenshot 2021-11-09 at 6 25 05 PM" src="https://user-images.githubusercontent.com/53938155/140928448-bf40d0c0-8e7f-4da3-b26f-b7421fbc015b.png"> 
+<img width="1440" alt="Screenshot 2021-11-09 at 6 25 05 PM" src="https://user-images.githubusercontent.com/53938155/140928448-bf40d0c0-8e7f-4da3-b26f-b7421fbc015b.png">
 
 
 ## Layout files

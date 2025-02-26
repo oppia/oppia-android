@@ -1,5 +1,5 @@
 """
-Macros for app module tests that depend on resources.
+Macros for app layer tests that depend on resources.
 """
 
 def test_with_resources(name):

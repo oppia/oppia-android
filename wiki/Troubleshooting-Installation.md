@@ -10,55 +10,7 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
 1. If you find any error related to `cURL`, please set up cURL on your machine. For Linux, you can use `sudo apt install curl`. No need to set up `cURL` for Windows as you are using git bash command line.<br>
 
-
-2. If you find any error which says `java: command not found`, please check you have Java installed correctly in your machine and the [environment path variable](https://www.java.com/en/download/help/path.html) is also set up correctly.
-
-
-3. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions#push-failed).
-
-
-4. If you see the error
-
-   ```
-   Could not resolve protoc-3.8.0-osx-aarch_64.exe (`com.google.protobuf:protoc:3.8.0`)
-   ```
-
-   then please follow the 2nd step mentioned in [this wiki](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-oppia-android) for Mac with Apple silicon(M1/M2) chips.
-
-
-5. If you see the error
-
-   ```
-   Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
-   ```
-
-   then it's fine to ignore it. The message just appears to be a warning. We don't use Gradle 7.0, so this warning is fine to ignore.
-
-6. If you see the error
-
-   ```
-   Error `Class 'org.oppia.android.app.profile.PinPasswordActivityTest' not found in module 'oppia-android.app'`
-   ```
-
-   or `Module not specified` while running Unit Tests, try to downgrade Android Studio to [Bumblebee (Patch 3)](https://developer.android.com/studio/archive). That should resolve this issue.
-
-
-7. If you encounter this error while building gradle:
-
-   ```
-   > Task :utility:kaptGenerateStubsDebugKotlin FAILED
-   Execution failed for task ':utility:kaptGenerateStubsDebugKotlin'.
-   > Could not resolve all files for configuration ':utility:debugCompileClasspath'.
-      > Failed to transform model.jar (project :model) to match attributes {artifactType=android-classes, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.jvm.version=15, org.gradle.libraryelements=jar, org.gradle.usage=java-api}.
-         > Execution failed for JetifyTransform: E:\Android\open-source\oppia-android\model\build\libs\model.jar.
-            > Failed to transform 'E:\Android\open-source\oppia-android\model\build\libs\model.jar' using Jetifier. Reason: Unsupported class file major version 59. (Run with --stacktrace for more details.)
-   ```
-   You are seeing this because Oppia android currently compiles with Java 8, or 9. Higher versions of Java are not supported by our version of Gradle.
-
-   The `model.jar` was compiled with Java 15/major version 59, hence the incompatibility.
-
-
-   To fix this error, you need to lower the version of Java to compile the JAR file. Please see [here](https://developer.android.com/studio/intro/studio-config#jdk) for more information about Java versions.
+2. If you find any error related to Kotlin or Java/Checkstyle while pushing the code, please check [this link](https://github.com/oppia/oppia-android/wiki/Frequent-Errors-and-Solutions#push-failed).
 
 ### Bazel issues
 

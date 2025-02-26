@@ -1,13 +1,13 @@
 """
-Macros for domain module tests.
+Macros for domain layer tests.
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_module_level_test")
 
-# TODO(#1620): Remove module-specific test macros once Gradle is removed
+# TODO(#1620): Remove layer-specific test macros once Gradle is removed
 def domain_test(name, filtered_tests, deps):
     """
-    Creates individual tests for test files in the domain module.
+    Creates individual tests for test files in the domain layer.
 
     Args:
         name: str. The relative path to the Kotlin test file.

@@ -23,7 +23,7 @@ package_group(
 # Source files that have been migrated to their own package-based libraries. Files added to this
 # list will be excluded automatically from the top-level utility library. It is recommended to use
 # globs here to ensure that new files added to migrated packages don't accidentally get included in the
-# top-level module library.
+# top-level layer library.
 MIGRATED_PROD_FILES = glob([
     "src/main/java/org/oppia/android/domain/auth/*.kt",
     "src/main/java/org/oppia/android/domain/feedbackreporting/*.kt",
@@ -254,7 +254,7 @@ TEST_DEPS = [
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
-# shouldn't be defined as module-level tests.
+# shouldn't be defined as layer-level tests.
 # keep sorted
 MIGRATED_TESTS = [
 ]

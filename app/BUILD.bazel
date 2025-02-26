@@ -50,7 +50,7 @@ filegroup(
 )
 
 # Source files for the migrated source files library. The files inside the migrated source files
-# library are dependencies in app module that have their own libraries.
+# library are dependencies in app layer that have their own libraries.
 # Place your files here if:
 #  - A file of any type has their own BAZEL library
 # NOTE: if the file is added here make sure to remove this from the other sub lists
@@ -66,7 +66,7 @@ MIGRATED_SOURCE_FILES = glob([
 ]
 
 # Source files for the annotations library. The files inside the annotations library are dependencies
-# for all other libraries in app module, except the listeners library.
+# for all other libraries in app layer, except the listeners library.
 # Place your file here if:
 #  - A view, view model, or layout file depends on it
 #  - It is an annotation or helper file of some kind
@@ -79,7 +79,7 @@ ANNOTATIONS = [
 ]
 
 # Source files for the listeners library. The files inside the listeners library are dependencies for
-# all other libraries in app module, except the annotations library.
+# all other libraries in app layer, except the annotations library.
 # Place your file here if:
 #  - A view, view model, or layout file depends on it
 #  - It is either a listener, an interface, or a direct dependency of one in this list
@@ -952,12 +952,12 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/profile:profile_name_validator",
 ]
 
-# App module tests. Note that all tests are assumed to be tests with resources (even though not all
+# App layer tests. Note that all tests are assumed to be tests with resources (even though not all
 # are). Note that if a test file imports resources or binding files, it must be wrapped by
 # test_with_resources().
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
-# shouldn't be defined as module-level tests.
+# shouldn't be defined as layer-level tests.
 # keep sorted
 MIGRATED_TESTS = [
 ]

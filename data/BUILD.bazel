@@ -46,7 +46,7 @@ TEST_DEPS = [
 ]
 
 # Qualified file paths for test classes that have been migrated over to their own packages &
-# shouldn't be defined as module-level tests.
+# shouldn't be defined as layer-level tests.
 # keep sorted
 MIGRATED_TESTS = [
 ]

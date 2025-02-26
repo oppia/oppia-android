@@ -18,7 +18,7 @@ class RegexPatternValidationCheckTest {
   private val outContent: ByteArrayOutputStream = ByteArrayOutputStream()
   private val originalOut: PrintStream = System.out
   private val activitiesPlacementErrorMessage =
-    "Activities cannot be placed outside the app or testing module."
+    "Activities cannot be placed outside the top-level app or testing directories."
   private val nestedResourceSubdirectoryErrorMessage =
     "Only one level of subdirectories under res/ should be maintained (further subdirectories " +
       "aren't supported by the project configuration)."

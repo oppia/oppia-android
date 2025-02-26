@@ -17,7 +17,7 @@ genrule(
     """,
 )
 
-# TODO(#2747): Move this to the testing package once Gradle doesn't force this into the app module.
+# TODO(#2747): Move this to the testing package once Gradle doesn't force this into the app layer.
 # Also, re-add testonly attribute when this TODO can be addressed.
 kt_android_library(
     name = "test_activity",

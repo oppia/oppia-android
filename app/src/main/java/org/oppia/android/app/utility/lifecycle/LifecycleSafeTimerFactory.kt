@@ -19,7 +19,7 @@ import javax.inject.Inject
 class LifecycleSafeTimerFactory @Inject constructor(
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) {
-  // TODO(#59): Add tests for this class once it's possible to swap the runtime dispatcher in app module tests.
+  // TODO(#59): Add tests for this class once it's possible to swap the runtime dispatcher in app layer tests.
 
   private val backgroundCoroutineScope = CoroutineScope(backgroundCoroutineDispatcher)
 

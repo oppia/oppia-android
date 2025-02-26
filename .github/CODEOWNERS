@@ -24,7 +24,7 @@
 
 
 ################################################################################
-#                                  app module                                  #
+#                                  app layer                                   #
 ################################################################################
 
 # All app code files.
@@ -38,20 +38,20 @@
 /app/src/main/res/raw/shrink_exemptions.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                                  data module                                 #
+#                                  data layer                                  #
 ################################################################################
 
-# All data module code.
+# All data layer code.
 /data/**/*.kt @oppia/android-app-infrastructure-reviewers
 
 # Test networking assets.
 /data/src/test/assets/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
-#                                 domain module                                #
+#                                 domain layer                                 #
 ################################################################################
 
-# All domain module code.
+# All domain layer code.
 /domain/**/*.kt @oppia/android-app-infrastructure-reviewers
 
 # Lesson assets.
@@ -66,14 +66,14 @@
 /instrumentation/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                                 model module                                 #
+#                                 model layer                                  #
 ################################################################################
 
 # All protos shared between the domain and app layers.
 /model/ @oppia/android-app-infrastructure-reviewers
 
 ################################################################################
-#                                testing module                                #
+#                                testing layer                                 #
 ################################################################################
 
 # All general-purpose shared test infrastructure.
@@ -129,14 +129,14 @@
 /scripts/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                              third_party module                              #
+#                             third_party directory                            #
 ################################################################################
 
 # Third-party configurations and infrastructure (not covered elsewhere).
 /third_party/ @oppia/android-dev-workflow-reviewers
 
 ################################################################################
-#                                utility module                                #
+#                                utility layer                                 #
 ################################################################################
 
 # Utilities that support central developer workflow infrastructure.

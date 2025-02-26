@@ -59,7 +59,7 @@ For example: If we want to prevent activities from being added into the any dire
 ```
 filename_checks {
   prohibited_filename_regex: "^((?!(app|testing)).)+/src/main/.+?Activity.kt"
-  failure_message: "Activities cannot be placed outside the app or testing module"
+  failure_message: "Activities cannot be placed outside the top-level app or testing directories."
 }
 ```
 
@@ -70,7 +70,7 @@ In general, failures for this check should be fixed by moving the file to the co
 ```
 filename_checks {
   prohibited_filename_regex: "^((?!(app|testing)).)+/src/main/.+?Activity.kt"
-  failure_message: "Activities cannot be placed outside the app or testing module"
+  failure_message: "Activities cannot be placed outside the top-level app or testing directories."
   exempted_file_name: "testing/src/main/SampleActivity.kt"
 }
 ```

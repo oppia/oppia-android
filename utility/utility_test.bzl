@@ -1,13 +1,13 @@
 """
-Macros for utility module tests.
+Macros for utility layer tests.
 """
 
 load("//:oppia_android_test.bzl", "oppia_android_module_level_test")
 
-# TODO(#1620): Remove module-specific test macros once Gradle is removed
+# TODO(#1620): Remove layer-specific test macros once Gradle is removed
 def utility_test(name, filtered_tests, deps):
     """
-    Creates individual tests for test files in the utility module.
+    Creates individual tests for test files in the utility layer.
 
     Args:
         name: str. The relative path to the Kotlin test file.

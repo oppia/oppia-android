@@ -495,9 +495,9 @@ class ComputeChangedFilesTest {
       maxFileCountPerSmallShard = 1
     )
 
-    // App module files partition eagerly, so there should be 3 groups. Also, the code below
-    // verifies duplicates by ensuring no shards are empty and there are no duplicate files. Note
-    // that it's done in this way to be resilient against potential randomness from the script.
+    // App layer files partition eagerly, so there should be 3 groups. Also, the code below verifies
+    // duplicates by ensuring no shards are empty and there are no duplicate files. Note that it's
+    // done in this way to be resilient against potential randomness from the script.
     val allFiles = reportedFiles.flatMap { it.changedFilesList }
     assertThat(reportedFiles).hasSize(3)
     assertThat(reportedFiles[0].changedFilesList).isNotEmpty()
@@ -578,7 +578,7 @@ class ComputeChangedFilesTest {
       maxFileCountPerSmallShard = 1
     )
 
-    // See app module file above for specifics. Scripts files are medium partitioned which means 3
+    // See app layer file above for specifics. Scripts files are medium partitioned which means 3
     // files will be split into two partitions.
     val allFiles = reportedFiles.flatMap { it.changedFilesList }
     assertThat(reportedFiles).hasSize(2)
