@@ -140,7 +140,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
   ) {
     stateFragmentTestViewModel.hasExplorationStarted.set(true)
 
-    val stateFragment = StateFragment.newInstance(topicId, storyId, explorationId)
+    val stateFragment = StateFragment.newInstance(profileId,topicId, storyId, explorationId)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.state_fragment_placeholder,
       stateFragment

@@ -51,11 +51,12 @@ class ExplorationFragmentPresenter @Inject constructor(
   /** Handles the [Fragment.onCreateView] portion of [ExplorationFragment]'s lifecycle. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     val args = retrieveArguments()
+    val profileId = activity.intent.extractCurrentUserProfileId().internalId
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
     val stateFragment =
       StateFragment.newInstance(
-        args.topicId, args.storyId, args.explorationId
+        profileId,args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {

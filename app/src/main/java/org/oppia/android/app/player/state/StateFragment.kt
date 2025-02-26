@@ -55,12 +55,14 @@ class StateFragment :
      * @return a new instance of [StateFragment].
      */
     fun newInstance(
+      internalProfileId: Int,
       topicId: String,
       storyId: String,
       explorationId: String
     ): StateFragment {
 
       val args = StateFragmentArguments.newBuilder().apply {
+        this.internalProfileId = internalProfileId
         this.topicId = topicId
         this.storyId = storyId
         this.explorationId = explorationId
