@@ -56,7 +56,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
     val stateFragment =
       StateFragment.newInstance(
-        profileId,args.topicId, args.storyId, args.explorationId
+        profileId, args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {

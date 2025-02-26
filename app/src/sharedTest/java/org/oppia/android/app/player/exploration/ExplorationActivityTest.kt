@@ -295,7 +295,7 @@ class ExplorationActivityTest {
   @Test
   fun testExploration_toolbarTitle_isDisplayedSuccessfully() {
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -595,7 +595,7 @@ class ExplorationActivityTest {
     }
 
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -623,7 +623,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -651,7 +651,7 @@ class ExplorationActivityTest {
     setUpAudioForFractionLesson()
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -671,7 +671,7 @@ class ExplorationActivityTest {
     }
 
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -698,7 +698,7 @@ class ExplorationActivityTest {
     markSpotlightSeen(Spotlight.FeatureCase.LESSONS_BACK_BUTTON)
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -725,7 +725,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -753,7 +753,7 @@ class ExplorationActivityTest {
   fun testExploration_clickAudioIconTwice_contentDescription_changesToDefault() {
     setUpAudioForFractionLesson()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         FRACTIONS_TOPIC_ID,
         FRACTIONS_STORY_ID_0,
@@ -781,7 +781,7 @@ class ExplorationActivityTest {
   @Test
   fun testAudioWithNoVoiceover_openPrototypeExploration_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -804,7 +804,7 @@ class ExplorationActivityTest {
   @Test
   fun testAudioWithNoVoiceover_prototypeExploration_configChange_checkAudioButtonIsHidden() {
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_0,
         TEST_TOPIC_ID_0,
         TEST_STORY_ID_0,
@@ -830,7 +830,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
@@ -860,7 +860,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
@@ -890,7 +890,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
@@ -921,7 +921,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
@@ -961,7 +961,7 @@ class ExplorationActivityTest {
     markAllSpotlightsSeen()
     setUpAudio()
     launch<ExplorationActivity>(
-     createExplorationActivityIntent(
+      createExplorationActivityIntent(
         TEST_CLASSROOM_ID_1,
         RATIOS_TOPIC_ID,
         RATIOS_STORY_ID_0,
