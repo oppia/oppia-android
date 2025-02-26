@@ -8,8 +8,8 @@ import org.oppia.android.app.model.RecentlyPlayedActivityParams
 import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RecentlyPlayedActivityBinding
-import javax.inject.Inject
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope

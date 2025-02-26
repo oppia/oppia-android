@@ -75,7 +75,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
     startTrainingSessionWithCallback {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.question_player_fragment_placeholder,
-        QuestionPlayerFragment.newInstance( readingTextSize),
+        QuestionPlayerFragment.newInstance(readingTextSize),
         TAG_QUESTION_PLAYER_FRAGMENT
       ).commitNow()
     }
@@ -150,7 +150,7 @@ class QuestionPlayerActivityPresenter @Inject constructor(
         // Re-add the player fragment when the new session is ready.
         activity.supportFragmentManager.beginTransaction().add(
           R.id.question_player_fragment_placeholder,
-          QuestionPlayerFragment.newInstance( readingTextSize),
+          QuestionPlayerFragment.newInstance(readingTextSize),
           TAG_QUESTION_PLAYER_FRAGMENT
         ).commitNow()
       }

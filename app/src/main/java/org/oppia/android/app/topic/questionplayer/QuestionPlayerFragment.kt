@@ -24,8 +24,8 @@ import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import javax.inject.Inject
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -59,7 +59,8 @@ class QuestionPlayerFragment :
       UserAnswerState.getDefaultInstance()
     ) ?: UserAnswerState.getDefaultInstance()
 
-    val profileId :ProfileId = activity?.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
+    val profileId: ProfileId =
+      activity?.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
     return questionPlayerFragmentPresenter.handleCreateView(
       inflater, container, profileId, userAnswerState
     )
@@ -116,7 +117,7 @@ class QuestionPlayerFragment :
      * @param profileId the profile in which the question play session will be played
      * @return a new [QuestionPlayerFragment] to start a question play session
      */
-    fun newInstance( readingTextSize: ReadingTextSize):
+    fun newInstance(readingTextSize: ReadingTextSize):
       QuestionPlayerFragment {
         val args = QuestionPlayerFragmentArguments.newBuilder().apply {
           this.readingTextSize = readingTextSize

@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.StateFragment
@@ -29,8 +28,8 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import javax.inject.Inject
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
+import javax.inject.Inject
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
@@ -44,7 +43,6 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
-
   /** Handles the [Fragment.onAttach] portion of [ExplorationFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
     fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
@@ -57,7 +55,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
     val stateFragment =
       StateFragment.newInstance(
-         args.topicId, args.storyId, args.explorationId
+        args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {
@@ -71,14 +69,15 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
   fun handleViewCreated() {
-    val profileDataProvider = profileManagementController.getProfile(activity.intent.extractCurrentUserProfileId())
+    val profileDataProvider = profileManagementController.getProfile(
+      activity.intent.extractCurrentUserProfileId()
+    )
     profileDataProvider.toLiveData().observe(
       fragment
     ) { result ->
       val readingTextSize = retrieveArguments().readingTextSize
       if (result is AsyncResult.Success) {
         if (result.value.readingTextSize != readingTextSize) {
-
           // Since text views are based on sp for sizing, the activity needs to be recreated so that
           // sp can be correctly recomputed.
           selectNewReadingTextSize(result.value.readingTextSize)
