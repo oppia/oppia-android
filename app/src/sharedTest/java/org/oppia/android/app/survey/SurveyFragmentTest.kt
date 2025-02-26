@@ -609,7 +609,6 @@ class SurveyFragmentTest {
   private fun createSurveyActivityIntent(): Intent {
     return SurveyActivity.createSurveyActivityIntent(
       context = context,
-      profileId = profileId,
       TEST_TOPIC_ID_0,
       TEST_EXPLORATION_ID_2
     )

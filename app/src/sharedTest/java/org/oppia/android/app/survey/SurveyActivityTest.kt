@@ -147,7 +147,7 @@ class SurveyActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val currentScreenNameWithIntent = SurveyActivity.createSurveyActivityIntent(
-      context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
+      context, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
     ).extractCurrentAppScreenName()
 
     assertThat(currentScreenNameWithIntent).isEqualTo(ScreenName.SURVEY_ACTIVITY)
@@ -160,7 +160,7 @@ class SurveyActivityTest {
 
   private fun createSurveyActivityIntent(profileId: ProfileId): Intent {
     return SurveyActivity.createSurveyActivityIntent(
-      context, profileId, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
+      context, TEST_TOPIC_ID_0, TEST_EXPLORATION_ID_2
     )
   }
 

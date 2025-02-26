@@ -313,7 +313,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
               if (it is AsyncResult.Success) {
                 explorationCheckpointLiveData.removeObserver(this)
                 routeToResumeLessonListener.routeToResumeLesson(
-                  profileId,
                   classroomId,
                   topicId,
                   storyId,
@@ -401,7 +400,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            profileId,
             classroomId,
             topicId,
             storyId,

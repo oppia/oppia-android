@@ -12,6 +12,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The activity for showing a survey. */
 class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -25,7 +26,7 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val params = intent.extractParams()
-    this.profileId = params.profileId ?: ProfileId.newBuilder().setInternalId(-1).build()
+    this.profileId = intent.extractCurrentUserProfileId()
 
     surveyActivityPresenter.handleOnCreate(
       profileId,
@@ -48,12 +49,10 @@ class SurveyActivity : InjectableAutoLocalizedAppCompatActivity() {
      */
     fun createSurveyActivityIntent(
       context: Context,
-      profileId: ProfileId,
       topicId: String,
       explorationId: String
     ): Intent {
       val params = SurveyActivityParams.newBuilder().apply {
-        this.profileId = profileId
         this.topicId = topicId
         this.explorationId = explorationId
       }.build()

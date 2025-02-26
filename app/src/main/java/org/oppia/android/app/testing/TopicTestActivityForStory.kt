@@ -73,7 +73,6 @@ class TopicTestActivityForStory :
   }
 
   override fun routeToResumeLesson(
-    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -84,7 +83,6 @@ class TopicTestActivityForStory :
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
-        profileId,
         classroomId,
         topicId,
         storyId,
@@ -96,7 +94,6 @@ class TopicTestActivityForStory :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -107,7 +104,6 @@ class TopicTestActivityForStory :
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
-        profileId,
         classroomId,
         topicId,
         storyId,

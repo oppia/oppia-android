@@ -25,6 +25,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** Fragment that contains all questions in Question Player. */
 class QuestionPlayerFragment :
@@ -53,17 +54,12 @@ class QuestionPlayerFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val args = checkNotNull(arguments) {
-      "Expected arguments to be passed to QuestionPlayerFragment"
-    }
     val userAnswerState = savedInstanceState?.getProto(
       QUESTION_PLAYER_FRAGMENT_STATE_KEY,
       UserAnswerState.getDefaultInstance()
     ) ?: UserAnswerState.getDefaultInstance()
 
-    val arguments =
-      args.getProto(ARGUMENTS_KEY, QuestionPlayerFragmentArguments.getDefaultInstance())
-    val profileId = arguments.profileId
+    val profileId :ProfileId = activity?.intent?.extractCurrentUserProfileId() ?: ProfileId.getDefaultInstance()
     return questionPlayerFragmentPresenter.handleCreateView(
       inflater, container, profileId, userAnswerState
     )
@@ -120,10 +116,9 @@ class QuestionPlayerFragment :
      * @param profileId the profile in which the question play session will be played
      * @return a new [QuestionPlayerFragment] to start a question play session
      */
-    fun newInstance(profileId: ProfileId, readingTextSize: ReadingTextSize):
+    fun newInstance( readingTextSize: ReadingTextSize):
       QuestionPlayerFragment {
         val args = QuestionPlayerFragmentArguments.newBuilder().apply {
-          this.profileId = profileId
           this.readingTextSize = readingTextSize
         }.build()
         return QuestionPlayerFragment().apply {

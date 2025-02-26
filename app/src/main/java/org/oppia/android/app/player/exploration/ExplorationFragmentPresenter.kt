@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
@@ -29,10 +30,12 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
 class ExplorationFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
@@ -41,7 +44,6 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
-  private var internalProfileId: Int = -1
 
   /** Handles the [Fragment.onAttach] portion of [ExplorationFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
@@ -53,10 +55,9 @@ class ExplorationFragmentPresenter @Inject constructor(
     val args = retrieveArguments()
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
-    internalProfileId = args.profileId.internalId
     val stateFragment =
       StateFragment.newInstance(
-        args.profileId.internalId, args.topicId, args.storyId, args.explorationId
+         args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {
@@ -70,7 +71,7 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
   fun handleViewCreated() {
-    val profileDataProvider = profileManagementController.getProfile(retrieveArguments().profileId)
+    val profileDataProvider = profileManagementController.getProfile(activity.intent.extractCurrentUserProfileId())
     profileDataProvider.toLiveData().observe(
       fragment
     ) { result ->
@@ -161,7 +162,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       oppiaLogger.createOpenExplorationActivityContext(
         classroomId, topicId, storyId, explorationId
       ),
-      ProfileId.newBuilder().apply { internalId = internalProfileId }.build()
+      activity.intent.extractCurrentUserProfileId()
     )
   }
 

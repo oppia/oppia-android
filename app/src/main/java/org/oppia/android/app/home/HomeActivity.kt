@@ -96,7 +96,6 @@ class HomeActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

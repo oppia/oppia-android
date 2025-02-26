@@ -27,6 +27,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The presenter for [RecentlyPlayedFragment]. */
 @FragmentScope
@@ -49,9 +50,9 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    internalProfileId: Int
   ): View? {
-    this.profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
+    this.profileId = activity.intent.extractCurrentUserProfileId()
     val recentlyPlayedViewModel = recentlyPlayedViewModelFactory.create(
       fragment as PromotedStoryClickListener,
       this.profileId
@@ -107,7 +108,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
               routeToResumeLessonListener.routeToResumeLesson(
-                profileId,
                 promotedStory.classroomId,
                 promotedStory.topicId,
                 promotedStory.storyId,
@@ -195,7 +195,6 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            profileId,
             classroomId,
             topicId,
             storyId,

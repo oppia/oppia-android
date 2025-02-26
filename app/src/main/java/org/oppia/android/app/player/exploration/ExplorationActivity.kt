@@ -28,6 +28,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -59,9 +60,10 @@ class ExplorationActivity :
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val params = intent.extractParams()
+    val profileId: ProfileId = intent.extractCurrentUserProfileId()
     explorationActivityPresenter.handleOnCreate(
       this,
-      params.profileId,
+      profileId,
       params.classroomId,
       params.topicId,
       params.storyId,
@@ -89,7 +91,6 @@ class ExplorationActivity :
      */
     fun createExplorationActivityIntent(
       context: Context,
-      profileId: ProfileId,
       classroomId: String,
       topicId: String,
       storyId: String,
@@ -98,7 +99,6 @@ class ExplorationActivity :
       isCheckpointingEnabled: Boolean
     ): Intent {
       val params = ExplorationActivityParams.newBuilder().apply {
-        this.profileId = profileId
         this.classroomId = classroomId
         this.topicId = topicId
         this.storyId = storyId

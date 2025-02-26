@@ -93,11 +93,9 @@ message DestinationScreen {
 
 // Intent extras for RecentlyPlayedActivity.
 message RecentlyPlayedActivityParams {
-  // The ID of current profile.
-  ProfileId profile_id = 1;
 
   // The title which should be displayed for the activity.
-  RecentlyPlayedActivityTitle activity_title = 2;
+  RecentlyPlayedActivityTitle activity_title = 1;
 }
 
 // Corresponds to activity title of RecentlyPlayedActivity.
@@ -120,9 +118,6 @@ enum RecentlyPlayedActivityTitle {
 
 // Params required when creating a new ExplorationActivity.
 message ExplorationActivityParams {
-  // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
-
   // The ID of the classroom to which the opening exploration belongs.
   string classroom_id = 7;
 
@@ -156,74 +151,65 @@ message ExplorationActivityParams {
 
 // Arguments that must be passed to a new ExplorationFragment.
 message ExplorationFragmentArguments {
-  // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
-
   // The ID of the classroom to which the opening exploration belongs.
-  string classroom_id = 6;
+  string classroom_id = 5;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id = 1;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id = 2;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id = 3;
 
   // The text size at which content in the exploration should be rendered.
-  ReadingTextSize reading_text_size = 5;
+  ReadingTextSize reading_text_size = 4;
 }
 
 // Params required when creating a new ResumeLessonActivity.
 message ResumeLessonActivityParams {
-  // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
-
   // The ID of the classroom to which the opening exploration belongs.
-  string classroom_id = 7;
+  string classroom_id = 6;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id = 1;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id = 2;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id = 3;
 
   // The screen from which this activity was opened.
-  ExplorationActivityParams.ParentScreen parent_screen = 5;
+  ExplorationActivityParams.ParentScreen parent_screen = 4;
 
   // The checkpoint that may be used to resume the exploration play session.
-  ExplorationCheckpoint checkpoint = 6;
+  ExplorationCheckpoint checkpoint = 5;
 }
 
 // Arguments that must be passed to a new ResumeLessonFragment.
 message ResumeLessonFragmentArguments {
-  // The ID of the profile that wants to start an exploration play session.
-  ProfileId profile_id = 1;
-
   // The ID of the classroom to which the opening exploration belongs.
-  string classroom_id = 7;
+  string classroom_id = 6;
 
   // The ID of the topic to which the opening exploration belongs.
-  string topic_id = 2;
+  string topic_id = 1;
 
   // The ID of the story to which the opening exploration belongs.
-  string story_id = 3;
+  string story_id = 2;
 
   // The exploration being opened for a new play session.
-  string exploration_id = 4;
+  string exploration_id = 3;
 
   // The screen from which this activity was opened.
-  ExplorationActivityParams.ParentScreen parent_screen = 5;
+  ExplorationActivityParams.ParentScreen parent_screen = 4;
 
   // The checkpoint that may be used to resume the exploration play session.
-  ExplorationCheckpoint checkpoint = 6;
+  ExplorationCheckpoint checkpoint = 5;
 
   // The text size at which content in the resume lesson should be rendered.
-  ReadingTextSize reading_text_size = 8;
+  ReadingTextSize reading_text_size = 7;
 }
 
 // Params required when creating a new ReadingTextSizeActivity.
@@ -339,23 +325,19 @@ message AppLanguageActivityStateBundle {
 
 // Represents the parameters needed to create SurveyActivity.
 message SurveyActivityParams {
-  // The ID of the profile for which the survey is to be shown.
-  ProfileId profile_id = 1;
 
   // The ID of the topic to which the triggering exploration belongs.
-  string topic_id = 2;
+  string topic_id = 1;
 
   // The ID of the triggering exploration.
-  string exploration_id = 3;
+  string exploration_id = 2;
 }
 
 // Arguments required when creating a QuestionPlayerFragment.
 message QuestionPlayerFragmentArguments{
-  // The ID of current profile.
-  ProfileId profile_id = 1;
 
   // The ReadingTextSize previously selected by the user (upon opening the fragment).
-  ReadingTextSize reading_text_size = 2;
+  ReadingTextSize reading_text_size = 1;
 }
 
 // Represents the parameters needed to create TopicActivity.

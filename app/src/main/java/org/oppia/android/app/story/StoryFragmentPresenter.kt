@@ -128,7 +128,6 @@ class StoryFragmentPresenter @Inject constructor(
   ) {
     if (canExplorationBeResumed) {
       routeToResumeLessonListener.routeToResumeLesson(
-        profileId,
         classroomId,
         topicId,
         storyId,
@@ -305,7 +304,6 @@ class StoryFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
           routeToExplorationListener.routeToExploration(
-            profileId,
             classroomId,
             topicId,
             storyId,

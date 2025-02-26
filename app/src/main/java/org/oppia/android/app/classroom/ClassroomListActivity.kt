@@ -92,7 +92,6 @@ class ClassroomListActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(profileId)
         .setActivityTitle(recentlyPlayedActivityTitle).build()
 
     activityRouter.routeToScreen(

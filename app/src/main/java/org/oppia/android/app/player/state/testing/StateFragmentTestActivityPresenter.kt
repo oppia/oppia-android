@@ -122,7 +122,7 @@ class StateFragmentTestActivityPresenter @Inject constructor(
             oppiaLogger.e(TEST_ACTIVITY_TAG, "Failed to load exploration", result.error)
           is AsyncResult.Success -> {
             oppiaLogger.d(TEST_ACTIVITY_TAG, "Successfully loaded exploration")
-            initializeExploration(profileId, topicId, storyId, explorationId)
+            initializeExploration( topicId, storyId, explorationId)
           }
         }
       }
@@ -134,14 +134,13 @@ class StateFragmentTestActivityPresenter @Inject constructor(
    * session is fully started).
    */
   private fun initializeExploration(
-    profileId: Int,
     topicId: String,
     storyId: String,
     explorationId: String
   ) {
     stateFragmentTestViewModel.hasExplorationStarted.set(true)
 
-    val stateFragment = StateFragment.newInstance(profileId, topicId, storyId, explorationId)
+    val stateFragment = StateFragment.newInstance( topicId, storyId, explorationId)
     activity.supportFragmentManager.beginTransaction().add(
       R.id.state_fragment_placeholder,
       stateFragment

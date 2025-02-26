@@ -68,7 +68,6 @@ class TopicTestActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -79,7 +78,6 @@ class TopicTestActivity :
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
-        profileId,
         classroomId,
         topicId,
         storyId,

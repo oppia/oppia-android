@@ -203,7 +203,6 @@ class ResumeLessonActivityTest {
   private fun createResumeLessonActivityIntent(): Intent {
     return ResumeLessonActivity.createResumeLessonActivityIntent(
       context,
-      ProfileId.newBuilder().apply { internalId = 1 }.build(),
       TEST_CLASSROOM_ID_1,
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0,

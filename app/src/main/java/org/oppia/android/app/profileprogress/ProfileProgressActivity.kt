@@ -61,7 +61,6 @@ class ProfileProgressActivity :
     val recentlyPlayedActivityParams =
       RecentlyPlayedActivityParams
         .newBuilder()
-        .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
         .setActivityTitle(recentlyPlayedActivityTitle)
         .build()
 

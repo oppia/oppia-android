@@ -86,7 +86,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             oppiaLogger.d("SurveyWelcomeDialogFragment", "Successfully started a survey session")
             val intent =
-              SurveyActivity.createSurveyActivityIntent(activity, profileId, topicId, explorationId)
+              SurveyActivity.createSurveyActivityIntent(activity, topicId, explorationId)
             fragment.startActivity(intent)
             activity.finish()
             val transaction = activity.supportFragmentManager.beginTransaction()

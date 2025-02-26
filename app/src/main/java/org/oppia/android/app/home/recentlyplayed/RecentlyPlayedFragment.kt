@@ -19,8 +19,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     const val TAG_RECENTLY_PLAYED_FRAGMENT = "TAG_RECENTLY_PLAYED_FRAGMENT"
 
     /** Returns a new [RecentlyPlayedFragment] to display recently played stories. */
-    fun newInstance(internalProfileId: Int): RecentlyPlayedFragment {
-      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fun newInstance(profileId: ProfileId): RecentlyPlayedFragment {
       return RecentlyPlayedFragment().apply {
         arguments = Bundle().apply {
           decorateWithUserProfileId(profileId)
@@ -42,13 +41,7 @@ class RecentlyPlayedFragment : InjectableFragment(), PromotedStoryClickListener 
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val arguments =
-      checkNotNull(arguments) { "Expected arguments to be passed to RecentlyPlayedFragment" }
-    val profileId =
-      arguments.extractCurrentUserProfileId()
-
-    val internalProfileId = profileId.internalId
-    return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container, internalProfileId)
+    return recentlyPlayedFragmentPresenter.handleCreateView(inflater, container)
   }
 
   override fun promotedStoryClicked(promotedStory: PromotedStory) {

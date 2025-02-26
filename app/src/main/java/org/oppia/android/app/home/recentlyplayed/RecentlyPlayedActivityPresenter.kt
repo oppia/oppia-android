@@ -9,6 +9,7 @@ import org.oppia.android.app.model.RecentlyPlayedActivityTitle
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.RecentlyPlayedActivityBinding
 import javax.inject.Inject
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 
 /** The presenter for [RecentlyPlayedActivity]. */
 @ActivityScope
@@ -32,7 +33,7 @@ class RecentlyPlayedActivityPresenter @Inject constructor(
     if (getRecentlyPlayedFragment() == null) {
       activity.supportFragmentManager.beginTransaction().add(
         R.id.recently_played_fragment_placeholder,
-        RecentlyPlayedFragment.newInstance(recentlyPlayedActivityParams.profileId.internalId),
+        RecentlyPlayedFragment.newInstance(activity.intent.extractCurrentUserProfileId()),
         RecentlyPlayedFragment.TAG_RECENTLY_PLAYED_FRAGMENT
       ).commitNow()
     }

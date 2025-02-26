@@ -213,7 +213,6 @@ class ResumeLessonFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
           routeToExplorationListener.routeToExploration(
-            profileId,
             classroomId,
             topicId,
             storyId,

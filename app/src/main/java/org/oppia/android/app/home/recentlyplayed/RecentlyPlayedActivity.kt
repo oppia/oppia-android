@@ -61,7 +61,6 @@ class RecentlyPlayedActivity :
   }
 
   override fun routeToExploration(
-    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -72,7 +71,6 @@ class RecentlyPlayedActivity :
     startActivity(
       ExplorationActivity.createExplorationActivityIntent(
         this,
-        profileId,
         classroomId,
         topicId,
         storyId,
@@ -84,7 +82,6 @@ class RecentlyPlayedActivity :
   }
 
   override fun routeToResumeLesson(
-    profileId: ProfileId,
     classroomId: String,
     topicId: String,
     storyId: String,
@@ -95,7 +92,6 @@ class RecentlyPlayedActivity :
     startActivity(
       ResumeLessonActivity.createResumeLessonActivityIntent(
         this,
-        profileId,
         classroomId,
         topicId,
         storyId,

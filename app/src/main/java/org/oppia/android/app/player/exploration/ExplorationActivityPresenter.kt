@@ -188,7 +188,6 @@ class ExplorationActivityPresenter @Inject constructor(
       activity.supportFragmentManager.beginTransaction().add(
         R.id.exploration_fragment_placeholder,
         ExplorationFragment.newInstance(
-          profileId,
           classroomId,
           topicId,
           storyId,
