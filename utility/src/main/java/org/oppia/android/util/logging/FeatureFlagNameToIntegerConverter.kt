@@ -13,12 +13,11 @@ import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
-import javax.inject.Inject
 
 /**
  *
  */
-class FeatureFlagNameToIntegerConverter @Inject constructor() {
+class FeatureFlagNameToIntegerConverter {
   /**
    * Converts a feature flag name to an integer.
    *
@@ -40,7 +39,7 @@ class FeatureFlagNameToIntegerConverter @Inject constructor() {
       ENABLE_NPS_SURVEY -> 11
       ENABLE_ONBOARDING_FLOW_V2 -> 12
       ENABLE_MULTIPLE_CLASSROOMS -> 13
-      else -> -1
+      else -> 0
     }
   }
 }

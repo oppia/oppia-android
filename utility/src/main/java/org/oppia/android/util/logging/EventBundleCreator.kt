@@ -689,17 +689,14 @@ class EventBundleCreator @Inject constructor(
     ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
         val featureFlagNameConverter = FeatureFlagNameToIntegerConverter()
-        val featureFlagSyncStatusConverter = FeatureFlagSyncStatusToIntegerConverter()
 
         val featureFlagNames = featureFlagsList.map {
           featureFlagNameConverter.convertToInteger(it.flagName)
         }
 
-        val featureFlagSyncStatuses = featureFlagsList.map {
-          featureFlagSyncStatusConverter.convertToInteger(it.flagSyncStatus)
-        }
 
-        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
+        val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus.number }
+        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState.compareTo(false) }
 
         store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
         store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
