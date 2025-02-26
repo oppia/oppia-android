@@ -38,6 +38,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WalkthroughFinalFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -138,7 +139,9 @@ class WalkthroughFinalFragmentTest {
     Intents.release()
   }
 
-  private fun createWalkthroughActivityIntent(profileId: Int): Intent {
+  private fun createWalkthroughActivityIntent(internalProfileId: Int): Intent {
+    val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+
     return WalkthroughActivity.createWalkthroughActivityIntent(
       context,
       profileId
