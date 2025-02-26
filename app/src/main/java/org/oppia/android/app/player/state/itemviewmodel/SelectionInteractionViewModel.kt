@@ -22,6 +22,10 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiv
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
+import org.oppia.android.util.parser.html.ImageTagHandler
 import javax.inject.Inject
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
@@ -52,7 +56,8 @@ class SelectionInteractionViewModel private constructor(
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
   private val resourceHandler: AppLanguageResourceHandler,
-  userAnswerState: UserAnswerState
+  userAnswerState: UserAnswerState,
+  consoleLogger: ConsoleLogger
 ) : StateItemViewModel(ViewType.SELECTION_INTERACTION), InteractionAnswerHandler {
   private val interactionId: String = interaction.id
 
@@ -81,9 +86,20 @@ class SelectionInteractionViewModel private constructor(
       ObservableBoolean(true)
     }
   }
-  val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
-    computeChoiceItems(choiceSubtitledHtmls, hasConversationView, this, enabledItemsList)
+  private val customTagHandlers = mapOf<String, CustomHtmlContentHandler.CustomTagHandler>(
+    CUSTOM_IMG_TAG to ImageTagHandler(consoleLogger)
+  )
 
+  val choiceItems: ObservableList<SelectionInteractionContentViewModel> =
+    computeChoiceItems(
+      choiceSubtitledHtmls,
+      hasConversationView,
+      this,
+      enabledItemsList,
+      this@SelectionInteractionViewModel.writtenTranslationContext,
+      translationController,
+      customTagHandlers
+    )
   private var pendingAnswerError: String? = null
   private val isAnswerAvailable = ObservableField(false)
   val errorMessage = ObservableField<String>("")
@@ -287,7 +303,8 @@ class SelectionInteractionViewModel private constructor(
   /** Implementation of [StateItemViewModel.InteractionItemFactory] for this view model. */
   class FactoryImpl @Inject constructor(
     private val translationController: TranslationController,
-    private val resourceHandler: AppLanguageResourceHandler
+    private val resourceHandler: AppLanguageResourceHandler,
+    private val consoleLogger: ConsoleLogger
   ) : InteractionItemFactory {
     override fun create(
       entityId: String,
@@ -310,7 +327,8 @@ class SelectionInteractionViewModel private constructor(
         writtenTranslationContext,
         translationController,
         resourceHandler,
-        userAnswerState
+        userAnswerState,
+        consoleLogger
       )
     }
   }
@@ -320,7 +338,10 @@ class SelectionInteractionViewModel private constructor(
       choiceSubtitledHtmls: List<SubtitledHtml>,
       hasConversationView: Boolean,
       selectionInteractionViewModel: SelectionInteractionViewModel,
-      enabledItemsList: List<ObservableBoolean>
+      enabledItemsList: List<ObservableBoolean>,
+      writtenTranslationContext: WrittenTranslationContext,
+      translationController: TranslationController,
+      customTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler>
     ): ObservableArrayList<SelectionInteractionContentViewModel> {
       val observableList = ObservableArrayList<SelectionInteractionContentViewModel>()
       observableList += choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
@@ -329,7 +350,10 @@ class SelectionInteractionViewModel private constructor(
           hasConversationView = hasConversationView,
           itemIndex = index,
           selectionInteractionViewModel = selectionInteractionViewModel,
-          isEnabled = enabledItemsList[index]
+          isEnabled = enabledItemsList[index],
+          customTagHandlers,
+          writtenTranslationContext,
+          translationController
         )
       }
       return observableList
