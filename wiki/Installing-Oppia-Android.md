@@ -14,23 +14,22 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 ## Prepare developer environment
 
-1. Download/Install [Android Studio Bumblebee | Patch 3](https://developer.android.com/studio/archive).
-
-   **Note**: We recommend installing **Android Studio Bumblebee | 2021.1.1 Patch 3** because newer versions of Android Studio[ do not support running tests where shared source sets are used](https://issuetracker.google.com/issues/232007221#comment18), a configuration we use at Oppia.
-
-   **Direct download Url**: [Windows](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-windows.exe) | [Linux](https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2021.1.1.23/android-studio-2021.1.1.23-linux.tar.gz) | [Intel Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac.dmg) | [Apple Silicon Mac](https://redirector.gvt1.com/edgedl/android/studio/install/2021.1.1.23/android-studio-2021.1.1.23-mac_arm.dmg)
-
-   You can have multiple versions of Android Studio installed on your machine at the same time.
+1. Download/Install the latest version of Android Studio from [this location](https://developer.android.com/studio).
 
 2. Configure your Android Studio
    - In Android Studio, open Tools > SDK Manager.
-     - In the "SDK Platforms" tab (which is the default), select `API Level 28` and also `API Level 30` (for Bazel support).
+     - In the "SDK Platforms" tab (which is the default), select `API Level 29` and also `API Level 30`.
      - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
 
-   - Must have **JDK 11** selected:
-     - In Android Studio, open Settings > Build, Execution, Deployment > Build Tools > Gradle and edit the Gradle JDK field.
+## Install Bazel
+
+**Select your Operating System for instructions on setting up Bazel:**
+
+- [For Windows/Ubuntu/Fedora](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
+- [For Mac including M1/M2](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Mac)
+- [For Linux](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Linux)
 
 ## Install oppia-android
 
@@ -40,20 +39,23 @@ Please follow these steps to set up Oppia Android on your local machine.
 
    **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
 
-2. Run the `bash scripts/setup.sh` script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.): These tools perform pre-push checks to ensure that your code is properly formatted as per Oppia standards.
+2. Run the `bash scripts/setup.sh` script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.). You should see a message indicating that the various tools have been downloaded.
+   ![] (https://user-images.githubusercontent.com/59600948/212415765-1ab0dfb7-8229-40f2-b1ac-2ca92c22ad4b.png)  
+   
+   **Note** These tools perform important pre-push checks to ensure that your code is properly formatted as per Oppia standards.
 
-    - For Mac or Linux
+    - **For Intel Mac or Linux**
        1. Open a terminal and navigate to `opensource/oppia-android/`.
        2. Run the script `bash scripts/setup.sh`.
 
-    - For Mac with Apple M1 chip
+    - **For Mac with Apple M1 chip**
        1. Locate Terminal in Finder.
        2. Right-click and create a duplicate Terminal (and rename it accordingly, say Terminal x86, to avoid confusion).
        3. In the Terminal x86, right-click and click "Get info", and check the option "Open using Rosetta".
        4. Navigate to `opensource/oppia-android/` in Rosetta.
-       5. Finally, run `bash scripts/setup.sh` in Terminal x86 and all the required files should be generated. (You should see messages like `Ktlint file downloaded`, etc.)
+       5. Finally, run `bash scripts/setup.sh` in Terminal x86 and all the required files should be generated.
 
-    - For Windows
+    - **For Windows**
        1. Install [Git Bash Command Line](https://gitforwindows.org/)
 
           **Note**: When installing Git bash, check the option to add it to powershell, so that you can run bash commands from within powershell.
@@ -63,85 +65,152 @@ Please follow these steps to set up Oppia Android on your local machine.
        5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file. To do this, you can simply right-click on the download button at the top-right of the file.
        6. Copy this file to the directory where Git is installed (usually C:/Program Files/Git/).
 
-3. In Android Studio, select `File > Open`, navigate to `opensource/oppia-android/`, and click `OK` to load the project.
-
-4. Select the Compile JDK version
-   - Go to Android Studio > Settings > Build, Execution, Deployment > Build Tools > Gradle
-   - Under "**Gradle JDK**", select Android Studio Default JDK 11.
-   - Then, click "Apply" and "OK" to complete your setup.
-5. Click the elephant icon in the toolbar ("Sync Gradle") to ensure that all the correct dependencies are downloaded. (In general, you'll want to do this step any time you update your dependencies.)
-
 ## Run the app from Android Studio
 
-1. Go to Tools > AVD Manager, click "Create Virtual Device...". Then:
+1. Launch Android Studio, and on the welcome screen, select **Plugins** to install the Bazel for Android Studio plugin and restart Android Studio.
 
-   - Select a preferred device definition. In general, any device is fine, but you can use Pixel 3a as a default (if you're developing for phones) or Nexus 7 (if you're developing for tablets). After selecting a device, click "Next" at the bottom right to continue.
-   - Select a system image (in general, API Level 28, unless you're an M1 Mac user, in which case use API Level 29). Then click "Next".
-   - Click "Finish" to complete setup.
+2. On next open, click the options button next to the new project/open project to find the "Import Bazel Project" option.
 
-2. To run the app, select the emulator device you want from the dropdown menu to the left of the "Run" button in the toolbar.
+   <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
 
-3. Finally, click the "Run" button.
+3. A setup wizard will open. For Workspace, click (**...**) to open file manager and select /opensource/oppia-android as the location since this is where we have our project's `WORKSPACE` file.
+
+   ![Image](https://github.com/user-attachments/assets/9baf6f71-560b-49fe-84a7-c7b846a64287)
+
+4. On **OK**, you will be asked to **Trust project**. Accept because we trust the project.
+
+   <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/bfc91f6d-d809-418d-ab20-89d899f12f72" />
+
+5. On **next**, to Select Project View, **select Create from scratch**.
+
+   <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/cdc110d6-2926-4f96-b7d8-117e2c716f76" />
+
+6. A file similar to the one below will be generated:
+
+   <img width="760" alt="Image" src="https://github.com/user-attachments/assets/5a26210f-865d-4048-b5a5-73379984bfb5" />
+
+7. In the above file, modify it so that it looks like below(copy and paste):
+   
+   ```
+   directories:
+      # Add the directories you want added as source here
+      # By default, we've added your entire workspace ('.')
+      .
+      
+   # Automatically includes all relevant targets under the 'directories' above
+   derive_targets_from_directories: true
+   
+   targets:
+   # If source code isn't resolving, add additional targets that compile it here
+      //:oppia_dev_binary
+      //app
+      //app/src/main/...
+      //domain/...
+      //model/...
+      //testing/...
+      //utility/...
+      //data/...
+      //scripts/...
+      
+   additional_languages:
+      # Uncomment any additional languages you want supported
+      # c
+      # dart
+      # kotlin
+      # java
+      kotlin
+
+   # Please uncomment an android-SDK platform. Available SDKs are:
+      # android_sdk_platform: android-28
+      android_sdk_platform: android-29
+      # android_sdk_platform: android-30
+      # android_sdk_platform: android-31
+      # android_sdk_platform: android-32
+      # android_sdk_platform: android-33
+      android_sdk_platform: android-34
+   
+   shard_sync: true
+   sync_flags:
+      --local_ram_resources=HOST_RAM*.5
+      --discard_analysis_cache
+   
+   java_language_level: 11
+   ```
+   **Note**: Only enable Android-SDK platforms that you have installed per the [Prepare developer environment](#prepare-developer-environment) section above. Android-SDK platforms are useful for creating emulators to test your app with.
+
+8. Click **Create**, and allow the project to synchronize.
+
+9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Run the following commands in your terminal:
+   
+   On Sdk 29 and below, run:
+   ```
+   bazel mobile-install //:oppia_dev_binary
+   ```
+   This will build, install and launch the app on your device. 
+   
+   On Sdk 30 and newer, run:
+   ```
+   bazel build //:oppia_dev_binary
+   ```
+   followed by:
+   ```
+   adb install bazel-bin/oppia_dev_binary.apk  
+   ```
+   Starting from Sdk 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
+
+ You can also run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the commands above, but using the GUI to run the app might be more intuitive for some developers.
+
+ ![Screenshot 2025-02-26 at 22 16 32](https://github.com/user-attachments/assets/f3be5288-dc96-4079-bcb2-b514de81f899)
+
+   Edit configurations allows us to specify the run command:
+
+   ![Image](https://github.com/user-attachments/assets/7270b6b3-11ac-4b49-a39a-734e0437bb9e)
+
+   - We can specify the target **Name**, which is helpful for identifying the target from the list on the left.
+   - **Target expression** requires a build target such as `//:oppia_dev_binary`.
+   - **The Bazel command** is `mobile-install`
+   - **Bazel flags** are optional.
+   - Select **Apply** and then **Close** or **Ok**.
 
 ## Set up and run tests
 Testing the app is an integral part of our development process. You will need to test all code changes to ensure that the app works correctly, therefore it is important to ensure that your test configuration works.
 
-We strongly recommend running tests on Robolectric which is faster because it does not require a physical device or emulator setup.
+Our Bazel setup currently supports running tests on Robolectric which is fast because it does not require a physical device or emulator setup.
 
 ### Configure Robolectric Tests
 
-#### Step-by-Step guidance for setting up and running app modules robolectric test:
+#### Step-by-Step guidance for setting up and running app module robolectric tests:
 
-1. Go to **Edit Configuration** in Android Studio (Bumblebee | 2021.1.1 Patch 3)
-   ![](https://user-images.githubusercontent.com/9396084/79109714-83525980-7d96-11ea-99d7-f83ea81a8a50.png)
+1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
-2. Click on Add(+) -> **JUnit**
-   ![](https://github.com/oppia/oppia-android/assets/76530270/87caf3fc-37d9-472d-92fd-b8ec49fb6b49)
+2. Because we have set up the Bazel plugin, we can also run a test class using the run arrow at the top of the project window:
 
-3. Enter following information:
-   - a) Name of test. Example: In my case "SplashActivityTest"
-   - b) Make sure select "java 11" and oppia-android.app
-   - c) Class path of Test class. Example: In my case "org.oppia.android.app.splash.
-   SplashActivityTest"
-   - d) Press `OK` to select the test.
-   ![](https://github.com/oppia/oppia-android/assets/76530270/5901624a-df76-4b27-8f31-6077a68fcb89)
+   ![Screenshot 2025-02-26 at 22 16 32](https://github.com/user-attachments/assets/f3be5288-dc96-4079-bcb2-b514de81f899)
 
-4. Click on "Run" button to run robolectric test. (In my case "SplashActivityTest")
-   ![](https://github.com/oppia/oppia-android/assets/76530270/75a6b998-90c5-4f0a-8886-78f96970be90)
+   Edit configurations allows us to specify the run command:
+   ![Screenshot 2025-02-26 at 22 19 34](https://github.com/user-attachments/assets/462d07d2-4407-4898-bbc4-544509bd7486)
+
+   - We can specify the test **name**, which is helpful for identifying the test target from the list on the left.
+   - **Target expression** requires the fully qualified path to the test file.
+   - **The Bazel command** for running tests is `test`
+   - **Bazel flags** are optional.
+   - Select **Apply** and then **Close** or **Ok**.
 
 #### For tests that are in non-app modules, such as **domain** or **utility**::
 
-1. In Android Studio, open the desired test file, e.g., `AnalyticsControllerTest`.
-2. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'AnalyticsControllerTest'**.
-   - You will notice that the emulator is greyed out, but the run window will open to show the running tests:
-   ![](https://user-images.githubusercontent.com/59600948/272657015-158117e5-47d2-40fc-a38b-5dee6c347556.png)
+1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
-### Configure Emulator Tests
+2. A second way to run a test class would be to open the `BUILD` file located in the same package as the test file, and clicking on the green arrow next to the test target name.
+   ![Image](https://github.com/user-attachments/assets/c1ee9e23-b0b2-430a-9592-9f87a2fdcbf0)
 
-**Espresso is slower for running tests, so we recommend using Robolectric.**
-
-1. In Android Studio, open the desired test file, e.g., `HomeActivityTest`.
-2. In the Android Studio toolbar, click on the `Available Devices` option. Select an emulator that has between API 28-30.
-
-   **Note**: If you don't have any available devices in this list, please follow [these instructions](#run-the-app-from-android-studio) to create one.
-
-3. In the test file, to the left of the class name, click on the orange and green arrow, and select **Run 'HomeActivityTest'**.
-   ![](https://user-images.githubusercontent.com/59600948/272657131-96e5354b-13a9-4709-969a-b9494a65c30f.png)
-
-4. An "**Edit Configuration**" dialog will show up, and you should add the following settings under the general tab:
-   - For module, select **oppia-android.app**
-   - For Test, select **Class**
-   - For Instrumentation class, **org.oppia.android.testing.OppiaTestRunner**, will be selected by default.
-   - For target, select the **Use the device/snapshot dropdown** option.
-   - Verify that your setup looks like below:
-
-     ![](https://user-images.githubusercontent.com/59600948/272657260-2e654891-61be-467a-8ebd-c997aa2abda6.png)
-- Finally, Click the "Apply" and "Okay" buttons.
-- You may need to repeat step (3) above to run the test with the new configuration.
-- Subsequent runs of any app module tests will not require editing the configuration.
-- This configuration will run all the tests in that class.
-5. To run only a specific test in a file:
-   - Search or scroll down to the desired test name, to the left of the test name, click on the run icon and select **Run '`test name`''**.
+3. Finally, for all module tests classes, we can run the tests from the terminal using the command:
+   ```
+   bazel test full-path-of-test-file
+   ```
+   e.g.
+   ```
+   bazel test domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest
+   ```
 
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
@@ -150,7 +219,7 @@ We strongly recommend running tests on Robolectric which is faster because it do
 
 - To learn about how we write tests at oppia-android, please refer to: [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
 
-- To get started with Bazel, please see [Oppia-Bazel-Setup-Instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) and follow the instructions appropriate to your OS.
+- To learn more about getting started with Bazel, please see [Oppia-Bazel-Setup-Instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) and follow the instructions appropriate to your OS.
 
 - If you run into any issues during your setup, search our [discussions](https://github.com/oppia/oppia-android/discussions) forum or start a new discussion.
 

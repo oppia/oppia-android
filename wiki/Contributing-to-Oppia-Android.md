@@ -59,15 +59,14 @@ Once you've merged PRs that correspond to **two** different pre-existing GitHub 
 
 ## Important: Ongoing Bazel migration
 
-The team is currently using two build systems for the project: Gradle and Bazel. We're in the process of actively migrating to Bazel.
+The team is in the process of migrating away from Gradle to Bazel, so while the project still has Gradle build files, they are no longer maintained and cannot be used to build the project.
 
 Please note that:
-- It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), we make this recommendation because day-to-day Bazel development currently suffers from:
-  - Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros, this can result in a Kernel panic when memory is fully exhausted.
+- It's currently recommended that all team members use **Bazel** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin, day-to-day Bazel development currently suffers from:
+  - Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros or MacOS, this can result in a Kernel panic when memory is fully exhausted.
   - Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
-- That said, when submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
-- Bazel & Gradle sometimes don't play nicely with one another. So, when you're verifying Bazel-specific things, we recommend doing so in one go, and then deleting the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
-- As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
+  - Syntax highlighting errors in some instances.
+- As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time, and we will continually update our documentation with the latest changes.
 
 ## Installing the Oppia web app
 
@@ -102,6 +101,7 @@ For now, you generally won't need to do this, until the Android app supports on-
   ```
   By using this command git will detect the file as a renamed file.
 
+*  We don't allow force-pushing at Oppia, so once you push your commits, you can't change them. Instead, submit a new commit with the desired changes. If you find that you have force-pushed your branch, please close the PR and submit a new one in its place.
 
 ## Communication channels
 
