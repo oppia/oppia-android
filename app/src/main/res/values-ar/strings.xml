@@ -196,6 +196,8 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
+  <string name="selected_image_region_selection_content_description">الصورة تظهر %1$s.</string>
+  <string name="unselected_image_region_selection_content_description">حدد الصورة %1$s.</string>
   <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
