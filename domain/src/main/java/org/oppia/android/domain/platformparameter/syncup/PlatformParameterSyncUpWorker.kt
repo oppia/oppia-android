@@ -92,6 +92,22 @@ class PlatformParameterSyncUpWorker private constructor(
 
   /** Extracts platform parameters from the remote service and stores them in the cache store. */
   private suspend fun refreshPlatformParameters(): Result {
+    // This is valid to do per the contract of the returned DataProvider (there will only ever be
+    // one result from the provider).
+    val result = platformParameterController.downloadRemoteParameters().retrieveData()
+    return when (result) {
+      is AsyncResult.Pending -> {
+        oppiaLogger.e(TAG, "Unexpected pending state when downloading remote parameters.")
+        Result.failure()
+      }
+        error("Encountered unexpected pending state when attempting to download remote parameters.")
+      is AsyncResult.Success -> Result.Success()
+      is AsyncResult.Failure -> {
+        oppiaLogger.e(TAG, "Failed to fetch platform parameters", e)
+        Result.failure()
+      }
+    }
+
     return try {
       val response = makeNetworkCallForPlatformParameters()
       if (response != null) {

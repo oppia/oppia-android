@@ -346,4 +346,18 @@ class PlatformParameterModule {
         ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
       )
   }
+
+  // TODO: Redo this module. Note that the following methods will eventually be automatically
+  //  generated based on the supported platform parameter and feature flag lists.
+  @Provides
+  @PlatformParameter(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+  fun provideSyncUpWorkerTimePeriodValue(processState: PlatformParameterProcessState): Int {
+    return processState.retrievePlatformParameterIntegerState(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+  }
+
+  @Provides
+  @FeatureFlag(FeatureFlagId.DOWNLOADS_SUPPORT)
+  fun provideSyncUpWorkerTimePeriodValue(processState: PlatformParameterProcessState): Boolean {
+    return processState.retrieveFeatureFlagState(FeatureFlagId.DOWNLOADS_SUPPORT)
+  }
 }
