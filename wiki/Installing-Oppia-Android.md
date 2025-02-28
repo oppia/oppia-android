@@ -17,11 +17,37 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 1. Download/Install the latest version of Android Studio from [this location](https://developer.android.com/studio).
 
 2. Configure your Android Studio
-   - In Android Studio, open Tools > SDK Manager.
+   - In Android Studio, open **Tools** > **SDK Manager**.
      - In the "SDK Platforms" tab (which is the default), select `API Level 29` and also `API Level 30`.
      - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
+
+3. Prepare a test device
+   You require a physical Android device or an Android emulator to run the Oppia app. 
+   - Physical devices are useful for a real-user experience feel, and testing with [accessibility tools](https://github.com/oppia/oppia-android/wiki/Accessibility-A11y-Guide#setting-up-accessibility-scanner-and-talkback).
+   
+     **Set up a physical device for development**
+      - On the device, open the **Settings** app, select **Developer options**, and then **enable USB debugging** (if applicable).
+        - If you don't see **Developer options**, you might need to enable developer mode first. Follow [these instructions](https://developer.android.com/studio/debug/dev-options#enable) to do so.
+        - Connect to your device using USB.
+        - Verify that your device is connected by running the `adb devices` command from your terminal.
+   - Emulators provide the flexibility of testing the application on a variety of devices and Android API levels without needing to have each physical device.
+   
+     **Emulator system requirements**
+       For the best experience, you should use the emulator in Android Studio on a computer with at least the following specs:
+           - 16 GB RAM
+           - 64-bit Windows 10 or higher, MacOS 12 or higher, Linux, or ChromeOS operating system
+           - 16 GB disk space
+     
+     If you don't have these specs, the emulator might still run but not smoothly. In this case, consider testing on a physical device instead.
+
+     **Create an Android Virtual Device**
+     - In Android Studio, in the right hand toolbar, locate `device Manager`.
+     - Click the **+**, and then click **Create Virtual Device**.
+     - Create a phone and a tablet AVD.
+     - After creating your devices, you will be able to see a list of all the devices on the device manager panel.
+     - For more information on the different configurations available for AVDs, please visit the [official documentation page.](https://developer.android.com/studio/run/managing-avds)
 
 ## Install Bazel
 
@@ -133,7 +159,9 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 8. Click **Create**, and allow the project to synchronize.
 
-9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Run the following commands in your terminal:
+9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
+
+   Run the following commands in your terminal:
    
    On Sdk 29 and below, run:
    ```
@@ -151,19 +179,19 @@ Please follow these steps to set up Oppia Android on your local machine.
    ```
    Starting from Sdk 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
 
- You can also run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the commands above, but using the GUI to run the app might be more intuitive for some developers.
+   You can also run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the commands above, but using the GUI to run the app might be more intuitive for some developers.
 
- ![Screenshot 2025-02-26 at 22 16 32](https://github.com/user-attachments/assets/f3be5288-dc96-4079-bcb2-b514de81f899)
+   ![Screenshot 2025-02-26 at 22 16 32](https://github.com/user-attachments/assets/f3be5288-dc96-4079-bcb2-b514de81f899)
 
    Edit configurations allows us to specify the run command:
 
    ![Image](https://github.com/user-attachments/assets/7270b6b3-11ac-4b49-a39a-734e0437bb9e)
 
-   - We can specify the target **Name**, which is helpful for identifying the target from the list on the left.
-   - **Target expression** requires a build target such as `//:oppia_dev_binary`.
-   - **The Bazel command** is `mobile-install`
-   - **Bazel flags** are optional.
-   - Select **Apply** and then **Close** or **Ok**.
+     - Target **Name**, is helpful for identifying the target from the list on the left.
+     - **Target expression** requires a build target such as `//:oppia_dev_binary`.
+     - **The Bazel command** is `mobile-install`
+     - **Bazel flags** are optional.
+     - Select **Apply** and then **Close** or **Ok**.
 
 ## Set up and run tests
 Testing the app is an integral part of our development process. You will need to test all code changes to ensure that the app works correctly, therefore it is important to ensure that your test configuration works.
@@ -183,7 +211,7 @@ Our Bazel setup currently supports running tests on Robolectric which is fast be
    Edit configurations allows us to specify the run command:
    ![Screenshot 2025-02-26 at 22 19 34](https://github.com/user-attachments/assets/462d07d2-4407-4898-bbc4-544509bd7486)
 
-   - We can specify the test **name**, which is helpful for identifying the test target from the list on the left.
+   - Test **name**, is helpful for identifying the test target from the list on the left.
    - **Target expression** requires the fully qualified path to the test file.
    - **The Bazel command** for running tests is `test`
    - **Bazel flags** are optional.
