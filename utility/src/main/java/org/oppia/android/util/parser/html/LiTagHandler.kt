@@ -277,7 +277,7 @@ class LiTagHandler(
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
         peerItemCount: Int
-      ) = ListItemLeadingMarginSpan.UlSpan(parentSpan, context, indentationLevel)
+      ) = ListItemLeadingMarginSpan.UlSpan(parentSpan, context, indentationLevel, displayLocale)
     }
 
     /** Marks the opening tag location of a list item inside an <ol> element. */
@@ -294,7 +294,9 @@ class LiTagHandler(
         return ListItemLeadingMarginSpan.OlSpan(
           parentSpan,
           context,
-          numberedItemPrefix = "${displayLocale.toHumanReadableString(number)}."
+          numberedItemPrefix = "${displayLocale.toHumanReadableString(number)}.",
+          longestNumberedItemPrefix = "${displayLocale.toHumanReadableString(peerItemCount)}.",
+          displayLocale
         )
       }
     }

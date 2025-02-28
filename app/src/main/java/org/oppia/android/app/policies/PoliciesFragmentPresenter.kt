@@ -1,8 +1,6 @@
 package org.oppia.android.app.policies
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +13,6 @@ import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.PoliciesFragmentBinding
 import org.oppia.android.util.parser.html.HtmlParser
-import org.oppia.android.util.parser.html.LeftAlignedSymbolsSpan
 import org.oppia.android.util.parser.html.PolicyType
 import javax.inject.Inject
 
@@ -78,38 +75,15 @@ class PoliciesFragmentPresenter @Inject constructor(
       policyWebLink = resourceHandler.getStringInLocale(R.string.terms_of_service_web_link)
     }
 
-    val parsedHtmlDescription = htmlParserFactory.create(
+    binding.policyDescriptionTextView.text = htmlParserFactory.create(
       policyOppiaTagActionListener = this,
       displayLocale = resourceHandler.getDisplayLocale()
     ).parseOppiaHtml(
-      rawString = policyDescription,
-      htmlContentTextView = binding.policyDescriptionTextView,
+      policyDescription,
+      binding.policyDescriptionTextView,
       supportsLinks = true,
       supportsConceptCards = false
     )
-
-    binding.policyDescriptionTextView.apply {
-      layoutDirection = View.LAYOUT_DIRECTION_LTR
-      textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-      textDirection = View.TEXT_DIRECTION_LTR
-      setSingleLine(false)
-      setMaxLines(Int.MAX_VALUE)
-    }
-
-    val spannableString = SpannableString(parsedHtmlDescription)
-    parsedHtmlDescription.split("\n").forEachIndexed { _, line ->
-      val lineStart = parsedHtmlDescription.indexOf(line)
-      if (line.trimStart().startsWith("•")) {
-        val bulletIndex = lineStart + line.indexOf("•")
-        spannableString.setSpan(
-          LeftAlignedSymbolsSpan(),
-          bulletIndex,
-          bulletIndex + 1,
-          Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-      }
-    }
-    binding.policyDescriptionTextView.text = spannableString
 
     binding.policyWebLinkTextView.text = htmlParserFactory.create(
       gcsResourceName = "",
