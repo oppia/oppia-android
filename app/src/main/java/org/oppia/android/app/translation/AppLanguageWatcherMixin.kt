@@ -2,6 +2,7 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -10,7 +11,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
-import org.oppia.android.app.model.OppiaLanguage
 
 /**
  * Activity mixin for automatically monitoring & recreating the activity whenever the current app
