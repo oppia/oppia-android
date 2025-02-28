@@ -40,20 +40,13 @@ Please follow these steps to set up Oppia Android on your local machine.
    **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
 
 2. Run the `bash scripts/setup.sh` script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.). You should see a message indicating that the various tools have been downloaded.
-   ![] (https://user-images.githubusercontent.com/59600948/212415765-1ab0dfb7-8229-40f2-b1ac-2ca92c22ad4b.png)  
+   ![image](https://github.com/user-attachments/assets/d039f070-a842-4874-b534-01df39599ce6)  
    
    **Note** These tools perform important pre-push checks to ensure that your code is properly formatted as per Oppia standards.
 
-    - **For Intel Mac or Linux**
+    - **For Mac or Linux**
        1. Open a terminal and navigate to `opensource/oppia-android/`.
        2. Run the script `bash scripts/setup.sh`.
-
-    - **For Mac with Apple M1 chip**
-       1. Locate Terminal in Finder.
-       2. Right-click and create a duplicate Terminal (and rename it accordingly, say Terminal x86, to avoid confusion).
-       3. In the Terminal x86, right-click and click "Get info", and check the option "Open using Rosetta".
-       4. Navigate to `opensource/oppia-android/` in Rosetta.
-       5. Finally, run `bash scripts/setup.sh` in Terminal x86 and all the required files should be generated.
 
     - **For Windows**
        1. Install [Git Bash Command Line](https://gitforwindows.org/)

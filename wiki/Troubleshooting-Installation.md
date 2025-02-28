@@ -34,31 +34,6 @@ Here are some general troubleshooting tips for oppia-android. The specific platf
 
    then it's fine to ignore it. The message just appears to be a warning. We don't use Gradle 7.0, so this warning is fine to ignore.
 
-6. If you see the error
-
-   ```
-   Error `Class 'org.oppia.android.app.profile.PinPasswordActivityTest' not found in module 'oppia-android.app'`
-   ```
-
-   or `Module not specified` while running Unit Tests, try to downgrade Android Studio to [Bumblebee (Patch 3)](https://developer.android.com/studio/archive). That should resolve this issue.
-
-
-7. If you encounter this error while building gradle:
-
-   ```
-   > Task :utility:kaptGenerateStubsDebugKotlin FAILED
-   Execution failed for task ':utility:kaptGenerateStubsDebugKotlin'.
-   > Could not resolve all files for configuration ':utility:debugCompileClasspath'.
-      > Failed to transform model.jar (project :model) to match attributes {artifactType=android-classes, org.gradle.category=library, org.gradle.dependency.bundling=external, org.gradle.jvm.version=15, org.gradle.libraryelements=jar, org.gradle.usage=java-api}.
-         > Execution failed for JetifyTransform: E:\Android\open-source\oppia-android\model\build\libs\model.jar.
-            > Failed to transform 'E:\Android\open-source\oppia-android\model\build\libs\model.jar' using Jetifier. Reason: Unsupported class file major version 59. (Run with --stacktrace for more details.)
-   ```
-   You are seeing this because Oppia android currently compiles with Java 8, or 9. Higher versions of Java are not supported by our version of Gradle.
-
-   The `model.jar` was compiled with Java 15/major version 59, hence the incompatibility.
-
-
-   To fix this error, you need to lower the version of Java to compile the JAR file. Please see [here](https://developer.android.com/studio/intro/studio-config#jdk) for more information about Java versions.
 
 ### Bazel issues
 
@@ -110,8 +85,10 @@ Bazel requires Xcode commandline tools to build on M1, and the Xcode license als
 - Reset the xcode select path: `sudo xcode-select -r `
 
  - Set the xcode select path to use CommandLineTools: `sudo xcode-select -s /Library/Developer/CommandLineTools`
+   Note: As of macOS 15.2.1(Sequoia), the full Xcode is required rather than just the CLT. The xcode-select path needs to point to Xcode instead:
+   `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
 
-- Confirm that the path was correctly set. The expected output is: `/Library/Developer/CommandLineTools`
+- Confirm that the path was correctly set. The expected output is: `/Library/Developer/CommandLineTools` or `/Applications/Xcode.app/Contents/Developer` in macOS 15 and later.
 
       xcode-select -p
 
@@ -119,9 +96,8 @@ After successfully running the above commands, build the app using Bazel by runn
 
       ```
       bazel clean --expunge
-      bazel build //:oppia_dev --noexperimental_check_desugar_deps
+      bazel build //:oppia_dev
       ```
-The `--noexperimental_check_desugar_deps` flag is explained in the [bazel blog](https://blog.bazel.build/2018/12/19/bazel-0.21.html#android).
 
 ### Can’t find a particular issue?
 
