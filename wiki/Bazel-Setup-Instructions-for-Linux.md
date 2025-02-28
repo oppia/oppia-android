@@ -21,7 +21,7 @@ Ensure that your `ANDROID_HOME` environment variable is set to the location of y
 
 ### 3. Verifying the build
 
-At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this and all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
+At this point, your system should be able to build Oppia Android. To verify, try building the APK (note that this and all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
 ```
 bazel build //:oppia_dev

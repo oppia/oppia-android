@@ -3,20 +3,11 @@
 ## Instructions
 
 **The steps to install Bazel on Mac are:**
-1. Set up Rosetta Terminal
-2. Install Bazel
-3. Set Bazel and ANDROID_HOME paths permanently in your terminal
-4. Verify that the build is working
+1. Install Bazel
+2. Set Bazel and ANDROID_HOME paths permanently in your terminal
+3. Verify that the build is working
 
-### 1. Set up Rosetta Terminal
-
-- In the Finder app on your Mac, locate the Applications folder from the favorites sidebar.
-- Right-click on your Terminal app and create a duplicate Terminal (and rename it accordingly, say **Terminal Rosetta**, to avoid confusion).
-- On the newly created Terminal Rosetta icon, right-click and select "Get info", and under “General”, check the option "Open using Rosetta".
-
-**Note: Always use the Rosetta terminal for Bazel setup and running `bash setup.sh` or any Bazel build-related commands.**
-
-### 2. Install Bazel
+### 1. Install Bazel
 
 1. Install Bazel following the instructions [here](https://docs.bazel.build/versions/4.0.0/install-os-x.html#install-with-installer-mac-os-x). Make sure that you follow the instructions for installing a specific version (Oppia Android requires 6.5.0 and won't build on other versions).
 
@@ -29,7 +20,7 @@
    bazel 6.5.0
    ```
 
-### 3. Set Bazel and ANDROID_HOME paths permanently in your terminal
+### 2. Set Bazel and ANDROID_HOME paths permanently in your terminal
 
 - To set the `Bazel` and `ANDROID_HOME` path permanently in your terminal run these commands:
     ```
@@ -47,7 +38,7 @@
 
 **Note: You must set the path for `Bazel` and `ANDROID_HOME` before running bazel build for oppia-android, otherwise you will get an error.**
 
-### 4. Verify that the build is working
+### 3. Verify that the build is working
 
 At this point, your system should be able to build Oppia Android. To verify, try building the APK (from your subsystem terminal -- note that this and all other Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail):
 
@@ -75,7 +66,7 @@ bazel mobile-install //:oppia_dev_binary
 
 ``mobile-install`` is much faster for local development (especially for the developer flavor of the app) because it does more sophisticated dex regeneration detection for faster incremental installs. See https://bazel.build/docs/mobile-install for details.
 
-**Note**: If you run into a failure like the following when trying to use `mobile-install` to a device running SDK 34 or newer:
+**Note**: If you run into a failure like the following when trying to use `mobile-install` to a device running SDK 30 or newer:
 
 ```
 FATAL EXCEPTION: main
