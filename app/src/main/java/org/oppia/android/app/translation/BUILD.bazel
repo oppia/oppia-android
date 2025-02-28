@@ -65,6 +65,7 @@ kt_android_library(
     name = "app_language_watcher_mixin",
     srcs = [
         "AppLanguageWatcherMixin.kt",
+        "LanguageSource.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [
