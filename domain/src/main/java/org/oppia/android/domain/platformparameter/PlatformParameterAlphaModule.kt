@@ -23,6 +23,10 @@ import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
@@ -37,6 +41,8 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
@@ -342,6 +348,28 @@ class PlatformParameterAlphaModule {
     return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_MULTIPLE_CLASSROOMS)
       ?: PlatformParameterValue.createDefaultParameter(
         ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
+      )
+  }
+
+  @Provides
+  @EnableTopicInfoTab
+  fun provideEnableTopicInfoTab(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_TOPIC_INFO_TAB)
+      ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
+      )
+  }
+
+  @Provides
+  @EnableTopicPracticeTab
+  fun provideEnableTopicPracticeTab(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_TOPIC_PRACTICE_TAB)
+      ?: PlatformParameterValue.createDefaultParameter(
+        ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
       )
   }
 }

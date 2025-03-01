@@ -179,3 +179,27 @@ const val ENABLE_MULTIPLE_CLASSROOMS = "enable_multiple_classrooms"
 
 /** Default value of the feature flag corresponding to [EnableMultipleClassrooms]. */
 const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = true
+
+/**
+ * Qualifier for the feature flag corresponding to enabling the topic info tab.
+ */
+@Qualifier
+annotation class EnableTopicInfoTab
+
+/** Name of the feature flag that controls whether to enable the topic info tab. */
+const val ENABLE_TOPIC_INFO_TAB = "enable_topic_info_tab"
+
+/** Default value for the feature flag corresponding to [EnableTopicInfoTab]. */
+const val ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE = false
+
+/**
+ * Qualifier for the feature flag corresponding to enabling the topic practice tab.
+ */
+@Qualifier
+annotation class EnableTopicPracticeTab
+
+/** Name of the feature flag that controls whether to enable the topic practice  tab. */
+const val ENABLE_TOPIC_PRACTICE_TAB = "enable_topic_practice_tab"
+
+/** Default value for the feature flag corresponding to [EnableTopicPracticeTab]. */
+const val ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE = false

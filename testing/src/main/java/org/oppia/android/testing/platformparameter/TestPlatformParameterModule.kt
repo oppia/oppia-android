@@ -65,6 +65,10 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -320,6 +324,22 @@ class TestPlatformParameterModule {
     return PlatformParameterValue.createDefaultParameter(enableMultipleClassrooms)
   }
 
+  @Provides
+  @EnableTopicInfoTab
+  fun provideEnableTopicInfoTab(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableTopicInfoTab)
+  }
+
+  @Provides
+  @EnableTopicPracticeTab
+  fun provideEnableTopicPracticeTab(
+    platformParameterSingleton: PlatformParameterSingleton
+  ): PlatformParameterValue<Boolean> {
+    return PlatformParameterValue.createDefaultParameter(enableTopicPracticeTab)
+  }
+
   companion object {
     private var enableDownloadsSupport = ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
     private var enableEditAccountsOptionsUi = ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
@@ -340,6 +360,8 @@ class TestPlatformParameterModule {
     private var enableNpsSurvey = ENABLE_NPS_SURVEY_DEFAULT_VALUE
     private var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
     private var enableMultipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
+    private var enableTopicInfoTab = ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
+    private var enableTopicPracticeTab = ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableDownloadsSupport(value: Boolean) {
@@ -416,6 +438,18 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableAppAndOsDeprecation(value: Boolean) {
       enableAppAndOsDeprecation = value
+    }
+
+    /** Enables forcing [EnableTopicInfoTab] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableTopicInfoTab(value: Boolean) {
+      enableTopicInfoTab = value
+    }
+
+    /** Enables forcing [EnableTopicPracticeTab] platform parameter flag from tests. */
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    fun forceEnableTopicPracticeTab(value: Boolean) {
+      enableTopicPracticeTab = value
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
