@@ -83,9 +83,6 @@ class UrlImageParserTest {
     val imageUrl = "https://example.com/test_image.png"
     urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
 
-    // Wait for Glide to finish loading
-    Shadows.shadowOf(Looper.getMainLooper()).idle()
-
     val loadedBitmaps = testGlideImageLoader.getLoadedBitmaps()
     assertThat(loadedBitmaps).hasSize(1)
     assertThat(loadedBitmaps.first()).contains("test_image.png")
