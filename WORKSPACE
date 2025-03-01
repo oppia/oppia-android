@@ -29,6 +29,33 @@ rules_java_dependencies()
 
 rules_java_toolchains()
 
+# The rules_proto contains the proto_library rule used in the model module. This must be declared
+# before oppia_proto_api in order to ensure that this version of rules_proto is used. This version
+# includes support for not re-building protoc on each rebuild.
+http_archive(
+    name = "rules_proto",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],
+    strip_prefix = "rules_proto-%s" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"],
+    urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
+)
+
+load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
+
+rules_proto_dependencies()
+
+rules_proto_toolchains()
+
+# Skylib needs to be set up before oppia_proto_api to ensure a newer version is used.
+http_archive(
+    name = "bazel_skylib",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["bazel_skylib"]["sha"],
+    url = "https://github.com/bazelbuild/bazel-skylib/releases/download/{0}/bazel-skylib-{0}.tar.gz".format(HTTP_DEPENDENCY_VERSIONS["bazel_skylib"]["version"]),
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
 # Oppia's backend proto API definitions.
 git_repository(
     name = "oppia_proto_api",
@@ -72,35 +99,6 @@ kotlin_repositories(
 )
 
 register_toolchains("//tools/kotlin:kotlin_16_jdk9_toolchain")
-
-# The proto_compiler and proto_java_toolchain bindings load the protos rules needed for the model
-# module while helping us avoid the unnecessary compilation of protoc. Referecences:
-# - https://github.com/google/startup-os/blob/5f30a62/WORKSPACE#L179-L187
-# - https://github.com/bazelbuild/bazel/issues/7095
-
-bind(
-    name = "proto_compiler",
-    actual = "//tools:protoc",
-)
-
-bind(
-    name = "proto_java_toolchain",
-    actual = "//tools:java_toolchain",
-)
-
-# The rules_proto contains the proto_library rule used in the model module.
-http_archive(
-    name = "rules_proto",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["rules_proto"]["sha"],
-    strip_prefix = "rules_proto-%s" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"],
-    urls = ["https://github.com/bazelbuild/rules_proto/archive/%s.tar.gz" % HTTP_DEPENDENCY_VERSIONS["rules_proto"]["version"]],
-)
-
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-
-rules_proto_dependencies()
-
-rules_proto_toolchains()
 
 # Add support for Dagger
 http_archive(
@@ -174,10 +172,24 @@ bind(
 )
 
 http_archive(
-    name = "protobuf_tools",
-    sha256 = HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["sha"],
-    strip_prefix = "protobuf-%s" % HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"],
-    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protobuf-all-{0}.zip".format(HTTP_DEPENDENCY_VERSIONS["protobuf_tools"]["version"])],
+    name = "protoc-linux-x86_64",
+    build_file_content = """exports_files(["bin/protoc"])""",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["protoc-linux-x86_64"]["sha"],
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protoc-{0}-linux-x86_64.zip".format(HTTP_DEPENDENCY_VERSIONS["protoc-linux-x86_64"]["version"])],
+)
+
+http_archive(
+    name = "protoc-osx-universal_binary",
+    build_file_content = """exports_files(["bin/protoc"])""",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["protoc-osx-universal_binary"]["sha"],
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protoc-{0}-osx-universal_binary.zip".format(HTTP_DEPENDENCY_VERSIONS["protoc-osx-universal_binary"]["version"])],
+)
+
+http_archive(
+    name = "protoc-win64",
+    build_file_content = """exports_files(["bin/protoc.exe"])""",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["protoc-win64"]["sha"],
+    urls = ["https://github.com/protocolbuffers/protobuf/releases/download/v{0}/protoc-{0}-win64.zip".format(HTTP_DEPENDENCY_VERSIONS["protoc-win64"]["version"])],
 )
 
 load("@rules_jvm_external//:defs.bzl", "maven_install")

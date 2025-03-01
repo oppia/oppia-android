@@ -16,11 +16,11 @@ concurrency:
 
 jobs:
   build_oppia_dev_aab:
-    name: Build Oppia AAB (developer flavors)
+    name: Build Oppia AAB (developer flavor)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-20.04, macos-14]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -96,7 +96,7 @@ jobs:
         run: bazel build -- //:oppia_dev
 
   build_oppia_alpha_aab:
-    name: Build Oppia AAB (alpha flavors)
+    name: Build Oppia AAB (alpha flavor)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

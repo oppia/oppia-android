@@ -138,6 +138,10 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
     },
+    "bazel_skylib": {
+        "sha": "bc283cdfcd526a52c3201279cda4bc298652efa898b10b4db0837dc51652756f",
+        "version": "1.7.1",
+    },
     "dagger": {
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "version": "2.41",
@@ -153,9 +157,17 @@ HTTP_DEPENDENCY_VERSIONS = {
     "oppia_proto_api": {
         "version": "9cf993ea0b798a67b3faa21c690c30b9027fb371",
     },
-    "protobuf_tools": {
-        "sha": "efcb0b9004200fce79de23be796072a055105273905a5a441dbb5a979d724d20",
-        "version": "3.11.0",
+    "protoc-linux-x86_64": {
+        "sha": "3e866620c5be27664f3d2fa2d656b5f3e09b5152b42f1bedbf427b333e90021a",
+        "version": "29.3",
+    },
+    "protoc-osx-universal_binary": {
+        "sha": "57e0423af36b491ba4d043c4a5b5346ce73464c397911b9ecb7ddf9b573896da",
+        "version": "29.3",
+    },
+    "protoc-win64": {
+        "sha": "57ea59e9f551ad8d71ffaa9b5cfbe0ca1f4e720972a1db7ec2d12ab44bff9383",
+        "version": "29.3",
     },
     "robolectric": {
         "sha": "50ad3e99f9793e19d96218ec9f5d46c039ce28e9e2e0e55be2916b5bfd0554b0",
@@ -174,8 +186,8 @@ HTTP_DEPENDENCY_VERSIONS = {
         "version": "v1.7.1",
     },
     "rules_proto": {
-        "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
-        "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
+        "sha": "bc12122a5ae4b517fa423ea03a8d82ea6352d5127ea48cb54bc324e8ab78493c",
+        "version": "af6481970a34554c6942d993e194a9aed7987780",
     },
 }
 

@@ -7,6 +7,17 @@ build --android_databinding_use_v3_4_args \
 # inconsistencies across environment configurations).
 build --java_runtime_version=remotejdk_11 --tool_java_runtime_version=remotejdk_11
 
+# Force builds to not use the local build environment so that build caches can be properly shared
+# across different terminal environments. This allows builds in a local terminal to share results
+# effectively with the Bazel plugin's sync mechanism (to avoid an unexpected full rebuild).
+build --incompatible_strict_action_env
+
+# Force Bazel to assume armeabi-v7a as the CPU for all Android library builds. Since the app and
+# toolchain don't rely on any native code, this has no real impact other than ensuring that building
+# app binaries doesn't cause a duplication of the entire build cache (as compared to non-binary
+# builds such as those used by the IntelliJ plugin and local tests).
+build --cpu=armeabi-v7a
+
 # Ensure all built Java files treat warnings as errors (similar to the Kotlin configuration) to help
 # reduce code smell & potential bugs during development.
 build --javacopt="-Werror"
