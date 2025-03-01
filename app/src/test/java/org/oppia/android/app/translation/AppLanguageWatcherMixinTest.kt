@@ -145,7 +145,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_noAppLanguageChange_doesNothing() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(languageSource = LanguageSource.APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       // Initializing without anything changing should result in no changes to the locale or activity.
@@ -159,7 +159,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_localeIsUnchanged() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(languageSource = LanguageSource.APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(ENGLISH)
@@ -174,7 +174,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_newLanguage_updatesLocale() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(languageSource = LanguageSource.APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -189,7 +189,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_sameLanguage_doesNotRecreateActivity() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(languageSource = LanguageSource.APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(ENGLISH)
@@ -203,7 +203,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withAppLanguageChange_newLanguage_recreatesActivity() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = false)
+      mixin.initialize(languageSource = LanguageSource.APP_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -217,7 +217,7 @@ class AppLanguageWatcherMixinTest {
   fun testMixin_initialized_withShouldUseSystemLanguage_initializesSystemLanguage() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = true)
+      mixin.initialize(languageSource = LanguageSource.SYSTEM_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
@@ -232,7 +232,7 @@ class AppLanguageWatcherMixinTest {
   @Test
   fun testMixin_initialized_noProfileLoggedIn_initializesSystemLanguage() {
     runAlongsideTestActivity { mixin ->
-      mixin.initialize(shouldOnlyUseSystemLanguage = true)
+      mixin.initialize(languageSource = LanguageSource.SYSTEM_LANGUAGE)
       testCoroutineDispatchers.runCurrent()
 
       updateAppLanguageTo(BRAZILIAN_PORTUGUESE)
