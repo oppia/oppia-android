@@ -79,7 +79,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadDrawable_bitmap_fromUrl() {
+  fun testLoadDrawable_bitmapFromUrl_loadsBlockImage() {
     val imageUrl = "https://example.com/test_image.png"
     urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
 
@@ -92,7 +92,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadDrawable_svg_fromUrl_blockType() {
+  fun testLoadDrawable_svgFromUrlBlockType_loadsBlockSvgImage() {
     val imageUrl = "https://example.com/test_image.svg"
     urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
 
@@ -104,7 +104,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadDrawable_svgz_fromUrl_blockType() {
+  fun testLoadDrawable_svgzFromUrlBlockType_loadsBlockSvgImage() {
     val imageUrl = "https://example.com/test_image.svgz"
     urlImageParser.loadDrawable(imageUrl, BLOCK_IMAGE)
 
@@ -116,7 +116,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadDrawable_latex_inlineType_fromUrl() {
+  fun testLoadMathDrawable_latexInlineType_loadsInlineLatexImage() {
     val rawLatex = "\\frac{2}{6}"
     urlImageParser.loadMathDrawable(
       rawLatex = rawLatex,
@@ -133,7 +133,7 @@ class UrlImageParserTest {
   }
 
   @Test
-  fun testLoadMultipleImages() {
+  fun testLoadDrawable_multipleImages_loadsAllImages() {
     val imageUrl1 = "https://example.com/test_image1.png"
     val imageUrl2 = "https://example.com/test_image2.svg"
     val imageUrl3 = "https://example.com/test_image3.svgz"
