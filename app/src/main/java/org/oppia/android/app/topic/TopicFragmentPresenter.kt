@@ -21,10 +21,10 @@ import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 import org.oppia.android.util.platformparameter.EnableTopicInfoTab
 import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
+import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope

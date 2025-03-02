@@ -19,7 +19,8 @@ class ViewPagerAdapter(
   private val enableTopicPracticeTab: Boolean
 ) : FragmentStateAdapter(fragment) {
 
-  override fun getItemCount(): Int = TopicTab.getTabCount(enableTopicInfoTab, enableTopicPracticeTab)
+  override fun getItemCount(): Int =
+    TopicTab.getTabCount(enableTopicInfoTab, enableTopicPracticeTab)
 
   override fun createFragment(position: Int): Fragment {
     return when (TopicTab.getTabForPosition(position, enableTopicInfoTab, enableTopicPracticeTab)) {

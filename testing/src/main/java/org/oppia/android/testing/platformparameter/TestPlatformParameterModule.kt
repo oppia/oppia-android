@@ -340,7 +340,6 @@ class TestPlatformParameterModule {
     private var enableFastLanguageSwitchingInLesson =
       FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
     private var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    private var enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
     private var enableInteractionConfigChangeStateRetention =
       ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
     private var enablePerformanceMetricsCollection =
@@ -383,12 +382,6 @@ class TestPlatformParameterModule {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun forceEnableLoggingLearnerStudyIds(value: Boolean) {
       enableLoggingLearnerStudyIds = value
-    }
-
-    /** Enables forcing [EnableExtraTopicTabsUi] platform parameter flag from tests. */
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    fun forceEnableExtraTopicTabsUi(value: Boolean) {
-      enableExtraTopicTabsUi = value
     }
 
     /** Enables forcing [EnableInteractionConfigChangeStateRetention] platform parameter flag from tests. */
@@ -458,6 +451,8 @@ class TestPlatformParameterModule {
       enableAppAndOsDeprecation = ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
       enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
       enableMultipleClassrooms = ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
+      enableTopicInfoTab = ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
+      enableTopicPracticeTab = ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
     }
   }
 }
