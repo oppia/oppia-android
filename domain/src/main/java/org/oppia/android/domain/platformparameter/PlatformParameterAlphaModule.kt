@@ -364,9 +364,7 @@ class PlatformParameterAlphaModule {
 
   @Provides
   @EnableTopicPracticeTab
-  fun provideEnableTopicPracticeTab(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
+  fun provideEnableTopicPracticeTab(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(true)
   }
 }
