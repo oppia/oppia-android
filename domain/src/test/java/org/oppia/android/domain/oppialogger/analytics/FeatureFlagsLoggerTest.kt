@@ -167,28 +167,28 @@ class FeatureFlagsLoggerTest {
 
   @Test
   @Iteration("downloads_support", "index=0", "flagName=$DOWNLOADS_SUPPORT")
-  @Iteration("learner_study_analytics", "index=2", "flagName=$LEARNER_STUDY_ANALYTICS")
+  @Iteration("learner_study_analytics", "index=1", "flagName=$LEARNER_STUDY_ANALYTICS")
   @Iteration(
-    "fast_language_switching_in_lesson", "index=3",
+    "fast_language_switching_in_lesson", "index=2",
     "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON"
   )
-  @Iteration("logging_learner_study_ids", "index=4", "flagName=$LOGGING_LEARNER_STUDY_IDS")
-  @Iteration("edit_accounts_options_ui", "index=5", "flagName=$EDIT_ACCOUNTS_OPTIONS_UI")
+  @Iteration("logging_learner_study_ids", "index=3", "flagName=$LOGGING_LEARNER_STUDY_IDS")
+  @Iteration("edit_accounts_options_ui", "index=4", "flagName=$EDIT_ACCOUNTS_OPTIONS_UI")
   @Iteration(
-    "enable_performance_metrics_collection", "index=6",
+    "enable_performance_metrics_collection", "index=5",
     "flagName=$ENABLE_PERFORMANCE_METRICS_COLLECTION"
   )
-  @Iteration("spotlight_ui", "index=7", "flagName=$SPOTLIGHT_UI")
+  @Iteration("spotlight_ui", "index=6", "flagName=$SPOTLIGHT_UI")
   @Iteration(
-    "interaction_config_change_state_retention", "index=8",
+    "interaction_config_change_state_retention", "index=7",
     "flagName=$INTERACTION_CONFIG_CHANGE_STATE_RETENTION"
   )
-  @Iteration("app_and_os_deprecation", "index=9", "flagName=$APP_AND_OS_DEPRECATION")
-  @Iteration("enable_nps_survey", "index=10", "flagName=$ENABLE_NPS_SURVEY")
-  @Iteration("enable_onboarding_flow_v2", "index=11", "flagName=$ENABLE_ONBOARDING_FLOW_V2")
-  @Iteration("enable_multiple_classrooms", "index=12", "flagName=$ENABLE_MULTIPLE_CLASSROOMS")
-  @Iteration("extra_topic_info_tab", "index=1", "flagName=$ENABLE_TOPIC_INFO_TAB")
-  @Iteration("enable_topic_practice_tab", "index=1", "flagName=$ENABLE_TOPIC_PRACTICE_TAB")
+  @Iteration("app_and_os_deprecation", "index=8", "flagName=$APP_AND_OS_DEPRECATION")
+  @Iteration("enable_nps_survey", "index=9", "flagName=$ENABLE_NPS_SURVEY")
+  @Iteration("enable_onboarding_flow_v2", "index=10", "flagName=$ENABLE_ONBOARDING_FLOW_V2")
+  @Iteration("enable_multiple_classrooms", "index=11", "flagName=$ENABLE_MULTIPLE_CLASSROOMS")
+  @Iteration("extra_topic_info_tab", "index=12", "flagName=$ENABLE_TOPIC_INFO_TAB")
+  @Iteration("enable_topic_practice_tab", "index=13", "flagName=$ENABLE_TOPIC_PRACTICE_TAB")
   fun testLogFeatureFlags_allFeatureFlagNamesAreLogged() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
