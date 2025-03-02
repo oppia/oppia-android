@@ -25,18 +25,6 @@ const val DOWNLOADS_SUPPORT = "android_enable_downloads_support"
 const val ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE = false
 
 /**
- * Qualifier for the feature flag corresponding to enabling the extra topic tabs: practice and info.
- */
-@Qualifier
-annotation class EnableExtraTopicTabsUi
-
-/** Name of the feature flag that controls whether to enable the extra topics tab UI. */
-const val EXTRA_TOPIC_TABS_UI = "android_enable_extra_topic_tabs_ui"
-
-/** Default value for the feature flag corresponding to [EnableExtraTopicTabsUi]. */
-const val ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE = false
-
-/**
  * Qualifier for the feature flag that controls the visibility of [ProfileAndDeviceIdActivity]
  * and working of learner study related analytics logging.
  */

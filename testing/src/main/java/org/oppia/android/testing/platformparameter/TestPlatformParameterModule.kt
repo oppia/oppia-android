@@ -14,16 +14,16 @@ import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
@@ -33,6 +33,8 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
@@ -65,10 +67,6 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
-import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableTopicInfoTab
-import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
@@ -226,11 +224,6 @@ class TestPlatformParameterModule {
       PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES_DEFAULT_VAL
     )
   }
-
-  @Provides
-  @EnableExtraTopicTabsUi
-  fun provideEnableExtraTopicTabsUi(): PlatformParameterValue<Boolean> =
-    PlatformParameterValue.createDefaultParameter(enableExtraTopicTabsUi)
 
   @Provides
   @EnableInteractionConfigChangeStateRetention
@@ -459,7 +452,6 @@ class TestPlatformParameterModule {
       enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
       enableFastLanguageSwitchingInLesson = FAST_LANGUAGE_SWITCHING_IN_LESSON_DEFAULT_VALUE
       enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-      enableExtraTopicTabsUi = ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
       enableInteractionConfigChangeStateRetention =
         ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
       enablePerformanceMetricsCollection = ENABLE_PERFORMANCE_METRICS_COLLECTION_DEFAULT_VALUE

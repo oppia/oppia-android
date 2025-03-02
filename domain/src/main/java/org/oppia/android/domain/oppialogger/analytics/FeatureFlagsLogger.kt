@@ -10,11 +10,11 @@ import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
@@ -24,6 +24,8 @@ import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
@@ -45,8 +47,6 @@ class FeatureFlagsLogger @Inject constructor(
   private val analyticsController: AnalyticsController,
   @EnableDownloadsSupport
   private val enableDownloadsSupport: PlatformParameterValue<Boolean>,
-  @EnableExtraTopicTabsUi
-  private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
   @EnableLearnerStudyAnalytics
   private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
   @EnableFastLanguageSwitchingInLesson
@@ -69,6 +69,10 @@ class FeatureFlagsLogger @Inject constructor(
   private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
   @EnableMultipleClassrooms
   private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableTopicInfoTab
+  private val enableTopicInfoTab: PlatformParameterValue<Boolean>,
+  @EnableTopicPracticeTab
+  private val enableTopicPracticeTab: PlatformParameterValue<Boolean>,
 ) {
   /**
    * A variable containing a list of all the feature flags in the app.
@@ -77,7 +81,6 @@ class FeatureFlagsLogger @Inject constructor(
    */
   private var featureFlagItemMap: Map<String, PlatformParameterValue<Boolean>> = mapOf(
     DOWNLOADS_SUPPORT to enableDownloadsSupport,
-    EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
     LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,
     FAST_LANGUAGE_SWITCHING_IN_LESSON to enableFastLanguageSwitchingInLesson,
     LOGGING_LEARNER_STUDY_IDS to enableLoggingLearnerStudyIds,
@@ -89,6 +92,8 @@ class FeatureFlagsLogger @Inject constructor(
     ENABLE_NPS_SURVEY to enableNpsSurvey,
     ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
     ENABLE_MULTIPLE_CLASSROOMS to enableMultipleClassrooms,
+    ENABLE_TOPIC_INFO_TAB to enableTopicInfoTab,
+    ENABLE_TOPIC_PRACTICE_TAB to enableTopicPracticeTab,
   )
 
   /**

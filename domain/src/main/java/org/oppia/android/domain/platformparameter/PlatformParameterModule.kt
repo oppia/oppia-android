@@ -13,7 +13,6 @@ import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.util.platformparameter.ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_DOWNLOADS_SUPPORT_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_EDIT_ACCOUNTS_OPTIONS_UI_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_INTERACTION_CONFIG_CHANGE_STATE_RETENTION_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
 import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE
@@ -28,11 +27,9 @@ import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB
 import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB
 import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
@@ -221,18 +218,6 @@ class PlatformParameterModule {
   ): PlatformParameterValue<Boolean> {
     return platformParameterSingleton.getBooleanPlatformParameter(SPOTLIGHT_UI)
       ?: PlatformParameterValue.createDefaultParameter(ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE)
-  }
-
-  @Provides
-  @EnableExtraTopicTabsUi
-  fun provideEnableExtraTopicTabsUi(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(
-      EXTRA_TOPIC_TABS_UI
-    ) ?: PlatformParameterValue.createDefaultParameter(
-      ENABLE_EXTRA_TOPIC_TABS_UI_DEFAULT_VALUE
-    )
   }
 
   @Provides
