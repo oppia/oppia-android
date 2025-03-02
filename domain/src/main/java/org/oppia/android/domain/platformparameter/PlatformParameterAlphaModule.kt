@@ -367,9 +367,6 @@ class PlatformParameterAlphaModule {
   fun provideEnableTopicPracticeTab(
     platformParameterSingleton: PlatformParameterSingleton
   ): PlatformParameterValue<Boolean> {
-    return platformParameterSingleton.getBooleanPlatformParameter(ENABLE_TOPIC_PRACTICE_TAB)
-      ?: PlatformParameterValue.createDefaultParameter(
-        ENABLE_TOPIC_PRACTICE_TAB_DEFAULT_VALUE
-      )
+    return PlatformParameterValue.createDefaultParameter(true)
   }
 }
