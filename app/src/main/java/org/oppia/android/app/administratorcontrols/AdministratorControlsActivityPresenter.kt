@@ -1,6 +1,7 @@
 package org.oppia.android.app.administratorcontrols
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -31,7 +32,7 @@ class AdministratorControlsActivityPresenter @Inject constructor(
   private lateinit var binding: AdministratorControlsActivityBinding
 
   private lateinit var lastLoadedFragment: String
-  private var selectedProfileId: ProfileId = ProfileId.getDefaultInstance()
+  private var selectedProfileId: ProfileId = ProfileId.newBuilder().setLoggedOut(true).build()
   private lateinit var extraControlsTitle: String
   private var isProfileDeletionDialogVisible: Boolean = false
 
@@ -68,9 +69,13 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         PROFILE_LIST_FRAGMENT -> activity.loadProfileList()
         APP_VERSION_FRAGMENT -> activity.loadAppVersion()
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
+          Log.d("profile", profileId.loggedOut.toString())
+          if(!profileId.loggedOut){
+            Log.d("profile",profileId.internalId.toString())
+          }
           if (extraControlsTitle != null) {
             activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
-            if (isProfileDeletionDialogVisible && profileId.internalId != 0) {
+            if (isProfileDeletionDialogVisible && !profileId.loggedOut) {
               val fragment = activity.supportFragmentManager.findFragmentById(
                 R.id.administrator_controls_fragment_multipane_placeholder
               )

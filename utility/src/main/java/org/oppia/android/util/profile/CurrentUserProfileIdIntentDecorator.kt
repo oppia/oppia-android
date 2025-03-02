@@ -30,7 +30,7 @@ object CurrentUserProfileIdIntentDecorator {
   fun Intent.extractCurrentUserProfileId(): ProfileId {
     return getProtoExtra(
       PROFILE_ID_INTENT_DECORATOR,
-      ProfileId.getDefaultInstance()
+      ProfileId.newBuilder().setLoggedOut(true).build()
     )
   }
 
@@ -39,7 +39,9 @@ object CurrentUserProfileIdIntentDecorator {
    * [extractCurrentUserProfileId] should be used for retrieving the [ProfileId] later.
    */
   fun Bundle.decorateWithUserProfileId(profileId: ProfileId) {
-    putProto(PROFILE_ID_BUNDLE_DECORATOR, profileId)
+    if(!profileId.loggedOut) {
+      putProto(PROFILE_ID_BUNDLE_DECORATOR, profileId)
+    }
   }
 
   /**
@@ -49,7 +51,7 @@ object CurrentUserProfileIdIntentDecorator {
   fun Bundle.extractCurrentUserProfileId(): ProfileId {
     return getProto(
       PROFILE_ID_BUNDLE_DECORATOR,
-      ProfileId.getDefaultInstance()
+      ProfileId.newBuilder().setLoggedOut(true).build()
     )
   }
 }
