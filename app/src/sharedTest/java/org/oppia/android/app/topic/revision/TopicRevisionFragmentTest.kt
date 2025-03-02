@@ -116,7 +116,8 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
+import org.oppia.android.util.platformparameter.EnableTopicInfoTab
+import org.oppia.android.util.platformparameter.EnableTopicPracticeTab
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -147,8 +148,11 @@ class TopicRevisionFragmentTest {
   @Inject
   lateinit var spotlightStateController: SpotlightStateController
 
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
+  @field:[Inject EnableTopicInfoTab]
+  lateinit var enableTopicInfoTab: PlatformParameterValue<Boolean>
+
+  @field:[Inject EnableTopicPracticeTab]
+  lateinit var enableTopicPracticeTab: PlatformParameterValue<Boolean>
 
   private val subtopicThumbnail = R.drawable.topic_fractions_01
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -156,7 +160,8 @@ class TopicRevisionFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     markAllSpotlightsSeen()
@@ -364,7 +369,8 @@ class TopicRevisionFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = 3,
-            enableExtraTopicTabsUi = enableExtraTopicTabsUi.value
+            enableTopicInfoTab.value,
+            enableTopicPracticeTab.value
           ).name
         ),
         isDescendantOfA(withId(R.id.topic_tabs_container))

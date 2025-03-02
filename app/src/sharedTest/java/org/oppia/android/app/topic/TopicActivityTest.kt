@@ -169,7 +169,8 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     launchTopicActivity(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).use { scenario ->
@@ -185,7 +186,7 @@ class TopicActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
