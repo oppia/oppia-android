@@ -154,7 +154,7 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
-    val expectedFeatureFlagCount = 13
+    val expectedFeatureFlagCount = 14
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()

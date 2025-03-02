@@ -498,7 +498,15 @@ class TopicFragmentTest {
   fun testTopicFragment_disableExtraTabs_infoTopicTab_isNotDisplayedInTabLayout() {
     initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = false)
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
-      onView(withText(TopicTab.getTabForPosition(position = INFO_TAB_POSITION, true).name))
+      onView(
+        withText(
+          TopicTab.getTabForPosition(
+            position = INFO_TAB_POSITION,
+            enableTopicInfoTab = true,
+            enableTopicPracticeTab = false
+          ).name
+        )
+      )
         .check(doesNotExist())
     }
   }
