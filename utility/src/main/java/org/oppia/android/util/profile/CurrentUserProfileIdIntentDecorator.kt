@@ -39,7 +39,7 @@ object CurrentUserProfileIdIntentDecorator {
    * [extractCurrentUserProfileId] should be used for retrieving the [ProfileId] later.
    */
   fun Bundle.decorateWithUserProfileId(profileId: ProfileId) {
-    if(!profileId.loggedOut) {
+    if (!profileId.loggedOut) {
       putProto(PROFILE_ID_BUNDLE_DECORATOR, profileId)
     }
   }

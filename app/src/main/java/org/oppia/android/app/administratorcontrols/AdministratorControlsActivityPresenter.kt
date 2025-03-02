@@ -70,8 +70,8 @@ class AdministratorControlsActivityPresenter @Inject constructor(
         APP_VERSION_FRAGMENT -> activity.loadAppVersion()
         PROFILE_EDIT_FRAGMENT -> selectedProfileId.let { profileId ->
           Log.d("profile", profileId.loggedOut.toString())
-          if(!profileId.loggedOut){
-            Log.d("profile",profileId.internalId.toString())
+          if (!profileId.loggedOut) {
+            Log.d("profile", profileId.internalId.toString())
           }
           if (extraControlsTitle != null) {
             activity.loadProfileEdit(profileId = profileId, profileName = extraControlsTitle)
