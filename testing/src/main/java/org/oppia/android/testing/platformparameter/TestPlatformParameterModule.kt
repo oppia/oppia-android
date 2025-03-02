@@ -319,17 +319,13 @@ class TestPlatformParameterModule {
 
   @Provides
   @EnableTopicInfoTab
-  fun provideEnableTopicInfoTab(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
+  fun provideEnableTopicInfoTab(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(enableTopicInfoTab)
   }
 
   @Provides
   @EnableTopicPracticeTab
-  fun provideEnableTopicPracticeTab(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Boolean> {
+  fun provideEnableTopicPracticeTab(): PlatformParameterValue<Boolean> {
     return PlatformParameterValue.createDefaultParameter(enableTopicPracticeTab)
   }
 
