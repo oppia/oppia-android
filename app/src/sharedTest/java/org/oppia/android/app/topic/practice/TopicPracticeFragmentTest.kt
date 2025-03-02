@@ -481,7 +481,7 @@ class TopicPracticeFragmentTest {
       allOf(
         withText(
           TopicTab.getTabForPosition(
-            position = 2,
+            position = 1,
             enableTopicInfoTab.value,
             enableTopicPracticeTab.value
           ).name
