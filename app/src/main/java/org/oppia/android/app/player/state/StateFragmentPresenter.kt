@@ -1,7 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import android.os.Bundle
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -619,13 +619,13 @@ class StateFragmentPresenter @Inject constructor(
     )
   }
 
-  /** Saves the state of the header. */
-  fun saveExpandedState(outState: Bundle) {
-    recyclerViewAssembler.saveExpandedState(outState)
+  /** Saves the assembler's state to a protobuf message. */
+  fun saveAssemblerState(): StatePlayerRecyclerViewAssemblerState {
+    return recyclerViewAssembler.saveState()
   }
 
-  /** Restore the state of the header. */
-  fun restoreExpandedState(savedInstanceState: Bundle?) {
-    recyclerViewAssembler.restoreExpandedState(savedInstanceState)
+  /** Restores the assembler's state from a protobuf message. */
+  fun restoreAssemblerState(state: StatePlayerRecyclerViewAssemblerState) {
+    recyclerViewAssembler.restoreState(state)
   }
 }

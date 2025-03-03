@@ -1,6 +1,7 @@
 package org.oppia.android.app.player.state
 
 import android.app.Application
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -1551,14 +1552,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
-  /** Saves the expanded state to a Bundle. */
-  fun saveExpandedState(outState: Bundle) {
-    outState.putBoolean(HAS_PREVIOUS_RESPONSES_EXPANDED_KEY, hasPreviousResponsesExpanded)
+  /** Saves the expanded state to a protobuf message. */
+  fun saveState(): StatePlayerRecyclerViewAssemblerState {
+    return StatePlayerRecyclerViewAssemblerState.newBuilder()
+      .setHasPreviousResponsesExpanded(hasPreviousResponsesExpanded)
+      .build()
   }
 
-  /** Restores the expanded state from a Bundle. */
-  fun restoreExpandedState(savedInstanceState: Bundle?) {
-    hasPreviousResponsesExpanded =
-      savedInstanceState?.getBoolean(HAS_PREVIOUS_RESPONSES_EXPANDED_KEY, false) ?: false
+  /** Restores the expanded state from a protobuf message. */
+  fun restoreState(state: StatePlayerRecyclerViewAssemblerState) {
+    hasPreviousResponsesExpanded = state.hasPreviousResponsesExpanded
   }
 }

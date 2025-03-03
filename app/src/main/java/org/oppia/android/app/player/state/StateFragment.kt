@@ -1,6 +1,8 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
+import org.oppia.android.util.extensions.putProto
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +47,8 @@ class StateFragment :
 
     /** Arguments key for StateFragment saved state. */
     const val STATE_FRAGMENT_STATE_KEY = "StateFragment.state"
+
+    private const val STATE_PLAYER_ASSEMBLER_STATE_KEY = "StatePlayerRecyclerViewAssembler.state"
 
     /**
      * Creates a new instance of a StateFragment.
@@ -166,15 +170,25 @@ class StateFragment :
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
+    // Save the user answer state as before
     outState.putProto(
       STATE_FRAGMENT_STATE_KEY,
       stateFragmentPresenter.getUserAnswerState()
     )
-    stateFragmentPresenter.saveExpandedState(outState)
+    // Save the assembler state using protobuf
+    val assemblerState = stateFragmentPresenter.saveAssemblerState()
+    outState.putProto(STATE_PLAYER_ASSEMBLER_STATE_KEY, assemblerState)
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    stateFragmentPresenter.restoreExpandedState(savedInstanceState)
+    if (savedInstanceState != null) {
+      // Restore the assembler state using protobuf
+      val assemblerState = savedInstanceState.getProto(
+        STATE_PLAYER_ASSEMBLER_STATE_KEY,
+        StatePlayerRecyclerViewAssemblerState.getDefaultInstance()
+      )
+      stateFragmentPresenter.restoreAssemblerState(assemblerState)
+    }
   }
 }
