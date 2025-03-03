@@ -1,8 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
-import org.oppia.android.util.extensions.putProto
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +9,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.StateFragmentArguments
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorOrAvailabilityCheckReceiver

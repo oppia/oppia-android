@@ -1,7 +1,6 @@
 package org.oppia.android.app.player.state
 
 import android.content.Context
-import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +25,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
