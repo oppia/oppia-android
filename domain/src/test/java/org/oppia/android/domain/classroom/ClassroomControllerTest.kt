@@ -17,7 +17,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -27,7 +27,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -50,6 +50,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [ClassroomController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -72,7 +74,7 @@ class ClassroomControllerTest {
   @Before
   fun setUp() {
     profileId0 = ProfileId.newBuilder().setInternalId(0).build()
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
     setUpTestApplicationComponent()
   }
 
@@ -381,8 +383,8 @@ class ClassroomControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class,
+      PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

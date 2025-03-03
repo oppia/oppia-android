@@ -35,13 +35,13 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -64,6 +64,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 
@@ -99,7 +101,7 @@ class MetricLogSchedulingWorkerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.PERFORMANCE_METRICS_COLLECTION, true)
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -268,8 +270,8 @@ class MetricLogSchedulingWorkerTest {
       TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, TestPlatformParameterModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
+      AssetModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
+      SyncStatusTestModule::class, PlatformParameterTestModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
     ]

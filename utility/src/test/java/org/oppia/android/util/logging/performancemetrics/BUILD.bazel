@@ -12,10 +12,10 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
-        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
@@ -52,6 +52,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
     ],
 )
 

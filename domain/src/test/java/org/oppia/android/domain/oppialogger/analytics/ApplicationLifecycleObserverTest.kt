@@ -30,7 +30,7 @@ import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
@@ -41,7 +41,7 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
 import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -59,7 +59,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -68,6 +67,8 @@ import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -158,7 +159,7 @@ class ApplicationLifecycleObserverTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -578,12 +579,12 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LOGGING_LEARNER_STUDY_IDS, true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationWithPerformanceMetricsCollection() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.PERFORMANCE_METRICS_COLLECTION, true)
     setUpTestApplicationComponent()
   }
 
@@ -666,7 +667,7 @@ class ApplicationLifecycleObserverTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]

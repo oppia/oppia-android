@@ -34,14 +34,14 @@ import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private const val UPLOAD_ALL_EVENTS_PROVIDER_ID = "AnalyticsController.upload_all_events"
 
@@ -67,7 +67,7 @@ class AnalyticsController @Inject constructor(
   @EventLogStorageCacheSize private val eventLogStorageCacheSize: Int,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @EnableLearnerStudyAnalytics private val enableLearnerStudyParam: PlatformParameterValue<Boolean>
+  @FeatureFlag(LEARNER_STUDY_ANALYTICS) private val enableLearnerStudyAnalytics: Boolean
 ) {
   // NOTE TO DEVELOPER: This log store should not be lazy since it needs to be primed as early as
   // possible. Creating the log store with a delay (such as would happen if it were lazy delegated)
@@ -84,8 +84,6 @@ class AnalyticsController @Inject constructor(
       }
       syncStatusManager.initializeEventLogStore(store)
     }
-
-  private val enableLearnerStudyAnalytics get() = enableLearnerStudyParam.value
 
   /**
    * Logs a high priority event defined by [eventContext] corresponding to time [timestamp].

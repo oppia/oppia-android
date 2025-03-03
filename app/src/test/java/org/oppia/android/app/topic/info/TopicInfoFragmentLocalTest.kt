@@ -56,14 +56,14 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -85,6 +85,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_CLASSROOM_ID = "test_classroom_id_1"
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
@@ -96,10 +98,13 @@ private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
   qualifiers = "port-xxhdpi"
 )
 class TopicInfoFragmentLocalTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
 
@@ -110,7 +115,7 @@ class TopicInfoFragmentLocalTest {
 
   @Test
   fun testTopicInfoFragment_onLaunch_logsEvent() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EXTRA_TOPIC_TABS_UI, true)
     launchTopicActivityIntent(profileId = profileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
@@ -145,7 +150,7 @@ class TopicInfoFragmentLocalTest {
   @Component(
     modules = [
       TestDispatcherModule::class, ApplicationModule::class, RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

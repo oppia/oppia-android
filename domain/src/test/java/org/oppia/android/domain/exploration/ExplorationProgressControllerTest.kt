@@ -71,7 +71,7 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -113,11 +113,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -3849,32 +3844,6 @@ class ExplorationProgressControllerTest {
     @LoadLessonProtosFromAssets
     fun provideLoadLessonProtosFromAssets(testEnvironmentConfig: TestEnvironmentConfig): Boolean =
       testEnvironmentConfig.isUsingBazel()
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Enable the study by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Enable study IDs by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -3892,7 +3861,7 @@ class ExplorationProgressControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterSingletonModule::class,
+      SyncStatusModule::class, PlatformParameterTestModule::class,
       ExplorationProgressModule::class, TestAuthenticationModule::class
     ]
   )

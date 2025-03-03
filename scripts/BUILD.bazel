@@ -256,13 +256,29 @@ kt_jvm_binary(
     ],
 )
 
-kt_jvm_binary(
+java_binary(
     name = "coverage_reporter",
     testonly = True,
     data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.coverage.reporter.CoverageReporterKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
+    ],
+)
+
+# Note that this is intentionally not test-only since it's used by the app build pipeline. Also,
+# this apparently needs to be a java_binary to set up runfiles correctly when executed within a
+# Starlark rule as a tool.
+java_binary(
+    name = "generate_platform_config_module",
+    data = [
+        "//config/src/java/org/oppia/android/config:feature_flag_definitions",
+        "//config/src/java/org/oppia/android/config:platform_parameter_definitions",
+    ],
+    main_class = "org.oppia.android.scripts.codegen.GeneratePlatformConfigModuleKt",
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/platformparameter:__subpackages__"],
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/codegen:generate_platform_config_module_lib",
     ],
 )
 

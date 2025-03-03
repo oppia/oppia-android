@@ -23,7 +23,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
 import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -470,7 +470,7 @@ class PerformanceMetricsAssessorImplTest {
       TestModule::class, TestLogReportingModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, SyncStatusModule::class,
+      PlatformParameterTestModule::class, SyncStatusModule::class,
       TestPerformanceMetricsAssessorModule::class
     ]
   )

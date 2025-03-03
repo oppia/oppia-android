@@ -11,6 +11,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.model.BuildFlavor
@@ -56,6 +57,10 @@ abstract class AbstractOppiaApplication(
           PlayIntegrityAppCheckProviderFactory.getInstance(),
         )
       }
+      // TODO: This needs to be figured out properly. Ideally, SplashActivity will block on
+      //  loadParameters() but apparently the work manager config indirectly depends on them.
+      //  Probably just need to remove that dependency and prohibit it.
+      runBlocking { component.getPlatformParameterController().loadParameters().retrieveData() }
       WorkManager.initialize(applicationContext, workManagerConfiguration)
       val workManager = WorkManager.getInstance(applicationContext)
       component.getAnalyticsStartupListenerStartupListeners().forEach { it.onCreate(workManager) }

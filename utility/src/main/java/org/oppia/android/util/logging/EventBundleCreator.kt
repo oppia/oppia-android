@@ -106,8 +106,6 @@ import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLogga
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.NetworkUsageLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StartupLatencyLoggableMetric
 import org.oppia.android.util.logging.EventBundleCreator.PerformanceMetricsLoggableMetricType.StorageUsageLoggableMetric
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -133,12 +131,14 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerE
 import org.oppia.android.app.model.EventLog.SurveyContext as SurveyEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.CpuUsageMetric as CpuUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -153,8 +153,7 @@ private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
 class EventBundleCreator @Inject constructor(
   private val context: Context,
   private val eventTypeNameConverter: EventTypeToHumanReadableNameConverter,
-  @EnableLoggingLearnerStudyIds
-  private val enableLoggingLearnerStudyIds: PlatformParameterValue<Boolean>
+  @FeatureFlag(LOGGING_LEARNER_STUDY_IDS) private val enableLoggingLearnerStudyIds: Boolean,
 ) {
   private val androidSdkVersion by lazy { Build.VERSION.SDK_INT }
   private val appVersionCode by lazy { context.getVersionCode() }
@@ -192,7 +191,7 @@ class EventBundleCreator @Inject constructor(
       eventContext.storeValue(
         PropertyStore(
           bundle,
-          allowUserIds = enableLoggingLearnerStudyIds.value
+          allowUserIds = enableLoggingLearnerStudyIds
         )
       )
     }.activityName

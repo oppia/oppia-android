@@ -21,12 +21,12 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
-import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollection
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** Observer that observes application and activity lifecycle. */
 @Singleton
@@ -43,8 +43,8 @@ class ApplicationLifecycleObserver @Inject constructor(
   private val cpuPerformanceSnapshotter: CpuPerformanceSnapshotter,
   @LearnerAnalyticsInactivityLimitMillis private val inactivityLimitMillis: Long,
   @BackgroundDispatcher private val backgroundDispatcher: CoroutineDispatcher,
-  @EnablePerformanceMetricsCollection
-  private val enablePerformanceMetricsCollection: PlatformParameterValue<Boolean>,
+  @FeatureFlag(PERFORMANCE_METRICS_COLLECTION)
+  private val enablePerformanceMetricsCollection: Boolean,
   private val analyticsController: AnalyticsController,
   private val applicationLifecycleListeners: Set<@JvmSuppressWildcards ApplicationLifecycleListener>
 ) : ApplicationStartupListener, LifecycleObserver, Application.ActivityLifecycleCallbacks {
@@ -101,7 +101,7 @@ class ApplicationLifecycleObserver @Inject constructor(
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
     }
-    if (enablePerformanceMetricsCollection.value) {
+    if (enablePerformanceMetricsCollection) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_FOREGROUND)
     }
     performanceMetricsController.setAppInForeground()
@@ -117,7 +117,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   fun onAppInBackground() {
     applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
     firstTimestamp = oppiaClock.getCurrentTimeMs()
-    if (enablePerformanceMetricsCollection.value) {
+    if (enablePerformanceMetricsCollection) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)
     }
     performanceMetricsController.setAppInBackground()

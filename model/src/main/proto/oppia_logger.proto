@@ -527,7 +527,7 @@ message EventLog {
     bool flag_enabled_state = 2;
 
     // The sync status of the feature flag or sync status flag.
-    PlatformParameter.SyncStatus flag_sync_status = 3;
+    SyncStatus flag_sync_status = 3;
   }
 
   // Structure for the profile onboarding context.

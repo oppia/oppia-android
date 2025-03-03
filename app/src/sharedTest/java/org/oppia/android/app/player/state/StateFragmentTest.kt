@@ -139,7 +139,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -166,7 +166,7 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -197,6 +197,8 @@ import java.io.IOException
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -206,21 +208,47 @@ import javax.inject.Singleton
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
 class StateFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
-  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var testGlideImageLoader: TestGlideImageLoader
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var oppiaClock: FakeOppiaClock
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
+  @Inject
+  lateinit var translationController: TranslationController
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var testGlideImageLoader: TestGlideImageLoader
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var oppiaClock: FakeOppiaClock
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -5956,22 +5984,22 @@ class StateFragmentTest {
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
     setUpTest()
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOff() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, false)
     setUpTest()
   }
 
   private fun setUpTestWithSurveyFeatureOn() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, true)
     setUpTest()
   }
 
   private fun setUpTestWithSurveyFeatureOff() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, false)
     setUpTest()
   }
 
@@ -6160,7 +6188,7 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestPlatformParameterModule::class,
+      TestModule::class, RobolectricModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
@@ -6178,7 +6206,7 @@ class StateFragmentTest {
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
       NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

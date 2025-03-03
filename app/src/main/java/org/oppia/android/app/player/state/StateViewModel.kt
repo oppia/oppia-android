@@ -27,9 +27,9 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** [ViewModel] for state-fragment. */
 @FragmentScope
@@ -40,8 +40,8 @@ class StateViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val fragment: Fragment,
   private val profileManagementController: ProfileManagementController,
-  @EnableFastLanguageSwitchingInLesson
-  private val enableFastLanguageSwitchingInLesson: PlatformParameterValue<Boolean>
+  @FeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  private val enableFastLanguageSwitchingInLesson: Boolean
 ) : ObservableViewModel() {
   val itemList: ObservableList<StateItemViewModel> = ObservableArrayList()
   val rightItemList: ObservableList<StateItemViewModel> = ObservableArrayList()
@@ -54,7 +54,7 @@ class StateViewModel @Inject constructor(
   val isHintBulbVisible = ObservableField(false)
   val isHintOpenedAndUnRevealed = ObservableField(false)
 
-  val hasSupportForSwitchingToSwahili: Boolean = enableFastLanguageSwitchingInLesson.value
+  val hasSupportForSwitchingToSwahili: Boolean = enableFastLanguageSwitchingInLesson
   val hasSwahiliTranslations: LiveData<Boolean> by lazy {
     Transformations.map(
       explorationProgressController.getCurrentState().toLiveData(),

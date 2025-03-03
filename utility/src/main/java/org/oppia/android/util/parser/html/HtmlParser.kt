@@ -16,9 +16,9 @@ import androidx.core.view.ViewCompat
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
-import org.oppia.android.util.platformparameter.CacheLatexRendering
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.PlatformParameterId.CACHE_LATEX_RENDERING
+import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -215,7 +215,7 @@ class HtmlParser private constructor(
     private val urlImageParserFactory: UrlImageParser.Factory,
     private val consoleLogger: ConsoleLogger,
     private val context: Context,
-    @CacheLatexRendering private val enableCacheLatexRendering: PlatformParameterValue<Boolean>
+    @PlatformParameter(CACHE_LATEX_RENDERING) private val enableCacheLatexRendering: Boolean
   ) {
     /**
      * Returns a new [HtmlParser] with the specified entity type and ID for loading images, and an
@@ -238,7 +238,7 @@ class HtmlParser private constructor(
         entityId = entityId,
         imageCenterAlign = imageCenterAlign,
         consoleLogger = consoleLogger,
-        cacheLatexRendering = enableCacheLatexRendering.value,
+        cacheLatexRendering = enableCacheLatexRendering,
         customOppiaTagActionListener = customOppiaTagActionListener,
         policyOppiaTagActionListener = null,
         displayLocale = displayLocale
@@ -261,7 +261,7 @@ class HtmlParser private constructor(
         entityId = "",
         imageCenterAlign = false,
         consoleLogger = consoleLogger,
-        cacheLatexRendering = enableCacheLatexRendering.value,
+        cacheLatexRendering = enableCacheLatexRendering,
         customOppiaTagActionListener = null,
         policyOppiaTagActionListener = null,
         displayLocale = displayLocale

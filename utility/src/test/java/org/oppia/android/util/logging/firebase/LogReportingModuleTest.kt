@@ -5,11 +5,11 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.google.firebase.FirebaseApp
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
-import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,16 +24,17 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [LogReportingModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -43,11 +44,11 @@ import javax.inject.Singleton
 @Config(application = LogReportingModuleTest.TestApplication::class)
 class LogReportingModuleTest {
 
-  @Inject
-  lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
-  @Inject
-  lateinit var analyticsEventLogger: AnalyticsEventLogger
+  @Inject lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
+  @Inject lateinit var analyticsEventLogger: AnalyticsEventLogger
 
   @Before
   fun setUp() {
@@ -75,34 +76,6 @@ class LogReportingModuleTest {
     fun provideContext(application: Application): Context
   }
 
-  @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLoggingLearnerStudyIds: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLoggingLearnerStudyIds)
-    }
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
@@ -110,7 +83,8 @@ class LogReportingModuleTest {
       TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class,
+      PlatformParameterTestModule::class, LoggerModule::class, SyncStatusModule::class,
+      NetworkModule::class, AssetModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -121,6 +95,10 @@ class LogReportingModuleTest {
       fun build(): TestApplicationComponent
     }
 
+    fun getPlatformParameterController(): PlatformParameterController
+
+    fun getDataProviderTestMonitorFactory(): DataProviderTestMonitor.Factory
+
     fun inject(logReportingModuleTest: LogReportingModuleTest)
   }
 
@@ -130,6 +108,15 @@ class LogReportingModuleTest {
         .setApplication(this)
         .build()
     }
+
+    override fun onCreate() {
+      super.onCreate()
+      FirebaseApp.initializeApp(applicationContext)
+    }
+
+    fun getPlatformParameterController() = component.getPlatformParameterController()
+
+    fun getDataProviderTestMonitorFactory() = component.getDataProviderTestMonitorFactory()
 
     fun inject(test: LogReportingModuleTest) {
       component.inject(test)

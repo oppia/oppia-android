@@ -69,10 +69,10 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** Test tag for the classroom list screen. */
 const val CLASSROOM_LIST_SCREEN_TEST_TAG = "TEST_TAG.classroom_list_screen"
@@ -93,8 +93,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val translationController: TranslationController,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val analyticsController: AnalyticsController,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  @FeatureFlag(ONBOARDING_FLOW_V2) private val enableOnboardingFlowV2: Boolean,
   private val appStartupStateController: AppStartupStateController
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
@@ -276,7 +275,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
         val profile = result.value
         val profileType = profile.profileType
 
-        if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
+        if (enableOnboardingFlowV2 && !profile.completedProfileOnboarding) {
           // These asynchronous API calls do not block or wait for their results. They execute in
           // the background and have minimal chances of interfering with the synchronous
           // `handleBackPress` call below.

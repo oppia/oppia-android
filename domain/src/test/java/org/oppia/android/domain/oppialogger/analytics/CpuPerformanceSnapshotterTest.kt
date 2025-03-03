@@ -18,13 +18,13 @@ import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -47,6 +47,8 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_CPU_USAGE_ONE = 0.07192
 private const val TEST_CPU_USAGE_TWO = 0.32192
@@ -61,14 +63,19 @@ class CpuPerformanceSnapshotterTest {
 
   @Inject
   lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
+
   @Inject
   lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+
   @Inject
   lateinit var fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
+
   @Inject
   lateinit var fakeOppiaClock: FakeOppiaClock
 
@@ -83,7 +90,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.PERFORMANCE_METRICS_COLLECTION, true)
     setUpTestApplicationComponent()
   }
 
@@ -485,7 +492,7 @@ class CpuPerformanceSnapshotterTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class
     ]

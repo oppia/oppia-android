@@ -9,18 +9,18 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import org.oppia.android.app.model.PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /**
  * Enqueues unique periodic work requests for fetching and caching latest platform parameter values
  * from the remote service on application creation.
  */
 class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
-  @SyncUpWorkerTimePeriodHours private val workRequestRepeatInterval: PlatformParameterValue<Int>
+  @PlatformParameter(SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS) private val workRequestRepeatInterval: Int
 ) : AnalyticsStartupListener {
 
   private val OPPIA_PLATFORM_PARAMETER_WORK_REQUEST_NAME = "OPPIA_PLATFORM_PARAMETER_WORK_REQUEST"
@@ -43,7 +43,7 @@ class PlatformParameterSyncUpWorkManagerInitializer @Inject constructor(
   private val workRequestForSyncingPlatformParameters =
     PeriodicWorkRequest.Builder(
       PlatformParameterSyncUpWorker::class.java,
-      workRequestRepeatInterval.value.toLong(),
+      workRequestRepeatInterval.toLong(),
       TimeUnit.HOURS
     )
       .addTag(PlatformParameterSyncUpWorker.TAG)

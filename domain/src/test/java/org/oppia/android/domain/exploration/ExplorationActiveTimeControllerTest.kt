@@ -36,7 +36,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleObserver
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -45,7 +45,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -67,6 +67,8 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val SESSION_LENGTH_1 = 300000L
 private const val SESSION_LENGTH_2 = 600000L
@@ -100,7 +102,7 @@ class ExplorationActiveTimeControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, true)
   }
 
   @Test
@@ -561,8 +563,8 @@ class ExplorationActiveTimeControllerTest {
       NetworkConnectionUtilDebugModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, PlatformParameterSingletonModule::class,
-      TestPlatformParameterModule::class, ExplorationStorageTestModule::class,
+      CpuPerformanceSnapshotterModule::class, PlatformParameterTestModule::class,
+      PlatformParameterTestModule::class, ExplorationStorageTestModule::class,
       LogStorageModule::class
     ]
   )

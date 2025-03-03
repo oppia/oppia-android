@@ -25,11 +25,12 @@ import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIn
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicPlayStoryActivityIntent
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import javax.inject.Provider
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The activity for displaying [ClassroomListFragment]. */
 class ClassroomListActivity :
@@ -50,8 +51,8 @@ class ClassroomListActivity :
   private lateinit var profileId: ProfileId
 
   @Inject
-  @field:EnableOnboardingFlowV2
-  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  @field:FeatureFlag(ONBOARDING_FLOW_V2)
+  lateinit var enableOnboardingFlowV2: Provider<Boolean>
 
   companion object {
     /** Returns a new [Intent] to route to [ClassroomListActivity] for a specified [profileId]. */
@@ -135,7 +136,7 @@ class ClassroomListActivity :
     val exitProfileDialogArguments =
       ExitProfileDialogArguments
         .newBuilder().apply {
-          if (enableOnboardingFlowV2.value) {
+          if (enableOnboardingFlowV2.get()) {
             this.profileType = profileType
           }
           this.highlightItem = HighlightItem.NONE

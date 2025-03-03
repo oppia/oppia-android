@@ -34,13 +34,23 @@ kt_android_library(
 
 kt_android_library(
     name = "network_config_prod_module",
-    srcs = [
-        "NetworkConfigProdModule.kt",
-    ],
+    srcs = ["NetworkConfigProdModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":network_config_annotations",
         "//:dagger",
+    ],
+)
+
+kt_android_library(
+    name = "network_config_test_module",
+    testonly = True,
+    srcs = ["NetworkConfigTestModule.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":network_config_annotations",
+        "//:dagger",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
     ],
 )
 

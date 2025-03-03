@@ -15,13 +15,13 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.extensions.getVersionCode
-import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
-import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
+import org.oppia.android.domain.platformparameter.PlatformParameter
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
 private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"
@@ -36,12 +36,11 @@ class DeprecationController @Inject constructor(
   private val context: Context,
   private val oppiaLogger: OppiaLogger,
   private val dataProviders: DataProviders,
-  @OptionalAppUpdateVersionCode
-  private val optionalAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
-  @ForcedAppUpdateVersionCode
-  private val forcedAppUpdateVersionCode: Provider<PlatformParameterValue<Int>>,
-  @LowestSupportedApiLevel
-  private val lowestSupportedApiLevel: Provider<PlatformParameterValue<Int>>
+  @PlatformParameter(OPTIONAL_APP_UPDATE_VERSION_CODE)
+  private val optionalAppUpdateVersionCode: Provider<Int>,
+  @PlatformParameter(FORCED_APP_UPDATE_VERSION_CODE)
+  private val forcedAppUpdateVersionCode: Provider<Int>,
+  @PlatformParameter(LOWEST_SUPPORTED_API_LEVEL) private val lowestSupportedApiLevel: Provider<Int>
 ) {
   /** Create an instance of [PersistentCacheStore] that contains a [DeprecationResponseDatabase]. */
   private val deprecationStore by lazy {
@@ -147,18 +146,18 @@ class DeprecationController @Inject constructor(
 
     val appVersionCode = context.getVersionCode()
     val currentApiLevel = Build.VERSION.SDK_INT
-    val osIsDeprecated = lowestSupportedApiLevel.get().value > currentApiLevel
+    val osIsDeprecated = lowestSupportedApiLevel.get() > currentApiLevel
 
     val osDeprecationDialogHasNotBeenShown =
-      previousDeprecatedOsVersion < lowestSupportedApiLevel.get().value
+      previousDeprecatedOsVersion < lowestSupportedApiLevel.get()
 
-    val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.get().value > appVersionCode
-    val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.get().value > appVersionCode
+    val forcedAppUpdateIsAvailable = forcedAppUpdateVersionCode.get() > appVersionCode
+    val optionalAppUpdateIsAvailable = optionalAppUpdateVersionCode.get() > appVersionCode
 
     val optionalAppDeprecationDialogHasNotBeenShown =
-      previousDeprecatedAppVersion < optionalAppUpdateVersionCode.get().value
+      previousDeprecatedAppVersion < optionalAppUpdateVersionCode.get()
     val forcedAppDeprecationDialogHasNotBeenShown =
-      previousDeprecatedAppVersion < forcedAppUpdateVersionCode.get().value
+      previousDeprecatedAppVersion < forcedAppUpdateVersionCode.get()
 
     return if (onboardingState.alreadyOnboardedApp) {
       when {

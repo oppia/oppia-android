@@ -24,7 +24,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
 import org.oppia.android.data.backends.gae.NetworkApiKey

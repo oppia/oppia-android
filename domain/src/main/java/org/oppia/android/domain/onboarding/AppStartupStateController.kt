@@ -14,11 +14,11 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.extensions.getStringFromBundle
 import org.oppia.android.util.locale.OppiaLocale
-import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 
@@ -31,8 +31,7 @@ class AppStartupStateController @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val currentBuildFlavor: BuildFlavor,
   private val deprecationController: DeprecationController,
-  @EnableAppAndOsDeprecation
-  private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
+  @FeatureFlag(APP_AND_OS_DEPRECATION) private val enableAppAndOsDeprecation: Provider<Boolean>,
   private val analyticsController: AnalyticsController,
 ) {
   private val onboardingFlowStore by lazy {
@@ -137,7 +136,7 @@ class AppStartupStateController @Inject constructor(
   ): StartupMode {
     // Process and return either a StartupMode.APP_IS_DEPRECATED, StartupMode.USER_IS_ONBOARDED or
     // StartupMode.USER_NOT_YET_ONBOARDED if the app and OS deprecation feature flag is not enabled.
-    return if (!enableAppAndOsDeprecation.get().value) {
+    return if (!enableAppAndOsDeprecation.get()) {
       return when {
         hasAppExpired() -> StartupMode.APP_IS_DEPRECATED
         onboardingState.alreadyOnboardedApp -> StartupMode.USER_IS_ONBOARDED

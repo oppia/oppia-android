@@ -87,7 +87,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -99,7 +99,7 @@ import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.espresso.ImageViewMatcher.Companion.hasScaleType
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -117,13 +117,15 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.domain.platformparameter.FeatureFlag
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_CLASSROOM_ID = "test_classroom_id_1"
 private const val TEST_TOPIC_ID = "GJ2rLXRKD5hw"
@@ -163,8 +165,8 @@ class TopicInfoFragmentTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @field:[Inject EnableExtraTopicTabsUi]
-  lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
+  @field:[Inject FeatureFlag(EXTRA_TOPIC_TABS_UI)]
+  lateinit var enableExtraTopicTabsUi: Provider<Boolean>
 
   @get:Rule
   var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
@@ -176,7 +178,7 @@ class TopicInfoFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableExtraTopicTabsUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
   }
@@ -506,7 +508,7 @@ class TopicInfoFragmentTest {
         withText(
           TopicTab.getTabForPosition(
             position = 0,
-            enableExtraTopicTabsUi = enableExtraTopicTabsUi.value
+            enableExtraTopicTabsUi = enableExtraTopicTabsUi.get()
           ).name
         ),
         ViewMatchers.isDescendantOfA(withId(R.id.topic_tabs_container))
@@ -553,7 +555,7 @@ class TopicInfoFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestPlatformParameterModule::class,
+      RobolectricModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
@@ -571,7 +573,7 @@ class TopicInfoFragmentTest {
       ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

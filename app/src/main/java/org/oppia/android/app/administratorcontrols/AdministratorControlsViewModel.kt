@@ -20,11 +20,11 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.EnableDownloadsSupport
-import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** [ViewModel] for [AdministratorControlsFragment]. */
 @FragmentScope
@@ -33,11 +33,9 @@ class AdministratorControlsViewModel @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
-  @EnableEditAccountsOptionsUi
-  private val enableEditAccountsOptionsUi: PlatformParameterValue<Boolean>,
-  @EnableLearnerStudyAnalytics
-  private val enableLearnerStudyAnalytics: PlatformParameterValue<Boolean>,
-  @EnableDownloadsSupport private val enableDownloadsSupport: PlatformParameterValue<Boolean>
+  @FeatureFlag(EDIT_ACCOUNTS_OPTIONS_UI) private val enableEditAccountsOptionsUi: Boolean,
+  @FeatureFlag(LEARNER_STUDY_ANALYTICS) private val enableLearnerStudyAnalytics: Boolean,
+  @FeatureFlag(DOWNLOADS_SUPPORT) private val enableDownloadsSupport: Boolean
 ) {
   private val routeToProfileListListener = activity as RouteToProfileListListener
   private val loadProfileListListener = activity as LoadProfileListListener
@@ -81,7 +79,7 @@ class AdministratorControlsViewModel @Inject constructor(
   ): List<AdministratorControlsItemViewModel> {
     val itemViewModelList = mutableListOf<AdministratorControlsItemViewModel>()
 
-    if (enableEditAccountsOptionsUi.value) {
+    if (enableEditAccountsOptionsUi) {
       itemViewModelList.add(AdministratorControlsGeneralViewModel())
     }
 
@@ -92,11 +90,11 @@ class AdministratorControlsViewModel @Inject constructor(
       )
     )
     // TODO(#4345): Add tests to verify this behavior both for the study flag being on & off.
-    if (enableLearnerStudyAnalytics.value) {
+    if (enableLearnerStudyAnalytics) {
       itemViewModelList.add(AdministratorControlsProfileAndDeviceIdViewModel(activity))
     }
 
-    if (enableDownloadsSupport.value) {
+    if (enableDownloadsSupport) {
       itemViewModelList.add(
         AdministratorControlsDownloadPermissionsViewModel(
           fragment,

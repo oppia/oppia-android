@@ -69,13 +69,13 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -98,6 +98,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [SpotlightFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -141,7 +143,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, false)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -163,7 +165,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -185,7 +187,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -207,7 +209,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -243,7 +245,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -278,7 +280,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -309,7 +311,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -342,7 +344,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use { scenario ->
@@ -368,7 +370,7 @@ class SpotlightFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

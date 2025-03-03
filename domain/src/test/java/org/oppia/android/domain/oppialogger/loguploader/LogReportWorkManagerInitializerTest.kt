@@ -35,7 +35,7 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -322,7 +322,7 @@ class LogReportWorkManagerInitializerTest {
       LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
       CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
     ]

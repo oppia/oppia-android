@@ -25,7 +25,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.ext.truth.content.IntentSubject.assertThat
 import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -96,7 +95,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -109,7 +108,7 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.EventLogSubject.LearnerDetailsContextSubject
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -140,6 +139,8 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.GZIPInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [ProfileAndDeviceIdFragment]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -152,20 +153,44 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileAndDeviceIdFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var syncStatusManager: TestSyncStatusManager
-  @Inject lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+
+  @Inject
+  lateinit var syncStatusManager: TestSyncStatusManager
+
+  @Inject
+  lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
+
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+
+  @Inject
+  lateinit var machineLocale: OppiaLocale.MachineLocale
 
   private val clipboardManager by lazy {
     context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -173,9 +198,9 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LOGGING_LEARNER_STUDY_IDS, true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1116,8 +1141,8 @@ class ProfileAndDeviceIdFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestPlatformParameterModule::class,
-      TestModule::class, RobolectricModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      TestModule::class, RobolectricModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,

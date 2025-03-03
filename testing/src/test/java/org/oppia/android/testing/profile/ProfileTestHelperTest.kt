@@ -17,7 +17,7 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
@@ -212,7 +212,7 @@ class ProfileTestHelperTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class, AssetModule::class
+      PlatformParameterModule::class, PlatformParameterTestModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

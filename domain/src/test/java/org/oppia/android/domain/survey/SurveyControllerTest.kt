@@ -36,12 +36,13 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [SurveyController]. */
 @RunWith(AndroidJUnit4::class)
@@ -72,7 +73,14 @@ class SurveyControllerTest {
 
   @Before
   fun setUp() {
+    // Enable the study by default in tests.
+    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -184,13 +192,6 @@ class SurveyControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Enable the study by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
   }
 
   @Module

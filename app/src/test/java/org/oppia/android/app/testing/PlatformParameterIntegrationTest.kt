@@ -74,7 +74,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
 import org.oppia.android.domain.question.QuestionModule
@@ -356,7 +356,7 @@ class PlatformParameterIntegrationTest {
       ExplorationStorageModule::class, TestNetworkModule::class, RetrofitTestModule::class,
       NetworkConfigProdModule::class, NetworkConnectionUtilDebugModule::class,
       NetworkConnectionDebugUtilModule::class, AssetModule::class, LocaleProdModule::class,
-      ActivityRecreatorTestModule::class, PlatformParameterSingletonModule::class,
+      ActivityRecreatorTestModule::class, PlatformParameterTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

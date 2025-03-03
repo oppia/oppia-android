@@ -38,7 +38,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
@@ -49,7 +49,7 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.mockito.anyOrNull
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -81,6 +81,8 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -93,22 +95,39 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var analyticsController: AnalyticsController
-  @Inject lateinit var dataController: FirestoreDataController
-  @Inject lateinit var exceptionsController: ExceptionsController
-  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
-  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject lateinit var dataProviders: DataProviders
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject
+  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject
+  lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var analyticsController: AnalyticsController
+  @Inject
+  lateinit var dataController: FirestoreDataController
+  @Inject
+  lateinit var exceptionsController: ExceptionsController
+  @Inject
+  lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject
+  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject
+  lateinit var dataProviders: DataProviders
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var testSyncStatusManager: TestSyncStatusManager
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @field:[Inject MockEventLogger]
+  lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
+
   @field:[Inject MockFirestoreEventLogger]
   lateinit var mockFirestoreEventLogger: FirestoreEventLogger
 
@@ -524,7 +543,7 @@ class LogUploadWorkerTest {
     map { elem -> listOf(elem.fileName, elem.methodName, elem.lineNumber, elem.className) }
 
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -565,15 +584,15 @@ class LogUploadWorkerTest {
     @MockFirestoreEventLogger
     fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
       FirestoreEventLogger {
-        return mock(FirestoreEventLogger::class.java).also {
-          `when`(it.uploadEvent(anyOrNull())).then { answer ->
-            fakeFirestoreLogger.uploadEvent(
-              answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
-            )
-            return@then null
-          }
+      return mock(FirestoreEventLogger::class.java).also {
+        `when`(it.uploadEvent(anyOrNull())).then { answer ->
+          fakeFirestoreLogger.uploadEvent(
+            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+          )
+          return@then null
         }
       }
+    }
 
     @Provides
     fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):
@@ -628,8 +647,8 @@ class LogUploadWorkerTest {
       TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      AssetModule::class, PlatformParameterTestModule::class,
+      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
       ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
       TestAuthenticationModule::class,

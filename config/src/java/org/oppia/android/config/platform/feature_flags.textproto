@@ -61,5 +61,5 @@ feature_flag_definition {
 feature_flag_definition {
   id: MULTIPLE_CLASSROOMS
   remote_server_name: "enable_multiple_classrooms"
-  default_is_enabled: true
+  default_is_enabled: false
 }

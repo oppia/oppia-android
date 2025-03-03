@@ -11,7 +11,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -82,7 +81,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -92,7 +91,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -117,6 +116,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [ProfileChooserFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -158,7 +159,7 @@ class ProfileChooserFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    TestPlatformParameterModule.reset()
+    TestPlatformParameterConfigRetriever.reset()
     Intents.release()
   }
 
@@ -329,7 +330,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserFragment_onboardingV1_clickAdminProfile_checkOpensPinPasswordActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, false)
     profileTestHelper.initializeProfiles(autoLogIn = false)
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -345,7 +346,7 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
     profileTestHelper.initializeProfiles(autoLogIn = true)
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(
@@ -368,7 +369,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensIntroActivity() {
     profileTestHelper.initializeProfiles(autoLogIn = true)
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -385,7 +386,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testMigrateProfiles_onboardingV2_clickAdminWithoutPin_checkOpensIntroActivity() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -410,7 +411,7 @@ class ProfileChooserFragmentTest {
       colorRgb = -10710042,
       isAdmin = false
     )
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -573,7 +574,7 @@ class ProfileChooserFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testProfileChooserFragment_enableClassrooms_clickProfile_opensClassroomListActivity() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
     profileManagementController.addProfile(
       name = "Admin",
       pin = "",
@@ -628,7 +629,7 @@ class ProfileChooserFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

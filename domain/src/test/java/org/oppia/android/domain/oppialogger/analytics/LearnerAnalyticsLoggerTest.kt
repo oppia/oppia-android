@@ -39,7 +39,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -2095,7 +2095,7 @@ class LearnerAnalyticsLoggerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, SyncStatusTestModule::class, LoggerModule::class,
+      PlatformParameterTestModule::class, SyncStatusTestModule::class, LoggerModule::class,
       ExplorationStorageModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

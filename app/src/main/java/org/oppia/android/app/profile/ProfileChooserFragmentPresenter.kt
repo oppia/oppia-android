@@ -33,12 +33,12 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.putProtoExtra
-import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
@@ -78,8 +78,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  @FeatureFlag(MULTIPLE_CLASSROOMS) private val enableMultipleClassrooms: Boolean,
+  @FeatureFlag(ONBOARDING_FLOW_V2) private val enableOnboardingFlowV2: Boolean
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -181,7 +181,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     binding.hasProfileEverBeenAddedValue = hasProfileEverBeenAddedValue
     binding.profileChooserItem.setOnClickListener {
       updateLearnerIdIfAbsent(model.profile)
-      if (enableOnboardingFlowV2.value) {
+      if (enableOnboardingFlowV2) {
         ensureProfileOnboarded(model.profile)
       } else {
         logInToProfile(model.profile)
@@ -283,7 +283,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         fragment,
         {
           if (it is AsyncResult.Success) {
-            if (enableMultipleClassrooms.value) {
+            if (enableMultipleClassrooms) {
               activity.startActivity(
                 ClassroomListActivity.createClassroomListActivity(activity, profile.id)
               )

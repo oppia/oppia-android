@@ -40,7 +40,6 @@ import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerMo
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -85,7 +84,7 @@ import javax.inject.Singleton
     ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
     FirebaseLogUploaderModule::class, NetworkModule::class,
-    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    PlatformParameterModule::class,
     ExplorationStorageModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class,

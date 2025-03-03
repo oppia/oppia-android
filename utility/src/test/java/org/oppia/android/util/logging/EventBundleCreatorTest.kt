@@ -1,5 +1,6 @@
 package org.oppia.android.util.logging
 
+import org.oppia.android.testing.robolectric.RobolectricModule
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
@@ -89,15 +90,26 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
@@ -154,6 +166,9 @@ class EventBundleCreatorTest {
     private const val TEST_MEMORY_USAGE = Long.MAX_VALUE
   }
 
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
+
   @Inject lateinit var context: Context
   @Inject lateinit var eventBundleCreator: EventBundleCreator
 
@@ -167,7 +182,7 @@ class EventBundleCreatorTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -545,6 +560,7 @@ class EventBundleCreatorTest {
     // Prepare one event for logging in one application.
     executeInPreviousAppInstance { testComponent ->
       val eventLog1 = createEventLog(context = createOpenExplorationActivity())
+      testComponent.getPlatformParameterTestInitializer() // Ensure params & flags are initialized.
       testComponent.getEventBundleCreator().fillEventBundle(eventLog1, Bundle())
     }
 
@@ -2498,12 +2514,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = false
+    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = true
+    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
     setUpTestApplicationComponent()
   }
 
@@ -2518,47 +2534,28 @@ class EventBundleCreatorTest {
     // can behave like a real Android application class (per Robolectric) without having a shared
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
-    block(
-      DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
-        .setApplication(testApplication)
-        .build()
-        .also { registerTestApplication(testApplication) }
-    )
+    block(testApplication.component.also { registerTestApplication(testApplication) })
   }
 
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLoggingLearnerStudyIds
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
-  interface TestApplicationComponent {
+  @Component(modules = [
+    TestModule::class, PlatformParameterTestModule::class, TestDispatcherModule::class,
+    RobolectricModule::class, FakeOppiaClockModule::class, TestLogReportingModule::class,
+    LocaleProdModule::class, NetworkModule::class, AssetModule::class, LoggerModule::class,
+    NetworkConfigTestModule::class
+  ])
+  interface TestApplicationComponent: DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -2567,13 +2564,15 @@ class EventBundleCreatorTest {
       fun build(): TestApplicationComponent
     }
 
+    fun getPlatformParameterTestInitializer(): PlatformParameterTestInitializer
+
     fun getEventBundleCreator(): EventBundleCreator
 
     fun inject(test: EventBundleCreatorTest)
   }
 
-  class TestApplication : Application() {
-    private val component: TestApplicationComponent by lazy {
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    val component: TestApplicationComponent by lazy {
       DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
@@ -2586,5 +2585,7 @@ class EventBundleCreatorTest {
     public override fun attachBaseContext(base: Context?) {
       super.attachBaseContext(base)
     }
+
+    override fun getDataProvidersInjector() = component
   }
 }

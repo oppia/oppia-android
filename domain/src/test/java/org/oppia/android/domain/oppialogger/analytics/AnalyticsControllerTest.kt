@@ -34,7 +34,7 @@ import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -44,7 +44,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -75,6 +75,8 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_CLASSROOM_ID = "test_classroomId"
@@ -94,19 +96,32 @@ private const val TEST_SUB_TOPIC_ID = 1
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
-  @Inject lateinit var analyticsControllerProvider: Provider<AnalyticsController>
-  @Inject lateinit var oppiaLogger: OppiaLogger
-  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var dataProviders: DataProviders
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
-  @Inject lateinit var profileManagementControllerProvider: Provider<ProfileManagementController>
-  @Inject lateinit var translationController: TranslationController
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var oppiaClock: OppiaClock
-  @Inject lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
-  @field:[Inject BackgroundDispatcher] lateinit var backgroundDispatcher: CoroutineDispatcher
+  @Inject
+  lateinit var analyticsControllerProvider: Provider<AnalyticsController>
+  @Inject
+  lateinit var oppiaLogger: OppiaLogger
+  @Inject
+  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject
+  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject
+  lateinit var dataProviders: DataProviders
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var testSyncStatusManager: TestSyncStatusManager
+  @Inject
+  lateinit var profileManagementControllerProvider: Provider<ProfileManagementController>
+  @Inject
+  lateinit var translationController: TranslationController
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var oppiaClock: OppiaClock
+  @Inject
+  lateinit var persistentCacheStoryFactory: PersistentCacheStore.Factory
+  @field:[Inject BackgroundDispatcher]
+  lateinit var backgroundDispatcher: CoroutineDispatcher
 
   // See testController_cachedEventsFromLastAppInstance_logNewEvent_thenForceSync_everythingUploads
   // for an explanation of why these are provided via indirect injection.
@@ -1003,11 +1018,13 @@ class AnalyticsControllerTest {
         assertThat(uploadResults[0]).isPending()
         assertThat(uploadResults[1]).isSuccessThat().isEqualTo(1 to 2)
       }
+
       4 -> {
         assertThat(uploadResults[0]).isPending()
         assertThat(uploadResults[1]).isSuccessThat().isEqualTo(0 to 2)
         assertThat(uploadResults[2]).isSuccessThat().isEqualTo(1 to 2)
       }
+
       else -> fail("Encountered too many upload results: ${uploadResults.size}.")
     }
     assertThat(uploadResults.last()).isSuccessThat().isEqualTo(2 to 2)
@@ -1178,7 +1195,7 @@ class AnalyticsControllerTest {
   }
 
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
@@ -1391,7 +1408,7 @@ class AnalyticsControllerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
     ]
   )

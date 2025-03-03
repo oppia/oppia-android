@@ -707,8 +707,8 @@ kt_android_library(
         "//third_party:androidx_core_core",
         "//third_party:androidx_databinding_databinding-common",
         "//third_party:androidx_databinding_databinding-runtime",
-        "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:annotations",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/math:fraction_parser",
         "//utility/src/main/java/org/oppia/android/util/networking:network_connection_debug_util",
@@ -743,7 +743,6 @@ android_library(
         "//third_party:androidx_lifecycle_lifecycle-livedata-core",
         "//third_party:androidx_lifecycle_lifecycle-livedata-ktx",
         "//third_party:com_google_android_material_material",
-        "//utility",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
     ],
@@ -814,7 +813,6 @@ kt_android_library(
         "//third_party:com_google_android_flexbox_flexbox",
         "//third_party:javax_annotation_javax_annotation-api_jar",
         "//third_party:org_jetbrains_kotlin_kotlin-stdlib-jdk8_jar",
-        "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_loader",
         "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_annonations",
@@ -892,6 +890,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+    "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
@@ -906,7 +905,6 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/mockito",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
-    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:is_on_robolectric",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:coroutine_executor_service",
@@ -935,7 +933,6 @@ TEST_DEPS = [
     "//third_party:org_mockito_mockito-core",
     "//third_party:org_robolectric_annotations",
     "//third_party:robolectric_android-all",
-    "//utility",
     "//utility/src/main/java/org/oppia/android/util/accessibility",
     "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
@@ -1008,14 +1005,21 @@ GOOGLE_SERVICES_RESOURCES = google_services_xml(
 )
 
 crashlytics_android_library(
-    name = "crashlytics",
+    name = "_crashlytics",
     package_name = "org.oppia.android",
     build_id = "48fc9d17-e102-444c-8e0d-638d75ec0942",
     resource_files = GOOGLE_SERVICES_RESOURCES,
 )
 
+alias(
+    name = "crashlytics",
+    actual = ":_crashlytics",
+    visibility = ["//app/src/main/java/org/oppia/android/app/application:__pkg__"],
+)
+
 android_library(
     name = "crashlytics_deps",
+    visibility = ["//app/src/main/java/org/oppia/android/app/application:__pkg__"],
     exports = [
         "//third_party:com_crashlytics_sdk_android_crashlytics",
         "//third_party:com_google_firebase_firebase-analytics",
@@ -1026,6 +1030,7 @@ android_library(
 
 android_library(
     name = "firestore_deps",
+    visibility = ["//app/src/main/java/org/oppia/android/app/application:__pkg__"],
     exports = [
         "//third_party:com_google_auto_value_auto-value-annotations",
         "//third_party:com_google_firebase_firebase-appcheck",

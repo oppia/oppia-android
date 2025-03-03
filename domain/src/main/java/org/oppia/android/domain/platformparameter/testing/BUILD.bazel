@@ -1,0 +1,52 @@
+"""
+Package for providing platform parameter and feature flag test-only functionality.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("//scripts/src/java/org/oppia/android/scripts/codegen:generate_platform_config_module.bzl", "generate_platform_config_module")
+
+kt_android_library(
+    name = "test_platform_parameter_config_retriever",
+    testonly = True,
+    srcs = ["TestPlatformParameterConfigRetriever.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:config_retriever",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
+    ],
+)
+
+kt_android_library(
+    name = "platform_parameter_test_initializer",
+    testonly = True,
+    srcs = ["PlatformParameterTestInitializer.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:controller",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+    ],
+)
+
+generate_platform_config_module(
+    name = "_generate_platform_parameter_generated_test_module_source",
+    output_file = "PlatformParameterGeneratedTestModule.kt",
+    qualified_class_name = "org.oppia.android.domain.platformparameter.testing.PlatformParameterGeneratedTestModule",
+)
+
+kt_android_library(
+    name = "test_module",
+    testonly = True,
+    srcs = [
+        "PlatformParameterGeneratedTestModule.kt",
+        "PlatformParameterTestModule.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        ":test_platform_parameter_config_retriever",
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:annotations",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
+        "//model/src/main/proto:platform_parameter_java_proto_lite",
+    ],
+)

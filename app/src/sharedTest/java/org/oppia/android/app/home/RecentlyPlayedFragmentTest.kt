@@ -97,7 +97,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -110,7 +110,7 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
@@ -136,6 +136,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_FRAGMENT_TAG = "recently_played_test_fragment"
 private const val TOLERANCE = 1e-5f
@@ -148,8 +150,11 @@ private const val TOLERANCE = 1e-5f
   qualifiers = "port-xxhdpi"
 )
 class RecentlyPlayedFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   private val testFragment by lazy { RecentlyPlayedFragment() }
 
@@ -160,13 +165,26 @@ class RecentlyPlayedFragmentTest {
     /* launchActivity= */ false
   )
 
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
-  @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
-  @Inject lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
-  @Inject lateinit var fakeExplorationRetriever: FakeExplorationRetriever
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var storyProgressTestHelper: StoryProgressTestHelper
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var fakeOppiaClock: FakeOppiaClock
+
+  @Inject
+  lateinit var explorationCheckpointTestHelper: ExplorationCheckpointTestHelper
+
+  @Inject
+  lateinit var fakeExplorationRetriever: FakeExplorationRetriever
 
   private val internalProfileId = 0
 
@@ -459,7 +477,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_disableClassrooms_recommendedSection_classroomNameIsNotDisplayed() { // ktlint-disable max-line-length
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -488,7 +506,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_enableClassrooms_recommendedSection_classroomNameIsCorrect() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -836,7 +854,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_disableClassrooms_classroomNameIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -869,7 +887,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_enableClassrooms_classroomNameIsCorrect() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1386,7 +1404,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_disableClassrooms_configChange_classroomNameIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1420,7 +1438,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testRecentlyPlayedTestActivity_enableClassrooms_configChange_classroomNameIsCorrect() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1687,7 +1705,7 @@ class RecentlyPlayedFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

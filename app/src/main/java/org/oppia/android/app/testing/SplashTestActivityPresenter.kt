@@ -10,18 +10,18 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import javax.inject.Inject
 import javax.inject.Provider
+import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /** The presenter for [SplashTestActivity]. */
 @ActivityScope
 class SplashTestActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val platformParameterController: PlatformParameterController,
-  @SplashScreenWelcomeMsg
-  private val splashScreenWelcomeMsgParam: Provider<PlatformParameterValue<Boolean>>
+  @PlatformParameter(PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE)
+  private val splashScreenWelcomeMsgParam: Provider<Boolean>
 ) {
   fun handleOnCreate() {
     activity.setContentView(R.layout.splash_test_activity)
@@ -42,17 +42,17 @@ class SplashTestActivityPresenter @Inject constructor(
 
   private fun fetchPlatformParametersFromDatabase(): LiveData<Boolean> {
     return Transformations.map(
-      platformParameterController.getParameterDatabase().toLiveData(),
+      platformParameterController.loadParameters().toLiveData(),
       ::processPlatformParameters
     )
   }
 
-  private fun processPlatformParameters(loadingStatus: AsyncResult<Unit>): Boolean {
+  private fun processPlatformParameters(loadingStatus: AsyncResult<Any?>): Boolean {
     return loadingStatus is AsyncResult.Success
   }
 
   private fun showToastIfAllowed() {
-    if (splashScreenWelcomeMsgParam.get().value) {
+    if (splashScreenWelcomeMsgParam.get()) {
       Toast.makeText(activity, SplashTestActivity.WELCOME_MSG, Toast.LENGTH_SHORT).show()
     }
   }

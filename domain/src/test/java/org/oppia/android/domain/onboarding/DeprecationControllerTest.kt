@@ -19,15 +19,12 @@ import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
-import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
-import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -45,20 +42,14 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
-import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.LOWEST_SUPPORTED_API_LEVEL
-import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
-import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
-import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /** Tests for [DeprecationController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -71,17 +62,16 @@ class DeprecationControllerTest {
   @Inject lateinit var deprecationController: DeprecationController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var platformParameterSingleton: PlatformParameterSingleton
   @Inject lateinit var platformParameterController: PlatformParameterController
 
-  @field:[Inject LowestSupportedApiLevel]
-  lateinit var lowestSupportedApiLevelProvider: Provider<PlatformParameterValue<Int>>
+  @field:[Inject PlatformParameter(PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL)]
+  lateinit var lowestSupportedApiLevelProvider: Provider<Int>
 
-  @field:[Inject OptionalAppUpdateVersionCode]
-  lateinit var optionalAppUpdateVersionProvider: Provider<PlatformParameterValue<Int>>
+  @field:[Inject PlatformParameter(PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE)]
+  lateinit var optionalAppUpdateVersionProvider: Provider<Int>
 
-  @field:[Inject ForcedAppUpdateVersionCode]
-  lateinit var forcedAppUpdateVersionProvider: Provider<PlatformParameterValue<Int>>
+  @field:[Inject PlatformParameter(PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE)]
+  lateinit var forcedAppUpdateVersionProvider: Provider<Int>
 
   @Test
   fun testController_initialAppLaunch_returnsDefaultDeprecationResponseDatabase() {
@@ -343,7 +333,7 @@ class DeprecationControllerTest {
       ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -357,13 +347,7 @@ class DeprecationControllerTest {
 
     fun getDeprecationController(): DeprecationController
 
-    fun getDataProviderTestMonitor(): DataProviderTestMonitor.Factory
-
-    fun getPlatformParameterSingleton(): PlatformParameterSingleton
-
     fun getPlatformParameterController(): PlatformParameterController
-
-    fun getCacheFactory(): PersistentCacheStore.Factory
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
 
@@ -393,24 +377,6 @@ class DeprecationControllerTest {
   companion object {
     val alreadyOnboardedOnboardingState: OnboardingState = OnboardingState.newBuilder()
       .setAlreadyOnboardedApp(true)
-      .build()
-
-    val lowestApiLevel: PlatformParameter = PlatformParameter.newBuilder()
-      .setName(LOWEST_SUPPORTED_API_LEVEL)
-      .setInteger(Int.MAX_VALUE)
-      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-      .build()
-
-    val optionalAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
-      .setName(OPTIONAL_APP_UPDATE_VERSION_CODE)
-      .setInteger(Int.MAX_VALUE)
-      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
-      .build()
-
-    val forcedAppUpdateVersion: PlatformParameter = PlatformParameter.newBuilder()
-      .setName(FORCED_APP_UPDATE_VERSION_CODE)
-      .setInteger(Int.MAX_VALUE)
-      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
       .build()
 
     val osDeprecationResponse: DeprecationResponse = DeprecationResponse.newBuilder()

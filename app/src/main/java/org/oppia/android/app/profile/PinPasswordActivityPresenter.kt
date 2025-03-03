@@ -21,10 +21,10 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import kotlin.system.exitProcess
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -37,7 +37,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val pinViewModel: PinPasswordViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val accessibilityService: AccessibilityService,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @FeatureFlag(MULTIPLE_CLASSROOMS) private val enableMultipleClassrooms: Boolean
 ) {
   private var internalProfileId = -1
   private var profileId = ProfileId.getDefaultInstance()
@@ -106,7 +106,7 @@ class PinPasswordActivityPresenter @Inject constructor(
                 {
                   if (it is AsyncResult.Success) {
                     activity.startActivity(
-                      if (enableMultipleClassrooms.value)
+                      if (enableMultipleClassrooms)
                         ClassroomListActivity.createClassroomListActivity(activity, profileId)
                       else
                         HomeActivity.createHomeActivity(activity, profileId)

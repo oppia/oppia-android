@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.clipboard.ClipboardController.CurrentClip
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -267,7 +267,7 @@ class ClipboardControllerTest {
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
       FakeOppiaClockModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class
     ]
   )

@@ -1,16 +1,6 @@
 package org.oppia.android.domain.platformparameter
 
-import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.app.model.RemotePlatformParameterDatabase
-import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /** Controller for managing and synchronizing platform parameters and feature flags. */
 interface PlatformParameterController {

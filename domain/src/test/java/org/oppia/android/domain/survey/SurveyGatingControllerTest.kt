@@ -24,7 +24,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -46,6 +46,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val SESSION_LENGTH_SHORT = 120000L
 private const val SESSION_LENGTH_LONG = 360000L
@@ -82,7 +84,7 @@ class SurveyGatingControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
   }
@@ -663,7 +665,7 @@ class SurveyGatingControllerTest {
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestPlatformParameterModule::class
+      TestLoggingIdentifierModule::class, PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -6,16 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.R
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /** Presenter class responsible for showing an OS deprecation dialog to the user. */
 class OsDeprecationNoticeDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val resourceHandler: AppLanguageResourceHandler,
-  @LowestSupportedApiLevel
-  private val lowestSupportedApiLevel: PlatformParameterValue<Int>
+  @PlatformParameter(LOWEST_SUPPORTED_API_LEVEL) private val lowestSupportedApiLevel: Int
 ) {
   private val deprecationNoticeActionListener by lazy {
     activity as DeprecationNoticeActionListener
@@ -37,7 +36,7 @@ class OsDeprecationNoticeDialogFragmentPresenter @Inject constructor(
         deprecationNoticeActionListener.onActionButtonClicked(
           DeprecationNoticeActionResponse.Dismiss(
             deprecationNoticeType = DeprecationNoticeType.OS_DEPRECATION,
-            deprecatedVersion = lowestSupportedApiLevel.value
+            deprecatedVersion = lowestSupportedApiLevel
           )
         )
       }

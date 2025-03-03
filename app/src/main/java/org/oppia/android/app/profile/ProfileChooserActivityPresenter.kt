@@ -7,21 +7,20 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The presenter for [ProfileChooserActivity]. */
 @ActivityScope
 class ProfileChooserActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val profileManagementController: ProfileManagementController,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+  @FeatureFlag(ONBOARDING_FLOW_V2) private val enableOnboardingFlowV2: Boolean
 ) {
   /** Adds [ProfileChooserFragment] to view. */
   fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
-    if (enableOnboardingFlowV2.value) {
+    if (enableOnboardingFlowV2) {
       profileManagementController.updateNewProfileDetails(
         profileId = profileId,
         profileType = profileType,

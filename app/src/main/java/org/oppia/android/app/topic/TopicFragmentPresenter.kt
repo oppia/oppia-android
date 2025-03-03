@@ -21,9 +21,9 @@ import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.util.accessibility.AccessibilityService
-import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope
@@ -33,7 +33,7 @@ class TopicFragmentPresenter @Inject constructor(
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  @EnableExtraTopicTabsUi private val enableExtraTopicTabsUi: PlatformParameterValue<Boolean>,
+  @FeatureFlag(EXTRA_TOPIC_TABS_UI) private val enableExtraTopicTabsUi: Boolean,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   @Inject
@@ -122,7 +122,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
-    return if (enableExtraTopicTabsUi.value) tab.positionWithFourTabs else tab.positionWithTwoTabs
+    return if (enableExtraTopicTabsUi) tab.positionWithFourTabs else tab.positionWithTwoTabs
   }
 
   private fun setUpViewPager(
@@ -138,17 +138,17 @@ class TopicFragmentPresenter @Inject constructor(
         classroomId,
         topicId,
         storyId,
-        enableExtraTopicTabsUi.value
+        enableExtraTopicTabsUi
       )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-      val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value)
+      val topicTab = TopicTab.getTabForPosition(position, enableExtraTopicTabsUi)
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
       tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescriptionResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
-      if (enableExtraTopicTabsUi.value) {
+      if (enableExtraTopicTabsUi) {
         setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LEARN else TopicTab.INFO)
       } else {
         setCurrentTab(TopicTab.LEARN)
@@ -156,7 +156,7 @@ class TopicFragmentPresenter @Inject constructor(
     }
     viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
       override fun onPageSelected(position: Int) {
-        logTopicEvents(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi.value))
+        logTopicEvents(TopicTab.getTabForPosition(position, enableExtraTopicTabsUi))
       }
     })
   }

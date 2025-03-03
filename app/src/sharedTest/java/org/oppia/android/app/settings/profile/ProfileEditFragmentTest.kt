@@ -82,7 +82,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -92,7 +92,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -117,6 +117,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [ProfileEditFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -152,7 +154,7 @@ class ProfileEditFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    TestPlatformParameterModule.reset()
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @After
@@ -218,7 +220,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, false)
     profileManagementController
       .addProfile(
         name = "James",
@@ -235,7 +237,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadDisabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, false)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -243,7 +245,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -261,7 +263,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     val addProfileProvider =
       profileManagementController.addProfile(
         name = "James",
@@ -280,7 +282,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -299,7 +301,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -316,7 +318,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -333,7 +335,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -350,7 +352,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -358,7 +360,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, false)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button))
         .check(matches(not(isDisplayed())))
@@ -367,7 +369,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_hasMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
     }
@@ -376,7 +378,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
@@ -385,7 +387,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
@@ -403,7 +405,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOff_doesNotHaveEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, false)
 
     // Without the study feature enabled, the switch should not be visible.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -414,7 +416,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
@@ -425,7 +427,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_featureOn_landscape_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -441,7 +443,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_doNotHaveSwitchingPermission_enableLanguageSwitchingIsOff() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
 
     // Without the permission to switch languages, the setting should be off by default.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -452,7 +454,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
 
     val updateLangProvider =
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -470,7 +472,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
     // Open the UI, but don't interact with it.
     launchFragmentTestActivity(internalProfileId = 0).use {}
 
@@ -486,7 +488,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_clickEnableLanguageSwitching_hasSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
 
     // Enable language switching in the UI.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -546,7 +548,7 @@ class ProfileEditFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

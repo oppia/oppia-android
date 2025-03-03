@@ -25,7 +25,7 @@ import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -454,7 +454,7 @@ class FirestoreDataControllerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      PlatformParameterSingletonModule::class, SyncStatusModule::class,
+      PlatformParameterTestModule::class, SyncStatusModule::class,
       ApplicationLifecycleModule::class, PlatformParameterModule::class,
       CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
     ]

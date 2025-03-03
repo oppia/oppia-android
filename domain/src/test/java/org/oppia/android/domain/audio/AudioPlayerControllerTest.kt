@@ -49,7 +49,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -73,11 +73,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -897,6 +892,7 @@ class AudioPlayerControllerTest {
   @Module
   class TestModule {
     companion object {
+      // TODO: Use the new mechanism.
       var enableLearnerStudyAnalytics: Boolean = false
     }
 
@@ -904,42 +900,6 @@ class AudioPlayerControllerTest {
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
 
@@ -951,7 +911,7 @@ class AudioPlayerControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterSingletonModule::class, ExplorationStorageModule::class,
+      PlatformParameterTestModule::class, ExplorationStorageModule::class,
       InteractionsModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

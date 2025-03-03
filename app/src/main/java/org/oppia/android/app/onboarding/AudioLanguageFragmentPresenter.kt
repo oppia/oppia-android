@@ -28,9 +28,9 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The presenter for [AudioLanguageFragment]. */
 class AudioLanguageFragmentPresenter @Inject constructor(
@@ -40,7 +40,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private val audioLanguageSelectionViewModel: AudioLanguageSelectionViewModel,
   private val profileManagementController: ProfileManagementController,
   private val translationController: TranslationController,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @FeatureFlag(MULTIPLE_CLASSROOMS) private val enableMultipleClassrooms: Boolean,
   private val oppiaLogger: OppiaLogger
 ) {
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
@@ -172,7 +172,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   }
 
   private fun navigateToHomeScreen(profileId: ProfileId) {
-    val intent = if (enableMultipleClassrooms.value) {
+    val intent = if (enableMultipleClassrooms) {
       ClassroomListActivity.createClassroomListActivity(fragment.requireContext(), profileId)
     } else {
       HomeActivity.createHomeActivity(fragment.requireContext(), profileId)

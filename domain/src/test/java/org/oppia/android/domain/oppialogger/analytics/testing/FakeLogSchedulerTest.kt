@@ -29,7 +29,7 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWork
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -180,7 +180,7 @@ class FakeLogSchedulerTest {
       TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterModule::class, PlatformParameterTestModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]

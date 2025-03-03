@@ -94,7 +94,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
@@ -109,7 +109,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedAutoAndroidTestRunner
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -141,6 +141,8 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /**
  * Tests for [SplashActivity]. For context on the activity test rule setup see:
@@ -158,21 +160,28 @@ class SplashActivityTest {
 
   @Inject
   lateinit var context: Context
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @Inject
   lateinit var fakeMetaDataRetriever: FakeExpirationMetaDataRetriever
+
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Inject
   lateinit var appStartupStateController: AppStartupStateController
+
   @Inject
   lateinit var profileTestHelper: ProfileTestHelper
 
   @Parameter
   lateinit var firstOpen: String
+
   @Parameter
   lateinit var secondOpen: String
 
@@ -188,7 +197,7 @@ class SplashActivityTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    TestPlatformParameterConfigRetriever.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -1090,7 +1099,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
@@ -1116,7 +1125,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
     initializeTestApplication(onboardingV2Enabled = true)
     testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -1229,7 +1238,7 @@ class SplashActivityTest {
 
   private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, onboardingV2Enabled)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
@@ -1317,7 +1326,7 @@ class SplashActivityTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, TestPlatformParameterModule::class,
+      TestDispatcherModule::class, ApplicationModule::class, PlatformParameterTestModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
@@ -1334,7 +1343,7 @@ class SplashActivityTest {
       ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

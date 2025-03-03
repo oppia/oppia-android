@@ -36,7 +36,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SHOW_SUR
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.START_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -487,7 +487,7 @@ class OppiaLoggerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class
     ]
   )

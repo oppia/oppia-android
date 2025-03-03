@@ -36,10 +36,10 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The presenter for [HomeFragment]. */
 @FragmentScope
@@ -56,8 +56,7 @@ class HomeFragmentPresenter @Inject constructor(
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
+  @FeatureFlag(ONBOARDING_FLOW_V2) private val enableOnboardingFlowV2: Boolean,
   private val appStartupStateController: AppStartupStateController
 ) {
   private val routeToTopicPlayStoryListener = activity as RouteToTopicPlayStoryListener
@@ -125,7 +124,7 @@ class HomeFragmentPresenter @Inject constructor(
         val profile = result.value
         val profileType = profile.profileType
 
-        if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
+        if (enableOnboardingFlowV2 && !profile.completedProfileOnboarding) {
           // These asynchronous API calls do not block or wait for their results. They execute in
           // the background and have minimal chances of interfering with the synchronous
           // `handleBackPress` call below.

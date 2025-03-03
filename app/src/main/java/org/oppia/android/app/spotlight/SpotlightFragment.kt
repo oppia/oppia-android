@@ -31,11 +31,12 @@ import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.EnableSpotlightUi
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
+import org.oppia.android.domain.platformparameter.FeatureFlag
+import javax.inject.Provider
 
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
@@ -43,20 +44,11 @@ import javax.inject.Inject
  * surviving orientation changes and marking spotlights as seen.
  */
 class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, SpotlightManager {
-  @Inject
-  lateinit var activity: AppCompatActivity
-
-  @Inject
-  lateinit var spotlightStateController: SpotlightStateController
-
-  @Inject
-  lateinit var accessibilityService: AccessibilityService
-
-  @Inject
-  lateinit var resourceHandler: AppLanguageResourceHandler
-
-  @field:[Inject EnableSpotlightUi]
-  lateinit var enableSpotlightUi: PlatformParameterValue<Boolean>
+  @Inject lateinit var activity: AppCompatActivity
+  @Inject lateinit var spotlightStateController: SpotlightStateController
+  @Inject lateinit var accessibilityService: AccessibilityService
+  @Inject lateinit var resourceHandler: AppLanguageResourceHandler
+  @field:[Inject FeatureFlag(SPOTLIGHT_UI)] lateinit var enableSpotlightUi: Provider<Boolean>
 
   private var targetList = mutableListOf<Target>()
   private lateinit var spotlight: Spotlight
@@ -98,7 +90,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
   override fun requestSpotlight(spotlightTarget: SpotlightTarget) {
     // When Talkback is turned on, do not show spotlights since they are visual tools and can
     // potentially make the app experience difficult for a non-sighted user.
-    if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.value) return
+    if (accessibilityService.isScreenReaderEnabled() || !enableSpotlightUi.get()) return
     val profileId = ProfileId.newBuilder()
       .setInternalId(internalProfileId)
       .build()
