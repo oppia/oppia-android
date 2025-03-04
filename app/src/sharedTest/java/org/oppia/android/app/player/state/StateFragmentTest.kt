@@ -1089,6 +1089,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
@@ -1108,6 +1109,13 @@ class StateFragmentTest {
       verifySubmitAnswerButtonIsDisabled()
       // Drag and rearrange an item.
       dragAndDropItem(fromPosition = 0, toPosition = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("a camera at the store"))))
       // Empty input error is reset.
       onView(withId(R.id.drag_drop_interaction_error))
         .check(
@@ -1211,6 +1219,7 @@ class StateFragmentTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -1239,6 +1248,13 @@ class StateFragmentTest {
       verifySubmitAnswerButtonIsDisabled()
       // Drag and rearrange an item.
       dragAndDropItem(fromPosition = 0, toPosition = 1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.drag_drop_interaction_recycler_view,
+          position = 0,
+          targetViewId = R.id.drag_drop_content_text_view
+        )
+      ).check(matches(withText(containsString("3/5"))))
       // Empty input error is reset.
       onView(withId(R.id.drag_drop_interaction_error))
         .check(

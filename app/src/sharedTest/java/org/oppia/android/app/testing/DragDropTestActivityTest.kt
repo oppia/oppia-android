@@ -128,6 +128,7 @@ class DragDropTestActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testDragDropTestActivity_dragItem0ToPosition1() {
     launch(DragDropTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -159,6 +160,7 @@ class DragDropTestActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testDragDropTestActivity_dragItem1ToPosition2() {
     launch(DragDropTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
@@ -190,6 +192,7 @@ class DragDropTestActivityTest {
   }
 
   @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testDragDropTestActivity_dragItem3ToPosition2() {
     launch(DragDropTestActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
