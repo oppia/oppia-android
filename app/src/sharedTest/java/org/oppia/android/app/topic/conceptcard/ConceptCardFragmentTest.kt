@@ -596,7 +596,7 @@ class ConceptCardFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PlatformParameterModule::class, RobolectricModule::class,
+      TestModule::class,  RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

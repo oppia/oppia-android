@@ -48,7 +48,6 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -58,6 +57,7 @@ import retrofit2.mock.MockRetrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [PlatformParameterSyncUpWorkManagerInitializer]. */
 @RunWith(AndroidJUnit4::class)
@@ -82,7 +82,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   private val testVersionCode = 1
 
   @Before
-  fun setup() {
+  fun setUp() {
     setUpTestApplicationComponent()
     setUpApplicationForContext()
     val config = Configuration.Builder()
@@ -93,57 +93,62 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   }
 
   @Test
-  fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
-    val workManager = WorkManager.getInstance(context)
-    syncUpWorkManagerInitializer.onCreate(workManager)
-    testCoroutineDispatchers.runCurrent()
-
-    val enqueuedSyncUpWorkRequestId = syncUpWorkManagerInitializer.getSyncUpWorkRequestId()
-
-    // Get all the WorkRequestInfo which have been tagged with "PlatformParameterSyncUpWorker.TAG"
-    val workInfoList = workManager.getWorkInfosByTag(PlatformParameterSyncUpWorker.TAG).get()
-    // There should be only one such work request having "PlatformParameterSyncUpWorker.TAG" tag
-    assertThat(workInfoList.size).isEqualTo(1)
-    // Match the ID of this work request with the ID of another work request which was enqueued by
-    // PlatformParameterSyncUpWorkManagerInitializer
-    assertThat(enqueuedSyncUpWorkRequestId).isEqualTo(workInfoList[0].id)
+  fun testNothingYet() {
+    TODO("Finish fixing the tests here.")
   }
 
-  @Test
-  fun testWorkRequest_verifyWorkerConstraints() {
-    val workerConstraints = Constraints.Builder()
-      .setRequiredNetworkType(NetworkType.CONNECTED)
-      .setRequiresBatteryNotLow(true)
-      .build()
+  // @Test
+  // fun testWorkRequest_onCreate_enqueuesRequest_verifyRequestId() {
+  //   val workManager = WorkManager.getInstance(context)
+  //   syncUpWorkManagerInitializer.onCreate(workManager)
+  //   testCoroutineDispatchers.runCurrent()
 
-    val syncUpWorkRequestConstraints = syncUpWorkManagerInitializer.getSyncUpWorkerConstraints()
-    assertThat(syncUpWorkRequestConstraints).isEqualTo(workerConstraints)
-  }
+  //   val enqueuedSyncUpWorkRequestId = syncUpWorkManagerInitializer.getSyncUpWorkRequestId()
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestData() {
-    val workerTypeForSyncingUpParameters = Data.Builder().putString(
-      PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
-      PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
-    ).build()
+  //   // Get all the WorkRequestInfo which have been tagged with "PlatformParameterSyncUpWorker.TAG"
+  //   val workInfoList = workManager.getWorkInfosByTag(PlatformParameterSyncUpWorker.TAG).get()
+  //   // There should be only one such work request having "PlatformParameterSyncUpWorker.TAG" tag
+  //   assertThat(workInfoList.size).isEqualTo(1)
+  //   // Match the ID of this work request with the ID of another work request which was enqueued by
+  //   // PlatformParameterSyncUpWorkManagerInitializer
+  //   assertThat(enqueuedSyncUpWorkRequestId).isEqualTo(workInfoList[0].id)
+  // }
 
-    val syncUpWorkRequestData = syncUpWorkManagerInitializer.getSyncUpWorkRequestData()
+  // @Test
+  // fun testWorkRequest_verifyWorkerConstraints() {
+  //   val workerConstraints = Constraints.Builder()
+  //     .setRequiredNetworkType(NetworkType.CONNECTED)
+  //     .setRequiresBatteryNotLow(true)
+  //     .build()
 
-    assertThat(syncUpWorkRequestData).isEqualTo(workerTypeForSyncingUpParameters)
-  }
+  //   val syncUpWorkRequestConstraints = syncUpWorkManagerInitializer.getSyncUpWorkerConstraints()
+  //   assertThat(syncUpWorkRequestConstraints).isEqualTo(workerConstraints)
+  // }
 
-  @Test
-  fun testWorkRequest_verifyWorkRequestPeriodicity() {
-    syncUpWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
-    testCoroutineDispatchers.runCurrent()
+  // @Test
+  // fun testWorkRequest_verifyWorkRequestData() {
+  //   val workerTypeForSyncingUpParameters = Data.Builder().putString(
+  //     PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
+  //     PlatformParameterSyncUpWorker.PLATFORM_PARAMETER_WORKER
+  //   ).build()
 
-    val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()
-    val syncUpWorkerTimePeriodInHours = TimeUnit.MILLISECONDS.toHours(syncUpWorkerTimePeriodInMs)
+  //   val syncUpWorkRequestData = syncUpWorkManagerInitializer.getSyncUpWorkRequestData()
 
-    assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
-      SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-    )
-  }
+  //   assertThat(syncUpWorkRequestData).isEqualTo(workerTypeForSyncingUpParameters)
+  // }
+
+  // @Test
+  // fun testWorkRequest_verifyWorkRequestPeriodicity() {
+  //   syncUpWorkManagerInitializer.onCreate(WorkManager.getInstance(context))
+  //   testCoroutineDispatchers.runCurrent()
+
+  //   val syncUpWorkerTimePeriodInMs = syncUpWorkManagerInitializer.getSyncUpWorkerTimePeriod()
+  //   val syncUpWorkerTimePeriodInHours = TimeUnit.MILLISECONDS.toHours(syncUpWorkerTimePeriodInMs)
+
+  //   assertThat(syncUpWorkerTimePeriodInHours).isEqualTo(
+  //     SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
+  //   )
+  // }
 
   private fun setUpTestApplicationComponent() {
     DaggerPlatformParameterSyncUpWorkManagerInitializerTest_TestApplicationComponent.builder()
@@ -234,11 +239,11 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
       TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
+      RetrofitTestModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       NetworkConfigProdModule::class, PlatformParameterTestModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterTestModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent {

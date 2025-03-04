@@ -25,6 +25,7 @@ app_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",

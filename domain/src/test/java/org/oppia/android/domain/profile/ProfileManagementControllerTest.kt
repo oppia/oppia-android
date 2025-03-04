@@ -1,5 +1,6 @@
 package org.oppia.android.domain.profile
 
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import android.app.Application
 import android.content.Context
 import android.net.Uri
@@ -70,6 +71,8 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.app.model.FeatureFlagId
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -119,8 +122,7 @@ class ProfileManagementControllerTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLearnerStudyAnalytics = false
-    TestModule.enableOnboardingFlowV2 = false
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -2057,17 +2059,17 @@ class ProfileManagementControllerTest {
   private fun <T> DataProvider<T>.ensureExecutes() = monitorFactory.ensureDataProviderExecutes(this)
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = false
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestWithOnboardingV2Enabled(enableOnboardingV2: Boolean) {
-    TestModule.enableOnboardingFlowV2 = enableOnboardingV2
+    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, enableOnboardingV2)
     setUpTestApplicationComponent()
   }
 
@@ -2091,14 +2093,6 @@ class ProfileManagementControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // TODO: Use the new mechanism.
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-//      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-//      var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -2139,7 +2133,7 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class, PlatformParameterTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

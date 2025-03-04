@@ -657,7 +657,7 @@ class BindableAdapterTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestModule::class, PlatformParameterModule::class,
+      RobolectricModule::class, TestModule::class,
       TestDispatcherModule::class, TestApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

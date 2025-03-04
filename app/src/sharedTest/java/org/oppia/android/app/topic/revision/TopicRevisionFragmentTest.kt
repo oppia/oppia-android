@@ -123,6 +123,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 
 /** Tests for [TopicRevisionFragment]. */
 @RunWith(AndroidJUnit4::class)

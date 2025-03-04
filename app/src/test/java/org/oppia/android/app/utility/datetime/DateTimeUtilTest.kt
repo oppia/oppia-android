@@ -209,7 +209,7 @@ class DateTimeUtilTest {
       ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
       ImageParsingModule::class, AccessibilityTestModule::class,
       GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      NetworkModule::class, PlatformParameterModule::class, HintsAndSolutionProdModule::class,
+      NetworkModule::class,  HintsAndSolutionProdModule::class,
       CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
       QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

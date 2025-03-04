@@ -41,6 +41,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/extensions:bundle_extensions",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
@@ -54,6 +55,7 @@ oppia_android_test(
     test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
         "//app",
         "//app/src/main/java/org/oppia/android/app/activity:activity_intent_factories_shim",
         "//app/src/main/java/org/oppia/android/app/application:application_component",

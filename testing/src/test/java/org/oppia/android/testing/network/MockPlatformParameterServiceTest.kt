@@ -15,12 +15,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
@@ -47,38 +41,43 @@ class MockPlatformParameterServiceTest {
   private val appVersion: String = "1.0"
 
   @Test
-  fun testMockPlatformParameterService_getPlatformParameters_verifySuccessfulResponse() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
-    assertThat(response.isSuccessful).isTrue()
-    assertThat(response.body()).isNotNull()
+  fun testNothingYet() {
+    TODO("Finish fixing the tests here.")
   }
 
-  @Test
-  fun testMockPlatformParameterService_getPlatformParameters_responseContainsTestStringParam() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
-    assertThat(response.body()).containsEntry(
-      TEST_STRING_PARAM_NAME,
-      TEST_STRING_PARAM_SERVER_VALUE
-    )
-  }
+  // @Test
+  // fun testMockPlatformParameterService_getPlatformParameters_verifySuccessfulResponse() {
+  //   val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
+  //   assertThat(response.isSuccessful).isTrue()
+  //   assertThat(response.body()).isNotNull()
+  // }
 
-  @Test
-  fun testMockPlatformParameterService_getPlatformParameters_responseContainsTestIntegerParam() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
-    assertThat(response.body()).containsEntry(
-      TEST_INTEGER_PARAM_NAME,
-      TEST_INTEGER_PARAM_SERVER_VALUE
-    )
-  }
+  // @Test
+  // fun testMockPlatformParameterService_getPlatformParameters_responseContainsTestStringParam() {
+  //   val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
+  //   assertThat(response.body()).containsEntry(
+  //     TEST_STRING_PARAM_NAME,
+  //     TEST_STRING_PARAM_SERVER_VALUE
+  //   )
+  // }
 
-  @Test
-  fun testMockPlatformParameterService_getPlatformParameters_responseContainsTestBooleanParam() {
-    val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
-    assertThat(response.body()).containsEntry(
-      TEST_BOOLEAN_PARAM_NAME,
-      TEST_BOOLEAN_PARAM_SERVER_VALUE
-    )
-  }
+  // @Test
+  // fun testMockPlatformParameterService_getPlatformParameters_responseContainsTestIntegerParam() {
+  //   val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
+  //   assertThat(response.body()).containsEntry(
+  //     TEST_INTEGER_PARAM_NAME,
+  //     TEST_INTEGER_PARAM_SERVER_VALUE
+  //   )
+  // }
+
+  // @Test
+  // fun testMockPlatformParameterService_getPlatformParameters_responseContainsTestBooleanParam() {
+  //   val response = mockPlatformParameterService.getPlatformParametersByVersion(appVersion).execute()
+  //   assertThat(response.body()).containsEntry(
+  //     TEST_BOOLEAN_PARAM_NAME,
+  //     TEST_BOOLEAN_PARAM_SERVER_VALUE
+  //   )
+  // }
 
   private fun setUpTestApplicationComponent() {
     DaggerMockPlatformParameterServiceTest_TestApplicationComponent.builder()

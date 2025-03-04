@@ -180,6 +180,7 @@ TEST_DEPS = [
     ":domain",
     ":interaction_object_test_builder",
     "//:dagger",
+    "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
     "//app:crashlytics",
     "//app:crashlytics_deps",
     "//app:firestore_deps",

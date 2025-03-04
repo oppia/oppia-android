@@ -1,5 +1,6 @@
 package org.oppia.android.domain.oppialogger
 
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import android.app.Application
 import android.app.Instrumentation
 import android.content.Context
@@ -468,7 +469,7 @@ class LoggingIdentifierControllerTest {
       TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterTestModule::class,
+      PlatformParameterTestModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusModule::class
     ]
   )

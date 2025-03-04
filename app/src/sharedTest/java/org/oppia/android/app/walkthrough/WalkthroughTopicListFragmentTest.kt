@@ -292,7 +292,7 @@ class WalkthroughTopicListFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, PlatformParameterModule::class,
+      TestModule::class, RobolectricModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

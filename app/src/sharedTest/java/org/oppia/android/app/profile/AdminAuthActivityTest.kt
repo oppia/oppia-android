@@ -668,7 +668,7 @@ class AdminAuthActivityTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, PlatformParameterModule::class, TestDispatcherModule::class,
+      RobolectricModule::class,  TestDispatcherModule::class,
       ApplicationModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

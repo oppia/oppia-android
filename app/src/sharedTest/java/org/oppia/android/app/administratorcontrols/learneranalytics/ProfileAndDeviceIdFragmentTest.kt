@@ -1,5 +1,6 @@
 package org.oppia.android.app.administratorcontrols.learneranalytics
 
+import androidx.test.ext.truth.content.IntentSubject.assertThat
 import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
