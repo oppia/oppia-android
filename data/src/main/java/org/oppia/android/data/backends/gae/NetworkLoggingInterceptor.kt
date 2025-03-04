@@ -14,6 +14,7 @@ import java.io.IOException
 import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.text.Charsets
 
 /**
  * Interceptor on top of Retrofit to log network requests and responses.
@@ -42,7 +43,15 @@ class NetworkLoggingInterceptor @Inject constructor(
     return try {
       val response = chain.proceed(request)
 
-      val responseBody = response.body?.string()
+      // The response body needs to be cloned for reading otherwise it will throw since the body can
+      // only be read fully at most one time and other interceptors in the chain may read it. See
+      // https://stackoverflow.com/a/33862068 or OkHttp's HttpLoggingInterceptor for a reference.
+      val responseBody = response.body
+      val requestLength = responseBody?.contentLength()?.takeIf { it != -1L }
+      val responseBodyText =
+        responseBody?.source()?.also {
+          it.request(requestLength ?: Long.MAX_VALUE)
+        }?.buffer?.clone()?.readString(Charsets.UTF_8)
 
       CoroutineScope(backgroundDispatcher).launch {
         _logNetworkCallFlow.emit(
@@ -50,7 +59,7 @@ class NetworkLoggingInterceptor @Inject constructor(
             .setRequestUrl(request.url.toString())
             .setHeaders(request.headers.toString())
             .setResponseStatusCode(response.code)
-            .setBody(responseBody ?: "")
+            .setBody(responseBodyText ?: "")
             .build()
         )
       }
@@ -62,7 +71,7 @@ class NetworkLoggingInterceptor @Inject constructor(
               .setRequestUrl(request.url.toString())
               .setHeaders(request.headers.toString())
               .setResponseStatusCode(response.code)
-              .setErrorMessage(responseBody ?: "")
+              .setErrorMessage(responseBodyText ?: "")
               .build()
           )
         }
