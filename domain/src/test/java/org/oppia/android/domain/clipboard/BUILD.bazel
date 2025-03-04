@@ -14,6 +14,7 @@ oppia_android_test(
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",

@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import javax.inject.Inject
-import javax.inject.Provider
 import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.domain.platformparameter.FeatureFlag
+import javax.inject.Inject
+import javax.inject.Provider
 
 /** Fragment that contains an onboarding flow of the app. */
 class OnboardingFragment : InjectableFragment() {

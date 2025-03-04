@@ -4,18 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.R
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import javax.inject.Inject
-import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** View model for [RecentlyPlayedFragment]. */
 class RecentlyPlayedViewModel private constructor(

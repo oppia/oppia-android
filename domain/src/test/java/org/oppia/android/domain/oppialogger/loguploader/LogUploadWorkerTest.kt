@@ -25,6 +25,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
@@ -39,6 +40,7 @@ import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
@@ -49,7 +51,6 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.mockito.anyOrNull
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -81,8 +82,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -584,15 +583,15 @@ class LogUploadWorkerTest {
     @MockFirestoreEventLogger
     fun bindMockFirestoreEventLogger(fakeFirestoreLogger: FakeFirestoreEventLogger):
       FirestoreEventLogger {
-      return mock(FirestoreEventLogger::class.java).also {
-        `when`(it.uploadEvent(anyOrNull())).then { answer ->
-          fakeFirestoreLogger.uploadEvent(
-            answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
-          )
-          return@then null
+        return mock(FirestoreEventLogger::class.java).also {
+          `when`(it.uploadEvent(anyOrNull())).then { answer ->
+            fakeFirestoreLogger.uploadEvent(
+              answer.getArgument(/* index= */ 0, /* clazz= */ EventLog::class.java)
+            )
+            return@then null
+          }
         }
       }
-    }
 
     @Provides
     fun bindFakeEventLogger(@MockEventLogger delegate: AnalyticsEventLogger):

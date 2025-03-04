@@ -11,6 +11,9 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
@@ -27,6 +30,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -41,10 +45,6 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"

@@ -5,11 +5,13 @@ import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.DeprecationResponseDatabase
+import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.extensions.getStringFromBundle
@@ -17,8 +19,6 @@ import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private const val APP_STARTUP_STATE_PROVIDER_ID = "app_startup_state_data_provider_id"
 

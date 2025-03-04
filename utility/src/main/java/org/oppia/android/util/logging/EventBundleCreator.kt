@@ -61,6 +61,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_I
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase
@@ -73,6 +74,7 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.extensions.getVersionName
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.AbandonSurveyContext
@@ -131,14 +133,12 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerE
 import org.oppia.android.app.model.EventLog.SurveyContext as SurveyEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
-import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.OppiaMetricLog.ApkSizeMetric as ApkSizePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.CpuUsageMetric as CpuUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -687,13 +687,13 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagListEventContext
     ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
-        val featureFlagNames = featureFlagsList.map { it.flagName }
-        val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus }
-        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState }
+        val featureFlagIds = featureFlagsList.map { it.id.number }
+        val featureFlagSyncStatuses = featureFlagsList.map { it.syncStatus }
+        val featureFlagEnabledStates = featureFlagsList.map { it.isEnabled }
 
         store.putNonSensitiveValue("uuid", uniqueUserUuid)
         store.putNonSensitiveValue("app_session_id", appSessionId)
-        store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
+        store.putNonSensitiveValue("feature_flag_ids", featureFlagIds)
         store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
         store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)
       }

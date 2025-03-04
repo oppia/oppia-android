@@ -32,7 +32,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_1
@@ -278,7 +277,7 @@ class QuestionTrainingControllerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, LoggingIdentifierModule::class,
       ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterTestModule::class
+      PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

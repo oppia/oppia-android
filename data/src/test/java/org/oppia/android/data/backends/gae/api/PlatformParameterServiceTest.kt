@@ -18,14 +18,14 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.testing.network.MockPlatformParameterService
-import org.oppia.android.testing.network.MockPlatformParameterService.Companion.appVersionForCorrectResponse
-import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.TEST_INTEGER_PARAM_NAME
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.TEST_INTEGER_PARAM_SERVER_VALUE
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.network.MockPlatformParameterService.Companion.TEST_STRING_PARAM_SERVER_VALUE
+import org.oppia.android.testing.network.MockPlatformParameterService.Companion.appVersionForCorrectResponse
+import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.LooperMode

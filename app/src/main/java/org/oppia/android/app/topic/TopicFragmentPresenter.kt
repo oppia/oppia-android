@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.spotlight.SpotlightManager
@@ -20,10 +21,9 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.databinding.TopicFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.util.accessibility.AccessibilityService
 import javax.inject.Inject
-import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The presenter for [TopicFragment]. */
 @FragmentScope

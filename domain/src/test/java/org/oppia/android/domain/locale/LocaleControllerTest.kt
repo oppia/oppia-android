@@ -33,7 +33,6 @@ import org.oppia.android.app.model.OppiaRegion.UNITED_STATES
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -897,8 +896,7 @@ class LocaleControllerTest {
       TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
       AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterTestModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

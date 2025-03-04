@@ -25,17 +25,17 @@ import com.bumptech.glide.request.target.Target
 import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.AddProfileActivityParams
+import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.profile.AddProfileActivity.Companion.ADD_PROFILE_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.databinding.AddProfileActivityBinding
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
-import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /** The presenter for [AddProfileActivity]. */
 @ActivityScope

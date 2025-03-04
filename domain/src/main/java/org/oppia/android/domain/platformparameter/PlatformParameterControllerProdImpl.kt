@@ -1,8 +1,6 @@
 package org.oppia.android.domain.platformparameter
 
 import android.content.Context
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oppia.android.app.model.FeatureFlagDefinition
@@ -23,6 +21,9 @@ import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.getVersionName
 import retrofit2.Response
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
 
 /**
  * Production implementation for the controller to manage and synchronize platform parameters and
@@ -37,7 +38,7 @@ class PlatformParameterControllerProdImpl @Inject constructor(
   private val processState: PlatformParameterProcessState,
   private val oppiaLogger: OppiaLogger,
   private val context: Context
-): PlatformParameterController {
+) : PlatformParameterController {
   private val databaseStore by lazy {
     cacheStoreFactory.create(
       DATABASE_NAME, RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
@@ -72,8 +73,10 @@ class PlatformParameterControllerProdImpl @Inject constructor(
       val featureFlags = params.filterIsInstance<ParameterState.FeatureFlag>()
       val platStatesById = platformParams.associate { it.definition.id to it.computeCurrentState() }
       val flagStatesById = featureFlags.associate { it.definition.id to it.computeCurrentState() }
+      val statusesById = featureFlags.associate { it.definition.id to it.computeCurrentStatus() }
       processState.initializePlatformParameters(platStatesById)
       processState.initializeFeatureFlags(flagStatesById)
+      processState.initializeFeatureFlagSyncStatuses(statusesById)
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.
@@ -180,8 +183,9 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     abstract fun updateFromServer(value: PlatformParameterValue)
 
     data class PlatformParameter(
-      val definition: PlatformParameterDefinition, val remote: RemotePlatformParameter?
-    ): ParameterState() {
+      val definition: PlatformParameterDefinition,
+      val remote: RemotePlatformParameter?
+    ) : ParameterState() {
       private var latestSyncFromServer: PlatformParameterValue? = null
 
       override val remoteServerName = definition.remoteServerName
@@ -213,8 +217,9 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     }
 
     data class FeatureFlag(
-      val definition: FeatureFlagDefinition, val remote: RemoteFeatureFlag?
-    ): ParameterState() {
+      val definition: FeatureFlagDefinition,
+      val remote: RemoteFeatureFlag?
+    ) : ParameterState() {
       private var latestSyncFromServer: Boolean? = null
 
       override val remoteServerName = definition.remoteServerName
@@ -229,6 +234,9 @@ class PlatformParameterControllerProdImpl @Inject constructor(
 
       // Always compute based on the remote value, if any, and fall back to the definition.
       fun computeCurrentState(): Boolean = remote?.remoteIsEnabled ?: definition.defaultIsEnabled
+
+      fun computeCurrentStatus(): SyncStatus =
+        remote?.syncStatus ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
       fun serialize(): RemoteFeatureFlag {
         // Ensure there's always a record of the parameter.
@@ -254,6 +262,7 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     private const val DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID = "download_remote_parameters"
     private const val SUPPORTED_PLATFORM_PARAMS_PROV_ID = "supported_platform_params"
     private const val SUPPORTED_FEATURE_FLAGS_PROVIDER_ID = "supported_feature_flags"
+    private const val FETCH_FEATURE_FLAG_SYNC_STATUSES_PROVIDER_ID = "feature_flag_sync_statuses"
     private const val LOAD_REMOTE_AND_LOCAL_PLATFORM_PARAMS_PROVIDER_ID =
       "load_remote_and_local_platform_params"
     private const val LOAD_REMOTE_AND_LOCAL_FEATURE_FLAGS_PROVIDER_ID =
@@ -292,7 +301,8 @@ class PlatformParameterControllerProdImpl @Inject constructor(
 
     @JvmName("mergeListsOfRemotePlatformParameter")
     private fun merge(
-      existing: List<RemotePlatformParameter>, updated: List<RemotePlatformParameter>
+      existing: List<RemotePlatformParameter>,
+      updated: List<RemotePlatformParameter>
     ): List<RemotePlatformParameter> {
       // Take all of the updated remotes and re-add any existing remotes not included. This ensures
       // definitions (or sync results) being removed and then re-added do not require re-syncing, or
@@ -305,7 +315,8 @@ class PlatformParameterControllerProdImpl @Inject constructor(
 
     @JvmName("mergeListsRemoteFeatureFlag")
     private fun merge(
-      existing: List<RemoteFeatureFlag>, updated: List<RemoteFeatureFlag>
+      existing: List<RemoteFeatureFlag>,
+      updated: List<RemoteFeatureFlag>
     ): List<RemoteFeatureFlag> {
       // Take all of the updated remotes and re-add any existing remotes not included. This ensures
       // definitions (or sync results) being removed and then re-added do not require re-syncing, or

@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.ProfileId
@@ -31,6 +32,7 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
@@ -38,10 +40,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
-import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
-import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -67,8 +65,11 @@ import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -88,6 +89,9 @@ class ApplicationLifecycleObserverTest {
     private const val testResponseBody = "{\"test\": \"test\"}"
     private const val headerString = "$testApiKey: $testApiKeyValue"
   }
+
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var loggingIdentifierController: LoggingIdentifierController
@@ -130,12 +134,6 @@ class ApplicationLifecycleObserverTest {
 
   @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
   var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
-
-  @field:[Inject EnableTestFeatureFlag]
-  lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
-
-  @field:[Inject EnableTestFeatureFlagWithEnabledDefault]
-  lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   @get:Rule
   var activityRule =
@@ -420,12 +418,9 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  fun testObserver_onAppInForeground_logsAllFeatureFlags() {
+  fun testObserver_onAppInForeground_logsFeatureFlags() {
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     setUpTestApplicationComponent()
-
-    featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
-    )
 
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
     val sessionIdProvider = loggingIdentifierController.getAppSessionId()
@@ -440,9 +435,9 @@ class ApplicationLifecycleObserverTest {
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasSessionIdThat().isEqualTo(sessionId)
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
-        hasFeatureFlagEnabledStateThat().isEqualTo(false)
-        hasFeatureFlagSyncStateThat().isEqualTo(PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER)
+        hasIdThat().isEqualTo(DOWNLOADS_SUPPORT)
+        hasEnabledStateThat().isTrue()
+        hasSyncStatusThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
       }
     }
   }
@@ -669,7 +664,8 @@ class ApplicationLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
+      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

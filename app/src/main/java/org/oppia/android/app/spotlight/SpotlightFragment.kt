@@ -20,6 +20,7 @@ import com.takusemba.spotlight.shape.Shape
 import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SpotlightViewState
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -27,6 +28,7 @@ import org.oppia.android.databinding.BottomLeftOverlayBinding
 import org.oppia.android.databinding.BottomRightOverlayBinding
 import org.oppia.android.databinding.TopLeftOverlayBinding
 import org.oppia.android.databinding.TopRightOverlayBinding
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
@@ -34,8 +36,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
-import org.oppia.android.domain.platformparameter.FeatureFlag
 import javax.inject.Provider
 
 /**

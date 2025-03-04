@@ -1,9 +1,9 @@
 package org.oppia.android.domain.platformparameter.testing
 
-import javax.inject.Inject
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import javax.inject.Inject
 
 /**
  * A test-only initialization utility for ensuring platform parameters and feature flags correctly

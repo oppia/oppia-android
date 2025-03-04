@@ -14,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.util.logging.SyncStatusModule
@@ -66,8 +65,7 @@ class ShowAllHintsAndSolutionControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterTestModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent {

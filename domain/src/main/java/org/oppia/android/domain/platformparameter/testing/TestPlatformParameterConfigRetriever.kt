@@ -1,9 +1,5 @@
 package org.oppia.android.domain.platformparameter.testing
 
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.FeatureFlagDefinition
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.PlatformParameterDefinition
@@ -13,6 +9,10 @@ import org.oppia.android.app.model.SupportedFeatureFlags
 import org.oppia.android.app.model.SupportedPlatformParameters
 import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriever
 import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetrieverProdImpl
+import java.util.concurrent.CopyOnWriteArrayList
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * A test-only variant of [PlatformParameterConfigRetriever] that can be used to orchestrate
@@ -32,7 +32,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriev
 @Singleton
 class TestPlatformParameterConfigRetriever @Inject constructor(
   private val prodImpl: PlatformParameterConfigRetrieverProdImpl
-): PlatformParameterConfigRetriever {
+) : PlatformParameterConfigRetriever {
   override fun loadSupportedPlatformParameters(): SupportedPlatformParameters {
     isFrozen.set(true)
     val baseParams = prodImpl.loadSupportedPlatformParameters()

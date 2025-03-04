@@ -1,13 +1,13 @@
 package org.oppia.android.domain.oppialogger.analytics
 
+import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 /**
  * Convenience logger for performance metrics related analytics events.

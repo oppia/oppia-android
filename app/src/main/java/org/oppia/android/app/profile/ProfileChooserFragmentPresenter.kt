@@ -17,6 +17,8 @@ import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
@@ -29,6 +31,7 @@ import org.oppia.android.databinding.ProfileChooserFragmentBinding
 import org.oppia.android.databinding.ProfileChooserProfileViewBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
@@ -36,9 +39,6 @@ import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
-import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,

@@ -13,12 +13,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import org.oppia.android.app.model.PlatformParameterId.CACHE_LATEX_RENDERING
+import org.oppia.android.domain.platformparameter.PlatformParameter
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import javax.inject.Inject
-import org.oppia.android.app.model.PlatformParameterId.CACHE_LATEX_RENDERING
-import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(

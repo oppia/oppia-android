@@ -8,8 +8,12 @@ import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.platformparameter.PlatformParameter
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -18,10 +22,6 @@ import org.oppia.android.util.extensions.getVersionCode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
-import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
-import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
-import org.oppia.android.domain.platformparameter.PlatformParameter
 
 private const val GET_DEPRECATION_RESPONSE_PROVIDER_ID = "get_deprecation_response_provider_id"
 private const val ADD_DEPRECATION_RESPONSE_PROVIDER_ID = "add_deprecation_response_provider_id"

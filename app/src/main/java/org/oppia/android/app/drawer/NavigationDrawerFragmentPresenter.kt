@@ -23,6 +23,7 @@ import org.oppia.android.app.help.HelpActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.CompletedStoryList
 import org.oppia.android.app.model.ExitProfileDialogArguments
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.OngoingTopicList
 import org.oppia.android.app.model.Profile
@@ -34,6 +35,7 @@ import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.databinding.DrawerFragmentBinding
 import org.oppia.android.databinding.NavHeaderNavigationDrawerBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
@@ -41,8 +43,6 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
-import org.oppia.android.domain.platformparameter.FeatureFlag
 
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 

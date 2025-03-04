@@ -24,7 +24,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -176,7 +175,7 @@ class PerformanceMetricsLogSchedulerTest {
       RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       TestDispatcherModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterModule::class, PlatformParameterTestModule::class,
+      AssetModule::class, PlatformParameterTestModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
       PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class

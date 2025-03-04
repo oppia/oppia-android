@@ -1,6 +1,5 @@
 package org.oppia.android.util.logging
 
-import org.oppia.android.testing.robolectric.RobolectricModule
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
@@ -67,6 +66,7 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
@@ -85,31 +85,30 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
-import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
-import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.robolectric.Shadows
-import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
-import javax.inject.Singleton
-import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
-import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
+import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
+import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.robolectric.Shadows
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
@@ -2549,13 +2548,15 @@ class EventBundleCreatorTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [
-    TestModule::class, PlatformParameterTestModule::class, TestDispatcherModule::class,
-    RobolectricModule::class, FakeOppiaClockModule::class, TestLogReportingModule::class,
-    LocaleProdModule::class, NetworkModule::class, AssetModule::class, LoggerModule::class,
-    NetworkConfigTestModule::class
-  ])
-  interface TestApplicationComponent: DataProvidersInjector {
+  @Component(
+    modules = [
+      TestModule::class, PlatformParameterTestModule::class, TestDispatcherModule::class,
+      RobolectricModule::class, FakeOppiaClockModule::class, TestLogReportingModule::class,
+      LocaleProdModule::class, NetworkModule::class, AssetModule::class, LoggerModule::class,
+      NetworkConfigTestModule::class
+    ]
+  )
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance

@@ -3,8 +3,6 @@ package org.oppia.android.domain.oppialogger.analytics
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
@@ -20,6 +18,10 @@ import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.domain.platformparameter.FeatureFlag
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.domain.platformparameter.FeatureFlagSyncStatuses
 
 /**
  * Convenience logger for feature flags.
@@ -47,13 +49,15 @@ class FeatureFlagsLogger @Inject constructor(
   @FeatureFlag(NPS_SURVEY) private val enableNpsSurvey: Boolean,
   @FeatureFlag(ONBOARDING_FLOW_V2) private val enableOnboardingFlowV2: Boolean,
   @FeatureFlag(MULTIPLE_CLASSROOMS) private val enableMultipleClassrooms: Boolean,
+  @FeatureFlagSyncStatuses
+  private val flagSyncStatuses: Map<FeatureFlagId, @JvmSuppressWildcards SyncStatus>
 ) {
   /**
    * A variable containing a list of all the feature flags in the app.
    *
    * @return a list of key-value pairs of [FeatureFlagId] and [Boolean]
    */
-  private var featureFlagItemMap: Map<FeatureFlagId, Boolean> = mapOf(
+  private val featureFlagItemMap: Map<FeatureFlagId, Boolean> = mapOf(
     DOWNLOADS_SUPPORT to enableDownloadsSupport,
     EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
     LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,
@@ -68,15 +72,6 @@ class FeatureFlagsLogger @Inject constructor(
     ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
     MULTIPLE_CLASSROOMS to enableMultipleClassrooms,
   )
-
-  /**
-   * This method can be used to override the featureFlagItemMap and sets its value to the given map.
-   *
-   * @param featureFlagItemMap denotes the map of [FeatureFlagId]s to their enabled states
-   */
-  fun setFeatureFlagItemMap(featureFlagItemMap: Map<FeatureFlagId, Boolean>) {
-    this.featureFlagItemMap = featureFlagItemMap
-  }
 
   /**
    * This method logs the name, enabled status and sync status of all feature flags to Firebase.
@@ -112,13 +107,12 @@ class FeatureFlagsLogger @Inject constructor(
    * @return an [EventLog.Context] for the feature flags to be logged
    */
   private fun createFeatureFlagItemContext(
-    flagDetails: Map.Entry<FeatureFlagId, Boolean>,
+    flagDetails: Map.Entry<FeatureFlagId, Boolean>
   ): FeatureFlagItemContext {
-    // TODO: Fix this.
-    return FeatureFlagItemContext.newBuilder()
-//      .setFlagName(flagDetails.key)
-      .setFlagEnabledState(flagDetails.value)
-//      .setFlagSyncStatus(flagDetails.value.syncStatus)
-      .build()
+    return FeatureFlagItemContext.newBuilder().apply {
+      this.id = flagDetails.key
+      this.isEnabled = flagDetails.value
+      flagSyncStatuses[flagDetails.key]?.let { this.syncStatus = it }
+    }.build()
   }
 }

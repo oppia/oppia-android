@@ -1,7 +1,7 @@
 package org.oppia.android.domain.platformparameter
 
-import org.oppia.android.app.model.SupportedPlatformParameters
 import org.oppia.android.app.model.SupportedFeatureFlags
+import org.oppia.android.app.model.SupportedPlatformParameters
 import org.oppia.android.util.caching.AssetRepository
 import javax.inject.Inject
 

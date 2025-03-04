@@ -520,14 +520,16 @@ message EventLog {
 
   // Structure for an individual feature flag log context.
   message FeatureFlagItemContext {
-    // The name of the feature flag or sync status flag.
-    string flag_name = 1;
+    reserved 1; // Old flag_name property.
+
+    // The ID of the feature flag.
+    FeatureFlagId id = 4;
 
     // The enabled state of the feature flag.
-    bool flag_enabled_state = 2;
+    bool is_enabled = 2;
 
     // The sync status of the feature flag or sync status flag.
-    SyncStatus flag_sync_status = 3;
+    SyncStatus sync_status = 3;
   }
 
   // Structure for the profile onboarding context.

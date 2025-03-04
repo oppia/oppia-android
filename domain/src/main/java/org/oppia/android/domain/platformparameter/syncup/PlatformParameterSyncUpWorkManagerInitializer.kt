@@ -8,12 +8,12 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import org.oppia.android.app.model.PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
+import org.oppia.android.domain.platformparameter.PlatformParameter
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import org.oppia.android.app.model.PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
-import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /**
  * Enqueues unique periodic work requests for fetching and caching latest platform parameter values

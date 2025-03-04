@@ -5,16 +5,16 @@ import androidx.work.Data
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
+import org.oppia.android.domain.platformparameter.PlatformParameter
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.MetricLogScheduler
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
-import org.oppia.android.app.model.PlatformParameterId.PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
-import org.oppia.android.domain.platformparameter.PlatformParameter
 
 /**
  * Enqueues unique periodic work requests for uploading events and exceptions to the remote service

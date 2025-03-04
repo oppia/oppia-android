@@ -1,15 +1,17 @@
 package org.oppia.android.domain.platformparameter
 
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
+import javax.inject.Inject
+import javax.inject.Singleton
+import org.oppia.android.app.model.SyncStatus
 
 @Singleton
 class PlatformParameterProcessState @Inject constructor() {
   private lateinit var platformParameters: Map<PlatformParameterId, PlatformParameterValue>
   private lateinit var featureFlags: Map<FeatureFlagId, Boolean>
+  private lateinit var featureFlagSyncStatuses: Map<FeatureFlagId, SyncStatus>
 
   fun initializePlatformParameters(states: Map<PlatformParameterId, PlatformParameterValue>) {
     check(!::platformParameters.isInitialized) {
@@ -21,6 +23,13 @@ class PlatformParameterProcessState @Inject constructor() {
   fun initializeFeatureFlags(states: Map<FeatureFlagId, Boolean>) {
     check(!::featureFlags.isInitialized) { "Attempting to initialize feature flag states twice." }
     featureFlags = states
+  }
+
+  fun initializeFeatureFlagSyncStatuses(syncStatuses: Map<FeatureFlagId, SyncStatus>) {
+    check(!::featureFlagSyncStatuses.isInitialized) {
+      "Attempting to initialize feature flag sync statuses twice."
+    }
+    featureFlagSyncStatuses = syncStatuses
   }
 
   fun retrievePlatformParameterBooleanState(id: PlatformParameterId): Boolean {
@@ -61,5 +70,12 @@ class PlatformParameterProcessState @Inject constructor() {
       "Attempting to access feature flag $id before initialization."
     }
     return featureFlags.getValue(id)
+  }
+
+  fun retrieveFeatureFlagSyncStatus(id: FeatureFlagId): SyncStatus {
+    check(::featureFlagSyncStatuses.isInitialized) {
+      "Attempting to access feature flag $id sync status before initialization."
+    }
+    return featureFlagSyncStatuses.getValue(id)
   }
 }

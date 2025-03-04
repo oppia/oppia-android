@@ -62,10 +62,11 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_I
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
@@ -2416,32 +2417,28 @@ class EventLogSubject private constructor(
     private val actual: FeatureFlagItemContext
   ) : LiteProtoSubject(metadata, actual) {
     /**
-     * Returns a [StringSubject] to test
-     * [EventLog.FeatureFlagItemContext.getFlagName].
+     * Returns a [ComparableSubject] to test [EventLog.FeatureFlagItemContext.getId].
      *
      * This method never fails since the underlying property defaults to empty string if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagNameThat(): StringSubject = assertThat(actual.flagName)
+    fun hasIdThat(): ComparableSubject<FeatureFlagId> = assertThat(actual.id)
 
     /**
-     * Returns a [BooleanSubject] to test
-     * [EventLog.FeatureFlagItemContext.getFlagEnabledState].
+     * Returns a [BooleanSubject] to test [EventLog.FeatureFlagItemContext.getIsEnabled].
      *
      * This method never fails since the underlying property defaults to false if it's not
      * defined in the context.
      */
-    fun hasFeatureFlagEnabledStateThat(): BooleanSubject = assertThat(actual.flagEnabledState)
+    fun hasEnabledStateThat(): BooleanSubject = assertThat(actual.isEnabled)
 
     /**
-     * Returns a [ComparableSubject] to test
-     * [EventLog.FeatureFlagItemContext.getFlagSyncStatus].
+     * Returns a [ComparableSubject] to test [EventLog.FeatureFlagItemContext.getSyncStatus].
      *
      * This method never fails since the underlying property defaults to the unspecified enum value
      * if it's not defined in the context.
      */
-    fun hasFeatureFlagSyncStateThat(): ComparableSubject<SyncStatus> =
-      assertThat(actual.flagSyncStatus)
+    fun hasSyncStatusThat(): ComparableSubject<SyncStatus> = assertThat(actual.syncStatus)
 
     companion object {
       /**

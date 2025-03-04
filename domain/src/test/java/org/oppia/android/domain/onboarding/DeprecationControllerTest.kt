@@ -22,8 +22,6 @@ import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -46,10 +44,17 @@ import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import javax.inject.Inject
-import javax.inject.Provider
 import javax.inject.Singleton
-import org.oppia.android.app.model.PlatformParameterId
-import org.oppia.android.domain.platformparameter.PlatformParameter
+import org.junit.After
+import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever.Companion.setParameterOverride
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [DeprecationController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -58,20 +63,25 @@ import org.oppia.android.domain.platformparameter.PlatformParameter
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(application = DeprecationControllerTest.TestApplication::class)
 class DeprecationControllerTest {
-  @Inject lateinit var context: Context
-  @Inject lateinit var deprecationController: DeprecationController
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var platformParameterController: PlatformParameterController
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
-  @field:[Inject PlatformParameter(PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL)]
-  lateinit var lowestSupportedApiLevelProvider: Provider<Int>
+  @Inject
+  lateinit var context: Context
 
-  @field:[Inject PlatformParameter(PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE)]
-  lateinit var optionalAppUpdateVersionProvider: Provider<Int>
+  @Inject
+  lateinit var deprecationController: DeprecationController
 
-  @field:[Inject PlatformParameter(PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE)]
-  lateinit var forcedAppUpdateVersionProvider: Provider<Int>
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
+  }
 
   @Test
   fun testController_initialAppLaunch_returnsDefaultDeprecationResponseDatabase() {
@@ -145,9 +155,8 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_osIsDeprecated_returnsOsIsDeprecatedStartUpMode() {
-    setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(lowestApiLevel)
-    )
+    setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
+    setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
       alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
@@ -158,9 +167,8 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_osIsDeprecated_previousResponseExists_returnsUserIsOnboardedStartUpMode() {
-    setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(lowestApiLevel)
-    )
+    setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
+    setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
       alreadyOnboardedOnboardingState, deprecationResponseDatabaseWithPreviousResponses
@@ -170,9 +178,8 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_hasOptionalUpdate_returnsOptionalUpdateAvailableStartupMode() {
-    setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(optionalAppUpdateVersion)
-    )
+    setParameterOverride(OPTIONAL_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
+    setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
       alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
@@ -182,9 +189,8 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_hasOptionalUpdate_previousResponseExists_returnsUserIsOnboardedStartupMode() {
-    setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(optionalAppUpdateVersion)
-    )
+    setParameterOverride(OPTIONAL_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
+    setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
       alreadyOnboardedOnboardingState, deprecationResponseDatabaseWithPreviousResponses
@@ -194,12 +200,8 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_hasForcedUpdate_returnsAppIsDeprecatedStartupMode() {
-    setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(forcedAppUpdateVersion)
-    )
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-    testCoroutineDispatchers.runCurrent()
+    setParameterOverride(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
+    setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
       alreadyOnboardedOnboardingState, defaultDeprecationResponseDatabase
@@ -209,9 +211,8 @@ class DeprecationControllerTest {
 
   @Test
   fun testController_hasForcedUpdate_previousResponseExists_returnsUserIsOnboardedStartupMode() {
-    setUpTestApplicationComponentWithParameters(
-      platformParameters = listOf(forcedAppUpdateVersion)
-    )
+    setParameterOverride(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
+    setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
       alreadyOnboardedOnboardingState, deprecationResponseDatabaseWithPreviousResponses
@@ -225,22 +226,6 @@ class DeprecationControllerTest {
 
   private fun setUpOppiaApplication(expirationEnabled: Boolean, expDate: String) {
     setUpOppiaApplicationForContext(context, expirationEnabled, expDate)
-  }
-
-  private fun setUpTestApplicationComponentWithParameters(
-    platformParameters: List<PlatformParameter>
-  ) {
-    executeInPreviousAppInstance { testComponent ->
-      testComponent.getPlatformParameterController().updatePlatformParameterDatabase(
-        platformParameters
-      )
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpDefaultTestApplicationComponent()
-
-    monitorFactory.ensureDataProviderExecutes(platformParameterController.getParameterDatabase())
-    testCoroutineDispatchers.runCurrent()
   }
 
   /**
@@ -332,8 +317,8 @@ class DeprecationControllerTest {
       OppiaClockModule::class, LocaleProdModule::class,
       ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterTestModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class, AssetModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -346,8 +331,6 @@ class DeprecationControllerTest {
     }
 
     fun getDeprecationController(): DeprecationController
-
-    fun getPlatformParameterController(): PlatformParameterController
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
 

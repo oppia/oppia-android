@@ -16,7 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.clipboard.ClipboardController.CurrentClip
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -266,9 +265,8 @@ class ClipboardControllerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
-      FakeOppiaClockModule::class, PlatformParameterModule::class,
-      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class
+      FakeOppiaClockModule::class, PlatformParameterTestModule::class,
+      LoggingIdentifierModule::class, SyncStatusTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

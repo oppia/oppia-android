@@ -9,9 +9,6 @@ import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import java.io.File
-import java.io.PrintStream
-import kotlin.reflect.KClass
 import org.oppia.android.app.model.FeatureFlagDefinition
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.PlatformParameterDefinition
@@ -19,6 +16,10 @@ import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SupportedFeatureFlags
 import org.oppia.android.app.model.SupportedPlatformParameters
+import java.io.File
+import java.io.PrintStream
+import kotlin.reflect.KClass
+import org.oppia.android.app.model.SyncStatus
 
 /*
   bazel run //scripts:generate_platform_config_module --
@@ -63,13 +64,16 @@ class GeneratePlatformConfigModule(private val output: PrintStream) {
     val moduleName = ClassName(modulePackage, qualifiedModuleClassName.substringAfterLast('.'))
 
     val platformParameterProviders =
-      supportedPlatformParameters.platformParameterDefinitionList.map { generateProvider(it) }
+      supportedPlatformParameters.platformParameterDefinitionList.map { generateValueProvider(it) }
     val featureFlagProviders =
-      supportedFeatureFlags.featureFlagDefinitionList.map { generateProvider(it) }
+      supportedFeatureFlags.featureFlagDefinitionList.map { generateValueProvider(it) }
+    val featureFlagStatusProviders =
+      supportedFeatureFlags.featureFlagDefinitionList.map { generateStatusProvider(it) }
     val moduleClassType = TypeSpec.classBuilder(moduleName).apply {
       addAnnotation(MODULE_CLASS)
       addFunctions(platformParameterProviders)
       addFunctions(featureFlagProviders)
+      addFunctions(featureFlagStatusProviders)
     }.build()
     FileSpec.builder(modulePackage, moduleName.simpleName).apply {
       addType(moduleClassType)
@@ -79,16 +83,21 @@ class GeneratePlatformConfigModule(private val output: PrintStream) {
   private companion object {
     private val MODULE_CLASS = ClassName("dagger", "Module")
     private val PROVIDES_CLASS = ClassName("dagger", "Provides")
+    private val INTO_MAP_CLASS = ClassName("dagger.multibindings", "IntoMap")
     private val PLATFORM_PARAMETER_CLASS =
       ClassName("org.oppia.android.domain.platformparameter", "PlatformParameter")
     private val FEATURE_FLAG_CLASS =
       ClassName("org.oppia.android.domain.platformparameter", "FeatureFlag")
+    private val FEATURE_FLAG_ID_KEY_CLASS =
+      ClassName("org.oppia.android.domain.platformparameter", "FeatureFlagIdKey")
+    private val FEATURE_FLAG_SYNC_STATUSES_CLASS =
+      ClassName("org.oppia.android.domain.platformparameter", "FeatureFlagSyncStatuses")
     private val PLATFORM_PARAMETER_ID_CLASS = PlatformParameterId::class.asClassName()
     private val FEATURE_FLAG_ID_CLASS = FeatureFlagId::class.asClassName()
     private val PLATFORM_PARAMETER_PROCESS_STATE_CLASS =
       ClassName("org.oppia.android.domain.platformparameter", "PlatformParameterProcessState")
 
-    private fun generateProvider(definition: PlatformParameterDefinition): FunSpec {
+    private fun generateValueProvider(definition: PlatformParameterDefinition): FunSpec {
       val paramName = definition.id.name.upperSnakeToUpperCamelCase()
       val member = MemberName(PLATFORM_PARAMETER_ID_CLASS, definition.id.name)
       return FunSpec.builder("provide${paramName}Value").apply {
@@ -105,7 +114,7 @@ class GeneratePlatformConfigModule(private val output: PrintStream) {
       }.build()
     }
 
-    private fun generateProvider(definition: FeatureFlagDefinition): FunSpec {
+    private fun generateValueProvider(definition: FeatureFlagDefinition): FunSpec {
       val paramName = definition.id.name.upperSnakeToUpperCamelCase()
       val member = MemberName(FEATURE_FLAG_ID_CLASS, definition.id.name)
       return FunSpec.builder("provide${paramName}Value").apply {
@@ -116,6 +125,24 @@ class GeneratePlatformConfigModule(private val output: PrintStream) {
         )
         returns(Boolean::class)
         addStatement("return processState.retrieveFeatureFlagState(%M)", member)
+      }.build()
+    }
+
+    private fun generateStatusProvider(definition: FeatureFlagDefinition): FunSpec {
+      val paramName = definition.id.name.upperSnakeToUpperCamelCase()
+      val member = MemberName(FEATURE_FLAG_ID_CLASS, definition.id.name)
+      return FunSpec.builder("provide${paramName}Status").apply {
+        addAnnotation(PROVIDES_CLASS)
+        addAnnotation(INTO_MAP_CLASS)
+        addAnnotation(FEATURE_FLAG_SYNC_STATUSES_CLASS)
+        addAnnotation(
+          AnnotationSpec.builder(FEATURE_FLAG_ID_KEY_CLASS).addMember("%M", member).build()
+        )
+        addParameter(
+          ParameterSpec.builder("processState", PLATFORM_PARAMETER_PROCESS_STATE_CLASS).build()
+        )
+        returns(SyncStatus::class)
+        addStatement("return processState.retrieveFeatureFlagSyncStatus(%M)", member)
       }.build()
     }
 
@@ -144,5 +171,5 @@ class GeneratePlatformConfigModule(private val output: PrintStream) {
   }
 }
 
-private inline fun <reified T: Message> loadProto(file: File, baseMessage: T): T =
+private inline fun <reified T : Message> loadProto(file: File, baseMessage: T): T =
   file.inputStream().use { baseMessage.newBuilderForType().mergeFrom(it).build() } as T

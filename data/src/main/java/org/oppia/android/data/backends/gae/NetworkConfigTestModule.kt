@@ -2,8 +2,8 @@ package org.oppia.android.data.backends.gae
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import okhttp3.mockwebserver.MockWebServer
+import javax.inject.Singleton
 
 /** Provides test-only network-specific constants. */
 @Module

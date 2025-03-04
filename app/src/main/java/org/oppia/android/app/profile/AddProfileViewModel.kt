@@ -2,10 +2,10 @@ package org.oppia.android.app.profile
 
 import androidx.databinding.ObservableField
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.FeatureFlag
+import javax.inject.Inject
 
 /** The ViewModel for [AddProfileActivity]. */
 @ActivityScope
