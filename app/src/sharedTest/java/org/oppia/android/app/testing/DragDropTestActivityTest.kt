@@ -2,6 +2,8 @@ package org.oppia.android.app.testing
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.GeneralLocation
@@ -27,6 +29,9 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.recyclerview.DragAndDropItemFacilitator
+import org.oppia.android.app.recyclerview.OnDragEndedListener
+import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -101,7 +106,10 @@ class DragDropTestActivityTest {
 
   @Test
   fun testDragDropTestActivity_dragItem0ToPosition1() {
-    launch(DragDropTestActivity::class.java).use {
+    launch(DragDropTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        attachDragDropToActivity(activity)
+      }
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
@@ -127,7 +135,10 @@ class DragDropTestActivityTest {
 
   @Test
   fun testDragDropTestActivity_dragItem1ToPosition2() {
-    launch(DragDropTestActivity::class.java).use {
+    launch(DragDropTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        attachDragDropToActivity(activity)
+      }
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
@@ -153,7 +164,10 @@ class DragDropTestActivityTest {
 
   @Test
   fun testDragDropTestActivity_dragItem3ToPosition2() {
-    launch(DragDropTestActivity::class.java).use {
+    launch(DragDropTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        attachDragDropToActivity(activity)
+      }
       onView(withId(R.id.drag_drop_recycler_view))
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
@@ -176,6 +190,22 @@ class DragDropTestActivityTest {
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3))
         .check(matches(withText("Item 3")))
     }
+  }
+
+  private fun attachDragDropToActivity(activity: DragDropTestActivity) {
+    val dragDragTestFragment: DragDropTestFragment = activity.supportFragmentManager
+      .findFragmentById(R.id.drag_drop_test_fragment_placeholder) as DragDropTestFragment
+    val recyclerView: RecyclerView? =
+      dragDragTestFragment.view?.findViewById(R.id.drag_drop_recycler_view)
+    val itemTouchHelper = ItemTouchHelper(createDragCallback(fragment = dragDragTestFragment))
+    itemTouchHelper.attachToRecyclerView(recyclerView)
+  }
+
+  private fun createDragCallback(fragment: DragDropTestFragment): ItemTouchHelper.Callback {
+    return DragAndDropItemFacilitator(
+      fragment as OnItemDragListener,
+      fragment as OnDragEndedListener
+    )
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

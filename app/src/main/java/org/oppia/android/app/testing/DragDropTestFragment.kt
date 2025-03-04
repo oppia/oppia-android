@@ -5,14 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.recyclerview.DragAndDropItemFacilitator
 import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
-import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
 import javax.inject.Inject
 
 /** Test-only fragment used for verifying ``BindableAdapter`` functionality. */
@@ -26,18 +23,11 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
   }
 
   @Inject
-  lateinit var lifecycleSafeTimerFactory: LifecycleSafeTimerFactory
-  @Inject
   lateinit var dragDropTestFragmentPresenter: DragDropTestFragmentPresenter
-
-  private var itemTouchHelper: ItemTouchHelper? = null
 
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
-    itemTouchHelper = ItemTouchHelper(
-      DragAndDropItemFacilitator(this, this)
-    )
   }
 
   override fun onCreateView(
@@ -45,19 +35,10 @@ class DragDropTestFragment : InjectableFragment(), OnItemDragListener, OnDragEnd
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val view = dragDropTestFragmentPresenter.handleCreateView(
+    return dragDropTestFragmentPresenter.handleCreateView(
       inflater,
       container
     )
-
-    dragDropTestFragmentPresenter.addDragDropTouchListener(
-      requireContext(),
-      this,
-      lifecycleSafeTimerFactory,
-      itemTouchHelper
-    )
-
-    return view
   }
 
   override fun onDragEnded(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
