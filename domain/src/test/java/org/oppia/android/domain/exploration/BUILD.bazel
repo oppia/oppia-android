@@ -11,6 +11,9 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationDataControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
@@ -56,6 +59,9 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationProgressControllerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//:dagger",
         "//config/src/java/org/oppia/android/config:all_languages_config",
         "//domain",
@@ -134,6 +140,9 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
@@ -179,6 +188,9 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.exploration.ExplorationProgressModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",

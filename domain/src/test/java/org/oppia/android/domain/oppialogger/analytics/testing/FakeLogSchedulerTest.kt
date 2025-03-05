@@ -47,6 +47,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [FakeLogScheduler]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -55,6 +58,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FakeLogSchedulerTest.TestApplication::class)
 class FakeLogSchedulerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var fakeLogScheduler: FakeLogScheduler
@@ -181,7 +186,8 @@ class FakeLogSchedulerTest {
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterTestModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, AssetModule::class
+      CpuPerformanceSnapshotterModule::class, AssetModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

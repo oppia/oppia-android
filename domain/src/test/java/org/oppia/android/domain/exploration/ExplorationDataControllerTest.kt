@@ -73,6 +73,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [ExplorationDataController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -82,6 +85,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationDataControllerTest.TestApplication::class)
 class ExplorationDataControllerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -474,7 +479,8 @@ class ExplorationDataControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterTestModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class
+      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

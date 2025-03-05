@@ -48,6 +48,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val TEST_CPU_USAGE_ONE = 0.07192
 private const val TEST_CPU_USAGE_TWO = 0.32192
@@ -59,6 +62,8 @@ private const val TEST_CPU_USAGE_TWO = 0.32192
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = CpuPerformanceSnapshotterTest.TestApplication::class)
 class CpuPerformanceSnapshotterTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
@@ -493,7 +498,8 @@ class CpuPerformanceSnapshotterTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class
+      CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

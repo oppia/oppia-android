@@ -81,6 +81,9 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val TOLERANCE = 1e-5
 
@@ -94,6 +97,8 @@ private const val TOLERANCE = 1e-5
 class QuestionAssessmentProgressControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var questionTrainingController: QuestionTrainingController
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
@@ -1665,7 +1670,8 @@ class QuestionAssessmentProgressControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterTestModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

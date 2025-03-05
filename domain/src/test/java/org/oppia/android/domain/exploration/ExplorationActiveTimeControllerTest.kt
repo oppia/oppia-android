@@ -68,6 +68,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val SESSION_LENGTH_1 = 300000L
 private const val SESSION_LENGTH_2 = 600000L
@@ -78,6 +81,9 @@ private const val SESSION_LENGTH_3 = 100000L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationActiveTimeControllerTest.TestApplication::class)
 class ExplorationActiveTimeControllerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
+
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -564,7 +570,7 @@ class ExplorationActiveTimeControllerTest {
       RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, PlatformParameterTestModule::class,
       PlatformParameterTestModule::class, ExplorationStorageTestModule::class,
-      LogStorageModule::class
+      LogStorageModule::class, NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -65,6 +65,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 
@@ -75,6 +78,9 @@ private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MetricLogSchedulingWorkerTest.TestApplication::class)
 class MetricLogSchedulingWorkerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
+
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
@@ -272,7 +278,8 @@ class MetricLogSchedulingWorkerTest {
       AssetModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterTestModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
+      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

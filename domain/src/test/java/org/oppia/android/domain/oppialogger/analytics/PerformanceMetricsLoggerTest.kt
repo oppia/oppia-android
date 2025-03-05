@@ -53,6 +53,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.util.caching.AssetModule
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Double.MAX_VALUE
@@ -70,6 +74,8 @@ private const val TEST_STARTUP_LATENCY_IN_MILLISECONDS = 3000L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsLoggerTest.TestApplication::class)
 class PerformanceMetricsLoggerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var performanceMetricsLogger: PerformanceMetricsLogger
@@ -339,7 +345,8 @@ class PerformanceMetricsLoggerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class, NetworkModule::class, NetworkConfigTestModule::class,
+      AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

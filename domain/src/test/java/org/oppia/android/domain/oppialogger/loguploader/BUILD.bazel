@@ -11,6 +11,9 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.loguploader.LogReportWorkManagerInitializerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
@@ -46,6 +49,9 @@ oppia_android_test(
     test_class = "org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerTest",
     test_manifest = "//domain:test_manifest",
     deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
         "//:dagger",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",

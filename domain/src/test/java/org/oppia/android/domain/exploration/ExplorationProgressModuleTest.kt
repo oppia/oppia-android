@@ -32,6 +32,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [ExplorationProgressModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -40,8 +44,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationProgressModuleTest.TestApplication::class)
 class ExplorationProgressModuleTest {
-  @Inject
-  lateinit var progressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
+  @Inject lateinit var progressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
 
   @Before
   fun setup() {
@@ -87,7 +92,8 @@ class ExplorationProgressModuleTest {
       FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
-      PlatformParameterTestModule::class
+      PlatformParameterTestModule::class, NetworkModule::class, NetworkConfigTestModule::class,
+      AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

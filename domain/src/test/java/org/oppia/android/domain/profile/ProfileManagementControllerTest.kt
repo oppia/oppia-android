@@ -73,6 +73,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -84,6 +87,8 @@ import org.oppia.android.app.model.FeatureFlagId
 class ProfileManagementControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
@@ -2134,6 +2139,7 @@ class ProfileManagementControllerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
       ApplicationLifecycleModule::class, PlatformParameterTestModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

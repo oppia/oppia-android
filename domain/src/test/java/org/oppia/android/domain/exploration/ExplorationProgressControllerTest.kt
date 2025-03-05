@@ -119,6 +119,9 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -146,6 +149,8 @@ class ExplorationProgressControllerTest {
   //  - testMoveToPrevious_whileSubmittingAnswer_failsWithError
 
   @get:Rule val oppiaTestRule = OppiaTestRule()
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var explorationProgressController: ExplorationProgressController
@@ -3862,7 +3867,8 @@ class ExplorationProgressControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterTestModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      ExplorationProgressModule::class, TestAuthenticationModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

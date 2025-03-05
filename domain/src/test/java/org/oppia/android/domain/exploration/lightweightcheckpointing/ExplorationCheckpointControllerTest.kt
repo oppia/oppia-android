@@ -78,6 +78,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /**
  * The base exploration id for every exploration used for testing [ExplorationCheckpointController].
@@ -107,6 +110,8 @@ private const val TEST_CHECKPOINTING_FAKE_EXP_ID = "test_checkpointing_fake_expl
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationCheckpointControllerTest.TestApplication::class)
 class ExplorationCheckpointControllerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
@@ -990,7 +995,8 @@ class ExplorationCheckpointControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      ExplorationProgressModule::class, TestAuthenticationModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

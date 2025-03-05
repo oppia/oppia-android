@@ -44,6 +44,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [SurveyEventsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -56,6 +59,9 @@ class SurveyEventsLoggerTest {
     private const val TEST_SURVEY_ID = "test_survey_id"
     private const val TEST_ANSWER = "Some text response"
   }
+
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var surveyEventsLogger: SurveyEventsLogger
@@ -192,6 +198,7 @@ class SurveyEventsLoggerTest {
       PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class,
       ApplicationLifecycleModule::class, AssetModule::class, TestAuthenticationModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

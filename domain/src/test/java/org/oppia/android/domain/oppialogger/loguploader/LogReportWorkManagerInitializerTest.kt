@@ -58,11 +58,16 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogReportWorkManagerInitializerTest.TestApplication::class)
 class LogReportWorkManagerInitializerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -323,6 +328,7 @@ class LogReportWorkManagerInitializerTest {
       LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
       CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

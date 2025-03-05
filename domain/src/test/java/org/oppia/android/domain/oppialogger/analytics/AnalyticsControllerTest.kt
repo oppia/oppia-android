@@ -76,6 +76,9 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_CLASSROOM_ID = "test_classroomId"
@@ -95,6 +98,8 @@ private const val TEST_SUB_TOPIC_ID = 1
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AnalyticsControllerTest.TestApplication::class)
 class AnalyticsControllerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject
   lateinit var analyticsControllerProvider: Provider<AnalyticsController>
   @Inject
@@ -1408,7 +1413,8 @@ class AnalyticsControllerTest {
       TestDispatcherModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterTestModule::class, PlatformParameterTestModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

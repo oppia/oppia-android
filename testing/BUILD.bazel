@@ -74,6 +74,8 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":assertion_helpers",
+    "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
+    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
     ":testing",
     "//:dagger",
     "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",

@@ -68,6 +68,9 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [LearnerAnalyticsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -88,6 +91,9 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_EXP_5_STATE_FOUR_NAME = "AlgebraicExpressionInput.MatchesExactlyWith"
     private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
+
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
@@ -2102,7 +2108,8 @@ class LearnerAnalyticsLoggerTest {
       MathEquationInputModule::class, ImageClickInputModule::class, AssetModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       CachingTestModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

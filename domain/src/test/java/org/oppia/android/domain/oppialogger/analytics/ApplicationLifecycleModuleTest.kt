@@ -35,6 +35,9 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [ApplicationLifecycleModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -43,6 +46,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ApplicationLifecycleModuleTest.TestApplication::class)
 class ApplicationLifecycleModuleTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
+
   @Inject
   lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
 
@@ -111,7 +117,8 @@ class ApplicationLifecycleModuleTest {
       PlatformParameterTestModule::class, PlatformParameterTestModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class,
-      AssetModule::class
+      AssetModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

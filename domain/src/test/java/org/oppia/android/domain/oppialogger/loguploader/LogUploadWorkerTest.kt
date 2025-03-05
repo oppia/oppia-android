@@ -82,6 +82,9 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -94,6 +97,8 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
 class LogUploadWorkerTest {
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject
@@ -651,6 +656,7 @@ class LogUploadWorkerTest {
       SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
       ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
       TestAuthenticationModule::class,
+      NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

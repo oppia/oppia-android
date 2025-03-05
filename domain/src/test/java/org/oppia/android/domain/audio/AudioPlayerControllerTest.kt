@@ -81,6 +81,9 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -94,6 +97,8 @@ class AudioPlayerControllerTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
   @Mock lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
   @Captor lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var audioPlayerController: AudioPlayerController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -919,7 +924,7 @@ class AudioPlayerControllerTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, CachingTestModule::class, HintsAndSolutionProdModule::class,
       HintsAndSolutionConfigModule::class, LoggerModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class, NetworkModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
