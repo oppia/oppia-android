@@ -43,6 +43,8 @@ class ExplorationFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler
 ) {
 
+  val profileId = activity.intent.extractCurrentUserProfileId()
+
   /** Handles the [Fragment.onAttach] portion of [ExplorationFragment]'s lifecycle. */
   fun handleAttach(context: Context) {
     fontScaleConfigurationUtil.adjustFontScale(context, retrieveArguments().readingTextSize)
@@ -51,12 +53,11 @@ class ExplorationFragmentPresenter @Inject constructor(
   /** Handles the [Fragment.onCreateView] portion of [ExplorationFragment]'s lifecycle. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View {
     val args = retrieveArguments()
-    val profileId = activity.intent.extractCurrentUserProfileId().internalId
     val binding =
       ExplorationFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false).root
     val stateFragment =
       StateFragment.newInstance(
-        profileId, args.topicId, args.storyId, args.explorationId
+        profileId.internalId, args.topicId, args.storyId, args.explorationId
       )
     logPracticeFragmentEvent(args.classroomId, args.topicId, args.storyId, args.explorationId)
     if (getStateFragment() == null) {
@@ -70,8 +71,9 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   /** Handles the [Fragment.onViewCreated] portion of [ExplorationFragment]'s lifecycle. */
   fun handleViewCreated() {
+
     val profileDataProvider = profileManagementController.getProfile(
-      activity.intent.extractCurrentUserProfileId()
+      profileId
     )
     profileDataProvider.toLiveData().observe(
       fragment
@@ -162,7 +164,7 @@ class ExplorationFragmentPresenter @Inject constructor(
       oppiaLogger.createOpenExplorationActivityContext(
         classroomId, topicId, storyId, explorationId
       ),
-      activity.intent.extractCurrentUserProfileId()
+      profileId
     )
   }
 

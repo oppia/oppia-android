@@ -42,6 +42,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [StoryFragment]. */
@@ -127,6 +128,7 @@ class StoryFragmentPresenter @Inject constructor(
     explorationCheckpoint: ExplorationCheckpoint
   ) {
     if (canExplorationBeResumed) {
+      activity.intent.decorateWithUserProfileId(profileId)
       routeToResumeLessonListener.routeToResumeLesson(
         classroomId,
         topicId,
@@ -303,6 +305,7 @@ class StoryFragmentPresenter @Inject constructor(
           oppiaLogger.e("Story Fragment", "Failed to load exploration", result.error)
         is AsyncResult.Success -> {
           oppiaLogger.d("Story Fragment", "Successfully loaded exploration: $explorationId")
+          activity.intent.decorateWithUserProfileId(profileId)
           routeToExplorationListener.routeToExploration(
             classroomId,
             topicId,

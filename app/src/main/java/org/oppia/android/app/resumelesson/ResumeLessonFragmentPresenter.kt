@@ -26,11 +26,12 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.HtmlParser
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [ResumeLessonFragment]. */
 class ResumeLessonFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val resumeLessonViewModel: ResumeLessonViewModel,
   private val topicController: TopicController,
@@ -212,6 +213,7 @@ class ResumeLessonFragmentPresenter @Inject constructor(
           oppiaLogger.e("ResumeLessonFragment", "Failed to load exploration", result.error)
         is AsyncResult.Success -> {
           oppiaLogger.d("ResumeLessonFragment", "Successfully loaded exploration")
+          activity.intent.decorateWithUserProfileId(profileId)
           routeToExplorationListener.routeToExploration(
             classroomId,
             topicId,

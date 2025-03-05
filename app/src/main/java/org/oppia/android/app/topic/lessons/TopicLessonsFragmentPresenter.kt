@@ -31,12 +31,13 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.enumfilter.filterByEnumCondition
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** The presenter for [TopicLessonsFragment]. */
 @FragmentScope
 class TopicLessonsFragmentPresenter @Inject constructor(
-  activity: AppCompatActivity,
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val explorationDataController: ExplorationDataController,
@@ -44,7 +45,6 @@ class TopicLessonsFragmentPresenter @Inject constructor(
   private val topicLessonViewModel: TopicLessonViewModel,
   private val accessibilityService: AccessibilityService,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private val routeToResumeLessonListener = activity as RouteToResumeLessonListener
@@ -312,6 +312,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
             override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
               if (it is AsyncResult.Success) {
                 explorationCheckpointLiveData.removeObserver(this)
+                activity.intent.decorateWithUserProfileId(profileId)
                 routeToResumeLessonListener.routeToResumeLesson(
                   classroomId,
                   topicId,
@@ -399,6 +400,7 @@ class TopicLessonsFragmentPresenter @Inject constructor(
           oppiaLogger.e("TopicLessonsFragment", "Failed to load exploration", result.error)
         is AsyncResult.Success -> {
           oppiaLogger.d("TopicLessonsFragment", "Successfully loaded exploration")
+          activity.intent.decorateWithUserProfileId(profileId)
           routeToExplorationListener.routeToExploration(
             classroomId,
             topicId,

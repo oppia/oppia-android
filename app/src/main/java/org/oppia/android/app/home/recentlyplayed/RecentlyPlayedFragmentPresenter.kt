@@ -26,6 +26,7 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
@@ -107,6 +108,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           override fun onChanged(it: AsyncResult<ExplorationCheckpoint>) {
             if (it is AsyncResult.Success) {
               explorationCheckpointLiveData.removeObserver(this)
+              activity.intent.decorateWithUserProfileId(profileId)
               routeToResumeLessonListener.routeToResumeLesson(
                 promotedStory.classroomId,
                 promotedStory.topicId,
@@ -194,6 +196,7 @@ class RecentlyPlayedFragmentPresenter @Inject constructor(
           oppiaLogger.e("RecentlyPlayedFragment", "Failed to load exploration", result.error)
         is AsyncResult.Success -> {
           oppiaLogger.d("RecentlyPlayedFragment", "Successfully loaded exploration")
+          activity.intent.decorateWithUserProfileId(profileId)
           routeToExplorationListener.routeToExploration(
             classroomId,
             topicId,

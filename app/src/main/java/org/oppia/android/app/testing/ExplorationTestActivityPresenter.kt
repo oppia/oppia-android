@@ -19,6 +19,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 private const val INTERNAL_PROFILE_ID = 0
@@ -67,6 +68,7 @@ class ExplorationTestActivityPresenter @Inject constructor(
             oppiaLogger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.error)
           is AsyncResult.Success -> {
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
+            activity.intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(INTERNAL_PROFILE_ID))
             routeToExplorationListener.routeToExploration(
               CLASSROOM_ID,
               TOPIC_ID,
