@@ -10,6 +10,7 @@ import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationDataController
@@ -68,7 +69,8 @@ class ExplorationTestActivityPresenter @Inject constructor(
             oppiaLogger.e(TAG_EXPLORATION_TEST_ACTIVITY, "Failed to load exploration", result.error)
           is AsyncResult.Success -> {
             oppiaLogger.d(TAG_EXPLORATION_TEST_ACTIVITY, "Successfully loaded exploration")
-            activity.intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(INTERNAL_PROFILE_ID))
+            activity.intent.decorateWithUserProfileId(
+              ProfileId.newBuilder().setInternalId(INTERNAL_PROFILE_ID).build())
             routeToExplorationListener.routeToExploration(
               CLASSROOM_ID,
               TOPIC_ID,
