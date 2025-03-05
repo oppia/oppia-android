@@ -12,8 +12,6 @@ import org.oppia.android.app.model.ComparableOperation.ComparisonTypeCase
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 
-// TODO(#4098): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [ComparableOperation]s.
  *
