@@ -124,7 +124,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_differentSuccessValues_withDistinctValues_hasDifferentEffectiveValue() {
+  fun testAsyncResultSubject_distinctSuccessValues_haveDifferentEffectiveValue() {
     val successResult1: AsyncResult<String> = AsyncResult.Success("First value")
     val successResult2: AsyncResult<String> = AsyncResult.Success("Second value")
     AsyncResultSubject.assertThat(successResult1)
@@ -149,7 +149,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_differentFailureMessages_withDistinctErrors_hasDifferentEffectiveValue() {
+  fun testAsyncResultSubject_distinctFailureMessages_haveDifferentEffectiveValue() {
     val failureResult1: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error 1"))
     val failureResult2: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error 2"))
     AsyncResultSubject.assertThat(failureResult1)
@@ -233,7 +233,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_successResult_withWrongTypeExtraction_throwsExceptionWithCorrectType() {
+  fun testAsyncResultSubject_extractWrongTypeFromSuccess_throwsAssertionErrorWithCorrectType() {
     val intResult: AsyncResult<Int> = AsyncResult.Success(42)
     try {
       AsyncResultSubject.assertThat(intResult).isStringSuccessThat()
