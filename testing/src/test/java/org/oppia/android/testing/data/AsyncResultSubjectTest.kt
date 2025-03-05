@@ -77,15 +77,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_newerResult_checkIsNewerOrSameAge() {
-    val olderResult: AsyncResult<String> = AsyncResult.Success("Older")
-    Thread.sleep(50)
-    val newerResult: AsyncResult<String> = AsyncResult.Success("Newer")
-    AsyncResultSubject.assertThat(newerResult).isNewerOrSameAgeAs(olderResult)
-  }
-
-  @Test
-  fun testAsyncResultSubject_throwableSuccess_isThrowableSuccessWithMessageContainingError() {
+  fun testAsyncResultSubject_throwableSuccess_withValidThrowable_hasMessageContainingError() {
     val throwableResult: AsyncResult<Throwable> =
       AsyncResult.Success(RuntimeException("Error"))
     AsyncResultSubject.assertThat(throwableResult)
@@ -95,7 +87,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_failureResult_checkCause() {
+  fun testAsyncResultSubject_failureResult_withCause_hasCauseMessageContainingCause() {
     val failureResult: AsyncResult<String> =
       AsyncResult.Failure(RuntimeException("Root error", FileNotFoundException("Cause")))
     AsyncResultSubject.assertThat(failureResult)
@@ -106,7 +98,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_nullSuccessValue_checkIsNull() {
+  fun testAsyncResultSubject_nullSuccessValue_withNullResult_isNull() {
     val nullSuccessResult: AsyncResult<String?> = AsyncResult.Success(null)
     AsyncResultSubject.assertThat(nullSuccessResult)
       .isSuccessThat()
@@ -114,7 +106,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_pendingAndSuccess_checkHasDifferentEffectiveValue() {
+  fun testAsyncResultSubject_pendingAndSuccess_withDifferentStates_hasDifferentEffectiveValue() {
     val pendingResult: AsyncResult<String> = AsyncResult.Pending()
     val successResult: AsyncResult<String> = AsyncResult.Success("Value")
     AsyncResultSubject.assertThat(pendingResult)
@@ -123,7 +115,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_sameSuccessValue_checkHasSameEffectiveValue() {
+  fun testAsyncResultSubject_sameSuccessValue_withIdenticalValues_hasSameEffectiveValue() {
     val successResult1: AsyncResult<String> = AsyncResult.Success("Same value")
     val successResult2: AsyncResult<String> = AsyncResult.Success("Same value")
     AsyncResultSubject.assertThat(successResult1)
@@ -132,7 +124,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_differentSuccessValues_checkHasDifferentEffectiveValue() {
+  fun testAsyncResultSubject_differentSuccessValues_withDistinctValues_hasDifferentEffectiveValue() {
     val successResult1: AsyncResult<String> = AsyncResult.Success("First value")
     val successResult2: AsyncResult<String> = AsyncResult.Success("Second value")
     AsyncResultSubject.assertThat(successResult1)
@@ -141,7 +133,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_intSuccess_isIntSuccessEqualTo42() {
+  fun testAsyncResultSubject_intSuccess_withValue42_isEqualTo42() {
     val intResult: AsyncResult<Int> = AsyncResult.Success(42)
     AsyncResultSubject.assertThat(intResult)
       .isIntSuccessThat()
@@ -149,7 +141,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_booleanSuccess_isBooleanSuccessEqualToTrue() {
+  fun testAsyncResultSubject_booleanSuccess_withTrueValue_isTrue() {
     val boolResult: AsyncResult<Boolean> = AsyncResult.Success(true)
     AsyncResultSubject.assertThat(boolResult)
       .isBooleanSuccessThat()
@@ -157,7 +149,7 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_differentFailureMessages_checkHasDifferentEffectiveValue() {
+  fun testAsyncResultSubject_differentFailureMessages_withDistinctErrors_hasDifferentEffectiveValue() {
     val failureResult1: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error 1"))
     val failureResult2: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error 2"))
     AsyncResultSubject.assertThat(failureResult1)
@@ -166,18 +158,12 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_pendingResult_checkIsNotSuccessOrFailure() {
-    AsyncResultSubject.assertThat(pendingResult).isNotSuccess()
-    AsyncResultSubject.assertThat(pendingResult).isNotFailure()
-  }
-
-  @Test
-  fun testAsyncResultSubject_successResult_isSuccessWithValueEqualToSomeString() {
+  fun testAsyncResultSubject_successResult_withStringValue_isSuccessWithSomeString() {
     AsyncResultSubject.assertThat(successResult).isSuccessThat().isEqualTo("Some string")
   }
 
   @Test
-  fun testAsyncResultSubject_failureResult_isFailureWithMessageContainingErrorMessage() {
+  fun testAsyncResultSubject_failureResult_withErrorMessage_isFailureWithMessageContainingError() {
     AsyncResultSubject.assertThat(failureResult)
       .isFailureThat()
       .hasMessageThat()
@@ -185,28 +171,13 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_twoPendingResults_haveSameEffectiveValue() {
+  fun testAsyncResultSubject_twoPendingResults_withSameState_haveSameEffectiveValue() {
     val anotherPending: AsyncResult<String> = AsyncResult.Pending()
     AsyncResultSubject.assertThat(pendingResult).hasSameEffectiveValueAs(anotherPending).isTrue()
   }
 
   @Test
-  fun testAsyncResultSubject_pendingResult_checkHasDifferentEffectiveValue() {
-    val successResult: AsyncResult<String> = AsyncResult.Success("Some string")
-    AsyncResultSubject.assertThat(pendingResult)
-      .hasSameEffectiveValueAs(successResult)
-      .isFalse()
-  }
-
-  @Test
-  fun testAsyncResultSubject_successResult_checkStringSuccessValue() {
-    AsyncResultSubject.assertThat(successResult)
-      .isSuccessThat()
-      .isEqualTo("Some string")
-  }
-
-  @Test
-  fun testAsyncResultSubject_failureResult_checkErrorMessageMatchesExact() {
+  fun testAsyncResultSubject_failureResult_withExactErrorMessage_hasMessageEqualToErrorMessage() {
     AsyncResultSubject.assertThat(failureResult)
       .isFailureThat()
       .hasMessageThat()
@@ -214,19 +185,86 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_pendingResult_checkHasNullEffectiveValue() {
-    val nullPending: AsyncResult<String> = AsyncResult.Pending()
-    AsyncResultSubject.assertThat(pendingResult)
-      .hasSameEffectiveValueAs(nullPending)
-      .isTrue()
+  fun testAsyncResultSubject_longSuccessResult_withValidValue_hasLongValueEqualTo100() {
+    val longResult: AsyncResult<Long> = AsyncResult.Success(100L)
+    AsyncResultSubject.assertThat(longResult)
+      .isLongSuccessThat()
+      .isEqualTo(100L)
   }
 
   @Test
-  fun testAsyncResultSubject_pendingResult_checkIsNotSameEffectiveValue() {
-    val pending1: AsyncResult<String> = AsyncResult.Pending()
-    val pending2: AsyncResult<String> = AsyncResult.Pending()
-    AsyncResultSubject.assertThat(pending1)
-      .hasSameEffectiveValueAs(pending2)
-      .isTrue()
+  fun testAsyncResultSubject_floatSuccessResult_withValidValue_hasFloatValueEqualTo3Point14() {
+    val floatResult: AsyncResult<Float> = AsyncResult.Success(3.14f)
+    AsyncResultSubject.assertThat(floatResult)
+      .isFloatSuccessThat()
+      .isEqualTo(3.14f)
+  }
+
+  @Test
+  fun testAsyncResultSubject_doubleSuccessResult_withValidValue_hasDoubleValueEqualTo2Point718() {
+    val doubleResult: AsyncResult<Double> = AsyncResult.Success(2.718)
+    AsyncResultSubject.assertThat(doubleResult)
+      .isDoubleSuccessThat()
+      .isEqualTo(2.718)
+  }
+
+  @Test
+  fun testAsyncResultSubject_comparableSuccessResult_withIntegerValue_hasValueGreaterThan0() {
+    val comparableResult: AsyncResult<Int> = AsyncResult.Success(42)
+    AsyncResultSubject.assertThat(comparableResult)
+      .isComparableSuccessThat<Int>()
+      .isGreaterThan(0)
+  }
+
+  @Test
+  fun testAsyncResultSubject_iterableSuccessResult_withListOfStrings_hasSize3() {
+    val iterableResult: AsyncResult<List<String>> = AsyncResult.Success(listOf("a", "b", "c"))
+    AsyncResultSubject.assertThat(iterableResult)
+      .isIterableSuccessThat<String>()
+      .hasSize(3)
+  }
+
+  @Test
+  fun testAsyncResultSubject_mapSuccessResult_withStringIntMap_hasEntryForKey() {
+    val mapResult: AsyncResult<Map<String, Int>> = AsyncResult.Success(mapOf("key" to 42))
+    AsyncResultSubject.assertThat(mapResult)
+      .asMapSuccessThat<String, Int>()
+      .containsEntry("key", 42)
+  }
+
+  @Test
+  fun testAsyncResultSubject_successResult_withWrongTypeExtraction_throwsExceptionWithCorrectType() {
+    val intResult: AsyncResult<Int> = AsyncResult.Success(42)
+    try {
+      AsyncResultSubject.assertThat(intResult).isStringSuccessThat()
+      throw AssertionError("Expected type mismatch exception")
+    } catch (e: AssertionError) {
+      assertThat(e as Throwable).hasMessageThat().contains("java.lang.Integer")
+    }
+  }
+
+  @Test
+  fun testAsyncResultSubject_iterableSuccessResult_withEmptyList_isEmpty() {
+    val emptyIterableResult: AsyncResult<List<String>> = AsyncResult.Success(emptyList())
+    AsyncResultSubject.assertThat(emptyIterableResult)
+      .isIterableSuccessThat<String>()
+      .isEmpty()
+  }
+
+  @Test
+  fun testAsyncResultSubject_mapSuccessResult_withEmptyMap_isEmpty() {
+    val emptyMapResult: AsyncResult<Map<String, Int>> = AsyncResult.Success(emptyMap())
+    AsyncResultSubject.assertThat(emptyMapResult)
+      .asMapSuccessThat<String, Int>()
+      .isEmpty()
+  }
+
+  @Test
+  fun testAsyncResultSubject_failureResult_withDifferentType_hasDifferentEffectiveValue() {
+    val failureResult1: AsyncResult<String> = AsyncResult.Failure(RuntimeException("Error"))
+    val failureResult2: AsyncResult<Int> = AsyncResult.Failure(RuntimeException("Error"))
+    AsyncResultSubject.assertThat(failureResult1)
+      .hasSameEffectiveValueAs(failureResult2)
+      .isFalse()
   }
 }
