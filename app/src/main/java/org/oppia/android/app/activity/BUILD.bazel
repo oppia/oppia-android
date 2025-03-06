@@ -95,8 +95,8 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "injectable_autolocalize_english_only_activity",
-    srcs = ["InjectableAutolocalizeEnglishOnlyActivity.kt"],
+    name = "injectable_autolocalized_english_only_activity",
+    srcs = ["InjectableAutolocalizedEnglishOnlyActivity.kt"],
     visibility = ["//app:app_visibility"],
     deps = [
         ":injectable_app_compat_activity",

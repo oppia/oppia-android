@@ -532,9 +532,8 @@ class TranslationController @Inject constructor(
       }
     }
   }
-  /**
-   * Returns a data provider for the display locale corresponding to the specified language.
-   */
+
+  /** Returns a data provider for the display locale corresponding to the specified language. */
   fun getLocaleFor(language: OppiaLanguage): DataProvider<OppiaLocale.DisplayLocale> {
     return localeController.retrieveAppStringDisplayLocale(language)
   }
