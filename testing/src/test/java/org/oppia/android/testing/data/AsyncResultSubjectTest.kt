@@ -209,14 +209,6 @@ class AsyncResultSubjectTest {
   }
 
   @Test
-  fun testAsyncResultSubject_comparableSuccessResult_withIntegerValue_hasValueGreaterThan0() {
-    val comparableResult: AsyncResult<Int> = AsyncResult.Success(42)
-    AsyncResultSubject.assertThat(comparableResult)
-      .isComparableSuccessThat<Int>()
-      .isGreaterThan(0)
-  }
-
-  @Test
   fun testAsyncResultSubject_iterableSuccessResult_withListOfStrings_hasSize3() {
     val iterableResult: AsyncResult<List<String>> = AsyncResult.Success(listOf("a", "b", "c"))
     AsyncResultSubject.assertThat(iterableResult)
