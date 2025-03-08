@@ -231,8 +231,6 @@ class StateFragmentTest {
   }
 
   // TODO(#388): Add more test-cases
-  //  1. Actually going through each of the exploration states with typing text/clicking the correct
-  //     answers for each of the interactions.
   //  2. Verifying the button visibility state based on whether text is missing, then
   //     present/missing for text input or numeric input.
   //  3. Testing providing the wrong answer and showing feedback and the same question again.
@@ -268,6 +266,119 @@ class StateFragmentTest {
 
       // Due to the exploration activity loading, the play button should no longer be visible.
       onView(withId(R.id.play_test_exploration_button)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  //1.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_navigateThroughAllStates_withCorrectAnswers_completesExploration() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // State 1: Continue Interaction
+      // Expected: "Test exploration with interactions" content and Continue button
+      verifyContentContains("Test exploration with interactions")
+      clickContinueInteractionButton()
+
+      // State 2: Fraction Input Interaction
+      // Correct Answer: "1/2"
+      verifyContentContains("What fraction represents half of something?")
+      typeFractionText("1/2")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 3: Multiple Choice Interaction
+      // Correct Answer: "Eagle" (position 2)
+      verifyContentContains("Which bird can sustain flight for long periods of time?")
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 4: Item Selection (Radio Buttons)
+      // Correct Answer: "Green" (position 0)
+      verifyContentContains("What color does the 'G' in 'RGB' correspond to?")
+      selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Yes!"))))
+      clickContinueNavigationButton()
+
+      // State 5: Item Selection (Checkboxes)
+      // Correct Answer: "Red", "Green", "Blue" (positions 0, 2, 3)
+      verifyContentContains("What are the primary colors of light?")
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 6: Numeric Input Interaction
+      // Correct Answer: "121"
+      verifyContentContains("What is 11 times 11?")
+      typeNumericInput("121")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 7: Ratio Input Interaction
+      // Correct Answer: "4:5"
+      verifyContentContains("The ratio of the two numbers is:")
+      typeRatioExpression("4:5")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 8: Text Input Interaction
+      // Correct Answer: "finnish"
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+      typeTextInput("finnish")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 9: Drag and Drop Sort Interaction (No Grouping)
+      // Correct Answer: Move first item (0.35) to fourth position
+      verifyContentContains("Sort the following in descending order.")
+      dragAndDropItem(fromPosition = 0, toPosition = 3)
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 10: Drag and Drop Sort Interaction (With Grouping)
+      // Correct Answer: Merge first two items and move second item to third position
+      verifyContentContains("putting equal items in the same position")
+      mergeDragAndDropItems(position = 1)
+      unlinkDragAndDropItems(position = 1)
+      mergeDragAndDropItems(position = 0)
+      dragAndDropItem(fromPosition = 1, toPosition = 2)
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(matches(withText(containsString("Correct!"))))
+      clickContinueNavigationButton()
+
+      // State 11: End of Exploration
+      // Expected: Return to Topic button
+      scrollToViewType(RETURN_TO_TOPIC_NAVIGATION_BUTTON)
+      onView(withId(R.id.return_to_topic_button)).check(
+        matches(withText(R.string.state_end_exploration_button))
+      )
+
+      clickReturnToTopicButton()
+
+      // Verify that the exploration is complete and the activity returns to the initial screen
+      onView(withId(R.id.play_test_exploration_button)).check(matches(isDisplayed()))
     }
   }
 
