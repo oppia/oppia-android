@@ -189,8 +189,6 @@ class Aapt2ClientTest {
     assertThat(resources[4]).contains("resource 0x7f070000 dimen/margin_small")
   }
 
-  // Badging Tests
-
   @Test
   fun testDumpBadging_nonExistentApk_failsWithError() {
     val aapt2Client = createAapt2Client()
