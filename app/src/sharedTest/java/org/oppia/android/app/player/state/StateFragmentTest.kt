@@ -269,7 +269,7 @@ class StateFragmentTest {
     }
   }
 
-  //1.
+  // 1.
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_navigateThroughAllStates_withCorrectAnswers_completesExploration() {
