@@ -426,6 +426,105 @@ class ApkAnalyzerClientTest {
     assertThat(dexReferences).isEmpty()
   }
 
+  @Test
+  fun testComputeDexReferencesList_apkWithOneSmallDexFile_returnsMapWithRefCount() {
+    val mockDexFile = generateMockDexFile(500)
+
+    val apkFile = createValidApkFile(
+      "small_dex.apk",
+      mapOf(
+        "classes.dex" to mockDexFile,
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
+      )
+    )
+
+    val apkAnalyzerClient = createApkAnalyzerClient()
+    val dexReferences = apkAnalyzerClient.computeDexReferencesList(apkFile.absolutePath)
+
+    assertThat(dexReferences).isNotEmpty()
+    assertThat(dexReferences).hasSize(1)
+    assertThat(dexReferences).containsKey("classes.dex")
+    // The exact count will depend on implementation, but we expect it to be a non-negative integer
+    assertThat(dexReferences["classes.dex"]).isAtLeast(0)
+  }
+
+  @Test
+  fun testComputeDexReferencesList_apkWithOneLargeDexFile_returnsMapWithRefCount() {
+    val mockDexFile = generateMockDexFile(10000)
+
+    val apkFile = createValidApkFile(
+      "large_dex.apk",
+      mapOf(
+        "classes.dex" to mockDexFile,
+        "resources.arsc" to ByteArray(500),
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
+      )
+    )
+
+    val apkAnalyzerClient = createApkAnalyzerClient()
+    val dexReferences = apkAnalyzerClient.computeDexReferencesList(apkFile.absolutePath)
+
+    assertThat(dexReferences).isNotEmpty()
+    assertThat(dexReferences).hasSize(1)
+    assertThat(dexReferences).containsKey("classes.dex")
+    // The exact count will depend on implementation, but we expect it to be a non-negative integer
+    assertThat(dexReferences["classes.dex"]).isAtLeast(0)
+  }
+
+  @Test
+  fun testComputeDexReferencesList_apkWithMultipleDexFiles_returnsMapWithRefCounts() {
+    val mockDexFile1 = generateMockDexFile(5000)
+    val mockDexFile2 = generateMockDexFile(4000)
+    val mockDexFile3 = generateMockDexFile(3000)
+
+    val apkFile = createValidApkFile(
+      "multi_dex.apk",
+      mapOf(
+        "classes.dex" to mockDexFile1,
+        "classes2.dex" to mockDexFile2,
+        "classes3.dex" to mockDexFile3,
+        "resources.arsc" to ByteArray(800),
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
+      )
+    )
+
+    val apkAnalyzerClient = createApkAnalyzerClient()
+    val dexReferences = apkAnalyzerClient.computeDexReferencesList(apkFile.absolutePath)
+
+    assertThat(dexReferences).isNotEmpty()
+    assertThat(dexReferences).hasSize(3)
+    assertThat(dexReferences).containsKey("classes.dex")
+    assertThat(dexReferences).containsKey("classes2.dex")
+    assertThat(dexReferences).containsKey("classes3.dex")
+    // The exact count will depend on implementation, but we expect it to be a non-negative integer
+    assertThat(dexReferences["classes.dex"]).isAtLeast(0)
+    assertThat(dexReferences["classes2.dex"]).isAtLeast(0)
+    assertThat(dexReferences["classes3.dex"]).isAtLeast(0)
+  }
+
+  /**
+   * Generates a simple mock DEX file with the basic header structure.
+   * It provides enough structure for the tests to work with
+   * the ZipEntry checks in [ApkAnalyzerClient.computeDexReferencesList].
+   */
+  private fun generateMockDexFile(size: Int): ByteArray {
+    // Create a byte array with the DEX file header and padding to reach desired size
+    val header = ByteArray(0x70)
+
+    // Set DEX magic "dex\n035\0"
+    val dexMagic = byteArrayOf(0x64, 0x65, 0x78, 0x0A, 0x30, 0x33, 0x35, 0x00)
+    System.arraycopy(dexMagic, 0, header, 0, dexMagic.size)
+
+    // Set endian tag (0x12345678 for little endian, which is standard for DEX)
+    header[0x28] = 0x78.toByte()
+    header[0x29] = 0x56.toByte()
+    header[0x2A] = 0x34.toByte()
+    header[0x2B] = 0x12.toByte()
+
+    val padding = ByteArray(size - header.size)
+    return header + padding
+  }
+
   private fun createApkAnalyzerClient(): ApkAnalyzerClient {
     return ApkAnalyzerClient(
       Aapt2Client(
