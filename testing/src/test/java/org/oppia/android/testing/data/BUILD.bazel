@@ -33,3 +33,20 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
+
+oppia_android_test(
+    name = "AsyncResultSubjectTest",
+    srcs = ["AsyncResultSubjectTest.kt"],
+    custom_package = "org.oppia.android.testing.data",
+    test_class = "org.oppia.android.testing.data.AsyncResultSubjectTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)

@@ -4011,10 +4011,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/data/AsyncResultSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/environment/TestEnvironmentConfig.kt"
   test_file_not_required: true
 }
