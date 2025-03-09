@@ -26,6 +26,7 @@ import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -111,6 +112,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
+private const val HAS_PREVIOUS_RESPONSES_EXPANDED_KEY = "hasPreviousResponsesExpanded"
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
@@ -1547,5 +1549,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
         UserAnswer.TextualAnswerCase.TEXTUALANSWER_NOT_SET, null -> false
       }
     }
+  }
+
+  /** Saves the expanded state to a protobuf message. */
+  fun saveState(): StatePlayerRecyclerViewAssemblerState {
+    return StatePlayerRecyclerViewAssemblerState.newBuilder()
+      .setHasPreviousResponsesExpanded(hasPreviousResponsesExpanded)
+      .build()
+  }
+
+  /** Restores the expanded state from a protobuf message. */
+  fun restoreState(state: StatePlayerRecyclerViewAssemblerState) {
+    hasPreviousResponsesExpanded = state.hasPreviousResponsesExpanded
   }
 }
