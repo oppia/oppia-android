@@ -25,6 +25,7 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.State
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserAnswer
 import org.oppia.android.app.model.UserAnswerState
@@ -616,5 +617,15 @@ class StateFragmentPresenter @Inject constructor(
       SurveyQuestionName.MARKET_FIT,
       SurveyQuestionName.NPS
     )
+  }
+
+  /** Saves the assembler's state to a protobuf message. */
+  fun saveAssemblerState(): StatePlayerRecyclerViewAssemblerState {
+    return recyclerViewAssembler.saveState()
+  }
+
+  /** Restores the assembler's state from a protobuf message. */
+  fun restoreAssemblerState(state: StatePlayerRecyclerViewAssemblerState) {
+    recyclerViewAssembler.restoreState(state)
   }
 }
