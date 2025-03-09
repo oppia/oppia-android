@@ -22,6 +22,7 @@ import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
@@ -231,10 +232,6 @@ class StateFragmentTest {
   }
 
   // TODO(#388): Add more test-cases
-  //  2. Verifying the button visibility state based on whether text is missing, then
-  //     present/missing for text input or numeric input.
-  //  3. Testing providing the wrong answer and showing feedback and the same question again.
-  //  8. Testing providing the wrong answer and showing hints.
   //  9. Testing all possible invalid/error input cases for each interaction.
   //  10. Testing interactions with custom Oppia tags (including images) render correctly (when
   //      manually inspected) and are correctly functional.
@@ -379,6 +376,229 @@ class StateFragmentTest {
 
       // Verify that the exploration is complete and the activity returns to the initial screen
       onView(withId(R.id.play_test_exploration_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_textInputInteraction_submitButtonVisibility_basedOnTextPresence() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Navigate to State 8: Text Input Interaction
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+      // Now at State 8: Text Input Interaction
+
+      // Step 1: Verify initial state (text missing) - Submit button should be disabled
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        replaceText(""),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+
+      // Step 2: Enter text (text present) - Submit button should be enabled
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        replaceText("finnish"),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+
+      // Step 3: Clear text (text missing again) - Submit button should be disabled
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_interaction_view)).perform(
+        replaceText(""),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_numericInputInteraction_submitButtonVisibility_basedOnTextPresence() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Navigate to State 6: Numeric Input Interaction
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      // Now at State 6: Numeric Input Interaction
+
+      // Step 1: Verify initial state (text missing) - Submit button should be disabled
+      scrollToViewType(NUMERIC_INPUT_INTERACTION)
+      onView(withId(R.id.numeric_input_interaction_view)).perform(
+        replaceText(""),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+
+      // Step 2: Enter numeric text (text present) - Submit button should be enabled
+      scrollToViewType(NUMERIC_INPUT_INTERACTION)
+      onView(withId(R.id.numeric_input_interaction_view)).perform(
+        replaceText("121"),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+
+      // Step 3: Clear text (text missing again) - Submit button should be disabled
+      scrollToViewType(NUMERIC_INPUT_INTERACTION)
+      onView(withId(R.id.numeric_input_interaction_view)).perform(
+        replaceText(""),
+        closeSoftKeyboard()
+      )
+      testCoroutineDispatchers.runCurrent()
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  // 3.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_textInputInteraction_submitWrongAnswer_showsFeedbackAndSameQuestion() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      // Navigate to State 8: Text Input Interaction
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+
+      // Verify initial state: Text input question is displayed
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Step 1: Submit a wrong answer ("spanish" instead of "finnish")
+      typeTextInput("spanish")
+      clickSubmitAnswerButton()
+
+      // Step 2: Verify feedback indicates the answer is incorrect
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(withText(containsString("No, that's not correct")))
+      )
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(withContentDescription("Incorrect submitted answer: spanish"))
+      )
+
+      // Step 3: Verify the same question is presented again
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_interaction_view)).check(matches(isDisplayed()))
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(matches(isEnabled()))
+
+      // Step 4: Submit the correct answer to ensure progression is possible
+      typeTextInput("finnish")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(withText(containsString("Correct!")))
+      )
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  // 8.
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_textInputInteraction_submitWrongAnswerTwice_showsHints() {
+    // Set up the test environment with language switching disabled
+    setUpTestWithLanguageSwitchingFeatureOff()
+
+    // Launch the exploration with no partial progress saving
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      // Start playing the exploration
+      startPlayingExploration()
+
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+      playThroughPrototypeState7()
+
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      onView(withId(R.id.text_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Step 1: Submit a wrong answer ("spanish" instead of "finnish")
+      typeTextInput("spanish")
+      clickSubmitAnswerButton()
+
+      // Verify feedback indicates the answer is incorrect
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(withText(containsString("No, that's not correct")))
+      )
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(
+        matches(withContentDescription("Incorrect submitted answer: spanish"))
+      )
+
+      // Verify hints are not yet visible after the first wrong answer
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(
+        matches(withEffectiveVisibility(GONE))
+      )
+
+      // Step 2: Submit the same wrong answer again
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      typeTextInput("spanish")
+      clickSubmitAnswerButton()
+
+      // Verify feedback still indicates the answer is incorrect
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(withText(containsString("No, that's not correct")))
+      )
+
+      // Verify hints are now visible after the second wrong answer
+      onView(withId(R.id.hints_and_solution_fragment_container)).check(
+        matches(withEffectiveVisibility(VISIBLE))
+      )
+
+      // Submit the correct answer to ensure progression is possible
+      scrollToViewType(TEXT_INPUT_INTERACTION)
+      typeTextInput("finnish")
+      clickSubmitAnswerButton()
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view)).check(
+        matches(withText(containsString("Correct!")))
+      )
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
     }
   }
 
