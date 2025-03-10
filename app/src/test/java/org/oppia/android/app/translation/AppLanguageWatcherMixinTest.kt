@@ -172,6 +172,17 @@ class AppLanguageWatcherMixinTest {
   }
 
   @Test
+  fun testMixin_initialized_useAppLanguage_noCurrentProfile_usesSystemLanguage() {
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(ActivityLanguageSource.USE_APP_LANGUAGE)
+      testCoroutineDispatchers.runCurrent()
+
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+    }
+  }
+
+  @Test
   fun testMixin_initialized_withAppLanguageChange_newLanguage_updatesLocale() {
     profileTestHelper.initializeProfiles()
     runAlongsideTestActivity { mixin ->
