@@ -928,3 +928,9 @@ message ProfileChooserFragmentArguments {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
 }
+
+// The bundle of properties that are saved upon configuration changes for the StatePlayerRecyclerViewAssembler.
+message StatePlayerRecyclerViewAssemblerState {
+  // Indicates whether the previous responses header is expanded.
+  bool has_previous_responses_expanded = 1;
+}
