@@ -114,6 +114,19 @@ import javax.inject.Singleton
   regionIetfTag = "US"
 )
 class AppLanguageWatcherMixinTest {
+  // TODO(#1720): Add a test to verify that the mixin does nothing when a language change occurs
+  //  without initialization. This is hard to test today because there are two mixins active
+  //  (TestActivity's & this class's) that share singleton Locale & test recreator state. Ideally,
+  //  the latter would become per-activity but this is challenging in the current configuration
+  //  since every test would need to be updated to support swapping activity-level modules. Hilt
+  //  should make this much easier by introducing compile-time generated entry points.
+  // TODO(#1720): Similar to the above, also add a test to verify that multiple language changes
+  //  does not result in multiple recreations for the same activity. It currently will in the test
+  //  since two mixins are active, but that won't happen in reality.
+  // TODO(#1720): Similar to the above, also add 2 tests to verify that mixin initialization in
+  //  cases when the locale isn't initialized (such as process death) prints an error & default
+  //  initializes the locale handler.
+
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var context: Context
