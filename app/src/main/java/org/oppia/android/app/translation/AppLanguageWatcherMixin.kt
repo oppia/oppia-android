@@ -11,6 +11,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.app.model.ActivityLanguageSource
 
 /**
  * Activity mixin for automatically monitoring & recreating the activity whenever the current app
@@ -40,7 +41,7 @@ class AppLanguageWatcherMixin @Inject constructor(
    *
    * @param shouldOnlyUseSystemLanguage whether only the system language should be used
    */
-  fun initialize(languageSource: LanguageSource) {
+  fun initialize(languageSource: ActivityLanguageSource) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -70,15 +71,16 @@ class AppLanguageWatcherMixin @Inject constructor(
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
     val activityLanguageLocaleDataProvider = when (languageSource) {
-      LanguageSource.SYSTEM_LANGUAGE -> translationController.getSystemLanguageLocale()
-      LanguageSource.APP_LANGUAGE -> {
+      ActivityLanguageSource.USE_SYSTEM_LANGUAGE -> translationController.getSystemLanguageLocale()
+      ActivityLanguageSource.USE_APP_LANGUAGE -> {
         if (currentUserProfileId != null) {
           translationController.getAppLanguageLocale(currentUserProfileId)
         } else {
           translationController.getSystemLanguageLocale()
         }
       }
-      LanguageSource.ENGLISH -> translationController.getLocaleFor(OppiaLanguage.ENGLISH)
+      ActivityLanguageSource.USE_ENGLISH -> translationController.getLocaleFor(OppiaLanguage.ENGLISH)
+      else -> translationController.getSystemLanguageLocale()
     }
 
     val liveData = activityLanguageLocaleDataProvider.toLiveData()

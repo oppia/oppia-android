@@ -1,13 +1,13 @@
 package org.oppia.android.app.activity
 
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
-import org.oppia.android.app.translation.LanguageSource
+import org.oppia.android.app.model.ActivityLanguageSource
 
 /**
  * An [AppCompatActivity] that always uses English as its locale, ensuring left-to-right alignment.
  */
 abstract class InjectableAutolocalizedEnglishOnlyActivity : InjectableAppCompatActivity() {
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
-    appLanguageWatcherMixin.initialize(LanguageSource.ENGLISH)
+    appLanguageWatcherMixin.initialize(ActivityLanguageSource.USE_ENGLISH)
   }
 }

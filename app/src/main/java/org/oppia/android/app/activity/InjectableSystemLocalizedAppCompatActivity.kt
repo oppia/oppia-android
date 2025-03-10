@@ -1,8 +1,8 @@
 package org.oppia.android.app.activity
 
 import androidx.appcompat.app.AppCompatActivity
+import org.oppia.android.app.model.ActivityLanguageSource
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
-import org.oppia.android.app.translation.LanguageSource
 
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
@@ -14,6 +14,6 @@ import org.oppia.android.app.translation.LanguageSource
 abstract class InjectableSystemLocalizedAppCompatActivity : InjectableAppCompatActivity() {
 
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
-    appLanguageWatcherMixin.initialize(LanguageSource.SYSTEM_LANGUAGE)
+    appLanguageWatcherMixin.initialize(ActivityLanguageSource.USE_SYSTEM_LANGUAGE)
   }
 }
