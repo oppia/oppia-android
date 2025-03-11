@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAutolocalizedEnglishOnlyActivity
+import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.POLICIES_ACTIVITY
@@ -12,10 +12,12 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.model.ActivityLanguageSource
+import org.oppia.android.app.translation.AppLanguageWatcherMixin
 
 /** Activity for displaying the app policies in English with left-aligned content. */
 class PoliciesActivity :
-  InjectableAutolocalizedEnglishOnlyActivity(),
+  InjectableAutoLocalizedAppCompatActivity(),
   RouteToPoliciesListener {
 
   @Inject
@@ -31,6 +33,10 @@ class PoliciesActivity :
         PoliciesActivityParams.getDefaultInstance()
       )
     )
+  }
+
+  override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
+    appLanguageWatcherMixin.initialize(ActivityLanguageSource.USE_ENGLISH)
   }
 
   companion object {

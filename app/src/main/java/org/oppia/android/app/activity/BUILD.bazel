@@ -93,14 +93,3 @@ kt_android_library(
         "//model/src/main/proto:profile_java_proto_lite",
     ],
 )
-
-kt_android_library(
-    name = "injectable_autolocalized_english_only_activity",
-    srcs = ["InjectableAutolocalizedEnglishOnlyActivity.kt"],
-    visibility = ["//app:app_visibility"],
-    deps = [
-        ":injectable_app_compat_activity",
-        "//app/src/main/java/org/oppia/android/app/translation:app_language_watcher_mixin",
-        "//third_party:androidx_appcompat_appcompat",
-    ],
-)
