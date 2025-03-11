@@ -60,6 +60,9 @@ class UrlImageParserTest {
     )
   }
 
+  // TODO(#277): Add more test cases for loading images. The below doesn't include layout or
+  //  sizing/positioning.
+
   @Test
   fun testGetDrawable_bitmap_loadsBitmapImage() {
     urlImageParser.getDrawable("test_image.png")
