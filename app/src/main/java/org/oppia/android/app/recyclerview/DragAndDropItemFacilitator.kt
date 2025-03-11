@@ -30,7 +30,7 @@ class DragAndDropItemFacilitator(
   }
 
   override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
-  override fun isLongPressDragEnabled(): Boolean = false
+  override fun isLongPressDragEnabled(): Boolean = true
 
   override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
     super.onSelectedChanged(viewHolder, actionState)
