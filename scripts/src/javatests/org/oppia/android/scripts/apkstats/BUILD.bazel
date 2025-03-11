@@ -11,7 +11,6 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/apkstats:aapt2_client",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
-        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],
@@ -23,7 +22,6 @@ kt_jvm_test(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/apkstats:apk_analyzer_client",
         "//scripts/src/java/org/oppia/android/scripts/common:android_build_sdk_properties",
-        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],
@@ -34,7 +32,6 @@ kt_jvm_test(
     srcs = ["BundleToolClientTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/apkstats:bundle_tool_client",
-        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//testing:assertion_helpers",
         "//third_party:com_google_truth_truth",
     ],
