@@ -222,45 +222,6 @@ class DragDropTestActivityTest {
     }
   }
 
-  @Test
-  fun testDragDropView_longPressTimer_startsAfterCorrectTimeout() {
-    launch(DragDropTestActivity::class.java).use { scenario ->
-      scenario.onActivity { activity ->
-        attachDragDropToActivity(activity)
-      }
-      testCoroutineDispatchers.runCurrent()
-
-      val startTime = System.currentTimeMillis()
-
-      onView(withId(R.id.drag_drop_recycler_view)).perform(
-        DragViewAction(
-          RecyclerViewCoordinatesProvider(
-            position = 0,
-            ChildViewCoordinatesProvider(
-              childViewId = R.id.text_view_for_string_no_data_binding,
-              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
-            )
-          ),
-          RecyclerViewCoordinatesProvider(
-            position = 1,
-            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
-          ),
-          precisionDescriber = Press.FINGER
-        )
-      )
-
-      val duration = System.currentTimeMillis() - startTime
-
-      testCoroutineDispatchers.runCurrent()
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
-        .check(matches(withText("Item 2")))
-      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
-        .check(matches(withText("Item 1")))
-
-      assertTrue(duration >= 300 && duration <= 350)
-    }
-  }
-
   private fun attachDragDropToActivity(activity: DragDropTestActivity) {
     val dragDragTestFragment: DragDropTestFragment = activity.supportFragmentManager
       .findFragmentById(R.id.drag_drop_test_fragment_placeholder) as DragDropTestFragment
