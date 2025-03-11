@@ -98,6 +98,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import java.lang.System
+import org.junit.Assert.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -217,6 +219,45 @@ class DragDropTestActivityTest {
         .check(matches(withText("Item 4")))
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3))
         .check(matches(withText("Item 3")))
+    }
+  }
+
+  @Test
+  fun testDragDropView_longPressTimer_startsAfterCorrectTimeout() {
+    launch(DragDropTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        attachDragDropToActivity(activity)
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      val startTime = System.currentTimeMillis()
+
+      onView(withId(R.id.drag_drop_recycler_view)).perform(
+        DragViewAction(
+          RecyclerViewCoordinatesProvider(
+            position = 0,
+            ChildViewCoordinatesProvider(
+              childViewId = R.id.text_view_for_string_no_data_binding,
+              insideChildViewCoordinatesProvider = GeneralLocation.CENTER
+            )
+          ),
+          RecyclerViewCoordinatesProvider(
+            position = 1,
+            childItemCoordinatesProvider = CustomGeneralLocation.UNDER_RIGHT
+          ),
+          precisionDescriber = Press.FINGER
+        )
+      )
+
+      val duration = System.currentTimeMillis() - startTime
+
+      testCoroutineDispatchers.runCurrent()
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
+        .check(matches(withText("Item 2")))
+      onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
+        .check(matches(withText("Item 1")))
+
+      assertTrue(duration >= 300 && duration <= 350)
     }
   }
 
