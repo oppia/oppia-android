@@ -57,7 +57,7 @@ class Aapt2ClientTest {
       aapt2Client.dumpPermissions(invalidApkFile.absolutePath)
     }
 
-    assertThat(exception).hasMessageThat().contains("Expected zero exit code")
+    assertThat(exception).hasMessageThat().contains("failed opening zip: Invalid file.")
   }
 
   @Test
@@ -110,7 +110,7 @@ class Aapt2ClientTest {
       aapt2Client.dumpResources(invalidApkFile.absolutePath)
     }
 
-    assertThat(exception).hasMessageThat().contains("Expected zero exit code")
+    assertThat(exception).hasMessageThat().contains("failed opening zip: Invalid file.")
   }
 
   @Test
@@ -211,7 +211,7 @@ class Aapt2ClientTest {
       aapt2Client.dumpBadging(invalidApkFile.absolutePath)
     }
 
-    assertThat(exception).hasMessageThat().contains("Expected zero exit code")
+    assertThat(exception).hasMessageThat().contains("failed opening zip: Invalid file.")
   }
 
   @Test

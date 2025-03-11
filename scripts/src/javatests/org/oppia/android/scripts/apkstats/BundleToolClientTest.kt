@@ -86,7 +86,8 @@ class BundleToolClientTest {
       )
     }
 
-    assertThat(exception).hasMessageThat().contains("Expected zero exit code")
+    assertThat(exception).hasMessageThat()
+      .contains("The file does not seem to be a valid zip file.")
   }
 
   @Test
@@ -206,7 +207,8 @@ class BundleToolClientTest {
       bundleToolClient.buildUniversalApk(invalidAabFile.absolutePath, outputApkPath)
     }
 
-    assertThat(exception).hasMessageThat().contains("Expected zero exit code")
+    assertThat(exception).hasMessageThat()
+      .contains("The file does not seem to be a valid zip file.")
   }
 
   @Test
