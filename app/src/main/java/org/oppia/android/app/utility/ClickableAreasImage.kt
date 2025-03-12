@@ -8,12 +8,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.forEachIndexed
 import androidx.core.view.isVisible
-import org.oppia.android.R
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.UserAnswerState
 import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.views.R
 import kotlin.math.roundToInt
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */

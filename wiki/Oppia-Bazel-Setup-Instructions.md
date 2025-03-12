@@ -96,13 +96,40 @@ With the example from our codebase, target `app` whose visibility is public. <br
  - `"//visibility:private"` - Only targets in this package can use this target.
 
 **[Testing](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L719)**<br>
-when we want to run test cases on Bazel build environment, we usually pass arguments related to test which `app_test.bazl` required to run our test.
-```
-app_test(
-    name = "HomeActivityLocalTest",
-    srcs = ["src/test/java/org/oppia/android/app/home/HomeActivityLocalTest.kt"],
-    test_class = "org.oppia.android.app.home.HomeActivityLocalTest",
-    deps = TEST_DEPS,
+when we want to run test cases on Bazel build environment, a test target needs to be set up correctly:
+
+```bazel
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "MathExpressionInteractionsViewTest",
+    srcs = [
+        "MathExpressionInteractionsViewTest.kt",
+        "//app:data_binder_mapper_impl"
+    ],
+    custom_package = "org.oppia.android.app.test",
+    test_manifest = "//app:test_manifest",
+    enable_data_binding = True,
+    test_class = "org.oppia.android.app.customview.interaction.MathExpressionInteractionsViewTest",
+    deps = [
+      ...
+    ],
 )
 ```
 
+The above assumes that the corresponding test requires resources. If it doesn't, the definition can be a bit simpler:
+
+```bazel
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "MathExpressionAccessibilityUtilTest",
+    srcs = ["MathExpressionAccessibilityUtilTest.kt"],
+    custom_package = "org.oppia.android.app.utility.math",
+    test_class = "org.oppia.android.app.utility.math.MathExpressionAccessibilityUtilTest",
+    test_manifest = "//app:test_manifest",
+    deps = [
+      ...
+    ],
+)
+```

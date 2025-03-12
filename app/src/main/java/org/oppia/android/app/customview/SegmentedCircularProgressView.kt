@@ -11,10 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import org.oppia.android.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.ViewComponentFactory
 import org.oppia.android.app.view.ViewComponentImpl
+import org.oppia.android.app.views.R
 import javax.inject.Inject
 
 private const val STROKE_DASH_GAP_IN_DEGREE = 12

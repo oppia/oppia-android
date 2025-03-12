@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.RecentlyPlayedFragmentBinding
+import org.oppia.android.app.databinding.databinding.RecentlyPlayedStoryCardBinding
+import org.oppia.android.app.databinding.databinding.SectionTitleBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
@@ -18,9 +20,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
-import org.oppia.android.databinding.RecentlyPlayedFragmentBinding
-import org.oppia.android.databinding.RecentlyPlayedStoryCardBinding
-import org.oppia.android.databinding.SectionTitleBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger

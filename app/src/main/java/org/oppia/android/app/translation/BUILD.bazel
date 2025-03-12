@@ -4,17 +4,6 @@ UI utilities for for managing languages & locales.
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
-# Resource shim needed so that AppLanguageResourceHandler can build in both Gradle & Bazel.
-genrule(
-    name = "update_AppLanguageResourceHandler",
-    srcs = ["AppLanguageResourceHandler.kt"],
-    outs = ["AppLanguageResourceHandler_updated.kt"],
-    cmd = """
-    cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' > $(OUTS)
-    """,
-)
-
 kt_android_library(
     name = "app_language_locale_handler",
     srcs = [
@@ -49,7 +38,7 @@ kt_android_library(
 kt_android_library(
     name = "app_language_resource_handler",
     srcs = [
-        "AppLanguageResourceHandler_updated.kt",
+        "AppLanguageResourceHandler.kt",
     ],
     visibility = ["//app:app_visibility"],
     deps = [

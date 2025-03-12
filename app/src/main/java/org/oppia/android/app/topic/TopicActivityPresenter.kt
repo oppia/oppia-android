@@ -2,12 +2,12 @@ package org.oppia.android.app.topic
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.TopicFragmentArguments
 import org.oppia.android.app.spotlight.SpotlightFragment
 import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
