@@ -146,7 +146,6 @@ private const val LESSON_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 0
 private const val PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 1
 private const val REVISION_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 2
 
-
 /** Tests for [TopicFragment]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
