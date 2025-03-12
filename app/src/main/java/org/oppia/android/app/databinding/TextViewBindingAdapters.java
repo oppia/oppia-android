@@ -45,7 +45,7 @@ public final class TextViewBindingAdapters {
   }
 
   // TODO(#4345): Add test for this method.
-  /** Binds an AndroidX KitKat-compatible drawable top to the specified text view. */
+  /** Binds an AndroidX drawable top to the specified text view. */
   @BindingAdapter("drawableTopCompat")
   public static void setDrawableTopCompat(
       @NonNull TextView imageView,
@@ -56,7 +56,7 @@ public final class TextViewBindingAdapters {
     );
   }
 
-  /** Binds an AndroidX KitKat-compatible drawable end to the specified text view. */
+  /** Binds an AndroidX drawable end to the specified text view. */
   @BindingAdapter("drawableEndCompat")
   public static void setDrawableEndCompat(
       @NonNull TextView imageView,

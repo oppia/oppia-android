@@ -43,6 +43,7 @@
       android:layout_toEndOf="@+id/multiple_choice_radio_button"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
+      android:contentDescription="@{viewModel.getContentDescription()}"
       android:textColor="@{viewModel.isAnswerSelected() ? @color/component_color_shared_selection_interaction_selected_text_color : @color/component_color_shared_selection_interaction_unselected_text_color}"
       android:textSize="16sp" />
   </RelativeLayout>

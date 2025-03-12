@@ -31,13 +31,13 @@ After the installation completes you can build the app using Bazel.
 **Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
 ```
-bazel build //:oppia
+bazel build //:oppia_dev
 ```
 
 #### Building + installing the app
 
 ```
-bazel build //:oppia && adb install -r bazel-bin/oppia.apk
+bazel run //:install_oppia_dev
 ```
 
 #### Running specific module (app) Robolectric tests

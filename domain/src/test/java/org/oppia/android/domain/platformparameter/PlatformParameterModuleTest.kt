@@ -261,7 +261,7 @@ class PlatformParameterModuleTest {
   private companion object {
     private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
     private const val TEST_APP_VERSION_CODE = 125L
-    private const val TEST_LOWEST_SUPPORTED_API_LEVEL = 19
+    private const val TEST_LOWEST_SUPPORTED_API_LEVEL = 21
     private const val TEST_ENABLE_APP_AND_OS_DEPRECATION_DEFAULT_VALUE = false
   }
 }

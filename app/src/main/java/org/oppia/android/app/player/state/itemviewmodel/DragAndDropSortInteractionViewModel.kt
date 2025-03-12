@@ -32,6 +32,7 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import java.util.Collections
 import javax.inject.Inject
 
 /** Represents the type of errors that can be thrown by drag and drop sort interaction. */
@@ -149,13 +150,13 @@ class DragAndDropSortInteractionViewModel private constructor(
     indexTo: Int,
     adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>
   ) {
-    val item = _choiceItems[indexFrom]
-    _choiceItems.removeAt(indexFrom)
-    _choiceItems.add(indexTo, item)
+    if (indexFrom == indexTo) return
+    Collections.swap(_choiceItems, indexFrom, indexTo)
 
     _choiceItems[indexFrom].itemIndex = indexFrom
     _choiceItems[indexTo].itemIndex = indexTo
 
+    adapter.notifyItemMoved(indexFrom, indexTo)
     (adapter as BindableAdapter<*>).setDataUnchecked(_choiceItems)
   }
 
