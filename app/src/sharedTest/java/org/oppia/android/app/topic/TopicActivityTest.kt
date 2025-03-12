@@ -186,6 +186,7 @@ class TopicActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
+    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
     TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       // Open the practice tab and select a skill.

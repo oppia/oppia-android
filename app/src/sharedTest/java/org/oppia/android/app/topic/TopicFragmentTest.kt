@@ -127,12 +127,25 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// When both extra tabs (info and practice) are enabled
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
 private const val PRACTICE_TAB_POSITION = 2
 private const val REVISION_TAB_POSITION = 3
+
+// When both extra tabs (info and practice) are disabled
 private const val LESSON_TAB_POSITION_EXTRA_TABS_DISABLED = 0
 private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
+
+// When only the info tab is enabled
+private const val LESSON_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED = 1
+private const val REVISION_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED = 2
+
+// When only the practice tab is enabled
+private const val LESSON_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 0
+private const val PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 1
+private const val REVISION_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 2
+
 
 /** Tests for [TopicFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -552,7 +565,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = LESSON_TAB_POSITION)
+      clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
         recyclerView = R.id.story_summary_recycler_view,
@@ -569,7 +582,7 @@ class TopicFragmentTest {
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       val practiceTab =
         TopicTab.getTabForPosition(
-          position = PRACTICE_TAB_POSITION,
+          position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED,
           enableTopicInfoTab.value,
           enableTopicPracticeTab.value
         )
@@ -595,7 +608,7 @@ class TopicFragmentTest {
         TopicTab.getTabForPosition(
           position = PRACTICE_TAB_POSITION,
           enableTopicInfoTab = false,
-          enableTopicPracticeTab = true
+          enableTopicPracticeTab = false
         )
       onView(withText(practiceTab.name)).check(doesNotExist())
     }
@@ -614,7 +627,7 @@ class TopicFragmentTest {
         TopicTab.getTabForPosition(
           position = PRACTICE_TAB_POSITION,
           enableTopicInfoTab = false,
-          enableTopicPracticeTab = true
+          enableTopicPracticeTab = false
         )
       // The tab should still not be visible even after a configuration change.
       onView(withText(practiceTab.name)).check(doesNotExist())
@@ -625,8 +638,8 @@ class TopicFragmentTest {
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabSelected() {
     initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = true)
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
-      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
     }
   }
 
@@ -636,7 +649,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
@@ -677,7 +690,7 @@ class TopicFragmentTest {
   fun testTopicFragment_enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTab() {
     initializeApplicationComponent(enableTopicInfoTab = true, enableTopicPracticeTab = false)
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
-      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = REVISION_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED)
       clickTabAtPosition(position = INFO_TAB_POSITION)
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
@@ -688,7 +701,7 @@ class TopicFragmentTest {
     initializeApplicationComponent(enableTopicInfoTab = true, enableTopicPracticeTab = false)
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = REVISION_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED)
       testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = INFO_TAB_POSITION)
       testCoroutineDispatchers.runCurrent()
@@ -724,7 +737,7 @@ class TopicFragmentTest {
     markAllSpotlightsSeen()
     launchTopicActivityIntent(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
@@ -734,7 +747,7 @@ class TopicFragmentTest {
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
@@ -815,7 +828,7 @@ class TopicFragmentTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
@@ -825,7 +838,7 @@ class TopicFragmentTest {
       )
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
-      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
         itemPosition = 0,
@@ -924,7 +937,7 @@ class TopicFragmentTest {
       FRACTIONS_TOPIC_ID,
       FRACTIONS_STORY_ID_0
     ).use {
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       testCoroutineDispatchers.runCurrent()
 
       assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
