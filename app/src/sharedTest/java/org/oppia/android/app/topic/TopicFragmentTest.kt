@@ -606,8 +606,8 @@ class TopicFragmentTest {
       val practiceTab =
         TopicTab.getTabForPosition(
           position = PRACTICE_TAB_POSITION,
-          enableTopicInfoTab = false,
-          enableTopicPracticeTab = false
+          enableTopicInfoTab = true,
+          enableTopicPracticeTab = true
         )
       onView(withText(practiceTab.name)).check(doesNotExist())
     }
@@ -625,8 +625,8 @@ class TopicFragmentTest {
       val practiceTab =
         TopicTab.getTabForPosition(
           position = PRACTICE_TAB_POSITION,
-          enableTopicInfoTab = false,
-          enableTopicPracticeTab = false
+          enableTopicInfoTab = true,
+          enableTopicPracticeTab = true
         )
       // The tab should still not be visible even after a configuration change.
       onView(withText(practiceTab.name)).check(doesNotExist())
