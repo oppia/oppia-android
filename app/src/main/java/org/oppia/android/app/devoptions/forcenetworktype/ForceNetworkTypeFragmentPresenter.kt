@@ -7,10 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.common.base.Optional
+import org.oppia.android.app.databinding.databinding.ForceNetworkTypeFragmentBinding
+import org.oppia.android.app.databinding.databinding.ForceNetworkTypeNetworkItemViewBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.ForceNetworkTypeFragmentBinding
-import org.oppia.android.databinding.ForceNetworkTypeNetworkItemViewBinding
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import javax.inject.Inject
 

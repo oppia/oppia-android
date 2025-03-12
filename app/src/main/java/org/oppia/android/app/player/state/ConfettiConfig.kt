@@ -3,7 +3,7 @@ package org.oppia.android.app.player.state
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 
 /**
  * Configuration for the confetti animations used in the state player. See enum types for available

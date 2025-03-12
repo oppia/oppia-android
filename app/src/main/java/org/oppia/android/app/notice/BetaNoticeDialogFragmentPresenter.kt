@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** Presenter for the dialog that shows when the beta version app is being used. */

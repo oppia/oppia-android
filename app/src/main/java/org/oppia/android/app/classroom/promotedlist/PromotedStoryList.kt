@@ -31,10 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.oppia.android.R
 import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.promotedlist.PromotedStoryListViewModel
 import org.oppia.android.app.home.promotedlist.PromotedStoryViewModel
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.locale.OppiaLocale
 
 /** Test tag for the header of the promoted story list. */
