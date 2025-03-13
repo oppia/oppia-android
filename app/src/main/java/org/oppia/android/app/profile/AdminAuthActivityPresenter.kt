@@ -5,15 +5,15 @@ import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
+import org.oppia.android.app.databinding.databinding.AdminAuthActivityBinding
 import org.oppia.android.app.model.AdminAuthActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.databinding.AdminAuthActivityBinding
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 

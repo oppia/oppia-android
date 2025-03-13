@@ -1,10 +1,10 @@
 package org.oppia.android.app.devoptions.forcenetworktype.testing
 
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
+import org.oppia.android.app.ui.R
 
 /** Activity for testing [ForceNetworkTypeFragment]. */
 class ForceNetworkTypeTestActivity : InjectableAutoLocalizedAppCompatActivity() {

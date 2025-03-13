@@ -5,32 +5,6 @@ parts of the app layer.
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
-IMPL_FILES = [
-    "IntentFactoryShimImpl.kt",
-    "ViewBindingShimImpl.kt",
-]
-
-# TODO(#1617): Remove genrules post-gradle
-[
-    genrule(
-        name = "update_" + file[0:-3],
-        srcs = [file],
-        outs = [file[0:-3] + "_updated.kt"],
-        cmd = """
-     cat $(SRCS) |
-     sed 's/import org.oppia.android.R/import org.oppia.android.app.databinding.R/g' |
-     sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
-     """,
-    )
-    for file in IMPL_FILES
-]
-
-# Files to be built by the app library.
-UPDATED_IMPL_FILES = [
-    "update_" + file_with_resource_imports[0:-3]
-    for file_with_resource_imports in IMPL_FILES
-]
-
 kt_android_library(
     name = "intent_factory_shim",
     srcs = [
@@ -57,7 +31,10 @@ kt_android_library(
 
 kt_android_library(
     name = "impl",
-    srcs = UPDATED_IMPL_FILES,
+    srcs = [
+        "IntentFactoryShimImpl.kt",
+        "ViewBindingShimImpl.kt",
+    ],
     deps = [
         ":intent_factory_shim",
         ":view_binding_shim",

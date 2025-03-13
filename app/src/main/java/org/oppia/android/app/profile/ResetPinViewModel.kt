@@ -1,9 +1,9 @@
 package org.oppia.android.app.profile
 
 import androidx.databinding.ObservableField
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import javax.inject.Inject
 
