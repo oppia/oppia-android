@@ -136,10 +136,10 @@ import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as
 // TODO: hook up to language configs for prod/dev language restrictions.
 // TODO: Consider using better argument parser so that dev env vals can be defaulted.
 fun main(vararg args: String) {
-  check(args.size == 8) {
+  check(args.size in 8..9) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
       " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force>" +
-      " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]>"
+      " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]> [-Werror]"
   }
 
   val baseUrl = args[0]
@@ -156,6 +156,10 @@ fun main(vararg args: String) {
   }
   val cacheDirPath = args[6]
   val downloadListVersionsPath = args[7]
+  val failOnError = args.getOrNull(8) == "-Werror"
+  if (failOnError) {
+    println("FAILING IF ANY ERRORS OCCUR.")
+  }
   val cacheDir = File(cacheDirPath).absoluteFile.normalize().also {
     check(if (!it.exists()) it.mkdirs() else it.isDirectory) {
       "Expected cache directory to exist or to be creatable: $cacheDirPath."
@@ -188,7 +192,7 @@ fun main(vararg args: String) {
     LessonDownloader(
       baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, forceCacheLoad, downloadListVersions
     )
-  downloader.downloadLessons(outputDir)
+  downloader.downloadLessons(outputDir, failOnError)
 }
 
 class LessonDownloader(
@@ -225,8 +229,8 @@ class LessonDownloader(
   // TODO: Convert ByteArray to DownloadedImage for better analysis?
   private val memoizedLoadedImageData by lazy { ConcurrentHashMap<File, ByteArray>() }
 
-  fun downloadLessons(outputDir: File) {
-    val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons(outputDir) }
+  fun downloadLessons(outputDir: File, failOnError: Boolean) {
+    val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons(outputDir, failOnError) }
     runBlocking {
       downloadJob.invokeOnCompletion { exception ->
         exception?.printStackTrace()
@@ -235,7 +239,7 @@ class LessonDownloader(
     }
   }
 
-  private suspend fun downloadAllLessons(outputDir: File) {
+  private suspend fun downloadAllLessons(outputDir: File, failOnError: Boolean) {
     when {
       cacheDir == null -> println("Config: Not using a local disk directory for asset caching.")
       !forceCacheLoad -> println("Config: Using ${cacheDir.path}/ for caching assets across runs.")
@@ -694,15 +698,17 @@ class LessonDownloader(
       }
     }
     println()
-    println("Images missing across translations: (Hidden)")
-//    imageInconsistencyIssues.groupBy { it.container }.forEach { (container, issues) ->
-//      println("- Within ${container.referenceString}:")
-//      issues.forEach { issue ->
-//        val missingLangs = issue.missingLanguages.joinToString { it.name }
-//        val presentLangs = issue.presentLanguages.joinToString { it.name }
-//        println("  - Image ${issue.filename} exists in languages: $presentLangs, but is missing in: $missingLangs")
-//      }
-//    }
+    if (failOnError) {
+      println("Images missing across translations:")
+      imageInconsistencyIssues.groupBy { it.container }.forEach { (container, issues) ->
+        println("- Within ${container.referenceString}:")
+        issues.forEach { issue ->
+          val missingLangs = issue.missingLanguages.joinToString { it.name }
+          val presentLangs = issue.presentLanguages.joinToString { it.name }
+          println("  - Image ${issue.filename} exists in languages: $presentLangs, but is missing in: $missingLangs")
+        }
+      }
+    } else println("Images missing across translations: (Hidden)")
     println()
     println("HTML strings with invalid tags:")
     htmlInvalidTagIssues.groupBy { it.text.container }.forEach { (container, issues) ->
@@ -752,6 +758,11 @@ class LessonDownloader(
     if (renamedImages.isNotEmpty() || convertedImages.isNotEmpty()) {
       println("WARNING: Images needed to be auto-fixed. Please verify that they are correct")
       println("(look at above output for specific images that require verification).")
+    }
+
+    val hasAnyFailure = issues.isNotEmpty() || imageDownloadFailures.isNotEmpty() || renamedImages.isNotEmpty() || convertedImages.isNotEmpty()
+    if (hasAnyFailure && failOnError) {
+      throw Exception("Failed to cleanly download and convert all lessons and images. See failures above.")
     }
 
 //    val translationMetrics = analyzer.computeTranslationsUsageReport()
