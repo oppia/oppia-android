@@ -100,6 +100,7 @@ import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertTo
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
+import kotlin.system.exitProcess
 
 /*
   TODO: Thoughts for improving the script:
@@ -192,7 +193,12 @@ fun main(vararg args: String) {
     LessonDownloader(
       baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, forceCacheLoad, downloadListVersions
     )
-  downloader.downloadLessons(outputDir, failOnError)
+  try {
+    downloader.downloadLessons(outputDir, failOnError)
+  } catch (t: Throwable) {
+    t.printStackTrace()
+    exitProcess(1)
+  }
 }
 
 class LessonDownloader(
@@ -230,12 +236,12 @@ class LessonDownloader(
   private val memoizedLoadedImageData by lazy { ConcurrentHashMap<File, ByteArray>() }
 
   fun downloadLessons(outputDir: File, failOnError: Boolean) {
-    val downloadJob = CoroutineScope(coroutineDispatcher).launch { downloadAllLessons(outputDir, failOnError) }
-    runBlocking {
-      downloadJob.invokeOnCompletion { exception ->
-        exception?.printStackTrace()
-        shutdownBlocking()
-      }
+    val downloadDeferred = CoroutineScope(coroutineDispatcher).async { downloadAllLessons(outputDir, failOnError) }
+    val exceptionResult = runBlocking {
+      runCatching { downloadDeferred.await() }.also { shutdownBlocking() }
+    }
+    if (exceptionResult.isFailure) {
+      throw IllegalStateException("Failed to download lessons.", exceptionResult.exceptionOrNull())
     }
   }
 
