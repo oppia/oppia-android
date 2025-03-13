@@ -36,9 +36,9 @@ jobs:
 
       - name: Extract production API key
         env:
-          BAZEL_REMOTE_CACHE_URL: ${{ secrets.BAZEL_REMOTE_CACHE_URL }}
+          PROD_SERVER_LESSON_SECRET: ${{ secrets.PROD_SERVER_LESSON_SECRET }}
         run: |
-          echo "$BAZEL_REMOTE_CACHE_URL" > prod_server.key
+          echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
 
       - name: Check Bazel environment
         run: |
