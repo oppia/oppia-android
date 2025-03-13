@@ -1,6 +1,6 @@
 package org.oppia.android.app.utility.datetime
 
-import org.oppia.android.R
+import org.oppia.android.app.R
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject

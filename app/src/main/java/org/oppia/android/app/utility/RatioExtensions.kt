@@ -1,8 +1,8 @@
 package org.oppia.android.app.utility
 
-import org.oppia.android.R
 import org.oppia.android.app.model.RatioExpression
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 
 /**
  * Returns an accessibly readable string representation of this [RatioExpression].
