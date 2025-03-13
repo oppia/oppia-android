@@ -74,6 +74,7 @@ bazel 6.5.0
 It is recommended to use the binary installer steps outline below. For other ways to install Bazel on Mac, refer to the [official page](https://bazel.build/install/os-x).
 
 **Step 1: Install Xcode command line tools**
+
 In macOS 14 or earlier, it is sufficient to install the Xcode command line tools package by using xcode-select:
 
 ```
@@ -91,9 +92,11 @@ sudo xcodebuild -license accept
 ```
 
 **Step 2: Download the Bazel installer**
+
 Click [here](https://github.com/bazelbuild/bazel/releases/download/6.5.0/bazel-6.5.0-installer-darwin-x86_64.sh) to download the Bazel 6.5.0 binary installer.
 
 **Step 3: Run the installer**
+
 Run the Bazel installer as follows:
 
 ```shell
@@ -102,6 +105,7 @@ chmod +x "bazel-6.5.0-installer-darwin-x86_64.sh"
 ```
 
 **Step 4: Set up your environment**
+
 You must set the path for `Bazel` and `ANDROID_HOME` before running bazel build for oppia-android, otherwise you will get an error.
 
 If you ran the Bazel installer with the `--user` flag as above, the Bazel executable is installed in your $HOME/bin directory. It’s a good idea to add this directory to your default paths, as follows:
@@ -122,6 +126,7 @@ sudo nano /etc/paths
 - That’s it! To test it, in a new terminal window, type: `echo $PATH`
 
 **Step 5: Verify that the build is working**
+
 Run the following command in your terminal:
 
 ```
@@ -138,6 +143,7 @@ Recommendations:
 - **Note**: if you encounter any errors related to `cURL`, please set up cURL on your machine using `sudo apt install curl`.
 
 **Step 1: Add Bazel distribution URI as a package source**
+
 This is a one-time setup step.
 
 ```
@@ -148,18 +154,21 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] h
 ```
 
 **Step 2: Install and update Bazel**
+
 Run:
 ```shell
 sudo apt update && sudo apt install bazel-6.5.0
 ```
 
 **Step 3: Set up your environment**
+
 Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. To do this, find the path to the installed SDK using Android Studio’s SDK Manager (install SDK 28). Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:<br>
 ```
 export ANDROID_HOME=$HOME/Android/Sdk/
 ```
 
 **Step 4: Verify that the build is working**
+
 Run the following command in your terminal:
 
 ```
@@ -187,6 +196,7 @@ At a high-level, the steps to make Bazel work on Windows are:
 7. Run Bazel commands as needed during development
 
 **Step 1: Install Ubuntu subsystem**
+
 Please follow Microsoft's [setup instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to set up the Linux subsystem on Windows 10. From there, you should install **Ubuntu** (the instructions below are based on the apt package manager on Ubuntu; other Linux distributions & package managers may work but they are untested by the team).
 
 Once installed, open the Ubuntu terminal from the start menu.
@@ -198,6 +208,7 @@ sudo apt update && sudo apt upgrade
 ```
 
 **Step 2: Install JDK 17+**
+
 Setting up Bazel for Oppia Android requires JDK>=17 for [Android Package Manager](#3-installing-the-android-sdk).
 
 For Ubuntu systems, this can be set up using:
@@ -213,6 +224,7 @@ sudo dnf install java-17-openjdk
 ```
 
 **Step 3: Install GCC**
+
 Install gcc using the following command:
 
 ```shell
@@ -220,6 +232,7 @@ sudo apt install gcc
 ```
 
 **Step 4: Install the Android SDK**
+
 We need to be able to run Linux-compatible Android utilities which requires installing a Linux version of the Android SDK. Since we can't install Android Studio in the subsystem, we need to do this via CLI commands. The steps below are extracted from [this article](https://proandroiddev.com/how-to-setup-android-sdk-without-android-studio-6d60d0f2812a).
 
 First, prepare the environment for the SDK by creating the default directory to hold the SDK (from within Ubuntu terminal):
@@ -275,6 +288,7 @@ sdkmanager --install "build-tools;32.0.0"
 When the commands above are finished running, the Android SDK should now be installed in your subsystem & be accessible to Bazel.
 
 **Step 5: Install Bazel**
+
 Use the steps outlined for Ubuntu Linux [above](#bazel-set-up-for-linux).
 
 For Fedora 25+
@@ -286,6 +300,7 @@ sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
 ```
 
 **Step 6: Verify that the build is working**
+
 Run the following command in your terminal:
 
 ```
@@ -307,6 +322,7 @@ Please follow these steps to set up Oppia Android on your local machine.
    **Note**: Please keep the folder name as `oppia-android`. Changing the project folder name might lead to future issues with running the pre-push checks on your machine.
 
 2. Run the `bash scripts/setup.sh` script, which adds some development tools for Oppia Android (ktlint, checkstyle, etc.). You should see a message indicating that the various tools have been downloaded.
+
    ![image](https://github.com/user-attachments/assets/d039f070-a842-4874-b534-01df39599ce6)  
    
    **Note** These tools perform important pre-push checks to ensure that your code is properly formatted as per Oppia standards.
