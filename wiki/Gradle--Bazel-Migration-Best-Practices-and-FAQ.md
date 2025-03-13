@@ -1,4 +1,4 @@
-The following document explains best practices & provides support for the Gradle to Bazel migration. For more information on setting up Bazel, read [Oppia Bazel Setup Instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions).
+The following document explains best practices & provides support for the Gradle to Bazel migration. For more information on setting up Bazel, read [Oppia Bazel Setup Instructions](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel).
 
 This is a living document that will grow as more questions get asked and answered.
 

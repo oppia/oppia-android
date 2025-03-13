@@ -3,26 +3,19 @@
 - [Overview](#overview)
 - [Installation](#installation)
   - [Building the app](#building-the-app)
-  - [Building + installing the app](#building--installing-the-app)
   - [Running specific module (app) Robolectric tests](#running-specific-module-app-robolectric-tests)
   - [Running all Robolectric tests (slow)](#running-all-robolectric-tests-slow)
-- [Known Issues and Troubleshooting](#known-issues-and-troubleshooting)
 - [Concepts and Terminology](#concepts-and-terminology)
+- [Syncing the Project](#syncing-the-project)
 
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
 
 **WARNING: We recommend to not use the Android Studio Bazel plugin since it currently has compatibility issues with the project.**
 
-### Installation
+## Installation
 
-1. Download and Install Java 11 using the links from the [Java website](https://www.java.com/en/download/).
-
-2. **Select your Operating System for instructions on setting up Bazel:**
-
-   - [For Windows/Ubuntu/Fedora](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Windows)
-   - [For Mac including M1/M2](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Mac)
-   - [For Linux](https://github.com/oppia/oppia-android/wiki/Bazel-Setup-Instructions-for-Linux)
+Follow the instructions on the [installation page](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel) to set up Bazel.
 
 ### Building the app
 
@@ -30,32 +23,32 @@ After the installation completes you can build the app using Bazel.
 
 **Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
 
+On Sdk 29 and below, run:
+```
+bazel mobile-install //:oppia_dev_binary
+```
+This will build, install and launch the app on your device.
+
+On Sdk 30 and newer, run:
 ```
 bazel build //:oppia_dev
 ```
-
-#### Building + installing the app
-
+followed by:
 ```
-bazel run //:install_oppia_dev
+adb install bazel-bin/oppia_dev_binary.apk  
 ```
 
-#### Running specific module (app) Robolectric tests
+### Running specific module (app) Robolectric tests
 
 ```
 bazel test //app/...
 ```
 
-#### Running all Robolectric tests (slow)
+### Running all Robolectric tests (slow)
 
 ```
 bazel test //...
 ```
-
-## Known Issues and Troubleshooting
-
-See our [troubleshooting wiki page](https://github.com/oppia/oppia-android/wiki/Troubleshooting-Installation#bazel-issues) for some known issues with Bazel, and the corresponding troubleshooting steps.
-
 
 ## Concepts and Terminology
 **[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**<br>
@@ -133,3 +126,59 @@ oppia_android_test(
     ],
 )
 ```
+
+## Syncing the Project
+The IntelliJ Bazel Plugin's Sync process has a purpose to query Bazel for information and build up IntelliJ's project structure to fit Bazel's model.
+
+It runs automatically during a project import, and manually by either clicking on the sync icon in the menu bar or, partially syncing packages and individual files in contextual menus.
+
+Running a sync generates a `.aswb` directory in the project root. 
+
+### Structure of the .aswb
+The `.aswb` is known as the **project directory**. It contains metadata about the project that bridges Bazel and IntelliJ project models.
+```
+.aswb/
+├── .bazelproject
+├── .blaze
+│   ├── aar_libraries
+│   ├── modules
+│   ├── remoteOutputCache 
+│   └── renderjars
+└── .idea
+```
+
+The `.bazelproject` is the project view file which contains project-wide settings, like targets to sync, Bazel flags, and enabled languages. It is used to import a subset of Bazel packages into the IDE. The project view determines which rules are imported and how. Read more information [here](https://ij.bazel.build/docs/project-views.html).
+
+The `.blaze` is the Bazel data subdirectory, containing mostly IntelliJ module definitions. 
+  - `modules` directory contains IntelliJ module definition files.
+  - `remoteOutputCache` is a general-purpose local cache for output artifacts generated remotely. During a project sync, updated outputs of interest will be copied locally.
+  - `aar_libraries` is the location of the plugin's JAR cache. This helps provide a more robust code navigation experience, but with the possibility of missing changes made by Bazel outside of the IDE view.
+
+The `.idea` directory contains project-specific settings files managed by IntelliJ. IntelliJ reads XML files in this directory to set up the Project Structure: project, modules, libraries, SDKs, facets.
+
+### Syncing (and Partial Syncing) the Bazel Plugin in Android Studio
+When you make certain changes to your project files, you need to sync your project with Bazel to pick up those changes. For example:
+* Changing a BUILD file, like adding a new target, or adding dependencies and sources to a target.
+* Changing generated output files required to resolve source code, like annotation processor outputs such as AutoValue-generated classes.
+
+You can sync with Bazel in two ways:
+* From your IDE’s menu, click **Bazel > Sync > Sync Project with BUILD files.**
+* From the toolbar, click the **Sync Project with BUILD files** button.
+
+**Expand Sync to Working Set**
+Your working set is any files your VCS says are dirty, roughly corresponding to something like git status. By default the plugin tries to expand the sync to cover any target in your working set. This ensures these files are refreshed without having to go to the trouble of adding a temporary target to your project view.
+- This sometimes causes problems, and you may see a warning in your Bazel sync tool window to disable it.
+
+**Non-Incrementally Sync Project with BUILD Files**
+This option recomputes certain things that are otherwise cached. 
+- You should never have to use this option, but exists for debugging/fallback purposes.
+
+**Sync Working Set**
+Your working set is any files your VCS says are dirty, roughly corresponding to something like git status. This option tries to sync only your working set, cutting down on sync time, which is useful if you want to quickly bring in new dependencies in some files you are working on.
+
+**Partially Sync File with Bazel**
+Syncs only the targets corresponding to the file from which this action is invoked. Can cut down on the time to sync the project if you’re only interested in resolving a single file.
+- This is invoked from the current active file.
+
+**Automatic Sync**
+You can enable automatic syncing in **Settings > Other Settings > Bazel > Auto sync on**. Automatic syncing occurs whenever BUILD files change. For many projects this is too slow, so this option is disabled by default.
