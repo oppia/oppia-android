@@ -5334,7 +5334,7 @@ class StateFragmentTest {
         )
       ).perform(click())
       clickSubmitAnswerButton()
-      clickContinueNavigationButton()
+      clickLearnAgainButton()
 
       scrollToViewType(NEXT_NAVIGATION_BUTTON)
       onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
@@ -5818,6 +5818,12 @@ class StateFragmentTest {
   private fun clickNextNavigationButton() {
     scrollToViewType(NEXT_NAVIGATION_BUTTON)
     onView(withId(R.id.next_state_navigation_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickLearnAgainButton() {
+    scrollToViewType(LEARN_AGAIN_BUTTON)
+    onView(withId(R.id.learn_again_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 

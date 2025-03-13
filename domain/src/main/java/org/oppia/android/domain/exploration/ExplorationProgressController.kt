@@ -679,6 +679,13 @@ class ExplorationProgressController @Inject constructor(
           ).outcome
         answerOutcome =
           explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
+
+        if(answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME &&
+          explorationProgress.stateDeck.isStatePreviouslyVisited(answerOutcome.previousStateName)) {
+          explorationProgress.stateDeck.enableLearnAgainButton()
+        } else {
+          explorationProgress.stateDeck.disableLearnAgainButton()
+        }
         explorationProgress.stateDeck.submitAnswer(
           userAnswer, answerOutcome.feedback, answerOutcome.labelledAsCorrectAnswer
         )
@@ -699,14 +706,6 @@ class ExplorationProgressController @Inject constructor(
         when {
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
             endState()
-            // Determines if a revision is required for the user based on the answer outcome.
-            if (!answerOutcome.labelledAsCorrectAnswer &&
-              answerOutcome.feedback.contentId.contains("feedback", true)
-            ) {
-              explorationProgress.stateDeck.turnOnRevisitEarlierCard(true)
-            } else {
-              explorationProgress.stateDeck.turnOnRevisitEarlierCard(false)
-            }
             val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
             explorationProgress.stateDeck.pushState(
               newState,
@@ -822,7 +821,12 @@ class ExplorationProgressController @Inject constructor(
       check(explorationProgress.playStage != SUBMITTING_ANSWER) {
         "Cannot navigate to a next state if an answer submission is pending."
       }
-      explorationProgress.stateDeck.navigateToNextState()
+
+      if(explorationProgress.stateDeck.doesCurrentStateNeedToRevisitOldState()) {
+        explorationProgress.stateDeck.revisitOldCard()
+      } else {
+        explorationProgress.stateDeck.navigateToNextState()
+      }
 
       if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
         hintHandler.navigateBackToLatestPendingState()

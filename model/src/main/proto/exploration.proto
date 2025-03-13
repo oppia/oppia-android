@@ -251,6 +251,9 @@ message EphemeralState {
     // A previous state completed by the learner.
     CompletedState completed_state = 5;
 
+    // A state where user need to revisit old card for revision.
+    CompletedState need_to_revisit_old_card = 12;
+
     // This value is always true in the case where the state type is terminal. This type may change in the future to a
     // message structure if additional data needs to be passed along to the terminal state card.
     bool terminal_state = 6;
@@ -361,6 +364,9 @@ message AnswerOutcome {
     // Indicates that the learner needs to play the specified exploration ID to refresh missing topics and then return
     // to restart the current exploration.
     string refresher_exploration_id = 7;
+
+    // Indicates that the learner should move to the one of previous state for revision.
+    string previous_state_name = 8;
   }
 }
 

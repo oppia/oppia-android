@@ -182,6 +182,10 @@ class StateFragmentPresenter @Inject constructor(
     moveToNextState()
   }
 
+  fun onLearnAgainButtonClicked() {
+    moveToNextState()
+  }
+
   fun onNextButtonClicked() = moveToNextState()
 
   fun onPreviousButtonClicked() {
@@ -247,6 +251,7 @@ class StateFragmentPresenter @Inject constructor(
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
+      .addLearnAgainSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,

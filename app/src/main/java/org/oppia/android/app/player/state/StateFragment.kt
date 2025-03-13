@@ -25,6 +25,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.player.state.listener.LearnAgainButtonListener
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -38,7 +39,8 @@ class StateFragment :
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
-  ShowHintAvailabilityListener {
+  ShowHintAvailabilityListener,
+  LearnAgainButtonListener {
   companion object {
 
     /** Arguments key for StateFragment. */
@@ -144,6 +146,10 @@ class StateFragment :
     inputAnswerAvailable: Boolean
   ) {
     stateFragmentPresenter.updateSubmitButton(pendingAnswerError, inputAnswerAvailable)
+  }
+
+  override fun onLearnAgainButtonClicked() {
+    stateFragmentPresenter.onLearnAgainButtonClicked()
   }
 
   fun setAudioBarVisibility(visibility: Boolean) =

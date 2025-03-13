@@ -33,6 +33,9 @@ class StateGraph constructor(
       outcome.missingPrerequisiteSkillId.isNotEmpty() ->
         answerOutcomeBuilder.missingPrerequisiteSkillId = outcome.missingPrerequisiteSkillId
       outcome.destStateName == currentState.name -> answerOutcomeBuilder.sameState = true
+      !outcome.labelledAsCorrect &&
+        outcome.feedback.contentId.contains("feedback", true) ->
+        answerOutcomeBuilder.previousStateName = outcome.destStateName
       else -> answerOutcomeBuilder.stateName = outcome.destStateName
     }
     return answerOutcomeBuilder.build()

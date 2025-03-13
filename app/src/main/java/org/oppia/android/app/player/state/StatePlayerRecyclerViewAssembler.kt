@@ -107,6 +107,9 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.player.state.itemviewmodel.LearnAgainButtonViewModel
+import org.oppia.android.app.player.state.listener.LearnAgainButtonListener
+import org.oppia.android.databinding.LearnAgainButtonItemBinding
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -281,6 +284,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
           HelpIndex.getDefaultInstance(),
           isCurrentStatePendingState = false
         )
+      } else if ( ephemeralState.stateTypeCase == StateTypeCase.NEED_TO_REVISIT_OLD_CARD) { //subha
+        if (playerFeatureSet.hintsAndSolutionsSupport) {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(
+            HelpIndex.getDefaultInstance(),
+            isCurrentStatePendingState = false
+          )
+        }
+        addPreviousAnswers(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          ephemeralState.needToRevisitOldCard.answerList,
+          isLastAnswerCorrect = false,
+          gcsEntityId,
+          ephemeralState.writtenTranslationContext
+        )
       }
 
       // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
@@ -298,6 +316,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
     var canContinueToNextState = false
     var hasGeneralContinueButton = false
+    var hasLearnAgainButton = false
     if (!isTerminalState) {
       if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE &&
         !ephemeralState.hasNextState
@@ -305,6 +324,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasGeneralContinueButton = true
       } else if (ephemeralState.completedState.answerList.size > 0 && ephemeralState.hasNextState) {
         canContinueToNextState = true
+      } else if (ephemeralState.stateTypeCase == StateTypeCase.NEED_TO_REVISIT_OLD_CARD) {
+        hasLearnAgainButton = true
       }
     }
 
@@ -337,7 +358,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasGeneralContinueButton,
       isTerminalState,
       shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
-      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs
+      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
+      hasLearnAgainButton = hasLearnAgainButton
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
@@ -645,7 +667,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasGeneralContinueButton: Boolean,
     stateIsTerminal: Boolean,
     shouldAnimateContinueButton: Boolean,
-    continueButtonAnimationTimestampMs: Long
+    continueButtonAnimationTimestampMs: Long,
+    hasLearnAgainButton: Boolean
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
@@ -678,8 +701,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       doesMostRecentInteractionRequireExplicitSubmission(conversationPendingItemList) &&
-        playerFeatureSet.interactionSupport -> {
+        !hasLearnAgainButton && playerFeatureSet.interactionSupport -> {
         addSubmitButton(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          hasPreviousButton
+        )
+      }
+      hasLearnAgainButton && playerFeatureSet.learnAgainSupport -> {
+        addLearnAgainButton(
           conversationPendingItemList,
           extraInteractionPendingItemList,
           hasPreviousButton
@@ -813,6 +843,24 @@ class StatePlayerRecyclerViewAssembler private constructor(
         isSplitView.get()!!
       )
     }
+  }
+
+  private fun addLearnAgainButton(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    hasPreviousButton: Boolean
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
+
+    targetList += LearnAgainButtonViewModel(
+      hasConversationView,
+      hasPrevious,
+      previousNavigationButtonListener,
+      fragment as LearnAgainButtonListener,
+      isSplitView.get()!!
+    )
   }
 
   private fun createBannerConfetti(confettiView: KonfettiView, config: ConfettiConfig) {
@@ -1179,6 +1227,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    fun addLearnAgainSupport(): Builder {
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.LEARN_AGAIN_BUTTON,
+        inflateDataBinding = LearnAgainButtonItemBinding::inflate,
+        setViewModel = LearnAgainButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as LearnAgainButtonViewModel }
+      )
+      featureSets += PlayerFeatureSet(learnAgainSupport = true)
+      return this
+    }
+
     private fun createListAnswerAdapter(
       gcsEntityId: String,
       supportsConceptCards: Boolean
@@ -1505,6 +1564,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val wrongAnswerCollapsing: Boolean = false,
     val backwardNavigation: Boolean = false,
     val forwardNavigation: Boolean = false,
+    val learnAgainSupport: Boolean = false,
     val replaySupport: Boolean = false,
     val returnToTopicNavigation: Boolean = false,
     val showCelebrationOnCorrectAnswer: Boolean = false,
@@ -1526,6 +1586,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         wrongAnswerCollapsing = wrongAnswerCollapsing || other.wrongAnswerCollapsing,
         backwardNavigation = backwardNavigation || other.backwardNavigation,
         forwardNavigation = forwardNavigation || other.forwardNavigation,
+        learnAgainSupport = learnAgainSupport || other.learnAgainSupport,
         replaySupport = replaySupport || other.replaySupport,
         returnToTopicNavigation = returnToTopicNavigation || other.returnToTopicNavigation,
         showCelebrationOnCorrectAnswer = showCelebrationOnCorrectAnswer ||
