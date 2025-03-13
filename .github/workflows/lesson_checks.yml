@@ -22,16 +22,13 @@ jobs:
         with:
           version: 6.5.0
 
-      # This checks out the actual true develop branch separately to ensure that the stats check is
-      # run from the latest develop rather than the base branch (which might be different for
-      # chained PRs).
       - name: Check out introduce-asset-download-script branch
         uses: actions/checkout@v4
         with:
           ref: introduce-asset-download-script
 
       - name: Set up build environment
-        uses: ./develop/.github/actions/set-up-android-bazel-build-environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
 
       - name: Extract production API key
         env:
