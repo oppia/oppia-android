@@ -40,6 +40,7 @@ import org.oppia.android.app.databinding.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.TextInputInteractionItemBinding
+import org.oppia.android.databinding.LearnAgainButtonItemBinding
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
@@ -64,6 +65,7 @@ import org.oppia.android.app.player.state.itemviewmodel.DragAndDropSortInteracti
 import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.LearnAgainButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NextButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.NumericInputViewModel
@@ -79,6 +81,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.LearnAgainButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
@@ -107,9 +110,6 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.player.state.itemviewmodel.LearnAgainButtonViewModel
-import org.oppia.android.app.player.state.listener.LearnAgainButtonListener
-import org.oppia.android.databinding.LearnAgainButtonItemBinding
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -284,7 +284,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           HelpIndex.getDefaultInstance(),
           isCurrentStatePendingState = false
         )
-      } else if ( ephemeralState.stateTypeCase == StateTypeCase.NEED_TO_REVISIT_OLD_CARD) { //subha
+      } else if (ephemeralState.stateTypeCase == StateTypeCase.NEED_TO_REVISIT_OLD_CARD) {
         if (playerFeatureSet.hintsAndSolutionsSupport) {
           (fragment as ShowHintAvailabilityListener).onHintAvailable(
             HelpIndex.getDefaultInstance(),
