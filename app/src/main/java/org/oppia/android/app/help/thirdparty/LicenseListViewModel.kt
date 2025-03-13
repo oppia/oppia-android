@@ -1,9 +1,9 @@
 package org.oppia.android.app.help.thirdparty
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.help.HelpViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 
 /**
  * View model in [LicenseListFragment] that contains the list of licenses corresponding to a

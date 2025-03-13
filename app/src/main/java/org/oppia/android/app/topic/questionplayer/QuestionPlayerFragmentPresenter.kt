@@ -12,6 +12,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import nl.dionsegijn.konfetti.KonfettiView
+import org.oppia.android.app.databinding.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnsweredQuestionOutcome
 import org.oppia.android.app.model.EphemeralQuestion
@@ -29,7 +30,6 @@ import org.oppia.android.app.player.stopplaying.RestartPlayingSessionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionListener
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
 import org.oppia.android.app.utility.SplitScreenManager
-import org.oppia.android.databinding.QuestionPlayerFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.question.QuestionAssessmentProgressController
