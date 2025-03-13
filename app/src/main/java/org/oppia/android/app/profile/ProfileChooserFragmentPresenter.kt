@@ -12,9 +12,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.recyclerview.widget.GridLayoutManager
-import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.classroom.ClassroomListActivity
+import org.oppia.android.app.databinding.databinding.ProfileChooserAddViewBinding
+import org.oppia.android.app.databinding.databinding.ProfileChooserFragmentBinding
+import org.oppia.android.app.databinding.databinding.ProfileChooserProfileViewBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
@@ -24,9 +26,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.ProfileChooserAddViewBinding
-import org.oppia.android.databinding.ProfileChooserFragmentBinding
-import org.oppia.android.databinding.ProfileChooserProfileViewBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController

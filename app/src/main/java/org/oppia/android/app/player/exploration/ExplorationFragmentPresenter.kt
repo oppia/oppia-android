@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.ExplorationFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ExplorationFragmentArguments
 import org.oppia.android.app.model.ProfileId
@@ -19,8 +19,8 @@ import org.oppia.android.app.spotlight.SpotlightManager
 import org.oppia.android.app.spotlight.SpotlightShape
 import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.databinding.ExplorationFragmentBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController

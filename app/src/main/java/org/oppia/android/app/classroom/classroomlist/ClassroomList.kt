@@ -27,9 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.oppia.android.R
 import org.oppia.android.app.classroom.ThumbnailImage
 import org.oppia.android.app.home.classroomlist.ClassroomSummaryViewModel
+import org.oppia.android.app.ui.R
 
 /** Test tag for the classroom list. */
 const val CLASSROOM_LIST_TEST_TAG = "TEST_TAG.classroom_list"

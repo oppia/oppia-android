@@ -4,7 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.HintSummaryBinding
+import org.oppia.android.app.databinding.databinding.HintsAndSolutionFragmentBinding
+import org.oppia.android.app.databinding.databinding.ReturnToLessonButtonItemBinding
+import org.oppia.android.app.databinding.databinding.SolutionSummaryBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.ProfileId
@@ -13,10 +16,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.HintSummaryBinding
-import org.oppia.android.databinding.HintsAndSolutionFragmentBinding
-import org.oppia.android.databinding.ReturnToLessonButtonItemBinding
-import org.oppia.android.databinding.SolutionSummaryBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
