@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.databinding.databinding.AudioLanguageFragmentBinding
+import org.oppia.android.app.databinding.databinding.AudioLanguageItemBinding
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.AudioLanguageFragmentBinding
-import org.oppia.android.databinding.AudioLanguageItemBinding
 import javax.inject.Inject
 
 /** The presenter for [AudioLanguageFragment]. */

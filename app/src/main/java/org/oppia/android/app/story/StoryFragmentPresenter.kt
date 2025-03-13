@@ -18,7 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.StoryChapterViewBinding
+import org.oppia.android.app.databinding.databinding.StoryFragmentBinding
+import org.oppia.android.app.databinding.databinding.StoryHeaderViewBinding
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -30,9 +32,7 @@ import org.oppia.android.app.story.storyitemviewmodel.StoryHeaderViewModel
 import org.oppia.android.app.story.storyitemviewmodel.StoryItemViewModel
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.StoryChapterViewBinding
-import org.oppia.android.databinding.StoryFragmentBinding
-import org.oppia.android.databinding.StoryHeaderViewBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
