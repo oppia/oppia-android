@@ -29,7 +29,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: introduce-asset-download-script
-          path: develop
 
       - name: Set up build environment
         uses: ./develop/.github/actions/set-up-android-bazel-build-environment
@@ -41,9 +40,7 @@ jobs:
           echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
 
       - name: Check Bazel environment
-        run: |
-          cd develop
-          bazel info
+        run: bazel info
 
       - name: Download lesson version list
         run: |
@@ -51,7 +48,7 @@ jobs:
             https://www.oppia.org \
             https://storage.googleapis.com \
             oppiaserver-resources \
-            $(pwd)/../prod_server.key \
+            $(pwd)/prod_server.key \
             $(pwd)/release_assets/pinned_versions.textproto
 
       - name: Download lessons and verify conversion
@@ -60,7 +57,7 @@ jobs:
             https://www.oppia.org \
             https://storage.googleapis.com \
             oppiaserver-resources \
-            $(pwd)/../prod_server.key \
+            $(pwd)/prod_server.key \
             $(pwd)/release_assets/assets \
             cache_mode=none \
             $(pwd)/release_assets/cache \
