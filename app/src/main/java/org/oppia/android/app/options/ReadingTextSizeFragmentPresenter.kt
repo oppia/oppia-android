@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.databinding.databinding.ReadingTextSizeFragmentBinding
+import org.oppia.android.app.databinding.databinding.TextSizeItemsBinding
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.ReadingTextSizeFragmentBinding
-import org.oppia.android.databinding.TextSizeItemsBinding
 import javax.inject.Inject
 
 /** The presenter for [ReadingTextSizeFragment]. */

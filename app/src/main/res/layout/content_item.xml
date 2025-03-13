@@ -1,5 +1,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <data>
 
@@ -44,11 +45,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:breakStrategy="simple"
+      tools:targetApi="23"
       android:fontFamily="sans-serif"
       android:minWidth="48dp"
       android:minHeight="48dp"
       android:text="@{htmlContent}"
-      android:contentDescription="@{viewModel.replaceRegexWithBlank(htmlContent)}"
+      android:contentDescription="@{viewModel.getContentDescription()}"
       android:textColor="@color/component_color_shared_primary_text_color"
       android:textColorLink="@color/component_color_shared_link_text_color"
       android:textSize="16sp"

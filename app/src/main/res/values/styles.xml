@@ -805,6 +805,15 @@
     <item name="android:textSize">@dimen/onboarding_shared_text_size_large</item>
   </style>
 
+  <style name="AdministratorControlsText">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_gravity">center_vertical</item>
+    <item name="android:layout_marginStart">12dp</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
   <style name="LanguageDropdownStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>

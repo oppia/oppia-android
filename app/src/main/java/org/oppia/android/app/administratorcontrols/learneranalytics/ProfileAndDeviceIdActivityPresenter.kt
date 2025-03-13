@@ -2,7 +2,7 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for arranging the UI of [ProfileAndDeviceIdActivity]. */

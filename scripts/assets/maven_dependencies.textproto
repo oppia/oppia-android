@@ -307,8 +307,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.concurrent:concurrent-futures:1.0.0"
-  artifact_version: "1.0.0"
+  artifact_name: "androidx.concurrent:concurrent-futures:1.1.0"
+  artifact_version: "1.1.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -892,6 +892,17 @@ maven_dependency {
 maven_dependency {
   artifact_name: "androidx.work:work-runtime:2.4.0"
   artifact_version: "2.4.0"
+  license {
+    license_name: "The Apache Software License, Version 2.0"
+    original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    scrapable_link {
+      url: "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    }
+  }
+}
+maven_dependency {
+  artifact_name: "com.android.tools.build:aapt2-proto:7.3.1-8691043"
+  artifact_version: "7.3.1-8691043"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1613,12 +1624,22 @@ maven_dependency {
   }
 }
 maven_dependency {
+  artifact_name: "com.google.protobuf:protobuf-java:3.17.3"
+  artifact_version: "3.17.3"
+  license {
+    license_name: "3-Clause BSD License"
+    extracted_copy_link {
+      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/refs/heads/develop/bsd-3-clause-license.txt"
+    }
+  }
+}
+maven_dependency {
   artifact_name: "com.google.protobuf:protobuf-javalite:3.19.2"
   artifact_version: "3.19.2"
   license {
-    license_name: "Simplified BSD License"
+    license_name: "3-Clause BSD License"
     extracted_copy_link {
-      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/develop/simplified-bsd-license.txt"
+      url: "https://raw.githubusercontent.com/oppia/oppia-android-licenses/refs/heads/develop/bsd-3-clause-license.txt"
     }
   }
 }

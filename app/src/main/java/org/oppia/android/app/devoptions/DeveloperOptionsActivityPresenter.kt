@@ -2,10 +2,10 @@ package org.oppia.android.app.devoptions
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.DeveloperOptionsActivityBinding
 import org.oppia.android.app.drawer.NavigationDrawerFragment
-import org.oppia.android.databinding.DeveloperOptionsActivityBinding
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [DeveloperOptionsActivity]. */

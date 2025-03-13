@@ -2,6 +2,6 @@
 <!-- TODO(#1632): Remove manifest post-Gradle -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="org.oppia.android.app.view.models">
-  <uses-sdk android:minSdkVersion="19"
-    android:targetSdkVersion="33" />
+  <uses-sdk android:minSdkVersion="21"
+    android:targetSdkVersion="34" />
 </manifest>

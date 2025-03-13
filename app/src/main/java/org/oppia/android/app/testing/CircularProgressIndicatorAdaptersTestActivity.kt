@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
-import org.oppia.android.databinding.CircularProgressIndicatorAdaptersTestActivityBinding
+import org.oppia.android.app.databinding.databinding.CircularProgressIndicatorAdaptersTestActivityBinding
+import org.oppia.android.app.ui.R
 
 /** Test activity for [org.oppia.android.app.databinding.CircularProgressIndicatorAdaptersTest]. */
 class CircularProgressIndicatorAdaptersTestActivity : InjectableSystemLocalizedAppCompatActivity() {

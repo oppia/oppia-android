@@ -45,7 +45,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -68,6 +67,7 @@ import org.oppia.android.app.ongoingtopiclist.OngoingTopicListActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.topic.TopicActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
@@ -133,6 +133,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -822,6 +823,27 @@ class ProfileProgressFragmentTest {
           profileId
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launch<ProfileProgressActivity>(
+      createProfileProgressActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val profileProgressFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.profile_progress_fragment_placeholder) as ProfileProgressFragment
+
+        val args = checkNotNull(profileProgressFragment.arguments) {
+          "Expected arguments to be passed to ProfileProgressFragment"
+        }
+        val receivedInternalProfileId = args.extractCurrentUserProfileId().internalId
+
+        assertThat(receivedInternalProfileId).isEqualTo(internalProfileId)
+      }
     }
   }
 
