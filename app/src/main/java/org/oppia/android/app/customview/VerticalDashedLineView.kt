@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
-import org.oppia.android.R
+import org.oppia.android.app.views.R
 
 private const val DASH_GAP_IN_DP = 16
 private const val DASH_LENGTH_IN_DP = 32

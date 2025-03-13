@@ -3,12 +3,12 @@ package org.oppia.android.app.survey
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.SurveyActivityBinding
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyFragmentArguments
 import org.oppia.android.app.survey.SurveyFragment.Companion.SURVEY_FRAGMENT_ARGUMENTS_KEY
-import org.oppia.android.databinding.SurveyActivityBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject

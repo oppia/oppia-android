@@ -2,7 +2,7 @@ package org.oppia.android.app.topic
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 
 /** Enum to store the tabs of [TopicFragment] and get tab by position. */
 enum class TopicTab(
@@ -19,10 +19,10 @@ enum class TopicTab(
     tabIconResId = R.drawable.ic_info_icon_24dp,
     contentDescriptionResId = R.string.info_tab_content_description
   ),
-  LESSONS(
+  LEARN(
     positionWithTwoTabs = 0,
     positionWithFourTabs = 1,
-    tabLabelResId = R.string.lessons,
+    tabLabelResId = R.string.learn,
     tabIconResId = R.drawable.ic_lessons_icon_24dp,
     contentDescriptionResId = R.string.lessons_tab_content_description
   ),
@@ -33,10 +33,10 @@ enum class TopicTab(
     tabIconResId = R.drawable.ic_practice_icon_24dp,
     contentDescriptionResId = R.string.practice_tab_content_description
   ),
-  REVISION(
+  STUDY(
     positionWithTwoTabs = 1,
     positionWithFourTabs = 3,
-    tabLabelResId = R.string.revision,
+    tabLabelResId = R.string.study,
     tabIconResId = R.drawable.ic_revision_icon_24dp,
     contentDescriptionResId = R.string.revision_tab_content_description
   );

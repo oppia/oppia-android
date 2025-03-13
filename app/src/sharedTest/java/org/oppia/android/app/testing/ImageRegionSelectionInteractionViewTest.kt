@@ -11,6 +11,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -32,7 +33,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -47,6 +47,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
@@ -177,7 +178,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+            regionLabel = "Region 3", contentDescription = "Image showing Region 3."
           )
         )
     }
@@ -218,9 +219,23 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+            regionLabel = "Region 2", contentDescription = "Image showing Region 2."
           )
         )
+    }
+  }
+
+  @Test
+  // TODO(#1611): Fix ImageRegionSelectionInteractionViewTest
+  @RunOn(TestPlatform.ESPRESSO)
+  fun testImageRegionSelectionInteractionView_initialContentDescriptionRegion3_isCorrect() {
+    launch(ImageRegionSelectionTestActivity::class.java).use {
+      onView(
+        allOf(
+          withTagValue(`is`("Region 3")),
+          withContentDescription("Select Region 3 image.")
+        )
+      ).check(matches(isDisplayed()))
     }
   }
 
@@ -280,7 +295,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+            regionLabel = "Region 2", contentDescription = "Image showing Region 2."
           )
         )
     }
@@ -308,7 +323,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+            regionLabel = "Region 3", contentDescription = "Image showing Region 3."
           )
         )
     }
@@ -352,7 +367,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 3", contentDescription = "You have selected Region 3"
+            regionLabel = "Region 3", contentDescription = "Image showing Region 3."
           )
         )
     }
@@ -394,7 +409,7 @@ class ImageRegionSelectionInteractionViewTest {
       assertThat(regionClickedEvent.value)
         .isEqualTo(
           NamedRegionClickedEvent(
-            regionLabel = "Region 2", contentDescription = "You have selected Region 2"
+            regionLabel = "Region 2", contentDescription = "Image showing Region 2."
           )
         )
     }

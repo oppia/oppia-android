@@ -1,9 +1,9 @@
 package org.oppia.android.app.options
 
 import androidx.databinding.ObservableField
-import org.oppia.android.R
 import org.oppia.android.app.model.ReadingTextSize
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 
 /** ReadingTextSize settings view model for the recycler view in [OptionsFragment]. */
 class OptionsReadingTextSizeViewModel(

@@ -2,12 +2,12 @@ package org.oppia.android.app.walkthrough
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.WalkthroughActivityBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicListFragment
 import org.oppia.android.app.walkthrough.welcome.WalkthroughWelcomeFragment
-import org.oppia.android.databinding.WalkthroughActivityBinding
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 

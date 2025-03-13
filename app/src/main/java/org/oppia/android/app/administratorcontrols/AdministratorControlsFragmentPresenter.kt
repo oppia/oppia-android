@@ -13,16 +13,16 @@ import org.oppia.android.app.administratorcontrols.administratorcontrolsitemview
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsItemViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileAndDeviceIdViewModel
 import org.oppia.android.app.administratorcontrols.administratorcontrolsitemviewmodel.AdministratorControlsProfileViewModel
+import org.oppia.android.app.databinding.databinding.AdministratorControlsAccountActionsViewBinding
+import org.oppia.android.app.databinding.databinding.AdministratorControlsAppInformationViewBinding
+import org.oppia.android.app.databinding.databinding.AdministratorControlsDownloadPermissionsViewBinding
+import org.oppia.android.app.databinding.databinding.AdministratorControlsFragmentBinding
+import org.oppia.android.app.databinding.databinding.AdministratorControlsGeneralViewBinding
+import org.oppia.android.app.databinding.databinding.AdministratorControlsLearnerAnalyticsViewBinding
+import org.oppia.android.app.databinding.databinding.AdministratorControlsProfileViewBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.AdministratorControlsAccountActionsViewBinding
-import org.oppia.android.databinding.AdministratorControlsAppInformationViewBinding
-import org.oppia.android.databinding.AdministratorControlsDownloadPermissionsViewBinding
-import org.oppia.android.databinding.AdministratorControlsFragmentBinding
-import org.oppia.android.databinding.AdministratorControlsGeneralViewBinding
-import org.oppia.android.databinding.AdministratorControlsLearnerAnalyticsViewBinding
-import org.oppia.android.databinding.AdministratorControlsProfileViewBinding
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import java.security.InvalidParameterException
 import javax.inject.Inject
@@ -36,7 +36,6 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: AdministratorControlsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
-  private var internalProfileId: Int = -1
   private lateinit var profileId: ProfileId
 
   @Inject
@@ -56,8 +55,7 @@ class AdministratorControlsFragmentPresenter @Inject constructor(
           /* attachToRoot= */ false
         )
 
-    internalProfileId = activity.intent.extractCurrentUserProfileId().internalId
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId = activity.intent.extractCurrentUserProfileId()
     administratorControlsViewModel.setProfileId(profileId)
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
