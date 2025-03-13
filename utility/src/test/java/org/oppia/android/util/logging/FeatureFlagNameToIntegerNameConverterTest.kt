@@ -116,9 +116,9 @@ class FeatureFlagNameToIntegerNameConverterTest {
     "expectedValue=13"
   )
   fun testConvertToIntegerName_returnsCorrectIntegerForEach() {
-    val nameInteger = converter.convertToInteger(flagName)
+    val integerName = converter.convertToInteger(flagName)
 
-    assertThat(nameInteger).isEqualTo(expectedValue)
+    assertThat(integerName).isEqualTo(expectedValue)
   }
 
   private fun setUpTestApplicationComponent() {
