@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.android.app.databinding.databinding.FaqContentBinding
+import org.oppia.android.app.databinding.databinding.FaqItemHeaderBinding
+import org.oppia.android.app.databinding.databinding.FaqListFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQContentViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQHeaderViewModel
 import org.oppia.android.app.help.faq.faqItemViewModel.FAQItemViewModel
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.FaqContentBinding
-import org.oppia.android.databinding.FaqItemHeaderBinding
-import org.oppia.android.databinding.FaqListFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [FAQListFragment]. */
