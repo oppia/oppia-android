@@ -684,8 +684,7 @@ class ExplorationProgressController @Inject constructor(
             topPendingState, outcome, stateVisited
           )
 
-        if (
-          answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME) {
+        if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME) {
           explorationProgress.stateDeck.enableLearnAgainButton()
         } else {
           explorationProgress.stateDeck.disableLearnAgainButton()
