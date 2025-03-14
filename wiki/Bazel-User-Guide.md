@@ -11,44 +11,49 @@
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
 
-**WARNING: We recommend to not use the Android Studio Bazel plugin since it currently has compatibility issues with the project.**
-
 ## Installation
 
 Follow the instructions on the [installation page](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel) to set up Bazel.
 
 ### Building the app
 
-After the installation completes you can build the app using Bazel.
+The [installation page](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel) provides information on running the project in Android Studio.
 
-**Move your command line head to the `~/opensource/oppia-android`**, then run the below bazel command:
+You can also run the app from the command line using the commands detailed below.
 
-On Sdk 29 and below, run:
-```
-bazel mobile-install //:oppia_dev_binary
-```
+Using the command line is helpful in instances when you need to run some targets outside of Android Studio.
+
+Run the following commands in your terminal. All Bazel commands must be run from the root of the `oppia-android` directory otherwise they will fail.
+
+Note that on the first run, these commands may take 10-20 minutes to complete depending on the performance of your machine. Subsequent runs will be much faster.
+
+**On SDK 29 and below, run**:
+   ```
+   bazel mobile-install //:oppia_dev_binary
+   ```
 This will build, install and launch the app on your device.
 
-On Sdk 30 and newer, run:
-```
-bazel build //:oppia_dev
-```
+**On SDK 30 and newer, run**:
+   ```
+   bazel build //:oppia_dev
+   ```
 followed by:
-```
-adb install bazel-bin/oppia_dev_binary.apk  
-```
+   ```
+   adb install bazel-bin/oppia_dev_binary.apk  
+   ```
+* Starting from Sdk 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
 
-### Running specific module (app) Robolectric tests
-
-```
-bazel test //app/...
-```
-
-### Running all Robolectric tests (slow)
+If everything is working, you should see output like the following:
 
 ```
-bazel test //...
+Target //:oppia_dev up-to-date:
+  bazel-bin/oppia_dev.aab
+INFO: Elapsed time: ...
+INFO: 1 process...
+INFO: Build completed successfully, ...
 ```
+
+Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the `mobile-install` command.
 
 ## Concepts and Terminology
 **[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**<br>
@@ -166,19 +171,28 @@ You can sync with Bazel in two ways:
 * From the toolbar, click the **Sync Project with BUILD files** button.
 
 **Expand Sync to Working Set**
+
 Your working set is any files your VCS says are dirty, roughly corresponding to something like git status. By default the plugin tries to expand the sync to cover any target in your working set. This ensures these files are refreshed without having to go to the trouble of adding a temporary target to your project view.
 - This sometimes causes problems, and you may see a warning in your Bazel sync tool window to disable it.
 
 **Non-Incrementally Sync Project with BUILD Files**
+
 This option recomputes certain things that are otherwise cached. 
-- You should never have to use this option, but exists for debugging/fallback purposes.
+- You should never have to use this option, but it exists for debugging/fallback purposes.
 
 **Sync Working Set**
+
 Your working set is any files your VCS says are dirty, roughly corresponding to something like git status. This option tries to sync only your working set, cutting down on sync time, which is useful if you want to quickly bring in new dependencies in some files you are working on.
 
 **Partially Sync File with Bazel**
+
 Syncs only the targets corresponding to the file from which this action is invoked. Can cut down on the time to sync the project if you’re only interested in resolving a single file.
 - This is invoked from the current active file.
+- It can also be accessed via right-clicking on a file and selecting the option.
+- This is useful for resolving a file marked as “(Unsynced)” or ensuring API changes are recognized by other targets.
+- This can be used on directories which is especially useful for resyncing multiple libraries or regenerating protos.
 
 **Automatic Sync**
-You can enable automatic syncing in **Settings > Other Settings > Bazel > Auto sync on**. Automatic syncing occurs whenever BUILD files change. For many projects this is too slow, so this option is disabled by default.
+
+You can enable automatic syncing in **Settings > Other Settings > Bazel > Auto sync on**. Automatic syncing occurs whenever BUILD files change.
+- We do not recommend enabling this option for now, as it can be slow and disruptive. Because of performance concerns, it is disabled by default.

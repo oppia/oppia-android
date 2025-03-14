@@ -51,7 +51,7 @@
   * [Spotlight Guide](https://github.com/oppia/oppia-android/wiki/Spotlight-Guide)
   * [Triaging Process](https://github.com/oppia/oppia-android/wiki/Triaging-process)
   * Bazel
-    * [Exploring Bazel](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Glossary)
+    * [Exploring Bazel](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide)
     * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
   * [Internationalization](https://github.com/oppia/oppia-android/wiki/Internationalization)

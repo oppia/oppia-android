@@ -10,8 +10,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
   - [Bazel setup for Linux](#bazel-set-up-for-linux)
   - [Bazel setup for Windows](#bazel-set-up-for-windows)
 - [Install oppia-android](#install-oppia-android)
-- [Run the app from Android Studio](#run-the-app-from-android-studio)
-- [Run the app from the command line](#run-the-app-from-the-command-line)
+- [Opening the Project in Android Studio](#opening-the-project-in-android-studio)
 - [Set up and Run tests](#set-up-and-run-tests)
   - [Step-by-Step guidance for setting up and running app modules robolectric test](#step-by-step-guidance-for-setting-up-and-running-app-modules-robolectric-test)
   - [For tests that are in non-app modules, such as **domain** or **utility**:](#for-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
@@ -20,15 +19,20 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 ## Prepare developer environment
 
-1. Download/Install the latest version of Android Studio from [this location](https://developer.android.com/studio).
-   **Note**: We strongly recommend **Giraffe** because it has been tested and produced the best experience across different OSes.
+1. Download and install Android Studio **Giraffe** from [this location](https://developer.android.com/studio/archive).
+   **Note**: You may try newer or older versions of Android Studio, but we can't guarantee good support.
 
 2. Configure your Android Studio
-   - In Android Studio, open **Tools** > **SDK Manager**.
-     - In the "SDK Platforms" tab (which is the default), select `API Level 29` and also `API Level 30`.
-     - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
+   - From your PC's application menu, open Android Studio. 
+   - On the welcome screen, find the "more options menu" and select **SDK Manager**
+     
+     <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
+    
+   - In the "SDK Platforms" tab (which is the default), select `API Level 30` and also `API Level 34`.
+   - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
+     - On this screen, note the **Android SDK Location**, which is set as the ANDROID_HOME variable in  the Bazel setup step below.
 
 3. Prepare a test device
    You require a physical Android device or an Android emulator to run the Oppia app. 
@@ -50,11 +54,15 @@ This wiki page explains how to install Oppia Android on your local machine. If y
      
       - If you don't have these specs, the emulator might still run but not smoothly. In this case, consider testing on a physical device.
 
-       - In Android Studio, in the right hand toolbar, locate `device Manager`.
-       - Click the **+**, and then click **Create Virtual Device**.
-       - Create a phone and a tablet AVD.
-       - After creating your devices, you will be able to see a list of all the devices on the device manager panel.
-       - For more information on the different configurations available for AVDs, please visit the [official documentation page.](https://developer.android.com/studio/run/managing-avds)
+      - On the welcome screen, find the "more options menu" and select **Virtual Device Manager**
+     
+        <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
+         
+        * If you already have a project open in Android Studio, in the right hand toolbar, locate `device Manager`.
+      - Click the **+**, and then click **Create Virtual Device**.
+      - Follow the wizard to create a phone and a tablet AVD, setting the **system image** to be one of `API Level 30` or `API Level 34` as installed above.
+      - After creating your devices, you will be able to see a list of all the devices on the device manager panel.
+      - For more information on the different configurations available for AVDs, please visit the [official documentation page.](https://developer.android.com/studio/run/managing-avds)
 
 ## Install Bazel
 ### Instructions
@@ -157,12 +165,13 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] h
 
 Run:
 ```shell
-sudo apt update && sudo apt install bazel-6.5.0
+sudo apt-get update && sudo apt-get install bazel-6.5.0
 ```
 
 **Step 3: Set up your environment**
 
-Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. To do this, find the path to the installed SDK using Android Studio’s SDK Manager (install SDK 28). Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:<br>
+Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:
+
 ```
 export ANDROID_HOME=$HOME/Android/Sdk/
 ```
@@ -176,14 +185,14 @@ bazel --version
 ```
 
 ### Bazel Set up for Windows
-This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. You may run into some problems--we suggest that you post a discussion at [github-discussions](https://github.com/oppia/oppia-android/discussions).
+This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. We suggest that you post a discussion at [github-discussions](https://github.com/oppia/oppia-android/discussions/categories/q-a-installation) if you run into any problems.
 
 Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem. Windows currently only supports a terminal experience in this subsystem (though there is a prerelease version of the software with GUI support) which means Android Studio will not be supported. You will need to continue using the Windows version of Android Studio and only use the Linux subsystem for building & running Robolectric or JUnit-based tests.
 
-Due to the issues mentioned above, we recommend dual-booting your PC with Linux. However, if you choose to use windows, please follow the instructions below:
+Due to the issues mentioned above, we recommend dual-booting your PC with Linux. However, if you choose to use Windows, please follow the instructions below:
 
 **Main prerequisites**:
-- Windows 10: These instructions are geared towards users of Windows 10 (older versions will not be compatible). If you're in using an older version of Windows, please follow up with a comment on [this issue](https://github.com/oppia/oppia-android/issues/3371).
+- Windows 10+: These instructions are geared towards users of Windows 10+ (older versions will not be compatible). If you're in using an older version of Windows, please follow up with a comment on [this issue](https://github.com/oppia/oppia-android/issues/3371).
 - At least 4GB of free local disk storage space (for Linux & needed dependencies), but more will probably help when building the app
 
 At a high-level, the steps to make Bazel work on Windows are:
@@ -197,7 +206,7 @@ At a high-level, the steps to make Bazel work on Windows are:
 
 **Step 1: Install Ubuntu subsystem**
 
-Please follow Microsoft's [setup instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to set up the Linux subsystem on Windows 10. From there, you should install **Ubuntu** (the instructions below are based on the apt package manager on Ubuntu; other Linux distributions & package managers may work but they are untested by the team).
+Please follow Microsoft's [setup instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to set up the Linux subsystem on Windows 10+. From there, you should install **Ubuntu** (the instructions below are based on the apt package manager on Ubuntu; other Linux distributions & package managers may work but they are untested by the team).
 
 Once installed, open the Ubuntu terminal from the start menu.
 
@@ -341,7 +350,7 @@ Please follow these steps to set up Oppia Android on your local machine.
        5. Download the [google_checks.xml](https://github.com/checkstyle/checkstyle/blob/14005e371803bd52dff429904b354dc3e72638c0/src/main/resources/google_checks.xml) file. To do this, you can simply right-click on the download button at the top-right of the file.
        6. Copy this file to the directory where Git is installed (usually C:/Program Files/Git/).
 
-## Run the app from Android Studio
+## Opening the project in Android Studio
 
 1. Launch Android Studio, and on the welcome screen, select **Plugins** to install the Bazel for Android Studio plugin and restart Android Studio.
 
@@ -365,7 +374,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 
    <img width="760" alt="Image" src="https://github.com/user-attachments/assets/5a26210f-865d-4048-b5a5-73379984bfb5" />
 
-7. In the above file, modify it so that it looks like below(copy and paste):
+7. In the above file, modify it so that it looks like below (copy and paste):
    
    ```
    directories:
@@ -379,14 +388,12 @@ Please follow these steps to set up Oppia Android on your local machine.
    targets:
    # If source code isn't resolving, add additional targets that compile it here
       //:oppia_dev_binary
-      //app
-      //app/src/main/...
-      //domain/...
+      //app //app/src/main/... 
+      //domain/src/main/... 
+      //testing/src/main/... 
+      //utility/src/main/... 
+      //data/src/main/... 
       //model/...
-      //testing/...
-      //utility/...
-      //data/...
-      //scripts/...
       
    additional_languages:
       # Uncomment any additional languages you want supported
@@ -398,17 +405,14 @@ Please follow these steps to set up Oppia Android on your local machine.
 
    # Please uncomment an android-SDK platform. Available SDKs are:
       # android_sdk_platform: android-28
-      android_sdk_platform: android-29
-      # android_sdk_platform: android-30
+      # android_sdk_platform: android-29
+      android_sdk_platform: android-30
       # android_sdk_platform: android-31
       # android_sdk_platform: android-32
       # android_sdk_platform: android-33
       android_sdk_platform: android-34
    
    shard_sync: true
-   sync_flags:
-      --local_ram_resources=HOST_RAM*.5
-      --discard_analysis_cache
    
    java_language_level: 11
    ```
@@ -418,7 +422,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
 
-   You can run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the commands below, but using the GUI to run the app might be more intuitive for some developers.
+   You can run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the run commands listed in the [bazel user guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide), but using the GUI to run the app might be more intuitive for some developers.
 
    ![Screenshot 2025-02-26 at 22 16 32](https://github.com/user-attachments/assets/f3be5288-dc96-4079-bcb2-b514de81f899)
 
@@ -432,42 +436,6 @@ Please follow these steps to set up Oppia Android on your local machine.
      - **Bazel flags** are optional.
      - Select **Apply** and then **Close** or **Ok**.
 
-## Run the app from the command line
-
-Using the command line is helpful in instances when you need to run some targets outside of Android Studio.
-
-Run the following commands in your terminal. All Bazel commands must be run from the root of the ‘oppia-android’ directory otherwise they will fail.
-
-Note that on the first run, these commands may take 10-20 minutes to complete depending on the performance of your machine. Subsequent runs will be much faster.
-
-On Sdk 29 and below, run:
-   ```
-   bazel mobile-install //:oppia_dev_binary
-   ```
-This will build, install and launch the app on your device.
-
-On Sdk 30 and newer, run:
-   ```
-   bazel build //:oppia_dev
-   ```
-followed by:
-   ```
-   adb install bazel-bin/oppia_dev_binary.apk  
-   ```
-Starting from Sdk 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
-
-If everything is working, you should see output like the following:
-
-```
-Target //:oppia_dev up-to-date:
-  bazel-bin/oppia_dev.aab
-INFO: Elapsed time: ...
-INFO: 1 process...
-INFO: Build completed successfully, ...
-```
-
-Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the `mobile-install` command.
-
 ## Set up and run tests
 Testing the app is an integral part of our development process. You will need to test all code changes to ensure that the app works correctly, therefore it is important to ensure that your test configuration works.
 
@@ -475,7 +443,7 @@ Our Bazel setup currently supports running tests on Robolectric which is fast be
 
 We can run tests either through the UI supported by the Bazel Plugin, or via running a `bazel test` command on the terminal, i.e.:
 
-> Tip 1: In order to get the correct path always, open the test file, then on the AS sidebar, right click on the file, and select `copy path/reference`. Then select `copy path from repository root`. Paste the copied path to terminal and remove the `.kt` extension.
+> Tip 1: In order to get the correct path always, open the test file, then on the AS sidebar, right click on the file, and select `copy path/reference`. Then select `copy path from repository root`. Paste the copied path to terminal and remove the `.kt` extension. This can also be achieved by right clicking on the file tab if the test file is open and copy the copy path/reference.
 
    ```
    bazel test full-path-of-test-file
@@ -487,7 +455,7 @@ e.g.
    bazel test domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest
    ```
 
-> Tip 2: You can pass a target argument to the `bazel test` command instead. Copy the relative path to the test file and query its target using `bazel query path-of-test-file` e.g. `bazel query domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt`. This will give you a Bazel target (i.e. starts with '//') --just copy that and remove the `.kt` at the end and you can pass it to `bazel test`, e.g.
+> Tip 2: You can pass a target argument to the `bazel test` command instead. Copy the relative path to the test file and query its target using `bazel query relative-path-of-test-file` e.g. `bazel query domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt`. This will give you a Bazel target (i.e. starts with '//') --just copy that and remove the `.kt` at the end and you can pass it to `bazel test`, e.g.
 
 ```
 bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest
@@ -517,7 +485,10 @@ bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartup
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
 2. A second way to run a test class would be to open the `BUILD` file located in the same package as the test file, and clicking on the green arrow next to the test target name.
+  
    ![Image](https://github.com/user-attachments/assets/c1ee9e23-b0b2-430a-9592-9f87a2fdcbf0)
+
+3. The third way is to run a the test via CLI as mentioned above.
 
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
@@ -526,22 +497,32 @@ bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartup
 
 - To learn about how we write tests at oppia-android, please refer to: [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
 
-- To learn more about getting started with Bazel, please see [Oppia-Bazel-Glossary](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Glossary).
+- To learn more about getting started with Bazel, please see the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide).
 
 ### Troubleshooting Installation
 #### General issues
 1. If the Static Checks on your PR keeps failing, please refer to [instructions on running static checks locally](https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks#how-to-run-static-checks-locally) in order to catch these errors before pushing.
 2. If you are using Android Studio or another UI-based git to push, you might see unclear errors such as `Error: Failed to push some refs to git@github.com:<your_user_name>/oppia-android.git`. We recommend using the command line to run all git commands.
+3. **Error**: Unresolved reference `DaggerXXTest_TestApplicationComponent`. **Solution**: Don't worry this is not an error. Just run the test file and it will solve the error. For running tests, you can see [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) document.
+4. Crashing layout tags in tablet, e.g.:
+   **Error**: `java.lang.IllegalArgumentException: The tag for topic_lessons_title is invalid. Received: layout-sw600dp-port/topic_lessons_title_0`
+   **Solution**: This error occurs when we remove any xml file which is related to tablet devices
+   To solve this
+      - Uninstall the app from tablet
+      - Rebuild the app.
+      - Run the app again.
 
 #### Bazel issues
 The team is in the process of migrating away from Gradle to Bazel, so while the project still has Gradle build files, they are no longer maintained and cannot be used to build the project.
 
 Please note that:
-- It's currently recommended that all team members use **Bazel** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin, day-to-day Bazel development currently suffers from:
+- The IntelliJ Bazel plugin currently has some known issues:
     - Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros or MacOS, this can result in a Kernel panic when memory is fully exhausted.
     - Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
     - Syntax highlighting errors in some instances.
 - As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time, and we will continually update our documentation with the latest changes.
+
+Other problems that you may run into:
 
 1. No matching toolchains (sdk_toolchain_type)
     ```
@@ -553,10 +534,10 @@ Please note that:
     INFO: 0 processes.
     FAILED: Build did NOT complete successfully (13 packages loaded, 51 targets configured)
     ```
-   [Steps](https://docs.bazel.build/versions/main/tutorial/android-app.html#integrate-with-the-android-sdk) to add ANDROID_HOME environment variable.
+   Follow the [steps](https://docs.bazel.build/versions/main/tutorial/android-app.html#integrate-with-the-android-sdk) to add the ANDROID_HOME environment variable.
 
 2. java.lang.ClassNotFoundException: com.android.tools.r8.compatdx.CompatDx
-   If, when building the app binary, you encounter a failure that indicates that the CompatDx file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 32.0.0). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
+   If, when building the app binary, you encounter a failure that indicates that the `CompatDx` file cannot be found, this is likely due to you using a newer version of the Android build tools. You can manually downgrade to an older version of build-tools (particularly 32.0.0). Unfortunately, this can't be done through Android Studio but it can be done over a terminal. Follow the instructions listed [here](https://github.com/oppia/oppia-android/issues/3024#issuecomment-884513455) to downgrade your build tools & then try to build the app again.
 
 3. If you encounter this error while building bazel on Apple Silicone Mac:
       ```
@@ -564,25 +545,25 @@ Please note that:
 
       Use --sandbox_debug to see verbose messages from the sandbox protoc failed: error executing command bazel-out/darwin-opt-exec-2B5CBBC6/bin/external/com_google_protobuf/protoc '--proto_path=bazel-out/android-armeabi-v7a-fastbuild/bin/model/src/main/proto/_virtual_imports/languages_proto' ... (remaining 8 argument(s) skipped)
       ```
-Bazel requires Xcode commandline tools to build on M1, and the Xcode license also needs to be accepted.
-
-**Follow these steps to solve this error:**
-
-- Install the commandline tools: `xcode-select --install`
-
-- Accept the Xcode licence: `sudo xcodebuild -licence`
-
-- Reset the xcode select path: `sudo xcode-select -r `
-
-- Set the xcode select path to use CommandLineTools: `sudo xcode-select -s /Library/Developer/CommandLineTools`
-  Note: As of macOS 15.2.1(Sequoia), the full Xcode is required rather than just the CLT. The xcode-select path needs to point to Xcode instead:
-  `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
-
-- Confirm that the path was correctly set. The expected output is: `/Library/Developer/CommandLineTools` or `/Applications/Xcode.app/Contents/Developer` in macOS 15 and later.
-
-      xcode-select -p
-
-After successfully running the above commands, build the app using Bazel by running the following command:
+    Bazel requires Xcode commandline tools to build on M1, and the Xcode license also needs to be accepted.
+    
+    **Follow these steps to solve this error:**
+    
+    - Install the commandline tools: `xcode-select --install`
+    
+    - Accept the Xcode licence: `sudo xcodebuild -licence`
+    
+    - Reset the xcode select path: `sudo xcode-select -r `
+    
+    - Set the xcode select path to use CommandLineTools: `sudo xcode-select -s /Library/Developer/CommandLineTools`
+        Note: As of macOS 15.2.1(Sequoia), the full Xcode is required rather than just the CLT. The xcode-select path needs to point to Xcode instead:
+        `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
+    
+    - Confirm that the path was correctly set. The expected output is: `/Library/Developer/CommandLineTools` or `/Applications/Xcode.app/Contents/Developer` in macOS 15 and later.
+    
+        `xcode-select -p`
+    
+    After successfully running the above commands, build the app using Bazel by running the following command:
 
       ```
       bazel clean --expunge
@@ -590,30 +571,30 @@ After successfully running the above commands, build the app using Bazel by runn
       ```
 4. If you run into a failure like the following when trying to use `mobile-install` to a device running SDK 30 or newer:
 
-```
-FATAL EXCEPTION: main
-Process: org.oppia.android, PID: 9508
-java.lang.RuntimeException: Unable to instantiate application com.google.devtools.build.android.incrementaldeployment.StubApplication package org.oppia.android: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
-at android.app.LoadedApk.makeApplicationInner(LoadedApk.java:1466)
-at android.app.LoadedApk.makeApplicationInner(LoadedApk.java:1395)
-at android.app.ActivityThread.handleBindApplication(ActivityThread.java:6959)
-at android.app.ActivityThread.-$$Nest$mhandleBindApplication(Unknown Source:0)
-at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2236)
-at android.os.Handler.dispatchMessage(Handler.java:106)
-at android.os.Looper.loopOnce(Looper.java:205)
-at android.os.Looper.loop(Looper.java:294)
-at android.app.ActivityThread.main(ActivityThread.java:8177)
-at java.lang.reflect.Method.invoke(Native Method)
-at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
-at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
-Caused by: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
-```
-
-Then you will need to use `adb install` directly:
-
-```shell
-adb install bazel-bin/oppia_dev_binary.apk
-```
+    ```
+    FATAL EXCEPTION: main
+    Process: org.oppia.android, PID: 9508
+    java.lang.RuntimeException: Unable to instantiate application com.google.devtools.build.android.incrementaldeployment.StubApplication package org.oppia.android: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
+    at android.app.LoadedApk.makeApplicationInner(LoadedApk.java:1466)
+    at android.app.LoadedApk.makeApplicationInner(LoadedApk.java:1395)
+    at android.app.ActivityThread.handleBindApplication(ActivityThread.java:6959)
+    at android.app.ActivityThread.-$$Nest$mhandleBindApplication(Unknown Source:0)
+    at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2236)
+    at android.os.Handler.dispatchMessage(Handler.java:106)
+    at android.os.Looper.loopOnce(Looper.java:205)
+    at android.os.Looper.loop(Looper.java:294)
+    at android.app.ActivityThread.main(ActivityThread.java:8177)
+    at java.lang.reflect.Method.invoke(Native Method)
+    at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+    at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:971)
+    Caused by: java.lang.SecurityException: Writable dex file '/data/local/tmp/incrementaldeployment/org.oppia.android/dex/incremental_classes4.dex' is not allowed.
+    ```
+    
+    Then you will need to use `adb install` directly:
+    
+    ```shell
+    adb install bazel-bin/oppia_dev_binary.apk
+    ```
 
 ### Can’t find a particular issue?
 
