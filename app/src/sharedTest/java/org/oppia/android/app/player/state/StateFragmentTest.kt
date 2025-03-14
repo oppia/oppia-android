@@ -266,7 +266,6 @@ class StateFragmentTest {
     }
   }
 
-  // 1.
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_navigateThroughAllStates_withCorrectAnswers_completesExploration() {
@@ -475,7 +474,6 @@ class StateFragmentTest {
     }
   }
 
-  // 3.
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_textInputInteraction_submitWrongAnswer_showsFeedbackAndSameQuestion() {
@@ -530,7 +528,6 @@ class StateFragmentTest {
     }
   }
 
-  // 8.
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
   fun testStateFragment_textInputInteraction_submitWrongAnswerTwice_showsHints() {
@@ -5572,7 +5569,6 @@ class StateFragmentTest {
     }
   }
 
-  // 4.
   @Test
   fun testStateFragment_textInput_temporaryTextIsRetainedAfterRotation() {
     setUpTestWithLanguageSwitchingFeatureOff()
@@ -5596,7 +5592,6 @@ class StateFragmentTest {
     }
   }
 
-  // 5.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_wrongAnswerError_retainedAfterRotation() {
@@ -5620,7 +5615,6 @@ class StateFragmentTest {
     }
   }
 
-  // 6.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_navigationWithConfigChange_currentStateRetained() {
@@ -5648,7 +5642,6 @@ class StateFragmentTest {
     }
   }
 
-  // 7.
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testStateFragment_navigateBackShowsPreviousFeedback() {
