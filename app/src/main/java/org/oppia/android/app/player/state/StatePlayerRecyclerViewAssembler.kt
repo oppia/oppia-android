@@ -284,21 +284,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           HelpIndex.getDefaultInstance(),
           isCurrentStatePendingState = false
         )
-      } else if (ephemeralState.stateTypeCase == StateTypeCase.NEED_TO_REVISIT_OLD_CARD) {
-        if (playerFeatureSet.hintsAndSolutionsSupport) {
-          (fragment as ShowHintAvailabilityListener).onHintAvailable(
-            HelpIndex.getDefaultInstance(),
-            isCurrentStatePendingState = false
-          )
-        }
-        addPreviousAnswers(
-          conversationPendingItemList,
-          extraInteractionPendingItemList,
-          ephemeralState.needToRevisitOldCard.answerList,
-          isLastAnswerCorrect = false,
-          gcsEntityId,
-          ephemeralState.writtenTranslationContext
-        )
       }
 
       // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
@@ -308,6 +293,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
         extraInteractionPendingItemList,
         ephemeralState.completedState.answerList,
         isLastAnswerCorrect = true,
+        gcsEntityId,
+        ephemeralState.writtenTranslationContext
+      )
+    } else if (ephemeralState.stateTypeCase == StateTypeCase.NEED_TO_REVISIT_OLD_CARD) {
+      if (playerFeatureSet.hintsAndSolutionsSupport) {
+        (fragment as ShowHintAvailabilityListener).onHintAvailable(
+          HelpIndex.getDefaultInstance(),
+          isCurrentStatePendingState = false
+        )
+      }
+      addPreviousAnswers(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        ephemeralState.needToRevisitOldCard.answerList,
+        isLastAnswerCorrect = false,
         gcsEntityId,
         ephemeralState.writtenTranslationContext
       )
