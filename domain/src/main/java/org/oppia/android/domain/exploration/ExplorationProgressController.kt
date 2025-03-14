@@ -680,8 +680,9 @@ class ExplorationProgressController @Inject constructor(
         answerOutcome =
           explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
 
-        if(answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME &&
-          explorationProgress.stateDeck.isStatePreviouslyVisited(answerOutcome.previousStateName)) {
+        if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME &&
+          explorationProgress.stateDeck.isStatePreviouslyVisited(answerOutcome.previousStateName)
+          ) {
           explorationProgress.stateDeck.enableLearnAgainButton()
         } else {
           explorationProgress.stateDeck.disableLearnAgainButton()
@@ -822,7 +823,7 @@ class ExplorationProgressController @Inject constructor(
         "Cannot navigate to a next state if an answer submission is pending."
       }
 
-      if(explorationProgress.stateDeck.doesCurrentStateNeedToRevisitOldState()) {
+      if (explorationProgress.stateDeck.doesCurrentStateNeedToRevisitOldState()) {
         explorationProgress.stateDeck.revisitOldCard()
       } else {
         explorationProgress.stateDeck.navigateToNextState()
