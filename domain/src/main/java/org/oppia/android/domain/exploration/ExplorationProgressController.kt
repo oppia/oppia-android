@@ -680,13 +680,15 @@ class ExplorationProgressController @Inject constructor(
         answerOutcome =
           explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
 
-        if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME &&
+        if (
+          answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME &&
           explorationProgress.stateDeck.isStatePreviouslyVisited(answerOutcome.previousStateName)
-          ) {
+        ) {
           explorationProgress.stateDeck.enableLearnAgainButton()
         } else {
           explorationProgress.stateDeck.disableLearnAgainButton()
         }
+
         explorationProgress.stateDeck.submitAnswer(
           userAnswer, answerOutcome.feedback, answerOutcome.labelledAsCorrectAnswer
         )

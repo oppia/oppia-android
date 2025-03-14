@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
+import org.oppia.android.databinding.LearnAgainButtonItemBinding
 import org.oppia.android.app.databinding.databinding.ContentItemBinding
 import org.oppia.android.app.databinding.databinding.ContinueInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ContinueNavigationButtonItemBinding
@@ -40,7 +41,6 @@ import org.oppia.android.app.databinding.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.TextInputInteractionItemBinding
-import org.oppia.android.databinding.LearnAgainButtonItemBinding
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
