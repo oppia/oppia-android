@@ -266,6 +266,9 @@ class StateDeck constructor(
     return stateIndex == previousStates.size
   }
 
+  /** Returns whether the current scrolled state is the most recent state and learner need to
+   * revisit to old state played by the learner.
+   * */
   fun doesCurrentStateNeedToRevisitOldState(): Boolean {
     return isCurrentStateTopOfDeck() && showLearnAgainButton
   }
@@ -282,6 +285,7 @@ class StateDeck constructor(
     return isTopOfDeckTerminalChecker(pendingTopState)
   }
 
+  /** Navigates to the old state in the deck if it is possible. */
   fun revisitOldCard() {
     if (showLearnAgainButton && revisionIndex != -1) {
       stateIndex = revisionIndex
@@ -304,10 +308,12 @@ class StateDeck constructor(
     return false
   }
 
+  /** Enables the learn again button by setting [showLearnAgainButton] true. */
   fun enableLearnAgainButton() {
     showLearnAgainButton = true
   }
 
+  /** Disable the learn again button by setting [showLearnAgainButton] false. */
   fun disableLearnAgainButton() {
     showLearnAgainButton = false
   }

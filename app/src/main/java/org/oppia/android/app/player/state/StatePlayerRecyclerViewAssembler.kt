@@ -1227,6 +1227,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /** Adds support for displaying learn again button. */
     fun addLearnAgainSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.LEARN_AGAIN_BUTTON,
