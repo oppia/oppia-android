@@ -19,7 +19,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
-import org.oppia.android.databinding.LearnAgainButtonItemBinding
 import org.oppia.android.app.databinding.databinding.ContentItemBinding
 import org.oppia.android.app.databinding.databinding.ContinueInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ContinueNavigationButtonItemBinding
@@ -27,6 +26,7 @@ import org.oppia.android.app.databinding.databinding.DragDropInteractionItemBind
 import org.oppia.android.app.databinding.databinding.FeedbackItemBinding
 import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.LearnAgainButtonItemBinding
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
 import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
 import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
