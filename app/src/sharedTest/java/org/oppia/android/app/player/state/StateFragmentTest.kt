@@ -5305,6 +5305,38 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testFragment_argumentsAreCorrect() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(
+      FRACTIONS_EXPLORATION_ID_1,
+      shouldSavePartialProgress = false
+    ).use { scenario ->
+      startPlayingExploration()
+
+      scenario.onActivity { activity ->
+        val stateFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.state_fragment_placeholder) as StateFragment
+
+        val args =
+          stateFragment.arguments?.getProto(
+            StateFragment.STATE_FRAGMENT_ARGUMENTS_KEY,
+            StateFragmentArguments.getDefaultInstance()
+          )
+
+        val receivedInternalProfileId = args?.internalProfileId ?: -1
+        val receivedTopicId = args?.topicId!!
+        val receivedStoryId = args.storyId!!
+        val reveivedExplorationId = args.explorationId!!
+
+        assertThat(receivedInternalProfileId).isEqualTo(profileId.internalId)
+        assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID_0)
+        assertThat(receivedStoryId).isEqualTo(TEST_STORY_ID_0)
+        assertThat(reveivedExplorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
+      }
+    }
+  }
+
+  @Test
   fun testStateFragment_usesSofterRedirection_afterRevisitingEarlierCard() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
