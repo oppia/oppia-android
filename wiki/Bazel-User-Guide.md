@@ -3,10 +3,10 @@
 - [Overview](#overview)
 - [Installation](#installation)
   - [Building the app](#building-the-app)
-  - [Running specific module (app) Robolectric tests](#running-specific-module-app-robolectric-tests)
-  - [Running all Robolectric tests (slow)](#running-all-robolectric-tests-slow)
+  - [Running specific module (app) Robolectric tests](#running-specific-module--app--robolectric-tests)
+  - [Running all Robolectric tests (slow)](#running-all-robolectric-tests--slow-)
 - [Concepts and Terminology](#concepts-and-terminology)
-- [Syncing the Project](#syncing-the-project)
+- [Syncing the Project](#Syncing-the-project)
 
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
@@ -55,22 +55,40 @@ INFO: Build completed successfully, ...
 
 Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the `mobile-install` command.
 
+### Running specific module (app) Robolectric tests
+
+```
+bazel test //app/...
+```
+
+### Running all Robolectric tests (slow)
+
+```
+bazel test //...
+```
+
 ## Concepts and Terminology
-**[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**<br>
+**[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**
+
 A workspace is a directory where we add targeted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory.
 
-**[Packages](https://github.com/oppia/oppia-android/tree/develop/app)**<br>
+**[Packages](https://github.com/oppia/oppia-android/tree/develop/app)**
+
 A package is defined as a directory containing a file named BUILD or BUILD.bazel.
 
-**[Binary rules](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L3)**<br>
+**[Binary rules](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L3)**
+
 A rule specifies the relationship between inputs and outputs, and the steps to build the outputs.
 In Android, rules are defined using `android_binary`. Android rules for testing are `android_instrumentation_test` and `android_local_test`.
 
-**[BUILD files](https://github.com/oppia/oppia-android/blob/develop/app/BUILD.bazel)**<br>
+**[BUILD files](https://github.com/oppia/oppia-android/blob/develop/app/BUILD.bazel)**
+
 Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
 
-**[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**<br>
-A target A depends upon a target B if B is needed by A at build. `A -> B`<br>
+**[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**
+
+A target A depends upon a target B if B is needed by A at build. `A -> B`
+
 ```
 deps = [ "//app",]
 ```
@@ -80,20 +98,25 @@ Example of Dependencies
 1. [srcs dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L617)
 2. [deps dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L622)
 
-**[Loading an extension](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L13)**<br>
-Bazel extensions are files ending in .bzl. Use the load statement to import a symbol from an extension.<br>
+**[Loading an extension](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L13)**
+
+Bazel extensions are files ending in .bzl. Use the load statement to import a symbol from an extension.
+
 ```
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 ```
 Here, we are loading `android.bzl` and we are going to use it with a symbol name `kt_android_library`.
 Arguments to the load function must be string literals. load statements must appear at top-level in the file.
 
-**[Visibility of a file target](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L621)**<br>
-With the example from our codebase, target `app` whose visibility is public. <br>
- - `visibility = ["//visibility:public"],` - Anyone can use this target.<br>
+**[Visibility of a file target](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L621)**
+
+With the example from our codebase, target `app` whose visibility is public. 
+
+ - `visibility = ["//visibility:public"],` - Anyone can use this target.
  - `"//visibility:private"` - Only targets in this package can use this target.
 
-**[Testing](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L719)**<br>
+**[Testing](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L719)**
+
 when we want to run test cases on Bazel build environment, a test target needs to be set up correctly:
 
 ```bazel

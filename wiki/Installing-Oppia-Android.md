@@ -6,9 +6,9 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 
 - [Prepare developer environment](#prepare-developer-environment)
 - [install Bazel](#install-bazel)
-  - [Bazel setup for Mac](#bazel-set-up-for-mac)
-  - [Bazel setup for Linux](#bazel-set-up-for-linux)
-  - [Bazel setup for Windows](#bazel-set-up-for-windows)
+  - [Bazel Set up for Mac](#bazel-set-up-for-mac)
+  - [Bazel Set up for Linux](#bazel-set-up-for-linux)
+  - [Bazel Set up for Windows](#bazel-set-up-for-windows)
 - [Install oppia-android](#install-oppia-android)
 - [Opening the Project in Android Studio](#opening-the-project-in-android-studio)
 - [Set up and Run tests](#set-up-and-run-tests)
@@ -422,7 +422,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
 
-   You can run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the run commands listed in the [bazel user guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide), but using the GUI to run the app might be more intuitive for some developers.
+   You can run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the run commands listed in the [Bazel user guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide), but using the GUI to run the app might be more intuitive for some developers.
 
    ![Screenshot 2025-02-26 at 22 16 32](https://github.com/user-attachments/assets/f3be5288-dc96-4079-bcb2-b514de81f899)
 
