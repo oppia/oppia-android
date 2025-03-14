@@ -603,6 +603,120 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_multipleChoice_noSelection_showsError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.selection_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_itemSelectionRadio_noSelection_showsError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.selection_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_itemSelectionCheckboxes_noSelection_showsError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.selection_input_error)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_nonIntegerParts_showsError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+
+      typeRatioExpression("1.5:2")
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  fun testStateFragment_ratioInput_zeroInParts_showsError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+
+      typeRatioExpression("0:1")
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.ratio_input_error)).check(matches(isDisplayed()))
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
+  fun testStateFragment_ratioInput_incorrectFormat_showsError() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      typeRatioExpression("1:2:3")
+      clickSubmitAnswerButton()
+
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(waitForMatch(withId(R.id.ratio_input_error), 5000L))
+
+      onView(withId(R.id.ratio_input_error))
+        .check(matches(isDisplayed()))
+        .check(matches(withText(containsString("Invalid ratio format"))))
+      verifySubmitAnswerButtonIsDisabled()
+    }
+  }
+
+  @Test
   fun testStateFragment_loadExp_explorationHasContinueButton() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -5878,6 +5992,16 @@ class StateFragmentTest {
         shouldSavePartialProgress
       )
     )
+  }
+
+  private fun playThroughFractionsExplorationState1() {
+    // First state: Multiple Choice Interaction
+    selectMultipleChoiceOption(
+      optionPosition = 3,
+      expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+    )
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
   }
 
   private fun startPlayingExploration() {
