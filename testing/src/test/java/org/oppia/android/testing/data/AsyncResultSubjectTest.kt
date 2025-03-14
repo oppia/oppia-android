@@ -259,4 +259,35 @@ class AsyncResultSubjectTest {
       .hasSameEffectiveValueAs(failureResult2)
       .isFalse()
   }
+
+  @Test
+  fun testAsyncResultSubject_newerResult_isNewerOrSameAgeAsOlderResult() {
+    val olderResult = AsyncResult.Success("Older")
+    val newerResult = AsyncResult.Success("Newer")
+    AsyncResultSubject.assertThat(newerResult).isNewerOrSameAgeAs(olderResult)
+  }
+
+  @Test
+  fun testAsyncResultSubject_sameAgeResults_areNotOlderThanEachOther() {
+    val result1 = AsyncResult.Success("Same1")
+    val result2 = AsyncResult.Success("Same2")
+    try {
+      AsyncResultSubject.assertThat(result1).isOlderThan(result2)
+      throw AssertionError("Expected assertion to fail")
+    } catch (e: AssertionError) {
+      // Expected: result1 is not older than result2
+    }
+    try {
+      AsyncResultSubject.assertThat(result2).isOlderThan(result1)
+      throw AssertionError("Expected assertion to fail")
+    } catch (e: AssertionError) {
+      // Expected: result2 is not older than result1
+    }
+  }
+
+  @Test
+  fun testAsyncResultSubject_result_isNewerOrSameAgeAsItself() {
+    val result = AsyncResult.Success("Value")
+    AsyncResultSubject.assertThat(result).isNewerOrSameAgeAs(result)
+  }
 }
