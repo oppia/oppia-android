@@ -22,7 +22,11 @@ class StateGraph constructor(
   }
 
   /** Returns an [AnswerOutcome] based on the current state and resulting [Outcome] from the learner's answer. */
-  fun computeAnswerOutcomeForResult(currentState: State, outcome: Outcome): AnswerOutcome {
+  fun computeAnswerOutcomeForResult(
+    currentState: State,
+    outcome: Outcome,
+    stateVisited: Boolean
+  ): AnswerOutcome {
     val answerOutcomeBuilder = AnswerOutcome.newBuilder()
       .setFeedback(outcome.feedback)
       .setLabelledAsCorrectAnswer(outcome.labelledAsCorrect)
@@ -34,7 +38,7 @@ class StateGraph constructor(
         answerOutcomeBuilder.missingPrerequisiteSkillId = outcome.missingPrerequisiteSkillId
       outcome.destStateName == currentState.name -> answerOutcomeBuilder.sameState = true
       !outcome.labelledAsCorrect &&
-        outcome.feedback.contentId.contains("feedback", true) ->
+        outcome.feedback.contentId.contains("feedback", true) && stateVisited  ->
         answerOutcomeBuilder.previousStateName = outcome.destStateName
       else -> answerOutcomeBuilder.stateName = outcome.destStateName
     }

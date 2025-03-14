@@ -677,13 +677,15 @@ class ExplorationProgressController @Inject constructor(
             userAnswer.answer,
             userAnswer.writtenTranslationContext
           ).outcome
+        val stateVisited =
+          explorationProgress.stateDeck.isStatePreviouslyVisited(outcome.destStateName)
         answerOutcome =
-          explorationProgress.stateGraph.computeAnswerOutcomeForResult(topPendingState, outcome)
+          explorationProgress.stateGraph.computeAnswerOutcomeForResult(
+            topPendingState, outcome, stateVisited
+          )
 
         if (
-          answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME &&
-          explorationProgress.stateDeck.isStatePreviouslyVisited(answerOutcome.previousStateName)
-        ) {
+          answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME) {
           explorationProgress.stateDeck.enableLearnAgainButton()
         } else {
           explorationProgress.stateDeck.disableLearnAgainButton()
