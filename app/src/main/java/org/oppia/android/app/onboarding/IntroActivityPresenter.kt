@@ -3,11 +3,11 @@ package org.oppia.android.app.onboarding
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.IntroActivityBinding
 import org.oppia.android.app.model.IntroFragmentArguments
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.databinding.IntroActivityBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject

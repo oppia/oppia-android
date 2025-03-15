@@ -2,9 +2,9 @@ package org.oppia.android.app.settings.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.databinding.ProfileRenameActivityBinding
+import org.oppia.android.app.databinding.databinding.ProfileRenameActivityBinding
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [ProfileRenameActivity]. */

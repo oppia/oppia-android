@@ -4011,10 +4011,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/data/AsyncResultSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/environment/TestEnvironmentConfig.kt"
   test_file_not_required: true
 }
@@ -4097,10 +4093,6 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/SyncStatusTestModule.kt"
   override_min_coverage_percent_required: 0
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/ComparableOperationSubject.kt"
-  test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/mockito/MockitoKotlinHelper.kt"

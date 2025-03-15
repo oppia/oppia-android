@@ -19,13 +19,34 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineDispatcher
 import nl.dionsegijn.konfetti.KonfettiView
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.ContentItemBinding
+import org.oppia.android.app.databinding.databinding.ContinueInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.ContinueNavigationButtonItemBinding
+import org.oppia.android.app.databinding.databinding.DragDropInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.FeedbackItemBinding
+import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
+import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
+import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.PreviousButtonItemBinding
+import org.oppia.android.app.databinding.databinding.PreviousResponsesHeaderItemBinding
+import org.oppia.android.app.databinding.databinding.RatioInputInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.ReplayButtonItemBinding
+import org.oppia.android.app.databinding.databinding.ReturnToTopicButtonItemBinding
+import org.oppia.android.app.databinding.databinding.SelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.SubmitButtonItemBinding
+import org.oppia.android.app.databinding.databinding.SubmittedAnswerItemBinding
+import org.oppia.android.app.databinding.databinding.SubmittedAnswerListItemBinding
+import org.oppia.android.app.databinding.databinding.SubmittedHtmlAnswerItemBinding
+import org.oppia.android.app.databinding.databinding.TextInputInteractionItemBinding
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.StatePlayerRecyclerViewAssemblerState
 import org.oppia.android.app.model.StringList
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
@@ -68,28 +89,8 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.lifecycle.LifecycleSafeTimerFactory
-import org.oppia.android.databinding.ContentItemBinding
-import org.oppia.android.databinding.ContinueInteractionItemBinding
-import org.oppia.android.databinding.ContinueNavigationButtonItemBinding
-import org.oppia.android.databinding.DragDropInteractionItemBinding
-import org.oppia.android.databinding.FeedbackItemBinding
-import org.oppia.android.databinding.FractionInteractionItemBinding
-import org.oppia.android.databinding.ImageRegionSelectionInteractionItemBinding
-import org.oppia.android.databinding.MathExpressionInteractionsItemBinding
-import org.oppia.android.databinding.NextButtonItemBinding
-import org.oppia.android.databinding.NumericInputInteractionItemBinding
-import org.oppia.android.databinding.PreviousButtonItemBinding
-import org.oppia.android.databinding.PreviousResponsesHeaderItemBinding
-import org.oppia.android.databinding.RatioInputInteractionItemBinding
-import org.oppia.android.databinding.ReplayButtonItemBinding
-import org.oppia.android.databinding.ReturnToTopicButtonItemBinding
-import org.oppia.android.databinding.SelectionInteractionItemBinding
-import org.oppia.android.databinding.SubmitButtonItemBinding
-import org.oppia.android.databinding.SubmittedAnswerItemBinding
-import org.oppia.android.databinding.SubmittedAnswerListItemBinding
-import org.oppia.android.databinding.SubmittedHtmlAnswerItemBinding
-import org.oppia.android.databinding.TextInputInteractionItemBinding
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.logging.ConsoleLogger
@@ -111,6 +112,7 @@ private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
 private const val CONGRATULATIONS_TEXT_VIEW_FADE_MILLIS: Long = 600
 private const val CONGRATULATIONS_TEXT_VIEW_VISIBLE_MILLIS: Long = 800
+private const val HAS_PREVIOUS_RESPONSES_EXPANDED_KEY = "hasPreviousResponsesExpanded"
 
 /**
  * An assembler for generating the list of view models to bind to the state player recycler view.
@@ -1547,5 +1549,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
         UserAnswer.TextualAnswerCase.TEXTUALANSWER_NOT_SET, null -> false
       }
     }
+  }
+
+  /** Saves the expanded state to a protobuf message. */
+  fun saveState(): StatePlayerRecyclerViewAssemblerState {
+    return StatePlayerRecyclerViewAssemblerState.newBuilder()
+      .setHasPreviousResponsesExpanded(hasPreviousResponsesExpanded)
+      .build()
+  }
+
+  /** Restores the expanded state from a protobuf message. */
+  fun restoreState(state: StatePlayerRecyclerViewAssemblerState) {
+    hasPreviousResponsesExpanded = state.hasPreviousResponsesExpanded
   }
 }

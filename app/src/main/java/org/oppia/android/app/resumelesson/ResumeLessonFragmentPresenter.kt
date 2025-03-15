@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import org.oppia.android.app.databinding.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.EphemeralChapterSummary
 import org.oppia.android.app.model.ExplorationActivityParams
@@ -16,7 +17,6 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ResumeLessonFragmentArguments
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.FontScaleConfigurationUtil
-import org.oppia.android.databinding.ResumeLessonFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.topic.TopicController

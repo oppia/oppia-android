@@ -1,9 +1,9 @@
 package org.oppia.android.app.completedstorylist
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [CompletedStoryListActivity]. */

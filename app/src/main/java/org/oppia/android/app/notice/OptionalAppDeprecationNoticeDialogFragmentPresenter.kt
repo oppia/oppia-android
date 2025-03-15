@@ -3,11 +3,11 @@ package org.oppia.android.app.notice
 import android.app.Dialog
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.platformparameter.PlatformParameter
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** Presenter class responsible for showing an optional update dialog to the user. */

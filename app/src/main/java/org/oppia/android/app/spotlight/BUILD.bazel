@@ -4,17 +4,7 @@ Constructs for setting up spotlights.
 
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
-genrule(
-    name = "update_SpotlightFragment",
-    srcs = ["SpotlightFragment.kt"],
-    outs = ["SpotlightFragment_updated.kt"],
-    cmd = """
-    cat $(SRCS) |
-    sed 's/import org.oppia.android.R/import org.oppia.android.app.R/g' |
-    sed 's/import org.oppia.android.databinding./import org.oppia.android.app.databinding.databinding./g' > $(OUTS)
-    """,
-    visibility = ["//app:app_visibility"],
-)
+exports_files(["SpotlightFragment.kt"])
 
 kt_android_library(
     name = "spotlight",

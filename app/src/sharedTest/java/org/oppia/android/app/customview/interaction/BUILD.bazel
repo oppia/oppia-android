@@ -2,13 +2,18 @@
 Tests for custom interaction views.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "MathExpressionInteractionsViewTest",
-    processed_src = test_with_resources("MathExpressionInteractionsViewTest.kt"),
+    srcs = [
+        "MathExpressionInteractionsViewTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.customview.interaction.MathExpressionInteractionsViewTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",

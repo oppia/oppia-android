@@ -23,7 +23,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -39,6 +38,7 @@ import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.SpotlightFragmentTestActivity
 import org.oppia.android.app.testing.SpotlightFragmentTestActivity.Companion.createSpotlightFragmentTestActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
