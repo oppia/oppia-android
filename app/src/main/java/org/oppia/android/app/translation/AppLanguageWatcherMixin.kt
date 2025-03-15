@@ -74,7 +74,8 @@ class AppLanguageWatcherMixin @Inject constructor(
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
     val activityLanguageLocaleDataProvider = when (languageSource) {
-      ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE -> translationController.getSystemLanguageLocale()
+      ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE ->
+        translationController.getSystemLanguageLocale()
       ForcedActivityLanguageMode.USE_APP_LANGUAGE -> {
         if (currentUserProfileId != null) {
           translationController.getAppLanguageLocale(currentUserProfileId)
