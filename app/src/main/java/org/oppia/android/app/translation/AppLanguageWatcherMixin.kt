@@ -84,7 +84,7 @@ class AppLanguageWatcherMixin @Inject constructor(
         }
       }
       ForcedActivityLanguageMode.USE_ENGLISH ->
-        translationController.getLocaleFor(OppiaLanguage.ENGLISH)
+        localeController.retrieveAppStringDisplayLocale(OppiaLanguage.ENGLISH)
       else -> translationController.getSystemLanguageLocale()
     }
 
