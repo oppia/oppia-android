@@ -119,9 +119,16 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -168,7 +175,16 @@ class ExplorationProgressControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test

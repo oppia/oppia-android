@@ -99,6 +99,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 
 /** Tests for [ProfileAndDeviceIdActivity]. */
 // Function name: test names are conventionally named with underscores.
@@ -114,11 +115,8 @@ class ProfileAndDeviceIdActivityTest {
     // Use a fixed application ID to ensure deterministic generation of learner IDs.
     private const val FIXED_APPLICATION_ID = 123456789L
   }
-
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   @get:Rule
   var activityRule =
@@ -126,22 +124,16 @@ class ProfileAndDeviceIdActivityTest {
       ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
     )
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-  @Inject
-  lateinit var oppiaClock: OppiaClock
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject
-  lateinit var syncStatusManager: SyncStatusManager
+  // This initializes platform parameters and feature flags at injection, so it's unused.
+  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject lateinit var syncStatusManager: SyncStatusManager
 
   @Before
   fun setUp() {

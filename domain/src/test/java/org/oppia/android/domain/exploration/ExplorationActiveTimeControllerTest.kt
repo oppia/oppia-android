@@ -68,6 +68,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -108,6 +109,11 @@ class ExplorationActiveTimeControllerTest {
   @Before
   fun setUp() {
     TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, true)
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -515,11 +521,9 @@ class ExplorationActiveTimeControllerTest {
     // can behave like a real Android application class (per Robolectric) without having a shared
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
-    block(
-      DaggerExplorationActiveTimeControllerTest_TestApplicationComponent.builder()
-        .setApplication(testApplication)
-        .build()
-    )
+    testApplication.component.getPlatformParameterTestInitializer() // Ensure parameters are inited.
+    block(testApplication.component)
+    TestPlatformParameterConfigRetriever.reset()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -584,6 +588,8 @@ class ExplorationActiveTimeControllerTest {
 
     fun inject(explorationActiveTimeControllerTest: ExplorationActiveTimeControllerTest)
 
+    fun getPlatformParameterTestInitializer(): PlatformParameterTestInitializer
+
     fun getExplorationActiveTimeController(): ExplorationActiveTimeController
 
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
@@ -592,7 +598,7 @@ class ExplorationActiveTimeControllerTest {
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
+    val component: TestApplicationComponent by lazy {
       DaggerExplorationActiveTimeControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()

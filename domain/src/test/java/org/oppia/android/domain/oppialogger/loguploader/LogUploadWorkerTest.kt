@@ -82,6 +82,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.junit.After
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -159,6 +160,11 @@ class LogUploadWorkerTest {
     ).build()
 
   private val exception = Exception("TEST")
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
+  }
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyFailed() {

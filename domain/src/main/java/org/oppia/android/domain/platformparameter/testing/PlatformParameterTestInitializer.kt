@@ -29,7 +29,7 @@ class PlatformParameterTestInitializer @Inject constructor(
     // Wait for parameters to successfully load. Note that this is particularly ordered to avoid a
     // race condition on priming the underlying platform parameter database and trying to load
     // parameters too quickly (which can cause a redundant initialization of
-    // PlatformParameterProcessState.
+    // PlatformParameterProcessState).
     val paramsProvider = platformParameterController.loadParameters()
     testCoroutineDispatchers.runCurrent()
     monitorFactory.createMonitor(paramsProvider).waitForNextSuccessResult()

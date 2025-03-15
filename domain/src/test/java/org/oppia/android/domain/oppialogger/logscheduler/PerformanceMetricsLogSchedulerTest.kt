@@ -159,10 +159,7 @@ class PerformanceMetricsLogSchedulerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerPerformanceMetricsLogSchedulerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#89): Move this to a common test application component.

@@ -76,6 +76,8 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -131,6 +133,11 @@ class AnalyticsControllerTest {
   // for an explanation of why these are provided via indirect injection.
   private val profileManagementController by lazy { profileManagementControllerProvider.get() }
   private val analyticsController by lazy { analyticsControllerProvider.get() }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
+  }
 
   @Test
   fun testController_logImportantEvent_withQuestionContext_checkLogsEvent() {
@@ -1199,7 +1206,7 @@ class AnalyticsControllerTest {
   }
 
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics)
+    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 

@@ -242,11 +242,7 @@ class DeprecationControllerTest {
     // can behave like a real Android application class (per Robolectric) without having a shared
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
-    block(
-      DaggerDeprecationControllerTest_TestApplicationComponent.builder()
-        .setApplication(testApplication)
-        .build()
-    )
+    block(testApplication.component)
   }
 
   private fun setUpOppiaApplicationForContext(
@@ -340,7 +336,7 @@ class DeprecationControllerTest {
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
-    private val component: TestApplicationComponent by lazy {
+    val component: TestApplicationComponent by lazy {
       DaggerDeprecationControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()

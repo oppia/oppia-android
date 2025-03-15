@@ -81,11 +81,15 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
-/** Tests for [AudioPlayerControllerTest]. */
+/** Tests for [AudioPlayerController]. */
 // FunctionName: test names are conventionally named with underscores.
 // SameParameterValue: tests should have specific context included/excluded for readability.
 @Suppress("FunctionName", "SameParameterValue")
@@ -116,6 +120,11 @@ class AudioPlayerControllerTest {
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
   private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterConfigRetriever.reset()
+  }
 
   @Test
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
@@ -870,7 +879,8 @@ class AudioPlayerControllerTest {
   }
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
     setUpMediaReadyApplication()
   }
 
@@ -896,11 +906,6 @@ class AudioPlayerControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    companion object {
-      // TODO: Use the new mechanism.
-      var enableLearnerStudyAnalytics: Boolean = false
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
