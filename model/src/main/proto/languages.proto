@@ -37,23 +37,25 @@ enum OppiaLanguage {
   NIGERIAN_PIDGIN = 8;
 }
 
-// Specifies the source of the language to be used for localizing activities in the Oppia Android app.
+// Specifies the mode that forces the language to be used for localizing activities in the Oppia Android app.
 // This enum determines whether an activity should derive its language from the system settings,
-// the app's selected language, or enforce a specific language such as English.
-enum ActivityLanguageSource {
-  // Corresponds to an unspecified or default language source. When this value is used, the app may
+// the app's selected language, or enforce a specific language such as English, overriding default behavior.
+enum ForcedActivityLanguageMode {
+  // Corresponds to an unspecified or default language mode. When this value is used, the app may
   // fall back to a default behavior, such as using the system language or another predefined
   // default, depending on the context in which it is applied.
-  ACTIVITY_LANGUAGE_SOURCE_UNSPECIFIED = 0;
+  FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED = 0;
 
   // Indicates that the activity should use the system's default language, as configured by the user
   // in the device's settings. This aligns with the system's locale settings and reflects the user's
-  // preferred language on the device.
+  // preferred language on the device. Note that this may be a necessary mode in cases when an
+  // activity cannot load user settings (such as in certain test or early app lifecycle scenarios).
   USE_SYSTEM_LANGUAGE = 1;
 
   // Indicates that the activity should use the language selected within the Oppia app. This may
   // differ from the system's language if the user has chosen a specific language through the app's
   // settings, providing flexibility for app-specific localization.
+  // Note that this should generally be the default mode used.
   USE_APP_LANGUAGE = 2;
 
   // Indicates that the activity should always use English, overriding both the system and app

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ActivityLanguageSource
+import org.oppia.android.app.model.ForcedActivityLanguageMode
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.POLICIES_ACTIVITY
@@ -36,7 +36,7 @@ class PoliciesActivity :
   }
 
   override fun initializeMixin(appLanguageWatcherMixin: AppLanguageWatcherMixin) {
-    appLanguageWatcherMixin.initialize(ActivityLanguageSource.USE_ENGLISH)
+    appLanguageWatcherMixin.initialize(ForcedActivityLanguageMode.USE_ENGLISH)
   }
 
   companion object {

@@ -2,7 +2,7 @@ package org.oppia.android.app.translation
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.android.app.model.ActivityLanguageSource
+import org.oppia.android.app.model.ForcedActivityLanguageMode
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -39,9 +39,12 @@ class AppLanguageWatcherMixin @Inject constructor(
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
    *
-   * @param shouldOnlyUseSystemLanguage whether only the system language should be used
+   * @param languageSource specifies the source of the language to use for this activity:
+   *   - `USE_SYSTEM_LANGUAGE`: Use the system's default language, as set in the device's settings.
+   *   - `USE_APP_LANGUAGE`: Use the language selected in the app's settings, if available; otherwise, fall back to the system language.
+   *   - `USE_ENGLISH`: Always use English, overriding both system and app language settings.
    */
-  fun initialize(languageSource: ActivityLanguageSource) {
+  fun initialize(languageSource: ForcedActivityLanguageMode) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -71,15 +74,15 @@ class AppLanguageWatcherMixin @Inject constructor(
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
     val activityLanguageLocaleDataProvider = when (languageSource) {
-      ActivityLanguageSource.USE_SYSTEM_LANGUAGE -> translationController.getSystemLanguageLocale()
-      ActivityLanguageSource.USE_APP_LANGUAGE -> {
+      ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE -> translationController.getSystemLanguageLocale()
+      ForcedActivityLanguageMode.USE_APP_LANGUAGE -> {
         if (currentUserProfileId != null) {
           translationController.getAppLanguageLocale(currentUserProfileId)
         } else {
           translationController.getSystemLanguageLocale()
         }
       }
-      ActivityLanguageSource.USE_ENGLISH ->
+      ForcedActivityLanguageMode.USE_ENGLISH ->
         translationController.getLocaleFor(OppiaLanguage.ENGLISH)
       else -> translationController.getSystemLanguageLocale()
     }
