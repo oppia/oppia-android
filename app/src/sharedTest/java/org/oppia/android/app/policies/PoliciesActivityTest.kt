@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.text.Spannable
 import android.text.style.ClickableSpan
+import android.view.Gravity
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -204,6 +205,30 @@ class PoliciesActivityTest {
             equalTo(policiesArguments)
           )
         )
+      }
+    }
+  }
+
+  @Test
+  fun testPoliciesActivity_withArabicSystemLocale_contentIsInEnglishAndLeftAligned() {
+    launch<PoliciesActivity>(
+      PoliciesActivity.createPoliciesActivityIntent(
+        ApplicationProvider.getApplicationContext(),
+        PolicyPage.PRIVACY_POLICY
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        // Verify that the content is in English
+        val titleToolbar = activity.findViewById<Toolbar>(R.id.policies_activity_toolbar)
+        assertThat(titleToolbar.title).isEqualTo("Privacy Policy")
+
+        // Verify that the text is left-aligned
+        val textView = activity.findViewById<TextView>(R.id.policy_description_text_view)
+        val effectiveGravity = Gravity.getAbsoluteGravity(
+          textView.gravity,
+          textView.layoutDirection
+        )
+        assertThat(effectiveGravity and Gravity.HORIZONTAL_GRAVITY_MASK).isEqualTo(Gravity.LEFT)
       }
     }
   }

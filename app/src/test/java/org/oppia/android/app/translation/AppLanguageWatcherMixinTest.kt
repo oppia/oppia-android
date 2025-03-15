@@ -253,6 +253,19 @@ class AppLanguageWatcherMixinTest {
   }
 
   @Test
+  fun testMixin_initialized_withUnspecifiedMode_usesSystemLanguage() {
+    profileTestHelper.initializeProfiles()
+    runAlongsideTestActivity { mixin ->
+      mixin.initialize(ForcedActivityLanguageMode.FORCED_ACTIVITY_LANGUAGE_MODE_UNSPECIFIED)
+      testCoroutineDispatchers.runCurrent()
+
+      val localeContext = appLanguageLocaleHandler.getDisplayLocale().localeContext
+      assertThat(localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+      assertThat(testActivityRecreator.getRecreateCount()).isEqualTo(0)
+    }
+  }
+
+  @Test
   fun testMixin_initialized_noProfileLoggedIn_initializesSystemLanguage() {
     runAlongsideTestActivity { mixin ->
       mixin.initialize(ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE)
