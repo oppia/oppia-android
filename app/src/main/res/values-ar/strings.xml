@@ -39,7 +39,7 @@
   <string name="concept_card_toolbar_title">بطاقة المفهوم</string>
   <string name="concept_card_one_button_text">بطاقة المفاهيم 1</string>
   <string name="concept_card_two_button_text">بطاقة المفاهيم 2</string>
-  <string name="revision_card_toolbar_title">بطاقة المراجعة</string>
+  <string name="revision_card_toolbar_title">دليل الدراسة</string>
   <string name="unsaved_exploration_dialog_title">هل تريد المغادرة إلى صفحة الموضوع؟</string>
   <string name="unsaved_exploration_dialog_description">لن يتم حفظ تقدمك.</string>
   <string name="unsaved_exploration_dialog_leave_button">مغادرة</string>
@@ -90,9 +90,9 @@
   <string name="onboarding_activity_title">مقدمة</string>
   <string name="frequently_asked_questions_FAQ">الأسئلة الأكثر تكرارا</string>
   <string name="info">معلومات</string>
-  <string name="lessons">الدروس</string>
+  <string name="learn">تعلم</string>
   <string name="practice">ممارسة</string>
-  <string name="revision">مراجعة</string>
+  <string name="study">يذاكر</string>
   <string name="administrator_controls_title">أدوات تحكم المشرف</string>
   <string name="topic_page">صفحة الموضوع</string>
   <string name="topic_name">الموضوع: %s</string>
@@ -196,6 +196,8 @@
   <string name="size_gb">%s ج.ب</string>
   <string name="correct">صحيح!</string>
   <string name="topic_prefix">الموضوع: %s</string>
+  <string name="selected_image_region_selection_content_description">الصورة تظهر %1$s.</string>
+  <string name="unselected_image_region_selection_content_description">حدد الصورة %1$s.</string>
   <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
@@ -577,7 +579,7 @@
   <string name="faq_answer_create_profile">&lt;p&gt;إذا كانت هذه هي المرة الأولى التي تقوم فيها بإنشاء ملف تعريف و لم يكن لديك رمز PIN: من خيار الملف تعريف، اضغط على إعداد ملف تعبير عدة. إخلق رقم PIN و حفظ. املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي. اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;ol&gt;&lt;li&gt;من اختيار الملفات الشخصية، اضغط على إعداد الملفات الملفات الأخرى.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;إبق&lt;/strong&gt; رقم PIN و حفظ.&lt;/li&gt;&lt;li&gt;املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي.&lt;ol&gt;&lt;li&gt; (اختياري) تحميل صورة.&lt;/li&gt;&lt;li&gt;أدخل اسمك&lt;/li&gt;&lt;li&gt; (اختياري) تعيين رقم PIN 3 رقمي.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;إذا كنت قد أنشأت ملفاً ملفاَ ملفاُ ملفاٌ ملفاٍ ملفاِ ملفا ً ملفا (PIN): من خيار الملفاً الملفاَ، اضغط على إضافة الملفاُ الملفاِ. أدخل رقم رسومك وتقرّب على \"إرسال\". املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي. اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;ol&gt;&lt;li&gt;من اختيار الملفات الشخصية، اضغط على إضافة الملفات.&lt;/li&gt;&lt;li&gt;أدخل رقم رسومك وتقرّب على \"&lt;strong&gt;إرسال&lt;/strong&gt;\".&lt;/li&gt;&lt;li&gt;املأ جميع الحقول للملف الشخصي.  (اختياري) تحميل صورة. أدخل اسمك  (اختياري) تعيين رقم PIN 3 رقمي.&lt;ol&gt;&lt;li&gt; (اختياري) تحميل صورة.&lt;/li&gt;&lt;li&gt;أدخل اسمك&lt;/li&gt;&lt;li&gt; (اختياري) تعيين رقم PIN 3 رقمي.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;اضغط على \"إنشاء\" هذا الملف الشخصي يضاف إلى اختيار الملف الشخصى الخاص بك!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;ملاحظة: إدارة الملفات الشخصية يمكن &lt;u&gt;المدير&lt;/u&gt; فقط.&lt;/p&gt;</string>
   <string name="faq_answer_app_language">&lt;p&gt;التطبيق %s يدعم حاليا اللغة الإنجليزية والبرتغالية البرازيلية والعربية والسواحيلية والبيدجينية النيجيرية. اختر إحدى هذه اللغات من القائمة، في الخيارات. لطلب التطبيق باللغة التي تتحدث بها، يرجى الاتصال بنا على   &lt;strong&gt;admin@oppia.org&lt;/strong&gt;.&lt;/p&gt;</string>
   <string name="faq_answer_bug_reporting">&lt;p&gt;&lt;ol&gt;&lt;li&gt;من خلال %s شاشة التطبيق الرئيسية، اضغط على القائمة في أعلى الزاوية اليسرى&lt;/li&gt;&lt;li&gt;اضغط على &lt;strong&gt;مشاركة التعليقات&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;اتبع التعليمات للإبلاغ عن الأخطاء أو مشاركة التعليقات&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
-  <string name="faq_answer_math_lessons">&lt;p&gt;%1$s مهمتها مساعدة المتعلمين على اكتساب المهارات الحياتية اللازمة. الرياضيات مهارة أساسية في الحياة اليومية1%$s سوف تقدم دروسا جديدة في العلوم وغيرها من المواد قريبا!&lt;/p&gt;</string>
+  <string name="faq_answer_math_lessons">&lt;p&gt;%1$s مهمتها مساعدة المتعلمين على اكتساب المهارات الحياتية اللازمة. الرياضيات مهارة أساسية في الحياة اليومية %1$s سوف تقدم دروسا جديدة في العلوم وغيرها من المواد قريبا!&lt;/p&gt;</string>
   <string name="faq_answer_more_lessons">&lt;p&gt;أجل, %s سوف تقدم دروسا جديدة في العلوم وفي مواد أخرى قريبا. الرجاء زيارتنا مجددا لمعرفة كل ماهو جديد!&lt;/p&gt;</string>
   <string name="faq_answer_exploration_player">&lt;p&gt;إذا لم يتم تحميل جهاز التحقيق&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من تحديث التطبيق:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اذهب إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصال الإنترنت بطيء، حاول إعادة الاتصال بشبكة واي فاي الخاصة بك أو الاتصال بشبك آخر.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;اطلب من المدير التحقق من جهازك و اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;احصل على المدير لإصلاح المشاكل باستخدام الخطوات أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كان لديك مشاكل مع الحملة:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إبلاغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
   <string name="faq_answer_audio_not_playing">&lt;p&gt;إذا كان صوتك لا يعزف&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من تحديث التطبيق:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;اذهب إلى متجر Play وتأكد من تحديث التطبيق إلى أحدث إصدار&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;تحقق من اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إذا كان اتصال الإنترنت بطيء، حاول إعادة الاتصال بشبكة واي فاي الخاصة بك أو الاتصال بشبك آخر. إن الإنترنت البطيء قد يسبب تحميل الصوت بشكل غير منتظم مما يجعل من الصعب تشغيله.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;اطلب من المدير التحقق من جهازك و اتصالك بالإنترنت:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;احصل على المدير لإصلاح المشاكل باستخدام الخطوات أعلاه&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;أخبرنا إذا كان لديك مشاكل مع الحملة:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;إبلاغ عن مشكلة عن طريق الاتصال بنا على admin@oppia.org.&lt;/li&gt;&lt;/ul&gt;</string>
@@ -673,4 +675,5 @@
   <string name="audio_language_fragment_text">في %s ، يمكنك الاستماع إلى الدروس!</string>
   <string name="audio_language_fragment_subtitle">اختر لغة المقاطع الصوتية للاستماع إلى الدروس</string>
   <string name="onboarding_step_count_five">الخطوة 5 من 5</string>
+  <string name="arabic_language_display_name_content_description">العربية</string>
 </resources>

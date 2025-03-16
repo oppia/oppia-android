@@ -1,8 +1,5 @@
 package org.oppia.android.data.backends.gae
 
-import android.annotation.SuppressLint
-import android.os.Build
-import com.google.common.base.Optional
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -19,58 +16,51 @@ import javax.inject.Singleton
  */
 @Module
 class NetworkModule {
-  @SuppressLint("ObsoleteSdkInt") // AS warning is incorrect in this context.
   @OppiaRetrofit
   @Provides
   @Singleton
   fun provideRetrofitInstance(
-    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     networkLoggingInterceptor: NetworkLoggingInterceptor,
+    jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
     @BaseUrl baseUrl: String
-  ): Optional<Retrofit> {
-    // TODO(#1720): Make this a compile-time dep once Hilt provides it as an option.
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .addInterceptor(networkLoggingInterceptor)
-        .build()
-
-      Optional.of(
-        Retrofit.Builder()
-          .baseUrl(baseUrl)
-          .addConverterFactory(MoshiConverterFactory.create())
-          .client(client)
-          .build()
+  ): Retrofit {
+    return Retrofit.Builder().apply {
+      baseUrl(baseUrl)
+      addConverterFactory(MoshiConverterFactory.create())
+      client(
+        OkHttpClient.Builder().apply {
+          // This is in a specific order. The auth modifies a request, so it happens first. The
+          // prefix remover executes other interceptors before changing the response, so it's
+          // registered last so that the network logging interceptor receives a response with the
+          // XSSI prefix correctly removed.
+          addInterceptor(remoteAuthNetworkInterceptor)
+          addInterceptor(networkLoggingInterceptor)
+          addInterceptor(jsonPrefixNetworkInterceptor)
+        }.build()
       )
-    } else Optional.absent()
+    }.build()
   }
 
   @Provides
   @Singleton
   fun provideFeedbackReportingService(
-    @OppiaRetrofit retrofit: Optional<Retrofit>
-  ): Optional<FeedbackReportingService> {
-    return retrofit.map { it.create(FeedbackReportingService::class.java) }
+    @OppiaRetrofit retrofit: Retrofit
+  ): FeedbackReportingService {
+    return retrofit.create(FeedbackReportingService::class.java)
   }
 
   @Provides
   @Singleton
   fun providePlatformParameterService(
-    @OppiaRetrofit retrofit: Optional<Retrofit>
-  ): Optional<PlatformParameterService> {
-    return retrofit.map { it.create(PlatformParameterService::class.java) }
+    @OppiaRetrofit retrofit: Retrofit
+  ): PlatformParameterService {
+    return retrofit.create(PlatformParameterService::class.java)
   }
 
   // Provides the API key to use in authenticating remote messages sent or received. This will be
-  // replaced with a secret key in production.
+  // replaced with a secret key in production builds.
   @Provides
   @NetworkApiKey
   fun provideNetworkApiKey(): String = ""
-
-  private companion object {
-    private fun <T, V> Optional<T>.map(mapFunc: (T) -> V): Optional<V> =
-      transform { mapFunc(checkNotNull(it)) } // Payload should never actually be null.
-  }
 }

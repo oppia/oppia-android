@@ -1,7 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableBoolean
-import org.oppia.android.R
 import org.oppia.android.app.hintsandsolution.HintsAndSolutionViewModel.Factory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -29,6 +28,7 @@ import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import org.oppia.android.app.utility.toAccessibleAnswerString
+import org.oppia.android.app.view.models.R
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation

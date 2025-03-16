@@ -34,6 +34,7 @@
       app:textChangedListener="@{viewModel.answerTextWatcher}" />
 
     <TextView
+      android:id="@+id/numeric_input_interaction_text_view"
       style="@style/InputInteractionErrorTextView"
       android:text="@{viewModel.errorMessage}"
       android:textColor="@color/component_color_shared_input_error_color"

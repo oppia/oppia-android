@@ -3,11 +3,11 @@ package org.oppia.android.app.devoptions.markchapterscompleted.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.model.MarkChaptersCompletedTestActivityParams
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 

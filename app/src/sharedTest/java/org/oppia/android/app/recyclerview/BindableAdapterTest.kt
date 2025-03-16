@@ -26,7 +26,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.ActivityComponentImpl
@@ -38,6 +37,9 @@ import org.oppia.android.app.application.ApplicationInjector
 import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.databinding.databinding.TestTextViewForIntWithDataBindingBinding
+import org.oppia.android.app.databinding.databinding.TestTextViewForLiveDataWithDataBindingBinding
+import org.oppia.android.app.databinding.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.fragment.FragmentComponent
@@ -51,6 +53,7 @@ import org.oppia.android.app.recyclerview.BindableAdapter.SingleTypeBuilder
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.BINDABLE_TEST_FRAGMENT_TAG
 import org.oppia.android.app.testing.BindableAdapterTestActivity
 import org.oppia.android.app.testing.BindableAdapterTestDataModel
@@ -64,9 +67,6 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.view.ViewComponentBuilderModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.databinding.TestTextViewForIntWithDataBindingBinding
-import org.oppia.android.databinding.TestTextViewForLiveDataWithDataBindingBinding
-import org.oppia.android.databinding.TestTextViewForStringWithDataBindingBinding
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule

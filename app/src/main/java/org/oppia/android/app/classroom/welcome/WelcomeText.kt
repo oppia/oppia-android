@@ -12,8 +12,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.oppia.android.R
 import org.oppia.android.app.home.WelcomeViewModel
+import org.oppia.android.app.ui.R
 
 /** Test tag for the welcome section. */
 const val WELCOME_TEST_TAG = "TEST_TAG.welcome"

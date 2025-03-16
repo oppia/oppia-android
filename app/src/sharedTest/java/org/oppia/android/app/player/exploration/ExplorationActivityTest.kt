@@ -57,7 +57,6 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -84,6 +83,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
@@ -2288,15 +2288,12 @@ class ExplorationActivityTest {
       openHintsAndSolutionsDialog()
       pressRevealHintButton(hintPosition = 0)
 
-      // TODO(#4848): Fix content description generation & update this test to verify using the
-      //  correct text.
-      // Ensure the hint description is correct and doesn't contain any HTML.
       onView(withId(R.id.hints_and_solution_summary))
         .check(
           matches(
             withContentDescription(
-              "Remember that two halves, when added together," +
-                " make one whole.\n\nClick on this .\n\n"
+              "Remember that two halves, when added together, make one whole." +
+                "\nClick on this test_skill_id_1 concept card."
             )
           )
         )

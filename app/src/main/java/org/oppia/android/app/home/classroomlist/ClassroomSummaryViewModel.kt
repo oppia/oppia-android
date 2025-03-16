@@ -10,6 +10,7 @@ import java.util.Objects
 class ClassroomSummaryViewModel(
   private val classroomSummaryClickListener: ClassroomSummaryClickListener,
   ephemeralClassroomSummary: EphemeralClassroomSummary,
+  val entityType: String,
   translationController: TranslationController,
 ) : HomeItemViewModel() {
   /** The [ClassroomSummary] retrieved from the [EphemeralClassroomSummary]. */

@@ -58,7 +58,6 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -94,6 +93,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -1452,6 +1452,56 @@ class StateFragmentLocalTest {
       // Submitting a wrong answer should not change anything since the solution's been revealed.
       onView(withId(R.id.hint_bulb))
         .check(matches(withDrawable(R.drawable.ic_hint_bulb_white_48dp)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_previousResponsesExpanded_retainedOnRotation() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { _ ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      onView(withId(R.id.previous_response_header)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 2))
+
+      // Rotate device to trigger configuration change
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify expanded state is retained after rotation
+      onView(withId(R.id.previous_response_header)).check(matches(isDisplayed()))
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 2))
+    }
+  }
+
+  @Test
+  fun testStateFragment_previousResponsesCollapsed_remainsCollapsedOnRotation() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1).use { _ ->
+      startPlayingExploration()
+      playThroughFractionsState1()
+
+      submitTwoWrongAnswersForFractionsState2()
+
+      onView(withId(R.id.state_recycler_view)).perform(scrollToViewType(PREVIOUS_RESPONSES_HEADER))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 1))
+
+      // Rotate device to trigger configuration change
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify the header remains collapsed after rotation
+      onView(withId(R.id.state_recycler_view))
+        .check(matchesChildren(withId(R.id.submitted_answer_container), times = 1))
     }
   }
 

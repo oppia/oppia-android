@@ -3,6 +3,7 @@ package org.oppia.android.app.utility
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.WindowManager
 import org.oppia.android.app.model.ReadingTextSize
 import javax.inject.Inject
@@ -21,16 +22,18 @@ class FontScaleConfigurationUtil @Inject constructor() {
     // TODO(#3616): Migrate to the proper SDK 30+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     windowManager!!.defaultDisplay.getMetrics(metrics)
-    // TODO(#5625): Migrate away from scaledDensity.
+    val scaledDensity = TypedValue.applyDimension(
+      TypedValue.COMPLEX_UNIT_SP, 1.0f, metrics
+    ) * configuration.fontScale
     @Suppress("DEPRECATION")
-    metrics.scaledDensity = configuration.fontScale * metrics.density
+    metrics.scaledDensity = scaledDensity
     context.createConfigurationContext(configuration)
     context.resources.displayMetrics.setTo(metrics)
   }
 
   private fun getReadingTextSizeConfigurationUtil(readingTextSize: ReadingTextSize): Float {
     return when (readingTextSize) {
-      ReadingTextSize.SMALL_TEXT_SIZE -> .8f
+      ReadingTextSize.SMALL_TEXT_SIZE -> 0.8f
       ReadingTextSize.MEDIUM_TEXT_SIZE -> 1.0f
       ReadingTextSize.LARGE_TEXT_SIZE -> 1.2f
       ReadingTextSize.EXTRA_LARGE_TEXT_SIZE -> 1.4f

@@ -12,13 +12,13 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -31,8 +31,11 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.LicenseTextViewerActivity
+import org.oppia.android.app.help.thirdparty.LicenseTextViewerFragment
+import org.oppia.android.app.model.LicenseTextViewerFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -77,6 +80,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -313,6 +317,36 @@ class LicenseTextViewerFragmentTest {
           withText(R.string.license_text_0)
         )
       )
+    }
+  }
+
+  @Test
+  fun testFragment_argumentsAreCorrect() {
+    launch<LicenseTextViewerActivity>(
+      createLicenseTextViewerActivity(
+        dependencyIndex = 3,
+        licenseIndex = 1
+      )
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { activity ->
+
+        val licenseTextViewerFragment = activity.supportFragmentManager
+          .findFragmentById(R.id.license_text_viewer_fragment_placeholder)
+          as LicenseTextViewerFragment
+        val arguments = checkNotNull(licenseTextViewerFragment.arguments) {
+          "Expected arguments to be passed to LicenseTextViewerFragment"
+        }
+        val args = arguments.getProto(
+          LicenseTextViewerFragment.LICENSE_TEXT_VIEWER_FRAGMENT_ARGUMENTS_KEY,
+          LicenseTextViewerFragmentArguments.getDefaultInstance()
+        )
+        val receivedDependencyIndex = args.dependencyIndex
+        val receivedLicenseIndex = args.licenseIndex
+
+        assertThat(receivedDependencyIndex).isEqualTo(3)
+        assertThat(receivedLicenseIndex).isEqualTo(1)
+      }
     }
   }
 

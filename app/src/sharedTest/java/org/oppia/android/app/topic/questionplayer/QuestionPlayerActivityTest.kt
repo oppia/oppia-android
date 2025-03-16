@@ -49,7 +49,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -77,6 +76,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.FontSizeMatcher
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -457,7 +457,7 @@ class QuestionPlayerActivityTest {
           matches(
             withContentDescription(
               "To write a fraction, you need to know its denominator, which is the total " +
-                "number of pieces in the whole. All of these pieces should be the same size.\n\n"
+                "number of pieces in the whole. All of these pieces should be the same size."
             )
           )
         )

@@ -29,7 +29,6 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
 import org.oppia.android.app.classroom.classroomlist.AllClassroomsHeaderText
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
 import org.oppia.android.app.classroom.promotedlist.ComingSoonTopicList
@@ -37,6 +36,7 @@ import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
 import org.oppia.android.app.classroom.topiclist.TopicCard
 import org.oppia.android.app.classroom.welcome.WelcomeText
+import org.oppia.android.app.databinding.databinding.ClassroomListFragmentBinding
 import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
@@ -54,8 +54,8 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
-import org.oppia.android.databinding.ClassroomListFragmentBinding
 import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -66,6 +66,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
 import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
@@ -84,6 +85,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private val topicListController: TopicListController,
   private val classroomController: ClassroomController,
   private val oppiaLogger: OppiaLogger,
+  @ClassroomHtmlParserEntityType private val classroomEntityType: String,
   @TopicHtmlParserEntityType private val topicEntityType: String,
   @StoryHtmlParserEntityType private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
@@ -120,6 +122,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
       profileManagementController,
       topicListController,
       classroomController,
+      classroomEntityType,
       topicEntityType,
       storyEntityType,
       resourceHandler,

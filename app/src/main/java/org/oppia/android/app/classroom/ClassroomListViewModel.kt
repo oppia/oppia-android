@@ -7,7 +7,6 @@ import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.WelcomeViewModel
 import org.oppia.android.app.home.classroomlist.AllClassroomsViewModel
@@ -28,6 +27,7 @@ import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStoryList
 import org.oppia.android.app.model.TopicList
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.classroom.ClassroomController
@@ -40,8 +40,6 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
-import org.oppia.android.util.parser.html.TopicHtmlParserEntityType
 
 private const val PROFILE_AND_PROMOTED_ACTIVITY_COMBINED_PROVIDER_ID =
   "profile+promotedActivityList"
@@ -57,8 +55,9 @@ class ClassroomListViewModel(
   private val profileManagementController: ProfileManagementController,
   private val topicListController: TopicListController,
   private val classroomController: ClassroomController,
-  @TopicHtmlParserEntityType private val topicEntityType: String,
-  @StoryHtmlParserEntityType private val storyEntityType: String,
+  private val classroomEntityType: String,
+  private val topicEntityType: String,
+  private val storyEntityType: String,
   private val resourceHandler: AppLanguageResourceHandler,
   private val dateTimeUtil: DateTimeUtil,
   private val translationController: TranslationController
@@ -270,6 +269,7 @@ class ClassroomListViewModel(
         ClassroomSummaryViewModel(
           fragment as ClassroomSummaryClickListener,
           ephemeralClassroomSummary,
+          classroomEntityType,
           translationController
         )
       }

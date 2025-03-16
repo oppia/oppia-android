@@ -318,6 +318,10 @@ class StateRetriever @Inject constructor() {
         InteractionObject.newBuilder()
           .setNonNegativeInt(inputJson.getInt(keyName))
           .build()
+      "HasIntegerPartEqualTo" ->
+        InteractionObject.newBuilder()
+          .setSignedInt(inputJson.getInt(keyName))
+          .build()
       else ->
         InteractionObject.newBuilder()
           .setFraction(parseFraction(inputJson.getJSONObject(keyName)))

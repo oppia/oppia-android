@@ -70,7 +70,7 @@ class RegexPatternValidationCheckTest {
     "All plurals outside strings.xml must be marked as not translatable, or moved to strings.xml."
   private val importingAndroidBidiFormatterErrorMessage =
     "Do not use Android's BidiFormatter directly. Instead, use AndroidX's BidiFormatter for" +
-      " KitKat compatibility."
+      " better compatibility."
   private val importingAndroidXBidiFormatterErrorMessage =
     "Do not use AndroidX's BidiFormatter directly. Instead, use the wrapper utility" +
       " OppiaBidiFormatter so that tests can verify that formatting actually occurs on select" +
@@ -120,7 +120,7 @@ class RegexPatternValidationCheckTest {
       " properly in SDK <21 environments."
   private val useJava8OptionalErrorMessage =
     "Prefer using com.google.common.base.Optional (Guava's Optional) since desugaring has some" +
-      " incompatibilities between Bazel & KitKat builds."
+      " incompatibilities between different SDK targeted builds."
   private val useJavaCalendarErrorMessage =
     "Don't use Calendar directly. Instead, use OppiaClock and/or OppiaLocale for" +
       " calendar-specific operations."
@@ -133,7 +133,7 @@ class RegexPatternValidationCheckTest {
   private val doNotUseKotlinDelegatesErrorMessage =
     "Don't use Delegates; use a lateinit var or nullable primitive var default-initialized to" +
       " null, instead. Delegates uses reflection internally, have a non-trivial initialization" +
-      " cost, and can cause breakages on KitKat devices. See #3939 for more context."
+      " cost, and can cause breakages on some devices. See #3939 for more context."
   private val screenNameNotPresentErrorMessage =
     "Please add a Screen Name for this activity. To do this, add a value in the ScreenName enum " +
       "of screens.proto and add that name to your activity using " +
@@ -206,7 +206,8 @@ class RegexPatternValidationCheckTest {
     "Badly formatted KDoc. Single-line KDocs should always end with exactly one space before the" +
       " final \"*/\"."
   private val badKdocOrBlockCommentShouldEndWithCorrectEnding =
-    "Badly formatted KDoc or block comment. KDocs and block comments should only end with \"*/\"."
+    "Badly formatted KDoc or block comment. KDocs and block comments should only" +
+      " end with \"*/\". Multiple asterisks or whitespace between asterisks are not allowed."
   private val badKdocParamsAndPropertiesShouldHaveNameFollowing =
     "Badly formatted KDoc param or property at-clause: the name of the parameter or property" +
       " should immediately follow the at-clause without any additional linking with brackets."
@@ -2603,6 +2604,37 @@ class RegexPatternValidationCheckTest {
         $stringFilePath:13: $badKdocOrBlockCommentShouldEndWithCorrectEnding
         $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
         $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_kdocWithInvalidEndingSequences_failsValidation() {
+    val prohibitedContent =
+      """
+      /**
+       * Incorrect KDoc comment.
+       * */
+       /**
+       * Incorrect KDoc comment.
+       **/
+       /**
+         * Correct KDoc comment.
+         */
+      """.trimIndent()
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+      $stringFilePath:3: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $stringFilePath:6: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $wikiReferenceNote
         """.trimIndent()
       )
   }
