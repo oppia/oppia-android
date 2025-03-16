@@ -2,8 +2,9 @@ package org.oppia.android.domain.oppialogger.analytics
 
 import android.app.Application
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -16,9 +17,18 @@ import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.activity.ActivityComponent
+import org.oppia.android.app.activity.ActivityComponentFactory
+import org.oppia.android.app.activity.route.ActivityRouterModule
+import org.oppia.android.app.application.ApplicationComponent
+import org.oppia.android.app.application.ApplicationInjector
+import org.oppia.android.app.application.ApplicationInjectorProvider
+import org.oppia.android.app.application.ApplicationModule
+import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.devoptions.DeveloperOptionsModule
+import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
@@ -26,17 +36,46 @@ import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.testing.activity.TestActivity
+import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
+import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.domain.classify.InteractionsModule
+import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
+import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
+import org.oppia.android.domain.classify.rules.dragAndDropSortInput.DragDropSortInputModule
+import org.oppia.android.domain.classify.rules.fractioninput.FractionInputModule
+import org.oppia.android.domain.classify.rules.imageClickInput.ImageClickInputModule
+import org.oppia.android.domain.classify.rules.itemselectioninput.ItemSelectionInputModule
+import org.oppia.android.domain.classify.rules.mathequationinput.MathEquationInputModule
+import org.oppia.android.domain.classify.rules.multiplechoiceinput.MultipleChoiceInputModule
+import org.oppia.android.domain.classify.rules.numberwithunits.NumberWithUnitsRuleModule
+import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExpressionInputModule
+import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
+import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
+import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
+import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
+import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.TextInputActionTestActivity
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
@@ -47,9 +86,12 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -58,7 +100,11 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -88,41 +134,19 @@ class ApplicationLifecycleObserverTest {
     private const val headerString = "$testApiKey: $testApiKeyValue"
   }
 
-  @Inject
-  lateinit var loggingIdentifierController: LoggingIdentifierController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var performanceMetricsController: PerformanceMetricsController
-
-  @Inject
-  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-
-  @Inject
-  lateinit var fakeConsoleLogger: ConsoleLogger
-
-  @Inject
-  lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
-
-  @Inject
-  lateinit var featureFlagsLogger: FeatureFlagsLogger
+  @Inject lateinit var context: Context
+  @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var applicationLifecycleObserver: ApplicationLifecycleObserver
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var fakeConsoleLogger: ConsoleLogger
+  @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+  @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
 
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
@@ -135,20 +159,6 @@ class ApplicationLifecycleObserverTest {
 
   @field:[Inject EnableTestFeatureFlagWithEnabledDefault]
   lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
-
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TextInputActionTestActivity>(
-      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext()).apply {
-        decorateWithScreenName(ScreenName.HOME_ACTIVITY)
-      }
-    )
-
-  @get:Rule
-  var activityRuleForUnspecifiedActivity =
-    ActivityScenarioRule<TextInputActionTestActivity>(
-      TextInputActionTestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
 
   private lateinit var retrofit: Retrofit
   private lateinit var mockWebServer: MockWebServer
@@ -284,10 +294,12 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
     setUpTestApplicationComponent()
-    activityRuleForUnspecifiedActivity.scenario.onActivity { activity ->
-      applicationLifecycleObserver.onActivityResumed(activity)
-      val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
-      assertThat(currentScreenValue).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+    runWithUnspecifiedLaunchedActivity {
+      onActivity { activity ->
+        applicationLifecycleObserver.onActivityResumed(activity)
+        val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
+        assertThat(currentScreenValue).isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
+      }
     }
   }
 
@@ -310,10 +322,12 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
     setUpTestApplicationComponent()
-    activityRule.scenario.onActivity { activity ->
-      applicationLifecycleObserver.onActivityResumed(activity)
-      val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
-      assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
+    runWithSpecifiedLaunchedActivity {
+      onActivity { activity ->
+        applicationLifecycleObserver.onActivityResumed(activity)
+        val currentScreenValue = applicationLifecycleObserver.getCurrentScreen()
+        assertThat(currentScreenValue).isEqualTo(ScreenName.HOME_ACTIVITY)
+      }
     }
   }
 
@@ -323,20 +337,22 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    activityRule.scenario.onActivity { activity ->
-      val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
-      applicationLifecycleObserver.onActivityResumed(activity)
-      val startupLatencyEvents =
-        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
-      val startupLatencyEvent = startupLatencyEvents[1]
+    runWithSpecifiedLaunchedActivity {
+      onActivity { activity ->
+        val expectedStartupLatency = TEST_TIMESTAMP_IN_MILLIS_TWO - TEST_TIMESTAMP_IN_MILLIS_ONE
+        applicationLifecycleObserver.onActivityResumed(activity)
+        val startupLatencyEvents =
+          fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(3)
+        val startupLatencyEvent = startupLatencyEvents[0]
 
-      assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
-      )
-      assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
-      assertThat(startupLatencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
-      assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
-        .isEqualTo(expectedStartupLatency)
+        assertThat(startupLatencyEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
+          OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STARTUP_LATENCY_METRIC
+        )
+        assertThat(startupLatencyEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_TWO)
+        assertThat(startupLatencyEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+        assertThat(startupLatencyEvent.loggableMetric.startupLatencyMetric.startupLatencyMillis)
+          .isEqualTo(expectedStartupLatency)
+      }
     }
   }
 
@@ -347,18 +363,20 @@ class ApplicationLifecycleObserverTest {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
-    activityRule.scenario.onActivity { activity ->
-      applicationLifecycleObserver.onActivityResumed(activity)
-      applicationLifecycleObserver.onActivityResumed(activity)
+    runWithSpecifiedLaunchedActivity {
+      onActivity { activity ->
+        applicationLifecycleObserver.onActivityResumed(activity)
+        applicationLifecycleObserver.onActivityResumed(activity)
 
-      val loggedStartupLatencyEvents =
-        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
-          fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
-        ).filter {
-          it.loggableMetric.hasStartupLatencyMetric()
-        }
+        val loggedStartupLatencyEvents =
+          fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvents(
+            fakePerformanceMetricsEventLogger.getPerformanceMetricsEventListCount()
+          ).filter {
+            it.loggableMetric.hasStartupLatencyMetric()
+          }
 
-      assertThat(loggedStartupLatencyEvents.size).isEqualTo(1)
+        assertThat(loggedStartupLatencyEvents.size).isEqualTo(1)
+      }
     }
   }
 
@@ -366,29 +384,33 @@ class ApplicationLifecycleObserverTest {
   fun testObserver_activityResumed_logsMemoryUsage() {
     setUpTestApplicationWithPerformanceMetricsCollection()
 
-    activityRule.scenario.onActivity { activity ->
-      applicationLifecycleObserver.onActivityResumed(activity)
+    runWithSpecifiedLaunchedActivity {
+      onActivity { activity ->
+        applicationLifecycleObserver.onActivityResumed(activity)
 
-      val memoryUsageEvent =
-        fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
+        val memoryUsageEvent =
+          fakePerformanceMetricsEventLogger.getMostRecentPerformanceMetricsEvent()
 
-      assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
-        OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
-      )
-      assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
-      assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+        assertThat(memoryUsageEvent.loggableMetric.loggableMetricTypeCase).isEqualTo(
+          OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.MEMORY_USAGE_METRIC
+        )
+        assertThat(memoryUsageEvent.timestampMillis).isEqualTo(TEST_TIMESTAMP_IN_MILLIS_ONE)
+        assertThat(memoryUsageEvent.currentScreen).isEqualTo(ScreenName.HOME_ACTIVITY)
+      }
     }
   }
 
   @Test
   fun testObserver_activityResumed_activityPaused_currentScreenReturnsBackgroundValue() {
     setUpTestApplicationComponent()
-    activityRule.scenario.onActivity { activity ->
-      applicationLifecycleObserver.onActivityResumed(activity)
-      applicationLifecycleObserver.onActivityPaused(activity)
-      val currentScreen = applicationLifecycleObserver.getCurrentScreen()
+    runWithSpecifiedLaunchedActivity {
+      onActivity { activity ->
+        applicationLifecycleObserver.onActivityResumed(activity)
+        applicationLifecycleObserver.onActivityPaused(activity)
+        val currentScreen = applicationLifecycleObserver.getCurrentScreen()
 
-      assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+        assertThat(currentScreen).isEqualTo(ScreenName.BACKGROUND_SCREEN)
+      }
     }
   }
 
@@ -593,6 +615,27 @@ class ApplicationLifecycleObserverTest {
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_ONE)
   }
 
+  private fun runWithSpecifiedLaunchedActivity(
+    testBlock: ActivityScenario<TestActivity>.() -> Unit
+  ) {
+    val intent = TestActivity.createIntent(context).apply {
+      decorateWithScreenName(ScreenName.HOME_ACTIVITY)
+    }
+    ActivityScenario.launch<TestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
+  private fun runWithUnspecifiedLaunchedActivity(
+    testBlock: ActivityScenario<TestActivity>.() -> Unit
+  ) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
   private fun setUpRetrofitApiCall() {
     mockWebServer = MockWebServer()
     client = OkHttpClient.Builder()
@@ -627,12 +670,6 @@ class ApplicationLifecycleObserverTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    @Provides
-    @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
-
     // TODO(#59): Either isolate these to their own shared test module, or use the real logging
     // module in tests to avoid needing to specify these settings for tests.
     @EnableConsoleLog
@@ -668,10 +705,27 @@ class ApplicationLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
+      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
+      LogReportWorkerModule::class, MetricLogSchedulerModule::class,
+      FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
+      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, NetworkModule::class,
+      NetworkConfigProdModule::class, ApplicationModule::class, ExplorationStorageModule::class,
+      HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
+      InteractionsModule::class, AlgebraicExpressionInputModule::class, ContinueModule::class,
+      DragDropSortInputModule::class, FractionInputModule::class, ImageClickInputModule::class,
+      ItemSelectionInputModule::class, MathEquationInputModule::class,
+      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class, NumericInputRuleModule::class, RatioInputModule::class,
+      TextInputRuleModule::class, QuestionModule::class, CachingTestModule::class,
+      ExpirationMetaDataRetrieverTestModule::class, ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class, AccessibilityTestModule::class, GcsResourceModule::class,
+      ImageParsingModule::class, TestImageLoaderModule::class, HtmlParserEntityTypeModule::class,
+      SplitScreenInteractionModule::class, NetworkConnectionDebugUtilModule::class,
+      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
+      HintsAndSolutionConfigModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent : DataProvidersInjector, ApplicationComponent {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -682,7 +736,11 @@ class ApplicationLifecycleObserverTest {
     fun inject(applicationLifecycleObserverImplTest: ApplicationLifecycleObserverTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    ActivityComponentFactory,
+    ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerApplicationLifecycleObserverTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -694,5 +752,11 @@ class ApplicationLifecycleObserverTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
+      return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
+    }
+
+    override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
