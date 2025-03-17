@@ -228,7 +228,6 @@ class AudioViewModel @Inject constructor(
     }
   }
 
-
   fun handleResume() {
     if (playStatusLiveData.value == UiAudioPlayStatus.PREPARED ||
       playStatusLiveData.value == UiAudioPlayStatus.PAUSED
