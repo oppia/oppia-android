@@ -220,8 +220,14 @@ class AudioViewModel @Inject constructor(
   }
 
   fun handlePause() {
-    audioPlayerController.pause(isFromExplicitUserAction = false)
+    if (playStatusLiveData.value == UiAudioPlayStatus.PLAYING ||
+      playStatusLiveData.value == UiAudioPlayStatus.PREPARED ||
+      playStatusLiveData.value == UiAudioPlayStatus.PAUSED
+    ) {
+      audioPlayerController.pause(isFromExplicitUserAction = false)
+    }
   }
+
 
   fun handleResume() {
     if (playStatusLiveData.value == UiAudioPlayStatus.PREPARED ||
