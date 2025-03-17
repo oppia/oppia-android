@@ -109,4 +109,19 @@ class AudioFragment :
 
   /** Used in data binding to know position of user's touch. */
   override fun getUserPosition() = audioFragmentPresenter.userProgress
+
+  override fun onPause() {
+    super.onPause()
+    audioFragmentPresenter.handleOnPause()
+  }
+
+  override fun onResume() {
+    super.onResume()
+    audioFragmentPresenter.handleOnResume()
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    audioFragmentPresenter.handleOnDestroyView()
+  }
 }

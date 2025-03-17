@@ -218,4 +218,16 @@ class AudioViewModel @Inject constructor(
     return "https://storage.googleapis.com/$gcsResource/exploration/$explorationId/" +
       "assets/audio/${voiceover?.fileName}"
   }
+
+  fun handlePause() {
+    audioPlayerController.pause(isFromExplicitUserAction = false)
+  }
+
+  fun handleResume() {
+    if (playStatusLiveData.value == UiAudioPlayStatus.PREPARED ||
+      playStatusLiveData.value == UiAudioPlayStatus.PAUSED
+    ) {
+      audioPlayerController.play(isPlayingFromAutoPlay = false, reloadingMainContent = false)
+    }
+  }
 }

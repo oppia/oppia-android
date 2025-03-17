@@ -333,4 +333,16 @@ class AudioFragmentPresenter @Inject constructor(
         dialog.dismiss()
       }.create().show()
   }
+
+  fun handleOnPause() {
+    audioViewModel.handlePause()
+  }
+
+  fun handleOnResume() {
+    audioViewModel.handleResume()
+  }
+
+  fun handleOnDestroyView() {
+    audioViewModel.handleRelease()
+  }
 }
