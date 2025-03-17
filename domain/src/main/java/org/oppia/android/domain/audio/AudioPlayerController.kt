@@ -239,7 +239,6 @@ class AudioPlayerController @Inject constructor(
 
   private fun stopUpdatingSeekBar() {
     audioLock.withLock {
-
       nextUpdateJob?.cancel()
       nextUpdateJob = null
     }
