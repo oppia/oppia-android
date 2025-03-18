@@ -3,10 +3,10 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.testing.SynchronousExecutor
@@ -116,33 +116,17 @@ class ProfileAndDeviceIdActivityTest {
     private const val FIXED_APPLICATION_ID = 123456789L
   }
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<ProfileAndDeviceIdActivity>(
-      ProfileAndDeviceIdActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-  @Inject
-  lateinit var oppiaClock: OppiaClock
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject
-  lateinit var syncStatusManager: SyncStatusManager
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var oppiaClock: OppiaClock
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject lateinit var syncStatusManager: SyncStatusManager
 
   @Before
   fun setUp() {
@@ -164,12 +148,15 @@ class ProfileAndDeviceIdActivityTest {
 
   @Test
   fun testActivity_hasCorrectActivityLabel() {
-    activityRule.scenario.onActivity { activity ->
-      val title = activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-      // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-      // correct string when it's read out.
-      assertThat(title).isEqualTo(context.getString(R.string.profile_and_device_id_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title)
+          .isEqualTo(context.getString(R.string.profile_and_device_id_activity_title))
+      }
     }
   }
 
@@ -184,13 +171,25 @@ class ProfileAndDeviceIdActivityTest {
 
   @Test
   fun testActivity_withOnlyAdminProfile_hasOneProfileListed() {
-    // Verify that the fragment has actually loaded by checking to make sure there are items listed
-    // in its recycler view.
-    onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
+    runWithLaunchedActivity {
+      // Verify that the fragment has actually loaded by checking to make sure there are items
+      // listed in its recycler view.
+      onView(withId(R.id.profile_and_device_id_recycler_view)).check(hasItemCount(count = 4))
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<ProfileAndDeviceIdActivity>.() -> Unit
+  ) {
+    val intent = ProfileAndDeviceIdActivity.createIntent(context)
+    ActivityScenario.launch<ProfileAndDeviceIdActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   @Module
