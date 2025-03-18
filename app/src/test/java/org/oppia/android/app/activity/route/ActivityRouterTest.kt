@@ -1,12 +1,13 @@
 package org.oppia.android.app.activity.route
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -73,6 +74,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -91,6 +93,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
+import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val internalProfileId = 1
@@ -102,14 +105,10 @@ private const val internalProfileId = 1
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityRouterTest.TestApplication::class)
 class ActivityRouterTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -124,44 +123,55 @@ class ActivityRouterTest {
 
   @Test
   fun testActivityRouter_canRouteToRecentlyPlayedActivity() {
-    activityRule.scenario.onActivity { activity ->
-      val activityRouter = activity.activityRouter
-      val recentlyPlayedActivityParams =
-        RecentlyPlayedActivityParams
-          .newBuilder()
-          .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
-          .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES).build()
-      activityRouter.routeToScreen(
-        DestinationScreen
-          .newBuilder()
-          .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
-          .build()
-      )
-      intended(
-        allOf(
-          hasProtoExtra(
-            RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
-            recentlyPlayedActivityParams
-          ),
-          hasComponent(RecentlyPlayedActivity::class.java.name)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityRouter = activity.activityRouter
+        val recentlyPlayedActivityParams =
+          RecentlyPlayedActivityParams
+            .newBuilder()
+            .setProfileId(ProfileId.newBuilder().setInternalId(internalProfileId).build())
+            .setActivityTitle(RecentlyPlayedActivityTitle.RECENTLY_PLAYED_STORIES).build()
+        activityRouter.routeToScreen(
+          DestinationScreen
+            .newBuilder()
+            .setRecentlyPlayedActivityParams(recentlyPlayedActivityParams)
+            .build()
         )
-      )
+        intended(
+          allOf(
+            hasProtoExtra(
+              RecentlyPlayedActivity.RECENTLY_PLAYED_ACTIVITY_INTENT_EXTRAS_KEY,
+              recentlyPlayedActivityParams
+            ),
+            hasComponent(RecentlyPlayedActivity::class.java.name)
+          )
+        )
+      }
     }
   }
 
   @Test
   fun testActivityRouter_destinationScreenNotSet_showsError() {
-    activityRule.scenario.onActivity { activity ->
-      val activityRouter = activity.activityRouter
-      activityRouter.routeToScreen(DestinationScreen.getDefaultInstance())
-      val log = ShadowLog.getLogs().last()
-      assertThat(log.tag).isEqualTo("ActivityRouter")
-      assertThat(log.msg).isEqualTo("Destination screen case is not identified.")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityRouter = activity.activityRouter
+        activityRouter.routeToScreen(DestinationScreen.getDefaultInstance())
+        val log = ShadowLog.getLogs().last()
+        assertThat(log.tag).isEqualTo("ActivityRouter")
+        assertThat(log.msg).isEqualTo("Destination screen case is not identified.")
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.

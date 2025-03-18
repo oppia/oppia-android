@@ -1,15 +1,16 @@
 package org.oppia.android.app.databinding
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -72,6 +73,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -88,6 +90,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [DrawableBindingAdapters]. */
@@ -99,17 +102,12 @@ import javax.inject.Singleton
 )
 class DrawableBindingAdaptersTest {
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule: ActivityScenarioRule<DrawableBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        DrawableBindingAdaptersTestActivity::class.java
-      )
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
 
   @Before
   fun setUp() {
@@ -122,32 +120,36 @@ class DrawableBindingAdaptersTest {
     Intents.release()
   }
 
-  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
-
   @Test
   fun testSetBackgroundColor_hasCorrectBackgroundColor() {
-    activityRule.scenario.onActivity {
-      val view: View = getView(it)
-      setBackgroundColor(view, /* colorRgb= */ colorRgb)
-      assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
+    runWithLaunchedActivity {
+      onActivity {
+        val view: View = getView(it)
+        setBackgroundColor(view, /* colorRgb= */ colorRgb)
+        assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
+      }
     }
   }
 
   @Test
   fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
-    activityRule.scenario.onActivity {
-      val view: View = getView(it)
-      setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+    runWithLaunchedActivity {
+      onActivity {
+        val view: View = getView(it)
+        setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+      }
     }
   }
 
   @Test
   fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
-    activityRule.scenario.onActivity {
-      val view: View = getView(it)
-      setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-      assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+    runWithLaunchedActivity {
+      onActivity {
+        val view: View = getView(it)
+        setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+      }
     }
   }
 
@@ -157,6 +159,16 @@ class DrawableBindingAdaptersTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<DrawableBindingAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, DrawableBindingAdaptersTestActivity::class.java)
+    ActivityScenario.launch<DrawableBindingAdaptersTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

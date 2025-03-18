@@ -1,9 +1,10 @@
 package org.oppia.android.app.utility.math
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.StringSubject
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
@@ -85,11 +86,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.testing.math.MathEquationSubject
-import org.oppia.android.testing.math.MathEquationSubject.Companion.assertThat
-import org.oppia.android.testing.math.MathExpressionSubject
-import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -113,6 +111,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
@@ -130,40 +129,37 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MathExpressionAccessibilityUtilTest.TestApplication::class)
 class MathExpressionAccessibilityUtilTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Parameter lateinit var language: String
   @Parameter lateinit var expression: String
   @Parameter lateinit var equation: String
   @Parameter lateinit var a11yStr: String
 
-  lateinit var util: MathExpressionAccessibilityUtil
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    activityRule.scenario.onActivity { util = it.mathExpressionAccessibilityUtil }
   }
 
   @Test
   fun testConvertToString_defaultExp_english_returnsNull() {
-    val exp = MathExpression.getDefaultInstance()
+    runWithLaunchedActivity {
+      val exp = MathExpression.getDefaultInstance()
 
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_defaultEq_english_returnsNull() {
-    val eq = MathEquation.getDefaultInstance()
+    runWithLaunchedActivity {
+      val eq = MathEquation.getDefaultInstance()
 
-    assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
+      assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
@@ -177,10 +173,12 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN")
   @Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   fun testConvertToString_constExp_unsupportedLanguage_returnsNull() {
-    val exp = parseAlgebraicExpression("2")
-    val language = OppiaLanguage.valueOf(language)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression("2")
+      val language = OppiaLanguage.valueOf(language)
 
-    assertThat(exp).forHumanReadable(language).doesNotConvertToString()
+      assertThat(exp).forHumanReadable(language).doesNotConvertToString()
+    }
   }
 
   @Test
@@ -194,23 +192,27 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("NIGERIAN_PIDGIN", "language=NIGERIAN_PIDGIN")
   @Iteration("UNRECOGNIZED", "language=UNRECOGNIZED")
   fun testConvertToString_constEq_unsupportedLanguage_returnsNull() {
-    val eq = parseAlgebraicEquation("x=2")
-    val language = OppiaLanguage.valueOf(language)
+    runWithLaunchedActivity {
+      val eq = parseAlgebraicEquation("x=2")
+      val language = OppiaLanguage.valueOf(language)
 
-    assertThat(eq).forHumanReadable(language).doesNotConvertToString()
+      assertThat(eq).forHumanReadable(language).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testTestSuite_verifyLanguageCoverage_allLanguagesCovered() {
-    // NOTE TO DEVELOPERS: This is a meta test to verify that the tests above are covering all
-    // supported languages. If this test ever fails, please make sure to update both the list below
-    // and other relevant tests in this suite.
-    assertThat(OppiaLanguage.values())
-      .asList()
-      .containsExactly(
-        LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
-        SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
-      )
+    runWithLaunchedActivity {
+      // NOTE TO DEVELOPERS: This is a meta test to verify that the tests above are covering all
+      // supported languages. If this test ever fails, please make sure to update both the list below
+      // and other relevant tests in this suite.
+      assertThat(OppiaLanguage.values())
+        .asList()
+        .containsExactly(
+          LANGUAGE_UNSPECIFIED, ENGLISH, ARABIC, HINDI, HINGLISH, PORTUGUESE, BRAZILIAN_PORTUGUESE,
+          SWAHILI, NIGERIAN_PIDGIN, UNRECOGNIZED
+        )
+    }
   }
 
   @Test
@@ -221,9 +223,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("123456", "expression=123456", "a11yStr=123,456")
   @Iteration("1234567", "expression=1234567", "a11yStr=1,234,567")
   fun testConvertToString_eng_constIntExp_returnsIntegerConvertedString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -244,9 +248,11 @@ class MathExpressionAccessibilityUtilTest {
     "large_number", "expression=123456789101112131415.0", "a11yStr=123,456,789,101,112,130,000"
   )
   fun testConvertToString_eng_constDoubleExp_returnsDoubleConvertedString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -258,10 +264,12 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("Z", "expression=Z", "a11yStr=Zed")
   @Iteration("a", "expression=a", "a11yStr=a")
   fun testConvertToString_eng_variableExp_returnsVariableNameWithZed() {
-    val allowedVariables = listOf("a", "x", "y", "z", "X", "Y", "Z")
-    val exp = parseAlgebraicExpression(expression, allowedVariables)
+    runWithLaunchedActivity {
+      val allowedVariables = listOf("a", "x", "y", "z", "X", "Y", "Z")
+      val exp = parseAlgebraicExpression(expression, allowedVariables)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -271,9 +279,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("z+3.14", "expression=z+3.14", "a11yStr=zed plus 3.14")
   @Iteration("x+z", "expression=x+z", "a11yStr=x plus zed")
   fun testConvertToString_eng_addition_returnsLeftPlusRightString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -283,9 +293,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("z-3.14", "expression=z-3.14", "a11yStr=zed minus 3.14")
   @Iteration("x-z", "expression=x-z", "a11yStr=x minus zed")
   fun testConvertToString_eng_subtraction_returnsLeftMinusRightString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -295,9 +307,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("z*3.14", "expression=z*3.14", "a11yStr=zed times 3.14")
   @Iteration("x*z", "expression=x*z", "a11yStr=x times zed")
   fun testConvertToString_eng_multiplication_returnsLeftTimesRightString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -307,9 +321,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("z/3.14", "expression=z/3.14", "a11yStr=zed divided by 3.14")
   @Iteration("x/z", "expression=x/z", "a11yStr=x divided by zed")
   fun testConvertToString_eng_division_returnsLeftDividedByRightString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -319,10 +335,12 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("z^3.14", "expression=z^3.14", "a11yStr=zed raised to the power of 3.14")
   @Iteration("x^z", "expression=x^z", "a11yStr=x raised to the power of zed")
   fun testConvertToString_eng_exponentiation_returnsLeftRaisedToThePowerOfRightString() {
-    // Some expressions may include variable terms as exponents (which normally isn't allowed).
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Some expressions may include variable terms as exponents (which normally isn't allowed).
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -332,9 +350,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("-3.14", "expression=-3.14", "a11yStr=negative 3.14")
   @Iteration("-z", "expression=-z", "a11yStr=negative zed")
   fun testConvertToString_eng_negation_returnsNegativeOperandString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -344,10 +364,12 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("+3.14", "expression=+3.14", "a11yStr=positive 3.14")
   @Iteration("+z", "expression=+z", "a11yStr=positive zed")
   fun testConvertToString_eng_positiveUnary_returnsPositiveOperandString() {
-    // Allow positive unary operations to verify this case.
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow positive unary operations to verify this case.
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -362,11 +384,13 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("√(1234)", "expression=√(1234)", "a11yStr=square root of 1,234")
   @Iteration("√(3.14)", "expression=√(3.14)", "a11yStr=square root of 3.14")
   fun testConvertToString_eng_inlineSqrt_returnsSquareRootOfArgumentString() {
-    // Allow for single-term parentheses for testing (even though these cases would normally result
-    // in errors).
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow for single-term parentheses for testing (even though these cases would normally result
+      // in errors).
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -376,9 +400,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("sqrt(1234)", "expression=sqrt(1234)", "a11yStr=square root of 1,234")
   @Iteration("sqrt(3.14)", "expression=sqrt(3.14)", "a11yStr=square root of 3.14")
   fun testConvertToString_eng_sqrt_returnsSquareRootOfArgumentString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -397,13 +423,15 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("(sqrt(2))", "expression=(sqrt(2))", "a11yStr=square root of 2")
   @Iteration("(sqrt(x))", "expression=(sqrt(x))", "a11yStr=square root of x")
   fun testConvertToString_eng_group_singleTermOrNestedSingleTerm_returnsDirectString() {
-    // Allow for single-term parentheses for testing (even though these cases would normally result
-    // in errors).
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow for single-term parentheses for testing (even though these cases would normally result
+      // in errors).
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    // Verify that groups are not included in the final string when they only encapsulate single
-    // terms.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // Verify that groups are not included in the final string when they only encapsulate single
+      // terms.
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -441,11 +469,13 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("(+2)", "expression=(+2)", "a11yStr=open parenthesis positive 2 close parenthesis")
   @Iteration("(+x)", "expression=(+x)", "a11yStr=open parenthesis positive x close parenthesis")
   fun testConvertToString_eng_group_nestedOps_returnOpenParensOpCloseParensString() {
-    // Allow for the outer expression to have redundant parentheses to test cases when groups are
-    // announced (even though these exact cases would normally result in an error).
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow for the outer expression to have redundant parentheses to test cases when groups are
+      // announced (even though these exact cases would normally result in an error).
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -528,10 +558,12 @@ class MathExpressionAccessibilityUtilTest {
     "a11yStr=start square root open parenthesis positive x close parenthesis end square root"
   )
   fun testConvertToString_eng_inlineSqrt_nestedOp_returnsStartSquareRootConstructString() {
-    // Allow for positive unary expressions.
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow for positive unary expressions.
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -586,10 +618,12 @@ class MathExpressionAccessibilityUtilTest {
     "sqrt(+x)", "expression=sqrt(+x)", "a11yStr=start square root positive x end square root"
   )
   fun testConvertToString_eng_sqrt_nestedOp_returnsStartSquareRootConstructString() {
-    // Allow for positive unary expressions.
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow for positive unary expressions.
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -601,11 +635,13 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("2z^3", "expression=2z^3", "a11yStr=2 zed raised to the power of 3")
   @Iteration("1234x^3.14", "expression=1234x^3.14", "a11yStr=1,234 x raised to the power of 3.14")
   fun testConvertToString_eng_implicitMult_leftConst_rightVarOrExp_returnsLeftRightString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // Verify that the format <constant> <var> [^ <rhs>] results in an implicit multiplication with
-    // no 'times' announced.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // Verify that the format <constant> <var> [^ <rhs>] results in an implicit multiplication with
+      // no 'times' announced.
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -621,22 +657,26 @@ class MathExpressionAccessibilityUtilTest {
     "a11yStr=2 times open parenthesis x raised to the power of 3 close parenthesis"
   )
   fun testConvertToString_eng_impMult_nonLeftConst_orRightIsNotVarOrExp_returnsLeftTimesRightStr() {
-    // Allow for redundant single-term parentheses.
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Allow for redundant single-term parentheses.
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    // If anything breaks up the format tested in the previous test (even if it's a group), then the
-    // multiplication is explicitly read out.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // If anything breaks up the format tested in the previous test (even if it's a group), then the
+      // multiplication is explicitly read out.
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
   fun testConvertToString_eng_divisionAsFractions_oneDivTwo_returnsOneHalfString() {
-    val exp = parseAlgebraicExpression("1/2")
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression("1/2")
 
-    // 1/2 is a special case.
-    assertThat(exp)
-      .forHumanReadable(ENGLISH)
-      .convertsWithFractionsToStringThat().isEqualTo("one half")
+      // 1/2 is a special case.
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat().isEqualTo("one half")
+    }
   }
 
   @Test
@@ -655,9 +695,14 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("19/3", "expression=19/3", "a11yStr=19 over 3")
   @Iteration("2/17", "expression=2/17", "a11yStr=2 over 17")
   fun testConvertToString_eng_divisionAsFractions_smallIntegerFracs_returnsNumOverDenomString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -665,10 +710,15 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("1234/1", "expression=1234/1", "a11yStr=1,234 over 1")
   @Iteration("1234/987654", "expression=1234/987654", "a11yStr=1,234 over 987,654")
   fun testConvertToString_eng_divisionAsFractions_largeIntegerFracs_returnsNumOverDenomString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // Large numbers are read as part of the fraction.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      // Large numbers are read as part of the fraction.
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -678,10 +728,15 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("z/3", "expression=z/3", "a11yStr=zed over 3")
   @Iteration("x/z", "expression=x/z", "a11yStr=x over zed")
   fun testConvertToString_eng_divisionAsFractions_fracsWithVariables_returnsNumOverDenomString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // Variables are read as part of the fraction.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      // Variables are read as part of the fraction.
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -727,10 +782,15 @@ class MathExpressionAccessibilityUtilTest {
     "x/3.14", "expression=x/3.14", "a11yStr=the fraction with numerator x and denominator 3.14"
   )
   fun testConvertToString_eng_divisionAsFractions_fracWithComplexParts_returnsFracConstructStr() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // Verify that complex fractions are read out with more specificity.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      // Verify that complex fractions are read out with more specificity.
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -741,9 +801,11 @@ class MathExpressionAccessibilityUtilTest {
   @Iteration("2=z", "expression=2=z", "a11yStr=2 equals zed")
   @Iteration("x=z", "expression=x=z", "a11yStr=x equals zed")
   fun testConvertToString_eng_simpleEquation_returnsLeftEqualsRightString() {
-    val eq = parseAlgebraicEquation(expression)
+    runWithLaunchedActivity {
+      val eq = parseAlgebraicEquation(expression)
 
-    assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -760,10 +822,12 @@ class MathExpressionAccessibilityUtilTest {
     "a11yStr=y raised to the power of 2 plus x times y plus x raised to the power of 2"
   )
   fun testConvertToString_eng_polynomialExpressions_returnsCorrectlyBuiltString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // Polynomials should be read out correctly.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // Polynomials should be read out correctly.
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -786,10 +850,12 @@ class MathExpressionAccessibilityUtilTest {
       " to the power of 2"
   )
   fun testConvertToString_eng_polynomialEquations_returnsCorrectlyBuiltString() {
-    val eq = parseAlgebraicEquation(expression)
+    runWithLaunchedActivity {
+      val eq = parseAlgebraicEquation(expression)
 
-    // Polynomial equations should be read out correctly.
-    assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // Polynomial equations should be read out correctly.
+      assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -837,11 +903,13 @@ class MathExpressionAccessibilityUtilTest {
     "x/y/z/2", "expression= x/ y/ z/ 2", "a11yStr=x divided by y divided by zed divided by 2"
   )
   fun testConvertToString_eng_complexNestedExpression_returnsCorrectlyBuiltString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // The expression should correctly convert to a readable string, and all original whitespace
-    // should be ignored in the final rendered string.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // The expression should correctly convert to a readable string, and all original whitespace
+      // should be ignored in the final rendered string.
+      assertThat(exp).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -892,11 +960,16 @@ class MathExpressionAccessibilityUtilTest {
       " zed and denominator 2"
   )
   fun testConvertToString_eng_complexNestedExpression_divAsFracs_returnsCorrectlyBuiltString() {
-    val exp = parseAlgebraicExpression(expression)
+    runWithLaunchedActivity {
+      val exp = parseAlgebraicExpression(expression)
 
-    // The expression should correctly convert to a readable string, and all original whitespace
-    // should be ignored in the final rendered string.
-    assertThat(exp).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      // The expression should correctly convert to a readable string, and all original whitespace
+      // should be ignored in the final rendered string.
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -948,11 +1021,13 @@ class MathExpressionAccessibilityUtilTest {
     "a11yStr=x divided by y divided by zed divided by 2 equals zed"
   )
   fun testConvertToString_eng_complexNestedEquations_returnsCorrectlyBuiltString() {
-    val eq = parseAlgebraicEquation(expression)
+    runWithLaunchedActivity {
+      val eq = parseAlgebraicEquation(expression)
 
-    // The equation should correctly convert to a readable string, and all original whitespace
-    // should be ignored in the final rendered string.
-    assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      // The equation should correctly convert to a readable string, and all original whitespace
+      // should be ignored in the final rendered string.
+      assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -1007,11 +1082,16 @@ class MathExpressionAccessibilityUtilTest {
       " zed and denominator 2 equals zed"
   )
   fun testConvertToString_eng_complexNestedEquations_divAsFracs_returnsCorrectlyBuiltString() {
-    val eq = parseAlgebraicEquation(expression)
+    runWithLaunchedActivity {
+      val eq = parseAlgebraicEquation(expression)
 
-    // The equation should correctly convert to a readable string, and all original whitespace
-    // should be ignored in the final rendered string.
-    assertThat(eq).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      // The equation should correctly convert to a readable string, and all original whitespace
+      // should be ignored in the final rendered string.
+      assertThat(eq)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   // This & the next test are implementing cases defined in the doc:
@@ -1054,10 +1134,15 @@ class MathExpressionAccessibilityUtilTest {
       " parenthesis a minus 2 b close parenthesis plus zed close parenthesis"
   )
   fun testConvertToString_eng_assortedExpressionsFromPrd_returnsCorrectlyComputedString() {
-    // Some of the expressions include cases that would normally result in errors.
-    val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
+    runWithLaunchedActivity {
+      // Some of the expressions include cases that would normally result in errors.
+      val exp = parseAlgebraicExpression(expression, errorCheckingMode = REQUIRED_ONLY)
 
-    assertThat(exp).forHumanReadable(ENGLISH).convertsWithFractionsToStringThat().isEqualTo(a11yStr)
+      assertThat(exp)
+        .forHumanReadable(ENGLISH)
+        .convertsWithFractionsToStringThat()
+        .isEqualTo(a11yStr)
+    }
   }
 
   @Test
@@ -1067,156 +1152,214 @@ class MathExpressionAccessibilityUtilTest {
     "a11yStr=3 x raised to the power of 2 plus 4 y equals 62"
   )
   fun testConvertToString_eng_assortedEquationsFromPrd_returnsCorrectlyComputedString() {
-    val eq = parseAlgebraicEquation(expression)
+    runWithLaunchedActivity {
+      val eq = parseAlgebraicEquation(expression)
 
-    assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+      assertThat(eq).forHumanReadable(ENGLISH).convertsToStringThat().isEqualTo(a11yStr)
+    }
   }
 
   @Test
   fun testConvertToString_eng_rationalConstant_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      constant = ONE_HALF
-    }.build()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        constant = ONE_HALF
+      }.build()
 
-    // The conversion should fail since the expression includes a rational real (which aren't yet
-    // supported).
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes a rational real (which aren't yet
+      // supported).
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_invalidConstant_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      constant = Real.getDefaultInstance()
-    }.build()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        constant = Real.getDefaultInstance()
+      }.build()
 
-    // The conversion should fail since the expression includes an invalid real constant.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid real constant.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_invalidBinaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      binaryOperation = MathBinaryOperation.getDefaultInstance()
-    }.build()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        binaryOperation = MathBinaryOperation.getDefaultInstance()
+      }.build()
 
-    // The conversion should fail since the expression includes an invalid binary operation.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid binary operation.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_invalidUnaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      unaryOperation = MathUnaryOperation.getDefaultInstance()
-    }.build()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        unaryOperation = MathUnaryOperation.getDefaultInstance()
+      }.build()
 
-    // The conversion should fail since the expression includes an invalid unary operation.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid unary operation.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_invalidFunctionType_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      functionCall = MathFunctionCall.getDefaultInstance()
-    }.build()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        functionCall = MathFunctionCall.getDefaultInstance()
+      }.build()
 
-    // The conversion should fail since the expression includes an invalid function call.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid function call.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_nestedDefaultExp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.getDefaultInstance()
-    }.build()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        group = MathExpression.getDefaultInstance()
+      }.build()
 
-    // The conversion should fail since the expression includes an invalid nested expression.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid nested expression.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_nestedInvalidBinaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.newBuilder().apply {
-        binaryOperation = MathBinaryOperation.getDefaultInstance()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        group = MathExpression.newBuilder().apply {
+          binaryOperation = MathBinaryOperation.getDefaultInstance()
+        }.build()
       }.build()
-    }.build()
 
-    // The conversion should fail since the expression includes an invalid nested expression.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid nested expression.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_nestedInvalidUnaryOp_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.newBuilder().apply {
-        unaryOperation = MathUnaryOperation.getDefaultInstance()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        group = MathExpression.newBuilder().apply {
+          unaryOperation = MathUnaryOperation.getDefaultInstance()
+        }.build()
       }.build()
-    }.build()
 
-    // The conversion should fail since the expression includes an invalid nested expression.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid nested expression.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eng_nestedInvalidFunctionType_returnsNull() {
-    val exp = MathExpression.newBuilder().apply {
-      group = MathExpression.newBuilder().apply {
-        functionCall = MathFunctionCall.getDefaultInstance()
+    runWithLaunchedActivity {
+      val exp = MathExpression.newBuilder().apply {
+        group = MathExpression.newBuilder().apply {
+          functionCall = MathFunctionCall.getDefaultInstance()
+        }.build()
       }.build()
-    }.build()
 
-    // The conversion should fail since the expression includes an invalid nested expression.
-    assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // The conversion should fail since the expression includes an invalid nested expression.
+      assertThat(exp).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eq_withLeftInvalidExp_returnsNull() {
-    val validExp = MathExpression.newBuilder().apply {
-      constant = ONE_HALF
-    }.build()
-    val invalidExp = MathExpression.getDefaultInstance()
-    val eq = MathEquation.newBuilder().apply {
-      leftSide = invalidExp
-      rightSide = validExp
-    }.build()
+    runWithLaunchedActivity {
+      val validExp = MathExpression.newBuilder().apply {
+        constant = ONE_HALF
+      }.build()
+      val invalidExp = MathExpression.getDefaultInstance()
+      val eq = MathEquation.newBuilder().apply {
+        leftSide = invalidExp
+        rightSide = validExp
+      }.build()
 
-    // Both sides of the equation must be valid.
-    assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
+      // Both sides of the equation must be valid.
+      assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
+    }
   }
 
   @Test
   fun testConvertToString_eq_withRightInvalidExp_returnsNull() {
-    val validExp = MathExpression.newBuilder().apply {
-      constant = ONE_HALF
-    }.build()
-    val invalidExp = MathExpression.getDefaultInstance()
-    val eq = MathEquation.newBuilder().apply {
-      leftSide = validExp
-      rightSide = invalidExp
-    }.build()
+    runWithLaunchedActivity {
+      val validExp = MathExpression.newBuilder().apply {
+        constant = ONE_HALF
+      }.build()
+      val invalidExp = MathExpression.getDefaultInstance()
+      val eq = MathEquation.newBuilder().apply {
+        leftSide = validExp
+        rightSide = invalidExp
+      }.build()
 
-    // Both sides of the equation must be valid.
-    assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
-  }
-
-  private fun MathExpressionSubject.forHumanReadable(
-    language: OppiaLanguage
-  ): HumanReadableStringChecker {
-    return HumanReadableStringChecker(language) { divAsFraction ->
-      util.convertToHumanReadableString(actual, language, divAsFraction)
+      // Both sides of the equation must be valid.
+      assertThat(eq).forHumanReadable(ENGLISH).doesNotConvertToString()
     }
   }
 
-  private fun MathEquationSubject.forHumanReadable(
-    language: OppiaLanguage
-  ): HumanReadableStringChecker {
-    return HumanReadableStringChecker(language) { divAsFraction ->
-      util.convertToHumanReadableString(actual, language, divAsFraction)
-    }
-  }
+  // This is a hacky workaround to capture ActivityScenario without context receivers. See:
+  // https://stackoverflow.com/a/71847436 for details on context receivers. They aren't available in
+  // rules_kotlin until v1.9.2 (per bazelbuild/rules_kotlin#1117).
+  private fun ActivityScenario<TestActivity>.assertThat(expression: MathExpression) =
+    ReadableMathExpressionSubject(this, expression)
+
+  private fun ActivityScenario<TestActivity>.assertThat(equation: MathEquation) =
+    ReadableMathEquationSubject(this, equation)
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
+  private class ReadableMathExpressionSubject(
+    private val scenario: ActivityScenario<TestActivity>,
+    private val actual: MathExpression
+  ) {
+    fun forHumanReadable(
+      language: OppiaLanguage
+    ): HumanReadableStringChecker {
+      return HumanReadableStringChecker(language) { divAsFraction ->
+        lateinit var util: MathExpressionAccessibilityUtil
+        scenario.onActivity { activity ->
+          util = activity.mathExpressionAccessibilityUtil
+        }
+        util.convertToHumanReadableString(actual, language, divAsFraction)
+      }
+    }
+  }
+
+  private class ReadableMathEquationSubject(
+    private val scenario: ActivityScenario<TestActivity>,
+    private val actual: MathEquation
+  ) {
+    fun forHumanReadable(
+      language: OppiaLanguage
+    ): HumanReadableStringChecker {
+      return HumanReadableStringChecker(language) { divAsFraction ->
+        lateinit var util: MathExpressionAccessibilityUtil
+        scenario.onActivity { activity ->
+          util = activity.mathExpressionAccessibilityUtil
+        }
+        util.convertToHumanReadableString(actual, language, divAsFraction)
+      }
+    }
   }
 
   private class HumanReadableStringChecker(
