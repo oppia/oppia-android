@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
@@ -30,7 +29,6 @@ import org.oppia.android.app.model.DestinationScreen
 import org.oppia.android.app.model.DestinationScreen.DestinationScreenCase
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -94,21 +92,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityRouterModuleTest.TestApplication::class)
 class ActivityRouterModuleTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var destinationRoutes:
-    Map<DestinationScreen.DestinationScreenCase, @JvmSuppressWildcards Route>
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var destinationRoutes: Map<DestinationScreenCase, @JvmSuppressWildcards Route>
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -125,8 +112,7 @@ class ActivityRouterModuleTest {
 
   @Test
   fun testInjectDestinationRoutes_doesNotHaveRouteForDestinationScreenNotSet() {
-    assertThat(destinationRoutes)
-      .doesNotContainKey(DestinationScreenCase.DESTINATIONSCREEN_NOT_SET)
+    assertThat(destinationRoutes).doesNotContainKey(DestinationScreenCase.DESTINATIONSCREEN_NOT_SET)
   }
 
   private fun setUpTestApplicationComponent() {
