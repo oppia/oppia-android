@@ -3,8 +3,10 @@
 - [Overview](#overview)
 - [Installation](#installation)
   - [Building the app](#building-the-app)
-  - [Running specific module (app) Robolectric tests](#running-specific-module--app--robolectric-tests)
-  - [Running all Robolectric tests (slow)](#running-all-robolectric-tests--slow-)
+- [Running Tests](#running-tests)
+  - [How to Obtain a Test Target](#how-to-obtain-a-test-target)
+  - [Common Flags](#common-flags)
+  - [Running multiple test targets](#running-multiple-test-targets)
 - [Concepts and Terminology](#concepts-and-terminology)
 - [Syncing the Project](#Syncing-the-project)
 
@@ -21,7 +23,7 @@ The [installation page](https://github.com/oppia/oppia-android/wiki/Installing-O
 
 You can also run the app from the command line using the commands detailed below.
 
-Using the command line is helpful in instances when you need to run some targets outside of Android Studio.
+Using the command line is helpful in instances when you need to build and run some targets outside of Android Studio.
 
 Run the following commands in your terminal. All Bazel commands must be run from the root of the `oppia-android` directory otherwise they will fail.
 
@@ -46,22 +48,77 @@ followed by:
 If everything is working, you should see output like the following:
 
 ```
-Target //:oppia_dev up-to-date:
-  bazel-bin/oppia_dev.aab
-INFO: Elapsed time: ...
-INFO: 1 process...
-INFO: Build completed successfully, ...
+Target //:oppia_dev_binary up-to-date:
+  bazel-bin/oppia_dev_binary_deploy.jar
+  bazel-bin/oppia_dev_binary_unsigned.apk
+  bazel-bin/oppia_dev_binary.apk
+INFO: Elapsed time: 37.155s, Critical Path: 17.24s
+INFO: 99 processes: 2 internal, 23 darwin-sandbox, 74 worker.
+INFO: Build completed successfully, 99 total actions
+Performing Streamed Install
+Success
 ```
 
 Note also that the ``oppia_dev.aab`` under the ``bazel-bin`` directory of your local copy of Oppia Android should be a fully functioning development version of the app that can be installed using bundle-tool. However, it's recommended to deploy Oppia to an emulator or connected device using the `mobile-install` command.
 
-### Running specific module (app) Robolectric tests
+## Running Tests
+
+The bazel test command is used to build and run tests in a Bazel workspace. It ensures that the specified test targets are built and executed in a sandboxed environment for reproducibility.
+
+**Syntax**
+
+```shell
+bazel test //path/to:target
+```
+
+### How to Obtain a Test Target
+A test target in Bazel refers to a specific testable entity defined in a BUILD file. It represents a test rule, such as `java_test` or `android_test`, that Bazel can build and execute.
+
+To ensure you always use the correct test target, follow one of these steps:
+1. If the test file is open in Android Studio:
+   * Right-click to open the context menu and select **Copy BUILD target string** as shown.
+     
+     ![Screenshot 2025-03-18 at 22 30 22](https://github.com/user-attachments/assets/286ebcb6-4f4e-4055-b6f0-4c070b039375)
+   
+   * Paste the target to the bazel test command, e.g. `bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest`
+
+2. If the test file is open in Android Studio, but **Copy BUILD target string** is not available in the context menu:
+Sometimes the **Copy BUILD target string** is not available in the context menu either due to sync issues or modularization issues. You can still copy the file path, and pass it to the test command.
+   * In the AS sidebar, right click on the file, and select `copy path/reference`.
+     or
+   * Right-click on the file tab and then click `copy path/reference`.
+   * Next, select `copy path from repository root`. 
+   * Paste the copied path to the bazel test command in the terminal and remove the `.kt` extension, e.g. `bazel test domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest`.
+
+With this syntax, Bazel implicitly converts the file path into a target if it matches a test rule in the BUILD file. If the file is not part of a test target in the BUILD file, this command may fail.
+**When to use this**: If you are unsure about the exact Bazel target and want a quick way to run a test.
+
+3. Querying for a target
+Using the explicit Bazel target (// syntax) is more reliable compared to the file path syntax above. However, in cases such as running the test outside android studio, you may not know the target. In this case, you can use Bazel's `query` command to retrieve the correct test target:
+   * Copy the relative path of the test file.
+   * Run the following command in your terminal to get the test’s Bazel target: `bazel query relative-path-of-test-file`
+   Example
+   
+   ```shell
+   bazel query domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt
+   ```
+   * The output will be a Bazel target that starts with //. Copy the target and remove the .kt extension.
+   * Use this target in the bazel test command, e.g. `bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest`.
+
+### Common Flags
+
+`--test_output=all` → Show full test output.
+`--cache_test_results=no` → Force re-running tests even if cached.
+`--test_filter=ClassName#methodName` → Run specific test cases.
+
+### Running multiple test targets
+To run all the test targets in the app module:
 
 ```
 bazel test //app/...
 ```
 
-### Running all Robolectric tests (slow)
+To run all the test targets in the project (note that this would be extremely slow and is not recommended):
 
 ```
 bazel test //...
@@ -70,8 +127,7 @@ bazel test //...
 ## Concepts and Terminology
 **[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**
 
-A workspace is a directory where we add targeted SDK version, all the required dependencies and there required Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case is the `oppia-android` root directory is the main directory.
-
+A workspace is a directory where we specify the targeted SDK version, required dependencies, and corresponding Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case, is the `oppia-android` root directory.
 **[Packages](https://github.com/oppia/oppia-android/tree/develop/app)**
 
 A package is defined as a directory containing a file named BUILD or BUILD.bazel.

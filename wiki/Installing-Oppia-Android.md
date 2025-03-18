@@ -12,8 +12,8 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Install oppia-android](#install-oppia-android)
 - [Opening the Project in Android Studio](#opening-the-project-in-android-studio)
 - [Set up and Run tests](#set-up-and-run-tests)
-  - [Step-by-Step guidance for setting up and running app modules robolectric test](#step-by-step-guidance-for-setting-up-and-running-app-modules-robolectric-test)
-  - [For tests that are in non-app modules, such as **domain** or **utility**:](#for-tests-that-are-in-non-app-modules-such-as-domain-or-utility)
+  - [Running app module tests](#running-app-module-tests)
+  - [Running non-app module tests](#running-non-app-module-tests)
 - [Next Steps](#next-steps)
 - [Troubleshooting Installation](#troubleshooting-installation)
 
@@ -376,49 +376,49 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 7. In the above file, modify it so that it looks like below (copy and paste):
    
-   ```
-   directories:
-      # Add the directories you want added as source here
-      # By default, we've added your entire workspace ('.')
-      .
-      
-   # Automatically includes all relevant targets under the 'directories' above
-   derive_targets_from_directories: false
-   
-   targets:
-   # If source code isn't resolving, add additional targets that compile it here
-      //:oppia_dev_binary
-      //app //app/src/main/... 
-      //domain/src/main/... 
-      //testing/src/main/... 
-      //utility/src/main/... 
-      //data/src/main/... 
-      //model/...
-      
-   additional_languages:
-      # Uncomment any additional languages you want supported
-      # c
-      # dart
-      # kotlin
-      java
-      kotlin
+```
+directories:
+  # Add the directories you want added as source here
+  # By default, we've added your entire workspace ('.')
+  .
+  
+# Automatically includes all relevant targets under the 'directories' above
+derive_targets_from_directories: false
 
-   # Please uncomment an android-SDK platform. Available SDKs are:
-      # android_sdk_platform: android-28
-      # android_sdk_platform: android-29
-      android_sdk_platform: android-30
-      # android_sdk_platform: android-31
-      # android_sdk_platform: android-32
-      # android_sdk_platform: android-33
-      android_sdk_platform: android-34
-   
-   shard_sync: true
-   
-   java_language_level: 11
-   ```
+targets:
+# If source code isn't resolving, add additional targets that compile it here
+  //:oppia_dev_binary
+  //app/src/main/... 
+  //domain/src/main/... 
+  //testing/src/main/... 
+  //utility/src/main/... 
+  //data/src/main/... 
+  //model/...
+  
+additional_languages:
+  # Uncomment any additional languages you want supported
+  # c
+  # dart
+  # kotlin
+  java
+  kotlin
+
+# Please uncomment an android-SDK platform. Available SDKs are:
+# android_sdk_platform: android-28
+# android_sdk_platform: android-29
+android_sdk_platform: android-30
+# android_sdk_platform: android-31
+# android_sdk_platform: android-32
+# android_sdk_platform: android-33
+android_sdk_platform: android-34
+
+shard_sync: true
+
+java_language_level: 11
+```
    **Note**: Only enable Android-SDK platforms that you have installed per the [Prepare developer environment](#prepare-developer-environment) section above. Android-SDK platforms are useful for creating emulators to test your app with.
 
-8. Click **Create**, and allow the project to synchronize.
+8. Click **Create**, and allow the project to synchronize. Read more about syncing at [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
 
 9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
 
@@ -441,29 +441,11 @@ Testing the app is an integral part of our development process. You will need to
 
 Our Bazel setup currently supports running tests on Robolectric which is fast because it does not require a physical device or emulator setup.
 
-We can run tests either through the UI supported by the Bazel Plugin, or via running a `bazel test` command on the terminal, i.e.:
+We can run tests either through the UI supported by the Bazel Plugin, or via running a `bazel test` command on the terminal.
 
-> Tip 1: In order to get the correct path always, open the test file, then on the AS sidebar, right click on the file, and select `copy path/reference`. Then select `copy path from repository root`. Paste the copied path to terminal and remove the `.kt` extension. This can also be achieved by right clicking on the file tab if the test file is open and copy the copy path/reference.
+Please refer to the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide) for more information on how to run tests via the terminal.
 
-   ```
-   bazel test full-path-of-test-file
-   ```
-
-e.g.
-   
-   ```
-   bazel test domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest
-   ```
-
-> Tip 2: You can pass a target argument to the `bazel test` command instead. Copy the relative path to the test file and query its target using `bazel query relative-path-of-test-file` e.g. `bazel query domain/src/test/java/org/oppia/android/domain/onboarding/AppStartupStateControllerTest.kt`. This will give you a Bazel target (i.e. starts with '//') --just copy that and remove the `.kt` at the end and you can pass it to `bazel test`, e.g.
-
-```
-bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest
-```
-
-### Configure Robolectric Tests
-
-#### Step-by-Step guidance for setting up and running app module robolectric tests:
+### Running app module tests
 
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
@@ -474,21 +456,23 @@ bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartup
    Edit configurations allows us to specify the run command:
    ![Screenshot 2025-02-26 at 22 19 34](https://github.com/user-attachments/assets/462d07d2-4407-4898-bbc4-544509bd7486)
 
-   - Test **name**, is helpful for identifying the test target from the list on the left.
+   - Test **name** is helpful for identifying the test target from the list on the left.
    - **Target expression** requires the fully qualified path to the test file.
    - **The Bazel command** for running tests is `test`
    - **Bazel flags** are optional.
    - Select **Apply** and then **Close** or **Ok**.
 
-#### For tests that are in non-app modules, such as **domain** or **utility**::
+### Running non-app module tests
+
+These are tests in other modules, such as **domain** or **utility**.
 
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
+   
+   ![Screenshot 2025-03-18 at 21 35 11](https://github.com/user-attachments/assets/4f83c8d2-cbb9-49cb-ac3b-3e500e1f82f6)
 
 2. A second way to run a test class would be to open the `BUILD` file located in the same package as the test file, and clicking on the green arrow next to the test target name.
   
    ![Image](https://github.com/user-attachments/assets/c1ee9e23-b0b2-430a-9592-9f87a2fdcbf0)
-
-3. The third way is to run a the test via CLI as mentioned above.
 
 ### Next Steps
 - Congratulations, you are ready to work on your first issue! Take a look at our [good first issues](https://github.com/oppia/oppia-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22+no%3Aassignee) and leave a comment with your suggested fix. A maintainer will assign you the issue and provide any necessary guidance.
