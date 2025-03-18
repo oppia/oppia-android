@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -76,6 +75,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -103,23 +103,11 @@ private const val TOLERANCE = 1e-5f
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ViewBindingAdaptersTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class ViewBindingAdaptersTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  var activityRule: ActivityScenarioRule<ViewBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        ViewBindingAdaptersTestActivity::class.java
-      )
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -135,66 +123,88 @@ class ViewBindingAdaptersTest {
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_ltrIsEnabled_antiClockwise_rotationAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
+    runWithLaunchedActivity {
+      val imageViewDropDown = onActivityWithResult {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        setRotationAnimation(
+          imageViewDropDown,
+          /* isClockwise= */ false,
+          /* angle= */ 180f
+        )
+        return@onActivityWithResult imageViewDropDown
+      }
+      assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
     }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_ltrIsEnabled_clockwise_rotationAngleForLtrIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ true,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
+    runWithLaunchedActivity {
+      val imageViewDropDown = onActivityWithResult {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        setRotationAnimation(
+          imageViewDropDown,
+          /* isClockwise= */ true,
+          /* angle= */ 180f
+        )
+        return@onActivityWithResult imageViewDropDown
+      }
+      assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(0f)
     }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(0f)
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_rtlIsEnabled_clockwise_rotationAngleForRtlIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ true,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
+    runWithLaunchedActivity {
+      val imageViewDropDown = onActivityWithResult {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setRotationAnimation(
+          imageViewDropDown,
+          /* isClockwise= */ true,
+          /* angle= */ 180f
+        )
+        return@onActivityWithResult imageViewDropDown
+      }
+      assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(360f)
     }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(360f)
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testViewBindingAdapters_rtlIsEnabled_antiClockwise_rotationAngleForRtlIsCorrect() {
-    val imageViewDropDown = activityRule.scenario.runWithActivity {
-      val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
-      ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setRotationAnimation(
-        imageViewDropDown,
-        /* isClockwise= */ false,
-        /* angle= */ 180f
-      )
-      return@runWithActivity imageViewDropDown
+    runWithLaunchedActivity {
+      val imageViewDropDown = onActivityWithResult {
+        val imageViewDropDown: ImageView = it.findViewById(R.id.test_drop_down_icon)
+        ViewCompat.setLayoutDirection(imageViewDropDown, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setRotationAnimation(
+          imageViewDropDown,
+          /* isClockwise= */ false,
+          /* angle= */ 180f
+        )
+        return@onActivityWithResult imageViewDropDown
+      }
+      assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
     }
-    assertThat(imageViewDropDown.rotation).isWithin(TOLERANCE).of(180f)
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<ViewBindingAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, ViewBindingAdaptersTestActivity::class.java)
+    ActivityScenario.launch<ViewBindingAdaptersTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.onActivityWithResult(
     crossinline action: (A) -> V
   ): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
@@ -204,10 +214,6 @@ class ViewBindingAdaptersTest {
     onActivity { fakeMock.consume(action(it)) }
     verify(fakeMock).consume(valueCaptor.capture())
     return valueCaptor.value
-  }
-
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
