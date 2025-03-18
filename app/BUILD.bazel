@@ -366,7 +366,6 @@ VIEWS = [
     "src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/ImageRegionSelectionInteractionView.kt",
     "src/main/java/org/oppia/android/app/player/state/SelectionInteractionView.kt",
-    "src/main/java/org/oppia/android/app/profile/ProfileListView.kt",
     "src/main/java/org/oppia/android/app/survey/SurveyMultipleChoiceOptionView.kt",
     "src/main/java/org/oppia/android/app/survey/SurveyNpsItemOptionView.kt",
     "src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt",

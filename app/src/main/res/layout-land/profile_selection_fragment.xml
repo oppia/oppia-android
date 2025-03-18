@@ -31,7 +31,7 @@
 
     <ImageView
       android:id="@+id/profile_list_scroll_left"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
       android:layout_marginBottom="32dp"
@@ -42,11 +42,14 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/profiles_list_landscape"
+      app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintHorizontal_weight="0.15"
       app:srcCompat="@drawable/ic_chevron_left" />
 
     <ImageView
       android:id="@+id/profile_list_scroll_right"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginEnd="24dp"
       android:layout_marginBottom="32dp"
@@ -57,9 +60,11 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toEndOf="@id/profiles_list_landscape"
+        app:layout_constraintHorizontal_weight="0.15"
       app:srcCompat="@drawable/ic_chevron_right" />
 
-    <org.oppia.android.app.profile.ProfileListView
+    <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/profiles_list_landscape"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
@@ -74,8 +79,8 @@
       app:layout_constraintEnd_toStartOf="@id/profile_list_scroll_right"
       app:layout_constraintStart_toEndOf="@id/profile_list_scroll_left"
       app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintWidth_percent="0.70"
-      app:profileList="@{viewModel.profilesList}" />
+      app:layout_constraintHorizontal_weight="0.70"
+      app:data="@{viewModel.profilesList}" />
 
     <ImageView
       android:id="@+id/profile_selection_setting_icon"
