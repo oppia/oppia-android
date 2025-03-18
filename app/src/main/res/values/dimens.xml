@@ -515,6 +515,7 @@
   <dimen name="add_profile_main_padding_bottom">64dp</dimen>
   <dimen name="add_profile_pin_checkbox_margin_top">32dp</dimen>
   <dimen name="add_profile_confirm_pin_margin_top">24dp</dimen>
+  <dimen name="edit_profile_picture_shadow_gradient_radius">60px</dimen>
 
   <!-- Home Fragment -->
   <dimen name="home_fragment_padding_top">36dp</dimen>
