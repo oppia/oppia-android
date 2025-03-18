@@ -44,7 +44,7 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintEnd_toStartOf="@id/profiles_list_landscape"
       app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintHorizontal_weight="0.15"
+      app:layout_constraintHorizontal_weight="0.15"
       app:srcCompat="@drawable/ic_chevron_left" />
 
     <ImageView
@@ -61,14 +61,13 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toEndOf="@id/profiles_list_landscape"
-        app:layout_constraintHorizontal_weight="0.15"
+      app:layout_constraintHorizontal_weight="0.15"
       app:srcCompat="@drawable/ic_chevron_right" />
 
     <androidx.recyclerview.widget.RecyclerView
       android:id="@+id/profiles_list_landscape"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/profile_selection_fragment_recyclerview_margin"
       android:layout_marginEnd="@dimen/profile_selection_fragment_recyclerview_margin"
       android:clipToPadding="false"
       android:orientation="horizontal"
