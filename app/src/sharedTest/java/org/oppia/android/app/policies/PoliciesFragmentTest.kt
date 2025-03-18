@@ -10,8 +10,8 @@ import android.text.style.ClickableSpan
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario.launch
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.openLinkWithText
 import androidx.test.espresso.action.ViewActions.scrollTo
@@ -24,7 +24,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -33,11 +32,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
@@ -117,7 +112,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.html.PolicyType
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -133,48 +127,16 @@ import kotlin.reflect.KClass
   qualifiers = "port-xxhdpi"
 )
 class PoliciesFragmentTest {
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
+  @Mock lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Mock
-  lateinit var mockRouteToPoliciesListener: RouteToPoliciesListener
-
-  @field:[Rule JvmField]
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Captor
-  lateinit var policyTypeCaptor: ArgumentCaptor<PolicyType>
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @get:Rule
-  var activityScenarioRule: ActivityScenarioRule<PoliciesFragmentTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        getApplicationContext(),
-        PoliciesFragmentTestActivity::class.java
-      )
-    )
-
-  // Note that the locale rule must be initialized first since the scenario rule can depend on the
-  // locale being initialized.
-  @get:Rule
-  val chain: TestRule =
-    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
+  @Inject lateinit var context: Context
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
   @Before
   fun setUp() {
@@ -189,31 +151,17 @@ class PoliciesFragmentTest {
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
-  private fun createPoliciesFragmentTestIntent(context: Context, policyPage: PolicyPage): Intent {
-    return createPoliciesFragmentTestActivity(context, policyPage)
-  }
-
   @Test
   fun testPoliciesFragment_forPrivacyPolicy_privacyPolicyPageIsDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use {
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_isDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -228,13 +176,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkPrivacyPolicyWebLink_opensTheLink() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -254,25 +197,15 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_forTermsOfService_termsOfServicePageIsDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use {
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
       onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
     }
   }
 
   @Test
   fun testPoliciesFragment_inTermsOfServicePage_clickOnPrivacyLink_callsRouteToPrivacyPolicy() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use { scenario ->
-      scenario.onActivity {
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity {
         it.mockCallbackListener = mockRouteToPoliciesListener
         onView(withId(R.id.policy_description_text_view)).check(matches(isDisplayed()))
         // Verify the displayed text is correct & has a clickable span.
@@ -289,13 +222,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkTermsOfServiceWebLink_isDisplayed() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -308,13 +236,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_privacyPolicy_retainsScrollPositionAfterOrientationChange() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestActivity(
-        getApplicationContext(),
-        PolicyPage.PRIVACY_POLICY
-      )
-    ).use { scenario ->
-      scenario.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.PRIVACY_POLICY) {
+      onActivity { activity ->
         val scrollView = activity.findViewById<ScrollView>(R.id.policy_scroll_view)
         scrollView.scrollTo(0, 500)
         testCoroutineDispatchers.runCurrent()
@@ -336,13 +259,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testPoliciesFragment_checkTermsOfServiceWebLink_opensTheLink() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use {
-      it.onActivity { activity ->
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity { activity ->
         val textView: TextView = activity.findViewById(R.id.policy_web_link_text_view)
         testCoroutineDispatchers.runCurrent()
         onView(withId(R.id.policy_web_link_text_view)).perform(scrollTo())
@@ -360,15 +278,8 @@ class PoliciesFragmentTest {
 
   @Test
   fun testFragment_argumentsAreCorrect() {
-    launch<PoliciesFragmentTestActivity>(
-      createPoliciesFragmentTestIntent(
-        getApplicationContext(),
-        PolicyPage.TERMS_OF_SERVICE
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-
+    runWithLaunchedActivity(PolicyPage.TERMS_OF_SERVICE) {
+      onActivity { activity ->
         val policiesFragment = activity.supportFragmentManager
           .findFragmentById(R.id.policies_fragment_placeholder) as PoliciesFragment
 
@@ -397,7 +308,18 @@ class PoliciesFragmentTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    getApplicationContext<TestApplication>().inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    policyPage: PolicyPage,
+    testBlock: ActivityScenario<PoliciesFragmentTestActivity>.() -> Unit
+  ) {
+    val intent = createPoliciesFragmentTestActivity(context, policyPage)
+    ActivityScenario.launch<PoliciesFragmentTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
