@@ -1,13 +1,14 @@
 package org.oppia.android.app.databinding
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -30,7 +31,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.AppCompatCheckBoxBindingAdaptersTestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -69,6 +69,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -85,6 +86,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Test for [AppCompatCheckBox] binding adapters. */
@@ -96,17 +98,10 @@ import javax.inject.Singleton
 )
 class AppCompatCheckBoxBindingAdaptersTest {
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule: ActivityScenarioRule<AppCompatCheckBoxBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        AppCompatCheckBoxBindingAdaptersTestActivity::class.java
-      )
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private var colorRgb: Int = Color.valueOf(0x10000).toArgb()
 
@@ -123,21 +118,27 @@ class AppCompatCheckBoxBindingAdaptersTest {
 
   @Test
   fun testSetButtonTint_hasCorrectButtonColor() {
-    activityRule.scenario.onActivity {
-      val appCompatCheckBox: AppCompatCheckBox = getAppCompatCheckBox(it)
-      setButtonTint(appCompatCheckBox, colorRgb)
-      assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val appCompatCheckBox: AppCompatCheckBox = activity.findViewById(R.id.test_check_box)
+        setButtonTint(appCompatCheckBox, colorRgb)
+        assertThat(appCompatCheckBox.buttonTintList?.defaultColor).isEqualTo(colorRgb)
+      }
     }
-  }
-
-  private fun getAppCompatCheckBox(
-    it: AppCompatCheckBoxBindingAdaptersTestActivity
-  ): AppCompatCheckBox {
-    return it.findViewById(R.id.test_check_box)
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<AppCompatCheckBoxBindingAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, AppCompatCheckBoxBindingAdaptersTestActivity::class.java)
+    ActivityScenario.launch<AppCompatCheckBoxBindingAdaptersTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
