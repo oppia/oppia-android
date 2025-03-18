@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -79,6 +78,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -108,23 +108,11 @@ private const val TOLERANCE = 1e-5f
   qualifiers = "port-xxhdpi"
 )
 class StateAssemblerPaddingBindingAdaptersTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  var activityRule: ActivityScenarioRule<StateAssemblerPaddingBindingAdaptersTestActivity> =
-    ActivityScenarioRule(
-      Intent(
-        ApplicationProvider.getApplicationContext(),
-        StateAssemblerPaddingBindingAdaptersTestActivity::class.java
-      )
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -139,328 +127,370 @@ class StateAssemblerPaddingBindingAdaptersTest {
 
   @Test
   fun testStateAssemblerPadding_explorationViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setExplorationViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Test
   fun testStateAssemblerPadding_explorationViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setExplorationViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Test
   fun testStateAssemblerPadding_questionViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setQuestionViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Test
   fun testStateAssemblerPadding_questionViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setQuestionViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setQuestionViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Test
   fun testStateAssemblerPadding_questionSplitViewPadding_ltrIsEnabled_paddingsForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setQuestionSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setQuestionSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Test
   fun testStateAssemblerPadding_questionSplitViewPadding_rtlIsEnabled_paddingsForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setQuestionSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setQuestionSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testStateAssemblerPadding_ltrIsEnabled_port_paddingStartAndPaddingEndForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "land")
   @Test
   fun testStateAssemblerPadding_ltrIsEnabled_landscape_paddingStartAndPaddingEndForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testStateAssemblerPadding_ltrEnabled__port_tablet_paddingStartAndPaddingEndForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "sw600dp-land")
   @Test
   fun testStateAssemblerPadding_ltrEnabled_landscape_tablet_paddingStartAndEndForLtrIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "port")
   @Test
   fun testStateAssemblerPadding_rtlIsEnabled_port_paddingStartAndPaddingEndForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "land")
   @Test
   fun testStateAssemblerPadding_rtlIsEnabled_landscape_paddingStartAndpaddingEndForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testStateAssemblerPadding_rtlIsEnabled_port_tablet_paddingStartAndEndForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
   @Config(qualifiers = "sw600dp-land")
   @Test
   fun testStateAssemblerPadding_rtlEnabled_landscape_tablet_paddingStartAndEndForRtlIsCorrect() {
-    val textView = activityRule.scenario.runWithActivity {
-      val textView: TextView = it.findViewById(R.id.test_margin_text_view)
-      ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
-      setExplorationSplitViewPadding(
-        textView,
-        /* isApplicable= */ true,
-        /* paddingStart= */ 12f,
-        /* paddingTop= */ 16f,
-        /* paddingEnd= */ 16f,
-        /* paddingBottom= */ 12f
-      )
-      return@runWithActivity textView
-    }
-    /*
+    runWithLaunchedActivity {
+      val textView = onActivityResult {
+        val textView: TextView = it.findViewById(R.id.test_margin_text_view)
+        ViewCompat.setLayoutDirection(textView, ViewCompat.LAYOUT_DIRECTION_RTL)
+        setExplorationSplitViewPadding(
+          textView,
+          /* isApplicable= */ true,
+          /* paddingStart= */ 12f,
+          /* paddingTop= */ 16f,
+          /* paddingEnd= */ 16f,
+          /* paddingBottom= */ 12f
+        )
+        return@onActivityResult textView
+      }
+      /*
      * Note that the padding starts/ends below match the ones set above because, when the adapters are
      * working correctly in RTL mode, the start/end should be exactly the start/end originally set.
      */
-    assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
-    assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+      assertThat(textView.paddingStart.toFloat()).isWithin(TOLERANCE).of(12f)
+      assertThat(textView.paddingEnd.toFloat()).isWithin(TOLERANCE).of(16f)
+    }
   }
 
-  private inline fun <reified V, A : Activity> ActivityScenario<A>.runWithActivity(
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<StateAssemblerPaddingBindingAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, StateAssemblerPaddingBindingAdaptersTestActivity::class.java)
+    ActivityScenario.launch<StateAssemblerPaddingBindingAdaptersTestActivity>(intent).use {
+      testCoroutineDispatchers.runCurrent()
+      it.testBlock()
+    }
+  }
+
+  private inline fun <reified V, A : Activity> ActivityScenario<A>.onActivityResult(
     crossinline action: (A) -> V
   ): V {
     // Use Mockito to ensure the routine is actually executed before returning the result.
@@ -470,10 +500,6 @@ class StateAssemblerPaddingBindingAdaptersTest {
     onActivity { fakeMock.consume(action(it)) }
     verify(fakeMock).consume(valueCaptor.capture())
     return valueCaptor.value
-  }
-
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
