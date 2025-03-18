@@ -1,9 +1,10 @@
 package org.oppia.android.app.utility
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -63,6 +64,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -80,6 +82,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [RatioExtensions]. */
@@ -87,17 +90,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = RatioExtensionsTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class RatioExtensionsTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -106,30 +103,41 @@ class RatioExtensionsTest {
 
   @Test
   fun testRatio_ratioLengthThree_returnsAccessibleRatioString() {
-    activityRule.scenario.onActivity { activity ->
-      val ratio = createRatio(listOf(1, 2, 3))
-      assertThat(
-        ratio.toAccessibleAnswerString(
-          activity.appLanguageResourceHandler
-        )
-      ).isEqualTo("1 to 2 to 3")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val ratio = createRatio(listOf(1, 2, 3))
+        assertThat(
+          ratio.toAccessibleAnswerString(
+            activity.appLanguageResourceHandler
+          )
+        ).isEqualTo("1 to 2 to 3")
+      }
     }
   }
 
   @Test
   fun testRatio_ratioLengthTwo_returnsAccessibleRatioString() {
-    activityRule.scenario.onActivity { activity ->
-      val ratio = createRatio(listOf(1, 2))
-      assertThat(
-        ratio.toAccessibleAnswerString(
-          activity.appLanguageResourceHandler
-        )
-      ).isEqualTo("1 to 2")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val ratio = createRatio(listOf(1, 2))
+        assertThat(
+          ratio.toAccessibleAnswerString(
+            activity.appLanguageResourceHandler
+          )
+        ).isEqualTo("1 to 2")
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   private fun createRatio(element: List<Int>): RatioExpression {

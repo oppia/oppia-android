@@ -1,11 +1,13 @@
 package org.oppia.android.app.databinding
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.progressindicator.CircularProgressIndicatorSpec
@@ -107,14 +109,8 @@ import javax.inject.Singleton
 class CircularProgressIndicatorAdaptersTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<CircularProgressIndicatorAdaptersTestActivity>(
-      CircularProgressIndicatorAdaptersTestActivity.createIntent(
-        ApplicationProvider.getApplicationContext()
-      )
-    )
 
+  @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
@@ -130,109 +126,132 @@ class CircularProgressIndicatorAdaptersTest {
 
   @Test
   fun testSetAnimatedProgress_autoBinding_progressOfZero_doesNotChangeIndicatorProgress() {
-    activityRule.scenario.onActivity { it.viewModel.currentAutoProgress.value = 0 }
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivity {
+      onActivity { it.viewModel.currentAutoProgress.value = 0 }
+      testCoroutineDispatchers.runCurrent()
 
-    activityRule.scenario.onActivity {
-      // Setting the progress to 0 should not change the view.
-      val view = it.findAutoBoundIndicatorView()
-      assertThat(view.progress).isEqualTo(it.viewModel.defaultInitialValue)
+      onActivity {
+        // Setting the progress to 0 should not change the view.
+        val view = it.findAutoBoundIndicatorView()
+        assertThat(view.progress).isEqualTo(it.viewModel.defaultInitialValue)
+      }
     }
   }
 
   @Test
   fun testSetAnimatedProgress_autoBinding_progressOfNonZero_updatesIndicatorProgress() {
-    activityRule.scenario.onActivity { it.viewModel.currentAutoProgress.value = 30 }
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivity {
+      onActivity { it.viewModel.currentAutoProgress.value = 30 }
+      testCoroutineDispatchers.runCurrent()
 
-    activityRule.scenario.onActivity {
-      // Setting the progress to nonzero should change the view.
-      val view = it.findAutoBoundIndicatorView()
-      assertThat(view.progress).isNotEqualTo(it.viewModel.defaultInitialValue)
-      assertThat(view.progress).isEqualTo(30)
+      onActivity {
+        // Setting the progress to nonzero should change the view.
+        val view = it.findAutoBoundIndicatorView()
+        assertThat(view.progress).isNotEqualTo(it.viewModel.defaultInitialValue)
+        assertThat(view.progress).isEqualTo(30)
+      }
     }
   }
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // Checking animation state could be flaky in Espresso.
   fun testSetAnimatedProgress_autoBinding_progressOfNonZero_animatesIndicatorProgress() {
-    activityRule.scenario.onActivity {
-      // Note that this needs to be done in the same 'onActivity' as checking the progress so as to
-      // not fully run the animation through when checking if it's active.
-      it.viewModel.currentAutoProgress.value = 30
-      it.viewModel.notifyChange()
-      it.binding.executePendingBindings()
+    runWithLaunchedActivity {
+      onActivity {
+        // Note that this needs to be done in the same 'onActivity' as checking the progress so as to
+        // not fully run the animation through when checking if it's active.
+        it.viewModel.currentAutoProgress.value = 30
+        it.viewModel.notifyChange()
+        it.binding.executePendingBindings()
 
-      // Setting the progress to nonzero should animate the progress change.
-      assertThat(it.findAutoBoundIndicatorView().isProgressSetToAnimate()).isTrue()
+        // Setting the progress to nonzero should animate the progress change.
+        assertThat(it.findAutoBoundIndicatorView().isProgressSetToAnimate()).isTrue()
+      }
     }
   }
 
   @Test
   fun testSetAnimatedProgress_directCall_progressOfZero_doesNotChangeIndicatorProgress() {
-    // Default the initial progress of the indicator view.
-    activityRule.scenario.onActivity {
-      it.findUnboundIndicatorView().progress = it.viewModel.defaultInitialValue
-    }
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivity {
+      // Default the initial progress of the indicator view.
+      onActivity {
+        it.findUnboundIndicatorView().progress = it.viewModel.defaultInitialValue
+      }
+      testCoroutineDispatchers.runCurrent()
 
-    // The view needs to be changed directly since its progress isn't auto-bound to the adapter.
-    activityRule.scenario.onActivity {
-      setAnimatedProgress(it.findUnboundIndicatorView(), /* progress = */ 0)
-    }
-    testCoroutineDispatchers.runCurrent()
+      // The view needs to be changed directly since its progress isn't auto-bound to the adapter.
+      onActivity {
+        setAnimatedProgress(it.findUnboundIndicatorView(), /* progress = */ 0)
+      }
+      testCoroutineDispatchers.runCurrent()
 
-    activityRule.scenario.onActivity {
-      // Setting the progress to 0 should not change the view.
-      assertThat(it.findUnboundIndicatorView().progress).isEqualTo(it.viewModel.defaultInitialValue)
+      onActivity {
+        // Setting the progress to 0 should not change the view.
+        assertThat(it.findUnboundIndicatorView().progress)
+          .isEqualTo(it.viewModel.defaultInitialValue)
+      }
     }
   }
 
   @Test
   fun testSetAnimatedProgress_directCall_progressOfNonZero_updatesIndicatorProgress() {
-    // Default the initial progress of the indicator view.
-    activityRule.scenario.onActivity {
-      it.findUnboundIndicatorView().progress = it.viewModel.defaultInitialValue
-    }
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivity {
+      // Default the initial progress of the indicator view.
+      onActivity {
+        it.findUnboundIndicatorView().progress = it.viewModel.defaultInitialValue
+      }
+      testCoroutineDispatchers.runCurrent()
 
-    // The view needs to be changed directly since its progress isn't auto-bound to the adapter.
-    activityRule.scenario.onActivity {
-      setAnimatedProgress(it.findUnboundIndicatorView(), /* progress = */ 30)
-    }
-    testCoroutineDispatchers.runCurrent()
+      // The view needs to be changed directly since its progress isn't auto-bound to the adapter.
+      onActivity {
+        setAnimatedProgress(it.findUnboundIndicatorView(), /* progress = */ 30)
+      }
+      testCoroutineDispatchers.runCurrent()
 
-    activityRule.scenario.onActivity {
-      // Setting the progress to nonzero should change the view.
-      val view = it.findUnboundIndicatorView()
-      assertThat(view.progress).isNotEqualTo(it.viewModel.defaultInitialValue)
-      assertThat(view.progress).isEqualTo(30)
+      onActivity {
+        // Setting the progress to nonzero should change the view.
+        val view = it.findUnboundIndicatorView()
+        assertThat(view.progress).isNotEqualTo(it.viewModel.defaultInitialValue)
+        assertThat(view.progress).isEqualTo(30)
+      }
     }
   }
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // Checking animation state could be flaky in Espresso.
   fun testSetAnimatedProgress_directCall_progressOfNonZero_animatesIndicatorProgress() {
-    // Default the initial progress of the indicator view.
-    activityRule.scenario.onActivity {
-      it.findUnboundIndicatorView().progress = it.viewModel.defaultInitialValue
-    }
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivity {
+      // Default the initial progress of the indicator view.
+      onActivity {
+        it.findUnboundIndicatorView().progress = it.viewModel.defaultInitialValue
+      }
+      testCoroutineDispatchers.runCurrent()
 
-    activityRule.scenario.onActivity {
-      // The view needs to be changed directly since its progress isn't auto-bound to the adapter.
-      // Note that this needs to be done in the same 'onActivity' as checking the progress so as to
-      // not fully run the animation through when checking if it's active.
-      val indicatorView = it.findUnboundIndicatorView()
-      setAnimatedProgress(indicatorView, /* progress = */ 30)
+      onActivity {
+        // The view needs to be changed directly since its progress isn't auto-bound to the adapter.
+        // Note that this needs to be done in the same 'onActivity' as checking the progress so as to
+        // not fully run the animation through when checking if it's active.
+        val indicatorView = it.findUnboundIndicatorView()
+        setAnimatedProgress(indicatorView, /* progress = */ 30)
 
-      // Setting the progress to nonzero should animate the progress change.
-      assertThat(indicatorView.isProgressSetToAnimate()).isTrue()
+        // Setting the progress to nonzero should animate the progress change.
+        assertThat(indicatorView.isProgressSetToAnimate()).isTrue()
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<CircularProgressIndicatorAdaptersTestActivity>.() -> Unit
+  ) {
+    val intent = Intent(context, CircularProgressIndicatorAdaptersTestActivity::class.java)
+    ActivityScenario.launch<CircularProgressIndicatorAdaptersTestActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   private fun AppCompatActivity.findAutoBoundIndicatorView() =
