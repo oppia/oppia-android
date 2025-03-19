@@ -8,7 +8,7 @@
   - [Common Flags](#common-flags)
   - [Running multiple test targets](#running-multiple-test-targets)
 - [Concepts and Terminology](#concepts-and-terminology)
-- [Syncing the Project](#Syncing-the-project)
+- [Syncing the Project](#syncing-the-project)
 
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
@@ -43,7 +43,7 @@ followed by:
    ```
    adb install bazel-bin/oppia_dev_binary.apk  
    ```
-* Starting from Sdk 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
+* Starting from SDK 30, incremental builds, like those executed using `bazel mobile-install`, are no longer permitted, necessitating the use of two separate commands.
 
 If everything is working, you should see output like the following:
 
@@ -110,6 +110,7 @@ Using the explicit Bazel target (// syntax) is more reliable compared to the fil
 `--test_output=all` → Show full test output.
 `--cache_test_results=no` → Force re-running tests even if cached.
 `--test_filter=ClassName#methodName` → Run specific test cases.
+`--runs_per_test=1000` → Specifies number of times to run each test.
 
 ### Running multiple test targets
 To run all the test targets in the app module:
@@ -124,8 +125,14 @@ To run all the test targets in the project (note that this would be extremely sl
 bazel test //...
 ```
 
+To run multiple test targets at once:
+
+```
+bazel test -- //path/to/target/FirstTest //path/to/target/SecondTest
+```
+
 ## Concepts and Terminology
-**[Workspace](https://github.com/oppia/oppia-android/blob/develop/WORKSPACE)**
+**[Workspace](https://github.com/oppia/oppia-android/blob/7344270032ac242b1b8987f1b51c8b5aa4f14ce3/WORKSPACE#L2)**
 
 A workspace is a directory where we specify the targeted SDK version, required dependencies, and corresponding Rules. The directory containing the WORKSPACE file is the root of the main repository, which in our case, is the `oppia-android` root directory.
 **[Packages](https://github.com/oppia/oppia-android/tree/develop/app)**
@@ -137,7 +144,7 @@ A package is defined as a directory containing a file named BUILD or BUILD.bazel
 A rule specifies the relationship between inputs and outputs, and the steps to build the outputs.
 In Android, rules are defined using `android_binary`. Android rules for testing are `android_instrumentation_test` and `android_local_test`.
 
-**[BUILD files](https://github.com/oppia/oppia-android/blob/develop/app/BUILD.bazel)**
+**[BUILD files](https://github.com/oppia/oppia-android/blob/7344270032ac242b1b8987f1b51c8b5aa4f14ce3/app/BUILD.bazel#L3)**
 
 Every package contains a BUILD file. This file is written in Starlark Language. In this Build file for module-level, we generally define `android_library`, `kt_android_library` to build our package files as per the requirement.
 
@@ -171,7 +178,7 @@ With the example from our codebase, target `app` whose visibility is public.
  - `visibility = ["//visibility:public"],` - Anyone can use this target.
  - `"//visibility:private"` - Only targets in this package can use this target.
 
-**[Testing](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L719)**
+**[Testing](https://github.com/oppia/oppia-android/blob/7344270032ac242b1b8987f1b51c8b5aa4f14ce3/app/src/sharedTest/java/org/oppia/android/app/player/exploration/BUILD.bazel#L7)**
 
 when we want to run test cases on Bazel build environment, a test target needs to be set up correctly:
 
@@ -203,8 +210,8 @@ oppia_android_test(
     name = "MathExpressionAccessibilityUtilTest",
     srcs = ["MathExpressionAccessibilityUtilTest.kt"],
     custom_package = "org.oppia.android.app.utility.math",
-    test_class = "org.oppia.android.app.utility.math.MathExpressionAccessibilityUtilTest",
     test_manifest = "//app:test_manifest",
+    test_class = "org.oppia.android.app.utility.math.MathExpressionAccessibilityUtilTest",
     deps = [
       ...
     ],

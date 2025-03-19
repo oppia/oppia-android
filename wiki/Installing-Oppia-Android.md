@@ -5,7 +5,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 ## Table of Contents
 
 - [Prepare developer environment](#prepare-developer-environment)
-- [install Bazel](#install-bazel)
+- [Install Bazel](#install-bazel)
   - [Bazel Set up for Mac](#bazel-set-up-for-mac)
   - [Bazel Set up for Linux](#bazel-set-up-for-linux)
   - [Bazel Set up for Windows](#bazel-set-up-for-windows)
@@ -32,7 +32,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
    - Also, navigate to the "SDK Tools" tab, click the "Show Package Details" checkbox at the bottom right, then click on "Android SDK Build-Tools 34-rc1" and select 32.0.0 (this is needed for Bazel support).
 
    - Then, click "Apply" to download and install these two SDKs/Tools.
-     - On this screen, note the **Android SDK Location**, which is set as the ANDROID_HOME variable in  the Bazel setup step below.
+     - On this screen, note the **Android SDK Location**, which is set as the ANDROID_HOME variable in the Bazel setup step below.
 
 3. Prepare a test device
    You require a physical Android device or an Android emulator to run the Oppia app. 
@@ -366,61 +366,31 @@ Please follow these steps to set up Oppia Android on your local machine.
 
    <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/bfc91f6d-d809-418d-ab20-89d899f12f72" />
 
-5. On **next**, to Select Project View, **select Create from scratch**.
+5. On **next**, to Select Project View, select **Import project view file**.
 
-   <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/cdc110d6-2926-4f96-b7d8-117e2c716f76" />
+   <img width="991" alt="Screenshot 2025-03-19 at 18 44 41" src="https://github.com/user-attachments/assets/2679a750-414b-4680-8558-7f438e11f633" />
 
-6. A file similar to the one below will be generated:
+Click on the 3 dots to open the file picker. Scroll down and select `oppia-android.bazelproject`, then click **next**.
 
-   <img width="760" alt="Image" src="https://github.com/user-attachments/assets/5a26210f-865d-4048-b5a5-73379984bfb5" />
+   <img width="991" alt="Screenshot 2025-03-19 at 18 45 23" src="https://github.com/user-attachments/assets/31e0694c-a179-4adf-8d4d-28793c586ee5" />
 
-7. In the above file, modify it so that it looks like below (copy and paste):
-   
+6. The project view will be generated as follows. Click the **Create** button to complete the import.
+
+   ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
+
+7. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
+
+   ![Screenshot 2025-03-19 at 18 49 59](https://github.com/user-attachments/assets/603d85d6-1336-4893-8153-eef8caef5e81)
+
+**Note**: Unlike Gradle, Bazel does not support the "**Android**" project view. To see all project directories, switch to the "**Project**" view instead.
+
+In the `.aswb` directory, you will find the generated `.bazelproject` file. It should contain:
+
+```shell
+import oppia-android.bazelproject
 ```
-directories:
-  # Add the directories you want added as source here
-  # By default, we've added your entire workspace ('.')
-  .
-  
-# Automatically includes all relevant targets under the 'directories' above
-derive_targets_from_directories: false
 
-targets:
-# If source code isn't resolving, add additional targets that compile it here
-  //:oppia_dev_binary
-  //app/src/main/... 
-  //domain/src/main/... 
-  //testing/src/main/... 
-  //utility/src/main/... 
-  //data/src/main/... 
-  //model/...
-  
-additional_languages:
-  # Uncomment any additional languages you want supported
-  # c
-  # dart
-  # kotlin
-  java
-  kotlin
-
-# Please uncomment an android-SDK platform. Available SDKs are:
-# android_sdk_platform: android-28
-# android_sdk_platform: android-29
-android_sdk_platform: android-30
-# android_sdk_platform: android-31
-# android_sdk_platform: android-32
-# android_sdk_platform: android-33
-android_sdk_platform: android-34
-
-shard_sync: true
-
-java_language_level: 11
-```
-   **Note**: Only enable Android-SDK platforms that you have installed per the [Prepare developer environment](#prepare-developer-environment) section above. Android-SDK platforms are useful for creating emulators to test your app with.
-
-8. Click **Create**, and allow the project to synchronize. Read more about syncing at [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
-
-9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
+8. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
 
    You can run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the run commands listed in the [Bazel user guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide), but using the GUI to run the app might be more intuitive for some developers.
 
@@ -481,7 +451,7 @@ These are tests in other modules, such as **domain** or **utility**.
 
 - To learn about how we write tests at oppia-android, please refer to: [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing).
 
-- To learn more about getting started with Bazel, please see the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide).
+- An important reference to go back to as you continue developing with Bazel is the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide).
 
 ### Troubleshooting Installation
 #### General issues
