@@ -2,9 +2,9 @@ package org.oppia.android.app.administratorcontrols.appversion
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.extensions.getLastUpdateTime
 import org.oppia.android.util.extensions.getVersionName

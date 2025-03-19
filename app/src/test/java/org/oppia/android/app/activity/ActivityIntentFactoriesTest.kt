@@ -1,9 +1,10 @@
 package org.oppia.android.app.activity
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
@@ -13,8 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.activity.ActivityIntentFactories.RecentlyPlayedActivityIntentFactory
-import org.oppia.android.app.activity.ActivityIntentFactories.TopicActivityIntentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -68,6 +67,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -87,6 +87,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ActivityIntentFactories]. */
@@ -96,14 +97,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ActivityIntentFactoriesTest.TestApplication::class)
 class ActivityIntentFactoriesTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -112,71 +109,74 @@ class ActivityIntentFactoriesTest {
 
   @Test
   fun testTopicActivityIntentFactory_createIntent_returnsIntentToStartTopicActivity() {
-    val intent =
-      getTopicActivityIntentFactory().createIntent(
-        ProfileId.getDefaultInstance(),
-        classroomId = "test_classroom_id",
-        topicId = "test_topic_id"
-      )
-    val args = intent.getProtoExtra(
-      TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
-      TopicActivityParams.getDefaultInstance()
-    )
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val intent =
+          activity.topicActivityIntentFactory.createIntent(
+            ProfileId.getDefaultInstance(),
+            classroomId = "test_classroom_id",
+            topicId = "test_topic_id"
+          )
+        val args = intent.getProtoExtra(
+          TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
+          TopicActivityParams.getDefaultInstance()
+        )
 
-    assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
-    assertThat(args.topicId).isEqualTo("test_topic_id")
-    assertThat(args.storyId).isEmpty()
+        assertThat(intent).hasComponentClass(TopicActivity::class.java)
+        assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+        assertThat(args.topicId).isEqualTo("test_topic_id")
+        assertThat(args.storyId).isEmpty()
+      }
+    }
   }
 
   @Test
   fun testTopicActivityIntentFactory_createIntent_withStoryId_returnsIntentToStartTopicActivity() {
-    val intent =
-      getTopicActivityIntentFactory().createIntent(
-        ProfileId.getDefaultInstance(),
-        classroomId = "test_classroom_id",
-        topicId = "test_topic_id",
-        storyId = "test_story_id"
-      )
-    val args = intent.getProtoExtra(
-      TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
-      TopicActivityParams.getDefaultInstance()
-    )
-    assertThat(intent).hasComponentClass(TopicActivity::class.java)
-    assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
-    assertThat(args.topicId).isEqualTo("test_topic_id")
-    assertThat(args.storyId).isEqualTo("test_story_id")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val intent =
+          activity.topicActivityIntentFactory.createIntent(
+            ProfileId.getDefaultInstance(),
+            classroomId = "test_classroom_id",
+            topicId = "test_topic_id",
+            storyId = "test_story_id"
+          )
+        val args = intent.getProtoExtra(
+          TopicActivity.TOPIC_ACTIVITY_PARAMS_KEY,
+          TopicActivityParams.getDefaultInstance()
+        )
+        assertThat(intent).hasComponentClass(TopicActivity::class.java)
+        assertThat(intent.extractCurrentUserProfileId().internalId).isEqualTo(0)
+        assertThat(args.topicId).isEqualTo("test_topic_id")
+        assertThat(args.storyId).isEqualTo("test_story_id")
+      }
+    }
   }
 
   @Test
   fun testRecentlyPlayedActivityIntentFactory_createIntent_returnsIntentToStartCorrectActivity() {
-    val intent =
-      getRecentlyPlayedActivityIntentFactory().createIntent(
-        RecentlyPlayedActivityParams.getDefaultInstance()
-      )
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val intent =
+          activity.recentlyPlayedActivityIntentFactory.createIntent(
+            RecentlyPlayedActivityParams.getDefaultInstance()
+          )
 
-    assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
-    assertThat(intent).extras().integer(RECENTLY_PLAYED_PROFILE_ID_KEY).isEqualTo(0)
-  }
-
-  private fun getTopicActivityIntentFactory(): TopicActivityIntentFactory {
-    lateinit var factory: TopicActivityIntentFactory
-    activityRule.scenario.onActivity { activity ->
-      factory = activity.topicActivityIntentFactory
+        assertThat(intent).hasComponentClass(RecentlyPlayedActivity::class.java)
+        assertThat(intent).extras().integer(RECENTLY_PLAYED_PROFILE_ID_KEY).isEqualTo(0)
+      }
     }
-    return factory
-  }
-
-  private fun getRecentlyPlayedActivityIntentFactory(): RecentlyPlayedActivityIntentFactory {
-    lateinit var factory: RecentlyPlayedActivityIntentFactory
-    activityRule.scenario.onActivity { activity ->
-      factory = activity.recentlyPlayedActivityIntentFactory
-    }
-    return factory
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.

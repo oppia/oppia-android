@@ -1,9 +1,9 @@
 package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.profile.ProfileChooserFragment
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import javax.inject.Inject
 

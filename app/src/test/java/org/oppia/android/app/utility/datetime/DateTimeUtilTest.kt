@@ -3,8 +3,8 @@ package org.oppia.android.app.utility.datetime
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
@@ -64,6 +64,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -107,20 +108,11 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DateTimeUtilTest.TestApplication::class)
 class DateTimeUtilTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -130,51 +122,68 @@ class DateTimeUtilTest {
 
   @Test
   fun testGreetingMessageBasedOnEveningTime_goodEveningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(EVENING_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnNightTime_goodEveningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(LATE_NIGHT_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(LATE_NIGHT_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good evening,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnMorningTime_goodMorningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(MID_MORNING_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(MID_MORNING_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnEarlyMorningTime_goodMorningMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(EARLY_MORNING_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(EARLY_MORNING_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good morning,")
+      }
     }
   }
 
   @Test
   fun testGreetingMessageBasedOnAfternoonTime_goodAfternoonMessageSucceeded() {
-    activityRule.scenario.onActivity { activity ->
-      val dateTimeUtil = activity.dateTimeUtil
-      fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
-      assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val dateTimeUtil = activity.dateTimeUtil
+        fakeOppiaClock.setCurrentTimeToSameDateTime(AFTERNOON_TIMESTAMP)
+        assertThat(dateTimeUtil.getGreetingMessage()).isEqualTo("Good afternoon,")
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.

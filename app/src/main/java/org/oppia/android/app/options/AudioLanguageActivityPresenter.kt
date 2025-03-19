@@ -4,12 +4,12 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.AudioLanguageActivityBinding
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.databinding.AudioLanguageActivityBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
 
