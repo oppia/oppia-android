@@ -110,7 +110,7 @@ Using the explicit Bazel target (// syntax) is more reliable compared to the fil
 `--test_output=all` → Show full test output.
 `--cache_test_results=no` → Force re-running tests even if cached.
 `--test_filter=ClassName#methodName` → Run specific test cases.
-`--runs_per_test=1000` → Specifies number of times to run each test.
+`--runs_per_test=100` → Specifies number of times to run each test.
 
 ### Running multiple test targets
 To run all the test targets in the app module:
