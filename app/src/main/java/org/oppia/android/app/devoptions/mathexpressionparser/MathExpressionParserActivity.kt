@@ -3,11 +3,11 @@ package org.oppia.android.app.devoptions.mathexpressionparser
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ScreenName.MATH_EXPRESSION_PARSER_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 

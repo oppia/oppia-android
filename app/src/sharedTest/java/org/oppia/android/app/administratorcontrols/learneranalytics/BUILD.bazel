@@ -1,10 +1,15 @@
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "ProfileAndDeviceIdActivityTest",
-    processed_src = test_with_resources("ProfileAndDeviceIdActivityTest.kt"),
+    srcs = [
+        "ProfileAndDeviceIdActivityTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdActivityTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -33,10 +38,16 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "ProfileAndDeviceIdFragmentTest",
-    processed_src = test_with_resources("ProfileAndDeviceIdFragmentTest.kt"),
+    srcs = [
+        "ProfileAndDeviceIdFragmentTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragmentTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",

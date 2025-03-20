@@ -2,12 +2,12 @@ package org.oppia.android.app.utility
 
 import android.content.Context
 import android.content.res.Resources
-import org.oppia.android.R
 import org.oppia.android.app.model.EphemeralQuestion
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.player.state.StateFragment
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionIds
 import org.oppia.android.app.topic.questionplayer.QuestionPlayerFragment
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 import kotlin.math.pow
 import kotlin.math.sqrt

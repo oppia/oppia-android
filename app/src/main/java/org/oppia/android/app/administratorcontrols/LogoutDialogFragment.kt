@@ -5,10 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.ui.R
 
 /** [DialogFragment] that gives option to either cancel or log out from current profile. */
 class LogoutDialogFragment : InjectableDialogFragment() {

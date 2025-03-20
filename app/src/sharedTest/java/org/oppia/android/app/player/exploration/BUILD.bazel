@@ -2,13 +2,18 @@
 Tests for exploration player.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "BottomSheetOptionsMenuTest",
-    processed_src = test_with_resources("BottomSheetOptionsMenuTest.kt"),
+    srcs = [
+        "BottomSheetOptionsMenuTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.player.exploration.BottomSheetOptionsMenuTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -41,10 +46,16 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "ExplorationActivityTest",
-    processed_src = test_with_resources("ExplorationActivityTest.kt"),
+    srcs = [
+        "ExplorationActivityTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.player.exploration.ExplorationActivityTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",

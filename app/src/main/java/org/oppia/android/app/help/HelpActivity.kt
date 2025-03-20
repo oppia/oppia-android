@@ -3,7 +3,6 @@ package org.oppia.android.app.help
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.help.faq.FAQListActivity
@@ -18,6 +17,7 @@ import org.oppia.android.app.model.ScreenName.HELP_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
 import org.oppia.android.app.policies.RouteToPoliciesListener
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
