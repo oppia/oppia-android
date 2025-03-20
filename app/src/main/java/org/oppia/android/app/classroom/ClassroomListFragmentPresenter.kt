@@ -29,7 +29,6 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.unit.dp
 import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
 import org.oppia.android.app.classroom.classroomlist.AllClassroomsHeaderText
 import org.oppia.android.app.classroom.classroomlist.ClassroomList
 import org.oppia.android.app.classroom.promotedlist.ComingSoonTopicList
@@ -37,6 +36,7 @@ import org.oppia.android.app.classroom.promotedlist.PromotedStoryList
 import org.oppia.android.app.classroom.topiclist.AllTopicsHeaderText
 import org.oppia.android.app.classroom.topiclist.TopicCard
 import org.oppia.android.app.classroom.welcome.WelcomeText
+import org.oppia.android.app.databinding.databinding.ClassroomListFragmentBinding
 import org.oppia.android.app.home.ExitProfileListener
 import org.oppia.android.app.home.HomeItemViewModel
 import org.oppia.android.app.home.RouteToTopicPlayStoryListener
@@ -54,8 +54,8 @@ import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.datetime.DateTimeUtil
-import org.oppia.android.databinding.ClassroomListFragmentBinding
 import org.oppia.android.domain.classroom.ClassroomController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger

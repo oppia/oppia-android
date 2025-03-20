@@ -1,11 +1,11 @@
 package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.PoliciesActivityParams
 import org.oppia.android.app.model.PoliciesFragmentArguments
 import org.oppia.android.app.policies.PoliciesFragment
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [PoliciesFragmentTestActivity]. */

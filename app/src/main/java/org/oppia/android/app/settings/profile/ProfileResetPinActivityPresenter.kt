@@ -2,11 +2,11 @@ package org.oppia.android.app.settings.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.databinding.databinding.ProfileResetPinActivityBinding
 import org.oppia.android.app.model.ProfileResetPinActivityParams
 import org.oppia.android.app.settings.profile.ProfileResetPinActivity.Companion.PROFILE_RESET_PIN_ACTIVITY_PARAMS_KEY
-import org.oppia.android.databinding.ProfileResetPinActivityBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject

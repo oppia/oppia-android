@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
+import org.oppia.android.app.databinding.databinding.AdministratorControlsActivityBinding
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.model.AdministratorControlActivityStateBundle
 import org.oppia.android.app.model.ProfileId
@@ -15,7 +15,7 @@ import org.oppia.android.app.settings.profile.LoadProfileEditDeletionDialogListe
 import org.oppia.android.app.settings.profile.ProfileEditFragment
 import org.oppia.android.app.settings.profile.ProfileListFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.AdministratorControlsActivityBinding
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject

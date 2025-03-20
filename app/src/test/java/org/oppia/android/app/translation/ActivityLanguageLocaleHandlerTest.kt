@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
@@ -78,6 +78,7 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -116,26 +117,13 @@ import javax.inject.Singleton
 )
 class ActivityLanguageLocaleHandlerTest {
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @Before
   fun setUp() {
@@ -144,109 +132,143 @@ class ActivityLanguageLocaleHandlerTest {
 
   @Test
   fun testActivityDisplayLocale_initializeToEnglish_returnsInitializedDisplayLocale() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
-    val displayLocale = activityLanguageLocaleHandler.displayLocale
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+        val displayLocale = activityLangLocaleHandler.displayLocale
 
-    assertThat(displayLocale.localeContext).isNotEqualToDefaultInstance()
-    assertThat(displayLocale.localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+        assertThat(displayLocale.localeContext).isNotEqualToDefaultInstance()
+        assertThat(displayLocale.localeContext.languageDefinition.language).isEqualTo(ENGLISH)
+      }
+    }
   }
 
   @Test
   fun testActivityDisplayLocale_initializeToSwahili_returnsInitializedDisplayLocale() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
 
-    val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
 
-    assertThat(displayLocale.localeContext).isNotEqualToDefaultInstance()
-    assertThat(displayLocale.localeContext.languageDefinition.language).isEqualTo(SWAHILI)
+        assertThat(displayLocale.localeContext).isNotEqualToDefaultInstance()
+        assertThat(displayLocale.localeContext.languageDefinition.language).isEqualTo(SWAHILI)
+      }
+    }
   }
 
   @Test
   fun testUpdateLocale_initialized_sameLocaleAsApp_returnsFalse() {
-    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+    runWithLaunchedActivity {
+      appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
 
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    val isUpdated = activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        val isUpdated = activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
 
-    // The locale never changed, so there's nothing to update.
-    assertThat(isUpdated).isFalse()
+        // The locale never changed, so there's nothing to update.
+        assertThat(isUpdated).isFalse()
+      }
+    }
   }
 
   @Test
   fun testUpdateLocale_initialized_differentLocaleFromApp_appChangedElsewhere_returnsTrue() {
-    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
+    runWithLaunchedActivity {
+      appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        appLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
 
-    val isUpdated =
-      activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
+        val isUpdated =
+          activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
 
-    // Since the app language changed, the request to change the activity language should succeed.
-    // This ensures cases like a newer activity in the stack changing the language results in an
-    // older activity correctly being recreated due to it now having a new language configuration.
-    assertThat(isUpdated).isTrue()
+        // Since the app language changed, the request to change the activity language should
+        // succeed. This ensures cases like a newer activity in the stack changing the language
+        // results in an older activity correctly being recreated due to it now having a new
+        // language configuration.
+        assertThat(isUpdated).isTrue()
+      }
+    }
   }
 
   @Test
   fun testUpdateLocale_initialized_differentLocale_returnsTrue() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    val isUpdated =
-      activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        val isUpdated = activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
 
-    assertThat(isUpdated).isTrue()
+        assertThat(isUpdated).isTrue()
+      }
+    }
   }
 
   @Test
   fun testUpdateLocale_afterUpdate_newLocale_returnsTrue() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    activityLanguageLocaleHandler.updateLocale(
-      computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE)
-    )
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(BRAZILIAN_PORTUGUESE))
 
-    // Change language back.
-    val isUpdated = activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
+        // Change language back.
+        val isUpdated = activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
 
-    // Updating twice with a new locale should lead to an update.
-    assertThat(isUpdated).isTrue()
+        // Updating twice with a new locale should lead to an update.
+        assertThat(isUpdated).isTrue()
+      }
+    }
   }
 
   @Test
   fun testUpdateLocale_afterUpdate_newLocale_isSimilar() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
 
-    val currentLocale = activityLanguageLocaleHandler.displayLocale
+        val currentLocale = activityLangLocaleHandler.displayLocale
 
-    assertThat(currentLocale.localeContext.regionDefinition.getLanguages(0)).isEqualTo(ENGLISH)
+        assertThat(currentLocale.localeContext.regionDefinition.getLanguages(0)).isEqualTo(ENGLISH)
+      }
+    }
   }
 
   @Test
   fun testInitializeLocaleForActivity_initedAndUpdated_doesNotUpdateSystemLocaleWithNewLocale() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    forceDefaultLocale(Locale.ROOT)
-    val configuration = Configuration()
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        forceDefaultLocale(Locale.ROOT)
+        val configuration = Configuration()
+        activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(ENGLISH))
 
-    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
+        activityLangLocaleHandler.initializeLocaleForActivity(configuration)
 
-    // Verify that the system locale changed to the updated version.
-    assertThat(Locale.getDefault().language).isEqualTo("en")
+        // Verify that the system locale changed to the updated version.
+        assertThat(Locale.getDefault().language).isEqualTo("en")
+      }
+    }
   }
 
   @Test
   fun testUpdate_activityLocale_updatesAppLocaleWithNewLocale() {
-    val activityLanguageLocaleHandler = retrieveActivityLanguageLocaleHandler()
-    forceDefaultLocale(Locale.ROOT)
-    val configuration = Configuration()
-    activityLanguageLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
-    activityLanguageLocaleHandler.initializeLocaleForActivity(configuration)
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val activityLangLocaleHandler = activity.activityLanguageLocaleHandler
+        forceDefaultLocale(Locale.ROOT)
+        val configuration = Configuration()
+        activityLangLocaleHandler.updateLocale(computeNewAppLanguageLocale(SWAHILI))
+        activityLangLocaleHandler.initializeLocaleForActivity(configuration)
 
-    val appLocale = appLanguageLocaleHandler.getDisplayLocale()
+        val appLocale = appLanguageLocaleHandler.getDisplayLocale()
 
-    // Verify that the system locale changed to the updated version.
-    assertThat(appLocale.localeContext.languageDefinition.language).isEqualTo(SWAHILI)
+        // Verify that the system locale changed to the updated version.
+        assertThat(appLocale.localeContext.languageDefinition.language).isEqualTo(SWAHILI)
+      }
+    }
   }
 
   private fun forceDefaultLocale(locale: Locale) {
@@ -280,16 +302,15 @@ class ActivityLanguageLocaleHandlerTest {
     return retrieveAppLanguageLocale()
   }
 
-  private fun retrieveActivityLanguageLocaleHandler(): ActivityLanguageLocaleHandler {
-    lateinit var activityLanguageLocaleHandler: ActivityLanguageLocaleHandler
-    activityRule.scenario.onActivity { activity ->
-      activityLanguageLocaleHandler = activity.activityLanguageLocaleHandler
-    }
-    return activityLanguageLocaleHandler
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.

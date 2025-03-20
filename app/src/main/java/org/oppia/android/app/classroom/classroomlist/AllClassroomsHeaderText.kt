@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 
 /** Test tag for the all classrooms section header. */
 const val ALL_CLASSROOMS_HEADER_TEST_TAG = "TEST_TAG.all_classrooms_header"
