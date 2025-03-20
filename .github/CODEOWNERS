@@ -250,6 +250,7 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 *.bazel @oppia/android-app-infrastructure-reviewers
 .bazelrc @oppia/android-app-infrastructure-reviewers
 .bazelversion @oppia/android-app-infrastructure-reviewers
+oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 /tools/android/ @oppia/android-app-infrastructure-reviewers
 /tools/kotlin/ @oppia/android-app-infrastructure-reviewers
 
