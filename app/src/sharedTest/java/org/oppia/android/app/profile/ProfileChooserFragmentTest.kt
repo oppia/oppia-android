@@ -21,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -126,27 +125,13 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileChooserFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  private val activityTestRule: ActivityTestRule<ProfileChooserActivity> = ActivityTestRule(
-    ProfileChooserActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -168,11 +153,15 @@ class ProfileChooserFragmentTest {
 
   @Test
   fun testProfileChooserActivity_hasCorrectLabel() {
-    activityTestRule.launchActivity(/* startIntent= */ null)
-    val title = activityTestRule.activity.title
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
+    launch(ProfileChooserActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
+      }
+    }
   }
 
   @Test
