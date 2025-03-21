@@ -20,7 +20,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -31,6 +30,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
+import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity.Companion.createAdministratorControlsActivityIntent
 import org.oppia.android.app.administratorcontrols.appversion.AppVersionActivity
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -115,22 +115,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AppVersionActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<AppVersionActivity> = ActivityTestRule(
-    AppVersionActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -141,18 +130,15 @@ class AppVersionActivityTest {
 
   @Test
   fun testAppVersionActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createAppVersionActivityIntent())
-    val title = activityTestRule.activity.title
+    launchAppVersionActivityIntent().use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
-  }
-
-  private fun createAppVersionActivityIntent(): Intent {
-    return AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.app_version_activity_title))
+      }
+    }
   }
 
   @After
@@ -167,8 +153,9 @@ class AppVersionActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createAppVersionActivityIntent().extractCurrentAppScreenName()
+    val intent = AppVersionActivity.createAppVersionActivityIntent(context)
 
+    val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.APP_VERSION_ACTIVITY)
   }
 
@@ -264,19 +251,12 @@ class AppVersionActivityTest {
     return dateTimeString
   }
 
-  private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> {
-    val intent = AppVersionActivity.createAppVersionActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
-    return ActivityScenario.launch(intent)
-  }
+  private fun launchAppVersionActivityIntent(): ActivityScenario<AppVersionActivity> =
+    ActivityScenario.launch(AppVersionActivity.createAppVersionActivityIntent(context))
 
   private fun launchAdministratorControlsActivityIntent(internalProfileId: Int): Intent {
     val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    return AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      profileId
-    )
+    return createAdministratorControlsActivityIntent(context, profileId)
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
