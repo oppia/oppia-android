@@ -232,6 +232,9 @@
   <string name="profile_selection_add_icon_description">Add another profile</string>
   <string name="profile_selection_add_profile_text">Add a learner profile</string>
   <string name="profile_selection_admin_label">Administrator</string>
+  <string name="profile_selection_scroll_left_content_description">Scroll left</string>
+  <string name="profile_selection_scroll_right_content_description">Scroll right</string>
+  <string name="profile_selection_administrator_controls">Administrator Controls</string>
 
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>

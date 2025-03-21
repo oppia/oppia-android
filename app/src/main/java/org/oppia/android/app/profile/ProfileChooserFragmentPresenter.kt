@@ -126,10 +126,10 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun ProfileSelectionFragmentBinding.setUpLandscapeMode() {
     val snapHelper = StartSnapHelper()
-
+    val recyclerviewAdapter = createRecyclerViewAdapter()
     profilesListLandscape?.apply {
       isNestedScrollingEnabled = false
-      adapter = createRecyclerViewAdapter()
+      adapter = recyclerviewAdapter
     }
 
     val layoutManager = profilesListLandscape?.layoutManager as LinearLayoutManager?
