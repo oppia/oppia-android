@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -22,15 +22,12 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import dagger.Module
@@ -46,8 +43,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Captor
+import org.mockito.Mock
 import org.mockito.Mockito.atLeastOnce
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -65,15 +65,19 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.home.RouteToExplorationListener
+import org.oppia.android.app.model.ExplorationActivityParams
+import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StoryFragmentArguments
-import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
+import org.oppia.android.app.testing.activity.TestActivity
+import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
@@ -156,46 +160,21 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryFragmentTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Mock lateinit var mockRouteToExplorationListener: RouteToExplorationListener
+  @Captor lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
 
-  @Rule
-  @JvmField
-  val mockitoRule: MockitoRule = MockitoJUnit.rule()
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var accessibilityService: FakeAccessibilityService
-
-  @Captor
-  lateinit var listCaptor: ArgumentCaptor<List<ImageTransformation>>
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
-    StoryActivity::class.java, /* initialTouchMode= */
-    true, /* launchActivity= */
-    false
-  )
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
+  @Inject lateinit var accessibilityService: FakeAccessibilityService
 
   private val internalProfileId = 0
-
   private lateinit var profileId: ProfileId
 
   @Before
@@ -217,16 +196,26 @@ class StoryFragmentTest {
   @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
   fun testStoryFragment_clickOnToolbarNavigationButton_closeActivity() {
-    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
-    testCoroutineDispatchers.runCurrent()
-    onView(withContentDescription(R.string.navigate_up)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      onActivity { assertThat(it.isFinishing).isTrue() }
+    }
   }
 
   @Test
   fun testStoryFragment_toolbarTitle_isDisplayedSuccessfully() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(withId(R.id.story_toolbar_title))
         .check(matches(withText("Matthew Goes to the Bakery")))
     }
@@ -236,74 +225,98 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(false)
-    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onActivity { activity ->
+        val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
+        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    val storyToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
-    onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
-    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+        onView(withId(R.id.story_toolbar_title)).perform(click())
+        assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(true)
-    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onActivity { activity ->
+        val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
+        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    val storyToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
-    onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
-    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+        onView(withId(R.id.story_toolbar_title)).perform(click())
+        assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(false)
-    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
-    testCoroutineDispatchers.runCurrent()
-
-    val storyToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-    onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
-    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onActivity { activity ->
+        val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
+        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
+        onView(withId(R.id.story_toolbar_title)).perform(click())
+        assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(storyToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   // TODO(#4212): Error -> Only the original thread that created a view hierarchy can touch its view
   @Test
   fun testStoryFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     accessibilityService.setScreenReaderEnabled(true)
-    activityTestRule.launchActivity(createFractionsStoryActivityIntent())
-    testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onActivity { activity ->
+        val storyToolbarTitle: TextView = activity.findViewById(R.id.story_toolbar_title)
+        ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    val storyToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.story_toolbar_title)
-    ViewCompat.setLayoutDirection(storyToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-
-    onView(withId(R.id.story_toolbar_title)).perform(click())
-    assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
-    assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+        onView(withId(R.id.story_toolbar_title)).perform(click())
+        assertThat(storyToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(storyToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(storyToolbarTitle.textAlignment).isEqualTo(TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   @Test
   fun testStoryFragment_correctStoryCountLoadedInHeader() {
     setStoryPartialProgressForFractions()
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
       onView(withId(R.id.story_chapter_list)).perform(
@@ -328,8 +341,12 @@ class StoryFragmentTest {
   @Test
   fun testStoryFragment_completedExp0_tickHasCorrectContentDescription() {
     setStoryPartialProgressForFractions()
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(withId(R.id.story_chapter_list)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -347,16 +364,24 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_correctNumberOfStoriesLoadedInRecyclerView() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(withId(R.id.story_chapter_list)).check(hasItemCount(3))
     }
   }
 
   @Test
   fun testStoryFragment_changeConfiguration_textViewIsShownCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -379,8 +404,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -402,8 +431,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummary_ltrEnabled_textAlignmentIsCorrect() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -427,8 +460,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterSummary_rtlEnabled_textAlignmentIsCorrect() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -452,8 +489,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -476,8 +517,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterLongSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createTestStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           1
@@ -503,8 +548,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterLongSummaryIsShownCorrectly() {
-    launch<StoryActivity>(createTestStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -531,8 +580,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterMissingPrerequisiteThumbnailIsBlurred() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -560,8 +613,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_chapterMissingPrerequisiteIsShownCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -583,8 +640,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_changeConfiguration_chapterMissingPrerequisiteIsShownCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -607,7 +668,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_checkClickableSpanWithoutScreenReader_isClickable() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       accessibilityService.setScreenReaderEnabled(false)
       testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
@@ -630,9 +696,13 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_checkClickableSpanWithScreenReader_isNotClickable() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      accessibilityService.setScreenReaderEnabled(true)
-      testCoroutineDispatchers.runCurrent()
+    accessibilityService.setScreenReaderEnabled(true)
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -653,8 +723,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_clickPrerequisiteChapter_prerequisiteChapterCardIsDisplayed() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
           2
@@ -686,8 +760,12 @@ class StoryFragmentTest {
 
   @Test
   fun testStoryFragment_configChange_clickPrerequisiteChapter_prerequisiteChapterCardIsDisplayed() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -721,9 +799,13 @@ class StoryFragmentTest {
   @Test // TODO(#3245): Error -> View falls below the minimum recommended size for touch targets and
   // URLSpan should be used in place of ClickableSpan
   @DisableAccessibilityChecks
-  fun testStoryFragment_changeConfiguration_explorationStartCorrectly() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+  fun testStoryFragment_changeConfiguration_routeToExplorationCallbackCalled() {
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       onView(allOf(withId(R.id.story_chapter_list))).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -738,15 +820,22 @@ class StoryFragmentTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ExplorationActivity::class.java.name))
+      verify(mockRouteToExplorationListener)
+        .routeToExploration(
+          anyOrNull(), anyString(), anyString(), anyString(), anyString(), anyOrNull(), anyBoolean()
+        )
     }
   }
 
   @Test
   fun testStoryFragment_changeConfiguration_correctStoryCountInHeader() {
     setStoryPartialProgressForFractions()
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
       onView(isRoot()).perform(orientationLandscape())
       val headerString: String =
         getResources().getQuantityString(R.plurals.story_total_chapters, 2, 1, 2)
@@ -776,12 +865,15 @@ class StoryFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scenario.onActivity { activity ->
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onActivity { activity ->
         val storyFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.story_fragment_placeholder) as StoryFragment
+          .findFragmentById(R.id.test_fragment_placeholder) as StoryFragment
 
         val arguments = checkNotNull(storyFragment.arguments) {
           "Expected arguments to be passed to StoryFragment."
@@ -817,8 +909,13 @@ class StoryFragmentTest {
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_checkProgressDrawableIsCorrect() {
     setStoryPartialProgressForFractions()
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -832,8 +929,13 @@ class StoryFragmentTest {
   @Config(qualifiers = "+sw600dp")
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_notStartedChapter_checkProgressDrawableIsCorrect() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -847,8 +949,13 @@ class StoryFragmentTest {
   @Config(qualifiers = "+sw600dp")
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_lockedChapter_checkProgressDrawableIsCorrect() {
-    launch<StoryActivity>(createRatiosStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      RATIOS_TOPIC_ID,
+      RATIOS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -862,8 +969,13 @@ class StoryFragmentTest {
   @Config(qualifiers = "+sw600dp")
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_pawIconIsVisible() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -877,8 +989,13 @@ class StoryFragmentTest {
   @Config(qualifiers = "+sw600dp")
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_pendingChapter_pawIconIsGone() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -892,8 +1009,13 @@ class StoryFragmentTest {
   @Config(qualifiers = "+sw600dp")
   @Test // TODO(#4212): Error -> No views in hierarchy found matching
   fun testStoryFragment_completedChapter_verticalDashedLineIsVisible() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(1))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -908,8 +1030,13 @@ class StoryFragmentTest {
   // TODO(#4212): Error -> No views in hierarchy found matching
   @Test
   fun testStoryFragment_lastChapter_verticalDashedLineIsGone() {
-    launch<StoryActivity>(createFractionsStoryActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(
+      internalProfileId,
+      TEST_CLASSROOM_ID_1,
+      FRACTIONS_TOPIC_ID,
+      FRACTIONS_STORY_ID_0
+    ) {
+      onView(withId(R.id.story_chapter_list)).perform(scrollToPosition<RecyclerView.ViewHolder>(2))
       onView(
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
@@ -972,36 +1099,6 @@ class StoryFragmentTest {
     return find { text in it.first }?.second
   }
 
-  private fun createFractionsStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      TEST_CLASSROOM_ID_1,
-      FRACTIONS_TOPIC_ID,
-      FRACTIONS_STORY_ID_0
-    )
-  }
-
-  private fun createTestStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      TEST_CLASSROOM_ID_1,
-      TEST_TOPIC_ID_0,
-      TEST_STORY_ID_0
-    )
-  }
-
-  private fun createRatiosStoryActivityIntent(): Intent {
-    return StoryActivity.createStoryActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId,
-      TEST_CLASSROOM_ID_1,
-      RATIOS_TOPIC_ID,
-      RATIOS_STORY_ID_0
-    )
-  }
-
   private fun setStoryPartialProgressForFractions() {
     storyProgressTestHelper.markCompletedFractionsStory0Exp0(
       profileId,
@@ -1011,6 +1108,66 @@ class StoryFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  @Suppress("SameParameterValue")
+  private fun runWithLaunchedActivityAndAddedFragment(
+    internalProfileId: Int,
+    classroomId: String,
+    topicId: String,
+    storyId: String,
+    testBlock: ActivityScenario<StoryFragmentTestActivity>.() -> Unit
+  ) {
+    val fragment = StoryFragment.newInstance(internalProfileId, classroomId, topicId, storyId)
+    val intent = Intent(context, StoryFragmentTestActivity::class.java)
+    TestActivity.registerWithPackageManager<StoryFragmentTestActivity>(context)
+    ActivityScenario.launch<StoryFragmentTestActivity>(intent).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.mockRouteToExplorationListener = mockRouteToExplorationListener
+        activity.setContentView(R.layout.test_activity)
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.test_fragment_placeholder, fragment)
+          .commitNow()
+      }
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
+  class StoryFragmentTestActivity :
+    TestActivity(), RouteToExplorationListener, RouteToResumeLessonListener {
+    lateinit var mockRouteToExplorationListener: RouteToExplorationListener
+
+    override fun routeToExploration(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+      storyId: String,
+      explorationId: String,
+      parentScreen: ExplorationActivityParams.ParentScreen,
+      isCheckpointingEnabled: Boolean
+    ) {
+      mockRouteToExplorationListener.routeToExploration(
+        profileId,
+        classroomId,
+        topicId,
+        storyId,
+        explorationId,
+        parentScreen,
+        isCheckpointingEnabled
+      )
+    }
+
+    override fun routeToResumeLesson(
+      profileId: ProfileId,
+      classroomId: String,
+      topicId: String,
+      storyId: String,
+      explorationId: String,
+      parentScreen: ExplorationActivityParams.ParentScreen,
+      explorationCheckpoint: ExplorationCheckpoint
+    ) {
+    }
   }
 
   private fun getResources(): Resources {
