@@ -158,10 +158,6 @@ class OngoingTopicListActivityTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
   @Test
   fun testOngoingTopicList_hasCorrectActivityLabel() {
     launch<OngoingTopicListActivity>(
@@ -438,6 +434,10 @@ class OngoingTopicListActivityTest {
         )
       )
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {

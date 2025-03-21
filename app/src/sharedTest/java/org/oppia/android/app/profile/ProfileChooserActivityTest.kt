@@ -3,6 +3,7 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -27,6 +28,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
@@ -106,6 +108,21 @@ class ProfileChooserActivityTest {
   @After
   fun tearDown() {
     Intents.release()
+  }
+
+  @Test
+  fun testProfileChooserActivity_hasCorrectActivityLabel() {
+    ActivityScenario.launch<ProfileChooserActivity>(
+      ProfileChooserActivity.createProfileChooserActivity(context)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.profile_chooser_activity_label))
+      }
+    }
   }
 
   @Test
