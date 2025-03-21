@@ -18,7 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
@@ -120,50 +119,15 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class OngoingTopicListActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    OngoingTopicListActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var storyProfileTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Test
-  fun testOngoingTopicList_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createOngoingTopicListActivityIntent(internalProfileId))
-    val title = activityTestRule.activity.title
-
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.ongoing_topic_list_activity_title))
-  }
-
-  @Test
-  fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName =
-      createOngoingTopicListActivityIntent(internalProfileId).extractCurrentAppScreenName()
-
-    assertThat(screenName).isEqualTo(ScreenName.ONGOING_TOPIC_LIST_ACTIVITY)
-  }
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -194,8 +158,27 @@ class OngoingTopicListActivityTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  @Test
+  fun testOngoingTopicList_hasCorrectActivityLabel() {
+    launch<OngoingTopicListActivity>(
+      createOngoingTopicListActivityIntent(internalProfileId)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.ongoing_topic_list_activity_title))
+      }
+    }
+  }
+
+  @Test
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName =
+      createOngoingTopicListActivityIntent(internalProfileId).extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(ScreenName.ONGOING_TOPIC_LIST_ACTIVITY)
   }
 
   @Test
@@ -451,6 +434,10 @@ class OngoingTopicListActivityTest {
         )
       )
     }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
   private fun createOngoingTopicListActivityIntent(internalProfileId: Int): Intent {
