@@ -3,10 +3,10 @@ package org.oppia.android.app.settings.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -63,7 +63,6 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -98,30 +97,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileRenameActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<ProfileRenameActivity> = ActivityTestRule(
-    ProfileRenameActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -135,33 +116,39 @@ class ProfileRenameActivityTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = ProfileRenameActivity.createProfileRenameActivity(
-      context = this.context.applicationContext,
-      internalProfileId = 1
-    ).extractCurrentAppScreenName()
+    val intent = ProfileRenameActivity.createProfileRenameActivity(context, internalProfileId = 1)
 
+    val currentScreenName = intent.extractCurrentAppScreenName()
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_RENAME_ACTIVITY)
   }
 
   @Test
   fun testProfileRenameActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      ProfileRenameActivity.createProfileRenameActivity(
-        context = this.context.applicationContext,
-        internalProfileId = 1
-      )
-    )
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.profile_rename_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.profile_rename_activity_title))
+      }
+    }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<ProfileRenameActivity>.() -> Unit
+  ) {
+    val intent = ProfileRenameActivity.createProfileRenameActivity(context, internalProfileId = 1)
+    ActivityScenario.launch<ProfileRenameActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
