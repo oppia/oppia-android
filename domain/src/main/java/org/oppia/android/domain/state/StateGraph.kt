@@ -25,7 +25,7 @@ class StateGraph constructor(
   fun computeAnswerOutcomeForResult(
     currentState: State,
     outcome: Outcome,
-    stateVisited: Boolean
+    wasStateVisitedBefore: Boolean
   ): AnswerOutcome {
     val answerOutcomeBuilder = AnswerOutcome.newBuilder()
       .setFeedback(outcome.feedback)

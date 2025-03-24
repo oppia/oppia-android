@@ -5359,6 +5359,7 @@ class StateFragmentTest {
       playThroughRatioExplorationState14()
       playThroughRatioExplorationState15()
 
+      // Select an incorrect answer in a multiple-choice interaction and submit.
       onView(
         atPositionOnView(
           recyclerViewId = R.id.selection_interaction_recyclerview,
@@ -5367,18 +5368,23 @@ class StateFragmentTest {
         )
       ).perform(click())
       clickSubmitAnswerButton()
+
+      // Choose to revisit a old state.
       clickLearnAgainButton()
 
+      // Ensure that the 'Next' button is visible in old state, indicating navigation is possible.
       scrollToViewType(NEXT_NAVIGATION_BUTTON)
       onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
       onView(withId(R.id.feedback_text_view))
         .check(matches(withText(containsString("Please continue."))))
 
+      // Navigates through states.
       clickNextNavigationButton()
       clickNextNavigationButton()
       clickNextNavigationButton()
       clickNextNavigationButton()
 
+      // Ensure that the submit button is enabled, meaning the learner has reached to pending state.
       verifySubmitAnswerButtonIsEnabled()
     }
   }

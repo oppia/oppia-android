@@ -677,11 +677,11 @@ class ExplorationProgressController @Inject constructor(
             userAnswer.answer,
             userAnswer.writtenTranslationContext
           ).outcome
-        val stateVisited =
-          explorationProgress.stateDeck.isStatePreviouslyVisited(outcome.destStateName)
+        val hasVisitedStateBefore =
+          explorationProgress.stateDeck.findPreviouslyVisitedState(outcome.destStateName)
         answerOutcome =
           explorationProgress.stateGraph.computeAnswerOutcomeForResult(
-            topPendingState, outcome, stateVisited
+            topPendingState, outcome, hasVisitedStateBefore
           )
 
         if (answerOutcome.destinationCase == AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME) {

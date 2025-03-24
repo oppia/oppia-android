@@ -27,10 +27,10 @@ message ExplorationCheckpoint {
   // Stores answers to the latest state in the deck.
   repeated AnswerAndResponse pending_user_answers = 3;
 
-  //Stores whether current selected state show learn again button or not.
+  // Stores whether the current selected state should show the 'learn again' button or not.
   bool show_learn_again_button = 11;
 
-  // The index of state where learner need to go for revision.
+  // The index of state where the learner needs to go for revision.
   int32 revision_index = 12;
 
   // The index of the current selected state from the deck of states.

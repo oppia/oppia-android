@@ -11,6 +11,8 @@ import org.oppia.android.app.model.State
 import org.oppia.android.app.model.SubtitledHtml
 import org.oppia.android.app.model.UserAnswer
 
+private const val NO_REVISION_INDEX = -1
+
 // TODO(#59): Hide the visibility of this class to domain implementations.
 /**
  * Tracks the progress of a dynamic playing session through a graph of state cards. This class
@@ -24,7 +26,7 @@ class StateDeck constructor(
   private val previousStates: MutableList<EphemeralState> = ArrayList()
   private val currentDialogInteractions: MutableList<AnswerAndResponse> = ArrayList()
   private var stateIndex: Int = 0
-  private var showLearnAgainButton: Boolean = false
+  private var shouldShowLearnAgainButton: Boolean = false
   private var revisionIndex: Int = -1
 
   /** Resets this deck to a new, specified initial [State]. */
@@ -50,7 +52,7 @@ class StateDeck constructor(
     this.previousStates.addAll(previousStates)
     this.currentDialogInteractions.addAll(currentDialogInteractions)
     this.stateIndex = stateIndex
-    this.showLearnAgainButton = showLearnAgainButton
+    this.shouldShowLearnAgainButton = showLearnAgainButton
     this.revisionIndex = revisionIndex
   }
 
@@ -107,7 +109,7 @@ class StateDeck constructor(
     // check would never be triggered since the second case assumes the top of the deck must be
     // pending.
     return when {
-      doesCurrentStateNeedToRevisitOldState() -> getCurrentNeedToRevisionState(
+      doesCurrentStateNeedToRevisitOldState() -> getStateToRevisit(
         timestamp,
         isContinueButtonAnimationSeen
       )
@@ -204,7 +206,7 @@ class StateDeck constructor(
       pendingStateName = pendingTopState.name
       addAllPendingUserAnswers(currentDialogInteractions)
       this.stateIndex = this@StateDeck.stateIndex
-      this.showLearnAgainButton = this@StateDeck.showLearnAgainButton
+      this.showLearnAgainButton = this@StateDeck.shouldShowLearnAgainButton
       this.revisionIndex = this@StateDeck.revisionIndex
       this.explorationVersion = explorationVersion
       this.explorationTitle = explorationTitle
@@ -231,7 +233,7 @@ class StateDeck constructor(
       .build()
   }
 
-  private fun getCurrentNeedToRevisionState(
+  private fun getStateToRevisit(
     timestamp: Long,
     isContinueButtonAnimationSeen: Boolean
   ): EphemeralState {
@@ -267,11 +269,11 @@ class StateDeck constructor(
   }
 
   /**
-   * Returns whether the current scrolled state is the most recent state and learner need to
-   * revisit to old state played by the learner.
+   * Returns whether the current scrolled state is the most recent state and learner needs to
+   * revisit to old state.
    */
   fun doesCurrentStateNeedToRevisitOldState(): Boolean {
-    return isCurrentStateTopOfDeck() && showLearnAgainButton
+    return isCurrentStateTopOfDeck() && shouldShowLearnAgainButton
   }
 
   /** Returns whether the current state is terminal. */
@@ -288,18 +290,28 @@ class StateDeck constructor(
 
   /** Navigates to the old state in the deck if it is possible. */
   fun revisitOldCard() {
-    if (showLearnAgainButton && revisionIndex != -1) {
+    if (canRevisitOldCard()) {
       stateIndex = revisionIndex
-      showLearnAgainButton = false
-      revisionIndex = -1
+      resetRevisionState()
     }
+  }
+
+  /** Checks if revisiting an old card is possible. */
+  private fun canRevisitOldCard(): Boolean {
+    return shouldShowLearnAgainButton && revisionIndex != NO_REVISION_INDEX
+  }
+
+  /** Resets revision-related state variables. */
+  private fun resetRevisionState() {
+    shouldShowLearnAgainButton = false
+    revisionIndex = NO_REVISION_INDEX
   }
 
   /**
    * Checks if the given state is present in the [previousStates] list.
    * If found, sets [revisionIndex] to the corresponding index.
    */
-  fun isStatePreviouslyVisited(stateName: String): Boolean {
+  fun findPreviouslyVisitedState(stateName: String): Boolean {
     for (i in previousStates.size - 1 downTo 0) {
       if (previousStates[i].state.name == stateName) {
         revisionIndex = i
@@ -309,13 +321,13 @@ class StateDeck constructor(
     return false
   }
 
-  /** Enables the learn again button by setting [showLearnAgainButton] true. */
+  /** Enables the learn again button by setting [shouldShowLearnAgainButton] to true. */
   fun enableLearnAgainButton() {
-    showLearnAgainButton = true
+    shouldShowLearnAgainButton = true
   }
 
-  /** Disable the learn again button by setting [showLearnAgainButton] false. */
+  /** Disable the learn again button by setting [shouldShowLearnAgainButton] to false. */
   fun disableLearnAgainButton() {
-    showLearnAgainButton = false
+    shouldShowLearnAgainButton = false
   }
 }
