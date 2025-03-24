@@ -6,6 +6,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import org.oppia.android.app.R
 
+/**
+ * A decorator that assigns a dynamic margin to a recyclerview based on the number of items in the
+ * adapter.
+ */
 class DynamicMarginItemDecorator(
   private val context: Context,
   private val adapter: RecyclerView.Adapter<*>

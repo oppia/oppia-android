@@ -288,6 +288,10 @@
   <dimen name="profile_selection_fragment_scroll_arrow_vertical_margin">32dp</dimen>
   <dimen name="profile_selection_fragment_scroll_arrow_padding">8dp</dimen>
 
+  <dimen name="profile_item_horizontal_margin">16dp</dimen>
+  <dimen name="profile_item_vertical_margin">20dp</dimen>
+  <dimen name="profile_item_profile_name_text_margin">8dp</dimen>
+
   <!-- Coming Soon Topic List -->
   <dimen name="coming_soon_topic_list_constraint_layout_padding_start">72dp</dimen>
   <dimen name="coming_soon_topic_list_constraint_layout_padding_end">72dp</dimen>

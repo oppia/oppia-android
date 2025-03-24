@@ -77,13 +77,16 @@ public final class RecyclerViewBindingAdapter {
     recyclerView.addItemDecoration(new DividerItemDecorator(drawable));
   }
 
+  /** Binds the [DynamicMarginItemDecorator] to a recyclerview to add dynamic spacing to items. */
   @BindingAdapter("dynamicMarginItemDecorator")
   public static void addItemDecorator(@NonNull RecyclerView recyclerView, boolean enabled) {
     if (enabled && recyclerView.getItemDecorationCount() == 0) { // Prevent multiple decorations.
-       RecyclerView.Adapter<?> adapter = recyclerView.getAdapter();
-         if (adapter != null) {
-             recyclerView.addItemDecoration(new DynamicMarginItemDecorator(recyclerView.getContext(), adapter));
-         }
+      RecyclerView.Adapter<?> adapter = recyclerView.getAdapter();
+      if (adapter != null) {
+        recyclerView.addItemDecoration(
+                        new DynamicMarginItemDecorator(recyclerView.getContext(), adapter)
+        );
+      }
     }
   }
 }
