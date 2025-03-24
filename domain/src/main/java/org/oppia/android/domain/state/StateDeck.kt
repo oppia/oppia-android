@@ -326,7 +326,7 @@ class StateDeck constructor(
     shouldShowLearnAgainButton = true
   }
 
-  /** Disable the learn again button by setting [shouldShowLearnAgainButton] to false. */
+  /** Disables the learn again button by setting [shouldShowLearnAgainButton] to false. */
   fun disableLearnAgainButton() {
     shouldShowLearnAgainButton = false
   }
