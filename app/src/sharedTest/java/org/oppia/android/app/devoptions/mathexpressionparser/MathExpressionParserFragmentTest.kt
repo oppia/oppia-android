@@ -7,6 +7,7 @@ import android.text.style.ImageSpan
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -14,7 +15,6 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -23,8 +23,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import org.junit.rules.TestRule
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
@@ -111,19 +109,7 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MathExpressionParserFragmentTest {
-  private val initializeDefaultLocaleRule by lazy { InitializeDefaultLocaleRule() }
-
-  private val activityScenarioRule by lazy {
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
-  }
-
-  // Note that the locale rule must be initialized first since the scenario rule can depend on the
-  // locale being initialized.
-  @get:Rule
-  val chain: TestRule =
-    RuleChain.outerRule(initializeDefaultLocaleRule).around(activityScenarioRule)
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -143,318 +129,330 @@ class MathExpressionParserFragmentTest {
 
   @Test
   fun testFragment_initialState_expressionEditBoxIsEmpty() {
-    initializeMathExpressionParserFragment()
-
-    onView(withId(R.id.math_expression_input_edit_text)).check(matches(withText("")))
+    runWithLaunchedActivityAndFragment {
+      onView(withId(R.id.math_expression_input_edit_text)).check(matches(withText("")))
+    }
   }
 
   @Test
   fun testFragment_initialState_hasUninitializedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      scrollToParseResult()
 
-    scrollToParseResult()
-
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   /* Tests specific to numeric expressions. */
 
   @Test
   fun testFragment_selectNumExps_typeExp_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectMathExpressionResultType()
+      clickParseButton()
 
-    selectNumericExpressionsParseType()
-    selectMathExpressionResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectNumExps_typeOp_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectComparableOperationResultType()
+      clickParseButton()
 
-    selectNumericExpressionsParseType()
-    selectComparableOperationResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectNumExps_typePoly_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectPolynomialResultType()
+      clickParseButton()
 
-    selectNumericExpressionsParseType()
-    selectPolynomialResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectNumExps_typeLatex_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectLatexResultType()
+      clickParseButton()
 
-    selectNumericExpressionsParseType()
-    selectLatexResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectNumExps_typeA11y_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectHumanReadableStringResultType()
+      clickParseButton()
 
-    selectNumericExpressionsParseType()
-    selectHumanReadableStringResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectNumExps_typeExp_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectMathExpressionResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectMathExpressionResultType()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3.14 × 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3.14 × 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathExpression"))))
-      check(matches(withText(containsString("operator: ADD"))))
-      check(matches(withText(containsString("3"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathExpression"))))
+        check(matches(withText(containsString("operator: ADD"))))
+        check(matches(withText(containsString("3"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeOp_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectComparableOperationResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectComparableOperationResultType()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3.14 × 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3.14 × 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("ComparableOperation"))))
-      check(matches(withText(containsString("accumulation_type: SUMMATION"))))
-      check(matches(withText(containsString("3"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("ComparableOperation"))))
+        check(matches(withText(containsString("accumulation_type: SUMMATION"))))
+        check(matches(withText(containsString("3"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typePoly_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectPolynomialResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectPolynomialResultType()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3 × 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3 × 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("Polynomial"))))
-      check(matches(withText(containsString("coefficient"))))
-      // The expression is fully evaluated as a constant polynomial.
-      check(matches(withText(containsString("whole_number: 337"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("Polynomial"))))
+        check(matches(withText(containsString("coefficient"))))
+        // The expression is fully evaluated as a constant polynomial.
+        check(matches(withText(containsString("whole_number: 337"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeLatex_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectLatexResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectLatexResultType()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the LaTeX output is correct.
-    activityScenarioRule.scenario.onActivity { activity ->
-      val resultTextView =
-        activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
-      val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
-      val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+      // Perform a cursory check to ensure that at least part of the LaTeX output is correct.
+      onActivity { activity ->
+        val resultTextView =
+          activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
+        val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
 
-      // Verify that an image drawable was loaded and with the correct LaTeX.
-      assertThat(drawableSpans).hasSize(1)
-      assertThat(loadedModels.first().rawLatex).contains("3 \\times 2")
-      assertThat(loadedModels.first().rawLatex).contains("8 \\div 3")
-      assertThat(loadedModels.first().useInlineRendering).isFalse()
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        assertThat(drawableSpans).hasSize(1)
+        assertThat(loadedModels.first().rawLatex).contains("3 \\times 2")
+        assertThat(loadedModels.first().rawLatex).contains("8 \\div 3")
+        assertThat(loadedModels.first().useInlineRendering).isFalse()
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeLatex_validExp_divAsFrac_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectLatexResultType()
-    toggleTreatDivisionsAsFractionsSwitch()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectLatexResultType()
+      toggleTreatDivisionsAsFractionsSwitch()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the LaTeX output is correct for
-    // cases when divisions are treated as fractions.
-    activityScenarioRule.scenario.onActivity { activity ->
-      val resultTextView =
-        activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
-      val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
-      val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+      // Perform a cursory check to ensure that at least part of the LaTeX output is correct for
+      // cases when divisions are treated as fractions.
+      onActivity { activity ->
+        val resultTextView =
+          activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
+        val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
 
-      // Verify that an image drawable was loaded and with the correct LaTeX.
-      assertThat(drawableSpans).hasSize(1)
-      assertThat(loadedModels.first().rawLatex).contains("3 \\times 2")
-      assertThat(loadedModels.first().rawLatex).contains("\\frac{8}{3}")
-      assertThat(loadedModels.first().useInlineRendering).isFalse()
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        assertThat(drawableSpans).hasSize(1)
+        assertThat(loadedModels.first().rawLatex).contains("3 \\times 2")
+        assertThat(loadedModels.first().rawLatex).contains("\\frac{8}{3}")
+        assertThat(loadedModels.first().useInlineRendering).isFalse()
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeA11y_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectHumanReadableStringResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectHumanReadableStringResultType()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the a11y output is correct.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("3 times 2"))))
-      check(matches(withText(containsString("4 raised to the power of 3"))))
-      check(matches(withText(containsString("8 divided by 3"))))
-      check(matches(withText(containsString("negative 7"))))
+      // Perform a cursory check to ensure that at least part of the a11y output is correct.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("3 times 2"))))
+        check(matches(withText(containsString("4 raised to the power of 3"))))
+        check(matches(withText(containsString("8 divided by 3"))))
+        check(matches(withText(containsString("negative 7"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeA11y_validExp_divAsFrac_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectHumanReadableStringResultType()
-    toggleTreatDivisionsAsFractionsSwitch()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectHumanReadableStringResultType()
+      toggleTreatDivisionsAsFractionsSwitch()
 
-    typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
-    clickParseButton()
+      typeExpression("3 × 2 − 3 + 4 ^ 3 + 8 ÷ 3 × 2 + −7")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the a11y output is correct for
-    // cases when divisions are treated as fractions.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("3 times 2"))))
-      check(matches(withText(containsString("4 raised to the power of 3"))))
-      check(matches(withText(containsString("8 over 3"))))
-      check(matches(withText(containsString("negative 7"))))
+      // Perform a cursory check to ensure that at least part of the a11y output is correct for
+      // cases when divisions are treated as fractions.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("3 times 2"))))
+        check(matches(withText(containsString("4 raised to the power of 3"))))
+        check(matches(withText(containsString("8 over 3"))))
+        check(matches(withText(containsString("negative 7"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeExp_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectMathExpressionResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectMathExpressionResultType()
 
-    typeExpression("3/0")
-    clickParseButton()
+      typeExpression("3/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeOp_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectComparableOperationResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectComparableOperationResultType()
 
-    typeExpression("3/0")
-    clickParseButton()
+      typeExpression("3/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typePoly_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectPolynomialResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectPolynomialResultType()
 
-    typeExpression("3/0")
-    clickParseButton()
+      typeExpression("3/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeLatex_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectLatexResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectLatexResultType()
 
-    typeExpression("3/0")
-    clickParseButton()
+      typeExpression("3/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectNumExps_typeA11y_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectNumericExpressionsParseType()
-    selectHumanReadableStringResultType()
+    runWithLaunchedActivityAndFragment {
+      selectNumericExpressionsParseType()
+      selectHumanReadableStringResultType()
 
-    typeExpression("3/0")
-    clickParseButton()
+      typeExpression("3/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
@@ -462,388 +460,405 @@ class MathExpressionParserFragmentTest {
 
   @Test
   fun testFragment_selectAlgExps_typeExp_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectMathExpressionResultType()
+      clickParseButton()
 
-    selectAlgebraicExpressionsParseType()
-    selectMathExpressionResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeOp_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectComparableOperationResultType()
+      clickParseButton()
 
-    selectAlgebraicExpressionsParseType()
-    selectComparableOperationResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgExps_typePoly_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectPolynomialResultType()
+      clickParseButton()
 
-    selectAlgebraicExpressionsParseType()
-    selectPolynomialResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeLatex_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectLatexResultType()
+      clickParseButton()
 
-    selectAlgebraicExpressionsParseType()
-    selectLatexResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeA11y_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectHumanReadableStringResultType()
+      clickParseButton()
 
-    selectAlgebraicExpressionsParseType()
-    selectHumanReadableStringResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeExp_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectMathExpressionResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectMathExpressionResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathExpression"))))
-      check(matches(withText(containsString("operator: ADD"))))
-      check(matches(withText(containsString("z"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathExpression"))))
+        check(matches(withText(containsString("operator: ADD"))))
+        check(matches(withText(containsString("z"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeOp_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectComparableOperationResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectComparableOperationResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("ComparableOperation"))))
-      check(matches(withText(containsString("accumulation_type: SUMMATION"))))
-      check(matches(withText(containsString("exponentiation"))))
-      check(matches(withText(containsString("x"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("ComparableOperation"))))
+        check(matches(withText(containsString("accumulation_type: SUMMATION"))))
+        check(matches(withText(containsString("exponentiation"))))
+        check(matches(withText(containsString("x"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typePoly_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectPolynomialResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectPolynomialResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("Polynomial"))))
-      check(matches(withText(containsString("name: \"x\""))))
-      check(matches(withText(containsString("power: 2"))))
-      check(matches(withText(containsString("integer: -731"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("Polynomial"))))
+        check(matches(withText(containsString("name: \"x\""))))
+        check(matches(withText(containsString("power: 2"))))
+        check(matches(withText(containsString("integer: -731"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeLatex_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectLatexResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectLatexResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the LaTeX output is correct.
-    activityScenarioRule.scenario.onActivity { activity ->
-      val resultTextView =
-        activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
-      val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
-      val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+      // Perform a cursory check to ensure that at least part of the LaTeX output is correct.
+      onActivity { activity ->
+        val resultTextView =
+          activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
+        val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
 
-      // Verify that an image drawable was loaded and with the correct LaTeX.
-      assertThat(drawableSpans).hasSize(1)
-      assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
-      assertThat(loadedModels.first().rawLatex).contains("731 \\div z")
-      assertThat(loadedModels.first().useInlineRendering).isFalse()
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        assertThat(drawableSpans).hasSize(1)
+        assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
+        assertThat(loadedModels.first().rawLatex).contains("731 \\div z")
+        assertThat(loadedModels.first().useInlineRendering).isFalse()
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeLatex_validExp_divAsFrac_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectLatexResultType()
-    specifyAllowedVariables("x", "y", "z")
-    toggleTreatDivisionsAsFractionsSwitch()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectLatexResultType()
+      specifyAllowedVariables("x", "y", "z")
+      toggleTreatDivisionsAsFractionsSwitch()
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the LaTeX output is correct for
-    // cases when divisions are treated as fractions.
-    activityScenarioRule.scenario.onActivity { activity ->
-      val resultTextView =
-        activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
-      val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
-      val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+      // Perform a cursory check to ensure that at least part of the LaTeX output is correct for
+      // cases when divisions are treated as fractions.
+      onActivity { activity ->
+        val resultTextView =
+          activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
+        val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
 
-      // Verify that an image drawable was loaded and with the correct LaTeX.
-      assertThat(drawableSpans).hasSize(1)
-      assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
-      assertThat(loadedModels.first().rawLatex).contains("\\frac{731}{z}")
-      assertThat(loadedModels.first().useInlineRendering).isFalse()
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        assertThat(drawableSpans).hasSize(1)
+        assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
+        assertThat(loadedModels.first().rawLatex).contains("\\frac{731}{z}")
+        assertThat(loadedModels.first().useInlineRendering).isFalse()
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeA11y_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectHumanReadableStringResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectHumanReadableStringResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the a11y output is correct.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("12 x raised to the power of 2"))))
-      check(matches(withText(containsString("731 divided by zed"))))
+      // Perform a cursory check to ensure that at least part of the a11y output is correct.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("12 x raised to the power of 2"))))
+        check(matches(withText(containsString("731 divided by zed"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeA11y_validExp_divAsFrac_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectHumanReadableStringResultType()
-    specifyAllowedVariables("x", "y", "z")
-    toggleTreatDivisionsAsFractionsSwitch()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectHumanReadableStringResultType()
+      specifyAllowedVariables("x", "y", "z")
+      toggleTreatDivisionsAsFractionsSwitch()
 
-    typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the a11y output is correct for
-    // cases when divisions are treated as fractions.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("12 x raised to the power of 2"))))
-      check(matches(withText(containsString("731 over zed"))))
+      // Perform a cursory check to ensure that at least part of the a11y output is correct for
+      // cases when divisions are treated as fractions.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("12 x raised to the power of 2"))))
+        check(matches(withText(containsString("731 over zed"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeExp_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectMathExpressionResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectMathExpressionResultType()
 
-    typeExpression("x/0")
-    clickParseButton()
+      typeExpression("x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeOp_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectComparableOperationResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectComparableOperationResultType()
 
-    typeExpression("x/0")
-    clickParseButton()
+      typeExpression("x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typePoly_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectPolynomialResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectPolynomialResultType()
 
-    typeExpression("x/0")
-    clickParseButton()
+      typeExpression("x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeLatex_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectLatexResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectLatexResultType()
 
-    typeExpression("x/0")
-    clickParseButton()
+      typeExpression("x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeA11y_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectHumanReadableStringResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectHumanReadableStringResultType()
 
-    typeExpression("x/0")
-    clickParseButton()
+      typeExpression("x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeExp_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectMathExpressionResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectMathExpressionResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("x/s")
-    clickParseButton()
+      typeExpression("x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeOp_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectComparableOperationResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectComparableOperationResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("x/s")
-    clickParseButton()
+      typeExpression("x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typePoly_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectPolynomialResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectPolynomialResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("x/s")
-    clickParseButton()
+      typeExpression("x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeLatex_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectLatexResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectLatexResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("x/s")
-    clickParseButton()
+      typeExpression("x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgExps_typeA11y_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicExpressionsParseType()
-    selectHumanReadableStringResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicExpressionsParseType()
+      selectHumanReadableStringResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("x/s")
-    clickParseButton()
+      typeExpression("x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
@@ -851,398 +866,415 @@ class MathExpressionParserFragmentTest {
 
   @Test
   fun testFragment_selectAlgEqs_typeExp_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectMathExpressionResultType()
+      clickParseButton()
 
-    selectAlgebraicEquationsParseType()
-    selectMathExpressionResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeOp_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectComparableOperationResultType()
+      clickParseButton()
 
-    selectAlgebraicEquationsParseType()
-    selectComparableOperationResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typePoly_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectPolynomialResultType()
+      clickParseButton()
 
-    selectAlgebraicEquationsParseType()
-    selectPolynomialResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeLatex_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectLatexResultType()
+      clickParseButton()
 
-    selectAlgebraicEquationsParseType()
-    selectLatexResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeA11y_emptyExp_clickParse_uninitedParseResult() {
-    initializeMathExpressionParserFragment()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectHumanReadableStringResultType()
+      clickParseButton()
 
-    selectAlgebraicEquationsParseType()
-    selectHumanReadableStringResultType()
-    clickParseButton()
-
-    // Without an expression entered, nothing should be parsed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view))
-      .check(matches(withText("Parse result: Uninitialized")))
+      // Without an expression entered, nothing should be parsed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view))
+        .check(matches(withText("Parse result: Uninitialized")))
+    }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeExp_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectMathExpressionResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectMathExpressionResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("left_side"))))
-      check(matches(withText(containsString("right_side"))))
-      check(matches(withText(containsString("MathEquation"))))
-      check(matches(withText(containsString("operator: ADD"))))
-      check(matches(withText(containsString("z"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("left_side"))))
+        check(matches(withText(containsString("right_side"))))
+        check(matches(withText(containsString("MathEquation"))))
+        check(matches(withText(containsString("operator: ADD"))))
+        check(matches(withText(containsString("z"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeOp_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectComparableOperationResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectComparableOperationResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("Left side"))))
-      check(matches(withText(containsString("Right side"))))
-      check(matches(withText(containsString("ComparableOperation"))))
-      check(matches(withText(containsString("accumulation_type: SUMMATION"))))
-      check(matches(withText(containsString("exponentiation"))))
-      check(matches(withText(containsString("x"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("Left side"))))
+        check(matches(withText(containsString("Right side"))))
+        check(matches(withText(containsString("ComparableOperation"))))
+        check(matches(withText(containsString("accumulation_type: SUMMATION"))))
+        check(matches(withText(containsString("exponentiation"))))
+        check(matches(withText(containsString("x"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typePoly_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectPolynomialResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectPolynomialResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least something sort of resembling the correct
-    // proto output is displayed.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("Left side"))))
-      check(matches(withText(containsString("Right side"))))
-      check(matches(withText(containsString("Polynomial"))))
-      check(matches(withText(containsString("name: \"x\""))))
-      check(matches(withText(containsString("power: 2"))))
-      check(matches(withText(containsString("integer: -731"))))
+      // Perform a cursory check to ensure that at least something sort of resembling the correct
+      // proto output is displayed.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("Left side"))))
+        check(matches(withText(containsString("Right side"))))
+        check(matches(withText(containsString("Polynomial"))))
+        check(matches(withText(containsString("name: \"x\""))))
+        check(matches(withText(containsString("power: 2"))))
+        check(matches(withText(containsString("integer: -731"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeLatex_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectLatexResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectLatexResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the LaTeX output is correct.
-    activityScenarioRule.scenario.onActivity { activity ->
-      val resultTextView =
-        activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
-      val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
-      val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+      // Perform a cursory check to ensure that at least part of the LaTeX output is correct.
+      onActivity { activity ->
+        val resultTextView =
+          activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
+        val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
 
-      // Verify that an image drawable was loaded and with the correct LaTeX.
-      assertThat(drawableSpans).hasSize(1)
-      assertThat(loadedModels.first().rawLatex).contains("1 \\div 2y =")
-      assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
-      assertThat(loadedModels.first().rawLatex).contains("731 \\div z")
-      assertThat(loadedModels.first().useInlineRendering).isFalse()
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        assertThat(drawableSpans).hasSize(1)
+        assertThat(loadedModels.first().rawLatex).contains("1 \\div 2y =")
+        assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
+        assertThat(loadedModels.first().rawLatex).contains("731 \\div z")
+        assertThat(loadedModels.first().useInlineRendering).isFalse()
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeLatex_validExp_divAsFrac_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectLatexResultType()
-    specifyAllowedVariables("x", "y", "z")
-    toggleTreatDivisionsAsFractionsSwitch()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectLatexResultType()
+      specifyAllowedVariables("x", "y", "z")
+      toggleTreatDivisionsAsFractionsSwitch()
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the LaTeX output is correct for
-    // cases when divisions are treated as fractions.
-    activityScenarioRule.scenario.onActivity { activity ->
-      val resultTextView =
-        activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
-      val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
-      val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
+      // Perform a cursory check to ensure that at least part of the LaTeX output is correct for
+      // cases when divisions are treated as fractions.
+      onActivity { activity ->
+        val resultTextView =
+          activity.findViewById<TextView>(R.id.math_expression_parse_result_text_view)
+        val drawableSpans = resultTextView.findSpansOfType<ImageSpan>()
+        val loadedModels = testGlideImageLoader.getLoadedMathDrawables()
 
-      // Verify that an image drawable was loaded and with the correct LaTeX.
-      assertThat(drawableSpans).hasSize(1)
-      assertThat(loadedModels.first().rawLatex).contains("\\frac{1}{2}y =")
-      assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
-      assertThat(loadedModels.first().rawLatex).contains("\\frac{731}{z}")
-      assertThat(loadedModels.first().useInlineRendering).isFalse()
+        // Verify that an image drawable was loaded and with the correct LaTeX.
+        assertThat(drawableSpans).hasSize(1)
+        assertThat(loadedModels.first().rawLatex).contains("\\frac{1}{2}y =")
+        assertThat(loadedModels.first().rawLatex).contains("12x ^ {2}")
+        assertThat(loadedModels.first().rawLatex).contains("\\frac{731}{z}")
+        assertThat(loadedModels.first().useInlineRendering).isFalse()
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeA11y_validExp_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectHumanReadableStringResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectHumanReadableStringResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the a11y output is correct.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("1 divided by 2 times y equals"))))
-      check(matches(withText(containsString("12 x raised to the power of 2"))))
-      check(matches(withText(containsString("731 divided by zed"))))
+      // Perform a cursory check to ensure that at least part of the a11y output is correct.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("1 divided by 2 times y equals"))))
+        check(matches(withText(containsString("12 x raised to the power of 2"))))
+        check(matches(withText(containsString("731 divided by zed"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeA11y_validExp_divAsFrac_clickParse_initedParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectHumanReadableStringResultType()
-    specifyAllowedVariables("x", "y", "z")
-    toggleTreatDivisionsAsFractionsSwitch()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectHumanReadableStringResultType()
+      specifyAllowedVariables("x", "y", "z")
+      toggleTreatDivisionsAsFractionsSwitch()
 
-    typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
-    clickParseButton()
+      typeExpression("1/2y = 12x^2y^2 − (y × z^2 + yzx) − 731 / z")
+      clickParseButton()
 
-    // Perform a cursory check to ensure that at least part of the a11y output is correct for
-    // cases when divisions are treated as fractions.
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("one half times y equals"))))
-      check(matches(withText(containsString("12 x raised to the power of 2"))))
-      check(matches(withText(containsString("731 over zed"))))
+      // Perform a cursory check to ensure that at least part of the a11y output is correct for
+      // cases when divisions are treated as fractions.
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("one half times y equals"))))
+        check(matches(withText(containsString("12 x raised to the power of 2"))))
+        check(matches(withText(containsString("731 over zed"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeExp_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectMathExpressionResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectMathExpressionResultType()
 
-    typeExpression("y=x/0")
-    clickParseButton()
+      typeExpression("y=x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeOp_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectComparableOperationResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectComparableOperationResultType()
 
-    typeExpression("y=x/0")
-    clickParseButton()
+      typeExpression("y=x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typePoly_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectPolynomialResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectPolynomialResultType()
 
-    typeExpression("y=x/0")
-    clickParseButton()
+      typeExpression("y=x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeLatex_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectLatexResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectLatexResultType()
 
-    typeExpression("y=x/0")
-    clickParseButton()
+      typeExpression("y=x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeA11y_invalidExp_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectHumanReadableStringResultType()
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectHumanReadableStringResultType()
 
-    typeExpression("y=x/0")
-    clickParseButton()
+      typeExpression("y=x/0")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("MathParsingError"))))
-      check(matches(withText(containsString("TermDividedByZeroError"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("MathParsingError"))))
+        check(matches(withText(containsString("TermDividedByZeroError"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeExp_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectMathExpressionResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectMathExpressionResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("y=x/s")
-    clickParseButton()
+      typeExpression("y=x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeOp_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectComparableOperationResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectComparableOperationResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("y=x/s")
-    clickParseButton()
+      typeExpression("y=x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typePoly_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectPolynomialResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectPolynomialResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("y=x/s")
-    clickParseButton()
+      typeExpression("y=x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeLatex_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectLatexResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectLatexResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("y=x/s")
-    clickParseButton()
+      typeExpression("y=x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
   @Test
   fun testFragment_selectAlgEqs_typeA11y_validExp_missingVars_clickParse_errorParseResult() {
-    initializeMathExpressionParserFragment()
-    selectAlgebraicEquationsParseType()
-    selectHumanReadableStringResultType()
-    specifyAllowedVariables("x", "y", "z")
+    runWithLaunchedActivityAndFragment {
+      selectAlgebraicEquationsParseType()
+      selectHumanReadableStringResultType()
+      specifyAllowedVariables("x", "y", "z")
 
-    typeExpression("y=x/s")
-    clickParseButton()
+      typeExpression("y=x/s")
+      clickParseButton()
 
-    scrollToParseResult()
-    onView(withId(R.id.math_expression_parse_result_text_view)).apply {
-      check(matches(withText(containsString("DisabledVariablesInUseError"))))
-      check(matches(withText(containsString("[s]"))))
+      scrollToParseResult()
+      onView(withId(R.id.math_expression_parse_result_text_view)).apply {
+        check(matches(withText(containsString("DisabledVariablesInUseError"))))
+        check(matches(withText(containsString("[s]"))))
+      }
     }
   }
 
@@ -1371,15 +1403,18 @@ class MathExpressionParserFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
-  private fun initializeMathExpressionParserFragment() {
-    activityScenarioRule.scenario.onActivity { it.addMathExpressionParserFragment() }
-    testCoroutineDispatchers.runCurrent()
-  }
-
-  private fun TestActivity.addMathExpressionParserFragment() {
-    supportFragmentManager.beginTransaction().apply {
-      add(R.id.test_fragment_placeholder, MathExpressionParserFragment.createNewInstance())
-    }.commitNow()
+  private fun runWithLaunchedActivityAndFragment(
+    testBlock: ActivityScenario<TestActivity>.() -> Unit
+  ) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.supportFragmentManager.beginTransaction().apply {
+          add(R.id.test_fragment_placeholder, MathExpressionParserFragment.createNewInstance())
+        }.commitNow()
+      }
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   private inline fun <reified T> TextView.findSpansOfType(): List<T> {

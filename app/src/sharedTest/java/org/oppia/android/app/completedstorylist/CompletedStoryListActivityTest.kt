@@ -19,7 +19,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.containsString
@@ -121,33 +120,16 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class CompletedStoryListActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var storyProfileTestHelper: StoryProgressTestHelper
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
   private val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    CompletedStoryListActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var storyProfileTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
 
   @Before
   fun setUp() {
@@ -186,12 +168,19 @@ class CompletedStoryListActivityTest {
 
   @Test
   fun testCompletedStoryList_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createCompletedStoryListActivityIntent(internalProfileId))
-    val title = activityTestRule.activity.title
+    launch<CompletedStoryListActivity>(
+      createCompletedStoryListActivityIntent(
+        internalProfileId = internalProfileId
+      )
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.completed_story_list_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.completed_story_list_activity_title))
+      }
+    }
   }
 
   @Test

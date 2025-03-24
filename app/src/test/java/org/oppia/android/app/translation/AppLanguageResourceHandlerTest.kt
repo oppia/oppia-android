@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
@@ -76,6 +76,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -114,13 +115,8 @@ import javax.inject.Singleton
 class AppLanguageResourceHandlerTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
-
   @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var wrapperChecker: TestOppiaBidiFormatter.Checker
   @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
   @Inject lateinit var translationController: TranslationController
@@ -140,73 +136,101 @@ class AppLanguageResourceHandlerTest {
   @Test
   fun testFormatInLocaleWithWrapping_formatStringWithArgs_returnsCorrectlyFormattedString() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val formatted = handler.formatInLocaleWithWrapping("Test with %s and %s", "string", "11")
+        val formatted = handler.formatInLocaleWithWrapping("Test with %s and %s", "string", "11")
 
-    assertThat(formatted).isEqualTo("Test with string and 11")
+        assertThat(formatted).isEqualTo("Test with string and 11")
+      }
+    }
   }
 
   @Test
   fun testFormatInLocaleWithWrapping_properlyWrapsArguments() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    handler.formatInLocaleWithWrapping("Test with %s and %s", "string", "11")
+        handler.formatInLocaleWithWrapping("Test with %s and %s", "string", "11")
 
-    // Verify that both arguments were wrapped.
-    assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).containsExactly("string", "11")
+        // Verify that both arguments were wrapped.
+        assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).containsExactly("string", "11")
+      }
+    }
   }
 
   @Test
   fun testFormatInLocaleWithoutWrapping_formatStringWithArgs_returnsCorrectlyFormattedString() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val formatted = handler.formatInLocaleWithoutWrapping("Test with %s and %s", "string", "11")
+        val formatted = handler.formatInLocaleWithoutWrapping("Test with %s and %s", "string", "11")
 
-    assertThat(formatted).isEqualTo("Test with string and 11")
+        assertThat(formatted).isEqualTo("Test with string and 11")
+      }
+    }
   }
 
   @Test
   fun testFormatInLocaleWithoutWrapping_doesNotWrapArguments() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    handler.formatInLocaleWithoutWrapping("Test with %s and %s", "string", "11")
+        handler.formatInLocaleWithoutWrapping("Test with %s and %s", "string", "11")
 
-    // Verify that none of the arguments were wrapped.
-    assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).isEmpty()
+        // Verify that none of the arguments were wrapped.
+        assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).isEmpty()
+      }
+    }
   }
 
   @Test
   fun testCapitalizeForHumans_capitalizedString_returnsSameString() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val capitalized = handler.capitalizeForHumans("Title String")
+        val capitalized = handler.capitalizeForHumans("Title String")
 
-    assertThat(capitalized).isEqualTo("Title String")
+        assertThat(capitalized).isEqualTo("Title String")
+      }
+    }
   }
 
   @Test
   fun testCapitalizeForHumans_uncapitalizedString_returnsCapitalized() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val capitalized = handler.capitalizeForHumans("lowercased string")
+        val capitalized = handler.capitalizeForHumans("lowercased string")
 
-    assertThat(capitalized).isEqualTo("Lowercased string")
+        assertThat(capitalized).isEqualTo("Lowercased string")
+      }
+    }
   }
 
   @Test
   fun testCapitalizeForHumans_englishLocale_localeSensitiveCharAtStart_returnsConvertedCase() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val capitalized = handler.capitalizeForHumans("igloo")
+        val capitalized = handler.capitalizeForHumans("igloo")
 
-    assertThat(capitalized).isEqualTo("Igloo")
+        assertThat(capitalized).isEqualTo("Igloo")
+      }
+    }
   }
 
   @Test
@@ -214,278 +238,380 @@ class AppLanguageResourceHandlerTest {
     // Set the language to Turkish to verify that the handler actually uses the user-specified
     // locale correctly.
     updateAppLanguageToSystem(TURKEY_TURKISH_LOCALE)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val capitalized = handler.capitalizeForHumans("igloo")
+        val capitalized = handler.capitalizeForHumans("igloo")
 
-    // Note that the starting letter differs when being capitalized with a Turkish context (as
-    // compared with the English version of this test). See https://stackoverflow.com/a/11063161 for
-    // context on how casing behaviors differ based on Locales in Java.
-    assertThat(capitalized).isEqualTo("İgloo")
+        // Note that the starting letter differs when being capitalized with a Turkish context (as
+        // compared with the English version of this test). See https://stackoverflow.com/a/11063161
+        // for context on how casing behaviors differ based on Locales in Java.
+        assertThat(capitalized).isEqualTo("İgloo")
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocale_validId_returnsResourceStringForId() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getStringInLocale(R.string.test_basic_string)
+        val str = handler.getStringInLocale(R.string.test_basic_string)
 
-    assertThat(str).isEqualTo("Basic string")
+        assertThat(str).isEqualTo("Basic string")
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocale_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() { handler.getStringInLocale(-1) }
+        assertThrows<Resources.NotFoundException>() { handler.getStringInLocale(-1) }
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocaleWithWrapping_formatStringResourceWithArgs_returnsFormattedString() {
     updateAppLanguageToSystem(HEBREW_LOCALE)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getStringInLocaleWithWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-    )
+        val str = handler.getStringInLocaleWithWrapping(
+          R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+        )
 
-    // This is based on the example here:
-    // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
-    assertThat(str)
-      .isEqualTo("האם התכוונת ל \u200F\u202A123 Some Street, Mountain View, CA\u202C\u200F")
+        // This is based on the example here:
+        // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
+        assertThat(str)
+          .isEqualTo("האם התכוונת ל \u200F\u202A123 Some Street, Mountain View, CA\u202C\u200F")
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocaleWithWrapping_properlyWrapsArguments() {
     updateAppLanguageToSystem(HEBREW_LOCALE)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    handler.getStringInLocaleWithWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-    )
+        handler.getStringInLocaleWithWrapping(
+          R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+        )
 
-    // Verify that the argument was wrapped.
-    assertThat(wrapperChecker.getAllWrappedUnicodeTexts())
-      .containsExactly("123 Some Street, Mountain View, CA")
+        // Verify that the argument was wrapped.
+        assertThat(wrapperChecker.getAllWrappedUnicodeTexts())
+          .containsExactly("123 Some Street, Mountain View, CA")
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocaleWithWrapping_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() { handler.getStringInLocaleWithWrapping(-1) }
+        assertThrows<Resources.NotFoundException>() { handler.getStringInLocaleWithWrapping(-1) }
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocaleWithoutWrapping_formatStringResourceWithArgs_returnsFormattedString() {
     updateAppLanguageToSystem(HEBREW_LOCALE)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getStringInLocaleWithoutWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-    )
+        val str = handler.getStringInLocaleWithoutWrapping(
+          R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+        )
 
-    // This is based on the example here:
-    // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
-    // Note that the string is formatted, but due to no bidirectional wrapping the address ends up
-    // incorrectly formatted.
-    assertThat(str).isEqualTo("האם התכוונת ל 123 Some Street, Mountain View, CA")
+        // This is based on the example here:
+        // https://developer.android.com/training/basics/supporting-devices/languages#FormatTextExplanationSolution.
+        // Note that the string is formatted, but due to no bidirectional wrapping the address ends
+        // up incorrectly formatted.
+        assertThat(str).isEqualTo("האם התכוונת ל 123 Some Street, Mountain View, CA")
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocaleWithoutWrapping_doesNotWrapArguments() {
     updateAppLanguageToSystem(HEBREW_LOCALE)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    handler.getStringInLocaleWithoutWrapping(
-      R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
-    )
+        handler.getStringInLocaleWithoutWrapping(
+          R.string.test_string_with_arg_hebrew, "123 Some Street, Mountain View, CA"
+        )
 
-    // Verify that no arguments were wrapped.
-    assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).isEmpty()
+        // Verify that no arguments were wrapped.
+        assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).isEmpty()
+      }
+    }
   }
 
   @Test
   fun testGetStringInLocaleWithoutWrapping_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() {
-      handler.getStringInLocaleWithoutWrapping(-1)
+        assertThrows<Resources.NotFoundException>() {
+          handler.getStringInLocaleWithoutWrapping(-1)
+        }
+      }
     }
   }
 
   @Test
   fun testGetStringArrayInLocale_validId_returnsArrayAsStringList() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val strList = handler.getStringArrayInLocale(R.array.test_str_array)
+        val strList = handler.getStringArrayInLocale(R.array.test_str_array)
 
-    assertThat(strList).containsExactly("Basic string", "Basic string2").inOrder()
+        assertThat(strList).containsExactly("Basic string", "Basic string2").inOrder()
+      }
+    }
   }
 
   @Test
   fun testGetStringArrayInLocale_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() { handler.getStringArrayInLocale(-1) }
+        assertThrows<Resources.NotFoundException>() { handler.getStringArrayInLocale(-1) }
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocale_validId_oneItem_returnsQuantityStringForSingleItem() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 1)
+        val str = handler.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 1)
 
-    assertThat(str).isEqualTo("1 item")
+        assertThat(str).isEqualTo("1 item")
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocale_validId_twoItems_returnsQuantityStringForMultipleItems() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 2)
+        val str = handler.getQuantityStringInLocale(R.plurals.test_plural_string_no_args, 2)
 
-    // Note that the 'other' case covers most scenarios in English (per
-    // https://issuetracker.google.com/issues/36917255).
-    assertThat(str).isEqualTo("2 items")
+        // Note that the 'other' case covers most scenarios in English (per
+        // https://issuetracker.google.com/issues/36917255).
+        assertThat(str).isEqualTo("2 items")
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocale_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() { handler.getQuantityStringInLocale(-1, 0) }
+        assertThrows<Resources.NotFoundException> { handler.getQuantityStringInLocale(-1, 0) }
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocaleWithWrapping_formatStrResourceWithArgs_returnsFormattedStr() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getQuantityStringInLocaleWithWrapping(
-      R.plurals.test_plural_string_with_args, 2, "Two"
-    )
+        val str = handler.getQuantityStringInLocaleWithWrapping(
+          R.plurals.test_plural_string_with_args, 2, "Two"
+        )
 
-    assertThat(str).isEqualTo("Two items")
+        assertThat(str).isEqualTo("Two items")
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocaleWithWrapping_properlyWrapsArguments() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    handler.getQuantityStringInLocaleWithWrapping(R.plurals.test_plural_string_with_args, 2, "Two")
+        handler.getQuantityStringInLocaleWithWrapping(
+          R.plurals.test_plural_string_with_args, 2, "Two"
+        )
 
-    // Verify that the argument was wrapped.
-    assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).containsExactly("Two")
+        // Verify that the argument was wrapped.
+        assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).containsExactly("Two")
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocaleWithWrapping_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() {
-      handler.getQuantityStringInLocaleWithWrapping(-1, 0)
+        assertThrows<Resources.NotFoundException> {
+          handler.getQuantityStringInLocaleWithWrapping(-1, 0)
+        }
+      }
     }
   }
 
   @Test
   fun testGetQuantityStringInLocaleWithoutWrapping_formatStrResourceWithArgs_returnsFormattedStr() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val str = handler.getQuantityStringInLocaleWithoutWrapping(
-      R.plurals.test_plural_string_with_args, 2, "Two"
-    )
+        val str = handler.getQuantityStringInLocaleWithoutWrapping(
+          R.plurals.test_plural_string_with_args, 2, "Two"
+        )
 
-    assertThat(str).isEqualTo("Two items")
+        assertThat(str).isEqualTo("Two items")
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocaleWithoutWrapping_doesNotWrapArguments() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    handler.getQuantityStringInLocaleWithoutWrapping(
-      R.plurals.test_plural_string_with_args, 2, "Two"
-    )
+        handler.getQuantityStringInLocaleWithoutWrapping(
+          R.plurals.test_plural_string_with_args, 2, "Two"
+        )
 
-    // Verify that no arguments were wrapped.
-    assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).isEmpty()
+        // Verify that no arguments were wrapped.
+        assertThat(wrapperChecker.getAllWrappedUnicodeTexts()).isEmpty()
+      }
+    }
   }
 
   @Test
   fun testGetQuantityStringInLocaleWithoutWrapping_nonExistentId_throwsException() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    assertThrows<Resources.NotFoundException>() {
-      handler.getQuantityStringInLocaleWithoutWrapping(-1, 0)
+        assertThrows<Resources.NotFoundException> {
+          handler.getQuantityStringInLocaleWithoutWrapping(-1, 0)
+        }
+      }
     }
   }
 
   @Test
   fun testFormatLong_forLargeLong_returnsStringWithExactDigits() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val formattedString = handler.formatLong(123456789)
+        val formattedString = handler.formatLong(123456789)
 
-    assertThat(formattedString.filter { it.isDigit() }).isEqualTo("123456789")
+        assertThat(formattedString.filter { it.isDigit() }).isEqualTo("123456789")
+      }
+    }
   }
 
   @Test
   fun testFormatLong_forDouble_returnsStringWithExactDigits() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val formattedString = handler.formatDouble(454545456.123)
+        val formattedString = handler.formatDouble(454545456.123)
 
-    val digitsOnly = formattedString.filter { it.isDigit() }
-    assertThat(digitsOnly).contains("454545456")
-    assertThat(digitsOnly).contains("123")
+        val digitsOnly = formattedString.filter { it.isDigit() }
+        assertThat(digitsOnly).contains("454545456")
+        assertThat(digitsOnly).contains("123")
+      }
+    }
   }
 
   @Test
   fun testFormatLong_forDouble_returnsStringWithPeriodsOrCommas() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val formattedString = handler.formatDouble(123456789.123)
+        val formattedString = handler.formatDouble(123456789.123)
 
-    // Depending on formatting, commas and/or periods are used for large doubles.
-    assertThat(formattedString).containsMatch("[,.]")
+        // Depending on formatting, commas and/or periods are used for large doubles.
+        assertThat(formattedString).containsMatch("[,.]")
+      }
+    }
   }
 
   @Test
   fun testToHumanReadableString_forInt_returnsStringWithExactNumberInEnglish() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val formattedString = handler.toHumanReadableString(1)
+        val formattedString = handler.toHumanReadableString(1)
 
-    assertThat(formattedString).contains("1")
+        assertThat(formattedString).contains("1")
+      }
+    }
   }
 
   @Test
   fun testComputeDateString_forFixedTime_returnMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val dateString = handler.computeDateString(MORNING_UTC_TIMESTAMP_MILLIS)
+        val dateString = handler.computeDateString(MORNING_UTC_TIMESTAMP_MILLIS)
 
-    assertThat(dateString.extractNumbers()).containsExactly("24", "2019")
-    assertThat(dateString).contains("Apr")
+        assertThat(dateString.extractNumbers()).containsExactly("24", "2019")
+        assertThat(dateString).contains("Apr")
+      }
+    }
   }
 
   // This test is breaking the "don't parameterize output" principle out of convenience since it's
@@ -502,12 +628,16 @@ class AppLanguageResourceHandlerTest {
   @Iteration("en", "lang=ENGLISH_AUDIO_LANGUAGE", "expectedDisplayText=English")
   fun testComputeLocalizedDisplayName_englishLocale_forAllLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val displayText = handler.computeLocalizedDisplayName(audioLanguage)
+        val displayText = handler.computeLocalizedDisplayName(audioLanguage)
 
-    // The display name is localized to that language rather than the current locale (English).
-    assertThat(displayText).isEqualTo(expectedDisplayText)
+        // The display name is localized to that language rather than the current locale (English).
+        assertThat(displayText).isEqualTo(expectedDisplayText)
+      }
+    }
   }
 
   @Test
@@ -522,22 +652,30 @@ class AppLanguageResourceHandlerTest {
   @Iteration("pcm", "lang=NIGERIAN_PIDGIN", "expectedDisplayText=Naijá")
   fun testComputeLocalizedDisplayName_englishLocale_forAllDisplayLanguages_hasTheExpectedOutput() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val displayText = handler.computeLocalizedDisplayName(oppiaLanguage)
+        val displayText = handler.computeLocalizedDisplayName(oppiaLanguage)
 
-    assertThat(displayText).isEqualTo(expectedDisplayText)
+        assertThat(displayText).isEqualTo(expectedDisplayText)
+      }
+    }
   }
 
   @Test
   fun testComputeDateTimeString_forFixedTime_returnsMinHourMonthDayYearParts() {
     updateAppLanguageTo(OppiaLanguage.ENGLISH)
-    val handler = retrieveAppLanguageResourceHandler()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val handler = activity.appLanguageResourceHandler
 
-    val dateTimeString = handler.computeDateTimeString(MORNING_UTC_TIMESTAMP_MILLIS)
+        val dateTimeString = handler.computeDateTimeString(MORNING_UTC_TIMESTAMP_MILLIS)
 
-    assertThat(dateTimeString.extractNumbers()).containsExactly("22", "8", "24", "2019")
-    assertThat(dateTimeString).contains("Apr")
+        assertThat(dateTimeString.extractNumbers()).containsExactly("22", "8", "24", "2019")
+        assertThat(dateTimeString).contains("Apr")
+      }
+    }
   }
 
   private fun updateAppLanguageTo(language: OppiaLanguage) {
@@ -576,16 +714,15 @@ class AppLanguageResourceHandlerTest {
     appLanguageLocaleHandler.updateLocale(displayLocale)
   }
 
-  private fun retrieveAppLanguageResourceHandler(): AppLanguageResourceHandler {
-    lateinit var handler: AppLanguageResourceHandler
-    activityRule.scenario.onActivity { activity ->
-      handler = activity.appLanguageResourceHandler
-    }
-    return handler
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
