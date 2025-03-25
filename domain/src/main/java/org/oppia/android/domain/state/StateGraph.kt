@@ -38,7 +38,8 @@ class StateGraph constructor(
         answerOutcomeBuilder.missingPrerequisiteSkillId = outcome.missingPrerequisiteSkillId
       outcome.destStateName == currentState.name -> answerOutcomeBuilder.sameState = true
       !outcome.labelledAsCorrect &&
-        outcome.feedback.contentId.contains("feedback", true) && stateVisited ->
+        outcome.feedback.contentId.contains("feedback", true) &&
+        wasStateVisitedBefore ->
         answerOutcomeBuilder.previousStateName = outcome.destStateName
       else -> answerOutcomeBuilder.stateName = outcome.destStateName
     }
