@@ -1,9 +1,10 @@
 package org.oppia.android.app.parser
 
 import android.app.Application
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -61,6 +62,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -80,6 +82,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [FractionParsingUiError]. */
@@ -87,14 +90,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FractionParsingUiErrorTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class FractionParsingUiErrorTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  var activityRule =
-    ActivityScenarioRule<TestActivity>(
-      TestActivity.createIntent(ApplicationProvider.getApplicationContext())
-    )
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private lateinit var fractionParser: FractionParser
 
@@ -106,135 +105,166 @@ class FractionParsingUiErrorTest {
 
   @Test
   fun testSubmitTimeError_validMixedNumber_noErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("11 22/33")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage).isNull()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("11 22/33")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage).isNull()
+      }
     }
   }
 
   @Test
   fun testSubmitTimeError_tenDigitNumber_numberTooLong_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("0123456789")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("0123456789")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("None of the numbers in the fraction should have more than 7 digits.")
+      }
     }
   }
 
   @Test
   fun testSubmitTimeError_nonDigits_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("jdhfc")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("jdhfc")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+      }
     }
   }
 
   @Test
   fun testSubmitTimeError_divisionByZero_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("123/0")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("123/0")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage).isEqualTo("Please do not put 0 in the denominator")
+      }
     }
   }
 
   @Test
   fun testSubmitTimeError_ambiguousSpacing_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("1 2 3/4")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("1 2 3/4")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+      }
     }
   }
 
   @Test
   fun testSubmitTimeError_emptyString_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Enter a fraction to continue.")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Enter a fraction to continue.")
+      }
     }
   }
 
   @Test
   fun testSubmitTimeError_noDenominator_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getSubmitTimeError("3/")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getSubmitTimeError("3/")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+      }
     }
   }
 
   @Test
   fun testRealTimeError_validRegularFraction_noErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("2/3")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage).isNull()
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getRealTimeAnswerError("2/3")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage).isNull()
+      }
     }
   }
 
   @Test
   fun testRealTimeError_nonDigits_invalidChars_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("abc")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getRealTimeAnswerError("abc")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please only use numerical digits, spaces or forward slashes (/)")
+      }
     }
   }
 
   @Test
   fun testRealTimeError_noNumerator_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("/3")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getRealTimeAnswerError("/3")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+      }
     }
   }
 
   @Test
   fun testRealTimeError_severalSlashes_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("1/3/8")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getRealTimeAnswerError("1/3/8")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+      }
     }
   }
 
   @Test
   fun testRealTimeError_severalDashes_invalidFormat_hasRelevantErrorMessage() {
-    activityRule.scenario.onActivity { activity ->
-      val errorMessage = fractionParser.getRealTimeAnswerError("-1/-3")
-        .toUiError()
-        .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
-      assertThat(errorMessage)
-        .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val errorMessage = fractionParser.getRealTimeAnswerError("-1/-3")
+          .toUiError()
+          .getErrorMessageFromStringRes(activity.appLanguageResourceHandler)
+        assertThat(errorMessage)
+          .isEqualTo("Please enter a valid fraction (e.g., 5/3 or 1 2/3)")
+      }
     }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   private companion object {

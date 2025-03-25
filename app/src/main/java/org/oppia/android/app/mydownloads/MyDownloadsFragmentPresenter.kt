@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.MyDownloadsFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.MyDownloadsFragmentBinding
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [MyDownloadsFragment]. */

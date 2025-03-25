@@ -3,10 +3,10 @@ package org.oppia.android.app.devoptions.vieweventlogs.testing
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.testing.activity.TestActivity
+import org.oppia.android.app.ui.R
 
 /** Activity for testing [ViewEventLogsFragment]. */
 class ViewEventLogsTestActivity : TestActivity() {

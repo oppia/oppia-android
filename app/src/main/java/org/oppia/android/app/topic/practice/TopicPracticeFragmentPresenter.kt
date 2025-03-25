@@ -6,6 +6,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.oppia.android.app.databinding.databinding.TopicPracticeFooterViewBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeFragmentBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeHeaderViewBinding
+import org.oppia.android.app.databinding.databinding.TopicPracticeSubtopicBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
@@ -14,10 +18,6 @@ import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeF
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeHeaderViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeItemViewModel
 import org.oppia.android.app.topic.practice.practiceitemviewmodel.TopicPracticeSubtopicViewModel
-import org.oppia.android.databinding.TopicPracticeFooterViewBinding
-import org.oppia.android.databinding.TopicPracticeFragmentBinding
-import org.oppia.android.databinding.TopicPracticeHeaderViewBinding
-import org.oppia.android.databinding.TopicPracticeSubtopicBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 

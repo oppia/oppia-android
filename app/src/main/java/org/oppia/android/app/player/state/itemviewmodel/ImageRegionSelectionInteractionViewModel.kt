@@ -3,7 +3,6 @@ package org.oppia.android.app.player.state.itemviewmodel
 import androidx.annotation.StringRes
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.ImageWithRegions
@@ -20,6 +19,7 @@ import org.oppia.android.app.utility.DefaultRegionClickedEvent
 import org.oppia.android.app.utility.NamedRegionClickedEvent
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
 import org.oppia.android.app.utility.RegionClickedEvent
+import org.oppia.android.app.view.models.R
 import javax.inject.Inject
 
 /** [StateItemViewModel] for image region selection. */
