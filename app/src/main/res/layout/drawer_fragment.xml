@@ -79,7 +79,7 @@
             android:layout_marginStart="12dp"
             android:text="@string/developer_options"
             android:textColor="@{footerViewModel.isDeveloperOptionsSelected ? @color/component_color_drawer_fragment_developer_options_selected_text_color : @color/component_color_shared_primary_dark_text_color}"
-            android:textSize="14sp" />
+            />
         </LinearLayout>
 
         <LinearLayout
