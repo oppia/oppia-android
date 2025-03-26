@@ -1,0 +1,63 @@
+# Contains jobs corresponding to verify Oppia lesson compatibility.
+
+name: Checks for Oppia Lesson Compatibility
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 02 * * 1"
+
+jobs:
+  check_lesson_compatibility:
+    name: Check production lesson conversion
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Set up Bazel
+        uses: abhinavsingh/setup-bazel@v3
+        with:
+          version: 6.5.0
+
+      - name: Check out introduce-asset-download-script branch
+        uses: actions/checkout@v4
+        with:
+          ref: introduce-asset-download-script
+
+      - name: Set up build environment
+        uses: ./.github/actions/set-up-android-bazel-build-environment
+
+      - name: Prepare environment
+        env:
+          PROD_SERVER_LESSON_SECRET: ${{ secrets.PROD_SERVER_LESSON_SECRET }}
+        run: |
+          echo "$PROD_SERVER_LESSON_SECRET" > prod_server.key
+          mkdir release_assets
+
+      - name: Check Bazel environment
+        run: bazel info
+
+      - name: Download lesson version list
+        run: |
+          bazel run //scripts:download_lesson_list -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            $(pwd)/release_assets/pinned_versions.textproto
+
+      - name: Download lessons and verify conversion
+        run: |
+          bazel run //scripts:download_lessons -- \
+            https://www.oppia.org \
+            https://storage.googleapis.com \
+            oppiaserver-resources \
+            $(pwd)/prod_server.key \
+            $(pwd)/release_assets/assets \
+            cache_mode=none \
+            $(pwd)/release_assets/cache \
+            $(pwd)/release_assets/pinned_versions.textproto \
+            -Werror

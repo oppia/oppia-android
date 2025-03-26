@@ -16,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -26,7 +25,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -44,6 +42,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -116,24 +115,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ResumeLessonActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val resumeLessonActivityTestRule = ActivityTestRule(
-    ResumeLessonActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -159,12 +145,15 @@ class ResumeLessonActivityTest {
 
   @Test
   fun testResumeLessonActivity_hasCorrectActivityLabel() {
-    resumeLessonActivityTestRule.launchActivity(createResumeLessonActivityIntent())
-    val title = resumeLessonActivityTestRule.activity.title
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.resume_lesson_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.resume_lesson_activity_title))
+      }
+    }
   }
 
   @Test
@@ -195,9 +184,13 @@ class ResumeLessonActivityTest {
 
   @Test
   fun testResumeLessonActivity_onToolbarClosePressed_closesResumeExplorationActivity() {
-    resumeLessonActivityTestRule.launchActivity(createResumeLessonActivityIntent())
-    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-    assertThat(resumeLessonActivityTestRule.activity.isFinishing).isTrue()
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
+          .perform(click())
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
   }
 
   private fun createResumeLessonActivityIntent(): Intent {
