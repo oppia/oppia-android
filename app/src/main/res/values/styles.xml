@@ -872,6 +872,12 @@
     <item name="android:gravity">center</item>
     <item name="android:paddingStart">8dp</item>
     <item name="android:paddingEnd">8dp</item>
+    <item name="android:minWidth">60dp</item>
+    <item name="android:minHeight">48dp</item>
+    <item name="android:background">@color/component_color_lessons_tab_activity_lessons_completed_chapter_index_background_color</item>
+    <item name="android:importantForAccessibility">yes</item>
+    <item name="android:paddingTop">12dp</item>
+    <item name="android:paddingBottom">12dp</item>
   </style>
 
   <style name="TestTextViewStyle" parent="TextView.Common1">
