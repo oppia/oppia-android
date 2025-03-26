@@ -13,6 +13,8 @@
 ## Overview
 Bazel is an open-source build and test tool similar to Make, Maven, and Gradle. It uses a human-readable, high-level build language.
 
+Oppia Android leverages Bazel for its efficient, scalable builds and reliable performance across various environments, making it well-suited for our large-scale project.
+
 ## Installation
 
 Follow the instructions on the [installation page](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel) to set up Bazel.
@@ -83,7 +85,7 @@ To ensure you always use the correct test target, follow one of these steps:
    * Paste the target to the bazel test command, e.g. `bazel test //domain/src/test/java/org/oppia/android/domain/onboarding:AppStartupStateControllerTest`
 
 2. If the test file is open in Android Studio, but **Copy BUILD target string** is not available in the context menu:
-Sometimes the **Copy BUILD target string** is not available in the context menu either due to sync issues or modularization issues. You can still copy the file path, and pass it to the test command.
+Sometimes, the **Copy BUILD target string** is not available in the context menu either due to sync issues or modularization issues. You can still copy the file path, and pass it to the test command.
    * In the AS sidebar, right click on the file, and select `copy path/reference`.
      or
    * Right-click on the file tab and then click `copy path/reference`.
@@ -150,12 +152,12 @@ Every package contains a BUILD file. This file is written in Starlark Language. 
 
 **[Dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/BUILD.bazel#L16)**
 
-A target A depends upon a target B if B is needed by A at build. `A -> B`
+A target A depends upon a target B, if B is needed by A at build. `A -> B`
 
 ```
 deps = [ "//app",]
 ```
-Here, `deps` is used to define the dependencies which is a type of dependencies called `deps dependencies` and it includes the files/directory/target which are dependent. From the above example the dependency is the `app` target which is defined in the [Build file of app package](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L616).
+Here, `deps` is used to define the dependencies which is a type of dependencies called `deps dependencies` and it includes the files/directory/target which are dependent. From the above example, the dependency is the `app` target which is defined in the [Build file of app package](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L616).
 
 Example of Dependencies
 1. [srcs dependencies](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L617)
@@ -169,7 +171,7 @@ Bazel extensions are files ending in .bzl. Use the load statement to import a sy
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 ```
 Here, we are loading `android.bzl` and we are going to use it with a symbol name `kt_android_library`.
-Arguments to the load function must be string literals. load statements must appear at top-level in the file.
+Arguments to the load function must be string literals. Load statements must appear at top-level in the file.
 
 **[Visibility of a file target](https://github.com/oppia/oppia-android/blob/ba8d914480251e4a8543feb63a93b6c91e0a5a2f/app/BUILD.bazel#L621)**
 
@@ -180,7 +182,7 @@ With the example from our codebase, target `app` whose visibility is public.
 
 **[Testing](https://github.com/oppia/oppia-android/blob/7344270032ac242b1b8987f1b51c8b5aa4f14ce3/app/src/sharedTest/java/org/oppia/android/app/player/exploration/BUILD.bazel#L7)**
 
-when we want to run test cases on Bazel build environment, a test target needs to be set up correctly:
+When we want to run test cases on Bazel build environment, a test target needs to be set up correctly:
 
 ```bazel
 load("//:oppia_android_test.bzl", "oppia_android_test")
@@ -258,7 +260,7 @@ You can sync with Bazel in two ways:
 
 **Expand Sync to Working Set**
 
-Your working set is any files your VCS says are dirty, roughly corresponding to something like git status. By default the plugin tries to expand the sync to cover any target in your working set. This ensures these files are refreshed without having to go to the trouble of adding a temporary target to your project view.
+Your working set is any files your VCS says are dirty, roughly corresponding to something like git status. By default, the plugin tries to expand the sync to cover any target in your working set. This ensures these files are refreshed without having to go to the trouble of adding a temporary target to your project view.
 - This sometimes causes problems, and you may see a warning in your Bazel sync tool window to disable it.
 
 **Non-Incrementally Sync Project with BUILD Files**

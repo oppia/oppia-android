@@ -20,7 +20,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 ## Prepare developer environment
 
 1. Download and install Android Studio **Giraffe** from [this location](https://developer.android.com/studio/archive).
-   **Note**: You may try newer or older versions of Android Studio, but we can't guarantee good support.
+   **Note**: You may try newer or older versions of Android Studio, but we can't guarantee good support as we have not tested them extensively yet.
 
 2. Configure your Android Studio
    - From your PC's application menu, open Android Studio. 
@@ -58,7 +58,7 @@ This wiki page explains how to install Oppia Android on your local machine. If y
      
         <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
          
-        * If you already have a project open in Android Studio, in the right hand toolbar, locate `device Manager`.
+        * If you already have a project open in Android Studio, in the right hand toolbar, locate `Device Manager`.
       - Click the **+**, and then click **Create Virtual Device**.
       - Follow the wizard to create a phone and a tablet AVD, setting the **system image** to be one of `API Level 30` or `API Level 34` as installed above.
       - After creating your devices, you will be able to see a list of all the devices on the device manager panel.
@@ -79,7 +79,7 @@ bazel 6.5.0
 ```
 
 ### Bazel Set up for Mac
-It is recommended to use the binary installer steps outline below. For other ways to install Bazel on Mac, refer to the [official page](https://bazel.build/install/os-x).
+It is recommended to use the binary installer steps outlined below. For other ways to install Bazel on Mac, refer to the [official page](https://bazel.build/install/os-x).
 
 **Step 1: Install Xcode command line tools**
 
@@ -189,10 +189,10 @@ This page outlines one way to allow Bazel to be used in CLI form on Windows. Ple
 
 Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem. Windows currently only supports a terminal experience in this subsystem (though there is a prerelease version of the software with GUI support) which means Android Studio will not be supported. You will need to continue using the Windows version of Android Studio and only use the Linux subsystem for building & running Robolectric or JUnit-based tests.
 
-Due to the issues mentioned above, we recommend dual-booting your PC with Linux. However, if you choose to use Windows, please follow the instructions below:
+Due to the issues mentioned above, we recommend dual-booting your PC with Linux for a smoother experience. However, if you prefer to use Windows, please follow the instructions below:
 
 **Main prerequisites**:
-- Windows 10+: These instructions are geared towards users of Windows 10+ (older versions will not be compatible). If you're in using an older version of Windows, please follow up with a comment on [this issue](https://github.com/oppia/oppia-android/issues/3371).
+- Windows 10+: These instructions are geared towards users of Windows 10+ (older versions will not be compatible). If you're using an older version of Windows, please follow up with a comment on [this issue](https://github.com/oppia/oppia-android/issues/3371).
 - At least 4GB of free local disk storage space (for Linux & needed dependencies), but more will probably help when building the app
 
 At a high-level, the steps to make Bazel work on Windows are:
@@ -455,7 +455,7 @@ These are tests in other modules, such as **domain** or **utility**.
 
 ### Troubleshooting Installation
 #### General issues
-1. If the Static Checks on your PR keeps failing, please refer to [instructions on running static checks locally](https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks#how-to-run-static-checks-locally) in order to catch these errors before pushing.
+1. If the Static Checks on your PR keep failing, please refer to [instructions on running static checks locally](https://github.com/oppia/oppia-android/wiki/Static-Analysis-Checks#how-to-run-static-checks-locally) in order to catch these errors before pushing.
 2. If you are using Android Studio or another UI-based git to push, you might see unclear errors such as `Error: Failed to push some refs to git@github.com:<your_user_name>/oppia-android.git`. We recommend using the command line to run all git commands.
 3. **Error**: Unresolved reference `DaggerXXTest_TestApplicationComponent`. **Solution**: Don't worry this is not an error. Just run the test file and it will solve the error. For running tests, you can see [Oppia Android Testing](https://github.com/oppia/oppia-android/wiki/Oppia-Android-Testing) document.
 4. Crashing layout tags in tablet, e.g.:
