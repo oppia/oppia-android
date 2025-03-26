@@ -2,11 +2,10 @@ package org.oppia.android.app.help
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
@@ -66,6 +65,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -86,24 +86,17 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+
 /** Tests for [HelpActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = HelpActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class HelpActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<HelpActivity> = ActivityTestRule(
-    HelpActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -112,32 +105,43 @@ class HelpActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createHelpActivityIntent().extractCurrentAppScreenName()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    val intent = HelpActivity.createHelpActivityIntent(
+      ApplicationProvider.getApplicationContext(),
+      isFromNavigationDrawer = false,
+      profileId = profileId
+    )
 
+    val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.HELP_ACTIVITY)
   }
 
   @Test
   fun testHelpActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createHelpActivityIntent())
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.help_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.help_activity_title))
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createHelpActivityIntent(): Intent {
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<HelpActivity>.() -> Unit) {
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
-    return HelpActivity.createHelpActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      isFromNavigationDrawer = false,
-      profileId = profileId
+    val intent = HelpActivity.createHelpActivityIntent(
+      context, isFromNavigationDrawer = false, profileId = profileId
     )
+    ActivityScenario.launch<HelpActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
