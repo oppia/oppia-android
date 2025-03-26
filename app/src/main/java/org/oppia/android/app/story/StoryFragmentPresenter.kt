@@ -89,9 +89,7 @@ class StoryFragmentPresenter @Inject constructor(
     storyViewModel.setStoryId(storyId)
     logStoryActivityEvent(topicId, storyId)
 
-    binding.storyToolbar.setNavigationOnClickListener {
-      (activity as StoryActivity).finish()
-    }
+    binding.storyToolbar.setNavigationOnClickListener { activity.finish() }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.storyToolbarTitle.setOnClickListener {
         binding.storyToolbarTitle.isSelected = true

@@ -2,11 +2,10 @@ package org.oppia.android.app.profileprogress
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
@@ -65,6 +64,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -94,19 +94,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileProgressActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<ProfileProgressActivity> = ActivityTestRule(
-    ProfileProgressActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -115,18 +107,23 @@ class ProfileProgressActivityTest {
 
   @Test
   fun testProfileProgressActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createProfileProgressActivityIntent())
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.profile_progress_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.profile_progress_activity_title))
+      }
+    }
   }
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createProfileProgressActivityIntent().extractCurrentAppScreenName()
+    val intent =
+      ProfileProgressActivity.createProfileProgressActivityIntent(context, internalProfileId = 0)
 
+    val currentScreenName = intent.extractCurrentAppScreenName()
     assertThat(currentScreenName).isEqualTo(ScreenName.PROFILE_PROGRESS_ACTIVITY)
   }
 
@@ -134,11 +131,15 @@ class ProfileProgressActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createProfileProgressActivityIntent(): Intent {
-    return ProfileProgressActivity.createProfileProgressActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      internalProfileId = 0
-    )
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<ProfileProgressActivity>.() -> Unit
+  ) {
+    val intent =
+      ProfileProgressActivity.createProfileProgressActivityIntent(context, internalProfileId = 0)
+    ActivityScenario.launch<ProfileProgressActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -1,15 +1,18 @@
 package org.oppia.android.app.customview
 
 import android.app.Application
-import android.content.Intent
+import android.content.Context
+import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import dagger.Component
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,7 +31,8 @@ import org.oppia.android.app.model.LessonThumbnail
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
-import org.oppia.android.app.testing.LessonThumbnailImageViewTestActivity
+import org.oppia.android.app.testing.LessonThumbnailImageViewTestFragment
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -68,6 +72,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -84,6 +89,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [LessonThumbnailImageView]. */
@@ -94,59 +100,77 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class LessonThumbnailImageViewTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    LessonThumbnailImageViewTestActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
 
   @Test
   fun callDataBindingFunctions_thenInflateView_thumbnailIsLoadedCorrectly() {
-    activityTestRule.launchActivity(Intent())
-    val lessonThumbnailImageViewHolder = activityTestRule.activity
-      .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
-
-    val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
-    lessonThumbnailImageView.id = R.id.lesson_thumbnail
-
-    activityTestRule.runOnUiThread {
-      with(lessonThumbnailImageView) {
-        setEntityId("")
-        setEntityType("")
-        setLessonThumbnail(LessonThumbnail.getDefaultInstance())
-        lessonThumbnailImageViewHolder.addView(this)
+    runWithLaunchedActivity {
+      val lessonThumbnailImageViewId = View.generateViewId()
+      onActivity { activity ->
+        val lessonThumbnailImageView = LessonThumbnailImageView(activity).apply {
+          this.id = lessonThumbnailImageViewId
+        }
+        lessonThumbnailImageView.setEntityId("")
+        lessonThumbnailImageView.setEntityType("")
+        lessonThumbnailImageView.setLessonThumbnail(LessonThumbnail.getDefaultInstance())
+        val fragmentView =
+          activity
+            .supportFragmentManager
+            .findFragmentById(R.id.test_fragment_placeholder)?.view as? FrameLayout
+        checkNotNull(fragmentView).addView(lessonThumbnailImageView)
       }
+      onView(withId(lessonThumbnailImageViewId))
+        .check(matches(withDrawable(R.drawable.topic_fractions_01)))
     }
-    onView(withId(lessonThumbnailImageView.id))
-      .check(matches(withDrawable(R.drawable.topic_fractions_01)))
   }
 
   @Test
   fun inflateView_thenCallDataBindingFunctions_thumbnailIsLoadedCorrectly() {
-    activityTestRule.launchActivity(Intent())
-    val lessonThumbnailImageViewHolder = activityTestRule.activity
-      .findViewById<FrameLayout>(R.id.lesson_thumbnail_image_view_holder)
-
-    val lessonThumbnailImageView = LessonThumbnailImageView(activityTestRule.activity)
-    lessonThumbnailImageView.id = R.id.lesson_thumbnail
-
-    activityTestRule.runOnUiThread {
-      with(lessonThumbnailImageView) {
-        lessonThumbnailImageViewHolder.addView(this)
-        setEntityId("")
-        setEntityType("")
-        setLessonThumbnail(LessonThumbnail.getDefaultInstance())
+    runWithLaunchedActivity {
+      val lessonThumbnailImageViewId = View.generateViewId()
+      onActivity { activity ->
+        val lessonThumbnailImageView = LessonThumbnailImageView(activity).apply {
+          this.id = lessonThumbnailImageViewId
+        }
+        val fragmentView =
+          activity
+            .supportFragmentManager
+            .findFragmentById(R.id.test_fragment_placeholder)?.view as? FrameLayout
+        checkNotNull(fragmentView).addView(lessonThumbnailImageView)
+        lessonThumbnailImageView.setEntityId("")
+        lessonThumbnailImageView.setEntityType("")
+        lessonThumbnailImageView.setLessonThumbnail(LessonThumbnail.getDefaultInstance())
       }
+      onView(withId(lessonThumbnailImageViewId))
+        .check(matches(withDrawable(R.drawable.topic_fractions_01)))
     }
-    onView(withId(lessonThumbnailImageView.id))
-      .check(matches(withDrawable(R.drawable.topic_fractions_01)))
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    val fragment = LessonThumbnailImageViewTestFragment()
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setContentView(R.layout.test_activity)
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.test_fragment_placeholder, fragment)
+          .commitNow()
+      }
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -218,8 +218,7 @@ class RegexPatternValidationCheckTest {
       " situations. Use ActivityScenario, instead."
   private val activityScenarioRuleShouldNotBeUsed =
     "ActivityScenarioRule can result in order dependence when static state leaks across tests" +
-      " (such as static module variables), and can make staging much more difficult for platform" +
-      " parameters. Use ActivityScenario directly, instead."
+      " (such as static module variables). Use ActivityScenario directly, instead."
   private val referenceComputeIfAbsent =
     "computeIfAbsent won't desugar and requires Java 8 support (SDK 24+). Suggest using an atomic" +
       " Kotlin-specific solution, instead."
