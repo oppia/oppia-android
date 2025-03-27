@@ -12,8 +12,6 @@ If you run into any problems along the way, we're here to help! Check out our [w
 - [Onboarding instructions](#onboarding-instructions)
   - [Guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR)
   - [Developing your skills](https://github.com/oppia/oppia-android/wiki/Developing-skills)
-- [Important: Ongoing Bazel migration](#important-ongoing-bazel-migration)
-- [Installing the Oppia web app](#installing-the-oppia-web-app)
 - [Communication channels](#communication-channels)
 
 ## How to find information on this wiki
@@ -49,32 +47,10 @@ When you've found an issue you'd like to tackle:
 
 - Leave a comment that describes in detail how you'll tackle it (e.g. explain which file(s) you would modify and what changes you would make), and @-mention the team lead (typically **@BenHenning**). If your explanation makes sense, we'll assign the issue to you.
 - Submit a PR, following the [guidance on submitting a PR](https://github.com/oppia/oppia-android/wiki/Guidance-on-submitting-a-PR). (Consider bookmarking this guide in your browser for easy reference. We also suggest bookmarking the ["my issues" page](https://github.com/issues/assigned) so that you can keep track of the issues assigned to you.)
-- If you run into any problems, feel free to create a [GitHub Discussion](https://github.com/oppia/oppia-android/discussions) and get help from the Oppia community.
 
 You are also welcome to tackle non-starter issues, but for those, you might need to be more independent, because we might not know how to solve them either!
 
 Once you've merged PRs that correspond to **two** different pre-existing GitHub issues, please fill in [this form](https://forms.gle/NxPjimCMqsSTNUgu5) to be considered for a place on a team at Oppia Android! A team lead will evaluate your contributions and give you access to the repository so that you can assign yourself to issues. (But please don't create your own issues and then make PRs for them -- that won't count.)
-
-
-
-## Important: Ongoing Bazel migration
-
-The team is currently using two build systems for the project: Gradle and Bazel. We're in the process of actively migrating to Bazel.
-
-Please note that:
-- It's currently recommended that all team members use **Gradle** for their active development in Android Studio. While some team members use the Bazel Android Studio plugin instead of Android Gradle Plugin (AGP), we make this recommendation because day-to-day Bazel development currently suffers from:
-  - Significant memory overhead that continues to grow without careful pruning (i.e. periodic shutdowns of the local Bazel build server). On some Linux distros, this can result in a Kernel panic when memory is fully exhausted.
-  - Various symbolic errors throughout the codebase that can make it much more difficult to jump to specific symbols (though, unlike Gradle, all code including scripts are editable and runnable within Android Studio).
-- That said, when submitting a PR for review, you may notice that some Bazel-specific tests or workflows fail. Investigating and fixing these will require setting up Bazel in your local environment (see the instructions [here](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions)), and then running the specific Bazel commands in your local repository (most team members just use the console within Android Studio to run their Bazel commands).
-- Bazel & Gradle sometimes don't play nicely with one another. So, when you're verifying Bazel-specific things, we recommend doing so in one go, and then deleting the corresponding Bazel build artifacts using ``bazel clean`` before switching back over to Gradle (to avoid any issues with the two build systems crossing). Note that Bazel generally doesn't have any problems with Gradle build artifacts, so there's no need to clean the Gradle project first.
-- As the team finishes the migration to Bazel, communications and instructions will be sent ahead of time for moving development environments away from Gradle so that we can officially deprecate it.
-
-## Installing the Oppia web app
-
-If you need to connect to a local version of the Oppia web application, check out a copy of the [Oppia web app repository](https://github.com/oppia/oppia) and get it running locally. This will allow you to connect to a local instance of the web app when developing locally.
-
-For now, you generally won't need to do this, until the Android app supports on-the-fly lesson downloading (which we're currently working on).
-
 
 ### Notes
 
@@ -102,6 +78,7 @@ For now, you generally won't need to do this, until the Android app supports on-
   ```
   By using this command git will detect the file as a renamed file.
 
+*  We don't allow force-pushing at Oppia, so once you push your commits, you can't change them. Instead, submit a new commit with the desired changes. If you find that you have force-pushed your branch, please close the PR and submit a new one in its place.
 
 ## Communication channels
 
