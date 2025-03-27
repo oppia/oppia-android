@@ -1,4 +1,4 @@
-package org.oppia.android.app.recyclerview
+package org.oppia.android.app.profile
 
 import android.content.Context
 import android.graphics.Rect
@@ -10,7 +10,7 @@ import org.oppia.android.app.R
  * A decorator that assigns a dynamic margin to a recyclerview based on the number of items in the
  * adapter.
  */
-class DynamicMarginItemDecorator(
+class DynamicProfileItemMarginsDecorator(
   private val context: Context,
   private val adapter: RecyclerView.Adapter<*>
 ) : RecyclerView.ItemDecoration() {
