@@ -2,11 +2,10 @@ package org.oppia.android.app.thirdparty
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
@@ -25,6 +24,7 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
+import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity.Companion.createThirdPartyDependencyListActivityIntent
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -66,6 +66,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -95,22 +96,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ThirdPartyDependencyListActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<ThirdPartyDependencyListActivity> =
-    ActivityTestRule(
-      ThirdPartyDependencyListActivity::class.java,
-      /* initialTouchMode= */ true,
-      /* launchActivity= */ false
-    )
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -119,32 +109,38 @@ class ThirdPartyDependencyListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createThirdPartyDependencyListActivityIntent()
-      .extractCurrentAppScreenName()
+    val intent = createThirdPartyDependencyListActivityIntent(context)
 
+    val currentScreenName = intent.extractCurrentAppScreenName()
     assertThat(currentScreenName).isEqualTo(ScreenName.THIRD_PARTY_DEPENDENCY_LIST_ACTIVITY)
   }
 
   @Test
   fun testThirdPartyDependencyListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createThirdPartyDependencyListActivityIntent())
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(
-      context.getString(R.string.third_party_dependency_list_activity_title)
-    )
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title)
+          .isEqualTo(context.getString(R.string.third_party_dependency_list_activity_title))
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createThirdPartyDependencyListActivityIntent(): Intent {
-    return ThirdPartyDependencyListActivity.createThirdPartyDependencyListActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+  private fun runWithLaunchedActivity(
+    testBlock: ActivityScenario<ThirdPartyDependencyListActivity>.() -> Unit
+  ) {
+    val intent = createThirdPartyDependencyListActivityIntent(context)
+    ActivityScenario.launch<ThirdPartyDependencyListActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

@@ -2,18 +2,17 @@ package org.oppia.android.app.thirdparty
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
@@ -74,6 +73,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -104,24 +104,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class LicenseTextViewerActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<LicenseTextViewerActivity> = ActivityTestRule(
-    LicenseTextViewerActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var fakeAccessibilityService: FakeAccessibilityService
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   @Before
   fun setUp() {
@@ -130,128 +118,135 @@ class LicenseTextViewerActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val currentScreenName = createLicenseTextViewerActivityIntent(0, 0)
-      .extractCurrentAppScreenName()
+    val intent = LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+      context, dependencyIndex = 0, licenseIndex = 0
+    )
 
+    val currentScreenName = intent.extractCurrentAppScreenName()
     assertThat(currentScreenName).isEqualTo(ScreenName.LICENSE_TEXT_VIEWER_ACTIVITY)
   }
 
   @Test
   fun testLicenseTextViewerActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
-      createLicenseTextViewerActivityIntent(
-        dependencyIndex = 0,
-        licenseIndex = 0
-      )
-    )
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity(
+      dependencyIndex = 0,
+      licenseIndex = 0
+    ) {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(
-      context.getString(
-        R.string.license_name_0
-      )
-    )
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(
+          context.getString(
+            R.string.license_name_0
+          )
+        )
+      }
+    }
   }
 
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     fakeAccessibilityService.setScreenReaderEnabled(false)
-    activityTestRule.launchActivity(
-      createLicenseTextViewerActivityIntent(
-        dependencyIndex = 0,
-        licenseIndex = 0
-      )
-    )
+    runWithLaunchedActivity(
+      dependencyIndex = 0,
+      licenseIndex = 0
+    ) {
+      onActivity { activity ->
+        val activityToolbarTitle: TextView =
+          activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    val activityToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
-      .perform(ViewActions.click())
-    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
-    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+          .perform(ViewActions.click())
+        assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     fakeAccessibilityService.setScreenReaderEnabled(true)
-    activityTestRule.launchActivity(
-      createLicenseTextViewerActivityIntent(
-        dependencyIndex = 0,
-        licenseIndex = 0
-      )
-    )
+    runWithLaunchedActivity(
+      dependencyIndex = 0,
+      licenseIndex = 0
+    ) {
+      onActivity { activity ->
+        val activityToolbarTitle: TextView =
+          activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
 
-    val activityToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_RTL)
-
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
-      .perform(ViewActions.click())
-    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
-    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+          .perform(ViewActions.click())
+        assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   @Test
   fun testExploration_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     fakeAccessibilityService.setScreenReaderEnabled(false)
-    activityTestRule.launchActivity(
-      createLicenseTextViewerActivityIntent(
-        dependencyIndex = 0,
-        licenseIndex = 0
-      )
-    )
+    runWithLaunchedActivity(
+      dependencyIndex = 0,
+      licenseIndex = 0
+    ) {
+      onActivity { activity ->
+        val activityToolbarTitle: TextView =
+          activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    val activityToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
-      .perform(ViewActions.click())
-    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
-    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+          .perform(ViewActions.click())
+        assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(activityToolbarTitle.isSelected).isEqualTo(true)
+        assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   @Test
   fun testExploration_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     fakeAccessibilityService.setScreenReaderEnabled(true)
-    activityTestRule.launchActivity(
-      createLicenseTextViewerActivityIntent(
-        dependencyIndex = 0,
-        licenseIndex = 0
-      )
-    )
+    runWithLaunchedActivity(
+      dependencyIndex = 0,
+      licenseIndex = 0
+    ) {
+      onActivity { activity ->
+        val activityToolbarTitle: TextView =
+          activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
+        ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
 
-    val activityToolbarTitle: TextView =
-      activityTestRule.activity.findViewById(R.id.license_text_viewer_activity_toolbar_title)
-    ViewCompat.setLayoutDirection(activityToolbarTitle, ViewCompat.LAYOUT_DIRECTION_LTR)
-
-    Espresso.onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
-      .perform(ViewActions.click())
-    assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
-    assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
-    assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+        onView(ViewMatchers.withId(R.id.license_text_viewer_activity_toolbar_title))
+          .perform(ViewActions.click())
+        assertThat(activityToolbarTitle.ellipsize).isEqualTo(TextUtils.TruncateAt.MARQUEE)
+        assertThat(activityToolbarTitle.isSelected).isEqualTo(false)
+        assertThat(activityToolbarTitle.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createLicenseTextViewerActivityIntent(
+  @Suppress("SameParameterValue")
+  private fun runWithLaunchedActivity(
     dependencyIndex: Int,
-    licenseIndex: Int
-  ): Intent {
-    return LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
-      ApplicationProvider.getApplicationContext(),
-      dependencyIndex,
-      licenseIndex
+    licenseIndex: Int,
+    testBlock: ActivityScenario<LicenseTextViewerActivity>.() -> Unit
+  ) {
+    val intent = LicenseTextViewerActivity.createLicenseTextViewerActivityIntent(
+      context, dependencyIndex, licenseIndex
     )
+    ActivityScenario.launch<LicenseTextViewerActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

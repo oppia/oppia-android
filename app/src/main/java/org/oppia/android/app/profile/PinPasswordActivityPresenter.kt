@@ -111,6 +111,7 @@ class PinPasswordActivityPresenter @Inject constructor(
                       else
                         HomeActivity.createHomeActivity(activity, profileId)
                     )
+                    activity.finish()
                   }
                 }
               )
