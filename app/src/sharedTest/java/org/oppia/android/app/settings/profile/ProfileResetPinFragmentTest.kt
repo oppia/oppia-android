@@ -2,6 +2,7 @@ package org.oppia.android.app.settings.profile
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -21,7 +22,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.CoreMatchers.allOf
@@ -46,6 +46,7 @@ import org.oppia.android.app.model.ProfileResetPinFragmentArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -116,32 +117,13 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileResetPinFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<ProfileResetPinActivity> = ActivityTestRule(
-    ProfileResetPinActivity::class.java, /* initialTouchMode= */
-    true, /*launchActivity= */
-    false
-  )
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  private val internalProfileId = 0
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
@@ -157,20 +139,9 @@ class ProfileResetPinFragmentTest {
     Intents.release()
   }
 
-  private fun setUpTestApplicationComponent() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
   @Test
   fun testProfileResetPin_withAdmin_inputBothPin_save_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -197,14 +168,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputBothPin_imeAction_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -230,14 +194,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_configChange_inputBothPin_save_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(isRoot()).perform(orientationLandscape())
       onView(
         allOf(
@@ -269,14 +226,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputBothPin_save_opensprofileResetPinFragment() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -302,14 +252,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_pinLengthErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -342,14 +285,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_configChange_pinLengthErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -383,13 +319,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -416,13 +346,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputShortPin_save_inputPin_configChange_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -449,14 +373,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -489,14 +406,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_inputWrongConfirmPin_configChange_confirmWrongErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -531,14 +441,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_inputPin_configChange_inputFieldsExist_saveButtonIsClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -580,13 +483,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withAdmin_wrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -621,14 +518,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputShortPin_save_pinLengthErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -661,13 +551,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputShortPin_save_inputPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -693,14 +577,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_save_confirmWrongErrorIsShown() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -733,13 +610,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_save_inputConfirmPin_errorIsCleared() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -774,26 +645,14 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_default_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(withId(R.id.profile_reset_save_button)).check(matches(not(isClickable())))
     }
   }
 
   @Test
   fun testProfileResetPin_default_configChange_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_reset_save_button)).perform(scrollTo())
         .check(matches(not(isClickable())))
@@ -802,13 +661,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_inputPin_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -824,13 +677,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_inputPin_configChange_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -848,14 +695,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_inputPin_inputConfirmPin_saveButtonIsClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -880,14 +720,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_inputPin_clickableSaveButton_clearPin_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -923,14 +756,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -965,14 +791,7 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testProfileResetPin_withUser_inputWrongConfirmPin_configChange_saveButtonIsNotClickable() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 1,
-        isAdmin = false
-      )
-    ).use {
-      testCoroutineDispatchers.runCurrent()
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 1, isAdmin = false) {
       onView(
         allOf(
           withId(R.id.profile_reset_input_pin_edit_text),
@@ -1009,18 +828,10 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = true
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = true) {
+      onActivity { activity ->
         val profileResetPinFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+          .findFragmentById(R.id.test_fragment_placeholder) as ProfileResetPinFragment
 
         val arguments = checkNotNull(profileResetPinFragment.arguments) {
           "Expected arguments to be passed to ProfileResetPinFragment"
@@ -1041,18 +852,10 @@ class ProfileResetPinFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_whenIsAdminFalse_verifyCorrectArgumentsPassed() {
-    ActivityScenario.launch<ProfileResetPinActivity>(
-      ProfileResetPinActivity.createProfileResetPinActivity(
-        context = context,
-        profileId = 0,
-        isAdmin = false
-      )
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-
+    runWithLaunchedActivityAndAddedFragment(internalProfileId = 0, isAdmin = false) {
+      onActivity { activity ->
         val profileResetPinFragment = activity.supportFragmentManager
-          .findFragmentById(R.id.profile_reset_pin_fragment_placeholder) as ProfileResetPinFragment
+          .findFragmentById(R.id.test_fragment_placeholder) as ProfileResetPinFragment
 
         val arguments = checkNotNull(profileResetPinFragment.arguments) {
           "Expected arguments to be passed to ProfileResetPinFragment"
@@ -1068,6 +871,29 @@ class ProfileResetPinFragmentTest {
         assertThat(receivedProfileResetPinProfileId).isEqualTo(0)
         assertThat(receivedProfileResetPinIsAdmin).isEqualTo(false)
       }
+    }
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun runWithLaunchedActivityAndAddedFragment(
+    internalProfileId: Int,
+    isAdmin: Boolean,
+    testBlock: ActivityScenario<TestActivity>.() -> Unit
+  ) {
+    val fragment = ProfileResetPinFragment.newInstance(internalProfileId, isAdmin)
+    val intent = Intent(context, TestActivity::class.java)
+    ActivityScenario.launch<TestActivity>(intent).use { scenario ->
+      scenario.onActivity { activity ->
+        activity.setContentView(R.layout.test_activity)
+        activity.supportFragmentManager.beginTransaction()
+          .add(R.id.test_fragment_placeholder, fragment)
+          .commitNow()
+      }
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
     }
   }
 

@@ -66,9 +66,7 @@ class TopicFragmentPresenter @Inject constructor(
     this.profileId = profileId
     this.topicId = topicId
 
-    binding.topicToolbar.setNavigationOnClickListener {
-      (activity as TopicActivity).finish()
-    }
+    binding.topicToolbar.setNavigationOnClickListener { activity.finish() }
     if (!accessibilityService.isScreenReaderEnabled()) {
       binding.topicToolbarTitle.setOnClickListener {
         binding.topicToolbarTitle.isSelected = true

@@ -95,14 +95,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class TextInputLayoutBindingAdaptersTest {
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   @Before
   fun setUp() {
