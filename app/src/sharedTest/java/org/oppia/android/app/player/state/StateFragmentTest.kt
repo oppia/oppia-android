@@ -77,7 +77,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StateFragmentArguments
@@ -5983,22 +5984,22 @@ class StateFragmentTest {
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FAST_LANGUAGE_SWITCHING_IN_LESSON, true)
     setUpTest()
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOff() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(FAST_LANGUAGE_SWITCHING_IN_LESSON, false)
     setUpTest()
   }
 
   private fun setUpTestWithSurveyFeatureOn() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, true)
     setUpTest()
   }
 
   private fun setUpTestWithSurveyFeatureOff() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, false)
     setUpTest()
   }
 

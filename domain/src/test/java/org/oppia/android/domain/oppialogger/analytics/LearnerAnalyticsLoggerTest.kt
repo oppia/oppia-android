@@ -17,6 +17,8 @@ import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -38,6 +40,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
@@ -68,9 +71,6 @@ import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [LearnerAnalyticsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -2099,7 +2099,8 @@ class LearnerAnalyticsLoggerTest {
     modules = [
       TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterTestModule::class, SyncStatusTestModule::class, LoggerModule::class,
+      LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterTestModule::class,
+      SyncStatusTestModule::class, LoggerModule::class,
       ExplorationStorageModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

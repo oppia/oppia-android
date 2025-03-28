@@ -331,7 +331,8 @@ class AppLanguageLocaleHandlerTest {
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterTestModule::class, CpuPerformanceSnapshotterModule::class
+      SyncStatusModule::class, PlatformParameterTestModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

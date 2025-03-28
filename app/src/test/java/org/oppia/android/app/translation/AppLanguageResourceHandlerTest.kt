@@ -729,7 +729,7 @@ class AppLanguageResourceHandlerTest {
   @Component(
     modules = [
       RobolectricModule::class, TestDispatcherModule::class, ApplicationModule::class,
-       LoggerModule::class, ContinueModule::class,
+      LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,

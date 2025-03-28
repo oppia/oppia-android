@@ -24,7 +24,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -114,7 +114,7 @@ class TopicInfoFragmentLocalTest {
 
   @Test
   fun testTopicInfoFragment_onLaunch_logsEvent() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EXTRA_TOPIC_TABS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, true)
     launchTopicActivityIntent(profileId = profileId, TEST_CLASSROOM_ID, TEST_TOPIC_ID).use {
       testCoroutineDispatchers.runCurrent()
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()

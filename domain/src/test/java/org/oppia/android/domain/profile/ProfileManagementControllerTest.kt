@@ -1,6 +1,5 @@
 package org.oppia.android.domain.profile
 
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import android.app.Application
 import android.content.Context
 import android.net.Uri
@@ -26,18 +25,26 @@ import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ReadingTextSize.MEDIUM_TEXT_SIZE
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_2
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -71,14 +78,6 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
-import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -2004,11 +2003,13 @@ class ProfileManagementControllerTest {
   }
 
   private fun ProfileManagementController.addAdminProfile(
-    name: String, pin: String = DEFAULT_PIN
+    name: String,
+    pin: String = DEFAULT_PIN
   ): DataProvider<Any?> = addProfile(name, pin, isAdmin = true)
 
   private fun ProfileManagementController.addAdminProfileAndWait(
-    name: String, pin: String = DEFAULT_PIN
+    name: String,
+    pin: String = DEFAULT_PIN
   ) {
     monitorFactory.ensureDataProviderExecutes(addAdminProfile(name, pin))
   }

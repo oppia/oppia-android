@@ -55,7 +55,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -1091,12 +1091,12 @@ class OnboardingFragmentTest {
   }
 
   private fun setUpTestWithOnboardingV2Disabled() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, false)
     setUp()
   }
 
   private fun setUpTestWithOnboardingV2Enabled() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, true)
     setUp()
   }
 

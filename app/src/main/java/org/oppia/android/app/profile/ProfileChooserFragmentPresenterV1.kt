@@ -18,6 +18,7 @@ import org.oppia.android.app.databinding.databinding.ProfileChooserFragmentBindi
 import org.oppia.android.app.databinding.databinding.ProfileChooserProfileViewBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileChooserUiModel
 import org.oppia.android.app.model.ProfileId
@@ -25,11 +26,10 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -71,7 +71,7 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  @FeatureFlag(FeatureFlagId.MULTIPLE_CLASSROOMS) private val enableMultipleClassrooms: Boolean
 ) {
   private lateinit var binding: ProfileChooserFragmentBinding
   val hasProfileEverBeenAddedValue = ObservableField<Boolean>(true)
@@ -244,7 +244,7 @@ class ProfileChooserFragmentPresenterV1 @Inject constructor(
     if (profile.pin.isNullOrBlank()) {
       profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
         if (it is AsyncResult.Success) {
-          if (enableMultipleClassrooms.value) {
+          if (enableMultipleClassrooms) {
             activity.startActivity(
               ClassroomListActivity.createClassroomListActivity(activity, profile.id)
             )

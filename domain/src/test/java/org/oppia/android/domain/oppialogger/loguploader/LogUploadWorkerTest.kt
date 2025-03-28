@@ -19,15 +19,18 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.reset
 import org.oppia.android.app.model.EventLog
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -39,6 +42,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
@@ -82,10 +86,6 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
-import org.junit.After
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -553,7 +553,9 @@ class LogUploadWorkerTest {
     map { elem -> listOf(elem.fileName, elem.methodName, elem.lineNumber, elem.className) }
 
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics)
+    TestPlatformParameterConfigRetriever.setFlagOverride(
+      LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics
+    )
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()

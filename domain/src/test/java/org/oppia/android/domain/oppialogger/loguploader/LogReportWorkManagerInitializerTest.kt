@@ -22,6 +22,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -34,6 +36,7 @@ import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeExceptionLogger
@@ -58,9 +61,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -325,7 +325,8 @@ class LogReportWorkManagerInitializerTest {
       TestLogStorageModule::class, TestDispatcherModule::class,
       LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
+      LoggerModule::class, AssetModule::class, LoggerModule::class,
+      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusModule::class, ApplicationLifecycleModule::class,
       CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
       NetworkModule::class, NetworkConfigTestModule::class

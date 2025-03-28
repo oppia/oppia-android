@@ -3,9 +3,9 @@ package org.oppia.android.domain.platformparameter
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.SyncStatus
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.SyncStatus
 
 @Singleton
 class PlatformParameterProcessState @Inject constructor() {

@@ -34,7 +34,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -142,7 +142,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, false)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -164,7 +164,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -186,7 +186,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -208,7 +208,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -244,7 +244,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -279,7 +279,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -310,7 +310,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -343,7 +343,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use { scenario ->

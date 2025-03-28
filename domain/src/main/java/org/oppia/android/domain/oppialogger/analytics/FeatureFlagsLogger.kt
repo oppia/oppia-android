@@ -17,11 +17,11 @@ import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.domain.platformparameter.FeatureFlag
+import org.oppia.android.domain.platformparameter.FeatureFlagSyncStatuses
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.SyncStatus
-import org.oppia.android.domain.platformparameter.FeatureFlagSyncStatuses
 
 /**
  * Convenience logger for feature flags.

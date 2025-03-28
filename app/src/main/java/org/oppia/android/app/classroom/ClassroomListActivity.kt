@@ -24,8 +24,8 @@ import org.oppia.android.app.model.ScreenName.CLASSROOM_LIST_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIntent
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicPlayStoryActivityIntent
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.app.ui.R
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId

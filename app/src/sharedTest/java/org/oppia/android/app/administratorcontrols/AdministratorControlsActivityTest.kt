@@ -57,7 +57,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -169,7 +170,7 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -223,7 +224,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, false)
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -607,7 +608,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectAdmin_tabletConfigChange_downloadsEnabled_hasNoDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -626,7 +627,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectUser_tabletConfigChange_downloadsEnabled_hasDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -646,7 +647,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectAdmin_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -667,7 +668,7 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectUser_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId

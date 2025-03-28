@@ -50,7 +50,8 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -325,7 +326,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -342,7 +343,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -359,7 +360,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_multipleClassroomsEnabled_continueButtonClicked_launchesClassroomScreen() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -376,7 +377,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_multipleClassroomsEnabled_continueButtonLaunchesClassroomScreen() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -394,7 +395,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_selectionIsUpdated() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -424,7 +425,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -595,7 +596,7 @@ class AudioLanguageFragmentTest {
   }
 
   private fun initializeTestApplicationComponent(enableOnboardingFlowV2: Boolean) {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, enableOnboardingFlowV2)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, enableOnboardingFlowV2)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()

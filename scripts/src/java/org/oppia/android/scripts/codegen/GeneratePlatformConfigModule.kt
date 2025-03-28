@@ -16,10 +16,10 @@ import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SupportedFeatureFlags
 import org.oppia.android.app.model.SupportedPlatformParameters
+import org.oppia.android.app.model.SyncStatus
 import java.io.File
 import java.io.PrintStream
 import kotlin.reflect.KClass
-import org.oppia.android.app.model.SyncStatus
 
 /*
   bazel run //scripts:generate_platform_config_module --

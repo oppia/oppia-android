@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.platformparameter.PlatformParameter
 import org.oppia.android.app.ui.R
+import org.oppia.android.domain.platformparameter.PlatformParameter
 import javax.inject.Inject
 
 /** Presenter class responsible for showing an OS deprecation dialog to the user. */

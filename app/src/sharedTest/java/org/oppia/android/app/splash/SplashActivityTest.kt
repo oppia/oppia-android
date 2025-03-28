@@ -45,7 +45,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.BuildFlavor
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -1098,7 +1099,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
@@ -1124,7 +1125,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     initializeTestApplication(onboardingV2Enabled = true)
     testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -1237,7 +1238,7 @@ class SplashActivityTest {
 
   private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, onboardingV2Enabled)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, onboardingV2Enabled)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }

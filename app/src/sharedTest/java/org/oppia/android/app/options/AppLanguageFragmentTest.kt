@@ -332,7 +332,7 @@ class AppLanguageFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class,  ApplicationModule::class,
+      TestDispatcherModule::class, ApplicationModule::class,
       RobolectricModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,

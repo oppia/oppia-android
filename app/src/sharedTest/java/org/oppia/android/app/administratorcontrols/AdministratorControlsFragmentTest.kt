@@ -46,7 +46,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AdministratorControlsFragmentArguments
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.scrollToPosition
@@ -147,8 +148,8 @@ class AdministratorControlsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
@@ -229,7 +230,7 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId

@@ -23,7 +23,6 @@ import org.oppia.android.util.extensions.getVersionName
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId
 
 /**
  * Production implementation for the controller to manage and synchronize platform parameters and

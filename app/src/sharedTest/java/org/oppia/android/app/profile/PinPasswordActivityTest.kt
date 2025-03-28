@@ -48,7 +48,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -199,7 +199,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -217,7 +217,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_enableClassrooms_withAdmin_inputCorrectPin_opensClassroomListActivity() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -236,7 +236,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_inputCorrectPin_opensHomeActivity() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -254,7 +254,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_enableClassrooms_withUser_inputCorrectPin_opensClassroomListActivity() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -527,7 +527,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPin_opensHomeActivity() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, false)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,

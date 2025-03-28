@@ -18,6 +18,7 @@ import androidx.test.espresso.Espresso.pressBackUnconditionally
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -55,7 +56,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -158,7 +159,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 
 // Time: Tue Apr 23 2019 23:22:00
 private const val EVENING_TIMESTAMP = 1556061720000
@@ -2059,12 +2059,12 @@ class HomeActivityTest {
   }
 
   private fun setUpTestWithOnboardingV2Enabled() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestWithOnboardingV2Disabled() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
   }

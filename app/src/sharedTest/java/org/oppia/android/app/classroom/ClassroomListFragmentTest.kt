@@ -52,7 +52,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicActivityParams
@@ -1105,7 +1105,7 @@ class ClassroomListFragmentTest {
   }
 
   private fun setUpTestApplicationComponent(onboardingV2Enabled: Boolean = false) {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, onboardingV2Enabled)
+    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, onboardingV2Enabled)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()

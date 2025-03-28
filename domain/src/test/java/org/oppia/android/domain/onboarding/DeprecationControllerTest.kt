@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -19,10 +20,18 @@ import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.DeprecationResponseDatabase
 import org.oppia.android.app.model.OnboardingState
+import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
+import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
+import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever.Companion.setParameterOverride
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -31,6 +40,7 @@ import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -45,16 +55,6 @@ import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
-import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
-import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
-import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever.Companion.setParameterOverride
-import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [DeprecationController]. */
 // FunctionName: test names are conventionally named with underscores.

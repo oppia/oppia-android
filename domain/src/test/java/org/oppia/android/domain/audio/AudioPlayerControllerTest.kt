@@ -11,6 +11,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
@@ -23,7 +24,11 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.app.model.Exploration
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.domain.audio.AudioPlayerController.PlayProgress
 import org.oppia.android.domain.audio.AudioPlayerController.PlayStatus
 import org.oppia.android.domain.classify.InteractionsModule
@@ -49,7 +54,9 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -81,13 +88,6 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
-import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /** Tests for [AudioPlayerController]. */
 // FunctionName: test names are conventionally named with underscores.

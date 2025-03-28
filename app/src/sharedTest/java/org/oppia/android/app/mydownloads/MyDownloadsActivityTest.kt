@@ -31,7 +31,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -163,7 +163,7 @@ class MyDownloadsActivityTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO)
   fun testMyDownloadsActivity_classroomsFlagEnabled_pressBack_opensClassroomListActivity() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {
       pressBack()
       intended(hasComponent(ClassroomListActivity::class.java.name))

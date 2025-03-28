@@ -733,6 +733,7 @@ TEST_DEPS = [
     "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:fake_exploration_meta_data_retriever",
     "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+    "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_test_initializer",
     "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_module",
     "//testing",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",

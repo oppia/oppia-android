@@ -35,7 +35,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
@@ -170,7 +170,7 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EXTRA_TOPIC_TABS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, true)
     launchTopicActivity(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).use { scenario ->
@@ -186,7 +186,7 @@ class TopicActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EXTRA_TOPIC_TABS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, true)
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())

@@ -8,8 +8,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.PromotedActivityList
 import org.oppia.android.app.model.PromotedStory
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.app.view.models.R
+import org.oppia.android.domain.platformparameter.FeatureFlag
 import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult

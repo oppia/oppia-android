@@ -34,7 +34,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.ExplorationActivityParams
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -339,7 +339,7 @@ class ExplorationActivityLocalTest {
   }
 
   private fun setUpTestWithNpsEnabled() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, true)
     setUpTestApplicationComponent()
   }
 

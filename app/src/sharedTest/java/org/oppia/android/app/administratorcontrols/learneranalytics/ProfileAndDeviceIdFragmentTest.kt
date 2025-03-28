@@ -1,6 +1,5 @@
 package org.oppia.android.app.administratorcontrols.learneranalytics
 
-import androidx.test.ext.truth.content.IntentSubject.assertThat
 import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -26,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.ext.truth.content.IntentSubject.assertThat
 import androidx.work.Configuration
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -55,7 +55,9 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -198,9 +200,9 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LOGGING_LEARNER_STUDY_IDS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
+    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
