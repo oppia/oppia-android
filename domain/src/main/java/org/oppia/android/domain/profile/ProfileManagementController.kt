@@ -43,6 +43,7 @@ import org.oppia.android.util.profile.ProfileNameValidator
 import org.oppia.android.util.system.OppiaClock
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -886,8 +887,7 @@ class ProfileManagementController @Inject constructor(
         updatedProfile.avatar =
           ProfileAvatar.newBuilder().setAvatarImageUri(imageUri).build()
       } else {
-        updatedProfile.avatar =
-          ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
+        updatedProfile.avatar = ProfileAvatar.newBuilder().setAvatarColorRgb(colorRgb).build()
       }
 
       if (profileType == ProfileType.PROFILE_TYPE_UNSPECIFIED) {
@@ -1225,7 +1225,7 @@ class ProfileManagementController @Inject constructor(
     // TODO(#3616): Migrate to the proper SDK 29+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, avatarImagePath)
-    val fileName = avatarImagePath.pathSegments.last()
+    val fileName = UUID.randomUUID().toString()
     val imageFile = File(profileDir, fileName)
     try {
       FileOutputStream(imageFile).use { fos ->
