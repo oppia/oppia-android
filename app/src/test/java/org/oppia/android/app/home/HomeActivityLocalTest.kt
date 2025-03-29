@@ -67,9 +67,14 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -92,6 +97,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -104,6 +110,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class HomeActivityLocalTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -138,8 +147,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onLaunch_logsOpenHomeEvent() {
-    setUpTestWithOnboardingV2Enabled(false)
+    setUpTestApplicationComponent()
 
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -151,8 +161,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_soleProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
       profileId = profileId,
@@ -169,8 +180,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_supervisorProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
       profileId = profileId,
@@ -187,8 +199,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_nonAdminProfile_onInitialLaunch_doesNotLogAppOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.addMoreProfiles(1)
     val profileId1 = ProfileId.newBuilder().setInternalId(1).build()
@@ -210,6 +223,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_adminProfile_onSubsequentLaunch_doesNotLogAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getProfileTestHelper().updateProfileType(profileId, ProfileType.SOLE_LEARNER)
@@ -219,7 +233,7 @@ class HomeActivityLocalTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(false)
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
@@ -232,13 +246,14 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(false)
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
       val eventCount = fakeAnalyticsEventLogger.getEventListCount()
@@ -251,8 +266,9 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
@@ -265,6 +281,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
@@ -272,18 +289,13 @@ class HomeActivityLocalTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
-    setUpTestWithOnboardingV2Enabled(true)
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
     }
-  }
-
-  private fun setUpTestWithOnboardingV2Enabled(enableOnboardingFlowV2: Boolean) {
-    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, enableOnboardingFlowV2)
-    setUpTestApplicationComponent()
   }
 
   /**

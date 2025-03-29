@@ -17,6 +17,8 @@ import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.activity.ActivityComponent
@@ -78,10 +80,21 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
+import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
+import org.oppia.android.testing.platformparameter.PlatformParameterTestConstantsModule
+import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -106,6 +119,8 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.FeatureFlag
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -133,6 +148,8 @@ class ApplicationLifecycleObserverTest {
     private const val testResponseBody = "{\"test\": \"test\"}"
     private const val headerString = "$testApiKey: $testApiKeyValue"
   }
+
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   // This initializes platform parameters and feature flags at injection, so it's unused.
   @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
@@ -162,6 +179,11 @@ class ApplicationLifecycleObserverTest {
   private lateinit var mockWebServerUrl: HttpUrl
   private lateinit var request: Request
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
   @After
   fun tearDown() {
     TestPlatformParameterConfigRetriever.reset()
@@ -169,7 +191,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_withDisabledMetricsCollection_doesNotLogAnyEvent() {
-    setUpTestApplicationComponent()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
     assertThat(fakePerformanceMetricsEventLogger.noPerformanceMetricsEventsPresent()).isTrue()
@@ -177,7 +198,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitExceeded_sessionIdUpdated() {
-    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionIdProvider = loggingIdentifierController.getSessionId()
     val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
@@ -190,7 +210,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_getSessionId_backgroundApp_thenForeground_limitNotExceeded_sessionIdUnchanged() {
-    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     val sessionIdProvider = loggingIdentifierController.getSessionId()
     val firstSessionId = monitorFactory.waitForNextSuccessfulResult(sessionIdProvider)
@@ -202,8 +221,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInForeground_loggedIntoProfile_studyOn_logsForegroundEventWithBothIds() {
-    setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
 
     applicationLifecycleObserver.onAppInForeground()
@@ -218,9 +237,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInForeground_notLoggedIn_studyOn_logsForegroundEventWithoutLearnerId() {
-    setUpTestApplicationWithLearnerStudy()
-
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
 
@@ -233,8 +251,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInBackground_loggedIntoProfile_studyOn_logsBackgroundEventWithBothIds() {
-    setUpTestApplicationWithLearnerStudy()
     logIntoAnalyticsReadyAdminProfile()
 
     applicationLifecycleObserver.onAppInBackground()
@@ -249,9 +267,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInBackground_notLoggedIn_studyOn_logsBackgroundEventWithoutLearnerId() {
-    setUpTestApplicationWithLearnerStudy()
-
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
 
@@ -266,7 +283,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_setsAppInForeground() {
-    setUpTestApplicationComponent()
     applicationLifecycleObserver.onAppInForeground()
 
     assertThat(performanceMetricsController.getIsAppInForeground()).isTrue()
@@ -274,7 +290,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInBackground_setsAppInBackground() {
-    setUpTestApplicationComponent()
     applicationLifecycleObserver.onAppInBackground()
 
     assertThat(performanceMetricsController.getIsAppInForeground()).isFalse()
@@ -282,14 +297,12 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_getCurrentScreen_verifyInitialValueIsUnspecified() {
-    setUpTestApplicationComponent()
     assertThat(applicationLifecycleObserver.getCurrentScreen())
       .isEqualTo(ScreenName.SCREEN_NAME_UNSPECIFIED)
   }
 
   @Test
   fun testObserver_onUnspecifiedActivityResume_verifyCurrentScreenReturnsUnspecifiedValue() {
-    setUpTestApplicationComponent()
     runWithUnspecifiedLaunchedActivity {
       onActivity { activity ->
         applicationLifecycleObserver.onActivityResumed(activity)
@@ -300,8 +313,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onCreate_performanceMetricsLoggingWithCorrectDetailsOccurs() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
 
@@ -317,7 +330,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onFirstActivityResume_verifyCurrentScreenReturnsCorrectValue() {
-    setUpTestApplicationComponent()
     runWithSpecifiedLaunchedActivity {
       onActivity { activity ->
         applicationLifecycleObserver.onActivityResumed(activity)
@@ -328,8 +340,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onFirstActivityResume_logsStartupLatency() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
     fakeOppiaClock.setCurrentTimeMs(TEST_TIMESTAMP_IN_MILLIS_TWO)
@@ -353,8 +365,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
 
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
@@ -377,9 +389,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_activityResumed_logsMemoryUsage() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
-
     runWithSpecifiedLaunchedActivity {
       onActivity { activity ->
         applicationLifecycleObserver.onActivityResumed(activity)
@@ -398,7 +409,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_activityResumed_activityPaused_currentScreenReturnsBackgroundValue() {
-    setUpTestApplicationComponent()
     runWithSpecifiedLaunchedActivity {
       onActivity { activity ->
         applicationLifecycleObserver.onActivityResumed(activity)
@@ -411,8 +421,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -424,8 +434,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
-    setUpTestApplicationWithPerformanceMetricsCollection()
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
@@ -439,7 +449,6 @@ class ApplicationLifecycleObserverTest {
   @Test
   fun testObserver_onAppInForeground_logsFeatureFlags() {
     TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
-    setUpTestApplicationComponent()
 
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
     val sessionIdProvider = loggingIdentifierController.getAppSessionId()
@@ -463,7 +472,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_thenInBackground_logsAppInForegroundTime() {
-    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
 
     applicationLifecycleObserver.onCreate()
@@ -492,8 +500,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_onConsoleError_logsConsoleErrors() {
-    setUpTestApplicationComponent()
-
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -515,7 +521,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_onNetworkCall_logsNetworkCalls() {
-    setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
     applicationLifecycleObserver.onCreate()
@@ -540,7 +545,6 @@ class ApplicationLifecycleObserverTest {
 
   @Test
   fun testObserver_onAppInForeground_onNetworkCall_logsFailedNetworkCalls() {
-    setUpTestApplicationComponent()
     setUpRetrofitApiCall()
 
     applicationLifecycleObserver.onCreate()
@@ -590,16 +594,6 @@ class ApplicationLifecycleObserverTest {
     monitorFactory.waitForNextSuccessfulResult(
       profileManagementController.loginToProfile(rootProfileId)
     )
-  }
-
-  private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
-    setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestApplicationWithPerformanceMetricsCollection() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(PERFORMANCE_METRICS_COLLECTION, true)
-    setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponent() {

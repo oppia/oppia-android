@@ -10,8 +10,10 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.gcsresource.QuestionResourceBucketName
 import org.robolectric.annotation.Config
@@ -23,6 +25,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EndToEndTestGcsResourceModuleTest.TestApplication::class)
 class EndToEndTestGcsResourceModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @field:[Inject DefaultResourceBucketName]
   lateinit var defaultResourceBucketName: String

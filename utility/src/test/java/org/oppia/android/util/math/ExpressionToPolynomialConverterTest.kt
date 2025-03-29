@@ -2,9 +2,11 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.math.PolynomialSubject.Companion.assertThat
 import org.oppia.android.util.math.ExpressionToPolynomialConverter.Companion.reduceToPolynomial
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
@@ -25,6 +27,9 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ExpressionToPolynomialConverterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Test
   fun testReduce_integerConstantExpression_returnsConstantPolynomial() {
     val expression = parseAlgebraicExpression("2")

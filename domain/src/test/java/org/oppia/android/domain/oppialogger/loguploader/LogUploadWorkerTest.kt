@@ -20,6 +20,8 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -45,11 +47,15 @@ import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -81,6 +87,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -97,42 +104,28 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
+@EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
 class LogUploadWorkerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
   // This initializes platform parameters and feature flags at injection, so it's unused.
   @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
-  @Inject
-  lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject
-  lateinit var fakeExceptionLogger: FakeExceptionLogger
-  @Inject
-  lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-  @Inject
-  lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
-  @Inject
-  lateinit var analyticsController: AnalyticsController
-  @Inject
-  lateinit var dataController: FirestoreDataController
-  @Inject
-  lateinit var exceptionsController: ExceptionsController
-  @Inject
-  lateinit var performanceMetricsController: PerformanceMetricsController
-  @Inject
-  lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
-  @Inject
-  lateinit var dataProviders: DataProviders
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var testSyncStatusManager: TestSyncStatusManager
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @field:[Inject MockEventLogger]
-  lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
-
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
+  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
+  @Inject lateinit var fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
+  @Inject lateinit var fakeFirestoreEventLogger: FakeFirestoreEventLogger
+  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var analyticsController: AnalyticsController
+  @Inject lateinit var dataController: FirestoreDataController
+  @Inject lateinit var exceptionsController: ExceptionsController
+  @Inject lateinit var performanceMetricsController: PerformanceMetricsController
+  @Inject lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
+  @Inject lateinit var dataProviders: DataProviders
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var testSyncStatusManager: TestSyncStatusManager
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @field:[Inject MockEventLogger] lateinit var mockAnalyticsEventLogger: AnalyticsEventLogger
   @field:[Inject MockFirestoreEventLogger]
   lateinit var mockFirestoreEventLogger: FirestoreEventLogger
 
@@ -161,6 +154,11 @@ class LogUploadWorkerTest {
 
   private val exception = Exception("TEST")
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
+
   @After
   fun tearDown() {
     TestPlatformParameterConfigRetriever.reset()
@@ -168,7 +166,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyFailed() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
@@ -199,7 +196,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withNetwork_enqueueRequest_verifySuccess() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
@@ -230,7 +226,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
@@ -261,7 +256,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logException_withoutNetwork_enqueueRequest_verifySuccess() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     exceptionsController.logNonFatalException(exception, TEST_TIMESTAMP)
     testCoroutineDispatchers.runCurrent()
@@ -293,7 +287,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logPerformanceMetric_withoutNetwork_enqueueRequest_verifySuccess() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     performanceMetricsController.logPerformanceMetricsEvent(
       TEST_TIMESTAMP,
@@ -335,7 +328,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withNetwork_enqueueRequest_studyOn_verifySyncStatusesHasSuccess() {
-    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
@@ -370,7 +362,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_studyOn_verifySyncStatusesHasFailed() {
-    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
@@ -406,7 +397,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logEvent_noNetwork_enqueueRequest_writeFails_studyOn_verifyHasFailedSyncStatus() {
-    setUpTestApplicationComponent(enableLearnerStudyAnalytics = true)
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     analyticsController.logImportantEvent(
       oppiaLogger.createOpenInfoTabContext(TEST_TOPIC_ID),
@@ -442,7 +432,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logFirestoreEvent_withNetwork_enqueueRequest_verifySuccess() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     dataController.logEvent(
       createOptionalSurveyResponseContext(),
@@ -475,7 +464,6 @@ class LogUploadWorkerTest {
 
   @Test
   fun testWorker_logFirestoreEvent_withoutNetwork_enqueueRequest_writeFails_verifyFailure() {
-    setUpTestApplicationComponent()
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     dataController.logEvent(
       createOptionalSurveyResponseContext(),
@@ -552,10 +540,7 @@ class LogUploadWorkerTest {
   private fun Array<StackTraceElement>.extractRelevantDetails(): List<List<Any>> =
     map { elem -> listOf(elem.fileName, elem.methodName, elem.lineNumber, elem.className) }
 
-  private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterConfigRetriever.setFlagOverride(
-      LEARNER_STUDY_ANALYTICS, enableLearnerStudyAnalytics
-    )
+  private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()

@@ -2,9 +2,11 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.TestMessage
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [Comparator] extensions. */
@@ -18,6 +20,9 @@ class ComparatorExtensionsTest {
     private val TEST_MESSAGE_1 = TestMessage.newBuilder().apply { intValue = 1 }.build()
     private val TEST_MESSAGE_2 = TestMessage.newBuilder().apply { intValue = 2 }.build()
   }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   private val stringComparator: Comparator<String> by lazy {
     Comparator { o1, o2 -> o1.compareTo(o2) }

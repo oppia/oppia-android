@@ -142,6 +142,7 @@ class RegexPatternValidationCheckTest {
     "presence of a screen name for this activity. To do this, add a test named " +
     "testActivity_createIntent_verifyScreenNameInIntent and verify that an appropriate screen " +
     "name has been added to the activity's intent."
+  private val missingOppiaTestRuleErrorMessage = "Missing `OppiaTestRule` declaration."
   private val doNotUseProtoLibrary = "Don't use proto_library. Use oppia_proto_library instead."
   private val parameterizedTestRunnerRequiresException =
     "To use OppiaParameterizedTestRunner, please add an exemption to" +
@@ -1652,6 +1653,7 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_kotlinTestUsesParameterizedTestRunner_fileContentIsNotCorrect() {
+    val oppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()\n"
     val prohibitedContent =
       """
       import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -1659,7 +1661,10 @@ class RegexPatternValidationCheckTest {
       """.trimIndent()
     tempFolder.newFolder("testfiles", "domain", "src", "test")
     val stringFilePath = "domain/src/test/SomeTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").apply {
+      writeText(oppiaTestRule)
+      appendText(prohibitedContent)
+    }
 
     val exception = assertThrows<Exception>() { runScript() }
 
@@ -1667,8 +1672,8 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $parameterizedTestRunnerRequiresException
-        $stringFilePath:2: $parameterizedTestRunnerRequiresException
+        $stringFilePath:3: $parameterizedTestRunnerRequiresException
+        $stringFilePath:4: $parameterizedTestRunnerRequiresException
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2365,9 +2370,10 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testScreenNameTestPresence_activityTestWithoutScreenNameTest_screenNameTestIsNotPresent() {
+    val oppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()\n"
     tempFolder.newFolder("testfiles", "app", "src", "main", "activity")
     val stringFilePath = "app/src/main/activity/HomeActivityTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath")
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(oppiaTestRule)
 
     val exception = assertThrows<Exception>() { runScript() }
 
@@ -2383,14 +2389,70 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testScreenNameTestPresence_activityTestWithScreenNameTest_screenNameTestIsPresent() {
+    val oppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()\n"
     val requiredContent = "testActivity_createIntent_verifyScreenNameInIntent()"
     tempFolder.newFolder("testfiles", "app", "src", "main")
     val stringFilePath = "app/src/main/HomeActivityTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredContent)
+    tempFolder.newFile("testfiles/$stringFilePath").apply {
+      writeText(oppiaTestRule)
+      appendText(requiredContent)
+    }
 
     runScript()
 
     assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_oppiaTestRuleDeclared_fileContentIsCorrect() {
+    val requiredOppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/ExampleTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(requiredOppiaTestRule)
+
+    runScript()
+
+    assertThat(outContent.toString().trim()).isEqualTo(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testFileContent_oppiaTestRuleNotDeclared_fileContentIsNotCorrect() {
+    val exampleTestRule = "@get:Rule\n" + "val exampleTestRule = ExampleTestRule()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/ExampleTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(exampleTestRule)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $missingOppiaTestRuleErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
+  }
+
+  @Test
+  fun testFileContent_noTestRuleIncluded_fileContentIsNotCorrect() {
+    val testFileContent = "testActivity_createIntent_verifyScreenNameInIntent()"
+    tempFolder.newFolder("testfiles", "app", "src", "main")
+    val stringFilePath = "app/src/main/HomeActivityTest.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(testFileContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+
+    assertThat(outContent.toString().trim())
+      .isEqualTo(
+        """
+        $stringFilePath: $missingOppiaTestRuleErrorMessage
+        $wikiReferenceNote
+        """.trimIndent()
+      )
   }
 
   @Test
@@ -2721,13 +2783,17 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_referencesActivityTestRule_fileContentIsNotCorrect() {
+    val oppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()\n"
     val prohibitedContent =
       """
       import androidx.test.rule.ActivityTestRule
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "test", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/test/java/org/oppia/android/PresenterTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").apply {
+      writeText(oppiaTestRule)
+      appendText(prohibitedContent)
+    }
 
     val exception = assertThrows<Exception>() { runScript() }
 
@@ -2735,7 +2801,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $activityTestRuleShouldNotBeUsed
+        $stringFilePath:3: $activityTestRuleShouldNotBeUsed
         $wikiReferenceNote
         """.trimIndent()
       )
@@ -2743,13 +2809,17 @@ class RegexPatternValidationCheckTest {
 
   @Test
   fun testFileContent_referencesActivityScenarioRule_fileContentIsNotCorrect() {
+    val oppiaTestRule = "@get:Rule\n" + "val oppiaTestRule = OppiaTestRule()\n"
     val prohibitedContent =
       """
       import androidx.test.ext.junit.rules.ActivityScenarioRule
       """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "test", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/test/java/org/oppia/android/PresenterTest.kt"
-    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+    tempFolder.newFile("testfiles/$stringFilePath").apply {
+      writeText(oppiaTestRule)
+      appendText(prohibitedContent)
+    }
 
     val exception = assertThrows<Exception>() { runScript() }
 
@@ -2757,7 +2827,7 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $activityScenarioRuleShouldNotBeUsed
+        $stringFilePath:3: $activityScenarioRuleShouldNotBeUsed
         $wikiReferenceNote
         """.trimIndent()
       )

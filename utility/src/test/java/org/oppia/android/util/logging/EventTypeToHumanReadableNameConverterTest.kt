@@ -8,9 +8,11 @@ import com.google.common.truth.Truth.assertWithMessage
 import dagger.BindsInstance
 import dagger.Component
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -31,6 +33,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = EventTypeToHumanReadableNameConverterTest.TestApplication::class)
 class EventTypeToHumanReadableNameConverterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var converter: EventTypeToHumanReadableNameConverter
 
   private companion object {

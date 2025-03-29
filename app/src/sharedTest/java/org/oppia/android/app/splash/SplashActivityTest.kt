@@ -98,9 +98,13 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -131,6 +135,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -1070,17 +1075,18 @@ class SplashActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testSplashActivity_initialOpen_onboardingV2Enabled_routesToOnboardingActivity() {
-    initializeTestApplication(onboardingV2Enabled = true)
-
+    initializeTestApplication()
     launchSplashActivityPartially {
       intended(hasComponent(OnboardingActivity::class.java.name))
     }
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testSplashActivity_onboardingV2Enabled_profilePartiallyOnboarded_routesToIntroActivity() {
-    initializeTestApplication(onboardingV2Enabled = true)
+    initializeTestApplication()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     val profileId = ProfileId.newBuilder().setInternalId(0).build()
     profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
@@ -1097,10 +1103,12 @@ class SplashActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
     TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
-    initializeTestApplication(onboardingV2Enabled = true)
+    initializeTestApplication()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
 
@@ -1123,10 +1131,12 @@ class SplashActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
   fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
     simulateAppAlreadyOnboarded()
     TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
-    initializeTestApplication(onboardingV2Enabled = true)
+    initializeTestApplication()
     testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
@@ -1150,9 +1160,10 @@ class SplashActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testSplashActivity_onboardingV2_onboardedAdminProfile_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
-    initializeTestApplication(onboardingV2Enabled = true)
+    initializeTestApplication()
     profileTestHelper.addOnlyAdminProfile()
 
     launchSplashActivityPartially {
@@ -1161,9 +1172,10 @@ class SplashActivityTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
-    initializeTestApplication(onboardingV2Enabled = true)
+    initializeTestApplication()
     profileTestHelper.addMoreProfiles(5)
 
     launchSplashActivityPartially {
@@ -1236,7 +1248,7 @@ class SplashActivityTest {
     simulateAppAlreadyOnboarded()
   }
 
-  private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
+  private fun initializeTestApplication() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, onboardingV2Enabled)
     testCoroutineDispatchers.registerIdlingResource()

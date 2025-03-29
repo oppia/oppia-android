@@ -72,8 +72,13 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -94,6 +99,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -110,6 +116,9 @@ import javax.inject.Singleton
 class SpotlightFragmentTest {
   @field:[Rule JvmField]
   val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var context: Context
@@ -141,6 +150,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @DisableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, false)
     launch<SpotlightFragmentTestActivity>(
@@ -163,6 +173,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
@@ -185,6 +196,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
@@ -207,6 +219,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
@@ -243,6 +256,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
@@ -278,6 +292,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
@@ -309,6 +324,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(
@@ -342,6 +358,7 @@ class SpotlightFragmentTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, true)
     launch<SpotlightFragmentTestActivity>(

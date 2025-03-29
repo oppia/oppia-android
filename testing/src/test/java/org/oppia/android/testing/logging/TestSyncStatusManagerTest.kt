@@ -55,6 +55,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = TestSyncStatusManagerTest.TestApplication::class)
 class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
+
   @Inject override lateinit var impl: TestSyncStatusManager
   @Inject override lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject override lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory

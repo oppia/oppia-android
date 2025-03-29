@@ -26,6 +26,7 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/network",
     "//testing/src/main/java/org/oppia/android/testing/network:test_module",
+    "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_activity_manager",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:oppia_shadow_traffic_stats",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",

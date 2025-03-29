@@ -59,6 +59,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -107,6 +108,7 @@ private const val AFTERNOON_TIMESTAMP = 1556029320000
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = DateTimeUtilTest.TestApplication::class)
 class DateTimeUtilTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var context: Context

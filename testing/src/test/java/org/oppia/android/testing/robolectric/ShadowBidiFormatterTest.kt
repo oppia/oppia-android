@@ -13,8 +13,10 @@ import dagger.Module
 import dagger.Provides
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -29,6 +31,9 @@ import javax.inject.Singleton
   manifest = Config.NONE, sdk = [Build.VERSION_CODES.P], shadows = [ShadowBidiFormatter::class]
 )
 class ShadowBidiFormatterTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

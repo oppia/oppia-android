@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
@@ -25,10 +26,14 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -47,6 +52,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -61,6 +67,8 @@ private const val SESSION_LENGTH_MINIMUM = 300000L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SurveyGatingControllerTest.TestApplication::class)
 class SurveyGatingControllerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
   // This initializes platform parameters and feature flags at injection, so it's unused.
   @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
@@ -293,6 +301,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_midMorning_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -312,6 +321,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_midMorning_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -397,6 +407,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_afternoon_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -416,6 +427,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_afternoon_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -501,6 +513,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_evening_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -565,6 +578,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_otherCriteriaMet_multipleTopicsHaveTimeThreshold_triggersSurveyInEitherTopic() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -584,6 +598,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
   fun testGating_criteriaMetOnProfileTwo_afterSurveyShownOnProfileOne_triggersSurveyProfileTwo() {
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_0)

@@ -27,6 +27,7 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -56,6 +57,9 @@ private const val OL_TAG_MARKUP_1 =
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CustomHtmlContentHandlerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private lateinit var tagHandlersWithListTagSupport: Map<String, CustomTagHandler>
 
   @Rule

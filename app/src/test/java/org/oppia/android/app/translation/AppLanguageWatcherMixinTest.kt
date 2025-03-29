@@ -69,6 +69,7 @@ import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestM
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -125,6 +126,7 @@ class AppLanguageWatcherMixinTest {
   //  cases when the locale isn't initialized (such as process death) prints an error & default
   //  initializes the locale handler.
 
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
   @Inject lateinit var context: Context

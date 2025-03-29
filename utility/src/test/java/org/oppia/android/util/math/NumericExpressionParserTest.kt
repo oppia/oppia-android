@@ -2,10 +2,12 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.MathExpression
 import org.oppia.android.app.model.MathFunctionCall.FunctionType.SQUARE_ROOT
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.math.MathExpressionSubject.Companion.assertThat
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
@@ -30,6 +32,8 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class NumericExpressionParserTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Test
   fun testParse_singleInteger_returnsExpressionWithConstant() {

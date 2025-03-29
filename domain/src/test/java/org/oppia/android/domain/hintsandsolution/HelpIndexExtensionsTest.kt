@@ -2,11 +2,13 @@ package org.oppia.android.domain.hintsandsolution
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.Hint
 import org.oppia.android.app.model.SubtitledHtml
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -26,6 +28,9 @@ class HelpIndexExtensionsTest {
     private val HINT_LIST_OF_SIZE_2 = HINT_LIST_OF_SIZE_1 + HINT_1
     private val HINT_LIST_OF_SIZE_3 = HINT_LIST_OF_SIZE_2 + HINT_2
   }
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Test
   fun testIsHintRevealed_defaultHelpIndex_returnsFalse() {

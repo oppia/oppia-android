@@ -81,6 +81,8 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -95,6 +97,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.util.toAnswerString
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -122,6 +125,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
+import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -2254,6 +2258,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPlayNewExploration_logsStartCardEvent() {
     logIntoAnalyticsReadyAdminProfile()
 
@@ -2273,6 +2278,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testResumeExploration_logsResumeExplorationEventAndNotStartCardEvent() {
     logIntoAnalyticsReadyAdminProfile()
     val checkpoint = createTestExp2CheckpointToState6()
@@ -2293,6 +2299,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testStartOverExploration_logsStartCardAndStartOverEvents() {
     logIntoAnalyticsReadyAdminProfile()
     createTestExp2CheckpointToState6()
@@ -2318,6 +2325,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPlayExplorationAgain_logsStartCardEvent() {
     logIntoAnalyticsReadyAdminProfile()
     createTestExp2CheckpointToState6()
@@ -2488,6 +2496,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testPlayNewExp_logsStartExplorationEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2776,6 +2785,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testSubmitAnswer_correctAnswer_logsEndCardAndSubmitAnswerEvents() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2802,6 +2812,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testSubmitAnswer_wrongAnswer_logsSubmitAnswerEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2826,6 +2837,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testMoveToNextState_logsStartCardEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2850,6 +2862,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testHint_offered_logsHintOfferedEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2884,6 +2897,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testHint_offeredThenViewed_logsRevealedHint_logsPgrssSavSuccEvent_logsExtingHintViwdEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2918,6 +2932,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testHint_existingHintViewed_logsExistingHintViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2946,6 +2961,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testHint_lastHintWithNoSolution_offered_logsHintOfferedEvent_logsProgressSavingSuccessEvt() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -2985,6 +3001,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testHint_lastHintWithNoSol_offeredThenViewed_logsRevealedHintEvt_logsPgrssSavingSucssEvt() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -3018,6 +3035,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testSolution_offered_logsSolutionOfferedEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -3045,6 +3063,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testSolution_offeredThenViewed_logsViewSolutionEvent_logsProgressSavingSuccessEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -3083,6 +3102,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testSolution_viewExistingSolution_logsExistingSolutionViewedEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -3117,6 +3137,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testEndExploration_withoutFinishing_logsExitExplorationEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -3132,6 +3153,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testEndExploration_afterFinishing_logsFinishExplorationEvent() {
     logIntoAnalyticsReadyAdminProfile()
     startPlayingNewExploration(
@@ -3172,6 +3194,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testUpdateLanguageMidLesson_englishToSwahili_logsLanguageSwitchEvent() {
     logIntoAnalyticsReadyAdminProfile()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
@@ -3253,6 +3276,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
+  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
   fun testUpdateLanguageMidLesson_swahiliToEnglish_logsLanguageSwitchEvent() {
     logIntoAnalyticsReadyAdminProfile()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)

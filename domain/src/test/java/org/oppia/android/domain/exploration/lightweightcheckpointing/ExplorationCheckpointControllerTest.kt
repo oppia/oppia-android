@@ -11,6 +11,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.CheckpointState
@@ -51,6 +52,7 @@ import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestI
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -110,6 +112,8 @@ private const val TEST_CHECKPOINTING_FAKE_EXP_ID = "test_checkpointing_fake_expl
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationCheckpointControllerTest.TestApplication::class)
 class ExplorationCheckpointControllerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
   // This initializes platform parameters and feature flags at injection, so it's unused.
   @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

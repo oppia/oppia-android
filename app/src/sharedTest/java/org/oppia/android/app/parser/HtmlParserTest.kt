@@ -95,6 +95,7 @@ import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestM
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
@@ -144,6 +145,7 @@ import kotlin.reflect.KClass
   appStringAndroidLanguageId = "en"
 )
 class HtmlParserTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 

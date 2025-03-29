@@ -10,8 +10,10 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -32,6 +34,8 @@ private const val ONE_GIGABYTE = 1024L * 1024L * 1024L
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PerformanceMetricsConfigurationsModuleTest.TestApplication::class)
 class PerformanceMetricsConfigurationsModuleTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @JvmField
   @field:[Inject MediumMemoryTierUpperBound]

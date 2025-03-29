@@ -3971,6 +3971,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/DisableFeatureFlag.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/EnableFeatureFlag.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/FakeAnalyticsEventLogger.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -4008,6 +4016,22 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRunner.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OverrideBoolParameter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OverrideIntParameter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OverrideStringParameter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/ResetFeatureFlagToDefault.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4159,11 +4183,11 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterConstants.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/PlatformParameterTestConstants.kt"
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterModule.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/PlatformParameterTestConstantsModule.kt"
   test_file_not_required: true
 }
 test_file_exemption {

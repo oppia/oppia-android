@@ -2,12 +2,14 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.ComparableOperation.CommutativeAccumulation
 import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation
 import org.oppia.android.app.model.Real
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [ComparableOperation] extensions. */
@@ -16,6 +18,9 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class ComparableOperationExtensionsTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val fractionParser by lazy { FractionParser() }
 
   @Test

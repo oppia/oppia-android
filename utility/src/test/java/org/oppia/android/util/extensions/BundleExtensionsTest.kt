@@ -6,11 +6,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.ext.truth.content.IntentSubject.assertThat
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.IncompatibleTestMessage
 import org.oppia.android.app.model.TestMessage
 import org.oppia.android.app.model.TestMessage2
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
@@ -19,6 +21,9 @@ import org.robolectric.annotation.LooperMode
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class BundleExtensionsTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   private val TEST_STRING = "String value"
 
   private val TEST_MESSAGE_WITH_STR_AND_INT =

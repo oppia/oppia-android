@@ -8,12 +8,14 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.junit.Rule
 import org.junit.Test
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.OppiaEventLogs
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_ALWAYS
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
@@ -34,6 +36,9 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
 abstract class SyncStatusManagerTestBase {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   protected abstract val impl: SyncStatusManager
   protected abstract val monitorFactory: DataProviderTestMonitor.Factory
   protected abstract val persistentCacheStoreFactory: PersistentCacheStore.Factory

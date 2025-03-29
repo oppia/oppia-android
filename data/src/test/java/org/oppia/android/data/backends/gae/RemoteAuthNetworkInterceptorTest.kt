@@ -18,9 +18,11 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
@@ -41,6 +43,8 @@ import javax.inject.Singleton
 @Config(application = RemoteAuthNetworkInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RemoteAuthNetworkInterceptorTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Inject
   lateinit var remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor

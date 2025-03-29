@@ -2,9 +2,11 @@ package org.oppia.android.util.math
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.RatioExpression
+import org.oppia.android.testing.OppiaTestRule
 import org.robolectric.annotation.LooperMode
 
 /** Tests for [RatioExpression] extensions. */
@@ -13,6 +15,8 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RatioExtensionsTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Test
   fun testRatio_ratioReduced_returnsOriginalList() {

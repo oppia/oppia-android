@@ -11,8 +11,10 @@ import dagger.Module
 import dagger.Provides
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.robolectric.ShadowBidiFormatter
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -27,6 +29,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE, shadows = [ShadowBidiFormatter::class])
 class OppiaBidiFormatterImplTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Inject
   lateinit var formatterFactory: OppiaBidiFormatter.Factory
 

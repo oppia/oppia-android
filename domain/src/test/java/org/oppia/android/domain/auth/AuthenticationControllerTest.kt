@@ -22,6 +22,7 @@ import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImpl
 import org.oppia.android.testing.firebase.TestAuthenticationModule
@@ -44,6 +45,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AuthenticationControllerTest.TestApplication::class)
 class AuthenticationControllerTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @Inject lateinit var firebaseAuthWrapper: FirebaseAuthWrapper

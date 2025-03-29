@@ -5,9 +5,11 @@ import android.os.Bundle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.LooperMode
@@ -18,6 +20,8 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class CurrentUserProfileIdIntentDecoratorTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Test
   fun testDecorator_decorateWithProfileId_returnsIntentWithCorrectProfileId() {

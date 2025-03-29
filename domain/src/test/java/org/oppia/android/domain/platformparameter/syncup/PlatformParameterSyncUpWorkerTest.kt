@@ -15,6 +15,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.BaseUrl
@@ -30,6 +31,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.network.MockPlatformParameterService
@@ -68,6 +70,8 @@ import javax.inject.Singleton
   manifest = Config.NONE
 )
 class PlatformParameterSyncUpWorkerTest {
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers

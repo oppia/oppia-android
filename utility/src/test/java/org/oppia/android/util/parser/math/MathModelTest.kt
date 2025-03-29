@@ -1,13 +1,21 @@
 package org.oppia.android.util.parser.math
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.oppia.android.testing.OppiaTestRule
 import java.security.MessageDigest
 
 /** Tests for [MathModel]. */
 // FunctionName: test names are conventionally named with underscores.
+@RunWith(AndroidJUnit4::class)
 @Suppress("FunctionName")
 class MathModelTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
   @Test
   fun testToKeySignature_sameModelByValues_returnsSameKeyWithSameDigest() {
     val model1 = MathModel(rawLatex = "\\frac{2}{6}", lineHeight = 21.5f, useInlineRendering = true)

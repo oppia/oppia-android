@@ -13,11 +13,14 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.testing.FakeExceptionLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -74,6 +77,8 @@ private const val TEST_CURRENT_TIME = 1665790700L
   shadows = [OppiaShadowActivityManager::class, OppiaShadowTrafficStats::class]
 )
 class PerformanceMetricsAssessorImplTest {
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
   @Parameter var totalMemory: Long = Long.MIN_VALUE
   @Parameter var secondCpuValue: Long = 1200L
