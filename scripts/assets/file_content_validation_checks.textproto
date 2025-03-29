@@ -280,6 +280,7 @@ file_content_checks {
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/parser/HtmlParserTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/parser/ListItemLeadingMarginSpanTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/player/audio/AudioFragmentTest.kt"
+  exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/profile/ProfileChooserFragmentTest.kt"
   exempted_file_name: "app/src/sharedTest/java/org/oppia/android/app/splash/SplashActivityTest.kt"
   exempted_file_name: "app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt"
   exempted_file_name: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
