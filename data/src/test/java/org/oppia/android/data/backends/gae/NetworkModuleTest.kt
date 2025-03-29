@@ -28,8 +28,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.FeedbackReportingService
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatcher

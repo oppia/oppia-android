@@ -30,8 +30,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger

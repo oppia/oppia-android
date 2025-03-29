@@ -24,12 +24,12 @@ def _generate_platform_config_module_impl(ctx):
 
 _generate_platform_config_module = rule(
     attrs = {
-        "qualified_class_name": attr.string(mandatory = True),
-        "platform_parameter_definitions": attr.label(default = "//config/src/java/org/oppia/android/config:platform_parameter_definitions"),
         "feature_flag_definitions": attr.label(default = "//config/src/java/org/oppia/android/config:feature_flag_definitions"),
         "output_file": attr.output(
             mandatory = True,
         ),
+        "platform_parameter_definitions": attr.label(default = "//config/src/java/org/oppia/android/config:platform_parameter_definitions"),
+        "qualified_class_name": attr.string(mandatory = True),
         "_generate_platform_config_module_tool": attr.label(
             executable = True,
             cfg = "host",

@@ -25,8 +25,6 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.survey.SurveyEventsLogger
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.OppiaTestRule

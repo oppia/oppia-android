@@ -16,12 +16,6 @@ import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkModule
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config

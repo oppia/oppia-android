@@ -51,8 +51,6 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
-import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
-import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -89,8 +87,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment

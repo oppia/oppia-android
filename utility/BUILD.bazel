@@ -3,29 +3,7 @@
 This library contains utilities that all other modules, minus model, depend on.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//utility:utility_test.bzl", "utility_test")
-
-# Source files that have been migrated to their own package-based libraries. Files added to this
-# list will automatically be excluded from the top-level utility library. It's recommended to use
-# globs here to ensure new files added to migrated packages don't accidentally get included in the
-# top-level module library.
-MIGRATED_PROD_FILES = glob([
-    "src/main/java/org/oppia/android/util/accessibility/*.kt",
-    "src/main/java/org/oppia/android/util/caching/*.kt",
-    "src/main/java/org/oppia/android/util/data/*.kt",
-    "src/main/java/org/oppia/android/util/datetime/*.kt",
-    "src/main/java/org/oppia/android/util/extensions/*.kt",
-    "src/main/java/org/oppia/android/util/gcsresource/*.kt",
-    "src/main/java/org/oppia/android/util/locale/*.kt",
-    "src/main/java/org/oppia/android/util/logging/*.kt",
-    "src/main/java/org/oppia/android/util/math/**/*.kt",
-    "src/main/java/org/oppia/android/util/networking/*.kt",
-    "src/main/java/org/oppia/android/util/profile/*.kt",
-    "src/main/java/org/oppia/android/util/statusbar/*.kt",
-    "src/main/java/org/oppia/android/util/system/*.kt",
-    "src/main/java/org/oppia/android/util/threading/*.kt",
-])
 
 android_library(
     name = "resources",

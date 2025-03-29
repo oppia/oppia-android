@@ -16,7 +16,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.junit.Before
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +27,6 @@ import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
@@ -45,8 +44,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.DisableFeatureFlag
 import org.oppia.android.testing.EnableFeatureFlag
@@ -83,7 +80,6 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
