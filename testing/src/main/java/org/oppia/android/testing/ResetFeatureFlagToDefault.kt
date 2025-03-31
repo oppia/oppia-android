@@ -1,6 +1,6 @@
 package org.oppia.android.testing
 
-import org.oppia.android.util.platformparameter.FeatureFlag
+import org.oppia.android.app.model.FeatureFlagId
 
 /**
  * Repeatable test method annotation for resetting the feature flag for tests of the
@@ -11,4 +11,4 @@ import org.oppia.android.util.platformparameter.FeatureFlag
  */
 @Target(AnnotationTarget.FUNCTION)
 @Repeatable
-annotation class ResetFeatureFlagToDefault(val name: FeatureFlag)
+annotation class ResetFeatureFlagToDefault(val id: FeatureFlagId)

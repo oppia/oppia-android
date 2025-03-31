@@ -51,6 +51,7 @@ import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedFragment
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationActivityParams.ParentScreen.PARENT_SCREEN_UNSPECIFIED
 import org.oppia.android.app.model.ExplorationCheckpoint
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -126,7 +127,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -322,7 +322,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @DisableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testFragment_disableClassrooms_recommendedSection_classroomNameIsNotDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -346,7 +346,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @EnableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testFragment_enableClassrooms_recommendedSection_classroomNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -676,7 +676,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @DisableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testFragment_disableClassrooms_classroomNameIsNotDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -704,7 +704,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @EnableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testFragment_enableClassrooms_classroomNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -1114,7 +1114,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @DisableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testFragment_disableClassrooms_configChange_classroomNameIsNotDisplayed() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
@@ -1143,7 +1143,7 @@ class RecentlyPlayedFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @EnableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testFragment_enableClassrooms_configChange_classroomNameIsCorrect() {
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(

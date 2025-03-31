@@ -48,7 +48,6 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -60,7 +59,7 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ClassroomControllerTest.TestApplication::class)
-@EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+@EnableFeatureFlag(MULTIPLE_CLASSROOMS)
 class ClassroomControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()

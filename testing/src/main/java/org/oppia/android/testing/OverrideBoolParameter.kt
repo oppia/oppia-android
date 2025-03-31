@@ -1,6 +1,6 @@
 package org.oppia.android.testing
 
-import org.oppia.android.util.platformparameter.PlatformParameter
+import org.oppia.android.app.model.PlatformParameterId
 
 /**
  * Repeatable test class or method annotation for overriding boolean platform parameter values
@@ -11,4 +11,4 @@ import org.oppia.android.util.platformparameter.PlatformParameter
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Repeatable
-annotation class OverrideBoolParameter(val name: PlatformParameter, val value: Boolean)
+annotation class OverrideBoolParameter(val id: PlatformParameterId, val value: Boolean)

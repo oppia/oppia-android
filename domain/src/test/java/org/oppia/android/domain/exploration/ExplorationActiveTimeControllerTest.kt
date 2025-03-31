@@ -70,7 +70,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -85,7 +84,7 @@ private const val SESSION_LENGTH_3 = 100000L
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationActiveTimeControllerTest.TestApplication::class)
-@EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+@EnableFeatureFlag(NPS_SURVEY)
 class ExplorationActiveTimeControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 

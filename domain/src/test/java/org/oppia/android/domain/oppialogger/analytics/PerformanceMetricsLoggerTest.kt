@@ -16,6 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.APK_SIZE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.CPU_USAGE_METRIC
@@ -56,7 +57,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -130,7 +130,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logApkSizePerformanceMetric_verifyLogsMetricCorrectly() {
     val apkSize = fakePerformanceMetricAssessor.getApkSize()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
@@ -150,7 +150,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logStorageUsagePerformanceMetric_verifyLogsMetricCorrectly() {
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -172,7 +172,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logMemoryUsagePerformanceMetric_verifyLogsMetricCorrectly() {
     val memoryUsage = fakePerformanceMetricAssessor.getTotalPssUsed()
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
@@ -192,7 +192,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logStartupLatencyPerformanceMetric_verifyLogsMetricCorrectly() {
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -218,7 +218,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logCpuUsagePerformanceMetric_verifyLogsMetricCorrectly() {
     val memoryTier = fakePerformanceMetricAssessor.getDeviceMemoryTier()
     val storageTier = fakePerformanceMetricAssessor.getDeviceStorageTier()
@@ -240,7 +240,7 @@ class PerformanceMetricsLoggerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testLogger_logNetworkUsagePerformanceMetric_verifyLogsMetricCorrectly() {
     val bytesSent = fakePerformanceMetricAssessor.getTotalSentBytes()
     val bytesReceived = fakePerformanceMetricAssessor.getTotalReceivedBytes()

@@ -56,6 +56,7 @@ import org.oppia.android.app.customview.LessonThumbnailImageView
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
+import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.ARABIC_VALUE
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
@@ -153,7 +154,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -358,7 +358,7 @@ class HomeActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
   fun testPromotedStorySpotlight_setToShowOnSecondLogin_notSeenBefore_checkSpotlightShown() {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
@@ -369,7 +369,7 @@ class HomeActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_pressDone_checkSpotlightNotShown() {
     logIntoUserTwice()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {

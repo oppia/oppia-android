@@ -79,7 +79,9 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.PlatformParameterId.CACHE_LATEX_RENDERING
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.StateFragmentArguments
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -194,8 +196,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.parser.image.TestGlideImageLoader
-import org.oppia.android.util.platformparameter.FeatureFlag
-import org.oppia.android.util.platformparameter.PlatformParameter
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -293,7 +293,7 @@ class StateFragmentTest {
   //  config changes.
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_explorationLoads() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -304,7 +304,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_explorationLoads_changeConfiguration_buttonIsNotVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -317,7 +317,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_explorationHasContinueButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -329,7 +329,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfiguration_explorationHasContinueButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -342,7 +342,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -357,7 +357,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfiguration_secondState_hasSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -373,7 +373,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -387,7 +387,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_submitAnswer_clickSubmit_continueButtonIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -404,7 +404,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_landscape_secondState_submitAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -419,7 +419,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_secondState_submitAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -437,7 +437,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -454,7 +454,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_secondState_submitInvalidAnswer_disablesSubmitAndShowsError() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -472,7 +472,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -487,7 +487,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // Robolectric tests don't rotate like this to recreate activity
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_invalidAnswer_changeConfiguration_submitButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -504,7 +504,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -522,7 +522,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_submitAnswerIsNotEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -537,7 +537,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_secondState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -556,7 +556,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_submitWrongAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -578,7 +578,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_secondState_submitCorrectAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -600,7 +600,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_thirdState_hasEnabledSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -616,7 +616,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfiguration_thirdState_hasEnabledSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -634,7 +634,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_thirdState_submitWithoutAnswer_showsErrorMessage() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -654,7 +654,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_thirdState_selectAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -669,7 +669,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_thirdState_selectAnswer_clickSubmit_continueButtonIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -687,7 +687,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_landscape_thirdState_selectAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -703,7 +703,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_thirdState_selectAnswer_clickSubmit_continueIsVisible() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -721,7 +721,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_fractionInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -733,7 +733,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_numericInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -749,7 +749,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_ratioInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -766,7 +766,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_textInput_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -784,7 +784,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_selectMultipleChoiceOption_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -818,7 +818,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_selectItemSelectionCheckbox_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -877,7 +877,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -888,7 +888,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -902,7 +902,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -916,7 +916,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_differentSelectionInteractions_doesNotShareSavedInputState() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -982,7 +982,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_sameSelectionInteractions_doesNotShareSavedInputState() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1026,7 +1026,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_textBasedInteractions_doesNotShareSavedInputState() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1041,7 +1041,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1060,7 +1060,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_thirdState_submitInvalidAnswer_submitButtonIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1079,7 +1079,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_thirdState_invalidAnswer_updated_submitAnswerIsEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1098,7 +1098,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_firstState_previousAndNextButtonIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1109,7 +1109,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_submitWithoutArranging_showsErrorMessage() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1126,7 +1126,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_withGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1158,7 +1158,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_groupingItemsEnablesSubmitButton() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1171,7 +1171,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1190,7 +1190,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeItems_dragAndDrop_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1216,7 +1216,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_submitTimeError_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1230,7 +1230,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1248,7 +1248,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_withoutGrouping_submitWithoutArranging_showsErrorMessage_dragItem_errorMessageIsReset() { // ktlint-disable max-line-length
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1289,7 +1289,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1308,7 +1308,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_invalidAnswer_correctItemCount() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1329,7 +1329,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_wrongAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1350,7 +1350,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_correctAnswer_contentDescriptionIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1380,7 +1380,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_wrongAnswer_retainsLatestState() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1418,7 +1418,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_wrongAnswer_unArrangedRetainState_causeSubmitTimeError() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1453,7 +1453,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestStateCount() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1474,7 +1474,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_wrongAnswer_retainsLatestStateText() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1501,7 +1501,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeUnlinkFirstTwoItems_wrongAnswer_retainsLatestState() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1524,7 +1524,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeItems_dragItem_wrongAnswer_retainsLatestState() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1545,7 +1545,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeItems_unArrangedRetainState_causeSubmitTimeError() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1571,7 +1571,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_dragItem_worksCorrectly() {
     // Note to self: current setup allows the user to drag the view without issues (now that
     // event interception isn't a problem), however the view is going partly offscreen which
@@ -1594,7 +1594,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadDragDropExp_mergeFirstTwoItems_unlinkFirstItem_worksCorrectly() {
     launchForExploration(TEST_EXPLORATION_ID_4, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1614,7 +1614,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickRegion6_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1634,7 +1634,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_submitTimeError_retainStateOnConfigurationChange() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1651,7 +1651,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickRegion6_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1667,7 +1667,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickRegion6_clickSubmit_receivesCorrectFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1688,7 +1688,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1703,7 +1703,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_defaultRegionClick_defRegionClicked_submitButtonDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1718,7 +1718,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_submitButtonEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1734,7 +1734,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1755,7 +1755,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_correctAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1776,7 +1776,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickedRegion6_region6Clicked_continueButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1793,7 +1793,7 @@ class StateFragmentTest {
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1611): Enable for Robolectric.
   @Ignore("Flaky test") // TODO(#3171): Fix ImageRegion failing test cases.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadImageRegion_clickRegion6_clickedRegion5_clickRegion5_correctFeedback() {
     launchForExploration(TEST_EXPLORATION_ID_13, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1813,7 +1813,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfiguration_firstState_prevAndNextButtonIsNotDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1826,7 +1826,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_submitAnswer_clickContinueButton_previousButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1838,7 +1838,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfig_submitAnswer_clickContinue_prevButtonIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1851,7 +1851,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevious_onlyNextButtonIsShown() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1867,7 +1867,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfig_submit_clickContinueThenPrev_onlyNextButtonShown() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1884,7 +1884,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_submitAnswer_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1903,7 +1903,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_land_submit_clickContinueThenPrevThenNext_prevAndSubmitShown() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1924,7 +1924,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_continueToEndExploration_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1941,7 +1941,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfiguration_continueToEnd_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1959,7 +1959,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_continueToEndExploration_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1974,7 +1974,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_changeConfig_continueToEnd_clickReturnToTopic_destroysActivity() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -1989,7 +1989,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testContentCard_forPrototypeExploration_withCustomOppiaTags_displaysParsedHtml() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2001,7 +2001,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testContentCard_forPrototypeExploration_changeConfig_withCustomTags_displaysParsedHtml() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2013,7 +2013,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_inputRatio_correctAnswerSubmitted_correctAnswerIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2033,7 +2033,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_forHintsAndSolution_incorrectInputTwice_hintBulbContainerIsVisible() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2056,7 +2056,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2081,7 +2081,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_landscape_forMisconception_showsLinkTextForConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       rotateToLandscape()
@@ -2107,7 +2107,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_forMisconception_clickLinkText_opensConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2131,7 +2131,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_landscape_forMisconception_clickLinkText_opensConceptCard() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       rotateToLandscape()
@@ -2156,7 +2156,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_initialStateIsContinueInteraction() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2168,7 +2168,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_continueInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2183,7 +2183,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_fractionInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2199,7 +2199,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_multipleChoiceInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2216,7 +2216,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_radioItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2233,7 +2233,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_radioItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2251,7 +2251,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_checkboxItemSelection_hasCorrectAccessibilityAttributes() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2267,7 +2267,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_checkboxItemSelection_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2286,7 +2286,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_numericInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2306,7 +2306,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_numericInputInteraction_hasCorrectHint() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2324,7 +2324,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_ratioInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2345,7 +2345,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_textInputInteraction_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2368,7 +2368,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_dragAndDropNoGrouping_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2392,7 +2392,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_dragAndDropWithGrouping_canSuccessfullySubmitAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -2415,7 +2415,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_fractionInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -2433,7 +2433,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_ratioInput_textViewHasTextInputType() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -2457,7 +2457,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_loadExp_saveProg_continueToEndExp_clickReturnToTopic_partialProgDeleted() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2476,7 +2476,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_englishContentLang_content_isInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2489,7 +2489,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabicContentLang_content_isInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2502,7 +2502,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabicContentLang_thenEnglish_content_isInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2516,7 +2516,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_continueInteraction_buttonIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2529,7 +2529,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_continueInteraction_buttonIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2542,7 +2542,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_fractionInput_placeholderIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2557,7 +2557,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_fractionInput_submitAnswer_answerMatchesSubmission() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2575,7 +2575,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_fractionInput_placeholderIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2590,7 +2590,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_fractionInput_submitAnswer_answerMatchesSubmission() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2609,7 +2609,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_englishContentLang_feedback_isInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2627,7 +2627,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabicContentLang_feedback_isInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2646,7 +2646,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabicContentLang_thenEnglish_feedback_isInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2665,7 +2665,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_multipleChoice_optionsAreInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2687,7 +2687,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_multipleChoice_submittedAnswer_answerIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2705,7 +2705,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_multipleChoice_optionsAreInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2728,7 +2728,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_answerIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2747,7 +2747,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2767,7 +2767,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_itemSelection_optionsAreInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2791,7 +2791,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_itemSelection_submittedAnswer_answerIsInEnglish() {
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2814,7 +2814,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_itemSelection_optionsAreInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2839,7 +2839,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_itemSelection_submittedAnswer_answerIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2862,7 +2862,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2886,7 +2886,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_numericInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2908,7 +2908,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_numericInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2930,7 +2930,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_ratioInput_placeholderIsInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2949,7 +2949,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_ratioInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2972,7 +2972,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_ratioInput_placeholderIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2992,7 +2992,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_ratioInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3015,7 +3015,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_textInput_placeholderIsInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3035,7 +3035,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_textInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3059,7 +3059,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_textInput_placeholderIsInArabic() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3080,7 +3080,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_textInput_submitAnswer_answerMatchesSubmission() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3104,7 +3104,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_arabic_textInput_submitAnswer_switchToEnglish_answerDoesNotChange() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3129,7 +3129,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_dragAndDrop_optionsAreInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3158,7 +3158,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_english_dragAndDrop_submittedAnswer_answerIsInEnglish() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3189,7 +3189,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_portuguese_dragAndDrop_optionsAreInPortuguese() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3218,7 +3218,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_answerIsInPortuguese() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3249,7 +3249,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_portuguese_dragAndDrop_submittedAnswer_switchToEnglish_answerIsInPt() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -3282,7 +3282,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_playWholeLesson_inArabic_hasReturnToTopicButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3299,7 +3299,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_studyOff_inEnglish_doesNotHaveSwitchToSwahiliButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3312,7 +3312,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_studyOn_inEnglish_lessonWithoutSwahili_doesNotHaveSwitchToSwahiliButton() {
     launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3326,7 +3326,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_studyOn_inEnglish_notEnabledForProfile_doesNotHaveSwitchToSwahiliButton() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3340,7 +3340,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_studyOn_enabledForProfile_inEnglish_hasSwitchToSwahiliButton() {
     enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -3357,7 +3357,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_studyOn_enabledForProfile_inSwahili_hasSwitchToEnglishButton() {
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
@@ -3375,7 +3375,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_inEnglish_clickSwitchToSwahili_contentIsInSwahili() {
     enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -3394,7 +3394,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_inSwahili_clickSwitchToEnglish_contentIsInEnglish() {
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
@@ -3414,7 +3414,7 @@ class StateFragmentTest {
   // TODO(#1612): Enable for Robolectric.
   @Test
   @RunOn(TestPlatform.ESPRESSO, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_inEnglish_clickSwitchToSwahili_thenBackToEnglish_contentIsInEnglish() {
     enableInLessonLanguageSwitching()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -3435,7 +3435,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_inEnglish_clickSwitchToSwahili_logsSwitchLanguageEvent() {
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
@@ -3457,7 +3457,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @EnableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_inSwahili_clickSwitchToEnglish_logsSwitchLanguageEvent() {
     enableInLessonLanguageSwitching()
     updateContentLanguage(profileId, OppiaLanguage.SWAHILI)
@@ -3478,7 +3478,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3494,7 +3494,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffOrder_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3510,7 +3510,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffElems_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3526,7 +3526,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesExactly_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3542,7 +3542,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3559,7 +3559,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffOrder_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3577,7 +3577,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffElems_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3594,7 +3594,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_matchesUpTo_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3611,7 +3611,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_equivalence_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3628,7 +3628,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_equivalence_diffOrder_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3646,7 +3646,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_equivalence_diffElems_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3664,7 +3664,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_equivalence_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3681,7 +3681,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_answerWithDivideByZero_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3694,7 +3694,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_answerWithVariable_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3711,8 +3711,8 @@ class StateFragmentTest {
   }
 
   @Test
-  @OverrideBoolParameter(PlatformParameter.CACHE_LATEX_RENDERING, true)
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @OverrideBoolParameter(CACHE_LATEX_RENDERING, true)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_validAns_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -3736,7 +3736,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -3761,7 +3761,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_validAns_english_submissionHasA11yAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3779,7 +3779,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_validAns_divAsFrac_submissionHasA11yAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3796,7 +3796,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_numericExp_validAns_arabic_submissionHasA11yAnswer() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -3815,7 +3815,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesExactly_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3832,7 +3832,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesExactly_diffOrder_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3849,7 +3849,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesExactly_diffElems_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3866,7 +3866,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesExactly_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3883,7 +3883,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3900,7 +3900,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffOrder_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3918,7 +3918,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffElems_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3935,7 +3935,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_matchesUpTo_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3952,7 +3952,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_equivalence_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3969,7 +3969,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_equivalence_diffOrder_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -3987,7 +3987,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_equivalence_diffElems_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4005,7 +4005,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_equivalence_diffElems_andVals_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4023,7 +4023,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_equivalence_diffOperations_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4042,7 +4042,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_equivalence_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4059,7 +4059,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_answerWithVariablePower_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4076,7 +4076,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_answerWithUnknownVars_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4091,7 +4091,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_validAns_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -4115,7 +4115,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -4141,7 +4141,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_validAns_english_submissionHasA11yAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4163,7 +4163,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_validAns_divAsFrac_submissionHasA11yAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4186,7 +4186,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_algExp_validAns_arabic_submissionHasA11yAnswer() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -4205,7 +4205,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4222,7 +4222,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_flipped_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4240,7 +4240,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffOrder_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4257,7 +4257,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffElems_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4274,7 +4274,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesExactly_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4291,7 +4291,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4308,7 +4308,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_flipped_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4326,7 +4326,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffOrder_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4344,7 +4344,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffElems_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4361,7 +4361,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_matchesUpTo_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4378,7 +4378,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_canSubmitCorrectAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4397,7 +4397,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_flipped_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4417,7 +4417,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffOrder_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4437,7 +4437,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffElems_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4457,7 +4457,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffElems_andVals_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4475,7 +4475,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffOperations_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4496,7 +4496,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_rearranged_answerIsCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4516,7 +4516,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_multiple_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4534,7 +4534,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_equivalence_diffValue_answerIsWrong() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4551,7 +4551,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_answerWithDoubleMult_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4565,7 +4565,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_missingEquals_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4580,7 +4580,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_answerWithUnknownVars_displaysError() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4597,7 +4597,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_validAns_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -4621,7 +4621,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionDisplaysLatex() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use { scenario ->
       startPlayingExploration()
@@ -4647,7 +4647,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_validAns_english_submissionHasA11yAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4670,7 +4670,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_validAns_divAsFrac_submissionHasA11yAnswer() {
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4695,7 +4695,7 @@ class StateFragmentTest {
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_mathInteractions_mathEq_validAns_arabic_submissionHasA11yAnswer() {
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_5, shouldSavePartialProgress = false).use {
@@ -4717,7 +4717,7 @@ class StateFragmentTest {
   //  answers submit normally & with no special behaviors.
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_clickContinue_returnToState_doesNotHaveFeedbackBox() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4732,7 +4732,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_clickContinue_finishNextState_returnToContinue_doesNotHaveFeedbackBox() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4750,7 +4750,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_noRadioItemSelected_defaultSelectionTextIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4766,7 +4766,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_oneRadioItemSelected_selectionTextIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4784,7 +4784,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_twoRadioItemSelected_selectionTextIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4803,7 +4803,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_maxRadioItemSelected_selectionTextIsDisplayed() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4823,7 +4823,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_maxRadioItemSelected_nonSelectedCheckboxesAreDisabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4864,7 +4864,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_maxItemSelected_deselectingReturnsYouMaySelectMoreChoices() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4885,7 +4885,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_someItemSelected_deselectingReturnsPleaseSelectAllCorrect() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4906,7 +4906,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_notSelectingMaxRadioItem_return_allOtherCheckBoxesEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4954,7 +4954,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_interactions_SelectingMaxItemAndOneBelow_returnNoOtherCheckBoxesEnabled() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -4997,7 +4997,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_lateNight_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(LATE_NIGHT_UTC_TIMESTAMP_MILLIS)
@@ -5027,7 +5027,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_earlyMorning_isPastGracePeriod_minimumAggregateTimeMet_noSurveyPopup() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EARLY_MORNING_UTC_TIMESTAMP_MILLIS)
@@ -5057,7 +5057,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_midMorning_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(MID_MORNING_UTC_TIMESTAMP_MILLIS)
@@ -5085,7 +5085,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_afternoon_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
@@ -5113,7 +5113,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_evening_isPastGracePeriod_minimumAggregateTimeMet_surveyPopupShown() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
@@ -5141,7 +5141,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_allGatingConditionsMet_surveyDismissed_popupDoesNotShowAgain() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(EVENING_UTC_TIMESTAMP_MILLIS)
@@ -5175,7 +5175,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @DisableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @DisableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_surveyFeatureOff_allGatingConditionsMet_noSurveyPopup() {
     // Survey Gating conditions are: isPastGracePeriod, has achieved minimum aggregate exploration
     // time of 5min in a topic, and is within the hours of 9am and 10pm in the user's local time.
@@ -5212,7 +5212,7 @@ class StateFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO) // TODO(#1612): Enable for Robolectric.
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testFinishChapter_updateGatingProvider_surveyGatingCriteriaMetEarlier_doesntUpdateUI() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     oppiaClock.setCurrentTimeMs(AFTERNOON_UTC_TIMESTAMP_MILLIS)
@@ -5248,7 +5248,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_contentDescription_replaceUnderscoresWithBlank() {
     launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5279,7 +5279,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_contentDescription_itemSelectionInteraction() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5308,7 +5308,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testStateFragment_contentDescription_multipleChoiceInteraction() {
     launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5343,7 +5343,7 @@ class StateFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
   fun testFragment_argumentsAreCorrect() {
     launchForExploration(
       FRACTIONS_EXPLORATION_ID_1,

@@ -30,6 +30,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -94,7 +95,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -144,7 +144,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testHomeActivity_onLaunch_logsOpenHomeEvent() {
     setUpTestApplicationComponent()
 
@@ -158,7 +158,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_soleProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -177,7 +177,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_supervisorProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -196,7 +196,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_nonAdminProfile_onInitialLaunch_doesNotLogAppOnboardingEvent() {
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -220,7 +220,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2_adminProfile_onSubsequentLaunch_doesNotLogAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getProfileTestHelper().updateProfileType(profileId, ProfileType.SOLE_LEARNER)
@@ -243,7 +243,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testHomeActivity_onSubsequentLaunch_doesNotLogCompletedAppOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
@@ -263,7 +263,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -278,7 +278,7 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testHomeActivity_onboardingV2_revisitApp_doesNotLogEndProfileOnboardingEvent() {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()

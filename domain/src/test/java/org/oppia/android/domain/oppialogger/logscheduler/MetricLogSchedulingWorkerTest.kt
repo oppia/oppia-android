@@ -68,7 +68,6 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfi
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -82,7 +81,7 @@ private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = MetricLogSchedulingWorkerTest.TestApplication::class)
-@EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+@EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
 class MetricLogSchedulingWorkerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 

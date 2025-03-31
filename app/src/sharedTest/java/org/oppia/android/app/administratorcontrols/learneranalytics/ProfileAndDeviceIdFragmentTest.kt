@@ -136,7 +136,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.security.MessageDigest
@@ -156,9 +155,9 @@ import javax.inject.Singleton
   application = ProfileAndDeviceIdFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-@EnableFeatureFlag(FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI)
-@EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
-@EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+@EnableFeatureFlag(EDIT_ACCOUNTS_OPTIONS_UI)
+@EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
+@EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
 class ProfileAndDeviceIdFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()

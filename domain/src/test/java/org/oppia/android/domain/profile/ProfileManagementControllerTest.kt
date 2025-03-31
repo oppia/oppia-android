@@ -27,6 +27,7 @@ import org.oppia.android.app.model.AudioLanguage.HINDI_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileDatabase
 import org.oppia.android.app.model.ProfileId
@@ -72,7 +73,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -156,7 +156,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testAddProfile_addSoleLearnerProfile_onboardingV2Enabled_checkProfileIsAdded() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addAdminProfile(name = "James", pin = "")
@@ -177,7 +177,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testAddProfile_addSupervisorProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addAdminProfile(name = "James")
@@ -198,7 +198,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testAddProfile_addAdditionalLearnerProfile_withPin_onboardingV2Enabled_checkProfileIsAdded() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addNonAdminProfile(name = "James")
@@ -219,7 +219,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testAddProfile_addProfile_withPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addAdminProfile(name = "James")
@@ -241,7 +241,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testAddProfile_addProfile_withoutPin_onboardingV2Disabled_checkProfileTypeIsNotSet() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addAdminProfile(name = "James", pin = "")
@@ -263,7 +263,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @DisableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testAddProfile_addProfile_studyOff_checkProfileDoesNotIncludeLearnerId() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addAdminProfile(name = "James", pin = "123")
@@ -277,7 +277,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testAddProfile_addProfile_studyOn_checkProfileDoesNotIncludeLearnerId() {
     setUpTestApplicationComponent()
     val dataProvider = profileManagementController.addAdminProfile(name = "James", pin = "123")
@@ -360,7 +360,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @DisableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_withoutStudy_learnerIdIsUnchanged() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -377,7 +377,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testUpdateLearnerId_addProfiles_updateLearnerIdWithSeed_withStudy_learnerIdIsUnchanged() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -393,7 +393,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testGetCurrentProfileId_noProfileLoggedIn_returnsNull() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -405,7 +405,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testGetCurrentProfileId_withProfileLoggedIn_returnsLoggedInProfileId() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -420,7 +420,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testGetCurrentProfileId_withProfileLoggedIn_thenAnother_returnsLatestLoggedInProfileId() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -545,7 +545,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @DisableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testFetchCurrentLearnerId_loggedInProfile_createdWithStudyOff_returnsEmptyString() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -559,7 +559,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFetchCurrentLearnerId_loggedInProfile_createdWithStudyOn_returnsEmptyString() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -584,7 +584,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @DisableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testFetchLearnerId_createdProfileWithStudyOff_returnsEmptyString() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -597,7 +597,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFetchLearnerId_createdProfileWithStudyOn_returnsEmptyString() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -1283,7 +1283,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testDeleteProfile_logsDeleteProfileEvent() {
     setUpTestApplicationComponent()
     profileManagementController.addTestProfiles()
@@ -1771,7 +1771,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileMigration_getExistingNonAdminProfile_checkProfileTypeIsAdditionalLearner() {
     // Simulate profiles already created in a previous app instance.
     executeInPreviousAppInstance { testComponent ->
@@ -1801,7 +1801,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileMigration_getExistingAdminWithPin_checkProfileTypeIsSupervisor() {
     // Simulate profiles already created in a previous app instance.
     executeInPreviousAppInstance { testComponent ->
@@ -1831,7 +1831,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileMigration_getExistingAdminWithoutPin_checkProfileTypeIsSoleLearner() {
     // Simulate profiles already created in a previous app instance.
     executeInPreviousAppInstance { testComponent ->
@@ -1853,7 +1853,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfileAndWait(name = "James", pin = "")
@@ -1872,7 +1872,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyMode() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfileAndWait(name = "James")
@@ -1889,7 +1889,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_multipleProfiles_returnsMultipleProfilesTypeMode() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfileAndWait(name = "James")
@@ -1904,7 +1904,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_noProfilesFound_returnsNewInstallTypeMode() {
     setUpTestApplicationComponent()
 
@@ -1916,7 +1916,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboardingState_existingProfilesV1_returnsUnknownProfileTypeMode() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfileAndWait(name = "James")
@@ -1929,7 +1929,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testGetProfile_createAdmin_returnsSupervisorType() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfile(name = "James")
@@ -1938,7 +1938,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testGetProfile_createSoleLearner_returnsSoleLearnerType() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfile(name = "James", pin = "")
@@ -1947,7 +1947,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testGetProfile_createAdditionalLearner_returnsAdditionalLearnerType() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfile(name = "James")
@@ -1957,7 +1957,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboarding_markOnboardingStarted_logsStartProfileOnboardingEvent() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfile(name = "James", pin = "")
@@ -1970,7 +1970,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testProfileOnboarding_markOnboardingCompleted_logsEndProfileOnboardingEvent() {
     setUpTestApplicationComponent()
     profileManagementController.addAdminProfile(name = "James", pin = "")

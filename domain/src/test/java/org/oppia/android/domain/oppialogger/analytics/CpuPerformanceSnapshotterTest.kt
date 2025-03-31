@@ -50,7 +50,6 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.UNINITIALIZED
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -66,7 +65,7 @@ private const val TEST_CPU_USAGE_TWO = 0.32192
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = CpuPerformanceSnapshotterTest.TestApplication::class)
-@EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+@EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
 class CpuPerformanceSnapshotterTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 

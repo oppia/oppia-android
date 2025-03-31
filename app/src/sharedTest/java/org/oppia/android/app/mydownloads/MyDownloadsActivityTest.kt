@@ -92,7 +92,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -164,7 +163,7 @@ class MyDownloadsActivityTest {
 
   @Test
   @RunOn(TestPlatform.ESPRESSO)
-  @EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @EnableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testMyDownloadsActivity_classroomsFlagEnabled_pressBack_opensClassroomListActivity() {
     TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     ActivityScenario.launch(MyDownloadsActivity::class.java).use {

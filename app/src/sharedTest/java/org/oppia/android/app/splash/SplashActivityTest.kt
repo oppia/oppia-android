@@ -133,7 +133,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -1073,7 +1072,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testSplashActivity_initialOpen_onboardingV2Enabled_routesToOnboardingActivity() {
     initializeTestApplication()
     launchSplashActivityPartially {
@@ -1082,7 +1081,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testSplashActivity_onboardingV2Enabled_profilePartiallyOnboarded_routesToIntroActivity() {
     initializeTestApplication()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -1101,8 +1100,8 @@ class SplashActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
-  @DisableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
     TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
@@ -1129,8 +1128,8 @@ class SplashActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
-  @EnableFeatureFlag(FeatureFlag.ENABLE_MULTIPLE_CLASSROOMS)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
     simulateAppAlreadyOnboarded()
     TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
@@ -1158,7 +1157,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testSplashActivity_onboardingV2_onboardedAdminProfile_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()
@@ -1170,7 +1169,7 @@ class SplashActivityTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication()

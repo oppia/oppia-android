@@ -254,46 +254,56 @@ val oppiaTestRule = OppiaTestRule()
 Use the appropriate annotations for enabling, disabling, or resetting feature flags.
 
 ```kotlin
+import org.oppia.android.app.model.FeatureFlagId.TEST_FEATURE
+
+...
+
 @Test
-@EnableFeatureFlag(FeatureFlag.TEST_FEATURE)
+@EnableFeatureFlag(TEST_FEATURE)
 fun testWhenFeatureFlagIsEnabled() {
     // Test logic with the feature flag enabled
 }
 
 @Test
-@DisableFeatureFlag(FeatureFlag.TEST_FEATURE)
+@DisableFeatureFlag(TEST_FEATURE)
 fun testWhenFeatureFlagIsDisabled() {
     // Test logic with the feature flag disabled
 }
 
 @Test
-@ResetFeatureFlagToDefault(FeatureFlag.TEST_FEATURE)
+@ResetFeatureFlagToDefault(TEST_FEATURE)
 fun testWithDefaultFeatureFlagState() {
     // Test logic with default feature flag state
 }
 ```
 
-The feature flag names are derived from the list of feature flag constant values.
+The available feature flags are defined in the `FeatureFlagId` proto enum and should be directly imported as demonstrated above.
 
 ### 2. Platform Parameters
 
 Use override annotations to override type specific platform parameter values for testing.
 
 ```kotlin
+import org.oppia.android.app.model.PlatformParameterId.TEST_BOOLEAN_PARAMETER
+import org.oppia.android.app.model.PlatformParameterId.TEST_INT_PARAMETER
+import org.oppia.android.app.model.PlatformParameterId.TEST_STRING_PARAMETER
+
+...
+
 @Test
-@OverrideBoolParameter(PlatformParameter.BOOLEAN_PARAMETER, value = true)
+@OverrideBoolParameter(TEST_BOOLEAN_PARAMETER, value = true)
 fun testWithOverriddenBooleanParameter() {
     // Test logic with overridden boolean parameter
 }
 
 @Test
-@OverrideIntParameter(PlatformParameter.INT_PARAMETER, value = 42)
+@OverrideIntParameter(TEST_INT_PARAMETER, value = 42)
 fun testWithOverriddenIntParameter() {
     // Test logic with overridden int parameter
 }
 
 @Test
-@OverrideStringParameter(PlatformParameter.STRING_PARAMETER, value = "Test Value")
+@OverrideStringParameter(TEST_STRING_PARAMETER, value = "Test Value")
 fun testWithOverriddenStringParameter() {
     // Test logic with overridden string parameter
 }
@@ -308,13 +318,16 @@ Use these annotations to simulate specific runtime conditions by overriding the 
    - `@ResetFeatureFlagToDefault` is specific to method level
 
 ```kotlin
-@EnableFeatureFlag(FeatureFlag.TEST_FEATURE)
-@OverrideBoolParameter(PlatformParameter.BOOLEAN_PARAMETER, value = true)
+import org.oppia.android.app.model.FeatureFlagId.TEST_FEATURE
+import org.oppia.android.app.model.PlatformParameterId.TEST_BOOLEAN_PARAMETER
+
+@EnableFeatureFlag(TEST_FEATURE)
+@OverrideBoolParameter(TEST_BOOLEAN_PARAMETER, value = true)
 class FeatureFlagPlatformParameterTest {
 
     @Test
-    @DisableFeatureFlag(FeatureFlag.TEST_FEATURE)
-    @ResetFeatureFlagToDefault(FeatureFlag.TEST_FEATURE)
+    @DisableFeatureFlag(TEST_FEATURE)
+    @ResetFeatureFlagToDefault(TEST_FEATURE)
     fun testWithMethodLevelOverrides() {
         // Test logic
     }
@@ -325,10 +338,14 @@ class FeatureFlagPlatformParameterTest {
    - Multiple annotations can be applied simultaneously to tweak the values of multiple feature flags and platform parameters.
 
 ```kotlin
+import org.oppia.android.app.model.FeatureFlagId.FEATURE_A
+import org.oppia.android.app.model.FeatureFlagId.FEATURE_B
+import org.oppia.android.app.model.PlatformParameterId.PARAMETER_X
+
 @Test
-@EnableFeatureFlag(FeatureFlag.FEATURE_A)
-@DisableFeatureFlag(FeatureFlag.FEATURE_B)
-@OverrideIntParameter(PlatformParameter.PARAMETER_X, value = 100)
+@EnableFeatureFlag(FEATURE_A)
+@DisableFeatureFlag(FEATURE_B)
+@OverrideIntParameter(PARAMETER_X, value = 100)
 fun testWithMultipleOverrides() {
     // Test logic combining multiple feature flags and platform parameter overrides
 }

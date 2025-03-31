@@ -76,7 +76,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -652,7 +651,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_logImportantEvent_withNoNetwork_exceedLimit_studyOn_checkEventLogStoreSize() {
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
     logFourEvents()
@@ -768,7 +767,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_logEvent_withoutNetwork_studyOn_verifySyncStatusIsUnchanged() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
     networkConnectionUtil.setCurrentConnectionStatus(NONE)
@@ -789,7 +788,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_logEvent_studyOn_verifySyncStatusChangesToRepresentLoggedEvent() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
     analyticsController.logImportantEvent(
@@ -823,7 +822,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_logImportantEvent_studyOn_recordsEventAsUploaded() {
     // Events are only tracked as uploaded when the learner study feature being enabled.
     // The important event should be marked as uploaded.
@@ -849,7 +848,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogs_noLogs_studyOn_cacheUnchanged() {
     val monitor = monitorFactory.createMonitor(analyticsController.getEventLogStore())
 
@@ -872,7 +871,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogs_withPreviousLogs_studyOn_setsSyncStatusToUploadingUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
     logTwoEvents()
@@ -891,7 +890,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogs_withLogs_studyOn_setsSyncStatusToUploadingThenUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
     logTwoEventsOffline()
@@ -918,7 +917,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogs_withLogs_studyOn_removesEventsForUploading() {
     logTwoEventsOffline()
 
@@ -1009,7 +1008,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogsAndWait_noLogs_studyOn_cacheUnchanged() {
     val monitor = monitorFactory.createMonitor(analyticsController.getEventLogStore())
 
@@ -1021,7 +1020,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogsAndWait_prevLogs_studyOn_setsSyncStatusToUploadingUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
     logTwoEvents()
@@ -1042,7 +1041,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogsAndWait_withLogs_studyOn_setsSyncStatusToUploadingUploaded() {
     // Sync statuses only make sense in the context of the learner study feature being enabled.
     logTwoEventsOffline()
@@ -1069,7 +1068,7 @@ class AnalyticsControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+  @EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
   fun testController_uploadEventLogsAndWait_withLogs_studyOn_removesEventsForUploading() {
     logTwoEventsOffline()
 

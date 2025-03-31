@@ -50,7 +50,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -299,7 +298,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_midMorning_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -319,7 +318,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_midMorning_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -405,7 +404,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_afternoon_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -425,7 +424,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_afternoon_isPastGracePeriod_minimumAggregateTimeExceeded_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -511,7 +510,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_evening_isPastGracePeriod_minimumAggregateTimeMet_returnsTrue() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_MINIMUM, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -576,7 +575,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_otherCriteriaMet_multipleTopicsHaveTimeThreshold_triggersSurveyInEitherTopic() {
     oppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     startAndEndExplorationSession(SESSION_LENGTH_LONG, PROFILE_ID_0, TEST_TOPIC_ID_0)
@@ -596,7 +595,7 @@ class SurveyGatingControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_NPS_SURVEY)
+  @EnableFeatureFlag(NPS_SURVEY)
   fun testGating_criteriaMetOnProfileTwo_afterSurveyShownOnProfileOne_triggersSurveyProfileTwo() {
     monitorFactory.ensureDataProviderExecutes(
       profileManagementController.loginToProfile(PROFILE_ID_0)

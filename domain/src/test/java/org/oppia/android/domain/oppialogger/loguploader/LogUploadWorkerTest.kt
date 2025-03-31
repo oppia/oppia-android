@@ -85,7 +85,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -102,7 +101,7 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = LogUploadWorkerTest.TestApplication::class)
-@EnableFeatureFlag(FeatureFlag.LEARNER_STUDY_ANALYTICS)
+@EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
 class LogUploadWorkerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 

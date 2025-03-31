@@ -53,6 +53,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.TopicActivityParams
@@ -130,7 +131,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -206,7 +206,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV1Enabled_onLaunch_logsOpenHomeEvent() {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -217,7 +217,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2Enabled_onLaunch_logsOpenHomeEvent() {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -229,7 +229,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_soleLearner_onInitialLaunch_logsEndProfileOnboardingEvent() {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
 
@@ -246,7 +246,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_supervisorProfile_onInitialLaunch_logsEndProfileOnboardingEvent() {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
 
@@ -263,7 +263,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_nonAdminProfile_onInitialLaunch_logsEndProfileOnboardingEvent() {
     scenario = ActivityScenario.launch(ClassroomListActivity::class.java)
 
@@ -280,7 +280,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_soleLearner_onInitialLaunch_logsAppOnboardingEvent() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
@@ -300,7 +300,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_supervisorProfile_onInitialLaunch_logsAppOnboardingEvent() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(
@@ -320,7 +320,7 @@ class ClassroomListFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_nonAdmin_onInitialLaunch_doesNotLogAppOnboardingEvent() {
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     profileTestHelper.updateProfileType(

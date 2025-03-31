@@ -13,7 +13,7 @@ import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
 
@@ -67,7 +67,7 @@ class OppiaTestRule : TestRule {
             else -> throw AssertionError("Reached impossible state in test rule")
           }
         } finally {
-          PlatformParameterModule.clearAllParameterOverrides()
+          TestPlatformParameterConfigRetriever.reset()
         }
       }
     }
@@ -221,12 +221,14 @@ class OppiaTestRule : TestRule {
         overriddenStringParameters = overriddenMethodLevelStringParameters
       )
 
-      applyPlatformParameterOverrides(
+      applyFeatureOverrides(
         enabledClassLevelFeatureFlags,
         disabledClassLevelFeatureFlags,
         enabledMethodLevelFeatureFlags,
         disabledMethodLevelFeatureFlags,
-        resetFeatureFlagToDefault,
+        resetFeatureFlagToDefault
+      )
+      applyPlatformParameterOverrides(
         overriddenClassLevelBoolParameters,
         overriddenClassLevelIntParameters,
         overriddenClassLevelStringParameters,
@@ -236,56 +238,53 @@ class OppiaTestRule : TestRule {
       )
     }
 
-    private fun applyPlatformParameterOverrides(
-      enabledClassLevelFeatureFlags: List<EnableFeatureFlag>?,
-      disabledClassLevelFeatureFlags: List<DisableFeatureFlag>?,
-      enabledMethodLevelFeatureFlags: List<EnableFeatureFlag>?,
-      disabledMethodLevelFeatureFlags: List<DisableFeatureFlag>?,
-      resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>?,
-      overriddenClassLevelBoolParameters: List<OverrideBoolParameter>?,
-      overriddenClassLevelIntParameters: List<OverrideIntParameter>?,
-      overriddenClassLevelStringParameters: List<OverrideStringParameter>?,
-      overriddenMethodLevelBoolParameters: List<OverrideBoolParameter>?,
-      overriddenMethodLevelIntParameters: List<OverrideIntParameter>?,
-      overriddenMethodLevelStringParameters: List<OverrideStringParameter>?,
+    private fun applyFeatureOverrides(
+      enabledClassLevelFlags: List<EnableFeatureFlag>,
+      disabledClassLevelFlags: List<DisableFeatureFlag>,
+      enabledMethodLevelFlags: List<EnableFeatureFlag>,
+      disabledMethodLevelFlags: List<DisableFeatureFlag>,
+      resetFeatureFlagToDefault: List<ResetFeatureFlagToDefault>
     ) {
-      enabledClassLevelFeatureFlags?.forEach {
-        PlatformParameterModule.overrideFeatureFlags(it.name, true)
-      }
-      disabledClassLevelFeatureFlags?.forEach {
-        PlatformParameterModule.overrideFeatureFlags(it.name, false)
-      }
+      val classFlagEnables = enabledClassLevelFlags.associate { it.id to true }
+      val classFlagDisables = disabledClassLevelFlags.associate { it.id to false }
+      val methodFlagEnables = enabledMethodLevelFlags.associate { it.id to true }
+      val methodFlagDisables = disabledMethodLevelFlags.associate { it.id to false }
+      val flagResets = resetFeatureFlagToDefault.mapTo(mutableSetOf()) { it.id }
 
-      enabledMethodLevelFeatureFlags?.forEach {
-        PlatformParameterModule.overrideFeatureFlags(it.name, true)
-      }
-      disabledMethodLevelFeatureFlags?.forEach {
-        PlatformParameterModule.overrideFeatureFlags(it.name, false)
-      }
+      // Class-level and method-level should be unique for a given ID.
+      val classFlagValues = classFlagEnables + classFlagDisables
+      val methodFlagValues = methodFlagEnables + methodFlagDisables
 
-      resetFeatureFlagToDefault?.forEach {
-        PlatformParameterModule.resetFeatureFlagToDefault(it.name)
-      }
+      // Method-level values take precedence over class-level, and adding replaces values. Resets
+      // should not perform any overriding, so they are resolved last.
+      val flagOverrideValues = (classFlagValues + methodFlagValues) - flagResets
 
-      overriddenClassLevelBoolParameters?.forEach {
-        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
-      }
-      overriddenClassLevelIntParameters?.forEach {
-        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
-      }
-      overriddenClassLevelStringParameters?.forEach {
-        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
-      }
+      flagOverrideValues.forEach(TestPlatformParameterConfigRetriever.Companion::setFlagOverride)
+    }
 
-      overriddenMethodLevelBoolParameters?.forEach {
-        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
-      }
-      overriddenMethodLevelIntParameters?.forEach {
-        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
-      }
-      overriddenMethodLevelStringParameters?.forEach {
-        PlatformParameterModule.overridePlatformParameters(it.name, it.value)
-      }
+    private fun applyPlatformParameterOverrides(
+      overriddenClassLevelBoolParams: List<OverrideBoolParameter>,
+      overriddenClassLevelIntParams: List<OverrideIntParameter>,
+      overriddenClassLevelStringParams: List<OverrideStringParameter>,
+      overriddenMethodLevelBoolParams: List<OverrideBoolParameter>,
+      overriddenMethodLevelIntParams: List<OverrideIntParameter>,
+      overriddenMethodLevelStringParams: List<OverrideStringParameter>
+    ) {
+      val classBoolOverrides = overriddenClassLevelBoolParams.associate { it.id to it.value }
+      val methodBoolOverrides = overriddenMethodLevelBoolParams.associate { it.id to it.value }
+      val classIntOverrides = overriddenClassLevelIntParams.associate { it.id to it.value }
+      val methodIntOverrides = overriddenMethodLevelIntParams.associate { it.id to it.value }
+      val classStrOverrides = overriddenClassLevelStringParams.associate { it.id to it.value }
+      val methodStrOverrides = overriddenMethodLevelStringParams.associate { it.id to it.value }
+
+      // Method-level values take precedence over class-level, and adding replaces values.
+      val boolOverrides = classBoolOverrides + methodBoolOverrides
+      val intOverrides = classIntOverrides + methodIntOverrides
+      val strOverrides = classStrOverrides + methodStrOverrides
+
+      boolOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
+      intOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
+      strOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
     }
 
     private fun validatePlatformParameterConflicts(
@@ -297,12 +296,12 @@ class OppiaTestRule : TestRule {
       overriddenStringParameters: List<OverrideStringParameter> = emptyList(),
     ) {
       val combinedPlatformParameters = (
-        enabledFeatureFlags.map { it.name } +
-          disabledFeatureFlags.map { it.name } +
-          resetFeatureFlags.map { it.name } +
-          overriddenBoolParameters.map { it.name } +
-          overriddenIntParameters.map { it.name } +
-          overriddenStringParameters.map { it.name }
+        enabledFeatureFlags.map { it.id } +
+          disabledFeatureFlags.map { it.id } +
+          resetFeatureFlags.map { it.id } +
+          overriddenBoolParameters.map { it.id } +
+          overriddenIntParameters.map { it.id } +
+          overriddenStringParameters.map { it.id }
         ).groupingBy { it }
         .eachCount()
 
@@ -321,10 +320,10 @@ class OppiaTestRule : TestRule {
       resetFeatureFlags: List<ResetFeatureFlagToDefault>
     ) {
       val classLevelFeatureFlags = (
-        enabledClassLevelFeatureFlags.map { it.name } +
-          disabledClassLevelFeatureFlags.map { it.name }
+        enabledClassLevelFeatureFlags.map { it.id } +
+          disabledClassLevelFeatureFlags.map { it.id }
         )
-      val invalidResets = resetFeatureFlags.map { it.name }
+      val invalidResets = resetFeatureFlags.map { it.id }
         .filterNot { it in classLevelFeatureFlags }
       if (invalidResets.isNotEmpty()) {
         error(

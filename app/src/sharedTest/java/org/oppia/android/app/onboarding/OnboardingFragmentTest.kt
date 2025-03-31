@@ -55,6 +55,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -120,7 +121,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -162,7 +162,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkDefaultSlideTitle_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -176,7 +176,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkDefaultSlideDescription_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -190,7 +190,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkDefaultSlide_index0DotIsActive_otherDotsAreInactive() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -222,7 +222,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkDefaultSlide_skipButtonIsVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -231,7 +231,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkDefaultSlide_getStartedButtonIsNotVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -240,7 +240,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_swipeRight_doesNotWork() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -255,7 +255,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide1Title_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -271,7 +271,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide1Description_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -287,7 +287,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide1_index1DotIsActive_otherDotsAreInactive() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -320,7 +320,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide1_skipButtonIsVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -331,7 +331,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide1_clickSkipButton_shiftsToLastSlide() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -350,7 +350,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide1_getStartedButtonIsNotVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -360,7 +360,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_swipeLeftThenSwipeRight_isWorking() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -377,7 +377,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide2Title_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -393,7 +393,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide2Description_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -409,7 +409,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide2_index2DotIsActive_otherDotsAreInactive() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -442,7 +442,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide2_skipButtonIsVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -453,7 +453,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide2_clickSkipButton_shiftsToLastSlide() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -472,7 +472,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide2_getStartedButtonIsNotVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -482,7 +482,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide3Title_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -498,7 +498,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide3Description_isCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -514,7 +514,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide3_skipButtonIsNotVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -525,7 +525,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide3_getStartedButtonIsVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -536,7 +536,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide3_clickGetStartedButton_opensProfileActivity() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -550,7 +550,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_swipeLeftOnLastSlide_doesNotWork() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -567,7 +567,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_slide0Title_changeOrientation_titleIsCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -582,7 +582,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_moveToSlide1_changeOrientation_titleIsCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -599,7 +599,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_clickOnSkip_changeOrientation_titleIsCorrect() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -617,7 +617,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_nextArrowIcon_hasCorrectContentDescription() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -632,7 +632,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_configChange_nextArrowIcon_hasCorrectContentDescription() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -648,7 +648,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_moveToSlide1_bottomDots_hasCorrectContentDescription() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -665,7 +665,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_configChange_moveToSlide1_bottomDots_hasCorrectContentDescription() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -683,7 +683,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_moveToSlide2_bottomDots_hasCorrectContentDescription() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -700,7 +700,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_configChange_moveToSlide2_bottomDots_hasCorrectContentDescription() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -718,7 +718,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @DisableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_checkSlide3_policiesLinkIsVisible() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -737,7 +737,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_screenIsCorrectlyDisplayed() {
     setUp()
 
@@ -761,7 +761,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_configChange_screenIsCorrectlyDisplayed() {
     setUp()
 
@@ -787,7 +787,7 @@ class OnboardingFragmentTest {
 
   @Config(qualifiers = "sw600dp-port")
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_tabletPortrait_screenIsCorrectlyDisplayed() {
     setUp()
 
@@ -813,7 +813,7 @@ class OnboardingFragmentTest {
 
   @Config(qualifiers = "sw600dp-land")
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_tabletLandscape_screenIsCorrectlyDisplayed() {
     setUp()
 
@@ -839,7 +839,7 @@ class OnboardingFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_englishLocale_englishIsPreselected() {
     setUp()
 
@@ -859,7 +859,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_englishLocale_layoutIsLtr() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -878,7 +878,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "ar"
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_arabicLocale_arabicIsPreselected() {
     setUp()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -904,7 +904,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "ar"
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_arabicLocale_layoutIsRtl() {
     setUp()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -925,7 +925,7 @@ class OnboardingFragmentTest {
     appStringAndroidRegionId = "BR"
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_portugueseLocale_portugueseIsPreselected() {
     setUp()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -952,7 +952,7 @@ class OnboardingFragmentTest {
     appStringAndroidRegionId = "BR"
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_portugueseLocale_layoutIsLtr() {
     setUp()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -973,7 +973,7 @@ class OnboardingFragmentTest {
     appStringAndroidRegionId = "NG"
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_nigeriaLocale_naijaIsPreselected() {
     setUp()
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
@@ -1000,7 +1000,7 @@ class OnboardingFragmentTest {
     appStringAndroidRegionId = "NG"
   )
   @RunOn(TestPlatform.ROBOLECTRIC)
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_nigeriaLocale_layoutIsLtr() {
     setUp()
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
@@ -1021,7 +1021,7 @@ class OnboardingFragmentTest {
     appStringAndroidRegionId = "CA"
   )
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testOnboardingFragment_onboardingV2Enabled_unsupportedLocale_englishIsPreselected() {
     setUp()
     forceDefaultLocale(CANADA_FRENCH_LOCALE)
@@ -1041,7 +1041,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2Enabled_clickLetsGoButton_launchesProfileTypeScreen() {
     setUp()
     launch(OnboardingActivity::class.java).use {
@@ -1056,7 +1056,7 @@ class OnboardingFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_languageSelectionChanged_languageIsUpdated() {
     setUp()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1085,7 +1085,7 @@ class OnboardingFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_languageSelectionChanged_configChange_languageIsUpdated() {
     setUp()
     launch(OnboardingActivity::class.java).use { scenario ->
@@ -1113,7 +1113,7 @@ class OnboardingFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  @EnableFeatureFlag(FeatureFlag.ENABLE_ONBOARDING_FLOW_V2)
+  @EnableFeatureFlag(ONBOARDING_FLOW_V2)
   fun testFragment_onboardingV2_orientationChange_languageSelectionIsRestored() {
     setUp()
     launch(OnboardingActivity::class.java).use { scenario ->

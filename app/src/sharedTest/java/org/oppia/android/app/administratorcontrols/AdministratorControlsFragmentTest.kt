@@ -116,7 +116,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -128,8 +127,8 @@ import javax.inject.Singleton
   application = AdministratorControlsFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-@EnableFeatureFlag(FeatureFlag.EDIT_ACCOUNTS_OPTIONS_UI)
-@EnableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
+@EnableFeatureFlag(EDIT_ACCOUNTS_OPTIONS_UI)
+@EnableFeatureFlag(DOWNLOADS_SUPPORT)
 class AdministratorControlsFragmentTest {
 
   @get:Rule
@@ -234,7 +233,7 @@ class AdministratorControlsFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.DOWNLOADS_SUPPORT)
+  @DisableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
     TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     launch<AdministratorControlsFragmentTestActivity>(

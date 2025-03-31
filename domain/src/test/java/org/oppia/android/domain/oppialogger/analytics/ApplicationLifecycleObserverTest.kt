@@ -36,6 +36,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
@@ -109,7 +110,6 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -210,7 +210,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInForeground_loggedIntoProfile_studyOn_logsForegroundEventWithBothIds() {
     logIntoAnalyticsReadyAdminProfile()
 
@@ -226,7 +226,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInForeground_notLoggedIn_studyOn_logsForegroundEventWithoutLearnerId() {
     applicationLifecycleObserver.onAppInForeground()
     testCoroutineDispatchers.runCurrent()
@@ -240,7 +240,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInBackground_loggedIntoProfile_studyOn_logsBackgroundEventWithBothIds() {
     logIntoAnalyticsReadyAdminProfile()
 
@@ -256,7 +256,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testObserver_onAppInBackground_notLoggedIn_studyOn_logsBackgroundEventWithoutLearnerId() {
     applicationLifecycleObserver.onAppInBackground()
     testCoroutineDispatchers.runCurrent()
@@ -302,7 +302,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onCreate_performanceMetricsLoggingWithCorrectDetailsOccurs() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
@@ -329,7 +329,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onFirstActivityResume_logsStartupLatency() {
     applicationLifecycleObserver.onCreate()
     testCoroutineDispatchers.runCurrent()
@@ -354,7 +354,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onSecondActivityResume_startupLatencyIsLoggedOnce() {
 
     applicationLifecycleObserver.onCreate()
@@ -378,7 +378,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_activityResumed_logsMemoryUsage() {
     runWithSpecifiedLaunchedActivity {
       onActivity { activity ->
@@ -410,7 +410,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onAppInForeground_logsCpuUsageWithCurrentScreenForeground() {
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInForeground()
@@ -423,7 +423,7 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.ENABLE_PERFORMANCE_METRICS_COLLECTION)
+  @EnableFeatureFlag(PERFORMANCE_METRICS_COLLECTION)
   fun testObserver_onAppInBackground_logsCpuUsageWithCurrentScreenBackground() {
     applicationLifecycleObserver.onCreate()
     applicationLifecycleObserver.onAppInBackground()

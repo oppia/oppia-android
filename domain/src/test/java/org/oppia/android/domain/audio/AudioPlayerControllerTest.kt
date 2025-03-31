@@ -83,7 +83,6 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -493,7 +492,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_reloadingMainContent_autoPlaying_studyOn_doesNotLogPlayEvent() {
     arrangeMediaPlayer(contentId = "test_content_id")
 
@@ -506,7 +505,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_reloadingMainContent_notAutoPlaying_studyOn_logsPlayEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id")
@@ -544,7 +543,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_notReloadingMainContent_autoPlaying_studyOn_logsPlayEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id")
@@ -582,7 +581,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_notReloadingMainContent_notAutoPlaying_studyOn_logsPlayEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
@@ -620,7 +619,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_missingContentId_studyOn_logsPlayEventWithoutContentId() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = null)
@@ -641,7 +640,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPlay_prepared_outsideExploration_studyOn_doesNotLogEvent() {
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
@@ -655,7 +654,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPause_playing_explicitUserAction_studyOn_logsPauseEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
@@ -695,7 +694,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPause_playing_explicitAction_missingContentId_studyOn_logsPauseEventWithoutContentId() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = null)
@@ -718,7 +717,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPause_playing_explicitUserAction_outsideExp_studyOn_doesNotLogEvent() {
     arrangeMediaPlayer(contentId = "test_content_id")
     logIntoAnalyticsReadyAdminProfile()
@@ -735,7 +734,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPause_playing_notExplicitUserAction_studyOn_doesNotLogEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
@@ -759,7 +758,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPause_notPlaying_explicitUserAction_studyOn_doesNotLogEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")
@@ -781,7 +780,7 @@ class AudioPlayerControllerTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.LOGGING_LEARNER_STUDY_IDS)
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testPause_notPlaying_notExplicitUserAction_studyOn_doesNotLogEvent() {
     val explorationId = TEST_EXPLORATION_ID_5
     arrangeMediaPlayer(contentId = "test_content_id", languageCode = "sw")

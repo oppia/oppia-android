@@ -48,6 +48,7 @@ import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
@@ -131,7 +132,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.platformparameter.FeatureFlag
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -186,7 +186,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_toolbarTitle_isDisplayedSuccessfully() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -198,8 +198,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testLessonsTabSpotlight_spotlightAlreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent()
     markSpotlightSeen(FIRST_CHAPTER)
@@ -220,8 +220,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicLessonTabSpotlight_spotlightNotSeenBefore_checkSpotlightIsShown() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -233,8 +233,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_checkSpotlightShown() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -247,8 +247,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testFirstChapterSpotlight_setToShowOnFirstLogin_alreadySeen_checkSpotlightNotShown() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -270,8 +270,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notSeenBefore_checkShown() {
     initializeApplicationComponent()
     markSpotlightSeen(FIRST_CHAPTER)
@@ -289,7 +289,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_notComplete_checkNotShown() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -303,8 +303,8 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.SPOTLIGHT_UI)
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(SPOTLIGHT_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testRevisionTabSpotlight_setToShowAfterAtleast3ChaptersCompleted_alreadySeen_checkNotShown() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -330,7 +330,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_toolbarTitle_readerOff_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -352,7 +352,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInRtl_isDisplayedCorrectly() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -374,7 +374,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_toolbarTitle_readerOff_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -395,7 +395,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_toolbarTitle_readerOn_marqueeInLtr_isDisplayedCorrectly() {
     initializeApplicationComponent()
     markSpotlightSeen(TOPIC_LESSON_TAB)
@@ -416,7 +416,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_clickOnToolbarNavigationButton_closeActivity() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -428,7 +428,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_showsTopicFragmentWithMultipleTabs() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -439,7 +439,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_swipePage_hasSwipedPage() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -452,7 +452,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_enableExtraTabs_infoTopicTab_isDisplayedInTabLayout() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -470,7 +470,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_disableExtraTabs_infoTopicTab_isNotDisplayedInTabLayout() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -482,7 +482,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_disableExtraTabs_defaultTabIsLessons() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -494,7 +494,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_enableExtraTabs_defaultTabIsLessons() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -506,7 +506,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_disableExtraTabs_clickOnLessonsTab_showsPlayTabSelected() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -518,7 +518,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_clickOnLessonsTab_showsPlayTabWithContentMatched() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -538,7 +538,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_practiceTabEnabled_practiceTopicTabIsDisplayedInTabLayout() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -559,7 +559,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_disableExtraTabs_practiceTopicTabIsNotDisplayedInTabLayout() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -574,7 +574,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_disableExtraTabs_configChange_practiceTopicTabIsNotDisplayed() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -593,7 +593,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabSelected() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -605,7 +605,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabWithContentMatched() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -625,7 +625,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -637,7 +637,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_clickOnReviewTab_showsReviewTabWithContentMatched() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -657,7 +657,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTab() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -670,7 +670,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -690,7 +690,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_clickOnLessonsTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -711,7 +711,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun enableExtraTabs_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -740,7 +740,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_clickOnReviewTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -762,7 +762,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_enableExtraTabs_configChange_showsDefaultTabAndItsContent() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -782,7 +782,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testTopicFragment_disableExtraTabs_configChange_showsDefaultTabAndItsContent() {
     initializeApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(
@@ -802,7 +802,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun enableExtraTabs_withStoryId_clickOnPracticeTab_configChange_showsSameTabAndItsContent() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -831,7 +831,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testOpenFragment_lessonsTabDefaulted_logsLessonsTabOpen() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -847,7 +847,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testOpenFragment_lessonsTabDefaulted_switchToRevisionTab_logsRevisionTabOpen() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -866,7 +866,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @DisableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @DisableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testOpenFragment_lessonsTabDefaulted_switchToRevisionTabThenBack_logsLessonsTabOpenAgain() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -887,7 +887,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testOpenFragment_extraTabs_openInfoTab_logsInfoTabOpen() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()
@@ -906,7 +906,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  @EnableFeatureFlag(FeatureFlag.EXTRA_TOPIC_TABS_UI)
+  @EnableFeatureFlag(EXTRA_TOPIC_TABS_UI)
   fun testOpenFragment_extraTabs_openQuestionsTab_logsInfoQuestionsOpen() {
     initializeApplicationComponent()
     markAllSpotlightsSeen()

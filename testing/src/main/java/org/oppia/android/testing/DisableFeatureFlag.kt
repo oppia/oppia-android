@@ -1,6 +1,6 @@
 package org.oppia.android.testing
 
-import org.oppia.android.util.platformparameter.FeatureFlag
+import org.oppia.android.app.model.FeatureFlagId
 
 /**
  * Repeatable test class or method annotation for disabling the feature flag for tests of the
@@ -11,4 +11,4 @@ import org.oppia.android.util.platformparameter.FeatureFlag
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Repeatable
-annotation class DisableFeatureFlag(val name: FeatureFlag)
+annotation class DisableFeatureFlag(val id: FeatureFlagId)
