@@ -108,12 +108,6 @@ jobs:
         run: |
           echo "PR $PR_NUMBER is merging into $PR_BASE_REF_NAME from https://github.com/$PR_HEAD branch $PR_HEAD_REF_NAME."
 
-      - name: Set up JDK 11
-        if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-
       - name: Set up Bazel
         if: ${{ steps.track_commits.outputs.new_commits == 'true' }}
         uses: abhinavsingh/setup-bazel@v3
