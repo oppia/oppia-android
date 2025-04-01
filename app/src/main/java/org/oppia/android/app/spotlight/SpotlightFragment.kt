@@ -40,7 +40,7 @@ import javax.inject.Inject
 /**
  * Fragment to hold spotlights on elements. This fragment provides a single place for all the
  * spotlight interactions, and handles lifecycle related functionality for spotlights, such as
- * surviving  orientation changes and marking spotlights as seen.
+ * surviving orientation changes and marking spotlights as seen.
  */
 class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, SpotlightManager {
   @Inject
