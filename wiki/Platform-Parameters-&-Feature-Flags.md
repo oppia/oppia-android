@@ -234,7 +234,7 @@ fun convertToInteger(flagName: String): Int {
 }
 ```
 
-**DO NOT** reuse any of the digits that have already been used. The numbers are supposed to increment to infinity.
+**DO NOT** reuse any of the digits that have already been used.
 
 ### 5. Update the FeatureFlagNameToIntegerNameConverter test
 Ensure you also add a test for the latest addition to the `FeatureFlagNameToIntegerNameConverter` in the `FeatureFlagNameToIntegerNameConverterTest` file. Simply open the `utility/src/test/java/org/oppia/android/util/logging/FeatureFlagNameToIntegerNameConverterTest.kt` and add a new `@Iteration` to the `testConvertToIntegerName_returnsCorrectIntegerForEach` test. It is a parameterized test that runs by running through the list of testable iterations annotated to it.

@@ -695,7 +695,7 @@ class EventBundleCreator @Inject constructor(
         }
 
         val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus.number }
-        val featureFlagEnabledStates = featureFlagsList.map { it.flagEnabledState.compareTo(false) }
+        val featureFlagEnabledStates = featureFlagsList.map { if (it.flagEnabledState) 1 else 0 }
 
         store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
         store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
