@@ -29,7 +29,7 @@ jobs:
   compute_changed_files:
     name: Compute changed files
     needs: check_unit_tests_completed
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.compute-file-matrix.outputs.matrix }}
       can_skip_files: ${{ steps.compute-file-matrix.outputs.can_skip_files }}
@@ -110,7 +110,7 @@ jobs:
     name: Run Code Coverage
     needs: compute_changed_files
     if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -257,7 +257,7 @@ jobs:
 
   evaluate_code_coverage_reports:
     name: Evaluate Code Coverage Reports
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [ check_unit_tests_completed, code_coverage_run  ]
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
@@ -315,7 +315,7 @@ jobs:
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
     if: ${{ !cancelled() }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check unit tests passed
         if: ${{ needs.check_unit_tests_completed.result != 'success' }}

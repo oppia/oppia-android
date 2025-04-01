@@ -13,7 +13,7 @@ permissions:
 jobs:
   find_open_pull_requests:
     name: Find open PRs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.compute-pull-request-matrix.outputs.matrix }}
     env:
@@ -32,7 +32,7 @@ jobs:
   build_stats:
     name: Build Stats
     needs: find_open_pull_requests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # Reduce parallelization due to high build times, and allow individual PRs to fail.
     strategy:
       fail-fast: false

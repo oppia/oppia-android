@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -100,7 +100,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -180,7 +180,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
@@ -260,7 +260,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-latest]
     env:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
