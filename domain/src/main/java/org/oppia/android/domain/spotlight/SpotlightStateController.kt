@@ -30,7 +30,7 @@ private const val RECORD_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
 private const val RETRIEVE_SPOTLIGHT_CHECKPOINT_DATA_PROVIDER_ID =
   "retrieve_spotlight_checkpoint_provider_id"
 
-/** Handles saving and retrieving feature spotlight states. */
+/** Handles  saving and retrieving feature spotlight states. */
 @Singleton
 class SpotlightStateController @Inject constructor(
   private val cacheStoreFactory: PersistentCacheStore.Factory,

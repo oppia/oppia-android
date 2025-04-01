@@ -17,7 +17,7 @@ import org.oppia.android.app.model.ComparableOperation.NonCommutativeOperation.O
  * whether it exactly matches the other except for constants (which instead utilize
  * [org.oppia.android.app.model.Real.isApproximatelyEqualTo]).
  *
- * This function assumes that both this [ComparableOperation] and [other] are sorted prior to
+ * This  function assumes that both this [ComparableOperation] and [other] are sorted prior to
  * equality checking.
  */
 fun ComparableOperation.isApproximatelyEqualTo(other: ComparableOperation): Boolean {

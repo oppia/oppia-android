@@ -18,7 +18,7 @@ import java.io.FileInputStream
  *   bazel run //scripts:test_file_check -- $(pwd)
  */
 fun main(vararg args: String) {
-  // Path of the repo to be analyzed.
+  // Path  of the repo to be analyzed.
   val repoPath = "${args[0]}/"
 
   val testFileExemptiontextProto = "scripts/assets/test_file_exemptions"
