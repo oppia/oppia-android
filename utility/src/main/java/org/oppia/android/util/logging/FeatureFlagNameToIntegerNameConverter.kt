@@ -13,7 +13,6 @@ import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
-import javax.inject.Inject
 
 /**
  * Converter for feature flag names to integers for more compact logging to address Google
@@ -22,7 +21,7 @@ import javax.inject.Inject
  *
  * See https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.html#logEvent(java.lang.String,android.os.Bundle)
  */
-class FeatureFlagNameToIntegerNameConverter @Inject constructor() {
+object FeatureFlagNameToIntegerNameConverter {
   /**
    * Converts a feature flag name to an integer.
    *
