@@ -18,7 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -113,33 +112,16 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkTopicsCompletedFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkTopicsCompletedTestActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {
@@ -413,19 +395,25 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedTestActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
+      scenario.onActivity { assertThat(it.isFinishing).isTrue() }
+    }
   }
 
   @Test
   fun testMarkTopicsCompletedFragment_configChange_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedTestActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
+      scenario.onActivity { assertThat(it.isFinishing).isTrue() }
+    }
   }
 
   @Test

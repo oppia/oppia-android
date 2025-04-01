@@ -169,6 +169,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
             val params = IntroActivityParams.newBuilder()
               .setProfileNickname(profileName)
+              .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
               .build()
 
             val intent =
