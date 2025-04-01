@@ -307,18 +307,29 @@ class StateDeck constructor(
     revisionIndex = NO_REVISION_INDEX
   }
 
+  /**  Checks if the given state was previously visited. */
+  fun wasStateVisitedBefore(stateName: String): Boolean {
+    return getStateIndex(stateName) != null
+  }
+
+  /** Sets [revisionIndex] to the index of the given state if found. */
+  fun setRevisionIndexIfVisited(stateName: String) {
+    getStateIndex(stateName)?.let {
+      revisionIndex = it
+    }
+  }
+
   /**
-   * Checks if the given state is present in the [previousStates] list.
-   * If found, sets [revisionIndex] to the corresponding index.
+   * Finds the index of the given state in the [previousStates] list.
+   * Returns the index if found, or null otherwise.
    */
-  fun findPreviouslyVisitedState(stateName: String): Boolean {
+  private fun getStateIndex(stateName: String): Int? {
     for (i in previousStates.size - 1 downTo 0) {
       if (previousStates[i].state.name == stateName) {
-        revisionIndex = i
-        return true
+        return i
       }
     }
-    return false
+    return null
   }
 
   /** Enables the learn again button by setting [shouldShowLearnAgainButton] to true. */

@@ -3284,6 +3284,66 @@ class ExplorationProgressControllerTest {
     assertThat(getAggregateTopicTime()).isEqualTo(sessionTime)
   }
 
+  @Test
+  fun testSubmitAnswer_forSofterRedirection_receivesNeedToRevisitOldCard_stateType() {
+    restartExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughRatioExplorationState1()
+    playThroughRatioExplorationState2()
+    playThroughRatioExplorationState3()
+    playThroughRatioExplorationState4()
+    playThroughRatioExplorationState5()
+    playThroughRatioExplorationState6()
+    playThroughRatioExplorationState7()
+    playThroughRatioExplorationState8()
+    playThroughRatioExplorationState9()
+    playThroughRatioExplorationState10()
+    playThroughRatioExplorationState11()
+    playThroughRatioExplorationState12()
+    playThroughRatioExplorationState13()
+    playThroughRatioExplorationState14()
+    playThroughRatioExplorationState15()
+
+    val ephemeralState = submitMultipleChoiceAnswer(1)
+
+    // Verify state type as expected for softer redirection.
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(StateTypeCase.NEED_TO_REVISIT_OLD_CARD)
+  }
+
+  @Test
+  fun testAnswerOutcome_forSofterRedirection_receivesPreviousStateName() {
+    restartExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughRatioExplorationState1()
+    playThroughRatioExplorationState2()
+    playThroughRatioExplorationState3()
+    playThroughRatioExplorationState4()
+    playThroughRatioExplorationState5()
+    playThroughRatioExplorationState6()
+    playThroughRatioExplorationState7()
+    playThroughRatioExplorationState8()
+    playThroughRatioExplorationState9()
+    playThroughRatioExplorationState10()
+    playThroughRatioExplorationState11()
+    playThroughRatioExplorationState12()
+    playThroughRatioExplorationState13()
+    playThroughRatioExplorationState14()
+    playThroughRatioExplorationState15()
+
+    val result = explorationProgressController.submitAnswer(
+      createMultipleChoiceAnswer(1)
+    )
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
+
+    // Verify that the answer outcome as expected for softer redirection.
+    assertThat(answerOutcome.destinationCase)
+      .isEqualTo(AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME)
+  }
+
   private fun getAggregateTopicTime(): Long {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -3822,6 +3882,73 @@ class ExplorationProgressControllerTest {
     endExploration()
 
     return retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+  }
+
+  private fun playThroughRatioExplorationState1(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState2(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState3(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState4(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState5(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState6(): EphemeralState {
+    submitTextInputAnswer("2 to 5")
+    return moveToNextState()
+  }
+
+  private fun playThroughRatioExplorationState7(): EphemeralState {
+    submitTextInputAnswer("3 to 1")
+    return moveToNextState()
+  }
+  private fun playThroughRatioExplorationState8(): EphemeralState {
+    submitTextInputAnswer("2:3")
+    return moveToNextState()
+  }
+
+  private fun playThroughRatioExplorationState9(): EphemeralState {
+    submitTextInputAnswer("5:2")
+    return moveToNextState()
+  }
+
+  private fun playThroughRatioExplorationState10(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState11(): EphemeralState {
+    submitMultipleChoiceAnswer(2)
+    return moveToNextState()
+  }
+
+  private fun playThroughRatioExplorationState12(): EphemeralState {
+    return submitContinueButtonAnswerAndContinue()
+  }
+
+  private fun playThroughRatioExplorationState13(): EphemeralState {
+    submitTextInputAnswer("1:4")
+    return moveToNextState()
+  }
+
+  private fun playThroughRatioExplorationState14(): EphemeralState {
+    submitTextInputAnswer("1:4")
+    return moveToNextState()
+  }
+
+  private fun playThroughRatioExplorationState15(): EphemeralState {
+    submitTextInputAnswer("2:1")
+    return moveToNextState()
   }
 
   // TODO(#89): Move this to a common test application component.
