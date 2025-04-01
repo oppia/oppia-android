@@ -17,7 +17,7 @@ concurrency:
 jobs:
   build_oppia_aab:
     name: Build Oppia AAB (${{ matrix.flavor }} flavor)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         flavor: [dev, alpha, beta, ga]

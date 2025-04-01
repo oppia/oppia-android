@@ -10,7 +10,7 @@ on:
 jobs:
   check_lesson_compatibility:
     name: Check production lesson conversion
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3

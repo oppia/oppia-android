@@ -12,7 +12,7 @@ permissions:
 jobs:
   script_check:
     name: Closed TODO Issue Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
 
