@@ -3341,7 +3341,7 @@ class ExplorationProgressControllerTest {
     )
     val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
 
-    // Verify that the answer outcome as expected for softer redirection.
+    // Verify answer outcome as expected for softer redirection.
     assertThat(answerOutcome.destinationCase)
       .isEqualTo(AnswerOutcome.DestinationCase.PREVIOUS_STATE_NAME)
   }
