@@ -32,9 +32,9 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.AndroidLocaleFactory
 import org.oppia.android.util.locale.DisplayLocaleImpl
-import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
 import org.robolectric.annotation.LooperMode
@@ -531,7 +531,7 @@ class CustomHtmlContentHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleTestModule::class
     ]
   )
 

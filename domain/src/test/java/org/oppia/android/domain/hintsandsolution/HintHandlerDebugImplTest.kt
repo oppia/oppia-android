@@ -43,7 +43,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
@@ -427,9 +427,9 @@ class HintHandlerDebugImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      TestModule::class, HintsAndSolutionConfigModule::class, TestLogReportingModule::class,
+      TestDispatcherModule::class, RobolectricModule::class, LoggerModule::class,
+      AssetModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
       ExplorationStorageTestModule::class
     ]
   )
