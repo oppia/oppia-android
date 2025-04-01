@@ -21,7 +21,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -116,27 +115,14 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class AdminAuthActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private val internalProfileId: Int = 0
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<AdminAuthActivity> = ActivityTestRule(
-    AdminAuthActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
 
   @Before
   fun setUp() {
@@ -629,7 +615,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_forProfileAdminControls_hasAuthorizeAccessControlsTitle() {
-    activityTestRule.launchActivity(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
@@ -637,19 +623,22 @@ class AdminAuthActivityTest {
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
       )
-    )
-    val title = activityTestRule.activity.title
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(
-      context.getString(R.string.admin_auth_activity_access_controls_title)
-    )
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(
+          context.getString(R.string.admin_auth_activity_access_controls_title)
+        )
+      }
+    }
   }
 
   @Test
   fun testAdminAuthActivity_forAddProfile_hasAuthorizeAddProfileTitle() {
-    activityTestRule.launchActivity(
+    launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
         adminPin = "12345",
@@ -657,12 +646,16 @@ class AdminAuthActivityTest {
         colorRgb = -10710042,
         adminPinEnum = AdminAuthEnum.PROFILE_ADD_PROFILE.value
       )
-    )
-    val title = activityTestRule.activity.title
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title)
+          .isEqualTo(context.getString(R.string.admin_auth_activity_add_profiles_title))
+      }
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.

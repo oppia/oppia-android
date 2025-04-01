@@ -64,7 +64,7 @@ The new comment should include an explicit indication of whether the audit was c
 ### Step 3: Testing the app & filing problems
 
 Compatibility with the new target SDK should be done by:
-1. Building a local production [Bazel build](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions#building-the-app) of the app (``//:oppia_beta``) and deployed to a local emulator or device running the **same** version of Android as the new target SDK version.
+1. Building a local production [Bazel build](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel) of the app (``//:oppia_beta``) and deployed to a local emulator or device running the **same** version of Android as the new target SDK version.
     - Note that this requires the local app's target SDK to be temporarily upgraded (see step (5) below) but not checked in.
     - In some cases, a real device may need to be used instead of an emulator since certain features change behavior on an emulator (such as the drag and drop interaction).
     - If the app isn't already using the new version of Android as its compile SDK version, then it may fail to build. Any build failures should be filed as issues on the issue tracker and fixed before this step of the process can continue.
