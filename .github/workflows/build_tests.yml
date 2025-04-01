@@ -92,5 +92,5 @@ jobs:
           if [[ "${{ matrix.flavor }}" == "dev" ]]; then
             bazel build -- //:oppia_${{ matrix.flavor }}
           else
-            bazel build --compilation_mode=opt -- //:oppia${{ matrix.flavor }}
+            bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi
