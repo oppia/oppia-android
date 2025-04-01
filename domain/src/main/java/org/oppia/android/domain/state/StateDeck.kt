@@ -270,7 +270,7 @@ class StateDeck constructor(
 
   /**
    * Returns whether the current scrolled state is the most recent state and learner needs to
-   * revisit to old state.
+   * revisit an old state.
    */
   fun doesCurrentStateNeedToRevisitOldState(): Boolean {
     return isCurrentStateTopOfDeck() && shouldShowLearnAgainButton
