@@ -309,21 +309,17 @@ class ClassroomListFragmentPresenter @Inject constructor(
   }
 
   private fun handleBackPress(profileType: ProfileType) {
-    onBackPressedCallback?.remove()
-
-    onBackPressedCallback = object : OnBackPressedCallback(true) {
-      override fun handleOnBackPressed() {
-        exitProfileListener.exitProfile(profileType)
-        // The dispatcher can hold a reference to the host
-        // so we need to null it out to prevent memory leaks.
-        this.remove()
-        onBackPressedCallback = null
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          exitProfileListener.exitProfile(profileType)
+          // The dispatcher can hold a reference to the host
+          // so we need to null it out to prevent memory leaks.
+          this.remove()
+        }
       }
-    }
-
-    onBackPressedCallback?.let { callback ->
-      activity.onBackPressedDispatcher.addCallback(fragment, callback)
-    }
+    )
   }
 }
 

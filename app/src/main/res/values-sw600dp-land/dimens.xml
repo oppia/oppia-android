@@ -71,7 +71,10 @@
   <dimen name="submitted_answer_exploration_split_view_margin_top_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_start_no_extra_interaction_answer">40dp</dimen>
   <dimen name="submitted_answer_question_split_view_margin_top_extra_interaction_answer">40dp</dimen>
-  <dimen name="profile_chooser_profile_view_divider_margin_top">40dp</dimen>
+
+  <dimen name="profile_selection_fragment_recyclerview_margin_single_item">120dp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_margin_few_items">72dp</dimen>
+  <dimen name="profile_selection_fragment_recyclerview_margin_many_items">16dp</dimen>
 
   <!-- Content Item: Exploration Split View -->
   <dimen name="content_item_exploration_split_view_margin_start">24dp</dimen>
