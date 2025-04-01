@@ -307,7 +307,7 @@ class StateDeck constructor(
     revisionIndex = NO_REVISION_INDEX
   }
 
-  /**  Checks if the given state was previously visited. */
+  /** Checks if the given state was previously visited. */
   fun wasStateVisitedBefore(stateName: String): Boolean {
     return getStateIndex(stateName) != null
   }

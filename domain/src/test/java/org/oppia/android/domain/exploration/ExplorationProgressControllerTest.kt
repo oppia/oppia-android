@@ -19,6 +19,7 @@ import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.ClickOnImage
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
+import org.oppia.android.app.model.EphemeralState.StateTypeCase.NEED_TO_REVISIT_OLD_CARD
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
@@ -76,6 +77,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
+import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -124,6 +126,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EphemeralState.StateTypeCase
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -3309,7 +3312,7 @@ class ExplorationProgressControllerTest {
     val ephemeralState = submitMultipleChoiceAnswer(1)
 
     // Verify state type as expected for softer redirection.
-    assertThat(ephemeralState.stateTypeCase).isEqualTo(StateTypeCase.NEED_TO_REVISIT_OLD_CARD)
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(NEED_TO_REVISIT_OLD_CARD)
   }
 
   @Test
