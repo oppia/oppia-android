@@ -1,0 +1,20 @@
+"""
+Test-only bundled modules for data layer tests.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "data_test_configuration_bundle_module",
+    testonly = True,
+    srcs = ["DataTestConfigurationBundleModule.kt"],
+    visibility = [
+        "//data:data_testing_visibility",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/domain:__pkg__",
+    ],
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/utility:utility_test_configuration_bundle_module",
+        "//testing/src/main/java/org/oppia/android/testing/network:test_module",
+    ],
+)

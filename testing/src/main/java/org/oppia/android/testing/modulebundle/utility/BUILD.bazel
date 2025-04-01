@@ -1,0 +1,79 @@
+"""
+Test-only bundled modules for utility layer tests.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "asset_bundle_module",
+    testonly = True,
+    srcs = ["AssetBundleModule.kt"],
+    visibility = ["//utility:utility_testing_visibility"],
+    deps = [
+        "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
+        "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
+    ],
+)
+
+kt_android_library(
+    name = "clock_bundle_module",
+    testonly = True,
+    srcs = ["ClockBundleModule.kt"],
+    visibility = ["//utility:utility_testing_visibility"],
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
+        "//utility/src/main/java/org/oppia/android/util/system:prod_module",
+    ],
+)
+
+# Note that RepositoryGlideModule is essentially a runtime dependency.
+kt_android_library(
+    name = "image_loading_bundle_module",
+    testonly = True,
+    srcs = ["ImageLoadingBundleModule.kt"],
+    visibility = ["//utility:utility_testing_visibility"],
+    deps = [
+        "//testing",
+        "//utility/src/main/java/org/oppia/android/util/gcsresource:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser_entity_type_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:image_parsing_module",
+        "//utility/src/main/java/org/oppia/android/util/parser/image:repository_glide_module",
+    ],
+)
+
+kt_android_library(
+    name = "utility_logging_bundle_module",
+    testonly = True,
+    srcs = ["UtilityLoggingBundleModule.kt"],
+    visibility = [
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/domain:__pkg__",
+        "//utility:utility_testing_visibility",
+    ],
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
+        "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+    ],
+)
+
+kt_android_library(
+    name = "utility_test_configuration_bundle_module",
+    testonly = True,
+    srcs = ["UtilityTestConfigurationBundleModule.kt"],
+    visibility = [
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/data:__pkg__",
+        "//utility:utility_testing_visibility",
+    ],
+    deps = [
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle:base_test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//utility/src/main/java/org/oppia/android/util/accessibility:test_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/networking:debug_util_module",
+    ],
+)

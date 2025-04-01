@@ -1,0 +1,88 @@
+"""
+Test-only bundled modules for domain layer tests.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "classify_bundle_module",
+    testonly = True,
+    srcs = ["ClassifyBundleModule.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput:algebraic_expression_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/continueinteraction:continue_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/dragAndDropSortInput:drag_and_drop_sort_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/fractioninput:fraction_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/imageClickInput:image_click_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/itemselectioninput:item_selection_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput:math_equation_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/multiplechoiceinput:multiple_choice_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numberwithunits:number_with_units_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericexpressioninput:numeric_expression_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
+        "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+    ],
+)
+
+kt_android_library(
+    name = "domain_logging_bundle_module",
+    testonly = True,
+    srcs = ["DomainLoggingBundleModule.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:logger_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler:metric_log_scheduler_module",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/utility:utility_logging_bundle_module",
+    ],
+)
+
+kt_android_library(
+    name = "domain_test_configuration_bundle_module",
+    testonly = True,
+    srcs = ["DomainTestConfigurationBundleModule.kt"],
+    visibility = [
+        "//domain:domain_testing_visibility",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/app:__pkg__",
+    ],
+    deps = [
+        "//domain",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
+        "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
+        "//testing/src/main/java/org/oppia/android/testing/firebase:test_authentication_module",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/data:data_test_configuration_bundle_module",
+    ],
+)
+
+kt_android_library(
+    name = "hints_with_fast_times_bundle_module",
+    testonly = True,
+    srcs = ["HintsWithFastTimesBundleModule.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = ["//domain"],
+)
+
+kt_android_library(
+    name = "hints_with_prod_times_bundle_module",
+    testonly = True,
+    srcs = ["HintsWithProdTimesBundleModule.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = ["//domain"],
+)
+
+kt_android_library(
+    name = "platform_parameter_bundle_module",
+    testonly = True,
+    srcs = ["PlatformParameterBundleModule.kt"],
+    visibility = ["//domain:domain_testing_visibility"],
+    deps = [
+        "//domain",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+    ],
+)

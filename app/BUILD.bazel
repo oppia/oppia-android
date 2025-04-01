@@ -33,6 +33,7 @@ package_group(
 # Visibility for migrated app tests.
 package_group(
     name = "app_testing_visibility",
+    includes = [":app_visibility"],  # TODO(#1607): Remove with app modularization.
     packages = [
         "//app/src/sharedTest/...",
         "//app/src/test/...",

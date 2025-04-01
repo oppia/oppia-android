@@ -1,0 +1,19 @@
+"""
+Package for test-only convenience bundled modules for simplifying test Dagger components.
+
+Note that tests should generally only use bundles corresponding to their layer in the app stack, or
+'below'.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "base_test_module",
+    testonly = True,
+    srcs = ["BaseTestModule.kt"],
+    visibility = ["//testing/src/main/java/org/oppia/android/testing/modulebundle/utility:__pkg__"],
+    deps = [
+        "//:dagger",
+        "//third_party:javax_inject_javax_inject",
+    ],
+)

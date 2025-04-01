@@ -80,6 +80,7 @@ kt_android_library(
         "ApplicationModule.kt",
         "ApplicationStartupListenerModule.kt",
     ],
+    visibility = ["//testing/src/main/java/org/oppia/android/testing/modulebundle/app:__pkg__"],
     deps = [
         "//app",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",

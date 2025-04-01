@@ -144,7 +144,10 @@ kt_android_library(
     srcs = [
         "RepositoryGlideModule.kt",
     ],
-    visibility = ["//app:__subpackages__"],
+    visibility = [
+        "//app:__subpackages__",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/utility:__pkg__",
+    ],
     deps = [
         ":image_asset_fetcher",
         ":repository_model_loader",

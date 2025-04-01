@@ -1,0 +1,35 @@
+"""
+Test-only bundled modules for app layer tests.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "activity_routing_bundle_module",
+    testonly = True,
+    srcs = ["ActivityRoutingBundleModule.kt"],
+    visibility = ["//app:app_testing_visibility"],
+    deps = ["//app"],
+)
+
+kt_android_library(
+    name = "app_test_configuration_bundle_module",
+    testonly = True,
+    srcs = ["AppTestConfigurationBundleModule.kt"],
+    visibility = ["//app:app_testing_visibility"],
+    deps = [
+        "//app",
+        "//app/src/main/java/org/oppia/android/app/application:modules",
+        "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
+        "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/modulebundle/domain:domain_test_configuration_bundle_module",
+    ],
+)
+
+kt_android_library(
+    name = "developer_options_bundle_module",
+    testonly = True,
+    srcs = ["DeveloperOptionsBundleModule.kt"],
+    visibility = ["//app:app_testing_visibility"],
+    deps = ["//app"],
+)

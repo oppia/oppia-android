@@ -11,6 +11,14 @@ filegroup(
     visibility = ["//:oppia_testing_visibility"],
 )
 
+# Visibility for data tests.
+package_group(
+    name = "data_testing_visibility",
+    packages = [
+        "//data/src/test/...",
+    ],
+)
+
 # keep sorted
 TEST_DEPS = [
     "//:dagger",
