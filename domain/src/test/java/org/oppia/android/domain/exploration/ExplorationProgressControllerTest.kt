@@ -126,7 +126,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.EphemeralState.StateTypeCase
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
