@@ -4115,6 +4115,70 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/app/ActivityRoutingBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/app/AppTestConfigurationBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/app/DeveloperOptionsBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/BaseTestModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/data/DataTestConfigurationBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/domain/ClassifyBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/domain/DomainLoggingBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/domain/DomainTestConfigurationBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/domain/HintsWithFastTimesBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/domain/HintsWithProdTimesBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/domain/PlatformParameterBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/utility/AssetBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/utility/ClockBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/utility/ImageLoadingBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/utility/UtilityLoggingBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/modulebundle/utility/UtilityTestConfigurationBundleModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/ApiMockLoader.kt"
   test_file_not_required: true
 }

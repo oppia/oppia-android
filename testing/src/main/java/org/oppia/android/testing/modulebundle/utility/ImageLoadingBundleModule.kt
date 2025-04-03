@@ -13,8 +13,10 @@ import org.oppia.android.util.parser.image.ImageParsingModule
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  GcsResourceModule::class, HtmlParserEntityTypeModule::class, ImageParsingModule::class,
-  TestImageLoaderModule::class
-])
+@Module(
+  includes = [
+    GcsResourceModule::class, HtmlParserEntityTypeModule::class, ImageParsingModule::class,
+    TestImageLoaderModule::class
+  ]
+)
 interface ImageLoadingBundleModule

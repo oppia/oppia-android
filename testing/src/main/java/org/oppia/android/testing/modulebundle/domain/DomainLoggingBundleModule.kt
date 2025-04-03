@@ -17,10 +17,12 @@ import org.oppia.android.testing.modulebundle.utility.UtilityLoggingBundleModule
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
-  LoggingIdentifierModule::class, LogReportWorkerModule::class, LogStorageModule::class,
-  MetricLogSchedulerModule::class, UncaughtExceptionLoggerModule::class,
-  UtilityLoggingBundleModule::class
-])
+@Module(
+  includes = [
+    ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
+    LoggingIdentifierModule::class, LogReportWorkerModule::class, LogStorageModule::class,
+    MetricLogSchedulerModule::class, UncaughtExceptionLoggerModule::class,
+    UtilityLoggingBundleModule::class
+  ]
+)
 interface DomainLoggingBundleModule

@@ -14,9 +14,11 @@ import org.oppia.android.testing.modulebundle.data.DataTestConfigurationBundleMo
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  DataTestConfigurationBundleModule::class, ExpirationMetaDataRetrieverTestModule::class,
-  ExplorationProgressModule::class, ExplorationStorageTestModule::class,
-  TestAuthenticationModule::class
-])
+@Module(
+  includes = [
+    DataTestConfigurationBundleModule::class, ExpirationMetaDataRetrieverTestModule::class,
+    ExplorationProgressModule::class, ExplorationStorageTestModule::class,
+    TestAuthenticationModule::class
+  ]
+)
 interface DomainTestConfigurationBundleModule

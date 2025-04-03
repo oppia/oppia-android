@@ -10,7 +10,9 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
  * Unlike ``HintsWithProdTimesBundleModule`` this configures tests to show hints quickly rather than
  * needing to wait for the normal clock time changes.
  */
-@Module(includes = [
-  HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class
-])
+@Module(
+  includes = [
+    HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class
+  ]
+)
 interface HintsWithFastTimesBundleModule

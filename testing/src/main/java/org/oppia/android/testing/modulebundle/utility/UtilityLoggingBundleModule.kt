@@ -15,9 +15,11 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfi
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  FirebaseLogUploaderModule::class, LoggerModule::class, LogReportingModule::class,
-  PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-  SyncStatusTestModule::class
-])
+@Module(
+  includes = [
+    FirebaseLogUploaderModule::class, LoggerModule::class, LogReportingModule::class,
+    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
+    SyncStatusTestModule::class
+  ]
+)
 interface UtilityLoggingBundleModule

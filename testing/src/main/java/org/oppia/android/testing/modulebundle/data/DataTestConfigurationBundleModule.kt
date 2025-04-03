@@ -12,8 +12,10 @@ import org.oppia.android.testing.network.RetrofitTestModule
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  RetrofitTestModule::class, NetworkConfigProdModule::class,
-  UtilityTestConfigurationBundleModule::class
-])
+@Module(
+  includes = [
+    RetrofitTestModule::class, NetworkConfigProdModule::class,
+    UtilityTestConfigurationBundleModule::class
+  ]
+)
 interface DataTestConfigurationBundleModule

@@ -14,9 +14,11 @@ import org.oppia.android.testing.modulebundle.domain.DomainTestConfigurationBund
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  ActivityRecreatorTestModule::class, ApplicationStartupListenerModule::class,
-  DomainTestConfigurationBundleModule::class, SplitScreenInteractionModule::class,
-  TestingBuildFlavorModule::class
-])
+@Module(
+  includes = [
+    ActivityRecreatorTestModule::class, ApplicationStartupListenerModule::class,
+    DomainTestConfigurationBundleModule::class, SplitScreenInteractionModule::class,
+    TestingBuildFlavorModule::class
+  ]
+)
 interface AppTestConfigurationBundleModule

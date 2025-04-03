@@ -19,10 +19,12 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
  * used instead of its prod variant, but the prod variant is essentially never expected to be used
  * in tests).
  */
-@Module(includes = [
-  AccessibilityTestModule::class, LocaleTestModule::class, NetworkConnectionDebugUtilModule::class,
-  NetworkConnectionUtilDebugModule::class, RobolectricModule::class, TestLogReportingModule::class,
-  TestDispatcherModule::class,
-  BaseTestModule::class // TODO: Figure out which config module needs this.
-])
+@Module(
+  includes = [
+    AccessibilityTestModule::class, LocaleTestModule::class,
+    NetworkConnectionDebugUtilModule::class, NetworkConnectionUtilDebugModule::class,
+    RobolectricModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
+    BaseTestModule::class
+  ]
+)
 interface UtilityTestConfigurationBundleModule

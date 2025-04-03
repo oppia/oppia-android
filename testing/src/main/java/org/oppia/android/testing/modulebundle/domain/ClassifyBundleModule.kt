@@ -23,11 +23,14 @@ import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
  * Note that there are no configuration varieties for these modules, so in most cases this module
  * can be included as-is.
  */
-@Module(includes = [
-  AlgebraicExpressionInputModule::class, ContinueModule::class, DragDropSortInputModule::class,
-  FractionInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-  ItemSelectionInputModule::class, MathEquationInputModule::class, MultipleChoiceInputModule::class,
-  NumberWithUnitsRuleModule::class, NumericExpressionInputModule::class,
-  NumericInputRuleModule::class, RatioInputModule::class, TextInputRuleModule::class
-])
+@Module(
+  includes = [
+    AlgebraicExpressionInputModule::class, ContinueModule::class, DragDropSortInputModule::class,
+    FractionInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
+    ItemSelectionInputModule::class, MathEquationInputModule::class,
+    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
+    NumericExpressionInputModule::class, NumericInputRuleModule::class, RatioInputModule::class,
+    TextInputRuleModule::class
+  ]
+)
 interface ClassifyBundleModule
