@@ -14,6 +14,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers

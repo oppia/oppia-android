@@ -32,6 +32,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -48,6 +49,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
@@ -61,6 +63,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -80,12 +83,14 @@ oppia_android_test(
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
+        "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
@@ -104,6 +109,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -120,6 +126,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+        "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
@@ -133,6 +140,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -163,6 +171,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -189,6 +198,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/numericinput:numeric_input_rule_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/ratioinput:ratio_input_module",
         "//domain/src/main/java/org/oppia/android/domain/classify/rules/textinput:text_input_rule_module",
+        "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:learner_analytics_logger",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
@@ -196,6 +206,7 @@ oppia_android_test(
         "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
         "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -207,6 +218,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -238,6 +250,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -268,6 +281,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -298,6 +312,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -330,6 +345,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -348,6 +364,8 @@ oppia_android_test(
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
         "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
+        "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
@@ -358,6 +376,7 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
