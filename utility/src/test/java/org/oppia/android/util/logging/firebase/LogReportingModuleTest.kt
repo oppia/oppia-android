@@ -13,15 +13,15 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -109,8 +109,8 @@ class LogReportingModuleTest {
     modules = [
       TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
+      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

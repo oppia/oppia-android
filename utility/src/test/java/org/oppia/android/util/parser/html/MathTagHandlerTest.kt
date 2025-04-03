@@ -34,7 +34,7 @@ import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.CustomTagHandler
@@ -510,7 +510,7 @@ class MathTagHandlerTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class, LoggerModule::class, LocaleTestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -16,7 +16,7 @@ import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.logging.firebase.LogReportingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -64,7 +64,7 @@ class TestAuthenticationModuleTest {
   @Component(
     modules = [
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      DebugLogReportingModule::class, TestAuthenticationModule::class
+      LogReportingModule::class, TestAuthenticationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

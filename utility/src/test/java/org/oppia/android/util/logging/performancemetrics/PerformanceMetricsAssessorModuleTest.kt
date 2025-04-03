@@ -19,7 +19,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
@@ -84,7 +84,7 @@ class PerformanceMetricsAssessorModuleTest {
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
       TestDispatcherModule::class, TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class,
-      LocaleProdModule::class
+      LocaleTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

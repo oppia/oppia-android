@@ -17,12 +17,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
-import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.logging.EnableConsoleLog
-import org.oppia.android.util.logging.EnableFileLog
-import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
@@ -36,17 +30,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class NetworkConnectionUtilProdImplTest {
+  @Inject lateinit var networkConnectionUtil: NetworkConnectionUtilProdImpl
+  @Inject lateinit var context: Context
+  @Inject lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
 
   private val NO_CONNECTION = -1
-
-  @Inject
-  lateinit var networkConnectionUtil: NetworkConnectionUtil
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
 
   @Before
   fun setUp() {
@@ -185,30 +173,11 @@ class NetworkConnectionUtilProdImplTest {
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // TODO(#59): Either isolate these to their own shared test module, or use the real logging
-    // module in tests to avoid needing to specify these settings for tests.
-    @EnableConsoleLog
-    @Provides
-    fun provideEnableConsoleLog(): Boolean = true
-
-    @EnableFileLog
-    @Provides
-    fun provideEnableFileLog(): Boolean = false
-
-    @GlobalLogLevel
-    @Provides
-    fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(
-    modules = [
-      TestModule::class, NetworkConnectionUtilProdModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
-    ]
-  )
+  @Component(modules = [TestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

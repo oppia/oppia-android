@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -298,11 +299,7 @@ class MachineLocaleImplTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(
-    modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
-    ]
-  )
+  @Component(modules = [TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

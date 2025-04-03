@@ -23,7 +23,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.BLOCK_IMAGE
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler.ImageRetriever.Type.INLINE_TEXT_IMAGE
@@ -287,7 +287,7 @@ class UrlImageParserTest {
       TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, LoggerModule::class, TestImageLoaderModule::class,
       CachingTestModule::class, ImageParsingModule::class, AssetModule::class,
-      LocaleProdModule::class
+      LocaleTestModule::class
     ]
   )
   interface TestApplicationComponent {

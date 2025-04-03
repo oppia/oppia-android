@@ -24,10 +24,10 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -35,7 +35,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -173,11 +173,12 @@ class PerformanceMetricsLogSchedulerTest {
   @Component(
     modules = [
       TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      RobolectricModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
       TestDispatcherModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class, LoggerModule::class,
+      AssetModule::class, TestPlatformParameterModule::class,
+      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      SyncStatusTestModule::class, TestLogReportingModule::class,
       PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
     ]

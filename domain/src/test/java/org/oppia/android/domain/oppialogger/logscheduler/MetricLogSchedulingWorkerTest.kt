@@ -50,7 +50,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
@@ -267,7 +267,7 @@ class MetricLogSchedulingWorkerTest {
       TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
       TestDispatcherModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class, LoggerModule::class,
       AssetModule::class, TestPlatformParameterModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,

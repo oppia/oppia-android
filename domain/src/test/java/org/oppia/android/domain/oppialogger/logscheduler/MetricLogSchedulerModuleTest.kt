@@ -14,7 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.robolectric.annotation.Config
@@ -62,7 +62,7 @@ class MetricLogSchedulerModuleTest {
   @Component(
     modules = [
       TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      RobolectricModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {
