@@ -190,8 +190,8 @@ class RemoteAuthNetworkInterceptorTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestNetworkModule::class, TestModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class
+      RobolectricModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -13,7 +13,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
@@ -113,8 +114,8 @@ class MockPlatformParameterServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class, TestDispatcherModule::class,
-      RetrofitTestModule::class, NetworkConfigProdModule::class, RobolectricModule::class,
+      TestModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      TestDispatcherModule::class, NetworkConfigProdModule::class, RobolectricModule::class,
     ]
   )
   interface TestApplicationComponent {

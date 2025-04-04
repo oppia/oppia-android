@@ -3,19 +3,13 @@ package org.oppia.android.data.backends.gae
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
-/**
- * Module which provides all required dependencies about network
- *
- * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
- */
+/** Module which provides [Retrofit] (qualified by [OppiaRetrofit]). */
 @Module
-class NetworkModule {
+class RetrofitModule {
   @OppiaRetrofit
   @Provides
   @Singleton
@@ -41,26 +35,4 @@ class NetworkModule {
       )
     }.build()
   }
-
-  @Provides
-  @Singleton
-  fun provideFeedbackReportingService(
-    @OppiaRetrofit retrofit: Retrofit
-  ): FeedbackReportingService {
-    return retrofit.create(FeedbackReportingService::class.java)
-  }
-
-  @Provides
-  @Singleton
-  fun providePlatformParameterService(
-    @OppiaRetrofit retrofit: Retrofit
-  ): PlatformParameterService {
-    return retrofit.create(PlatformParameterService::class.java)
-  }
-
-  // Provides the API key to use in authenticating remote messages sent or received. This will be
-  // replaced with a secret key in production builds.
-  @Provides
-  @NetworkApiKey
-  fun provideNetworkApiKey(): String = ""
 }
