@@ -7,11 +7,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.network.ApiMockLoader.Companion.openAssetInputStream
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -81,9 +82,18 @@ class JsonPrefixNetworkInterceptorTest {
       .inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkConfigProdModule::class])
+  @Component(modules = [TestModule::class, NetworkConfigProdModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
