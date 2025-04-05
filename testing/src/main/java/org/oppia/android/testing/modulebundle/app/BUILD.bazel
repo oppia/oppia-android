@@ -5,14 +5,6 @@ Test-only bundled modules for app layer tests.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "activity_routing_bundle_module",
-    testonly = True,
-    srcs = ["ActivityRoutingBundleModule.kt"],
-    visibility = ["//app:app_testing_visibility"],
-    deps = ["//app"],
-)
-
-kt_android_library(
     name = "app_test_configuration_bundle_module",
     testonly = True,
     srcs = ["AppTestConfigurationBundleModule.kt"],
