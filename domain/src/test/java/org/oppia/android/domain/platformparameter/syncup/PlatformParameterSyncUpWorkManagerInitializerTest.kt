@@ -19,9 +19,9 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -169,7 +169,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       RetrofitServiceModule::class,
       RetrofitTestModule::class, FakeOppiaClockModule::class, TestPlatformParameterModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
+      NetworkConfigTestModule::class, PlatformParameterSingletonModule::class,
       LocaleTestModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusTestModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class

@@ -39,10 +39,10 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -711,7 +711,7 @@ class ApplicationLifecycleObserverTest {
       FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
       WorkManagerConfigurationModule::class, TestAuthenticationModule::class, RetrofitModule::class,
       RetrofitServiceModule::class,
-      NetworkConfigProdModule::class, ApplicationModule::class, ExplorationStorageTestModule::class,
+      NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageTestModule::class,
       HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
       InteractionsModule::class, AlgebraicExpressionInputModule::class, ContinueModule::class,
       DragDropSortInputModule::class, FractionInputModule::class, ImageClickInputModule::class,

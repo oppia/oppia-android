@@ -16,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -44,9 +43,9 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -80,9 +79,9 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -97,19 +96,10 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
-import org.oppia.android.util.logging.AnalyticsEventLogger
-import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
-import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
-import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
-import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
-import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -696,37 +686,6 @@ class ViewEventLogsFragmentTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
-  @Module
-  class TestLogReportingModule {
-    @Provides
-    @Singleton
-    fun provideExceptionLogger(): ExceptionLogger =
-      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
-
-    @Provides
-    @Singleton
-    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
-      AnalyticsEventLogger = debugAnalyticsEventLogger
-
-    @Provides
-    @Singleton
-    fun providePerformanceMetricsEventLogger(
-      factory: FirebaseAnalyticsEventLogger.Factory
-    ): PerformanceMetricsEventLogger =
-      factory.createPerformanceMetricEventLogger()
-
-    @Provides
-    @Singleton
-    fun provideDebugFirestoreEventLogger(
-      debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl
-    ): FirestoreEventLogger = debugFirestoreEventLogger
-
-    @Provides
-    @Singleton
-    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
-      FirestoreInstanceWrapper = wrapperImpl
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -747,7 +706,7 @@ class ViewEventLogsFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageTestModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      NetworkConfigProdModule::class,
+      NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleTestModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,
@@ -755,7 +714,7 @@ class ViewEventLogsFragmentTest {
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusTestModule::class, MetricLogSchedulerModule::class,
-      PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
+      PerformanceMetricsConfigurationsModule::class,
       TestingBuildFlavorModule::class, ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class,

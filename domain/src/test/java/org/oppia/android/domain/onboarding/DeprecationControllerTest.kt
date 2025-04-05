@@ -37,6 +37,7 @@ import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
@@ -53,7 +54,6 @@ import org.oppia.android.util.platformparameter.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.util.platformparameter.OptionalAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import javax.inject.Inject
@@ -339,7 +339,7 @@ class DeprecationControllerTest {
       LogStorageModule::class, RobolectricModule::class,
       TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
       NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class, LocaleTestModule::class,
+      FakeOppiaClockModule::class, LocaleTestModule::class,
       ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusTestModule::class, TestPlatformParameterModule::class,

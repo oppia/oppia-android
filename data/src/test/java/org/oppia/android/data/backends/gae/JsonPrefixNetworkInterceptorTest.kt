@@ -83,7 +83,7 @@ class JsonPrefixNetworkInterceptorTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkConfigProdModule::class])
+  @Component(modules = [NetworkConfigTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

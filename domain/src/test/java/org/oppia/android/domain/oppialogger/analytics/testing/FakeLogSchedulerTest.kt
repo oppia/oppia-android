@@ -34,6 +34,7 @@ import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -42,7 +43,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -179,7 +179,8 @@ class FakeLogSchedulerTest {
       TestModule::class, LoggerModule::class, TestDispatcherModule::class,
       TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleTestModule::class,
-      OppiaClockModule::class, NetworkConnectionUtilDebugModule::class, TestLogStorageModule::class,
+      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class,
+      TestLogStorageModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       SyncStatusTestModule::class, ApplicationLifecycleModule::class,
       LoggingIdentifierModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class

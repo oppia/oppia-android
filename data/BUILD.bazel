@@ -24,7 +24,6 @@ android_library(
 TEST_DEPS = [
     ":data_assets",
     "//:dagger",
-    "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae:oppia_retrofit",
     "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
     "//data/src/main/java/org/oppia/android/data/backends/gae/model",
