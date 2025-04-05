@@ -25,8 +25,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
@@ -44,19 +42,15 @@ import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
-/** Tests for [NetworkModule]. */
+/** Tests for [RetrofitModule]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = NetworkModuleTest.TestApplication::class)
-class NetworkModuleTest {
-  @field:[Inject NetworkApiKey] lateinit var networkApiKey: String
+@Config(application = RetrofitModuleTest.TestApplication::class)
+class RetrofitModuleTest {
   @field:[Inject OppiaRetrofit] lateinit var retrofit: Retrofit
   @field:[Inject OppiaRetrofit] lateinit var retrofitProvider: Provider<Retrofit>
   @Inject lateinit var context: Context
   @Inject lateinit var mockWebServer: MockWebServer
-  @Inject lateinit var platformParameterService: PlatformParameterService
-  @Inject lateinit var feedbackReportingServiceProvider: Provider<FeedbackReportingService>
-  @Inject lateinit var platformParameterServiceProvider: Provider<PlatformParameterService>
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
 
@@ -176,30 +170,6 @@ class NetworkModuleTest {
     assertThat(firstRequest.body).isEqualTo("{\"field1\":\"field val\",\"field2\":3}")
   }
 
-  @Test
-  fun testInjectedFeedbackReportingService_secondInjection_returnsSingletonInstance() {
-    val firstInjection = feedbackReportingServiceProvider.get()
-    val secondInjection = feedbackReportingServiceProvider.get()
-
-    // Multiple injections should yield the same instance due to it being a singleton.
-    assertThat(firstInjection).isEqualTo(secondInjection)
-  }
-
-  @Test
-  fun testInjectedPlatformParameterService_secondInjection_returnsSingletonInstance() {
-    val firstInjection = platformParameterServiceProvider.get()
-    val secondInjection = platformParameterServiceProvider.get()
-
-    // Multiple injections should yield the same instance due to it being a singleton.
-    assertThat(firstInjection).isEqualTo(secondInjection)
-  }
-
-  @Test
-  fun testInjectedNetworkApiKey_isEmptyByDefault() {
-    // The network API key is empty by default on developer builds.
-    assertThat(networkApiKey).isEmpty()
-  }
-
   private fun setUpTestObjectServiceResponse(field1: String, field2: Int) {
     setUpTestServiceResponse(json = "$XSSI_PREFIX\n{\"field1\":\"$field1\",\"field2\":$field2}")
   }
@@ -254,10 +224,10 @@ class NetworkModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkModule::class, TestDispatcherModule::class, RobolectricModule::class
+      TestModule::class, RetrofitModule::class, TestDispatcherModule::class,
+      RobolectricModule::class
     ]
   )
-
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
@@ -266,17 +236,17 @@ class NetworkModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkModuleTest: NetworkModuleTest)
+    fun inject(networkModuleTest: RetrofitModuleTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerNetworkModuleTest_TestApplicationComponent.builder()
+      DaggerRetrofitModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(networkModuleTest: NetworkModuleTest) {
+    fun inject(networkModuleTest: RetrofitModuleTest) {
       component.inject(networkModuleTest)
     }
   }
