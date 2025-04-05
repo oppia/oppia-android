@@ -12,19 +12,35 @@ kt_android_library(
     deps = [
         "//:dagger",
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
+        "//third_party:androidx_test_core",
         "//third_party:com_squareup_okhttp3_mockwebserver",
+        "//third_party:org_robolectric_robolectric",
     ],
 )
 
 kt_android_library(
-    name = "retrofit_service_test_module",
+    name = "feedback_reporting_service_test_orchestrator",
     testonly = True,
-    srcs = ["RetrofitServiceTestModule.kt"],
+    srcs = ["FeedbackReportingServiceTestOrchestrator.kt"],
     visibility = ["//:oppia_testing_visibility"],
     deps = [
-        "//:dagger",
-        "//data/src/main/java/org/oppia/android/data/backends/gae/api",
-        "//testing/src/main/java/org/oppia/android/testing/network",
-        "//third_party:com_squareup_retrofit2_retrofit-mock",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:moshi",
+    ],
+)
+
+kt_android_library(
+    name = "platform_parameter_service_test_orchestrator",
+    testonly = True,
+    srcs = ["PlatformParameterServiceTestOrchestrator.kt"],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
+        "//third_party:com_squareup_okhttp3_mockwebserver",
+        "//third_party:javax_inject_javax_inject",
+        "//third_party:moshi",
     ],
 )
