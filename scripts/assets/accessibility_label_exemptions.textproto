@@ -32,7 +32,6 @@ exempted_activity: "app/src/main/java/org/oppia/android/app/testing/MathExpressi
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/NavigationDrawerTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/PoliciesFragmentTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/ProfileChooserFragmentTestActivity"
-exempted_activity: "app/src/main/java/org/oppia/android/app/testing/SplashTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/StateAssemblerMarginBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/StateAssemblerPaddingBindingAdaptersTestActivity"
 exempted_activity: "app/src/main/java/org/oppia/android/app/testing/TestFontScaleConfigurationUtilActivity"

@@ -39,9 +39,10 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -708,8 +709,9 @@ class ApplicationLifecycleObserverTest {
       SyncStatusTestModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
       LogReportWorkerModule::class, MetricLogSchedulerModule::class,
       FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
-      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, NetworkModule::class,
-      NetworkConfigProdModule::class, ApplicationModule::class, ExplorationStorageTestModule::class,
+      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, RetrofitModule::class,
+      RetrofitServiceModule::class,
+      NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageTestModule::class,
       HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
       InteractionsModule::class, AlgebraicExpressionInputModule::class, ContinueModule::class,
       DragDropSortInputModule::class, FractionInputModule::class, ImageClickInputModule::class,

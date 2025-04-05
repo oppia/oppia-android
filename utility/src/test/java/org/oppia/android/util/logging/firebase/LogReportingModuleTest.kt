@@ -13,6 +13,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -107,7 +108,7 @@ class LogReportingModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
+      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
       TestPlatformParameterModule::class, LoggerModule::class, SyncStatusTestModule::class,
