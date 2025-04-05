@@ -16,7 +16,7 @@ concurrency:
 jobs:
   check_code_coverage_completed:
     name: Check code coverage completed
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       conclusion: ${{ steps.wait-for-coverage.outputs.run-conclusion }}
     steps:
@@ -46,7 +46,7 @@ jobs:
     # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
     # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
     if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Find the latest Code Coverage Report Comment 
         uses: actions/github-script@v6
