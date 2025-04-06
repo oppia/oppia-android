@@ -28,7 +28,6 @@ import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [FeatureFlagNameToIntegerNameConverter]. */
@@ -39,8 +38,6 @@ import javax.inject.Singleton
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
 @Config(application = FeatureFlagNameToIntegerNameConverterTest.TestApplication::class)
 class FeatureFlagNameToIntegerNameConverterTest {
-  @Inject lateinit var converter: FeatureFlagNameToIntegerNameConverter
-
   @Parameter lateinit var flagName: String
   @Parameter var expectedValue: Int = 0
 
@@ -51,53 +48,53 @@ class FeatureFlagNameToIntegerNameConverterTest {
 
   @Test
   @Iteration(
-    "downloads_support",
-    "flagName=$DOWNLOADS_SUPPORT",
-    "expectedValue=1"
-  )
-  @Iteration(
-    "extra_topic_tabs_ui",
-    "flagName=$EXTRA_TOPIC_TABS_UI",
-    "expectedValue=2"
-  )
-  @Iteration(
     "learner_study_analytics",
     "flagName=$LEARNER_STUDY_ANALYTICS",
-    "expectedValue=3"
-  )
-  @Iteration(
-    "fast_language_switching_in_lesson",
-    "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON",
-    "expectedValue=4"
-  )
-  @Iteration(
-    "logging_learner_study_ids",
-    "flagName=$LOGGING_LEARNER_STUDY_IDS",
-    "expectedValue=5"
-  )
-  @Iteration(
-    "edit_accounts_options_ui",
-    "flagName=$EDIT_ACCOUNTS_OPTIONS_UI",
-    "expectedValue=6"
+    "expectedValue=1"
   )
   @Iteration(
     "enable_performance_metrics_collection",
     "flagName=$ENABLE_PERFORMANCE_METRICS_COLLECTION",
-    "expectedValue=7"
+    "expectedValue=2"
+  )
+  @Iteration(
+    "edit_accounts_options_ui",
+    "flagName=$EDIT_ACCOUNTS_OPTIONS_UI",
+    "expectedValue=3"
   )
   @Iteration(
     "spotlight_ui",
     "flagName=$SPOTLIGHT_UI",
-    "expectedValue=8"
+    "expectedValue=4"
+  )
+  @Iteration(
+    "extra_topic_tabs_ui",
+    "flagName=$EXTRA_TOPIC_TABS_UI",
+    "expectedValue=5"
   )
   @Iteration(
     "interaction_config_change_state_retention",
     "flagName=$INTERACTION_CONFIG_CHANGE_STATE_RETENTION",
-    "expectedValue=9"
+    "expectedValue=6"
+  )
+  @Iteration(
+    "downloads_support",
+    "flagName=$DOWNLOADS_SUPPORT",
+    "expectedValue=7"
   )
   @Iteration(
     "app_and_os_deprecation",
     "flagName=$APP_AND_OS_DEPRECATION",
+    "expectedValue=8"
+  )
+  @Iteration(
+    "fast_language_switching_in_lesson",
+    "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON",
+    "expectedValue=9"
+  )
+  @Iteration(
+    "logging_learner_study_ids",
+    "flagName=$LOGGING_LEARNER_STUDY_IDS",
     "expectedValue=10"
   )
   @Iteration(
@@ -116,7 +113,7 @@ class FeatureFlagNameToIntegerNameConverterTest {
     "expectedValue=13"
   )
   fun testConvertToIntegerName_returnsCorrectIntegerForEach() {
-    val integerName = converter.convertToInteger(flagName)
+    val integerName = FeatureFlagNameToIntegerNameConverter.convertToInteger(flagName)
 
     assertThat(integerName).isEqualTo(expectedValue)
   }
