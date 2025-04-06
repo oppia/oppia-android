@@ -27,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_RE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
@@ -55,6 +56,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_I
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.FeatureFlagListContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.Priority.ESSENTIAL
@@ -81,6 +83,7 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
@@ -89,6 +92,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -846,6 +850,27 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_featureFlagsContext() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createFeatureFlagListContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("feature_flag_list")
+    assertThat(bundle).hasSize(14)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(FEATURE_FLAG_LIST_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("feature_flag_names").isEqualTo("0,0,0,7")
+    assertThat(bundle).string("feature_flag_enabled_states").isEqualTo("0,1,0,1")
+    assertThat(bundle).string("feature_flag_sync_statuses").isEqualTo("0,1,2,2")
   }
 
   @Test
@@ -2317,6 +2342,10 @@ class EventBundleCreatorTest {
       createSwitchInLessonLanguageEventContext(),
   ) = createEventContext(switchLanguageContext, EventContextBuilder::setSwitchInLessonLanguage)
 
+  private fun createFeatureFlagListContext(
+    featureFlagListContext: FeatureFlagListContext = createFeatureFlagListEventContext()
+  ) = createEventContext(featureFlagListContext, EventContextBuilder::setFeatureFlagListContext)
+
   private fun createInstallationIdForFailedAnalyticsLogContext(
     installationId: String = TEST_INSTALLATION_ID
   ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
@@ -2356,6 +2385,33 @@ class EventBundleCreatorTest {
 
   private fun createTopicContext(topicId: String = TEST_TOPIC_ID) =
     TopicContext.newBuilder().apply { this.topicId = topicId }.build()
+
+  private fun createFeatureFlagListEventContext() = FeatureFlagListContext.newBuilder()
+    .setAppSessionId("test session")
+    .addAllFeatureFlags(
+      listOf(
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = "test flag sync status unspecified"
+          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = "test flag not synced from server"
+          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.flagEnabledState = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = "test flag synced from server"
+          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = DOWNLOADS_SUPPORT
+          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.flagEnabledState = true
+        }.build(),
+      )
+    ).build()
 
   private fun createQuestionContext(
     questionId: String = TEST_QUESTION_ID,
