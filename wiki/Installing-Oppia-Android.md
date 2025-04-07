@@ -12,8 +12,8 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 - [Install oppia-android](#install-oppia-android)
 - [Opening the Project in Android Studio](#opening-the-project-in-android-studio)
 - [Set up and Run tests](#set-up-and-run-tests)
-  - [Running app module tests](#running-app-module-tests)
-  - [Running non-app module tests](#running-non-app-module-tests)
+  - [Running app layer tests](#running-app-layer-tests)
+  - [Running non-app layer tests](#running-non-app-layer-tests)
 - [Next Steps](#next-steps)
 - [Troubleshooting Installation](#troubleshooting-installation)
 
@@ -415,7 +415,7 @@ We can run tests either through the UI supported by the Bazel Plugin, or via run
 
 Please refer to the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide) for more information on how to run tests via the terminal.
 
-### Running app module tests
+### Running app layer tests
 
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
@@ -432,9 +432,9 @@ Please refer to the [Bazel User Guide](https://github.com/oppia/oppia-android/wi
    - **Bazel flags** are optional.
    - Select **Apply** and then **Close** or **Ok**.
 
-### Running non-app module tests
+### Running non-app layer tests
 
-These are tests in other modules, such as **domain** or **utility**.
+These are tests in other layers, such as **domain** or **utility**.
 
 1. In Android Studio, open the test file that you wish to run. If sync completed successfully when the project was opened, there will be a green run arrow next to the class name, as well as next to each individual test name. Clicking on the arrow will run either the full class or a single test as selected.
 
@@ -467,7 +467,7 @@ These are tests in other modules, such as **domain** or **utility**.
       - Run the app again.
 
 #### Bazel issues
-The team is in the process of migrating away from Gradle to Bazel, so while the project still has Gradle build files, they are no longer maintained and cannot be used to build the project.
+The team is in the process of migrating away from Gradle to Bazel.
 
 Please note that:
 - The IntelliJ Bazel plugin currently has some known issues:
