@@ -298,7 +298,7 @@ With this report, you can review the coverage percentages for various files and 
 
 While the CI check provides an overview of coverage, you might want to visualize how tests cover specific files locally, including which lines are covered and which are not. For this, Oppia's local command-line coverage tooling is useful.
 
-Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions) if Bazel isn't yet set up in your local development environment.
+Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android) if Bazel isn't yet set up in your local development environment.
 
 Oppia Android allows you to generate coverage reports in HTML format using the command:
 
