@@ -2,6 +2,8 @@ package org.oppia.android.data.backends.gae.testing
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager.MATCH_ALL
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -14,6 +16,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.NetworkApiKey
 import org.oppia.android.data.backends.gae.XssiPrefix
@@ -67,11 +70,22 @@ class NetworkConfigTestModuleTest {
   }
 
   @Test
+  fun testModule_doesNotOverrideAlreadyRegisteredActivity() {
+    TestActivity.registerWithPackageManager<SampleTestActivity>(context)
+    mockWebServerProvider.get() // Starting the server initializes the test package.
+
+    val intent = Intent(context, SampleTestActivity::class.java)
+    val activityInfos = context.packageManager.queryIntentActivities(intent, MATCH_ALL)
+    assertThat(activityInfos).hasSize(1)
+    assertThat(activityInfos.first().activityInfo.name)
+      .isEqualTo(SampleTestActivity::class.java.name)
+  }
+
+  @Test
   fun testModule_setsAppTestVersionCode() {
     mockWebServerProvider.get() // Starting the server initializes the app's version code.
 
     val versionCode = context.getVersionCode()
-
     assertThat(versionCode).isEqualTo(1)
   }
 
@@ -80,7 +94,6 @@ class NetworkConfigTestModuleTest {
     mockWebServerProvider.get() // Starting the server initializes the app's version name.
 
     val versionName = context.getVersionName()
-
     assertThat(versionName).isEqualTo("oppia-android-test-0123456789")
   }
 
@@ -110,6 +123,8 @@ class NetworkConfigTestModuleTest {
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+
+  private class SampleTestActivity : TestActivity()
 
   @Module
   interface TestModule {

@@ -151,7 +151,6 @@ class HelpActivityTest {
     modules = [
       RobolectricModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      RetrofitModule::class, RetrofitServiceModule::class,
       TestDispatcherModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,

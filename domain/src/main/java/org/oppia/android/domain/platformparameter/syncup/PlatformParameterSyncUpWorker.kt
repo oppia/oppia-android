@@ -98,7 +98,6 @@ class PlatformParameterSyncUpWorker private constructor(
   private suspend fun refreshPlatformParameters(): Result {
     return try {
       val response = fetchPlatformParameters()
-      println("@@@@@ params response: $response / ${response?.body()}")
       if (response != null) {
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)
@@ -114,13 +113,10 @@ class PlatformParameterSyncUpWorker private constructor(
         }
         Result.success()
       } else {
-        println("@@@@@ WAS NULL")
         oppiaLogger.e(TAG, "Failed to fetch platform parameters (no network stack available)")
         Result.failure()
       }
     } catch (e: Exception) {
-      println("@@@@@ CAUGHT EXCEPTION")
-      e.printStackTrace()
       oppiaLogger.e(TAG, "Failed to fetch platform parameters", e)
       exceptionsController.logNonFatalException(e)
       Result.failure()
