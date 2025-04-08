@@ -34,61 +34,61 @@ _PRODUCTION_PROGUARD_SPECS = [
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
 _FLAVOR_METADATA = {
-    "alpha": {
-        "application_class": ".app.application.alpha.AlphaOppiaApplication",
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
-            "//config/src/java/org/oppia/android/config:all_languages_config",
-        ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
-        "multidex": "native",
-        "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 34,
-        "version_code": OPPIA_ALPHA_VERSION_CODE,
-    },
-    "beta": {
-        "application_class": ".app.application.beta.BetaOppiaApplication",
-        "deps": [
-            "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
-            "//config/src/java/org/oppia/android/config:production_languages_config",
-        ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
-        "multidex": "native",
-        "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 34,
-        "version_code": OPPIA_BETA_VERSION_CODE,
-    },
     "dev": {
-        "application_class": ".app.application.dev.DeveloperOppiaApplication",
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 34,
+        "multidex": "native",
+        "proguard_specs": [],  # Developer builds are not optimized.
+        "production_release": False,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/dev:developer_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
         ],
+        "version_code": OPPIA_DEV_VERSION_CODE,
+        "application_class": ".app.application.dev.DeveloperOppiaApplication",
+    },
+    "alpha": {
         "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
-        "multidex": "native",
-        "production_release": False,
-        "proguard_specs": [],  # Developer builds are not optimized.
         "target_sdk_version": 34,
-        "version_code": OPPIA_DEV_VERSION_CODE,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
+            "//config/src/java/org/oppia/android/config:all_languages_config",
+        ],
+        "version_code": OPPIA_ALPHA_VERSION_CODE,
+        "application_class": ".app.application.alpha.AlphaOppiaApplication",
+    },
+    "beta": {
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 34,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
+        "deps": [
+            "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+            "//config/src/java/org/oppia/android/config:production_languages_config",
+        ],
+        "version_code": OPPIA_BETA_VERSION_CODE,
+        "application_class": ".app.application.beta.BetaOppiaApplication",
     },
     "ga": {
-        "application_class": ".app.application.ga.GaOppiaApplication",
+        "manifest": "//app:src/main/AndroidManifest.xml",
+        "min_sdk_version": 21,
+        "target_sdk_version": 34,
+        "multidex": "native",
+        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
+        "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
-        "manifest": "//app:src/main/AndroidManifest.xml",
-        "min_sdk_version": 21,
-        "multidex": "native",
-        "production_release": True,
-        "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
-        "target_sdk_version": 34,
         "version_code": OPPIA_GA_VERSION_CODE,
+        "application_class": ".app.application.ga.GaOppiaApplication",
     },
 }
 
@@ -132,22 +132,22 @@ def _transform_android_manifest_impl(ctx):
 
 _transform_android_manifest = rule(
     attrs = {
-        "application_relative_qualified_class": attr.string(mandatory = True),
-        "build_flavor": attr.string(mandatory = True),
-        "git_meta_dir": attr.label(
-            allow_files = True,
-            mandatory = True,
-        ),
         "input_file": attr.label(
             allow_files = True,
             mandatory = True,
         ),
-        "major_version": attr.int(mandatory = True),
-        "minor_version": attr.int(mandatory = True),
         "output_file": attr.output(
             mandatory = True,
         ),
+        "git_meta_dir": attr.label(
+            allow_files = True,
+            mandatory = True,
+        ),
+        "build_flavor": attr.string(mandatory = True),
+        "major_version": attr.int(mandatory = True),
+        "minor_version": attr.int(mandatory = True),
         "version_code": attr.int(mandatory = True),
+        "application_relative_qualified_class": attr.string(mandatory = True),
         "_transform_android_manifest_tool": attr.label(
             executable = True,
             cfg = "host",

@@ -34,6 +34,7 @@ oppia_android_test(
     test_manifest = "//data:test_manifest",
     deps = [
         "//:dagger",
+        "//app/src/main/java/org/oppia/android/app/testing/activity:test_activity",
         "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
         "//testing",
         "//third_party:androidx_test_ext_junit",
