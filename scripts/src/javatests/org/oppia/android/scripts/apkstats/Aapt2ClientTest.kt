@@ -11,7 +11,11 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.testing.assertThrows
 import java.io.File
+import java.io.FileOutputStream
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 /**
  * Tests for [Aapt2Client].
@@ -29,20 +33,20 @@ class Aapt2ClientTest {
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val commandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private val fakeCommandExecutor by lazy { FakeCommandExecutor() }
+  private val createdFiles = mutableListOf<File>()
 
   @After
   fun tearDown() {
     scriptBgDispatcher.close()
+    createdFiles.forEach { it.delete() }
   }
 
   @Test
   fun testDumpPermissions_nonExistentApk_failsWithError() {
     val aapt2Client = createAapt2Client()
-
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException>() {
       aapt2Client.dumpPermissions("fake_file.apk")
     }
-
     assertThat(exception).hasMessageThat().contains("No such file or directory")
   }
 
@@ -50,6 +54,7 @@ class Aapt2ClientTest {
   fun testDumpPermissions_invalidApk_failsWithError() {
     val invalidApkFile = File(tempFolder.root, "invalid.apk")
     invalidApkFile.writeText("This is not a valid APK file")
+    createdFiles.add(invalidApkFile)
 
     val aapt2Client = createAapt2Client()
 
@@ -62,30 +67,45 @@ class Aapt2ClientTest {
 
   @Test
   fun testDumpPermissions_apkWithNoPermissions_returnsEmptyList() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForNoPermissions()
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+      )
+    )
 
-    val permissions = aapt2Client.dumpPermissions("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForPermissions(apkFile.absolutePath)
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+
+    val permissions = aapt2Client.dumpPermissions(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(permissions).isEmpty()
   }
 
   @Test
   fun testDumpPermissions_apkWithSomePermissions_returnsListOfQualifiedPermissionNames() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForPermissions(
-      "uses-permission: name='android.permission.INTERNET'",
-      "uses-permission: name='android.permission.ACCESS_NETWORK_STATE'",
-      "uses-permission: name='android.permission.CAMERA'"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithPermissions()
+      )
     )
 
-    val permissions = aapt2Client.dumpPermissions("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForPermissions(
+      apkFile.absolutePath,
+      "uses-permission: name='android.permission.INTERNET'",
+      "uses-permission: name='android.permission.ACCESS_NETWORK_STATE'"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
 
-    assertThat(permissions).hasSize(3)
+    val permissions = aapt2Client.dumpPermissions(apkFile.absolutePath).filter { it.isNotBlank() }
+
+    assertThat(permissions).hasSize(2)
     assertThat(permissions).contains("uses-permission: name='android.permission.INTERNET'")
     assertThat(permissions)
       .contains("uses-permission: name='android.permission.ACCESS_NETWORK_STATE'")
-    assertThat(permissions).contains("uses-permission: name='android.permission.CAMERA'")
   }
 
   @Test
@@ -103,6 +123,7 @@ class Aapt2ClientTest {
   fun testDumpResources_invalidApk_failsWithError() {
     val invalidApkFile = File(tempFolder.root, "invalid.apk")
     invalidApkFile.writeText("This is not a valid APK file")
+    createdFiles.add(invalidApkFile)
 
     val aapt2Client = createAapt2Client()
 
@@ -115,85 +136,132 @@ class Aapt2ClientTest {
 
   @Test
   fun testDumpResources_apkWithNoResources_returnsEmptyList() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForNoResources()
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+      )
+    )
 
-    val resources = aapt2Client.dumpResources("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForResources(apkFile.absolutePath)
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+
+    val resources = aapt2Client.dumpResources(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(resources).isEmpty()
   }
 
   @Test
   fun testDumpResources_apkWithOnlyStrings_returnsListWithResourcesWithTypesAndIds() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForResources(
-      "resource 0x7f030000 string/app_name: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f030001 string/welcome_message: t=0x03 d=0x00000005 (s=0x0008 r=0x00)"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "resources.arsc" to ByteArray(100)
+      )
     )
 
-    val resources = aapt2Client.dumpResources("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForResources(
+      apkFile.absolutePath,
+      "resource 0x7f0b0000 string/app_name",
+      "resource 0x7f0b0001 string/hello_world"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+
+    val resources = aapt2Client.dumpResources(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(resources).hasSize(2)
-    assertThat(resources[0]).contains("resource 0x7f030000 string/app_name")
-    assertThat(resources[1]).contains("resource 0x7f030001 string/welcome_message")
+    assertThat(resources).contains("resource 0x7f0b0000 string/app_name")
+    assertThat(resources).contains("resource 0x7f0b0001 string/hello_world")
   }
 
   @Test
   fun testDumpResources_apkWithOnlyDrawables_returnsListWithResourcesWithTypesAndIds() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForResources(
-      "resource 0x7f040000 drawable/ic_launcher: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f040001 drawable/background: t=0x03 d=0x00000005 (s=0x0008 r=0x00)"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "resources.arsc" to ByteArray(100)
+      )
     )
 
-    val resources = aapt2Client.dumpResources("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForResources(
+      apkFile.absolutePath,
+      "resource 0x7f070000 drawable/ic_launcher",
+      "resource 0x7f070001 drawable/ic_background"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+
+    val resources = aapt2Client.dumpResources(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(resources).hasSize(2)
-    assertThat(resources[0]).contains("resource 0x7f040000 drawable/ic_launcher")
-    assertThat(resources[1]).contains("resource 0x7f040001 drawable/background")
+    assertThat(resources).contains("resource 0x7f070000 drawable/ic_launcher")
+    assertThat(resources).contains("resource 0x7f070001 drawable/ic_background")
   }
 
   @Test
   fun testDumpResources_apkWithOnlyLayouts_returnsListWithResourcesWithTypesAndIds() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForResources(
-      "resource 0x7f050000 layout/activity_main: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f050001 layout/fragment_detail: t=0x03 d=0x00000005 (s=0x0008 r=0x00)"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "resources.arsc" to ByteArray(100)
+      )
     )
 
-    val resources = aapt2Client.dumpResources("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForResources(
+      apkFile.absolutePath,
+      "resource 0x7f0c0000 layout/activity_main",
+      "resource 0x7f0c0001 layout/fragment_home"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+
+    val resources = aapt2Client.dumpResources(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(resources).hasSize(2)
-    assertThat(resources[0]).contains("resource 0x7f050000 layout/activity_main")
-    assertThat(resources[1]).contains("resource 0x7f050001 layout/fragment_detail")
+    assertThat(resources).contains("resource 0x7f0c0000 layout/activity_main")
+    assertThat(resources).contains("resource 0x7f0c0001 layout/fragment_home")
   }
 
   @Test
   fun testDumpResources_apkWithManyResources_returnsListWithResourcesWithTypesAndIds() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForResources(
-      "resource 0x7f030000 string/app_name: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f040000 drawable/ic_launcher: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f050000 layout/activity_main: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f060000 color/primary: t=0x03 d=0x00000004 (s=0x0008 r=0x00)",
-      "resource 0x7f070000 dimen/margin_small: t=0x03 d=0x00000004 (s=0x0008 r=0x00)"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "resources.arsc" to ByteArray(300)
+      )
     )
 
-    val resources = aapt2Client.dumpResources("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForResources(
+      apkFile.absolutePath,
+      "resource 0x7f0b0000 string/app_name",
+      "resource 0x7f070000 drawable/ic_launcher",
+      "resource 0x7f0c0000 layout/activity_main",
+      "resource 0x7f010000 anim/fade_in",
+      "resource 0x7f030000 color/primary_color"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+
+    val resources = aapt2Client.dumpResources(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(resources).hasSize(5)
-    assertThat(resources[0]).contains("resource 0x7f030000 string/app_name")
-    assertThat(resources[1]).contains("resource 0x7f040000 drawable/ic_launcher")
-    assertThat(resources[2]).contains("resource 0x7f050000 layout/activity_main")
-    assertThat(resources[3]).contains("resource 0x7f060000 color/primary")
-    assertThat(resources[4]).contains("resource 0x7f070000 dimen/margin_small")
+    assertThat(resources).contains("resource 0x7f0b0000 string/app_name")
+    assertThat(resources).contains("resource 0x7f070000 drawable/ic_launcher")
+    assertThat(resources).contains("resource 0x7f0c0000 layout/activity_main")
+    assertThat(resources).contains("resource 0x7f010000 anim/fade_in")
+    assertThat(resources).contains("resource 0x7f030000 color/primary_color")
   }
 
   @Test
   fun testDumpBadging_nonExistentApk_failsWithError() {
     val aapt2Client = createAapt2Client()
-
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException>() {
       aapt2Client.dumpBadging("fake_file.apk")
     }
 
@@ -204,6 +272,7 @@ class Aapt2ClientTest {
   fun testDumpBadging_invalidApk_failsWithError() {
     val invalidApkFile = File(tempFolder.root, "invalid.apk")
     invalidApkFile.writeText("This is not a valid APK file")
+    createdFiles.add(invalidApkFile)
 
     val aapt2Client = createAapt2Client()
 
@@ -216,124 +285,187 @@ class Aapt2ClientTest {
 
   @Test
   fun testDumpBadging_apkWithNoExtraBadgingInfo_returnsPackageAndGenericInfo() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForBadging(
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+      )
+    )
+
+    setupFakeCommandForBadging(
+      apkFile.absolutePath,
       "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
       "sdkVersion:'21'",
       "targetSdkVersion:'30'"
     )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
 
-    val badging = aapt2Client.dumpBadging("test.apk").filter { it.isNotBlank() }
+    val badging = aapt2Client.dumpBadging(apkFile.absolutePath).filter { it.isNotBlank() }
 
     assertThat(badging).hasSize(3)
-    assertThat(badging[0]).contains("package: name='org.oppia.android'")
-    assertThat(badging[1]).contains("sdkVersion:'21'")
-    assertThat(badging[2]).contains("targetSdkVersion:'30'")
+    assertThat(badging)
+      .contains("package: name='org.oppia.android' versionCode='1' versionName='1.0'")
+    assertThat(badging).contains("sdkVersion:'21'")
+    assertThat(badging).contains("targetSdkVersion:'30'")
   }
 
   @Test
   fun testDumpBadging_apkWithOnlyUsesFeatures_returnsBadgingInfo() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForBadging(
-      "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
-      "uses-feature: name='android.hardware.camera'",
-      "uses-feature: name='android.hardware.camera.autofocus'"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+      )
     )
 
-    val badging = aapt2Client.dumpBadging("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForBadging(
+      apkFile.absolutePath,
+      "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
+      "sdkVersion:'21'",
+      "targetSdkVersion:'30'",
+      "uses-feature: name='android.hardware.camera'",
+      "uses-feature: name='android.hardware.bluetooth'"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
 
-    assertThat(badging).hasSize(3)
-    assertThat(badging[0]).contains("package: name='org.oppia.android'")
-    assertThat(badging[1]).contains("uses-feature: name='android.hardware.camera'")
-    assertThat(badging[2]).contains("uses-feature: name='android.hardware.camera.autofocus'")
+    val badging = aapt2Client.dumpBadging(apkFile.absolutePath).filter { it.isNotBlank() }
+
+    assertThat(badging).hasSize(5)
+    assertThat(badging).contains("uses-feature: name='android.hardware.camera'")
+    assertThat(badging).contains("uses-feature: name='android.hardware.bluetooth'")
   }
 
   @Test
   fun testDumpBadging_apkWithOnlyUsesImpliedFeatures_returnsBadgingInfo() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForBadging(
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+      )
+    )
+
+    setupFakeCommandForBadging(
+      apkFile.absolutePath,
       "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
-      "uses-implied-feature: name='android.hardware.camera'" +
-        " reason='requested android.permission.CAMERA permission'",
+      "sdkVersion:'21'",
+      "targetSdkVersion:'30'",
+      "uses-implied-feature: name='android.hardware.microphone'" +
+        " reason='requested android.permission.RECORD_AUDIO permission'",
       "uses-implied-feature: name='android.hardware.location'" +
         " reason='requested android.permission.ACCESS_FINE_LOCATION permission'"
     )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
 
-    val badging = aapt2Client.dumpBadging("test.apk").filter { it.isNotBlank() }
+    val badging = aapt2Client.dumpBadging(apkFile.absolutePath).filter { it.isNotBlank() }
 
-    assertThat(badging).hasSize(3)
-    assertThat(badging[0]).contains("package: name='org.oppia.android'")
-    assertThat(badging[1]).contains("uses-implied-feature: name='android.hardware.camera'")
-    assertThat(badging[2]).contains("uses-implied-feature: name='android.hardware.location'")
+    assertThat(badging).hasSize(5)
+    assertThat(badging).contains(
+      "uses-implied-feature: name='android.hardware.microphone' " +
+        "reason='requested android.permission.RECORD_AUDIO permission'"
+    )
+    assertThat(badging).contains(
+      "uses-implied-feature: name='android.hardware.location' " +
+        "reason='requested android.permission.ACCESS_FINE_LOCATION permission'"
+    )
   }
 
   @Test
   fun testDumpBadging_apkWithOnlyUsesFeaturesNotRequired_returnsBadgingInfo() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForBadging(
-      "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
-      "uses-feature-not-required: name='android.hardware.camera'",
-      "uses-feature-not-required: name='android.hardware.bluetooth'"
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+      )
     )
 
-    val badging = aapt2Client.dumpBadging("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForBadging(
+      apkFile.absolutePath,
+      "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
+      "sdkVersion:'21'",
+      "targetSdkVersion:'30'",
+      "uses-feature-not-required: name='android.hardware.camera.front'",
+      "uses-feature-not-required: name='android.hardware.nfc'"
+    )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
 
-    assertThat(badging).hasSize(3)
-    assertThat(badging[0]).contains("package: name='org.oppia.android'")
-    assertThat(badging[1]).contains("uses-feature-not-required: name='android.hardware.camera'")
-    assertThat(badging[2]).contains("uses-feature-not-required: name='android.hardware.bluetooth'")
+    val badging = aapt2Client.dumpBadging(apkFile.absolutePath).filter { it.isNotBlank() }
+
+    assertThat(badging).hasSize(5)
+    assertThat(badging).contains("uses-feature-not-required: name='android.hardware.camera.front'")
+    assertThat(badging).contains("uses-feature-not-required: name='android.hardware.nfc'")
   }
 
   @Test
   fun testDumpBadging_apkWithOnlyUsesPermission_returnsBadgingInfo() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForBadging(
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithPermissions()
+      )
+    )
+
+    setupFakeCommandForBadging(
+      apkFile.absolutePath,
       "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
+      "sdkVersion:'21'",
+      "targetSdkVersion:'30'",
       "uses-permission: name='android.permission.INTERNET'",
       "uses-permission: name='android.permission.ACCESS_NETWORK_STATE'"
     )
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
 
-    val badging = aapt2Client.dumpBadging("test.apk").filter { it.isNotBlank() }
+    val badging = aapt2Client.dumpBadging(apkFile.absolutePath).filter { it.isNotBlank() }
 
-    assertThat(badging).hasSize(3)
-    assertThat(badging[0]).contains("package: name='org.oppia.android'")
-    assertThat(badging[1]).contains("uses-permission: name='android.permission.INTERNET'")
-    assertThat(badging[2])
-      .contains("uses-permission: name='android.permission.ACCESS_NETWORK_STATE'")
+    assertThat(badging).hasSize(5)
+    assertThat(badging).contains("uses-permission: name='android.permission.INTERNET'")
+    assertThat(badging).contains("uses-permission: name='android.permission.ACCESS_NETWORK_STATE'")
   }
 
   @Test
   fun testDumpBadging_apkWithAllOppiaLikeBadgingInfo_returnsBadgingInfo() {
-    val aapt2Client = createAapt2ClientWithFakeExecutor()
-    setupFakeCommandExecutorForBadging(
+    val apkFile = createValidApkFile(
+      "test.apk",
+      mapOf(
+        "classes.dex" to ByteArray(100),
+        "AndroidManifest.xml" to createBasicManifestWithPermissions()
+      )
+    )
+
+    val expectedBadgingOutput = listOf(
       "package: name='org.oppia.android' versionCode='1' versionName='1.0'",
       "sdkVersion:'21'",
       "targetSdkVersion:'30'",
       "uses-permission: name='android.permission.INTERNET'",
       "uses-permission: name='android.permission.ACCESS_NETWORK_STATE'",
       "uses-feature: name='android.hardware.camera'",
-      "uses-feature-not-required: name='android.hardware.bluetooth'",
-      "uses-implied-feature: name='android.hardware.location'" +
-        " reason='requested android.permission.ACCESS_FINE_LOCATION permission'",
-      "supports-screens: 'small' 'normal' 'large' 'xlarge'",
-      "supports-densities: '160' '240' '320' '480' '640'",
+      "uses-feature-not-required: name='android.hardware.nfc'",
+      "uses-implied-feature: name='android.hardware.microphone' " +
+        "reason='requested android.permission.RECORD_AUDIO permission'",
+      "application-label:'Oppia'",
+      "application-label-fr:'Oppia'",
+      "application-label-es:'Oppia'",
+      "application-icon-160:'res/drawable/ic_launcher.png'",
+      "application-icon-240:'res/drawable-hdpi/ic_launcher.png'",
+      "application-icon-320:'res/drawable-xhdpi/ic_launcher.png'",
+      "application: label='Oppia' icon='res/drawable/ic_launcher.png'",
+      "launchable-activity: " +
+        "name='org.oppia.android.app.activity.SplashActivity'  label='Oppia' icon=''",
+      "densities: 160 240 320"
     )
 
-    val badging = aapt2Client.dumpBadging("test.apk").filter { it.isNotBlank() }
+    setupFakeCommandForBadging(apkFile.absolutePath, *expectedBadgingOutput.toTypedArray())
 
-    assertThat(badging).hasSize(10)
+    val aapt2Client = createAapt2ClientWithFakeExecutor()
+    val actualBadgingOutput = aapt2Client.dumpBadging(apkFile.absolutePath)
+      .filter { it.isNotBlank() }
 
-    assertThat(badging[0]).contains("package: name='org.oppia.android'")
-    assertThat(badging[1]).contains("sdkVersion:'21'")
-    assertThat(badging[2]).contains("targetSdkVersion:'30'")
-    assertThat(badging[3]).contains("uses-permission: name='android.permission.INTERNET'")
-    assertThat(badging[4])
-      .contains("uses-permission: name='android.permission.ACCESS_NETWORK_STATE'")
-    assertThat(badging[5]).contains("uses-feature: name='android.hardware.camera'")
-    assertThat(badging[6]).contains("uses-feature-not-required: name='android.hardware.bluetooth'")
-    assertThat(badging[7]).contains("uses-implied-feature: name='android.hardware.location'")
-    assertThat(badging[8]).contains("supports-screens: 'small' 'normal' 'large' 'xlarge'")
-    assertThat(badging[9]).contains("supports-densities: '160' '240' '320' '480' '640'")
+    assertThat(actualBadgingOutput).hasSize(expectedBadgingOutput.size)
+    assertThat(actualBadgingOutput).containsExactlyElementsIn(expectedBadgingOutput)
   }
 
   private fun createAapt2Client(): Aapt2Client {
@@ -360,41 +492,89 @@ class Aapt2ClientTest {
     )
   }
 
-  private fun setupFakeCommandExecutorForNoPermissions() {
-    setupFakeCommandExecutorForCommand("dump", "permissions", emptyList())
+  /** Creates a valid APK (ZIP) file with the specified contents. */
+  private fun createValidApkFile(fileName: String, contents: Map<String, ByteArray>): File {
+    val apkFile = File(tempFolder.root, fileName)
+    createdFiles.add(apkFile)
+
+    ZipOutputStream(FileOutputStream(apkFile)).use { zipOut ->
+      contents.forEach { (path, data) ->
+        zipOut.putNextEntry(ZipEntry(path))
+        zipOut.write(data)
+        zipOut.closeEntry()
+      }
+    }
+
+    return apkFile
   }
 
-  private fun setupFakeCommandExecutorForPermissions(vararg permissions: String) {
-    setupFakeCommandExecutorForCommand("dump", "permissions", permissions.toList())
+  private fun createBasicManifestWithoutPermissions(): ByteArray {
+    val manifest =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android">
+          <application
+              android:label="Oppia"
+              android:icon="@drawable/ic_launcher">
+              <activity android:name=".app.activity.SplashActivity">
+                  <intent-filter>
+                      <action android:name="android.intent.action.MAIN" />
+                      <category android:name="android.intent.category.LAUNCHER" />
+                  </intent-filter>
+              </activity>
+          </application>
+      </manifest>
+      """.trimIndent()
+    return manifest.toByteArray(StandardCharsets.UTF_8)
   }
 
-  private fun setupFakeCommandExecutorForNoResources() {
-    setupFakeCommandExecutorForCommand("dump", "resources", emptyList())
+  private fun createBasicManifestWithPermissions(): ByteArray {
+    val manifest =
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android">
+          <uses-permission android:name="android.permission.INTERNET" />
+          <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+          <application
+              android:label="Oppia"
+              android:icon="@drawable/ic_launcher">
+              <activity android:name=".app.activity.SplashActivity">
+                  <intent-filter>
+                      <action android:name="android.intent.action.MAIN" />
+                      <category android:name="android.intent.category.LAUNCHER" />
+                  </intent-filter>
+              </activity>
+          </application>
+      </manifest>
+      """.trimIndent()
+    return manifest.toByteArray(StandardCharsets.UTF_8)
   }
 
-  private fun setupFakeCommandExecutorForResources(vararg resources: String) {
-    setupFakeCommandExecutorForCommand("dump", "resources", resources.toList())
-  }
-
-  private fun setupFakeCommandExecutorForBadging(vararg badgingInfo: String) {
-    setupFakeCommandExecutorForCommand("dump", "badging", badgingInfo.toList())
-  }
-
-  private fun setupFakeCommandExecutorForCommand(
-    command: String,
-    subCommand: String,
-    output: List<String>
-  ) {
+  private fun setupFakeCommand(apkPath: String, dumpType: String, vararg outputLines: String) {
     val aapt2Path = File(
       "external/androidsdk", "build-tools/${sdkProperties.buildToolsVersion}/aapt2"
     ).absolutePath
 
     fakeCommandExecutor.registerHandler(aapt2Path) { _, args, outputStream, _ ->
-      if (args.size >= 2 && args[0] == command && args[1] == subCommand) {
-        output.forEach { outputStream.println(it) }
+      if (args.size >= 3 && args[0] == "dump" && args[1] == dumpType && args[2] == apkPath) {
+        outputLines.forEach { outputStream.println(it) }
         return@registerHandler 0
       }
       return@registerHandler 1
     }
+  }
+
+  private fun setupFakeCommandForPermissions(apkPath: String, vararg permissionInfo: String) {
+    setupFakeCommand(apkPath, "permissions", *permissionInfo)
+  }
+
+  private fun setupFakeCommandForResources(apkPath: String, vararg resourceInfo: String) {
+    setupFakeCommand(apkPath, "resources", *resourceInfo)
+  }
+
+  private fun setupFakeCommandForBadging(apkPath: String, vararg badgingInfo: String) {
+    setupFakeCommand(apkPath, "badging", *badgingInfo)
   }
 }
