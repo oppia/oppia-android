@@ -1868,7 +1868,7 @@ class ExplorationActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  fun testExpActivity_openConceptCard_onHintsAndSolutionDialog_selectNavigationUp_conceptCardCloses() {
+  fun testExpActivity_openConceptCard_onHintsAndSolutionDialog_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
     markAllSpotlightsSeen()
     runWithLaunchedActivityAndStartedExploration(
       TEST_CLASSROOM_ID_0,
