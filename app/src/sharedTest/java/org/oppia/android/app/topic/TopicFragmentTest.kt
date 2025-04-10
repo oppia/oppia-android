@@ -466,8 +466,13 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
-      onView(withText(TopicTab.getTabForPosition(position = INFO_TAB_POSITION, true).name))
-        .check(doesNotExist())
+      val infoTab =
+        TopicTab.getTabForPosition(
+          position = INFO_TAB_POSITION,
+          enableTopicInfoTab.value,
+          enableTopicPracticeTab.value
+        )
+      onView(withText(infoTab.name)).check(doesNotExist())
     }
   }
 
