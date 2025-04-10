@@ -71,7 +71,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -89,7 +89,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -140,7 +140,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -158,7 +158,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8),
         "resources.arsc" to ByteArray(100)
       )
     )
@@ -183,7 +183,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8),
         "resources.arsc" to ByteArray(100)
       )
     )
@@ -208,7 +208,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8),
         "resources.arsc" to ByteArray(100)
       )
     )
@@ -233,7 +233,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions(),
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8),
         "resources.arsc" to ByteArray(300)
       )
     )
@@ -289,7 +289,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -316,7 +316,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -343,7 +343,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -378,7 +378,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithoutPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -405,7 +405,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -432,7 +432,7 @@ class Aapt2ClientTest {
       "test.apk",
       mapOf(
         "classes.dex" to ByteArray(100),
-        "AndroidManifest.xml" to createBasicManifestWithPermissions()
+        "AndroidManifest.xml" to "<manifest></manifest>".toByteArray(StandardCharsets.UTF_8)
       )
     )
 
@@ -506,50 +506,6 @@ class Aapt2ClientTest {
     }
 
     return apkFile
-  }
-
-  private fun createBasicManifestWithoutPermissions(): ByteArray {
-    val manifest =
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.oppia.android">
-          <application
-              android:label="Oppia"
-              android:icon="@drawable/ic_launcher">
-              <activity android:name=".app.activity.SplashActivity">
-                  <intent-filter>
-                      <action android:name="android.intent.action.MAIN" />
-                      <category android:name="android.intent.category.LAUNCHER" />
-                  </intent-filter>
-              </activity>
-          </application>
-      </manifest>
-      """.trimIndent()
-    return manifest.toByteArray(StandardCharsets.UTF_8)
-  }
-
-  private fun createBasicManifestWithPermissions(): ByteArray {
-    val manifest =
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.oppia.android">
-          <uses-permission android:name="android.permission.INTERNET" />
-          <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-          <application
-              android:label="Oppia"
-              android:icon="@drawable/ic_launcher">
-              <activity android:name=".app.activity.SplashActivity">
-                  <intent-filter>
-                      <action android:name="android.intent.action.MAIN" />
-                      <category android:name="android.intent.category.LAUNCHER" />
-                  </intent-filter>
-              </activity>
-          </application>
-      </manifest>
-      """.trimIndent()
-    return manifest.toByteArray(StandardCharsets.UTF_8)
   }
 
   private fun setupFakeCommand(apkPath: String, dumpType: String, vararg outputLines: String) {
