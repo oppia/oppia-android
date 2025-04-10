@@ -1,6 +1,5 @@
 package org.oppia.android.app.faq
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -16,7 +15,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
@@ -106,38 +104,18 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FAQSingleActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class FAQSingleActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  private lateinit var launchedActivity: Activity
-
-  @Inject
-  lateinit var htmlParserFactory: HtmlParser.Factory
-
-  @Inject
-  @field:DefaultResourceBucketName
-  lateinit var resourceBucketName: String
-
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<FAQSingleActivity> = ActivityTestRule(
-    FAQSingleActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var htmlParserFactory: HtmlParser.Factory
+  @Inject lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @Inject lateinit var context: Context
+  @field:[Inject DefaultResourceBucketName] lateinit var resourceBucketName: String
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
     Intents.init()
-    val intent = createFAQSingleActivity()
-    launchedActivity = activityTestRule.launchActivity(intent)
   }
 
   @After
@@ -154,11 +132,15 @@ class FAQSingleActivityTest {
 
   @Test
   fun testFaqSingleActivity_hasCorrectActivityLabel() {
-    val title = activityTestRule.activity.title
+    launch<FAQSingleActivity>(createFAQSingleActivity()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
+      }
+    }
   }
 
   @Test
@@ -177,22 +159,24 @@ class FAQSingleActivityTest {
 
   @Test
   fun openFAQSingleActivity_checkAnswer_isCorrectlyParsed() {
-    val answerTextView = activityTestRule.activity.findViewById(
-      R.id.faq_answer_text_view
-    ) as TextView
-    val htmlParser = htmlParserFactory.create(
-      resourceBucketName,
-      entityType = "",
-      entityId = "",
-      imageCenterAlign = false,
-      customOppiaTagActionListener = null,
-      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-    )
-    val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-      getResources().getString(R.string.faq_answer_whats_oppia),
-      answerTextView
-    )
-    assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
+    launch<FAQSingleActivity>(createFAQSingleActivity()).use { scenario ->
+      scenario.onActivity { activity ->
+        val answerTextView: TextView = activity.findViewById(R.id.faq_answer_text_view)
+        val htmlParser = htmlParserFactory.create(
+          resourceBucketName,
+          entityType = "",
+          entityId = "",
+          imageCenterAlign = false,
+          customOppiaTagActionListener = null,
+          displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+        )
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          getResources().getString(R.string.faq_answer_whats_oppia),
+          answerTextView
+        )
+        assertThat(answerTextView.text.toString()).isEqualTo(htmlResult.toString())
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {

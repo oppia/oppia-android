@@ -19,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,6 +37,8 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN
+import org.oppia.android.app.model.IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -162,12 +165,20 @@ class IntroFragmentTest {
   }
 
   @Test
-  fun testFragment_portraitMode_stepCountText_isDisplayed() {
+  fun testFragment_parentScreenIsCreateProfile_stepCountTextIsDisplayed() {
     launchOnboardingLearnerIntroActivity().use {
       onView(withId(R.id.onboarding_steps_count))
         .check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_steps_count))
         .check(matches(withText(R.string.onboarding_step_count_four)))
+    }
+  }
+
+  @Test
+  fun testFragment_parentScreenIsProfileChooser_stepCountTextIsNotDisplayed() {
+    launchOnboardingLearnerIntroActivity(PROFILE_CHOOSER_SCREEN).use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(not(isDisplayed())))
     }
   }
 
@@ -229,21 +240,23 @@ class IntroFragmentTest {
     }
   }
 
-  private fun launchOnboardingLearnerIntroActivity():
-    ActivityScenario<IntroActivity>? {
-      val params = IntroActivityParams.newBuilder()
-        .setProfileNickname(testProfileNickname)
-        .build()
+  private fun launchOnboardingLearnerIntroActivity(
+    parentScreen: IntroActivityParams.ParentScreen = CREATE_PROFILE_SCREEN
+  ): ActivityScenario<IntroActivity>? {
+    val params = IntroActivityParams.newBuilder()
+      .setProfileNickname(testProfileNickname)
+      .setParentScreen(parentScreen)
+      .build()
 
-      val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(context).apply {
-          putProtoExtra(IntroActivity.PARAMS_KEY, params)
-          decorateWithUserProfileId(testProfileId)
-        }
-      )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    val scenario = ActivityScenario.launch<IntroActivity>(
+      IntroActivity.createIntroActivity(context).apply {
+        putProtoExtra(IntroActivity.PARAMS_KEY, params)
+        decorateWithUserProfileId(testProfileId)
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
