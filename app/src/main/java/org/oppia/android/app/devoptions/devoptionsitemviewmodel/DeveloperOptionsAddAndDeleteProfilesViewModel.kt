@@ -33,7 +33,11 @@ class DeveloperOptionsAddAndDeleteProfilesViewModel(
   private fun processGetProfileCountResult(profileCountResult: AsyncResult<Int>): Int {
     return when (profileCountResult) {
       is AsyncResult.Failure -> {
-        oppiaLogger.e("DeveloperOptionsFragment", "Failed to retrieve profile count", profileCountResult.error)
+        oppiaLogger.e(
+          "DeveloperOptionsFragment",
+          "Failed to retrieve profile count",
+          profileCountResult.error
+        )
         0
       }
       is AsyncResult.Pending -> 0
