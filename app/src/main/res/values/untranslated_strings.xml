@@ -35,6 +35,7 @@
   <string name="developer_options_add_one_profile" translatable="false">Add 1 profile</string>
   <string name="developer_options_add_three_profiles" translatable="false">Add 3 profiles</string>
   <string name="developer_options_delete_all_non_admin_profiles" translatable="false">Delete all non admin profiles</string>
+  <string name="developer_options_profile_count" translatable="false">Existing Profile Count</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
   <string name="math_expression_parse_result_label" translatable="false">Parse result: %s</string>

@@ -624,12 +624,6 @@ class DeveloperOptionsFragmentTest {
           stringToMatch = "Admin"
         )
 
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(1))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 1,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Ben"
-        )
         onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(2))
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 2,
@@ -661,26 +655,6 @@ class DeveloperOptionsFragmentTest {
           itemPosition = 0,
           targetView = R.id.profile_name_text,
           stringToMatch = "Admin"
-        )
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(1))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 1,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Adhiambo"
-        )
-
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(2))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 2,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Ben"
-        )
-
-        onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(3))
-        verifyTextOnProfileListItemAtPosition(
-          itemPosition = 3,
-          targetView = R.id.profile_name_text,
-          stringToMatch = "Nikita"
         )
 
         onView(withId(R.id.profile_recycler_view)).perform(scrollToPosition<ViewHolder>(4))

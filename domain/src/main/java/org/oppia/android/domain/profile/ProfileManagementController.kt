@@ -235,6 +235,13 @@ class ProfileManagementController @Inject constructor(
     }
   }
 
+/** Returns the count of profiles. */
+  fun getProfileCount(): DataProvider<Int> {
+    return profileDataStore.transform(GET_PROFILES_PROVIDER_ID) {
+      it.profilesCount
+    }
+  }
+
   /** Returns a boolean determining whether the profile was ever added or not. */
   fun getWasProfileEverAdded(): DataProvider<Boolean> {
     return profileDataStore.transformAsync(GET_WAS_PROFILE_EVER_ADDED_PROVIDER_ID) {

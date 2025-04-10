@@ -63,7 +63,8 @@ private val COLORS_LIST = listOf(
 )
 
 private val PRE_DEFINED_NAMES_LIST = listOf(
-  "Ben", "Nikita", "Adhiambo", "Sean", "Saptak", "Vishwajit", "Subhajit", "Aarav", "Emily", "Fatima"
+  "Ben", "Adhiambo", "Sean", "Saptak", "Vishwajit", "Subhajit", "Tanish", "Ayush", "Jinshu",
+  "Eduard", "Kenneth", "Manas", "Mohit", "RD", "Oyindamola", "Sandeep", "Yash"
 )
 
 /** The presenter for [DeveloperOptionsFragment]. */
@@ -210,7 +211,7 @@ class DeveloperOptionsFragmentPresenter @Inject constructor(
 
       val newNames = PRE_DEFINED_NAMES_LIST.filter {
         !existingProfileNameList.contains(it)
-      }.take(count)
+      }.shuffled().take(count)
       newNames.forEach { newName ->
         val rgbColor = selectRandomColor()
         profileManagementController.addProfile(

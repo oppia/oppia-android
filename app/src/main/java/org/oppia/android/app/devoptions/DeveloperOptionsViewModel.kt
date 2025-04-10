@@ -11,6 +11,8 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import javax.inject.Inject
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.profile.ProfileManagementController
 
 /**
  * [ViewModel] for [DeveloperOptionsFragment]. It populates the recyclerview with a list of
@@ -19,7 +21,9 @@ import javax.inject.Inject
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(
   activity: AppCompatActivity,
-  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
+  private val profileManagementController: ProfileManagementController,
+  private val oppiaLogger: OppiaLogger
 ) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val routeToMarkChaptersCompletedListener =
@@ -62,7 +66,9 @@ class DeveloperOptionsViewModel @Inject constructor(
       DeveloperOptionsAddAndDeleteProfilesViewModel(
         addProfileButtonClickListener,
         addThreeProfilesButtonClickListener,
-        deleteAllNonAdminProfilesButtonClickListener
+        deleteAllNonAdminProfilesButtonClickListener,
+        profileManagementController,
+        oppiaLogger
       )
     )
   }
