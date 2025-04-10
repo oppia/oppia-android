@@ -16,7 +16,6 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -25,7 +24,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -43,6 +41,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.exploration.ExplorationActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
@@ -113,26 +112,13 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = StoryActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class StoryActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
 
   private val internalProfileId = 0
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<StoryActivity> = ActivityTestRule(
-    StoryActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
 
   @Before
   fun setUp() {
@@ -161,19 +147,22 @@ class StoryActivityTest {
 
   @Test
   fun testStoryActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(
+    launch<StoryActivity>(
       createStoryActivityIntent(
         internalProfileId = internalProfileId,
         classroomId = TEST_CLASSROOM_ID_0,
         topicId = TEST_TOPIC_ID_0,
         storyId = TEST_STORY_ID_0
       )
-    )
-    val title = activityTestRule.activity.title
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.story_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.story_activity_title))
+      }
+    }
   }
 
   @Test // TODO(#3245): Error -> URLSpan should be used in place of ClickableSpan

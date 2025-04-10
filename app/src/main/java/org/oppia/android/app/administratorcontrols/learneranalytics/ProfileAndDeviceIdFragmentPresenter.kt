@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewType
+import org.oppia.android.app.databinding.databinding.ProfileAndDeviceIdFragmentBinding
+import org.oppia.android.app.databinding.databinding.ProfileListControlButtonsBinding
+import org.oppia.android.app.databinding.databinding.ProfileListDeviceIdItemBinding
+import org.oppia.android.app.databinding.databinding.ProfileListLearnerIdItemBinding
+import org.oppia.android.app.databinding.databinding.ProfileListSyncStatusItemBinding
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.databinding.ProfileAndDeviceIdFragmentBinding
-import org.oppia.android.databinding.ProfileListControlButtonsBinding
-import org.oppia.android.databinding.ProfileListDeviceIdItemBinding
-import org.oppia.android.databinding.ProfileListLearnerIdItemBinding
-import org.oppia.android.databinding.ProfileListSyncStatusItemBinding
 import javax.inject.Inject
 
 /** Presenter for arranging [ProfileAndDeviceIdFragment]'s UI. */

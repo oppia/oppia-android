@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
-import org.oppia.android.R
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -17,6 +16,7 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandle
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.toAccessibleAnswerString
+import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.math.toAnswerString
 import javax.inject.Inject

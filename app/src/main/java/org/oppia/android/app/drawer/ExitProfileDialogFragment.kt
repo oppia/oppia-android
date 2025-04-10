@@ -8,13 +8,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.DialogFragment
-import org.oppia.android.R
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.app.model.ExitProfileDialogArguments
 import org.oppia.android.app.model.HighlightItem
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 
@@ -33,11 +33,11 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
     fun newInstance(
       exitProfileDialogArguments: ExitProfileDialogArguments
     ): ExitProfileDialogFragment {
-      val exitProfileDialogFragment = ExitProfileDialogFragment()
-      val args = Bundle()
-      args.putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
-      exitProfileDialogFragment.arguments = args
-      return exitProfileDialogFragment
+      return ExitProfileDialogFragment().apply {
+        arguments = Bundle().apply {
+          putProto(EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO, exitProfileDialogArguments)
+        }
+      }
     }
   }
 
@@ -50,7 +50,7 @@ class ExitProfileDialogFragment : InjectableDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args =
-      checkNotNull(arguments) { "Expected arguments to be pass to ExitProfileDialogFragment" }
+      checkNotNull(arguments) { "Expected arguments to be passed to ExitProfileDialogFragment" }
 
     val exitProfileDialogArguments = args.getProto(
       EXIT_PROFILE_DIALOG_ARGUMENTS_PROTO,

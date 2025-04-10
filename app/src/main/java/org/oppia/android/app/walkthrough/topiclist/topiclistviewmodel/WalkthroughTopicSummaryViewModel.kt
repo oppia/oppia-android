@@ -2,10 +2,10 @@ package org.oppia.android.app.walkthrough.topiclist.topiclistviewmodel
 
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
-import org.oppia.android.R
 import org.oppia.android.app.home.topiclist.TopicSummaryClickListener
 import org.oppia.android.app.model.EphemeralTopicSummary
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.walkthrough.topiclist.WalkthroughTopicItemViewModel
 import org.oppia.android.domain.translation.TranslationController
 
