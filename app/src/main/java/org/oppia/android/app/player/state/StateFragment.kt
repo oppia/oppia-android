@@ -25,6 +25,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -164,6 +165,12 @@ class StateFragment :
   fun viewSolution() {
     stateFragmentPresenter.viewSolution()
   }
+
+  /**
+   * Delegates the removal of all [ConceptCardFragment] instances
+   * to the [stateFragmentPresenter].
+   */
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
 

@@ -184,6 +184,8 @@ class ExplorationFragmentPresenter @Inject constructor(
     fragment.requireArguments().putProto(ARGUMENTS_KEY, updatedArgs)
   }
 
+  fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
+
   companion object {
     /** The fragment arguments key for all proto-held arguments for [ExplorationFragment]. */
     const val ARGUMENTS_KEY = "ExplorationFragment.arguments"
