@@ -28,6 +28,7 @@ class DeveloperOptionsAddAndDeleteProfilesViewModel(
     ::processGetProfileCountResult
   )
 
+  /** A [LiveData] that represents the profile count as a string. */
   val profileCountString: LiveData<String> = Transformations.map(profileCount) { it.toString() }
 
   private fun processGetProfileCountResult(profileCountResult: AsyncResult<Int>): Int {
