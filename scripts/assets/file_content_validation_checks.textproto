@@ -461,6 +461,9 @@ file_content_checks {
   exempted_file_name: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
   exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
   exempted_file_name: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
+  # These are false positives.
+  exempted_file_name: "data/src/test/java/org/oppia/android/data/backends/gae/testing/FeedbackReportingServiceTestOrchestratorTest.kt"
+  exempted_file_name: "data/src/test/java/org/oppia/android/data/backends/gae/testing/PlatformParameterServiceTestOrchestratorTest.kt"
 }
 file_content_checks {
   file_path_regex: "app/src/main/AndroidManifest.xml"
