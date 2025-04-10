@@ -466,11 +466,13 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      // Unconditionally retrieve the info tab name since this test is verifying that it's not
+      // enabled.
       val infoTab =
         TopicTab.getTabForPosition(
           position = INFO_TAB_POSITION,
-          enableTopicInfoTab.value,
-          enableTopicPracticeTab.value
+          enableTopicInfoTab = true,
+          enableTopicPracticeTab = true
         )
       onView(withText(infoTab.name)).check(doesNotExist())
     }
@@ -658,7 +660,7 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
-      clickTabAtPosition(position = REVISION_TAB_POSITION)
+      clickTabAtPosition(position = REVISION_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED)
       clickTabAtPosition(position = INFO_TAB_POSITION)
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
     }
@@ -798,7 +800,7 @@ class TopicFragmentTest {
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       testCoroutineDispatchers.runCurrent()
       matchStringOnListItem(
         recyclerView = R.id.topic_practice_skill_list,
@@ -897,7 +899,7 @@ class TopicFragmentTest {
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
       testCoroutineDispatchers.runCurrent()
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       testCoroutineDispatchers.runCurrent()
 
       assertThat(fakeAnalyticsEventLogger.getMostRecentEvent())
