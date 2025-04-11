@@ -1,25 +1,22 @@
 package org.oppia.android.data.backends.gae
 
+import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import org.oppia.android.data.backends.gae.api.FeedbackReportingService
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
-/**
- * Module which provides all required dependencies about network
- *
- * Sample resource: https://github.com/gahfy/Feed-Me/tree/unitTests
- */
+/** Module which provides [Retrofit] (qualified by [OppiaRetrofit]). */
 @Module
-class NetworkModule {
+class RetrofitModule {
   @OppiaRetrofit
   @Provides
   @Singleton
   fun provideRetrofitInstance(
+    moshi: Moshi,
     remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
     networkLoggingInterceptor: NetworkLoggingInterceptor,
     jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
@@ -27,7 +24,7 @@ class NetworkModule {
   ): Retrofit {
     return Retrofit.Builder().apply {
       baseUrl(baseUrl)
-      addConverterFactory(MoshiConverterFactory.create())
+      addConverterFactory(MoshiConverterFactory.create(moshi))
       client(
         OkHttpClient.Builder().apply {
           // This is in a specific order. The auth modifies a request, so it happens first. The
@@ -44,23 +41,5 @@ class NetworkModule {
 
   @Provides
   @Singleton
-  fun provideFeedbackReportingService(
-    @OppiaRetrofit retrofit: Retrofit
-  ): FeedbackReportingService {
-    return retrofit.create(FeedbackReportingService::class.java)
-  }
-
-  @Provides
-  @Singleton
-  fun providePlatformParameterService(
-    @OppiaRetrofit retrofit: Retrofit
-  ): PlatformParameterService {
-    return retrofit.create(PlatformParameterService::class.java)
-  }
-
-  // Provides the API key to use in authenticating remote messages sent or received. This will be
-  // replaced with a secret key in production builds.
-  @Provides
-  @NetworkApiKey
-  fun provideNetworkApiKey(): String = ""
+  fun provideMoshi(): Moshi = Moshi.Builder().add(GaePlatformParameterValue.Adapter).build()
 }
