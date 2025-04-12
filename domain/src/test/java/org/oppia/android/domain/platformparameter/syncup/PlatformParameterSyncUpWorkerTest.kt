@@ -3,8 +3,6 @@ package org.oppia.android.domain.platformparameter.syncup
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.Data
@@ -19,19 +17,16 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
+import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
+import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
-import org.oppia.android.data.backends.gae.BaseUrl
-import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkApiKey
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.OppiaRetrofit
-import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -41,8 +36,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.network.MockPlatformParameterService
-import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
@@ -65,12 +58,8 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.mock.MockRetrofit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -91,6 +80,7 @@ class PlatformParameterSyncUpWorkerTest {
   @Inject lateinit var context: Context
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var serviceOrchestrator: PlatformParameterServiceTestOrchestrator
 
   private val expectedTestStringParameter = PlatformParameter.newBuilder()
     .setName(TEST_STRING_PARAM_NAME)
@@ -134,8 +124,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsEmpty_getCorrectPlatformParameters_verifyValuesAreCached() {
-    // Set up versionName to get correct network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+    serviceOrchestrator.setNextResponseAsSuccess()
 
     // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request.
     platformParameterController.updatePlatformParameterDatabase(listOf())
@@ -170,8 +159,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsEmpty_getWrongPlatformParameters_verifyWorkerCrashes() {
-    // Set up versionName to get incorrect network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
+    serviceOrchestrator.setNextResponseAsSuccess(REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE)
 
     // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request.
     platformParameterController.updatePlatformParameterDatabase(listOf())
@@ -201,8 +189,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsNotEmpty_getCorrectPlatformParameters_verifyValuesAreUpdated() {
-    // Set up versionName to get correct network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+    serviceOrchestrator.setNextResponseAsSuccess()
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
     // Work request that is not first.
@@ -249,8 +236,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsNotEmpty_getWrongPlatformParameters_verifyWorkerCrashes() {
-    // Set up versionName to get incorrect network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForWrongResponse)
+    serviceOrchestrator.setNextResponseAsSuccess(REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE)
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
     // Work request that is not first.
@@ -281,8 +267,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseIsNotEmpty_getEmptyResponseForWrongVersion_verifyValuesNotUpdated() {
-    // Set up versionName to get incorrect network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForEmptyResponse)
+    serviceOrchestrator.setNextResponseAsSuccess(parameterValues = emptyMap())
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
     // Work request that is not first.
@@ -328,8 +313,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_getFeatureFlags_addSyncStatusFlags_verifyCorrectStatusReturned() {
-    // Set up versionName to get correct network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForCorrectResponse)
+    serviceOrchestrator.setNextResponseAsSuccess()
 
     // Empty the Platform Parameter Database to simulate the execution of first SyncUp Work request.
     platformParameterController.updatePlatformParameterDatabase(listOf())
@@ -367,8 +351,7 @@ class PlatformParameterSyncUpWorkerTest {
 
   @Test
   fun testSyncUpWorker_databaseNotEmpty_getEmptyResponse_verifySyncStatusNotUpdated() {
-    // Set up versionName to get incorrect network response from mock platform parameter service.
-    setUpApplicationForContext(MockPlatformParameterService.appVersionForEmptyResponse)
+    serviceOrchestrator.setNextResponseAsSuccess(parameterValues = emptyMap())
 
     // Fill the Platform Parameter Database with mock values to simulate the execution of a SyncUp
     // Work request that is not first.
@@ -409,21 +392,6 @@ class PlatformParameterSyncUpWorkerTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpApplicationForContext(testAppVersionName: String) {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = testAppVersionName
-    packageManager.installPackage(packageInfo)
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -453,48 +421,13 @@ class PlatformParameterSyncUpWorkerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
-  @Module
-  class TestNetworkModule {
-
-    @OppiaRetrofit
-    @Provides
-    @Singleton
-    fun provideRetrofitInstance(
-      jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
-      remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
-      @BaseUrl baseUrl: String
-    ): Retrofit {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .build()
-
-      return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
-    }
-
-    @Provides
-    @NetworkApiKey
-    fun provideNetworkApiKey(): String = ""
-
-    @Provides
-    fun provideMockPlatformParameterService(
-      mockRetrofit: MockRetrofit
-    ): PlatformParameterService {
-      return MockPlatformParameterService(mockRetrofit.create(PlatformParameterService::class.java))
-    }
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class, NetworkConfigProdModule::class,
+      TestModule::class, TestLogReportingModule::class, RetrofitModule::class,
+      RetrofitServiceModule::class, FakeOppiaClockModule::class, NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class
