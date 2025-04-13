@@ -563,6 +563,7 @@ class TopicController @Inject constructor(
       html = topicData.getStringFromObject("topic_description")
     }.build()
     val classroomId = classroomController.getClassroomIdByTopicId(topicId)
+    val enablePracticeTab = topicData.getBoolean("enable_practice_tab")
     // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
@@ -574,6 +575,7 @@ class TopicController @Inject constructor(
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)
+      .setEnablePracticeTab(enablePracticeTab)
       .build()
   }
 

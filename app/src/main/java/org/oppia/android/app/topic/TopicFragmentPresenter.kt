@@ -78,7 +78,10 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    setUpViewPager(viewPager, classroomId, topicId, isConfigChanged)
+    viewModel.enablePracticeTab.observe(fragment) { enablePracticeTab ->
+      setUpViewPager(viewPager, classroomId, topicId, isConfigChanged, enablePracticeTab)
+    }
+
     return binding.root
   }
 
@@ -129,7 +132,8 @@ class TopicFragmentPresenter @Inject constructor(
     viewPager2: ViewPager2,
     classroomId: String,
     topicId: String,
-    isConfigChanged: Boolean
+    isConfigChanged: Boolean,
+    enablePracticeTab: Boolean
   ) {
     val adapter =
       ViewPagerAdapter(
@@ -139,14 +143,14 @@ class TopicFragmentPresenter @Inject constructor(
         topicId,
         storyId,
         enableTopicInfoTab.value,
-        enableTopicPracticeTab.value
+        enableTopicPracticeTab.value && enablePracticeTab
       )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(
         position,
         enableTopicInfoTab.value,
-        enableTopicPracticeTab.value
+        enableTopicPracticeTab.value && enablePracticeTab
       )
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
@@ -165,7 +169,7 @@ class TopicFragmentPresenter @Inject constructor(
           TopicTab.getTabForPosition(
             position,
             enableTopicInfoTab.value,
-            enableTopicPracticeTab.value
+            enableTopicPracticeTab.value && enablePracticeTab
           )
         )
       }
