@@ -122,7 +122,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
-      return tab.getPosition(enableTopicInfoTab.value, enableTopicPracticeTab.value)
+    return tab.getPosition(enableTopicInfoTab.value, enableTopicPracticeTab.value)
   }
 
   private fun setUpViewPager(

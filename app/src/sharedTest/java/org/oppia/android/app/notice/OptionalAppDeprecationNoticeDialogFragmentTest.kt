@@ -42,7 +42,8 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -239,7 +240,8 @@ class OptionalAppDeprecationNoticeDialogFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,

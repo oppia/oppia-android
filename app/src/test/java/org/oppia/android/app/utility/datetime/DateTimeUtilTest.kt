@@ -31,7 +31,8 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -219,7 +220,8 @@ class DateTimeUtilTest {
       ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
       ImageParsingModule::class, AccessibilityTestModule::class,
       GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      NetworkModule::class, PlatformParameterModule::class, HintsAndSolutionProdModule::class,
+      RetrofitModule::class, RetrofitServiceModule::class, PlatformParameterModule::class,
+      HintsAndSolutionProdModule::class,
       CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
       QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
