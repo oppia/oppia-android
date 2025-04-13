@@ -485,6 +485,7 @@ class TopicController @Inject constructor(
               availableToPlayNow = true
             } else availableToPlayInFuture = true
           }.build()
+          enablePracticeTab = topicRecord.enablePracticeTab
         }.build()
       }
     } else createTopicFromJson(topicId)
