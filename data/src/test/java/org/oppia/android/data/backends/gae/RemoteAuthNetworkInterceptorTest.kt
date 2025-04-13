@@ -3,10 +3,9 @@ package org.oppia.android.data.backends.gae
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import com.squareup.moshi.Moshi
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
@@ -21,6 +20,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
@@ -28,7 +28,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -41,34 +40,22 @@ import javax.inject.Singleton
 @Config(application = RemoteAuthNetworkInterceptorTest.TestApplication::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class RemoteAuthNetworkInterceptorTest {
-
-  @Inject
-  lateinit var remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
-
-  @Inject
-  lateinit var context: Context
-
+  @Inject lateinit var context: Context
+  @Inject lateinit var remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor
+  @Inject lateinit var moshi: Moshi
+  @Inject lateinit var mockWebServer: MockWebServer
   @field:[Inject BackgroundTestDispatcher]
   lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
   private lateinit var retrofit: Retrofit
-
-  private lateinit var mockWebServer: MockWebServer
-
   private lateinit var client: OkHttpClient
-
   private lateinit var platformParameterService: PlatformParameterService
 
   private val testVersionName = "1.0"
 
-  private val testVersionCode = 1
-
-  private val topicName = "Topic1"
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    setUpApplicationForContext()
     setUpRetrofit()
   }
 
@@ -124,39 +111,15 @@ class RemoteAuthNetworkInterceptorTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun setUpApplicationForContext() {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = testVersionName
-    @Suppress("DEPRECATION") // versionCode is needed to test production code.
-    packageInfo.versionCode = testVersionCode
-    packageManager.installPackage(packageInfo)
-  }
-
   private fun setUpRetrofit() {
-    mockWebServer = MockWebServer()
     client = OkHttpClient.Builder()
       .addInterceptor(remoteAuthNetworkInterceptor)
       .build()
-
-    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
-    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
-    // request mocking in different ways and we want to verify the full request is executed here.
-    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
     retrofit = Retrofit.Builder()
       .baseUrl(mockWebServer.url("/"))
-      .addConverterFactory(MoshiConverterFactory.create())
+      .addConverterFactory(MoshiConverterFactory.create(moshi))
       .client(client)
       .build()
-
     platformParameterService = retrofit.create(PlatformParameterService::class.java)
   }
 
@@ -164,17 +127,8 @@ class RemoteAuthNetworkInterceptorTest {
     assertThat(headers).isNotNull()
     assertThat(headers?.get("api_key")).isEqualTo("test_api_key")
     assertThat(headers?.get("app_package_name")).isEqualTo(context.packageName)
-    assertThat(headers?.get("app_version_name")).isEqualTo("1.0")
+    assertThat(headers?.get("app_version_name")).isEqualTo("oppia-android-test-0123456789")
     assertThat(headers?.get("app_version_code")).isEqualTo("1")
-  }
-
-  // TODO(#89): Move this to a common test application component.
-  @Module
-  class TestNetworkModule {
-    @Provides
-    @Singleton
-    @NetworkApiKey
-    fun provideNetworkApiKey(): String = "test_api_key"
   }
 
   @Module
@@ -190,8 +144,9 @@ class RemoteAuthNetworkInterceptorTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestNetworkModule::class, TestModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class
+      RobolectricModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
+      NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
