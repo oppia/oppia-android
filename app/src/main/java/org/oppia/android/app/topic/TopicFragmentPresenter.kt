@@ -122,15 +122,7 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
-    return if (enableTopicInfoTab.value && enableTopicPracticeTab.value) {
-      tab.positionWithFourTabs
-    } else if (enableTopicInfoTab.value) {
-      tab.positionWithThreeTabsWithInfo
-    } else if (enableTopicPracticeTab.value) {
-      tab.positionWithThreeTabsWithPractice
-    } else {
-      tab.positionWithTwoTabs
-    }
+      return tab.getPosition(enableTopicInfoTab.value, enableTopicPracticeTab.value)
   }
 
   private fun setUpViewPager(
