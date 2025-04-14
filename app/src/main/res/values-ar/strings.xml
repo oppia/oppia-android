@@ -7,6 +7,7 @@
 * SamarBenNafa
 * Sarah zoubida
 * Seanlip
+* Zaid1442011
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
@@ -254,6 +255,14 @@
   <string name="set_up_multiple_profiles_description">أضف حتى 10 مستخدمين إلى حسابك. مثالي للعائلات والفصول الدراسية.</string>
   <string name="profile_chooser_administrator_controls">أدوات تحكم المشرف</string>
   <string name="profile_chooser_language">اللغة</string>
+  <string name="profile_selection_header">حدد ملفك الشخصي لاستكشاف الدروس</string>
+  <string name="profile_selection_profile_icon_description">صورة الملف الشخصي للمستخدم</string>
+  <string name="profile_selection_add_icon_description">إضافة ملف تعريف آخر</string>
+  <string name="profile_selection_add_profile_text">إضافة ملف تعريف المتعلم</string>
+  <string name="profile_selection_admin_label">إداري</string>
+  <string name="profile_selection_scroll_left_content_description">انتقل إلى اليسار</string>
+  <string name="profile_selection_scroll_right_content_description">انتقل إلى اليمين</string>
+  <string name="profile_selection_administrator_controls">عناصر تحكم المسؤول</string>
   <string name="admin_auth_toolbar">أدوات تحكم المشرف</string>
   <string name="admin_auth_activity_add_profiles_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="admin_auth_activity_access_controls_title">أمّن الحساب للوصول إلى أدوات تحكم المشرف</string>

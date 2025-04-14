@@ -22,12 +22,9 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = NetworkConfigProdModuleTest.TestApplication::class)
 class NetworkConfigProdModuleTest {
-
-  @field:[Inject BaseUrl]
-  lateinit var baseUrl: String
-
-  @field:[Inject XssiPrefix]
-  lateinit var xssiPrefix: String
+  @field:[Inject BaseUrl] lateinit var baseUrl: String
+  @field:[Inject XssiPrefix] lateinit var xssiPrefix: String
+  @field:[Inject NetworkApiKey] lateinit var networkApiKey: String
 
   @Before
   fun setUp() {
@@ -42,6 +39,12 @@ class NetworkConfigProdModuleTest {
   @Test
   fun testModule_xssiPrefix_isXssiPrefix() {
     assertThat(xssiPrefix).isEqualTo(")]}'")
+  }
+
+  @Test
+  fun testInjectedNetworkApiKey_isEmptyByDefault() {
+    // The network API key is empty by default on developer builds.
+    assertThat(networkApiKey).isEmpty()
   }
 
   private fun setUpTestApplicationComponent() {

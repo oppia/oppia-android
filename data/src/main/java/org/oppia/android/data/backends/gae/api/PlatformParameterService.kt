@@ -1,5 +1,6 @@
 package org.oppia.android.data.backends.gae.api
 
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -22,5 +23,5 @@ interface PlatformParameterService {
   fun getPlatformParametersByVersion(
     @Query("app_version") version: String,
     @Query("platform_type") platformType: String = "Android"
-  ): Call<Map<String, Any>>
+  ): Call<Map<String, GaePlatformParameterValue>>
 }
