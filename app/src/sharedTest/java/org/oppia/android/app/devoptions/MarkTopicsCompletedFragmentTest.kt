@@ -18,7 +18,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
@@ -27,7 +26,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -43,10 +41,12 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -113,33 +113,16 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkTopicsCompletedFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var storyProgressTestHelper: StoryProgressTestHelper
+  @Inject lateinit var fakeOppiaClock: FakeOppiaClock
 
   private val internalProfileId = 0
   private lateinit var profileId: ProfileId
-
-  @Inject
-  lateinit var storyProgressTestHelper: StoryProgressTestHelper
-
-  @Inject
-  lateinit var fakeOppiaClock: FakeOppiaClock
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkTopicsCompletedTestActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {
@@ -413,19 +396,25 @@ class MarkTopicsCompletedFragmentTest {
 
   @Test
   fun testMarkTopicsCompletedFragment_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedTestActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
+      scenario.onActivity { assertThat(it.isFinishing).isTrue() }
+    }
   }
 
   @Test
   fun testMarkTopicsCompletedFragment_configChange_clickMarkCompleted_activityFinishes() {
-    activityTestRule.launchActivity(createMarkTopicsCompletedTestActivityIntent(internalProfileId))
-    testCoroutineDispatchers.runCurrent()
-    onView(isRoot()).perform(orientationLandscape())
-    onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
-    assertThat(activityTestRule.activity.isFinishing).isTrue()
+    launch<MarkTopicsCompletedTestActivity>(
+      createMarkTopicsCompletedTestActivityIntent(internalProfileId)
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.mark_topics_completed_mark_completed_text_view)).perform(click())
+      scenario.onActivity { assertThat(it.isFinishing).isTrue() }
+    }
   }
 
   @Test
@@ -593,7 +582,8 @@ class MarkTopicsCompletedFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,

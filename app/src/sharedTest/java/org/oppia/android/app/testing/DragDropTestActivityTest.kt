@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
@@ -13,10 +14,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -34,13 +36,15 @@ import org.oppia.android.app.recyclerview.OnDragEndedListener
 import org.oppia.android.app.recyclerview.OnItemDragListener
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPosition
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -75,6 +79,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -92,6 +97,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
@@ -101,8 +107,26 @@ class DragDropTestActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
+
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+    testCoroutineDispatchers.registerIdlingResource()
+  }
+
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
+  private fun setUpTestApplicationComponent() {
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
 
   @Test
   fun testDragDropTestActivity_dragItem0ToPosition1() {
@@ -110,6 +134,7 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
@@ -126,6 +151,7 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 0))
         .check(matches(withText("Item 2")))
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
@@ -139,6 +165,7 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
@@ -155,6 +182,7 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 1))
         .check(matches(withText("Item 3")))
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
@@ -168,7 +196,7 @@ class DragDropTestActivityTest {
       scenario.onActivity { activity ->
         attachDragDropToActivity(activity)
       }
-      onView(withId(R.id.drag_drop_recycler_view))
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.drag_drop_recycler_view)).perform(
         DragViewAction(
           RecyclerViewCoordinatesProvider(
@@ -185,6 +213,7 @@ class DragDropTestActivityTest {
           precisionDescriber = Press.FINGER
         )
       )
+      testCoroutineDispatchers.runCurrent()
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 2))
         .check(matches(withText("Item 4")))
       onView(atPosition(recyclerViewId = R.id.drag_drop_recycler_view, position = 3))
@@ -228,7 +257,8 @@ class DragDropTestActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,

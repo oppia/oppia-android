@@ -19,12 +19,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -37,14 +37,18 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN
+import org.oppia.android.app.model.IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -162,12 +166,20 @@ class IntroFragmentTest {
   }
 
   @Test
-  fun testFragment_portraitMode_stepCountText_isDisplayed() {
+  fun testFragment_parentScreenIsCreateProfile_stepCountTextIsDisplayed() {
     launchOnboardingLearnerIntroActivity().use {
       onView(withId(R.id.onboarding_steps_count))
         .check(matches(isDisplayed()))
       onView(withId(R.id.onboarding_steps_count))
         .check(matches(withText(R.string.onboarding_step_count_four)))
+    }
+  }
+
+  @Test
+  fun testFragment_parentScreenIsProfileChooser_stepCountTextIsNotDisplayed() {
+    launchOnboardingLearnerIntroActivity(PROFILE_CHOOSER_SCREEN).use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(not(isDisplayed())))
     }
   }
 
@@ -229,21 +241,23 @@ class IntroFragmentTest {
     }
   }
 
-  private fun launchOnboardingLearnerIntroActivity():
-    ActivityScenario<IntroActivity>? {
-      val params = IntroActivityParams.newBuilder()
-        .setProfileNickname(testProfileNickname)
-        .build()
+  private fun launchOnboardingLearnerIntroActivity(
+    parentScreen: IntroActivityParams.ParentScreen = CREATE_PROFILE_SCREEN
+  ): ActivityScenario<IntroActivity>? {
+    val params = IntroActivityParams.newBuilder()
+      .setProfileNickname(testProfileNickname)
+      .setParentScreen(parentScreen)
+      .build()
 
-      val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(context).apply {
-          putProtoExtra(IntroActivity.PARAMS_KEY, params)
-          decorateWithUserProfileId(testProfileId)
-        }
-      )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
-    }
+    val scenario = ActivityScenario.launch<IntroActivity>(
+      IntroActivity.createIntroActivity(context).apply {
+        putProtoExtra(IntroActivity.PARAMS_KEY, params)
+        decorateWithUserProfileId(testProfileId)
+      }
+    )
+    testCoroutineDispatchers.runCurrent()
+    return scenario
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
@@ -268,7 +282,8 @@ class IntroFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,

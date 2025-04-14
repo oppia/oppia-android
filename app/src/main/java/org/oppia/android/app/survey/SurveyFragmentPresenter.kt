@@ -13,6 +13,11 @@ import androidx.lifecycle.LiveData
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import org.oppia.android.app.databinding.databinding.SurveyFragmentBinding
+import org.oppia.android.app.databinding.databinding.SurveyFreeFormLayoutBinding
+import org.oppia.android.app.databinding.databinding.SurveyMarketFitQuestionLayoutBinding
+import org.oppia.android.app.databinding.databinding.SurveyNpsScoreLayoutBinding
+import org.oppia.android.app.databinding.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.app.model.EphemeralSurveyQuestion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
@@ -24,11 +29,6 @@ import org.oppia.android.app.survey.surveyitemviewmodel.NpsItemsViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.SurveyAnswerItemViewModel
 import org.oppia.android.app.survey.surveyitemviewmodel.UserTypeItemsViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.databinding.SurveyFragmentBinding
-import org.oppia.android.databinding.SurveyFreeFormLayoutBinding
-import org.oppia.android.databinding.SurveyMarketFitQuestionLayoutBinding
-import org.oppia.android.databinding.SurveyNpsScoreLayoutBinding
-import org.oppia.android.databinding.SurveyUserTypeQuestionLayoutBinding
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.survey.SurveyProgressController

@@ -6,6 +6,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import org.oppia.android.app.databinding.databinding.LessonsCompletedChapterViewBinding
+import org.oppia.android.app.databinding.databinding.LessonsInProgressChapterViewBinding
+import org.oppia.android.app.databinding.databinding.LessonsLockedChapterViewBinding
+import org.oppia.android.app.databinding.databinding.LessonsNotStartedChapterViewBinding
+import org.oppia.android.app.databinding.databinding.TopicLessonsFragmentBinding
+import org.oppia.android.app.databinding.databinding.TopicLessonsStorySummaryBinding
+import org.oppia.android.app.databinding.databinding.TopicLessonsTitleBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ChapterPlayState
@@ -17,13 +24,6 @@ import org.oppia.android.app.model.StorySummary
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.topic.RouteToResumeLessonListener
 import org.oppia.android.app.topic.RouteToStoryListener
-import org.oppia.android.databinding.LessonsCompletedChapterViewBinding
-import org.oppia.android.databinding.LessonsInProgressChapterViewBinding
-import org.oppia.android.databinding.LessonsLockedChapterViewBinding
-import org.oppia.android.databinding.LessonsNotStartedChapterViewBinding
-import org.oppia.android.databinding.TopicLessonsFragmentBinding
-import org.oppia.android.databinding.TopicLessonsStorySummaryBinding
-import org.oppia.android.databinding.TopicLessonsTitleBinding
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController
 import org.oppia.android.domain.oppialogger.OppiaLogger

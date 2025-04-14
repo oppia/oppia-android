@@ -1,9 +1,9 @@
 package org.oppia.android.app.testing
 
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
+import org.oppia.android.app.ui.R
 
 /** Test activity for [org.oppia.android.app.databinding.AppCompatCheckBoxBindingAdapters]. */
 class AppCompatCheckBoxBindingAdaptersTestActivity : InjectableSystemLocalizedAppCompatActivity() {

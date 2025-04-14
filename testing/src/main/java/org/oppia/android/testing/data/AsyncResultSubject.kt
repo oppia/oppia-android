@@ -20,8 +20,6 @@ import com.google.common.truth.extensions.proto.LiteProtoTruth.assertThat
 import com.google.protobuf.MessageLite
 import org.oppia.android.util.data.AsyncResult
 
-// TODO(#4236): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [AsyncResult]s.
  *

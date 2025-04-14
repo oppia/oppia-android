@@ -66,7 +66,6 @@ import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -104,6 +103,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.testing.StateFragmentTestActivity
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
@@ -112,7 +112,8 @@ import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientati
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.app.utility.clickPoint
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -5230,13 +5231,77 @@ class StateFragmentTest {
       playThroughRatioExplorationState13()
       playThroughRatioExplorationState14()
 
-      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie." +
-        " Yummy!\n\n2 cups of milk and 1 cup of banana puree \n\n“I can make this,” he said." +
-        " “We’ll need to mix milk and banana puree in the ratio Blank.”\n\nCan you complete" +
-        " James’s sentence? What is the ratio of milk to banana puree?”"
+      val expectedDescription = "James turned the page, and saw a recipe for banana smoothie. " +
+        "Yummy!\nImage illustrating 2 cups of milk and 1 cup of banana puree\n“I can make this," +
+        "” he said. “We’ll need to mix milk and banana puree in the ratio Blank.”\nCan you " +
+        "complete James’s sentence? What is the ratio of milk to banana puree?”"
 
       onView(withId(R.id.content_text_view))
         .check(matches(withContentDescription(expectedDescription)))
+    }
+  }
+
+  @Test
+  fun testStateFragment_contentDescription_itemSelectionInteraction() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      verifyViewTypeIsPresent(SELECTION_INTERACTION)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.item_selection_contents_text_view
+        )
+      ).check(matches(withContentDescription("Green")))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 3,
+          targetViewId = R.id.item_selection_contents_text_view
+        )
+      ).check(matches(withContentDescription("Blue")))
+    }
+  }
+
+  @Test
+  fun testStateFragment_contentDescription_multipleChoiceInteraction() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughRatioExplorationState1()
+      playThroughRatioExplorationState2()
+      playThroughRatioExplorationState3()
+      playThroughRatioExplorationState4()
+      playThroughRatioExplorationState5()
+      playThroughRatioExplorationState6()
+      playThroughRatioExplorationState7()
+      playThroughRatioExplorationState8()
+      playThroughRatioExplorationState9()
+      playThroughRatioExplorationState10()
+      playThroughRatioExplorationState11()
+      playThroughRatioExplorationState12()
+      playThroughRatioExplorationState13()
+      playThroughRatioExplorationState14()
+      playThroughRatioExplorationState15()
+
+      val expectedDescription = "Image illustrating On the left, there is 1-unit wide glass " +
+        "filled with apple puree. On the right, there is 2-unit wide glass filled with milk."
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 2,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).check(matches(withContentDescription(expectedDescription)))
     }
   }
 
@@ -5341,6 +5406,12 @@ class StateFragmentTest {
 
   private fun playThroughRatioExplorationState14() {
     typeTextInput("1:4")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughRatioExplorationState15() {
+    typeTextInput("2:1")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
@@ -6106,7 +6177,8 @@ class StateFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,

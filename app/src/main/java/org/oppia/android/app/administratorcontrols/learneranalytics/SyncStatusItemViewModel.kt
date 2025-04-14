@@ -2,9 +2,9 @@ package org.oppia.android.app.administratorcontrols.learneranalytics
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.R
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileListViewModel.ProfileListItemViewModel
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData

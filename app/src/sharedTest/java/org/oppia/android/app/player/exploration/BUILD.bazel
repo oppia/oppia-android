@@ -2,13 +2,18 @@
 Tests for exploration player.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "BottomSheetOptionsMenuTest",
-    processed_src = test_with_resources("BottomSheetOptionsMenuTest.kt"),
+    srcs = [
+        "BottomSheetOptionsMenuTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.player.exploration.BottomSheetOptionsMenuTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -19,7 +24,7 @@ app_test(
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/player/exploration/testing:bottom_sheet_options_menu_test_activity",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/junit:initialize_default_locale_rule",
@@ -41,10 +46,16 @@ app_test(
     ],
 )
 
-app_test(
+oppia_android_test(
     name = "ExplorationActivityTest",
-    processed_src = test_with_resources("ExplorationActivityTest.kt"),
+    srcs = [
+        "ExplorationActivityTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.player.exploration.ExplorationActivityTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -56,7 +67,7 @@ app_test(
         "//app/src/main/java/org/oppia/android/app/application/testing:testing_build_flavor_module",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//config/src/java/org/oppia/android/config:all_languages_config",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
         "//testing",

@@ -1,0 +1,27 @@
+# This file describes the shared configuration for developing Oppia Android using the Bazel IntelliJ
+# plugin. Note that this file should be imported rather than used directly. It can be extended in
+# local .bazelproject files to add additional target directories for syncing, as needed.
+
+directories:
+  .
+  
+derive_targets_from_directories: false
+
+targets:
+  //:oppia_dev_binary
+  //app/src/main/... 
+  //domain/src/main/... 
+  //testing/src/main/... 
+  //utility/src/main/... 
+  //data/src/main/... 
+  //model/...
+  
+additional_languages:
+  java
+  kotlin
+
+android_sdk_platform: android-34
+
+shard_sync: true
+
+java_language_level: 11
