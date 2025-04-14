@@ -57,3 +57,17 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
+
+oppia_android_test(
+    name = "EventLogSubjectTest",
+    srcs = ["EventLogSubjectTest.kt"],
+    custom_package = "org.oppia.android.testing.logging",
+    test_class = "org.oppia.android.testing.logging.EventLogSubjectTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//testing/src/main/java/org/oppia/android/testing/logging:event_log_subject",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:robolectric_android-all",
+    ],
+)

@@ -19,7 +19,7 @@ concurrency:
 jobs:
   bazel_compute_affected_targets:
     name: Compute affected tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.compute-test-matrix.outputs.matrix }}
       can_skip_tests: ${{ steps.compute-test-matrix.outputs.can_skip_tests }}
@@ -100,7 +100,7 @@ jobs:
     name: Run Bazel Test
     needs: bazel_compute_affected_targets
     if: ${{ needs.bazel_compute_affected_targets.outputs.can_skip_tests != 'true' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       max-parallel: 10
@@ -109,11 +109,6 @@ jobs:
       CACHE_DIRECTORY: ~/.bazel_cache
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
@@ -254,7 +249,7 @@ jobs:
       # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
       # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
       if: ${{ !cancelled() }}
-      runs-on: ubuntu-20.04
+      runs-on: ubuntu-24.04
       steps:
         # This step will be skipped if there are no tests to run, so the overall job should pass.
         - name: Check tests passed (for tests that ran)

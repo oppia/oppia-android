@@ -3,6 +3,7 @@ package org.oppia.android.instrumentation.application
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.data.backends.gae.BaseUrl
+import org.oppia.android.data.backends.gae.NetworkApiKey
 import org.oppia.android.data.backends.gae.XssiPrefix
 
 /** Provides network-specific constants needed to configure end-to-end tests. */
@@ -12,9 +13,7 @@ class EndToEndTestNetworkConfigModule {
   /** Provides BaseUrl that connects to development server. */
   @Provides
   @BaseUrl
-  fun provideNetworkBaseUrl(): String {
-    return "http://localhost:8181"
-  }
+  fun provideNetworkBaseUrl(): String = "http://localhost:8181"
 
   /**
    * Prefix in Json response for extra layer of security in API calls
@@ -23,7 +22,9 @@ class EndToEndTestNetworkConfigModule {
    */
   @Provides
   @XssiPrefix
-  fun provideXssiPrefix(): String {
-    return ")]}'"
-  }
+  fun provideXssiPrefix(): String = ")]}'"
+
+  @Provides
+  @NetworkApiKey
+  fun provideNetworkApiKey(): String = ""
 }

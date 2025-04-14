@@ -101,8 +101,6 @@ TEST_DEPS = [
     "//testing/src/main/java/org/oppia/android/testing/data:async_result_subject",
     "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
     "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
-    "//testing/src/main/java/org/oppia/android/testing/network",
-    "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
     "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
     "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
