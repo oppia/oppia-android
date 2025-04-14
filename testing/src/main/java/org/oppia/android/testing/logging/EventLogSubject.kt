@@ -70,8 +70,6 @@ import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 
-// TODO(#4272): Add tests for this class.
-
 /**
  * Truth subject for verifying properties of [EventLog]s.
  *
@@ -80,7 +78,6 @@ import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
  *
  * Call [assertThat] to create the subject.
  */
-@Suppress("unused", "MemberVisibilityCanBePrivate") // TODO(#4272): Remove suppression when tested.
 class EventLogSubject private constructor(
   metadata: FailureMetadata,
   private val actual: EventLog
