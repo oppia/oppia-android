@@ -55,7 +55,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_matchesPriorityEssential() {
+  fun testEventLogSubject_withPriorityEssential_passes() {
     val eventLog = EventLog.newBuilder()
       .setPriority(EventLog.Priority.ESSENTIAL)
       .build()
@@ -76,7 +76,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_matchesPriorityOptional() {
+  fun testEventLogSubject_withPriorityOptional_passes() {
     val eventLog = EventLog.newBuilder()
       .setPriority(EventLog.Priority.OPTIONAL)
       .build()
@@ -120,7 +120,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_matchesProfileIdPresent() {
+  fun testHasProfileIdThat_eventWithProfileId_returnsProfileIdSubject() {
     val profileId = ProfileId.newBuilder()
       .setInternalId(1)
       .build()
@@ -152,7 +152,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_matchesAppLanguageSelection() {
+  fun testEventLogSubject_eventWithAppLanguageSelection_returnsAppLanguageSelectionSubject() {
     val appLanguageSelection = AppLanguageSelection.newBuilder()
       .setSelectedLanguage(OppiaLanguage.ENGLISH)
       .build()
@@ -184,7 +184,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_matchesWrittenTranslationLanguageSelection() {
+  fun testEventLogSubject_eventReturnsWrittenTranslationLanguageSelectionSubject() {
     val writtenTranslationLanguageSelection = WrittenTranslationLanguageSelection.newBuilder()
       .setSelectedLanguage(OppiaLanguage.ENGLISH)
       .build()
@@ -216,7 +216,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_matchesAudioTranslationLanguageSelection() {
+  fun testEventLogSubject_eventReturnsAudioTranslationLanguageSelectionSubject() {
     val audioTranslationLanguageSelection = AudioTranslationLanguageSelection.newBuilder()
       .setSelectedLanguage(OppiaLanguage.ENGLISH)
       .build()
@@ -248,7 +248,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenExplorationActivityContext() {
+  fun testEventLogSubject_hasOpenExplorationActivityContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -271,7 +271,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenInfoTabContext() {
+  fun testEventLogSubject_hasOpenInfoTabContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -284,7 +284,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenLessonsTabContext() {
+  fun testEventLogSubject_hasOpenLessonsTabContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -297,7 +297,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenPracticeTabContextPresent() {
+  fun testEventLogSubject_hasOpenPracticeTabContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -310,7 +310,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenRevisionTabContext() {
+  fun testEventLogSubject_hasOpenRevisionTabContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -333,7 +333,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenRevisionTabContext_hasTopicContext() {
+  fun testEventLogSubject_hasOpenRevisionTabContext_hasTopicContext_passes() {
     val topicContext = TopicContext.newBuilder()
       .setTopicId("topicId")
       .build()
@@ -372,7 +372,6 @@ class EventLogSubjectTest {
 
   @Test
   fun testEventLogSubject_hasOpenRevisionTabContext_withTopicIdEquals() {
-    // give code
     val topicContext = TopicContext.newBuilder()
       .setTopicId("topicId")
       .build()
@@ -408,7 +407,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenQuestionPlayerContext() {
+  fun testEventLogSubject_hasOpenQuestionPlayerContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -506,7 +505,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenStoryActivityContext() {
+  fun testEventLogSubject_hasOpenStoryActivityContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -529,7 +528,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenStoryActivityContext_hasStoryContext() {
+  fun testEventLogSubject_hasOpenStoryActivityContext_hasStoryContext_passes() {
     val storyContext = StoryContext.newBuilder()
       .setStoryId("storyId")
       .build()
@@ -604,7 +603,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenConceptCardContext() {
+  fun testEventLogSubject_hasOpenConceptCardContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -702,7 +701,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenRevisionCardContext() {
+  fun testEventLogSubject_hasOpenRevisionCardContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -800,7 +799,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasCloseRevisionCardContext() {
+  fun testEventLogSubject_hasCloseRevisionCardContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -898,7 +897,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasStartCardContext() {
+  fun testEventLogSubject_hasStartCardContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -996,7 +995,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasEndCardContext() {
+  fun testEventLogSubject_hasEndCardContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1192,7 +1191,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasRevealHintContext() {
+  fun testEventLogSubject_hasRevealHintContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1215,7 +1214,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasRevealHintContext_hasHintContext() {
+  fun testEventLogSubject_hasRevealHintContext_hasHintContext_passes() {
     val hintContext = HintContext.newBuilder()
       .setHintIndex(1)
       .build()
@@ -1290,7 +1289,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasViewExistingHintContext() {
+  fun testEventLogSubject_hasViewExistingHintContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1313,7 +1312,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasViewExistingHintContext_hasHintContext() {
+  fun testEventLogSubject_hasViewExistingHintContext_hasHintContext_passes() {
     val hintContext = HintContext.newBuilder()
       .setHintIndex(1)
       .build()
@@ -1388,7 +1387,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasSolutionUnlockedContext() {
+  fun testEventLogSubject_hasSolutionUnlockedContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1411,7 +1410,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasSolutionUnlockedContext_hasExplorationContext() {
+  fun testEventLogSubject_hasSolutionUnlockedContext_hasExplorationContext_passes() {
     val explorationContext = ExplorationContext.newBuilder()
       .setExplorationId("explorationId")
       .build()
@@ -1486,7 +1485,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasRevealSolutionContext() {
+  fun testEventLogSubject_hasRevealSolutionContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1584,7 +1583,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasViewExistingSolutionContext() {
+  fun testEventLogSubject_hasViewExistingSolutionContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1661,7 +1660,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasSubmitAnswerContext() {
+  fun testEventLogSubject_hasSubmitAnswerContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1701,7 +1700,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasPlayVoiceOverContext() {
+  fun testEventLogSubject_hasPlayVoiceOverContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1800,7 +1799,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasPauseVoiceOverContext() {
+  fun testEventLogSubject_hasPauseVoiceOverContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1899,7 +1898,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasAppInBackgroundContext() {
+  fun testEventLogSubject_hasAppInBackgroundContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -1998,7 +1997,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasAppInForegroundContext() {
+  fun testEventLogSubject_hasAppInForegroundContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2097,7 +2096,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasStartExplorationContext() {
+  fun testEventLogSubject_hasStartExplorationContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2196,7 +2195,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasExitExplorationContext() {
+  fun testEventLogSubject_hasExitExplorationContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2295,7 +2294,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasFinishExplorationContext() {
+  fun testEventLogSubject_hasFinishExplorationContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2394,7 +2393,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasResumeExplorationContext() {
+  fun testEventLogSubject_hasResumeExplorationContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2493,7 +2492,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasStartOverExplorationContext() {
+  fun testEventLogSubject_hasStartOverExplorationContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2593,7 +2592,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasDeleteProfileContext() {
+  fun testEventLogSubject_hasDeleteProfileContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2693,7 +2692,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenHomeContext() {
+  fun testEventLogSubject_hasOpenHomeContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2716,7 +2715,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOpenProfileChooserContext() {
+  fun testEventLogSubject_hasOpenProfileChooserContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2739,7 +2738,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasReachedInvestedEngagementContext() {
+  fun testEventLogSubject_hasReachedInvestedEngagementContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2839,7 +2838,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasSwitchInLessonLanguageContext() {
+  fun testEventLogSubject_hasSwitchInLessonLanguageContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2943,7 +2942,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasInstallIdForAnalyticsLogFailure() {
+  fun testEventLogSubject_hasInstallIdForAnalyticsLogFailure_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -2996,7 +2995,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasAbandonSurveyContext() {
+  fun testEventLogSubject_hasAbandonSurveyContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -3196,7 +3195,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasShowSurveyPopupContext() {
+  fun testEventLogSubject_hasShowSurveyPopupContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -3296,7 +3295,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasBeginSurveyContext() {
+  fun testEventLogSubject_hasBeginSurveyContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
         EventLog.Context.newBuilder()
@@ -3396,7 +3395,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasFeatureFlagContext() {
+  fun testEventLogSubject_hasFeatureFlagContext_passes() {
     val featureFlagListContext = FeatureFlagListContext.newBuilder()
       .setAppSessionId("sessionId")
       .build()
@@ -3477,7 +3476,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasOptionalSurveyResponseContext() {
+  fun testEventLogSubject_hasOptionalSurveyResponseContext_passes() {
     val optionalSurveyResponseContext = OptionalSurveyResponseContext.newBuilder()
       .setFeedbackAnswer("some_feedback")
       .build()
@@ -3554,7 +3553,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasProgressSavingSuccessContext() {
+  fun testEventLogSubject_hasProgressSavingSuccessContext_passes() {
     val progressSavingSuccessContext = ExplorationContext.newBuilder()
       .setExplorationId("exploration123")
       .build()
@@ -3631,7 +3630,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasProgressSavingFailureContext() {
+  fun testEventLogSubject_hasProgressSavingFailureContext_passes() {
     val progressSavingFailureContext = ExplorationContext.newBuilder()
       .setExplorationId("exploration123")
       .build()
@@ -3708,7 +3707,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasLessonSavedAdvertentlyContext() {
+  fun testEventLogSubject_hasLessonSavedAdvertentlyContext_passes() {
     val lessonSavedAdvertentlyContext = ExplorationContext.newBuilder()
       .setExplorationId("exploration123")
       .build()
@@ -3785,7 +3784,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasResumeLessonSubmitCorrectAnswerContext() {
+  fun testEventLogSubject_hasResumeLessonSubmitCorrectAnswerContext_passes() {
     val resumeLessonSubmitCorrectAnswerContext = ExplorationContext.newBuilder()
       .setExplorationId("exploration123")
       .build()
@@ -3862,7 +3861,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testEventLogSubject_hasResumeLessonSubmitIncorrectAnswerContext() {
+  fun testEventLogSubject_hasResumeLessonSubmitIncorrectAnswerContext_passes() {
     val resumeLessonSubmitIncorrectAnswerContext = ExplorationContext.newBuilder()
       .setExplorationId("exploration123")
       .build()
