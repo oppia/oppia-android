@@ -14,6 +14,7 @@ import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext
 import org.oppia.android.app.model.EventLog.OptionalSurveyResponseContext
+import org.oppia.android.app.model.EventLog.ProfileOnboardingContext
 import org.oppia.android.app.model.EventLog.QuestionContext
 import org.oppia.android.app.model.EventLog.RevisionCardContext
 import org.oppia.android.app.model.EventLog.StoryContext
@@ -27,6 +28,12 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.logging.EventLogSubject.AppLanguageSelectionSubject
+import org.oppia.android.testing.logging.EventLogSubject.WrittenTranslationLanguageSelectionSubject
+import org.oppia.android.testing.logging.EventLogSubject.AudioTranslationLanguageSelectionSubject
+import org.oppia.android.testing.logging.EventLogSubject.CardContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.ExplorationContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.HintContextSubject
 
 /** Tests for [EventLogSubject]. */
 class EventLogSubjectTest {
@@ -271,6 +278,42 @@ class EventLogSubjectTest {
   }
 
   @Test
+  fun testEventLogSubject_contextIsExploration_returnsExplorationContextSubject() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenExplorationActivity(explorationContext)
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasOpenExplorationActivityContextThat()
+    subject.hasExplorationIdThat().isEqualTo("explorationId")
+  }
+
+  @Test
+  fun testHasOpenExplorationActivityContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val explorationContext = ExplorationContext.newBuilder()
+      .setExplorationId("explorationId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenExplorationActivity(explorationContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenExplorationActivityContextThat {
+        hasExplorationIdThat().isEqualTo("explorationId")
+      }
+  }
+  @Test
   fun testEventLogSubject_hasOpenInfoTabContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
@@ -283,6 +326,53 @@ class EventLogSubjectTest {
       .hasOpenInfoTabContext()
   }
 
+  @Test
+  fun testEventLogSubject_hasOpenInfoTabContext_fails() {
+    val eventLog = EventLog.newBuilder()
+      .build()
+    assertThrows(AssertionError::class.java) {
+      EventLogSubject.assertThat(eventLog)
+        .hasOpenInfoTabContext()
+    }
+  }
+
+  @Test
+  fun testEventLogSubject_contextIsOpenInfoTab_returnsTopicContextSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenInfoTab(topicContext)
+      )
+      .build()
+
+   val subject= EventLogSubject.assertThat(eventLog)
+      .hasOpenInfoTabContextThat()
+
+    subject.hasTopicIdThat().isEqualTo("topicId")
+  }
+
+  @Test
+  fun testHasOpenInfoTabContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenInfoTab(topicContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenInfoTabContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
+  }
   @Test
   fun testEventLogSubject_hasOpenLessonsTabContext_passes() {
     val eventLog = EventLog.newBuilder()
@@ -297,6 +387,44 @@ class EventLogSubjectTest {
   }
 
   @Test
+  fun testEventLogSubject_contextIsOpenLessonsTab_returnsTopicContextSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenLessonsTab(topicContext)
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasOpenLessonsTabContextThat()
+
+    subject.hasTopicIdThat().isEqualTo("topicId")
+  }
+
+  @Test
+  fun testHasOpenLessonsTabContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenLessonsTab(topicContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenLessonsTabContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
+  }
+
+  @Test
   fun testEventLogSubject_hasOpenPracticeTabContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
@@ -307,6 +435,44 @@ class EventLogSubjectTest {
 
     EventLogSubject.assertThat(eventLog)
       .hasOpenPracticeTabContext()
+  }
+
+  @Test
+  fun testEventLogSubject_contextIsOpenPracticeTab_returnsTopicContextSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenPracticeTab(topicContext)
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasOpenPracticeTabContextThat()
+
+    subject.hasTopicIdThat().isEqualTo("topicId")
+  }
+
+  @Test
+  fun testHasOpenPracticeTabContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenPracticeTab(topicContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenPracticeTabContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
   }
 
   @Test
@@ -330,6 +496,44 @@ class EventLogSubjectTest {
       EventLogSubject.assertThat(eventLog)
         .hasOpenRevisionTabContext()
     }
+  }
+
+  @Test
+  fun testEventLogSubject_contextIsOpenRevisionTab_returnsTopicContextSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionTab(topicContext)
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionTabContextThat()
+
+    subject.hasTopicIdThat().isEqualTo("topicId")
+  }
+
+  @Test
+  fun testHasOpenRevisionTabContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val topicContext = TopicContext.newBuilder()
+      .setTopicId("topicId")
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenRevisionTab(topicContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasOpenRevisionTabContextThat {
+        hasTopicIdThat().isEqualTo("topicId")
+      }
   }
 
   @Test
@@ -1700,6 +1904,25 @@ class EventLogSubjectTest {
   }
 
   @Test
+  fun testHasSubmitAnswerContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val submitAnswerContext = SubmitAnswerContext.newBuilder()
+      .setIsAnswerCorrect(true)
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setSubmitAnswerContext(submitAnswerContext)
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasSubmitAnswerContextThat {
+         hasAnswerCorrectValueThat().isEqualTo(true)
+      }
+  }
+
+  @Test
   fun testEventLogSubject_hasPlayVoiceOverContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
@@ -2715,6 +2938,21 @@ class EventLogSubjectTest {
   }
 
   @Test
+  fun testEventLogSubject_contextIsOpenHome_returnsBooleanSubject() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenHome(true)
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasOpenHomeContextThat()
+
+    subject.isTrue()
+  }
+
+  @Test
   fun testEventLogSubject_hasOpenProfileChooserContext_passes() {
     val eventLog = EventLog.newBuilder()
       .setContext(
@@ -2735,6 +2973,21 @@ class EventLogSubjectTest {
       EventLogSubject.assertThat(eventLog)
         .hasOpenProfileChooserContext()
     }
+  }
+
+  @Test
+  fun testEventLogSubject_contextIsOpenProfileChooser_returnsBooleanSubject() {
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenProfileChooser(true)
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasOpenProfileChooserContextThat()
+
+    subject.isTrue()
   }
 
   @Test
@@ -3935,4 +4188,383 @@ class EventLogSubjectTest {
         }
     }
   }
+
+  @Test
+  fun testEventLogSubject_hasStartProfileOnboardingContext_passes() {
+    val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(123))
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartProfileOnboardingEvent(startProfileOnboardingContext)
+          .build()
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartProfileOnboardingContext()
+  }
+  @Test
+  fun testEventLogSubject_contextIsStartProfileOnboarding_returnsProfileOnboardingContextSubject() {
+    val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(123))
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartProfileOnboardingEvent(startProfileOnboardingContext)
+          .build()
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasStartProfileOnboardingContextThat()
+
+    subject.hasProfileIdThat()
+      .isEqualTo(startProfileOnboardingContext.profileId)
+  }
+
+  @Test
+  fun testHasStartProfileOnboardingContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(123))
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setStartProfileOnboardingEvent(startProfileOnboardingContext)
+          .build()
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasStartProfileOnboardingContextThat {
+        hasProfileIdThat().isEqualTo(startProfileOnboardingContext.profileId)
+      }
+  }
+
+  @Test
+  fun testEventLogSubject_hasEndProfileOnboardingContext_passes() {
+    val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(456))
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndProfileOnboardingEvent(endProfileOnboardingContext)
+          .build()
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasEndProfileOnboardingContext()
+  }
+  @Test
+  fun testEventLogSubject_contextIsEndProfileOnboarding_returnsProfileOnboardingContextSubject() {
+    val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(456))
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndProfileOnboardingEvent(endProfileOnboardingContext)
+          .build()
+      )
+      .build()
+
+    val subject = EventLogSubject.assertThat(eventLog)
+      .hasEndProfileOnboardingContextThat()
+
+    subject.hasProfileIdThat().isEqualTo(endProfileOnboardingContext.profileId)
+  }
+
+  @Test
+  fun testHasEndProfileOnboardingContextThat_blockIsProvided_executesWithCorrectSubject() {
+    val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
+      .setProfileId(ProfileId.newBuilder().setInternalId(456))
+      .build()
+
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndProfileOnboardingEvent(endProfileOnboardingContext)
+          .build()
+      )
+      .build()
+
+    EventLogSubject.assertThat(eventLog)
+      .hasEndProfileOnboardingContextThat {
+        hasProfileIdThat().isEqualTo(endProfileOnboardingContext.profileId)
+      }
+  }
+
+  @Test
+  fun testAppLanguageSelectionSubject_isUseSystemLanguageOrAppDefault_passes() {
+    val selection = AppLanguageSelection.newBuilder()
+      .setUseSystemLanguageOrAppDefault(true)
+      .build()
+
+   AppLanguageSelectionSubject.assertThat(selection)
+      .isUseSystemLanguageOrAppDefault()
+  }
+
+  @Test
+  fun testAppLanguageSelectionSubject_isSelectedLanguage_passes() {
+    val selection = AppLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    AppLanguageSelectionSubject.assertThat(selection)
+      .isSelectedLanguage()
+  }
+
+  @Test
+  fun testAppLanguageSelectionSubject_isSelectedLanguageThat_returnsCorrectSubject() {
+    val selection = AppLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    AppLanguageSelectionSubject.assertThat(selection)
+      .isSelectedLanguageThat()
+      .isEqualTo(OppiaLanguage.HINDI)
+  }
+
+  @Test
+  fun testWrittenTranslationLanguageSelectionSubject_isUseAppLanguage_passes() {
+    val selection = WrittenTranslationLanguageSelection.newBuilder()
+      .setUseAppLanguage(true)
+      .build()
+
+    WrittenTranslationLanguageSelectionSubject.assertThat(selection)
+      .isUseAppLanguage()
+  }
+
+  @Test
+  fun testWrittenTranslationLanguageSelectionSubject_isUseAppLanguage_fails() {
+    val selection = WrittenTranslationLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    assertThrows(AssertionError::class.java) {
+      WrittenTranslationLanguageSelectionSubject.assertThat(selection)
+        .isUseAppLanguage()
+    }
+  }
+
+  @Test
+  fun testWrittenTranslationLanguageSelectionSubject_isSelectedLanguage_passes() {
+    val selection = WrittenTranslationLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    WrittenTranslationLanguageSelectionSubject.assertThat(selection)
+      .isSelectedLanguage()
+  }
+
+  @Test
+  fun testWrittenTranslationLanguageSelectionSubject_isSelectedLanguageThat_returnsCorrectSubject() {
+    val selection = WrittenTranslationLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    WrittenTranslationLanguageSelectionSubject.assertThat(selection)
+      .isSelectedLanguageThat()
+      .isEqualTo(OppiaLanguage.HINDI)
+  }
+
+  @Test
+  fun testAudioTranslationLanguageSelectionSubject_isUseAppLanguage_passes() {
+    val selection = AudioTranslationLanguageSelection.newBuilder()
+      .setUseAppLanguage(true)
+      .build()
+
+    AudioTranslationLanguageSelectionSubject.assertThat(selection)
+      .isUseAppLanguage()
+  }
+  @Test
+  fun testAudioTranslationLanguageSelectionSubject_isUseAppLanguage_fails() {
+    val selection = AudioTranslationLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    assertThrows(AssertionError::class.java) {
+      AudioTranslationLanguageSelectionSubject.assertThat(selection)
+        .isUseAppLanguage()
+    }
+  }
+
+  @Test
+  fun testAudioTranslationLanguageSelectionSubject_isSelectedLanguage_passes() {
+    val selection = AudioTranslationLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.ENGLISH)
+      .build()
+
+    AudioTranslationLanguageSelectionSubject.assertThat(selection)
+      .isSelectedLanguage()
+  }
+  @Test
+  fun testAudioTranslationLanguageSelectionSubject_isSelectedLanguageThat_returnsCorrectSubject() {
+    val selection = AudioTranslationLanguageSelection.newBuilder()
+      .setSelectedLanguage(OppiaLanguage.HINDI)
+      .build()
+
+    AudioTranslationLanguageSelectionSubject.assertThat(selection)
+      .isSelectedLanguageThat()
+      .isEqualTo(OppiaLanguage.HINDI)
+  }
+
+  @Test
+  fun testCardContextSubject_hasExplorationDetailsThat_passes() {
+    val explorationDetails = ExplorationContext.newBuilder()
+      .setExplorationId("exp_id_123")
+      .build()
+
+    val cardContext = CardContext.newBuilder()
+      .setExplorationDetails(explorationDetails)
+      .build()
+
+    CardContextSubject.assertThat(cardContext).hasExplorationDetailsThat {
+      hasExplorationIdThat().isEqualTo("exp_id_123")
+    }
+  }
+  @Test
+  fun testCardContextSubject_hasExplorationDetailsThat_failsWithWrongExplorationId() {
+    val explorationDetails = ExplorationContext.newBuilder()
+      .setExplorationId("wrong_id")
+      .build()
+
+    val cardContext = CardContext.newBuilder()
+      .setExplorationDetails(explorationDetails)
+      .build()
+
+    assertThrows(AssertionError::class.java) {
+      CardContextSubject.assertThat(cardContext).hasExplorationDetailsThat {
+        hasExplorationIdThat().isEqualTo("expected_id")
+      }
+    }
+  }
+
+  @Test
+  fun testExplorationContextSubject_hasClassroomIdThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setClassroomId("math")
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasClassroomIdThat()
+      .isEqualTo("math")
+  }
+
+  @Test
+  fun testExplorationContextSubject_hasTopicIdThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setTopicId("topic_1")
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasTopicIdThat()
+      .isEqualTo("topic_1")
+  }
+
+  @Test
+  fun testExplorationContextSubject_hasStoryIdThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setStoryId("story_abc")
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasStoryIdThat()
+      .isEqualTo("story_abc")
+  }
+  @Test
+  fun testExplorationContextSubject_hasSessionIdThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setSessionId("session_xyz")
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasSessionIdThat()
+      .isEqualTo("session_xyz")
+  }
+  @Test
+  fun testExplorationContextSubject_hasVersionThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setExplorationVersion(5)
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasVersionThat()
+      .isEqualTo(5)
+  }
+  @Test
+  fun testExplorationContextSubject_hasStateNameThat_passes() {
+    val context = ExplorationContext.newBuilder()
+      .setStateName("Introduction")
+      .build()
+
+    ExplorationContextSubject.assertThat(context)
+      .hasStateNameThat()
+      .isEqualTo("Introduction")
+  }
+  @Test
+  fun testExplorationContextSubject_hasLearnerDetailsThat__executesBlockWithCorrectSubject() {
+    val learnerDetails = LearnerDetailsContext.newBuilder()
+      .setLearnerId("learner_001")
+      .build()
+
+    val context = ExplorationContext.newBuilder()
+      .setLearnerDetails(learnerDetails)
+      .build()
+
+    ExplorationContextSubject.assertThat(context).hasLearnerDetailsThat {
+      hasLearnerIdThat().isEqualTo("learner_001")
+    }
+  }
+  @Test
+  fun testHintContextSubject_hasHintIndexThat_returnsCorrectValue() {
+    val hintContext = HintContext.newBuilder()
+      .setHintIndex(3)
+      .build()
+
+    HintContextSubject.assertThat(hintContext)
+      .hasHintIndexThat()
+      .isEqualTo(3)
+  }
+
+  @Test
+  fun testHintContextSubject_hasExplorationDetailsThat_returnsExplorationId() {
+    val explorationDetails = ExplorationContext.newBuilder()
+      .setExplorationId("exploration_id_123")
+      .build()
+    val hintContext = HintContext.newBuilder()
+      .setExplorationDetails(explorationDetails)
+      .build()
+
+    HintContextSubject.assertThat(hintContext)
+      .hasExplorationDetailsThat()
+      .hasExplorationIdThat()
+      .isEqualTo("exploration_id_123")
+  }
+
+  @Test
+  fun testHintContextSubject_hasExplorationDetailsThat_executesBlockCorrectly() {
+    val explorationDetails =ExplorationContext.newBuilder()
+      .setStateName("IntroState")
+      .build()
+    val hintContext = HintContext.newBuilder()
+      .setExplorationDetails(explorationDetails)
+      .build()
+
+    HintContextSubject.assertThat(hintContext).hasExplorationDetailsThat {
+      hasStateNameThat().isEqualTo("IntroState")
+    }
+  }
+
+
 }
