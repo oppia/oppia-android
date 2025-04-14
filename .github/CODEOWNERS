@@ -110,7 +110,6 @@
 /testing/src/*/java/org/oppia/android/testing/lightweightcheckpointing/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/logging/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/math/ @oppia/android-app-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/network/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/networking/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/profile/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/story/ @oppia/android-app-infrastructure-reviewers

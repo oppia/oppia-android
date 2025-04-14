@@ -1,0 +1,21 @@
+"""
+Tests for model definitions for Oppia's App Engine backend endpoints.
+"""
+
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "GaePlatformParameterValueTest",
+    srcs = ["GaePlatformParameterValueTest.kt"],
+    custom_package = "org.oppia.android.data.backends.gae.model",
+    test_class = "org.oppia.android.data.backends.gae.model.GaePlatformParameterValueTest",
+    test_manifest = "//data:test_manifest",
+    deps = [
+        "//data/src/main/java/org/oppia/android/data/backends/gae/model",
+        "//testing",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:moshi",
+        "//third_party:robolectric_android-all",
+    ],
+)
