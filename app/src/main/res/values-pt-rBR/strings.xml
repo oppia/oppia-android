@@ -45,7 +45,7 @@
   <string name="concept_card_toolbar_title">Cartão de Conceito</string>
   <string name="concept_card_one_button_text">Cartão Conceitual 1</string>
   <string name="concept_card_two_button_text">Cartão Conceitual 2</string>
-  <string name="revision_card_toolbar_title" fuzzy="true">Cartão de Revisão</string>
+  <string name="revision_card_toolbar_title">Guia de estudos</string>
   <string name="unsaved_exploration_dialog_title">Pretende ir para a página do tópico?</string>
   <string name="unsaved_exploration_dialog_description">Seu progresso não será salvo.</string>
   <string name="unsaved_exploration_dialog_leave_button">Sair</string>
@@ -96,17 +96,19 @@
   <string name="onboarding_activity_title">Introdução</string>
   <string name="frequently_asked_questions_FAQ">Perguntas Frequentes (FAQs)</string>
   <string name="info">Info</string>
+  <string name="learn">Aprender</string>
   <string name="practice">Prática</string>
+  <string name="study">Estudar</string>
   <string name="administrator_controls_title">Controles do administrador</string>
   <string name="topic_page">Página do tópico</string>
   <string name="topic_name">Tópico: %s</string>
   <string name="topic">Tópico</string>
   <string name="ongoing_topic_list_activity_title">Tópicos em Andamento</string>
-  <string name="chapter_name" fuzzy="true">Capítulo %s: %s</string>
-  <string name="chapter_completed" fuzzy="true">O capítulo %s com o título %s foi concluído</string>
-  <string name="chapter_in_progress" fuzzy="true">O capítulo %s com o título %s está em andamento</string>
-  <string name="chapter_prerequisite_title_label" fuzzy="true">Conclua o capítulo %s: %s para desbloquear este capítulo.</string>
-  <string name="chapter_locked_prerequisite_title_label" fuzzy="true">O capítulo %s: %s está bloqueado no momento. Conclua o capítulo %s: %s para desbloquear esse capítulo.</string>
+  <string name="chapter_name">Capítulo %1$s: %2$s</string>
+  <string name="chapter_completed">O capítulo %1$s com o título %2$s foi finalizado</string>
+  <string name="chapter_in_progress">O capítulo %1$s com o título %2$s está em andamento</string>
+  <string name="chapter_prerequisite_title_label">Conclua o capítulo %1$s: %2$s para desbloquear este capítulo.</string>
+  <string name="chapter_locked_prerequisite_title_label">O capítulo %1$s: %2$s está bloqueado no momento. Conclua o capítulo %3$s: %4$s para desbloquear esse capítulo.</string>
   <string name="chapter_prerequisite_title_label_without_chapter_title">Conclua o capítulo anterior para desbloquear este capítulo.</string>
   <string name="text_input_default_content_description">Inserir texto.</string>
   <string name="fractions_default_hint_text">Insira uma fração na forma x/x, ou um número misto na forma x x/x.</string>
@@ -164,7 +166,7 @@
   <string name="topic_downloaded">Tópico Baixado</string>
   <string name="downloaded">Baixado</string>
   <string name="question_player_title">Modo de Prática</string>
-  <string name="question_training_session_progress" fuzzy="true">Questão %s de %s</string>
+  <string name="question_training_session_progress">Questão %1$s de %2$s</string>
   <string name="question_training_session_progress_finished">Concluído</string>
   <string name="question_training_session_finished_header">Concluído</string>
   <string name="question_training_session_finished_message">Você concluiu todas as perguntas! Você pode escolher reproduzir outro conjunto de perguntas ou retornar ao tópico.</string>
@@ -200,29 +202,31 @@
   <string name="size_gb">%s GB</string>
   <string name="correct">Correto!</string>
   <string name="topic_prefix">Tópico: %s</string>
-  <plurals name="chapter_count" fuzzy="true">
-    <item quantity="one">%s Capítulo</item>
+  <string name="selected_image_region_selection_content_description">Mostrando imagem %1$s</string>
+  <string name="unselected_image_region_selection_content_description">Selecione %1$s imagem</string>
+  <plurals name="chapter_count">
+    <item quantity="one">1 Capítulo</item>
     <item quantity="other">%s Capítulos</item>
   </plurals>
-  <plurals name="story_count" fuzzy="true">
-    <item quantity="one">%s História</item>
-    <item quantity="other">%s Histórias</item>
+  <plurals name="story_count">
+    <item quantity="one">1 Story</item>
+    <item quantity="other">%s Stories</item>
   </plurals>
-  <plurals name="story_total_chapters" fuzzy="true">
-    <item quantity="one">%s de %s Capítulo Concluído</item>
-    <item quantity="other">%s de %s Capítulos Concluídos</item>
+  <plurals name="story_total_chapters">
+    <item quantity="one">%1$s of %2$s Chapter Completed</item>
+    <item quantity="other">%1$s of %2$s Chapters Completed</item>
   </plurals>
-  <plurals name="lesson_count" fuzzy="true">
-    <item quantity="one">%s Lição</item>
-    <item quantity="other">%s Lições</item>
+  <plurals name="lesson_count">
+    <item quantity="one">1 Lesson</item>
+    <item quantity="other">%s Lessons</item>
   </plurals>
-  <plurals name="completed_story_count" fuzzy="true">
-    <item quantity="one">%s história concluída</item>
-    <item quantity="other">%s Histórias concluídas</item>
+  <plurals name="completed_story_count">
+    <item quantity="one">1 Story Completed</item>
+    <item quantity="other">%s Stories Completed</item>
   </plurals>
-  <plurals name="ongoing_topic_count" fuzzy="true">
-    <item quantity="one">%s Tópico em andamento</item>
-    <item quantity="other">%s Tópicos em andamento</item>
+  <plurals name="ongoing_topic_count">
+    <item quantity="one">1 Topic in Progress</item>
+    <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="profile_chooser_activity_label">Página de seleção de perfil</string>
   <string name="profile_chooser_admin">Administrador</string>
@@ -265,6 +269,8 @@
   <string name="add_profile_error_name_not_unique">Este nome já está em uso por outro perfil.</string>
   <string name="add_profile_error_name_empty">Digite um nome válido para esse perfil.</string>
   <string name="add_profile_error_name_only_letters">Escolha um nome de perfil que não inclua números ou símbolos.</string>
+  <string name="add_profile_error_missing_profile_type">Perfil desconhecido.</string>
+  <string name="add_profile_default_error_message">Ocorreu um erro ao criar o perfil.</string>
   <string name="add_profile_error_pin_length">Seu PIN deve ter 3 dígitos.</string>
   <string name="add_profile_error_pin_confirm_wrong">Certifique-se de que os dois PINs coincidam.</string>
   <string name="add_profile_info_content_description">Mais informações sobre PINs de 3 dígitos.</string>
@@ -281,7 +287,7 @@
   <string name="skip">Pular</string>
   <string name="next_arrow">Próximo</string>
   <string name="get_started">Começar</string>
-  <string name="onboarding_slide_dots_content_description" fuzzy="true">Slide %s de %s</string>
+  <string name="onboarding_slide_dots_content_description">Slide %1$s de %2$s</string>
   <string name="pin_password_hello">Olá, %s!</string>
   <string name="pin_password_admin_enter">Por favor, insira o PIN do Administrador.</string>
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
@@ -339,7 +345,9 @@
   <string name="profile_edit_delete_dialog_message">Todo o progresso será apagado e não pode ser recuperado.</string>
   <string name="profile_edit_delete_dialog_positive">Apagar</string>
   <string name="profile_edit_delete_dialog_negative">Cancelar</string>
+  <string name="profile_edit_delete_successful_message">Perfil deletado com sucesso.</string>
   <string name="profile_edit_allow_download_heading">Permitir Acesso a Download</string>
+  <string name="profile_edit_delete_success_dialog_positive_button">OK</string>
   <string name="profile_edit_allow_download_sub">O usuário pode baixar e apagar conteúdo sem senha de Administrador</string>
   <string name="profile_picture_activity_title">Foto do Perfil</string>
   <string name="profile_progress_edit_dialog_title">Imagem de perfil</string>
@@ -443,7 +451,19 @@
   <string name="move_item_up_content_description">Mover o item para cima para %s</string>
   <string name="up_button_disabled">Para cima</string>
   <string name="down_button_disabled">Para baixo</string>
-  <string name="profile_last_visited" fuzzy="true">%s %s</string>
+  <string name="profile_last_visited">%1$s %2$s</string>
+  <plurals name="minutes_ago">
+    <item quantity="one">a minute ago</item>
+    <item quantity="other">%s minutes ago</item>
+  </plurals>
+  <plurals name="hours_ago">
+    <item quantity="one">an hour ago</item>
+    <item quantity="other">%s hours ago</item>
+  </plurals>
+  <plurals name="days_ago">
+    <item quantity="one">a day ago</item>
+    <item quantity="other">%s days ago</item>
+  </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
   <string name="item_selection_text">Por favor, selecione todas as alternativas corretas.</string>
@@ -625,4 +645,5 @@
   <string name="audio_language_fragment_text">Em %s, você pode ouvir as lições!</string>
   <string name="audio_language_fragment_subtitle">Selecione a lingua do áudio para ouvir às lições</string>
   <string name="onboarding_step_count_five">Passo 5 de 5</string>
+  <string name="arabic_language_display_name_content_description">Árabe</string>
 </resources>
