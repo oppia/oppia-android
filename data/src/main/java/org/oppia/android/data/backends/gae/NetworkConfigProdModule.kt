@@ -24,4 +24,10 @@ class NetworkConfigProdModule {
   fun provideXssiPrefix(): String {
     return ")]}'"
   }
+
+  // Provides the API key to use in authenticating remote messages sent or received. This will be
+  // replaced with a secret key in production builds.
+  @Provides
+  @NetworkApiKey
+  fun provideNetworkApiKey(): String = ""
 }
