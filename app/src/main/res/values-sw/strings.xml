@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
 * Jepkorir
+* Joeamj
 * Killy95
 * Seanlip
 * VivianW
@@ -187,6 +188,14 @@
   <string name="set_up_multiple_profiles_description">Ongeza hadi watumiaji 10 kwenye akaunti yako. Nzuri sana kwa familia na madarasa.</string>
   <string name="profile_chooser_administrator_controls">Udhibiti vya Msimamizi</string>
   <string name="profile_chooser_language">Lugha</string>
+  <string name="profile_selection_header">Chagua wasifu wako ili kuchunguza masomo</string>
+  <string name="profile_selection_profile_icon_description">Picha ya wasifu ya mtumiaji</string>
+  <string name="profile_selection_add_icon_description">Ongeza wasifu mwingine</string>
+  <string name="profile_selection_add_profile_text">Ongeza wasifu wa mwanafunzi</string>
+  <string name="profile_selection_admin_label">Msimamizi</string>
+  <string name="profile_selection_scroll_left_content_description">Sogeza kushoto</string>
+  <string name="profile_selection_scroll_right_content_description">Sogeza kulia</string>
+  <string name="profile_selection_administrator_controls">Vidhibiti vya Msimamizi</string>
   <string name="admin_auth_toolbar">Vidhibiti vya Msimamizi</string>
   <string name="admin_auth_activity_add_profiles_title">Idhinisha kuongeza wasifu</string>
   <string name="admin_auth_activity_access_controls_title">Idhinisha kufikia Vidhibiti vya Msimamizi</string>
