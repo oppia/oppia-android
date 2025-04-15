@@ -50,12 +50,12 @@
         android:text="@string/developer_options_profile_count"
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/show_profile_count"
+        app:layout_constraintEnd_toStartOf="@id/profile_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
-        android:id="@+id/show_profile_count"
+        android:id="@+id/profile_count"
         style="@style/Subtitle1ViewStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
