@@ -693,8 +693,9 @@ class DeveloperOptionsFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 4)
 
-      onView(withId(R.id.existing_profile_count_text_view)).check(matches(
-        withText(context.getString(R.string.developer_options_profile_count))))
+      onView(withId(R.id.existing_profile_count_text_view)).check(
+        matches(withText(context.getString(R.string.developer_options_profile_count)))
+      )
       onView(withId(R.id.profile_count)).check(matches(withText("1")))
 
       onView(withId(R.id.add_three_profiles_text_view)).perform(click())
