@@ -11,6 +11,7 @@ import kotlinx.coroutines.guava.asListenableFuture
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.platformparameter.PlatformParameterController
@@ -67,15 +68,18 @@ class PlatformParameterSyncUpWorker private constructor(
    * Parses a map of platform parameter values into a [List<PlatformParameter>]. Parameters must be
    * of type String, Int or Boolean.
    */
-  private fun parseNetworkResponse(response: Map<String, Any>): List<PlatformParameter> {
+  private fun parseNetworkResponse(
+    response: Map<String, GaePlatformParameterValue>
+  ): List<PlatformParameter> {
     return response.map {
       val platformParameter = PlatformParameter.newBuilder().setName(it.key)
         .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
       when (val value = it.value) {
-        is String -> platformParameter.string = value
-        is Int -> platformParameter.integer = value
-        is Boolean -> platformParameter.boolean = value
-        else -> throw IllegalArgumentException(INCORRECT_TYPE_EXCEPTION_MSG)
+        is GaePlatformParameterValue.StringValue -> platformParameter.string = value.value
+        is GaePlatformParameterValue.IntValue -> platformParameter.integer = value.value
+        is GaePlatformParameterValue.BooleanValue -> platformParameter.boolean = value.value
+        GaePlatformParameterValue.UnsupportedValue ->
+          throw IllegalArgumentException(INCORRECT_TYPE_EXCEPTION_MSG)
       }
       platformParameter.build()
     }
@@ -84,7 +88,7 @@ class PlatformParameterSyncUpWorker private constructor(
   /**
    * Synchronously executes the network request to get platform parameters from the Oppia backend.
    */
-  private fun makeNetworkCallForPlatformParameters(): Response<Map<String, Any>>? {
+  private fun fetchPlatformParameters(): Response<Map<String, GaePlatformParameterValue>>? {
     return platformParameterService.getPlatformParametersByVersion(
       applicationContext.getVersionName()
     ).execute()
@@ -93,7 +97,7 @@ class PlatformParameterSyncUpWorker private constructor(
   /** Extracts platform parameters from the remote service and stores them in the cache store. */
   private suspend fun refreshPlatformParameters(): Result {
     return try {
-      val response = makeNetworkCallForPlatformParameters()
+      val response = fetchPlatformParameters()
       if (response != null) {
         val responseBody = checkNotNull(response.body())
         val platformParameterList = parseNetworkResponse(responseBody)

@@ -258,7 +258,6 @@
       android:name=".app.topic.revisioncard.RevisionCardActivity"
       android:label="@string/revision_card_activity_title"
       android:theme="@style/RevisionCardActivityTheme" />
-    <activity android:name=".app.testing.SplashTestActivity" />
     <activity
       android:name=".app.topic.TopicActivity"
       android:label="@string/topic_page"

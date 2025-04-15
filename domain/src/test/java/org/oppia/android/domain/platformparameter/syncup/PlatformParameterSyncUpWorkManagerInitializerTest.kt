@@ -3,8 +3,6 @@ package org.oppia.android.domain.platformparameter.syncup
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.Constraints
@@ -18,25 +16,18 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.BaseUrl
-import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkApiKey
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.OppiaRetrofit
-import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.network.MockPlatformParameterService
-import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -50,12 +41,8 @@ import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.mock.MockRetrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -78,14 +65,9 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   @Inject
   lateinit var context: Context
 
-  private val testVersionName = "1.0"
-
-  private val testVersionCode = 1
-
   @Before
   fun setup() {
     setUpTestApplicationComponent()
-    setUpApplicationForContext()
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())
       .setWorkerFactory(platformParameterSyncUpWorkerFactory)
@@ -153,23 +135,6 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       .inject(this)
   }
 
-  private fun setUpApplicationForContext() {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = testVersionName
-    @Suppress("DEPRECATION") // versionCode is needed to test production code.
-    packageInfo.versionCode = testVersionCode
-    packageManager.installPackage(packageInfo)
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
@@ -194,50 +159,15 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
   }
 
-  @Module
-  class TestNetworkModule {
-
-    @OppiaRetrofit
-    @Provides
-    @Singleton
-    fun provideRetrofitInstance(
-      jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
-      remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
-      @BaseUrl baseUrl: String
-    ): Retrofit {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .build()
-
-      return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
-    }
-
-    @Provides
-    @NetworkApiKey
-    fun provideNetworkApiKey(): String = ""
-
-    @Provides
-    fun provideMockPlatformParameterService(
-      mockRetrofit: MockRetrofit
-    ): PlatformParameterService {
-      return MockPlatformParameterService(mockRetrofit.create(PlatformParameterService::class.java))
-    }
-  }
-
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, TestNetworkModule::class,
-      RetrofitTestModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
+      TestModule::class, TestLogReportingModule::class, RetrofitModule::class,
+      RetrofitServiceModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      NetworkConfigProdModule::class, PlatformParameterSingletonModule::class,
+      NetworkConfigTestModule::class, PlatformParameterSingletonModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
