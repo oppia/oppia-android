@@ -928,3 +928,7 @@ message ProfileChooserFragmentArguments {
   // The ProfileType of the new profile as implied by the user's selection.
   ProfileType profile_type = 1;
 }
+// The bundle of properties that are saved on configuration change in PinPasswordActivity.
+message PinPasswordActivityStateBundle {
+  string input_pin = 1;
+}

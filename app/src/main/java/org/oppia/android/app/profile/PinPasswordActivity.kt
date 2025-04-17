@@ -40,7 +40,7 @@ class PinPasswordActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    pinPasswordActivityPresenter.handleOnCreate()
+    pinPasswordActivityPresenter.handleOnCreate(savedInstanceState)
   }
 
   override fun routeToResetPinDialog() {
@@ -53,11 +53,6 @@ class PinPasswordActivity :
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     pinPasswordActivityPresenter.handleSaveInstanceState(outState)
-  }
-
-  override fun onRestoreInstanceState(outState: Bundle) {
-    super.onRestoreInstanceState(outState)
-    pinPasswordActivityPresenter.handleRestoreInstanceState(outState)
   }
 
   override fun onDestroy() {
