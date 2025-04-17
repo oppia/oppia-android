@@ -2,13 +2,18 @@
 Tests for the splash/app UI initialization process.
 """
 
-load("//app:app_test.bzl", "app_test")
-load("//app:test_with_resources.bzl", "test_with_resources")
+load("//:oppia_android_test.bzl", "oppia_android_test")
 
-app_test(
+oppia_android_test(
     name = "SplashActivityTest",
-    processed_src = test_with_resources("SplashActivityTest.kt"),
+    srcs = [
+        "SplashActivityTest.kt",
+        "//app:data_binder_mapper_impl",
+    ],
+    custom_package = "org.oppia.android.app.test",
+    enable_data_binding = True,
     test_class = "org.oppia.android.app.splash.SplashActivityTest",
+    test_manifest = "//app:test_manifest",
     deps = [
         "//:dagger",
         "//app",
@@ -19,7 +24,7 @@ app_test(
         "//app/src/main/java/org/oppia/android/app/application:common_application_modules",
         "//app/src/main/java/org/oppia/android/app/translation/testing:test_module",
         "//config/src/java/org/oppia/android/config:all_languages_config",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding/testing:retriever_test_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",

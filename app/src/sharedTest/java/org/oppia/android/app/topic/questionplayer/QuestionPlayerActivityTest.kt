@@ -28,7 +28,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.bumptech.glide.Glide
 import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.load.engine.executor.MockGlideExecutor
@@ -49,7 +48,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -77,11 +75,13 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.hasItemCount
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.FontSizeMatcher
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -167,46 +167,21 @@ private val SKILL_ID_LIST = listOf(FRACTIONS_SKILL_ID_0)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = QuestionPlayerActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class QuestionPlayerActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
   // TODO(#503): add tests for QuestionPlayerActivity (use StateFragmentTest for a reference).
   // TODO(#1273): add tests for Hints and Solution in Question Player.
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<QuestionPlayerActivity> = ActivityTestRule(
-    QuestionPlayerActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  @field:BackgroundDispatcher
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var context: Context
+  @Inject lateinit var translationController: TranslationController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @field:[Inject BackgroundDispatcher]
   lateinit var backgroundCoroutineDispatcher: CoroutineDispatcher
-
-  @Inject
-  lateinit var translationController: TranslationController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @Inject
-  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val profileId = ProfileId.newBuilder().apply { internalId = 1 }.build()
 
@@ -871,7 +846,8 @@ class QuestionPlayerActivityTest {
       WorkManagerConfigurationModule::class, FirebaseLogUploaderModule::class,
       LogReportWorkerModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,

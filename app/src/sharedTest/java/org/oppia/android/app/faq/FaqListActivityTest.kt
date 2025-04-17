@@ -2,18 +2,16 @@ package org.oppia.android.app.faq
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -29,9 +27,11 @@ import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -66,6 +66,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -92,19 +93,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = FaqListActivityTest.TestApplication::class, qualifiers = "port-xxhdpi")
 class FaqListActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @get:Rule
-  val activityTestRule: ActivityTestRule<FAQListActivity> = ActivityTestRule(
-    FAQListActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -113,29 +106,35 @@ class FaqListActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createFaqListActivityIntent().extractCurrentAppScreenName()
+    val intent = FAQListActivity.createFAQListActivityIntent(context)
 
+    val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.FAQ_LIST_ACTIVITY)
   }
 
   @Test
   fun testFaqListActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createFaqListActivityIntent())
-    val title = activityTestRule.activity.title
+    runWithLaunchedActivity {
+      onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.faq_activity_title))
+      }
+    }
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFaqListActivityIntent(): Intent {
-    return FAQListActivity.createFAQListActivityIntent(
-      ApplicationProvider.getApplicationContext()
-    )
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<FAQListActivity>.() -> Unit) {
+    val intent = FAQListActivity.createFAQListActivityIntent(context)
+    ActivityScenario.launch<FAQListActivity>(intent).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -158,7 +157,8 @@ class FaqListActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,

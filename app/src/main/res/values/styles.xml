@@ -826,4 +826,39 @@
     <item name="endIconDrawable">@drawable/ic_arrow_drop_down_black_24dp</item>
     <item name="endIconTint">@color/component_color_shared_black_background_color</item>
   </style>
+
+  <style name="AdministratorLabelStyle">
+    <item name="android:layout_gravity">center</item>
+    <item name="android:layout_marginTop">@dimen/profile_chooser_profile_view_is_admin_margin_top</item>
+    <item name="android:textAlignment">center</item>
+    <item name="android:textSize">12sp</item>
+    <item name="android:textStyle">italic</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+  </style>
+
+  <style name="AdministratorControlsLabelStyle">
+    <item name="android:gravity">center</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:textSize">@dimen/profile_selection_fragment_profile_settings_size</item>
+    <item name="android:minHeight">@dimen/profile_selection_fragment_view_min_size</item>
+  </style>
+
+  <style name="ProfileSelectionHeaderStyle">
+    <item name="android:gravity">center</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">@dimen/profile_selection_fragment_header_text_size</item>
+    <item name="android:textStyle">italic</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+  </style>
+
+  <style name="AddProfilePromptStyle">
+    <item name="android:layout_gravity">center_vertical</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_marginStart">12dp</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
+    <item name="android:textSize">@dimen/profile_selection_fragment_profile_prompt_size</item>
+    <item name="android:minHeight">@dimen/profile_selection_fragment_view_min_size</item>
+  </style>
 </resources>

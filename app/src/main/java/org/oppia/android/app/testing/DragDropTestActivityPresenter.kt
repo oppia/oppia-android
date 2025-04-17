@@ -1,7 +1,7 @@
 package org.oppia.android.app.testing
 
 import androidx.appcompat.app.AppCompatActivity
-import org.oppia.android.R
+import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
 /** The presenter for [DragDropTestActivity]. */
