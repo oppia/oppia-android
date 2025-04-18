@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import org.oppia.android.R
+import org.oppia.android.app.databinding.databinding.ImageRegionSelectionTestFragmentBinding
 import org.oppia.android.app.model.AnswerErrorCategory
 import org.oppia.android.app.model.ImageWithRegions.LabeledRegion
 import org.oppia.android.app.model.Interaction
@@ -17,8 +17,8 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.OnClickableAreaClickedListener
-import org.oppia.android.databinding.ImageRegionSelectionTestFragmentBinding
 import javax.inject.Inject
 
 /** The presenter for [ImageRegionSelectionTestActivity]. */

@@ -110,7 +110,6 @@
 /testing/src/*/java/org/oppia/android/testing/lightweightcheckpointing/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/logging/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/math/ @oppia/android-app-infrastructure-reviewers
-/testing/src/*/java/org/oppia/android/testing/network/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/networking/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/profile/ @oppia/android-app-infrastructure-reviewers
 /testing/src/*/java/org/oppia/android/testing/story/ @oppia/android-app-infrastructure-reviewers
@@ -250,6 +249,7 @@ WORKSPACE @oppia/android-app-infrastructure-reviewers
 *.bazel @oppia/android-app-infrastructure-reviewers
 .bazelrc @oppia/android-app-infrastructure-reviewers
 .bazelversion @oppia/android-app-infrastructure-reviewers
+oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 /tools/android/ @oppia/android-app-infrastructure-reviewers
 /tools/kotlin/ @oppia/android-app-infrastructure-reviewers
 

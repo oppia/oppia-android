@@ -2,6 +2,8 @@ package org.oppia.android.app.testing.activity
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager.GET_ACTIVITIES
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -29,7 +31,8 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -60,6 +63,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -170,12 +174,62 @@ class TestActivityTest {
     }
   }
 
-  private fun launchTestActivity(): ActivityScenario<TestActivity> =
-    ActivityScenario.launch(TestActivity.createIntent(context))
+  @Test
+  fun testRegisterWithPackageManager_customActivity_registersWithShadowPackageManager() {
+    TestActivity.registerWithPackageManager<CustomTestActivity>(context)
+
+    val activities = fetchAllActivities()
+    assertThat(activities).containsKey(CustomTestActivity::class.java.name)
+  }
+
+  @Test
+  fun testRegisterWithPackageManager_tryLaunchCustomActivity_withoutRegistration_throwsException() {
+    val failure = assertThrows<RuntimeException> {
+      ActivityScenario.launch(CustomTestActivity::class.java)
+    }
+
+    assertThat(failure).hasMessageThat().contains("Unable to resolve activity for Intent")
+    assertThat(failure).hasMessageThat().contains(CustomTestActivity::class.java.name)
+  }
+
+  @Test
+  fun testRegisterWithPackageManager_tryLaunchCustomActivity_withRegistration_launchesActivity() {
+    TestActivity.registerWithPackageManager<CustomTestActivity>(context)
+
+    ActivityScenario.launch(CustomTestActivity::class.java).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity).isInstanceOf(CustomTestActivity::class.java)
+      }
+    }
+  }
+
+  @Test
+  fun testRegisterActivityInfo_customActivity_registersWithShadowPackageManager() {
+    val activityInfo = ActivityInfo().apply {
+      this.name = CustomTestActivity::class.java.name
+      packageName = context.packageName
+    }
+
+    TestActivity.registerActivityInfo(context, activityInfo)
+
+    val activities = fetchAllActivities()
+    assertThat(activities).containsKey(CustomTestActivity::class.java.name)
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
+
+  private fun launchTestActivity(): ActivityScenario<TestActivity> =
+    ActivityScenario.launch(TestActivity.createIntent(context))
+
+  private fun fetchAllActivities(): Map<String, ActivityInfo> {
+    val packageManager = context.packageManager
+    val activities = packageManager.getPackageInfo(context.packageName, GET_ACTIVITIES).activities
+    return activities.associateBy { it.name }
+  }
+
+  private class CustomTestActivity : TestActivity()
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
@@ -195,7 +249,8 @@ class TestActivityTest {
       LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, HintsAndSolutionProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      HintsAndSolutionProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, ActivityRecreatorTestModule::class, LocaleProdModule::class,
       PlatformParameterSingletonModule::class,

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.profile.ProfileChooserViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/profile_list_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/component_color_profile_selection_background_color">
+
+    <TextView
+      android:id="@+id/profile_selection_header"
+      style="@style/ProfileSelectionHeaderStyle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/profile_selection_fragment_header_margin"
+      android:text="@string/profile_selection_header"
+      app:layout_constraintBottom_toTopOf="@id/profiles_list_landscape"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+      android:id="@+id/profile_list_scroll_left"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/profile_selection_fragment_scroll_arrow_horizontal_margin"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_scroll_arrow_vertical_margin"
+      android:minHeight="@dimen/clickable_item_min_height"
+      android:padding="@dimen/profile_selection_fragment_scroll_arrow_padding"
+      android:contentDescription="@string/profile_selection_scroll_left_content_description"
+      android:visibility="visible"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_chevron_left" />
+
+    <ImageView
+      android:id="@+id/profile_list_scroll_right"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/profile_selection_fragment_scroll_arrow_horizontal_margin"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_scroll_arrow_vertical_margin"
+      android:minHeight="@dimen/clickable_item_min_height"
+      android:padding="@dimen/profile_selection_fragment_scroll_arrow_padding"
+      android:contentDescription="@string/profile_selection_scroll_right_content_description"
+      android:visibility="visible"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:srcCompat="@drawable/ic_chevron_right" />
+
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/profiles_list_landscape"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:clipToPadding="false"
+      android:orientation="horizontal"
+      android:overScrollMode="never"
+      android:scrollbars="none"
+      app:dynamicMarginItemDecorator="@{true}"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/profile_list_scroll_right"
+      app:layout_constraintStart_toEndOf="@id/profile_list_scroll_left"
+      app:layout_constraintTop_toTopOf="parent"
+      app:data="@{viewModel.profilesList}" />
+
+    <ImageView
+      android:id="@+id/profile_selection_setting_icon"
+      android:layout_width="@dimen/profile_selection_fragment_icon_size"
+      android:layout_height="@dimen/profile_selection_fragment_icon_size"
+      android:layout_marginStart="@dimen/profile_selection_fragment_settings_icon_margin_start"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_settings_icon_margin_bottom"
+      android:contentDescription="@string/setting_icon_content_description"
+      android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
+      android:paddingStart="@dimen/profile_selection_fragment_icon_padding"
+      android:paddingEnd="@dimen/profile_selection_fragment_icon_padding"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:srcCompat="@drawable/ic_settings_grey_48dp"
+      app:tint="@color/component_color_profile_selection_settings_icon_background_color" />
+
+    <TextView
+      android:id="@+id/profile_selection_admin_controls_text"
+      style="@style/AdministratorControlsLabelStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_settings_icon_margin_bottom"
+      android:onClick="@{(v) -> viewModel.onAdministratorControlsButtonClicked()}"
+      android:paddingStart="@dimen/profile_selection_fragment_icon_padding"
+      android:paddingEnd="@dimen/profile_selection_fragment_icon_padding"
+      android:text="@string/profile_selection_administrator_controls"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toEndOf="@id/profile_selection_setting_icon" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/add_profile_button"
+      android:layout_width="@dimen/profile_selection_fragment_icon_size"
+      android:layout_height="@dimen/profile_selection_fragment_icon_size"
+      android:layout_marginEnd="@dimen/profile_selection_fragment_add_profile_button_margin_end"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_add_button_margin_bottom"
+      android:contentDescription="@string/profile_selection_profile_icon_description"
+      android:paddingStart="@dimen/profile_selection_fragment_icon_padding"
+      android:paddingEnd="@dimen/profile_selection_fragment_icon_padding"
+      android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
+      app:backgroundTint="@color/component_color_drawer_fragment_admin_controls_selected_text_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/add_profile_prompt"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:srcCompat="@drawable/ic_add" />
+
+    <TextView
+      android:id="@+id/add_profile_prompt"
+      style="@style/AddProfilePromptStyle"
+      android:layout_width="@dimen/profile_selection_fragment_prompt_width"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="@dimen/profile_selection_fragment_add_profile_button_margin_end"
+      android:layout_marginBottom="@dimen/profile_selection_fragment_prompt_margin_bottom"
+      android:text="@string/profile_selection_add_profile_text"
+      android:visibility="@{viewModel.canAddProfile ? View.VISIBLE : View.GONE}"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

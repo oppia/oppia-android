@@ -3,7 +3,6 @@ package org.oppia.android.app.classroom
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.activity.route.ActivityRouter
@@ -24,6 +23,7 @@ import org.oppia.android.app.model.ScreenName.CLASSROOM_LIST_ACTIVITY
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicActivityIntent
 import org.oppia.android.app.topic.TopicActivity.Companion.createTopicPlayStoryActivityIntent
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.ui.R
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -70,22 +70,6 @@ class ClassroomListActivity :
     profileId = intent.extractCurrentUserProfileId()
     classroomListActivityPresenter.handleOnCreate()
     title = resourceHandler.getStringInLocale(R.string.classroom_list_activity_title)
-  }
-
-  override fun onBackPressed() {
-    val previousFragment =
-      supportFragmentManager.findFragmentByTag(TAG_SWITCH_PROFILE_DIALOG)
-    if (previousFragment != null) {
-      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
-    }
-    val exitProfileDialogArguments =
-      ExitProfileDialogArguments
-        .newBuilder()
-        .setHighlightItem(HighlightItem.NONE)
-        .build()
-    val dialogFragment = ExitProfileDialogFragment
-      .newInstance(exitProfileDialogArguments = exitProfileDialogArguments)
-    dialogFragment.showNow(supportFragmentManager, TAG_SWITCH_PROFILE_DIALOG)
   }
 
   override fun routeToRecentlyPlayed(recentlyPlayedActivityTitle: RecentlyPlayedActivityTitle) {

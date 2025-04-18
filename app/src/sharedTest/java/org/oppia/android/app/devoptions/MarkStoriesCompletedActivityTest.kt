@@ -12,14 +12,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -33,10 +31,12 @@ import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesComplete
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -100,23 +100,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class MarkStoriesCompletedActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+
+  @Inject lateinit var context: Context
 
   private val internalProfileId = 0
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val activityTestRule = ActivityTestRule(
-    MarkStoriesCompletedActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
   @Before
   fun setUp() {
@@ -137,12 +126,18 @@ class MarkStoriesCompletedActivityTest {
 
   @Test
   fun testMarkStoriesCompletedActivity_hasCorrectActivityLabel() {
-    activityTestRule.launchActivity(createMarkStoriesCompletedActivityIntent(internalProfileId))
-    val title = activityTestRule.activity.title
+    launch<MarkStoriesCompletedActivity>(
+      createMarkStoriesCompletedActivityIntent(internalProfileId)
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.mark_stories_completed_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title)
+          .isEqualTo(context.getString(R.string.mark_stories_completed_activity_title))
+      }
+    }
   }
 
   @Test
@@ -193,7 +188,8 @@ class MarkStoriesCompletedActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,

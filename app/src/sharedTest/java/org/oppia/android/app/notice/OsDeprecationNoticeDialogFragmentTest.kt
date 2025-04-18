@@ -24,7 +24,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
@@ -40,9 +39,11 @@ import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.notice.testing.OsDeprecationNoticeDialogFragmentTestActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -221,7 +222,8 @@ class OsDeprecationNoticeDialogFragmentTest {
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,

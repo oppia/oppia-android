@@ -4,13 +4,13 @@ import android.content.Context
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import org.oppia.android.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.home.RouteToExplorationListener
 import org.oppia.android.app.model.ExplorationActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.SplitScreenManager
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationDataController
