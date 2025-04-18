@@ -2,7 +2,6 @@ package org.oppia.android.app.profile
 
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil

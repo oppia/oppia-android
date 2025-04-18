@@ -1231,7 +1231,6 @@ class PinPasswordActivityTest {
     }
   }
 
-
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =

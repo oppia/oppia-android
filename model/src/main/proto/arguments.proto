@@ -949,6 +949,7 @@ message ProfileChooserFragmentArguments {
 
 // The bundle of properties that are saved on configuration change in PinPasswordActivity.
 message PinPasswordActivityStateBundle {
+//The admin pin entered by the user.
   string input_pin = 1;
 }
 
