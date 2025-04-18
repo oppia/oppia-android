@@ -1228,6 +1228,24 @@ class PinPasswordActivityTest {
     }
   }
 
+  @Test
+  fun testPinPassword_inputPin_configChange_pinIsPersisted() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .check(matches(withText("1234")))
+    }
+  }
+
+
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =

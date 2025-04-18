@@ -1,6 +1,5 @@
 package org.oppia.android.app.profile
 
-import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -12,7 +11,6 @@ import org.oppia.android.R
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.PinPasswordActivityParams
-import org.oppia.android.app.model.PinPasswordActivityStateBundle
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -23,9 +21,7 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
@@ -33,7 +29,7 @@ import kotlin.system.exitProcess
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
-private const val PINPASSWORD_ACTIVITY_STATE_KEY = "PINPASSWORD_ACTIVITY_STATE_KEY"
+const val PINPASSWORD_ACTIVITY_STATE_KEY = "PINPASSWORD_ACTIVITY_STATE_KEY"
 
 /** The presenter for [PinPasswordActivity]. */
 class PinPasswordActivityPresenter @Inject constructor(
@@ -51,7 +47,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   private var confirmedDeletion = false
   private lateinit var binding: PinPasswordActivityBinding
 
-  fun handleOnCreate(outState: Bundle?) {
+  fun handleOnCreate(savedPin: String?) {
     val args = activity.intent.getProtoExtra(
       PIN_PASSWORD_ACTIVITY_PARAMS_KEY,
       PinPasswordActivityParams.getDefaultInstance()
@@ -74,14 +70,10 @@ class PinPasswordActivityPresenter @Inject constructor(
     binding.pinPasswordToolbar.setNavigationOnClickListener {
       (activity as PinPasswordActivity).finish()
     }
-
-    outState?.getProto(
-      PINPASSWORD_ACTIVITY_STATE_KEY,
-      PinPasswordActivityStateBundle.getDefaultInstance()
-    )?.inputPin?.let { savedInputPin ->
-      if (savedInputPin.isNotEmpty()) {
-        Toast.makeText(activity, savedInputPin.toString(), Toast.LENGTH_SHORT).show()
-        binding.pinPasswordInputPinEditText.setText(savedInputPin)
+    savedPin?.let { pin ->
+      if (pin.isNotEmpty()) {
+        binding.pinPasswordInputPinEditText.setText(pin)
+        pinViewModel.inputPin.set(pin)
       }
     }
 
@@ -265,16 +257,8 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
   }
 
-  fun handleSaveInstanceState(outState: Bundle) {
-    val enteredPin = binding.pinPasswordInputPinEditText.text.toString()
-    val args = PinPasswordActivityStateBundle.newBuilder()
-      .setInputPin(enteredPin)
-      .build()
-    outState.putProto(
-      PINPASSWORD_ACTIVITY_STATE_KEY,
-      args
-    )
-  }
+  fun getInputPin() =
+    binding.pinPasswordInputPinEditText.text.toString()
 
   private fun showSuccessDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
