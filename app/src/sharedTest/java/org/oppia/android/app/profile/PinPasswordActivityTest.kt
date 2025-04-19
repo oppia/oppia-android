@@ -1223,11 +1223,12 @@ class PinPasswordActivityTest {
         profileId = userId
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("123"))
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .check(matches(withText("1234")))
+        .check(matches(withText("123")))
     }
   }
 

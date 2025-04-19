@@ -2,6 +2,7 @@ package org.oppia.android.app.profile
 
 import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -28,7 +29,6 @@ import kotlin.system.exitProcess
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
-const val PINPASSWORD_ACTIVITY_STATE_KEY = "PINPASSWORD_ACTIVITY_STATE_KEY"
 
 /** The presenter for [PinPasswordActivity]. */
 class PinPasswordActivityPresenter @Inject constructor(
@@ -42,11 +42,11 @@ class PinPasswordActivityPresenter @Inject constructor(
 ) {
   private var internalProfileId = -1
   private var profileId = ProfileId.getDefaultInstance()
-  private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
+  private lateinit var alertDialog: AlertDialog
   private lateinit var binding: PinPasswordActivityBinding
 
-  fun handleOnCreate(savedPin: String?) {
+  fun handleOnCreate(savedPin: String) {
     val args = activity.intent.getProtoExtra(
       PIN_PASSWORD_ACTIVITY_PARAMS_KEY,
       PinPasswordActivityParams.getDefaultInstance()
@@ -60,6 +60,10 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity,
       R.layout.pin_password_activity
     )
+    binding.root.post {
+      pinViewModel.inputPin.set(savedPin)
+    }
+
     pinViewModel.setProfileId(internalProfileId)
     binding.apply {
       lifecycleOwner = activity
@@ -68,12 +72,6 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     binding.pinPasswordToolbar.setNavigationOnClickListener {
       (activity as PinPasswordActivity).finish()
-    }
-    savedPin?.let { pin ->
-      if (pin.isNotEmpty()) {
-        binding.pinPasswordInputPinEditText.setText(pin)
-        pinViewModel.inputPin.set(pin)
-      }
     }
 
     binding.showPin.setOnClickListener {
@@ -257,7 +255,7 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
   }
 
-  fun getInputPin() =
+  fun getInputPin(): String =
     binding.pinPasswordInputPinEditText.text.toString()
 
   private fun showSuccessDialog() {

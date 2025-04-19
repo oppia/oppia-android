@@ -24,6 +24,7 @@ class PinPasswordActivity :
   companion object {
     /** Params key for PinPasswordActivity. */
     const val PIN_PASSWORD_ACTIVITY_PARAMS_KEY = "PinPasswordActivity.params"
+    const val PINPASSWORD_ACTIVITY_STATE_KEY = "PINPASSWORD_ACTIVITY_STATE_KEY"
     fun createPinPasswordActivityIntent(
       context: Context,
       adminPin: String,
@@ -46,7 +47,7 @@ class PinPasswordActivity :
     val savedPin = savedInstanceState?.getProto(
       PINPASSWORD_ACTIVITY_STATE_KEY,
       PinPasswordActivityStateBundle.getDefaultInstance()
-    )?.inputPin
+    )?.inputPin?:""
     pinPasswordActivityPresenter.handleOnCreate(savedPin)
   }
 
@@ -63,10 +64,7 @@ class PinPasswordActivity :
     val args = PinPasswordActivityStateBundle.newBuilder()
       .setInputPin(pinPasswordActivityPresenter.getInputPin())
       .build()
-    outState.putProto(
-      PINPASSWORD_ACTIVITY_STATE_KEY,
-      args
-    )
+    outState.putProto(PINPASSWORD_ACTIVITY_STATE_KEY, args)
   }
 
   override fun onDestroy() {
