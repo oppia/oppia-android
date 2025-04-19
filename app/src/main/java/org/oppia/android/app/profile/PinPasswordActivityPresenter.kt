@@ -4,6 +4,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.classroom.ClassroomListActivity
@@ -59,7 +60,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity,
       R.layout.pin_password_activity
     )
-    binding.root.post {
+    binding.root.doOnLayout {
       pinViewModel.inputPin.set(savedPin)
     }
 
