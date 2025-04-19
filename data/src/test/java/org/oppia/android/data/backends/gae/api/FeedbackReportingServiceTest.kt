@@ -9,7 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.FeedbackReportingServiceTestOrchestrator
+import org.oppia.android.data.backends.gae.testing.FeedbackReportingServiceTestOrchestrator
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
