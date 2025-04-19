@@ -47,7 +47,7 @@ class PinPasswordActivity :
     val savedPin = savedInstanceState?.getProto(
       PINPASSWORD_ACTIVITY_STATE_KEY,
       PinPasswordActivityStateBundle.getDefaultInstance()
-    )?.inputPin?:""
+    )?.inputPin ?: ""
     pinPasswordActivityPresenter.handleOnCreate(savedPin)
   }
 
