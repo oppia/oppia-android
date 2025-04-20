@@ -23,17 +23,32 @@ import org.oppia.android.app.model.EventLog.SurveyContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
+import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.logging.EventLogSubject.AbandonSurveyContextSubject
 import org.oppia.android.testing.logging.EventLogSubject.AppLanguageSelectionSubject
-import org.oppia.android.testing.logging.EventLogSubject.WrittenTranslationLanguageSelectionSubject
 import org.oppia.android.testing.logging.EventLogSubject.AudioTranslationLanguageSelectionSubject
 import org.oppia.android.testing.logging.EventLogSubject.CardContextSubject
 import org.oppia.android.testing.logging.EventLogSubject.ExplorationContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.FeatureFlagListContextSubject
 import org.oppia.android.testing.logging.EventLogSubject.HintContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.LearnerDetailsContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.MandatorySurveyResponseContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.OptionalSurveyResponseContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.QuestionContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.RevisionCardContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.StoryContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.SubmitAnswerContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.SurveyContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.SurveyResponseContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.SwitchInLessonLanguageEventContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.VoiceoverActionContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.WrittenTranslationLanguageSelectionSubject
 
 /** Tests for [EventLogSubject]. */
 class EventLogSubjectTest {
@@ -313,6 +328,7 @@ class EventLogSubjectTest {
         hasExplorationIdThat().isEqualTo("explorationId")
       }
   }
+
   @Test
   fun testEventLogSubject_hasOpenInfoTabContext_passes() {
     val eventLog = EventLog.newBuilder()
@@ -349,7 +365,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-   val subject= EventLogSubject.assertThat(eventLog)
+    val subject = EventLogSubject.assertThat(eventLog)
       .hasOpenInfoTabContextThat()
 
     subject.hasTopicIdThat().isEqualTo("topicId")
@@ -373,6 +389,7 @@ class EventLogSubjectTest {
         hasTopicIdThat().isEqualTo("topicId")
       }
   }
+
   @Test
   fun testEventLogSubject_hasOpenLessonsTabContext_passes() {
     val eventLog = EventLog.newBuilder()
@@ -1918,7 +1935,7 @@ class EventLogSubjectTest {
 
     EventLogSubject.assertThat(eventLog)
       .hasSubmitAnswerContextThat {
-         hasAnswerCorrectValueThat().isEqualTo(true)
+        hasAnswerCorrectValueThat().isEqualTo(true)
       }
   }
 
@@ -4206,6 +4223,7 @@ class EventLogSubjectTest {
     EventLogSubject.assertThat(eventLog)
       .hasStartProfileOnboardingContext()
   }
+
   @Test
   fun testEventLogSubject_contextIsStartProfileOnboarding_returnsProfileOnboardingContextSubject() {
     val startProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
@@ -4264,6 +4282,7 @@ class EventLogSubjectTest {
     EventLogSubject.assertThat(eventLog)
       .hasEndProfileOnboardingContext()
   }
+
   @Test
   fun testEventLogSubject_contextIsEndProfileOnboarding_returnsProfileOnboardingContextSubject() {
     val endProfileOnboardingContext = ProfileOnboardingContext.newBuilder()
@@ -4310,7 +4329,7 @@ class EventLogSubjectTest {
       .setUseSystemLanguageOrAppDefault(true)
       .build()
 
-   AppLanguageSelectionSubject.assertThat(selection)
+    AppLanguageSelectionSubject.assertThat(selection)
       .isUseSystemLanguageOrAppDefault()
   }
 
@@ -4368,7 +4387,7 @@ class EventLogSubjectTest {
   }
 
   @Test
-  fun testWrittenTranslationLanguageSelectionSubject_isSelectedLanguageThat_returnsCorrectSubject() {
+  fun testWrittenTranslationLanguageSelection_isSelectedLanguageThat_returnsCorrectSubject() {
     val selection = WrittenTranslationLanguageSelection.newBuilder()
       .setSelectedLanguage(OppiaLanguage.HINDI)
       .build()
@@ -4387,6 +4406,7 @@ class EventLogSubjectTest {
     AudioTranslationLanguageSelectionSubject.assertThat(selection)
       .isUseAppLanguage()
   }
+
   @Test
   fun testAudioTranslationLanguageSelectionSubject_isUseAppLanguage_fails() {
     val selection = AudioTranslationLanguageSelection.newBuilder()
@@ -4408,6 +4428,7 @@ class EventLogSubjectTest {
     AudioTranslationLanguageSelectionSubject.assertThat(selection)
       .isSelectedLanguage()
   }
+
   @Test
   fun testAudioTranslationLanguageSelectionSubject_isSelectedLanguageThat_returnsCorrectSubject() {
     val selection = AudioTranslationLanguageSelection.newBuilder()
@@ -4433,6 +4454,7 @@ class EventLogSubjectTest {
       hasExplorationIdThat().isEqualTo("exp_id_123")
     }
   }
+
   @Test
   fun testCardContextSubject_hasExplorationDetailsThat_failsWithWrongExplorationId() {
     val explorationDetails = ExplorationContext.newBuilder()
@@ -4482,6 +4504,7 @@ class EventLogSubjectTest {
       .hasStoryIdThat()
       .isEqualTo("story_abc")
   }
+
   @Test
   fun testExplorationContextSubject_hasSessionIdThat_passes() {
     val context = ExplorationContext.newBuilder()
@@ -4492,6 +4515,7 @@ class EventLogSubjectTest {
       .hasSessionIdThat()
       .isEqualTo("session_xyz")
   }
+
   @Test
   fun testExplorationContextSubject_hasVersionThat_passes() {
     val context = ExplorationContext.newBuilder()
@@ -4502,6 +4526,7 @@ class EventLogSubjectTest {
       .hasVersionThat()
       .isEqualTo(5)
   }
+
   @Test
   fun testExplorationContextSubject_hasStateNameThat_passes() {
     val context = ExplorationContext.newBuilder()
@@ -4512,6 +4537,7 @@ class EventLogSubjectTest {
       .hasStateNameThat()
       .isEqualTo("Introduction")
   }
+
   @Test
   fun testExplorationContextSubject_hasLearnerDetailsThat__executesBlockWithCorrectSubject() {
     val learnerDetails = LearnerDetailsContext.newBuilder()
@@ -4526,6 +4552,7 @@ class EventLogSubjectTest {
       hasLearnerIdThat().isEqualTo("learner_001")
     }
   }
+
   @Test
   fun testHintContextSubject_hasHintIndexThat_returnsCorrectValue() {
     val hintContext = HintContext.newBuilder()
@@ -4554,7 +4581,7 @@ class EventLogSubjectTest {
 
   @Test
   fun testHintContextSubject_hasExplorationDetailsThat_executesBlockCorrectly() {
-    val explorationDetails =ExplorationContext.newBuilder()
+    val explorationDetails = ExplorationContext.newBuilder()
       .setStateName("IntroState")
       .build()
     val hintContext = HintContext.newBuilder()
@@ -4566,5 +4593,348 @@ class EventLogSubjectTest {
     }
   }
 
+  @Test
+  fun testLearnerDetailsContextSubject_hasInstallationIdThat_returnsCorrectValue() {
+    val learnerDetailsContext = LearnerDetailsContext.newBuilder()
+      .setInstallId("install_id_789")
+      .build()
 
+    LearnerDetailsContextSubject.assertThat(learnerDetailsContext)
+      .hasInstallationIdThat()
+      .isEqualTo("install_id_789")
+  }
+
+  @Test
+  fun testVoiceoverActionContextSubject_hasExplorationDetailsThat_returnsCorrectExplorationId() {
+    val explorationDetails = ExplorationContext.newBuilder()
+      .setExplorationId("exp789")
+      .build()
+    val voiceoverActionContext = VoiceoverActionContext.newBuilder()
+      .setExplorationDetails(explorationDetails)
+      .build()
+
+    VoiceoverActionContextSubject.assertThat(voiceoverActionContext)
+      .hasExplorationDetailsThat()
+      .hasExplorationIdThat()
+      .isEqualTo("exp789")
+  }
+
+  @Test
+  fun testVoiceoverActionContextSubject_hasExplorationDetailsThat_executesBlockCorrectly() {
+    val explorationDetails = ExplorationContext.newBuilder()
+      .setStateName("SomeState")
+      .build()
+    val voiceoverActionContext = VoiceoverActionContext.newBuilder()
+      .setExplorationDetails(explorationDetails)
+      .build()
+
+    VoiceoverActionContextSubject.assertThat(voiceoverActionContext).hasExplorationDetailsThat {
+      hasStateNameThat().isEqualTo("SomeState")
+    }
+  }
+
+  @Test
+  fun testVoiceoverActionContextSubject_hasLanguageCodeThat_returnsSetValue() {
+    val voiceoverActionContext = VoiceoverActionContext.newBuilder()
+      .setLanguageCode("hi")
+      .build()
+
+    VoiceoverActionContextSubject.assertThat(voiceoverActionContext)
+      .hasLanguageCodeThat()
+      .isEqualTo("hi")
+  }
+
+  @Test
+  fun testQuestionContextSubject_hasSkillIdListThat_returnsCorrectValues() {
+    val questionContext = QuestionContext.newBuilder()
+      .addSkillId("skill_1")
+      .addSkillId("skill_2")
+      .build()
+
+    QuestionContextSubject.assertThat(questionContext)
+      .hasSkillIdListThat()
+      .containsExactly("skill_1", "skill_2")
+      .inOrder()
+  }
+
+  @Test
+  fun testRevisionCardContextSubject_hasSubtopicIndexThat_returnsCorrectValue() {
+    val revisionCardContext = RevisionCardContext.newBuilder()
+      .setSubTopicId(7)
+      .build()
+
+    RevisionCardContextSubject.assertThat(revisionCardContext)
+      .hasSubtopicIndexThat()
+      .isEqualTo(7)
+  }
+
+  @Test
+  fun testStoryContextSubject_hasTopicIdThat_returnsCorrectValue() {
+    val storyContext = StoryContext.newBuilder()
+      .setTopicId("topic_xyz")
+      .build()
+
+    StoryContextSubject.assertThat(storyContext)
+      .hasTopicIdThat()
+      .isEqualTo("topic_xyz")
+  }
+
+  @Test
+  fun testSubmitAnswerContext_hasExplorationDetailsThat_returnsCorrectExplorationId() {
+    val submitAnswerContext = SubmitAnswerContext.newBuilder()
+      .setExplorationDetails(
+        ExplorationContext.newBuilder()
+          .setExplorationId("exp_id_123")
+      )
+      .build()
+
+    SubmitAnswerContextSubject.assertThat(submitAnswerContext)
+      .hasExplorationDetailsThat()
+      .hasExplorationIdThat()
+      .isEqualTo("exp_id_123")
+  }
+
+  @Test
+  fun testSubmitAnswerContext_hasExplorationDetailsThat_executesBlockCorrectly() {
+    val submitAnswerContext = SubmitAnswerContext.newBuilder()
+      .setExplorationDetails(
+        ExplorationContext.newBuilder()
+          .setTopicId("topic_id_456")
+      )
+      .build()
+
+    SubmitAnswerContextSubject.assertThat(submitAnswerContext)
+      .hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo("topic_id_456")
+      }
+  }
+
+  @Test
+  fun testSwitchInLessonLanguageEventContext_hasLanguageDetailsThat_returnsCorrectLanguageId() {
+    val switchInLessonLanguageEventContext = SwitchInLessonLanguageEventContext.newBuilder()
+      .setExplorationDetails(
+        ExplorationContext.newBuilder()
+          .setExplorationId("exp_id_123")
+      )
+      .build()
+
+    SwitchInLessonLanguageEventContextSubject.assertThat(switchInLessonLanguageEventContext)
+      .hasExplorationDetailsThat()
+      .hasExplorationIdThat()
+      .isEqualTo("exp_id_123")
+  }
+
+  @Test
+  fun testSwitchInLessonLanguageEventContext_hasLanguageDetailsThat_executesBlockCorrectly() {
+    val switchInLessonLanguageEventContext = SwitchInLessonLanguageEventContext.newBuilder()
+      .setExplorationDetails(
+        ExplorationContext.newBuilder()
+          .setTopicId("topic_id_456")
+      )
+      .build()
+
+    SwitchInLessonLanguageEventContextSubject.assertThat(switchInLessonLanguageEventContext)
+      .hasExplorationDetailsThat {
+        hasTopicIdThat().isEqualTo("topic_id_456")
+      }
+  }
+
+  @Test
+  fun testOptionalSurveyResponseContext_hasSurveyDetailsThat_returnsCorrectSurveyId() {
+    val optionalSurveyResponseContext = EventLog.OptionalSurveyResponseContext.newBuilder()
+      .setSurveyDetails(
+        EventLog.SurveyResponseContext.newBuilder()
+          .setSurveyId("survey_id_789")
+      )
+      .build()
+
+    OptionalSurveyResponseContextSubject.assertThat(optionalSurveyResponseContext)
+      .hasSurveyDetailsThat()
+      .hasSurveyIdThat()
+      .isEqualTo("survey_id_789")
+  }
+  @Test
+  fun testOptionalSurveyResponseContext_hasSurveyDetailsThat_executesBlockCorrectly() {
+    val optionalSurveyResponseContext = EventLog.OptionalSurveyResponseContext.newBuilder()
+      .setSurveyDetails(
+        EventLog.SurveyResponseContext.newBuilder()
+          .setSurveyId("survey_id_789")
+      )
+      .build()
+
+    OptionalSurveyResponseContextSubject.assertThat(optionalSurveyResponseContext)
+      .hasSurveyDetailsThat {
+        hasSurveyIdThat().isEqualTo("survey_id_789")
+      }
+  }
+
+  @Test
+  fun testMandatorySurveyResponseContext_hasSurveyDetailsThat_returnsCorrectSurveyId() {
+    val mandatorySurveyResponseContext = MandatorySurveyResponseContext.newBuilder()
+      .setSurveyDetails(
+        EventLog.SurveyResponseContext.newBuilder()
+          .setSurveyId("survey_id_123")
+      )
+      .build()
+
+    MandatorySurveyResponseContextSubject.assertThat(mandatorySurveyResponseContext)
+      .hasSurveyDetailsThat()
+      .hasSurveyIdThat()
+      .isEqualTo("survey_id_123")
+  }
+
+  @Test
+  fun testMandatorySurveyResponseContext_hasSurveyDetailsThat_executesBlockCorrectly() {
+    val mandatorySurveyResponseContext = EventLog.MandatorySurveyResponseContext.newBuilder()
+      .setSurveyDetails(
+        EventLog.SurveyResponseContext.newBuilder()
+          .setSurveyId("survey_id_123")
+      )
+      .build()
+
+    MandatorySurveyResponseContextSubject.assertThat(mandatorySurveyResponseContext)
+      .hasSurveyDetailsThat {
+        hasSurveyIdThat().isEqualTo("survey_id_123")
+      }
+  }
+  @Test
+  fun testMandatorySurveyResponseContext_hasMarketFitAnswerThat_returnsCorrectMarketFitAnswer() {
+    val mandatorySurveyResponseContext = MandatorySurveyResponseContext.newBuilder()
+      .setMarketFitAnswer(MarketFitAnswer.DISAPPOINTED)
+      .build()
+
+    MandatorySurveyResponseContextSubject.assertThat(mandatorySurveyResponseContext)
+      .hasMarketFitAnswerThat()
+      .isEqualTo(MarketFitAnswer.DISAPPOINTED)
+  }
+
+  @Test
+  fun testMandatorySurveyResponseContext_hasNpsScoreAnswerThat_returnsCorrectNpsScore() {
+    val mandatorySurveyResponseContext = EventLog.MandatorySurveyResponseContext.newBuilder()
+      .setNpsScoreAnswer(8)
+      .build()
+
+    MandatorySurveyResponseContextSubject.assertThat(mandatorySurveyResponseContext)
+      .hasNpsScoreAnswerThat()
+      .isEqualTo(8)
+  }
+
+  @Test
+  fun testAbandonSurveyContext_hasSurveyDetailsThat_returnsCorrectSurveyId() {
+    val abandonSurveyContext = AbandonSurveyContext.newBuilder()
+      .setSurveyDetails(
+        EventLog.SurveyResponseContext.newBuilder().setSurveyId("survey_id_123")
+      )
+      .build()
+
+    AbandonSurveyContextSubject.assertThat(abandonSurveyContext)
+      .hasSurveyDetailsThat()
+      .hasSurveyIdThat()
+      .isEqualTo("survey_id_123")
+  }
+
+  @Test
+  fun testAbandonSurveyContext_hasSurveyDetailsThat_executesBlockCorrectly() {
+    val abandonSurveyContext = EventLog.AbandonSurveyContext.newBuilder()
+      .setSurveyDetails(
+        EventLog.SurveyResponseContext.newBuilder().setSurveyId("test_id")
+      )
+      .build()
+
+    AbandonSurveyContextSubject.assertThat(abandonSurveyContext)
+      .hasSurveyDetailsThat {
+        hasSurveyIdThat().isEqualTo("test_id")
+      }
+  }
+
+  @Test
+  fun testSurveyResponseContext_hasInternalProfileIdThat_returnsCorrectProfileId() {
+    val context = EventLog.SurveyResponseContext.newBuilder()
+      .setProfileId("user_profile_456")
+      .build()
+
+    SurveyResponseContextSubject.assertThat(context)
+      .hasInternalProfileIdThat()
+      .isEqualTo("user_profile_456")
+  }
+
+  @Test
+  fun testSurveyContext_hasTopicIdThat_returnsCorrectId() {
+    val context = SurveyContext.newBuilder()
+      .setTopicId("topic_xyz")
+      .build()
+
+    SurveyContextSubject.assertThat(context)
+      .hasTopicIdThat()
+      .isEqualTo("topic_xyz")
+  }
+
+  @Test
+  fun testFeatureFlagListContext_hasUniqueUserUuidThat_returnsCorrectUuid() {
+    val context = EventLog.FeatureFlagListContext.newBuilder()
+      .setUniqueUserUuid("uuid-456")
+      .build()
+
+    FeatureFlagListContextSubject.assertThat(context)
+      .hasUniqueUserUuidThat()
+      .isEqualTo("uuid-456")
+  }
+  @Test
+  fun testFeatureFlagListContext_hasSessionIdThat_returnsCorrectSessionId() {
+    val context = EventLog.FeatureFlagListContext.newBuilder()
+      .setAppSessionId("session-789")
+      .build()
+
+    FeatureFlagListContextSubject.assertThat(context)
+      .hasSessionIdThat()
+      .isEqualTo("session-789")
+  }
+  @Test
+  fun testFeatureFlagListContext_hasFeatureFlagItemCountThat_returnsCorrectCount() {
+    val context = FeatureFlagListContext.newBuilder()
+      .addFeatureFlags(EventLog.FeatureFlagItemContext.getDefaultInstance())
+      .addFeatureFlags(EventLog.FeatureFlagItemContext.getDefaultInstance())
+      .build()
+
+    FeatureFlagListContextSubject.assertThat(context)
+      .hasFeatureFlagItemCountThat()
+      .isEqualTo(2)
+  }
+  @Test
+  fun testFeatureFlagListContext_hasFeatureFlagItemContextThatAtIndex_returnsCorrectItem() {
+    val featureFlagItem = EventLog.FeatureFlagItemContext.newBuilder()
+      .setFlagName("enable_multiple_classrooms")
+      .setFlagEnabledState(true)
+      .build()
+
+    val context = FeatureFlagListContext.newBuilder()
+      .addFeatureFlags(featureFlagItem)
+      .build()
+
+    FeatureFlagListContextSubject.assertThat(context)
+      .hasFeatureFlagItemContextThatAtIndex(0)
+      .hasFeatureFlagNameThat()
+      .isEqualTo("enable_multiple_classrooms")
+  }
+  @Test
+  fun testFeatureFlagListContext_hasFeatureFlagItemContextThatAtIndex_executesBlockCorrectly() {
+    val featureFlagItem = EventLog.FeatureFlagItemContext.newBuilder()
+      .setFlagName("new_dashboard")
+      .setFlagEnabledState(true)
+      .setFlagSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+      .build()
+
+    val context = FeatureFlagListContext.newBuilder()
+      .addFeatureFlags(featureFlagItem)
+      .build()
+
+    FeatureFlagListContextSubject.assertThat(context)
+      .hasFeatureFlagItemContextThatAtIndex(0) {
+        hasFeatureFlagNameThat().isEqualTo("new_dashboard")
+        hasFeatureFlagEnabledStateThat().isEqualTo(true)
+        hasFeatureFlagSyncStateThat().isEqualTo(
+          SyncStatus.SYNCED_FROM_SERVER
+        )
+      }
+  }
 }
