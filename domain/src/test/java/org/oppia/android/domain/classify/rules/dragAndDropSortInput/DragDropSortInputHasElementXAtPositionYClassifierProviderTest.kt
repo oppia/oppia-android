@@ -20,28 +20,29 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [DragDropSortInputHasElementXBeforeElementYClassifierProvider]. */
+/** Tests for [DragDropSortInputHasElementXAtPositionYClassifierProvider]. */
 @Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
+class DragDropSortInputHasElementXAtPositionYClassifierProviderTest {
 
-  private val VALID_CONTENT_ID_1 = createTranslatableHtmlContentId(contentId = "content_id_1")
-  private val VALID_CONTENT_ID_2 = createTranslatableHtmlContentId(contentId = "content_id_2")
+  private val NON_NEGATIVE_VALUE_0 = createNonNegativeInt(value = 1)
+  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 2)
+  private val VALID_CONTENT_ID_2 = createTranslatableHtmlContentId(contentId = "valid_content_id_2")
   private val INVALID_CONTENT_ID = createTranslatableHtmlContentId(contentId = "invalid_content_id")
-  private val NON_NEGATIVE_VALUE_1 = createNonNegativeInt(value = 1)
   private val LIST_OF_SETS_OF_CONTENT_IDS =
     createListOfSetsOfTranslatableHtmlContentIds(
-      listOf("content_id_1"), listOf("content_id_2"), listOf("content_id_3")
+      listOf("other_id_1", "other_id_2"),
+      listOf("valid_content_id_1", "valid_content_id_2", "valid_content_id_3")
     )
 
   @Inject
-  internal lateinit var dragDropSortInputHasElementXBeforeElementYClassifierProvider:
-    DragDropSortInputHasElementXBeforeElementYClassifierProvider
+  internal lateinit var dragDropSortInputHasElementXAtPositionYClassifierProvider:
+    DragDropSortInputHasElementXAtPositionYClassifierProvider
 
-  private val hasElementXBeforeElementYRuleClassifier: RuleClassifier by lazy {
-    dragDropSortInputHasElementXBeforeElementYClassifierProvider.createRuleClassifier()
+  private val hasElementXAtPositionYRuleClassifier: RuleClassifier by lazy {
+    dragDropSortInputHasElementXAtPositionYClassifierProvider.createRuleClassifier()
   }
 
   @Before
@@ -50,14 +51,12 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_nonNegativeInput_bothInputsWithIncorrectTypes_throwsException() {
-    val inputs = mapOf(
-      "x" to NON_NEGATIVE_VALUE_1,
-      "y" to NON_NEGATIVE_VALUE_1
-    )
+  fun testAnswer_nonNegativeInput_testString_bothInputsWithIncorrectTypes_throwsException() {
+    // Reverse the x and y parameters to ensure both have the incorrect type.
+    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -71,10 +70,13 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_testString_xInputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to NON_NEGATIVE_VALUE_1, "y" to VALID_CONTENT_ID_2)
+    val inputs = mapOf(
+      "x" to NON_NEGATIVE_VALUE_1,
+      "y" to NON_NEGATIVE_VALUE_1
+    )
 
     val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -88,10 +90,10 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
   @Test
   fun testAnswer_nonNegativeInput_testString_yInputWithIncorrectType_throwsException() {
-    val inputs = mapOf("x" to VALID_CONTENT_ID_2, "y" to NON_NEGATIVE_VALUE_1)
+    val inputs = mapOf("x" to VALID_CONTENT_ID_2, "y" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -100,7 +102,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
 
     assertThat(exception)
       .hasMessageThat()
-      .contains("Expected input value to be of type TRANSLATABLE_HTML_CONTENT_ID")
+      .contains("Expected input value to be of type NON_NEGATIVE_INT")
   }
 
   @Test
@@ -108,7 +110,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val inputs = mapOf("y" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -125,7 +127,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val inputs = mapOf("x" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -142,7 +144,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
     val inputs = mapOf("z" to VALID_CONTENT_ID_2)
 
     val exception = assertThrows<IllegalStateException>() {
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -155,11 +157,11 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementXAfterElementY_orderedIncorrectly() {
-    val inputs = mapOf("x" to VALID_CONTENT_ID_2, "y" to VALID_CONTENT_ID_1)
+  fun testAnswer_elementXWithPositionY_bothValueDoNotMatch() {
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to INVALID_CONTENT_ID)
 
     val matches =
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -169,11 +171,11 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementX_invalidElementY_orderedIncorrectly() {
-    val inputs = mapOf("y" to INVALID_CONTENT_ID, "x" to VALID_CONTENT_ID_2)
+  fun testAnswer_elementXWithPositionY_xValueDoesNotMatch() {
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to INVALID_CONTENT_ID)
 
     val matches =
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -183,11 +185,25 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   @Test
-  fun testAnswer_elementXBeforeElementY_orderedCorrectly() {
-    val inputs = mapOf("x" to VALID_CONTENT_ID_1, "y" to VALID_CONTENT_ID_2)
+  fun testAnswer_elementXWithPositionY_yValueDoesNotMatch() {
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_0, "x" to VALID_CONTENT_ID_2)
 
     val matches =
-      hasElementXBeforeElementYRuleClassifier.matches(
+      hasElementXAtPositionYRuleClassifier.matches(
+        answer = LIST_OF_SETS_OF_CONTENT_IDS,
+        inputs = inputs,
+        classificationContext = ClassificationContext()
+      )
+
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testAnswer_elementXWithPositionY_bothMatchesCorrectly() {
+    val inputs = mapOf("y" to NON_NEGATIVE_VALUE_1, "x" to VALID_CONTENT_ID_2)
+
+    val matches =
+      hasElementXAtPositionYRuleClassifier.matches(
         answer = LIST_OF_SETS_OF_CONTENT_IDS,
         inputs = inputs,
         classificationContext = ClassificationContext()
@@ -197,7 +213,7 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerDragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest_TestApplicationComponent // ktlint-disable max-line-length
+    DaggerDragDropSortInputHasElementXAtPositionYClassifierProviderTest_TestApplicationComponent
       .builder()
       .setApplication(ApplicationProvider.getApplicationContext()).build().inject(this)
   }
@@ -214,6 +230,6 @@ class DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: DragDropSortInputHasElementXBeforeElementYRuleClassifierProviderTest)
+    fun inject(test: DragDropSortInputHasElementXAtPositionYClassifierProviderTest)
   }
 }
