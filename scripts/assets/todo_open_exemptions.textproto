@@ -349,16 +349,16 @@ todo_open_exemption {
 }
 todo_open_exemption {
   exempted_file_path: "wiki/Static-Analysis-Checks.md"
-  line_number: 171
-  line_number: 195
+  line_number: 176
   line_number: 200
-  line_number: 204
-  line_number: 208
-  line_number: 210
-  line_number: 232
-  line_number: 242
-  line_number: 245
-  line_number: 248
-  line_number: 251
-  line_number: 254
+  line_number: 205
+  line_number: 209
+  line_number: 213
+  line_number: 215
+  line_number: 237
+  line_number: 247
+  line_number: 250
+  line_number: 253
+  line_number: 256
+  line_number: 259
 }

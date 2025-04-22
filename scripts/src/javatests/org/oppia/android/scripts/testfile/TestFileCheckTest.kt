@@ -996,7 +996,10 @@ class TestFileCheckTest {
     createMavenTestFile(layer = "app", subpkg, filename, testDir)
 
   private fun createMavenProdFile(
-    layer: String, subpkg: String, filename: String, layerDir: String = layer
+    layer: String,
+    subpkg: String,
+    filename: String,
+    layerDir: String = layer
   ): File {
     tempFolder.newFolder(layerDir, "src", "main", "java", "org", "oppia", "android", layer, subpkg)
     return tempFolder.newFile("$layerDir/src/main/java/org/oppia/android/$layer/$subpkg/$filename")

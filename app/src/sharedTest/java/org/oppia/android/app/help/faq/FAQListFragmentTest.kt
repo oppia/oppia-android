@@ -36,7 +36,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.help.faq.FAQListActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity
 import org.oppia.android.app.help.faq.faqsingle.FAQSingleActivity.Companion.FAQ_SINGLE_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.model.FAQSingleActivityParams

@@ -46,7 +46,8 @@ import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.ProgressMatcher.Companion.withProgress
-import org.oppia.android.app.walkthrough.end.WalkthroughFinalFragment
+import org.oppia.android.app.walkthrough.WalkthroughActivity
+import org.oppia.android.app.walkthrough.WalkthroughPages
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -106,8 +107,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.walkthrough.WalkthroughActivity
-import org.oppia.android.app.walkthrough.WalkthroughPages
 
 /** Tests for [WalkthroughFinalFragment]. */
 @RunWith(AndroidJUnit4::class)

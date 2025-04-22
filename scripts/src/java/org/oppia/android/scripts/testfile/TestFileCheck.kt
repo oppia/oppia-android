@@ -139,9 +139,9 @@ class TestFileCheck(
       println()
     }
 
-    return classesMissingTests.isEmpty()
-      && testsMissingProdClasses.isEmpty()
-      && missingExemptedFiles.isEmpty()
+    return classesMissingTests.isEmpty() &&
+      testsMissingProdClasses.isEmpty() &&
+      missingExemptedFiles.isEmpty()
   }
 }
 
@@ -158,36 +158,52 @@ private fun loadTestFileExemptionsProto(testFileExemptionProtoPath: String): Tes
   return protoObj
 }
 
+/** Represents a production class that should have one or more tests. */
 private sealed class TestableProdClass {
+  /** The fully qualified Java class name of the production class. */
   abstract val qualifiedProdClass: String
+  /**
+   * The list of production files where one should exist, or the actual production file that does
+   * exist.
+   */
   abstract val possibleProdFiles: List<File>
+  /** The list of test files that either do or should exist for this production class. */
   abstract val possibleTestFiles: List<File>
 
+  /** The actual class name (without its package) that should be tested. */
   val className: String get() = qualifiedProdClass.substringAfterLast('.')
 
+  /** A testable production class that has been originated from an actual production class file. */
   data class DerivedFromProdFile(
     val prodFile: File,
     override val qualifiedProdClass: String,
     override val possibleTestFiles: List<File>
-  ): TestableProdClass() {
+  ) : TestableProdClass() {
     override val possibleProdFiles = listOf(prodFile)
 
+    /** Returns whether this class should be exempted from testing per the provided exemptions. */
     fun isExempted(exemptedAbsoluteProdFilePaths: Set<String>): Boolean =
       prodFile.absolutePath in exemptedAbsoluteProdFilePaths
   }
 
+  /** A testable production class that has been originated from a test file. */
   data class DerivedFromTestFile(
     val testFile: File,
     override val qualifiedProdClass: String,
     override val possibleProdFiles: List<File>
-  ): TestableProdClass() {
+  ) : TestableProdClass() {
     override val possibleTestFiles = listOf(testFile)
 
+    /**
+     * Returns whether this test should be exempted from having a production file per the provided
+     * exemptions.
+     */
     fun isExempted(exemptedAbsoluteTestFilePaths: Set<String>): Boolean =
       testFile.absolutePath in exemptedAbsoluteTestFilePaths
   }
 
   companion object {
+    /** Returns a [TestableProdClass] corresponding to the specified production class file. */
     fun createFromProdFile(repoRoot: File, prodFile: File): TestableProdClass {
       val prodPackage = extractPackage(repoRoot, prodFile)
       val baseProdName = prodFile.nameWithoutExtension
@@ -211,6 +227,7 @@ private sealed class TestableProdClass {
       )
     }
 
+    /** Returns a [TestableProdClass] that should correspond to the specified test file. */
     fun createFromTestFile(repoRoot: File, testFile: File): TestableProdClass {
       val testPackage = extractPackage(repoRoot, testFile)
       val baseProdName = testFile.nameWithoutExtension.removeSuffix("Test")
@@ -247,56 +264,68 @@ private sealed class TestableProdClass {
   }
 }
 
+/** Represents a distinct, top-level application architecture layer. */
 private sealed class CodeLayer {
   // TODO(#1639): Remove support for Java files once they're no longer needed.
+  /** Possible file extensions for production files in this code layer. */
   abstract val possibleProdFileExtensions: List<String>
+  /** The relative path to production files (without subpackages). */
   abstract val prodFilesPath: String
   // TODO(#2532): Consolidate tests to one location rather than have differentiaton.
+  /** The list of possible file directories for this layer's tests (without subpackages). */
   abstract val testFilesPaths: List<String>
 
-  object App: CodeLayer() {
+  /** Corresponds to the UI/app layer. */
+  object App : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt", "java")
     override val prodFilesPath = "app/src/main/java"
     override val testFilesPaths = listOf("app/src/test/java", "app/src/sharedTest/java")
   }
 
-  object Domain: CodeLayer() {
+  /** Corresponds to the domain logic layer. */
+  object Domain : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt")
     override val prodFilesPath = "domain/src/main/java"
     override val testFilesPaths = listOf("domain/src/test/java")
   }
 
-  object Data: CodeLayer() {
+  /** Corresponds to the network data layer. */
+  object Data : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt")
     override val prodFilesPath = "data/src/main/java"
     override val testFilesPaths = listOf("data/src/test/java")
   }
 
-  object Testing: CodeLayer() {
+  /** Corresponds to the testing infrastructure layer. */
+  object Testing : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt")
     override val prodFilesPath = "testing/src/main/java"
     override val testFilesPaths = listOf("testing/src/test/java")
   }
 
-  object Utility: CodeLayer() {
+  /** Corresponds to the general-purpose utilities layer. */
+  object Utility : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt")
     override val prodFilesPath = "utility/src/main/java"
     override val testFilesPaths = listOf("utility/src/test/java")
   }
 
-  object Instrumentation: CodeLayer() {
+  /** Corresponds to the instrumentation testing layer. */
+  object Instrumentation : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt")
     override val prodFilesPath = "instrumentation/src/java"
     override val testFilesPaths = listOf("instrumentation/src/javatests")
   }
 
-  object Scripts: CodeLayer() {
+  /** Corresponds to the developer workflow scripts layer. */
+  object Scripts : CodeLayer() {
     override val possibleProdFileExtensions = listOf("kt")
     override val prodFilesPath = "scripts/src/java"
     override val testFilesPaths = listOf("scripts/src/javatests")
   }
 
   companion object {
+    /** Returns the [CodeLayer] corresponding to the specified prod/test file and package. */
     fun computeFromPackage(repoRoot: File, file: File, pkg: String): CodeLayer {
       val layerHint = pkg.substringAfter("org.oppia.android.").substringBefore('.')
       val filePath = file.toRelativeString(repoRoot)

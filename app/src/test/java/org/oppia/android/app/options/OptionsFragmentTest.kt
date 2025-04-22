@@ -29,13 +29,6 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.OptionsFragmentArguments
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.options.AppLanguageFragment
-import org.oppia.android.app.options.AudioLanguageFragment
-import org.oppia.android.app.options.OPTIONS_FRAGMENT_ARGUMENTS_KEY
-import org.oppia.android.app.options.OptionsActivity
-import org.oppia.android.app.options.OptionsFragment
-import org.oppia.android.app.options.READING_TEXT_SIZE_FRAGMENT
-import org.oppia.android.app.options.ReadingTextSizeFragment
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule

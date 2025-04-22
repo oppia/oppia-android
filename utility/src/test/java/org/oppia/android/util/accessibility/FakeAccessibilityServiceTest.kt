@@ -11,8 +11,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
-import org.oppia.android.util.accessibility.AccessibilityTestModule
-import org.oppia.android.util.accessibility.FakeAccessibilityService
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
