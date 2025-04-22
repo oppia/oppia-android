@@ -125,8 +125,11 @@ This check ensures that all the production (file which is not a test file) Kotli
 To ensure that we are not missing tests for any production file being added to the codebase, this check is needed. It helps us to ensure production files have corresponding tests and reminds the contributor to add tests for new code added.
 
 ### Fixing failures
-In general, failures for this check should be fixed by: adding a corresponding test file which has tests for the file which fails this check. Note that: the file name of the added test file must be file_name without extension + “Test.kt”.
-For example: For a file named as “SampleFragment.kt” failing this check, the name of the added test file should be “SampleFragmentTest.kt”.
+In general, failures for this check should be fixed by: adding a corresponding test file which has tests for the file which fails this check.
+
+Important things to note:
+- The file name of the added test file must be file_name without extension + “Test.kt”. For example: For a file named as “SampleFragment.kt” failing this check, the name of the added test file should be “SampleFragmentTest.kt”.
+- The relative paths must match for the "production" file (i.e. the file being tested) and its test. For example, if "SampleFragment.kt" above is under app/src/main/java/org/oppia/android/app/sample then its test needs to be under app/src/test/java/org/oppia/android/app/sample. Note that the exact test directory layout depends on the corresponding top-level directory/layer (e.g. scripts places its tests under a javatests/ directory, instead).
 
 In cases where a test can’t be added, or the check is wrong, please:
 
@@ -138,8 +141,10 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityCo
 2. Add an explanation to your PR description detailing why this exemption is correct.
 
 Following are the cases where its valid to have test file exemptions:
-1. Interface files
-2. Files with only constants defined (no logic)
+1. Interface files.
+2. Files with only constants defined (no logic).
+3. Cases when tests fail to pass code coverage.
+4. Cases when a test is verifying additional functionality beyond what can be tested in its usual test suite (for these cases use the 'is_extra_test' property in the exemption structure).
 
 ## Accessibility label check
 This check ensures that activities are defined with accessibility labels.
