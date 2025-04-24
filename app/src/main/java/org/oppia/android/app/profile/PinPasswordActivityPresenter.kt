@@ -44,9 +44,8 @@ class PinPasswordActivityPresenter @Inject constructor(
   private var profileId = ProfileId.getDefaultInstance()
   private var confirmedDeletion = false
   private lateinit var alertDialog: AlertDialog
-  private lateinit var binding: PinPasswordActivityBinding
 
-  fun handleOnCreate(savedPin: String) {
+  fun handleOnCreate() {
     val args = activity.intent.getProtoExtra(
       PIN_PASSWORD_ACTIVITY_PARAMS_KEY,
       PinPasswordActivityParams.getDefaultInstance()
@@ -56,13 +55,10 @@ class PinPasswordActivityPresenter @Inject constructor(
     internalProfileId = args?.internalProfileId ?: -1
     profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
 
-    binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
+    val binding = DataBindingUtil.setContentView<PinPasswordActivityBinding>(
       activity,
       R.layout.pin_password_activity
     )
-    binding.root.doOnLayout {
-      pinViewModel.inputPin.set(savedPin)
-    }
 
     pinViewModel.setProfileId(internalProfileId)
     binding.apply {
@@ -255,8 +251,6 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
   }
 
-  fun getInputPin(): String =
-    binding.pinPasswordInputPinEditText.text.toString()
 
   private fun showSuccessDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)

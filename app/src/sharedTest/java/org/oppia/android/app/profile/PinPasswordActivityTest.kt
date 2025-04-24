@@ -1225,7 +1225,7 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin_edit_text))
         .check(matches(withText("123")))

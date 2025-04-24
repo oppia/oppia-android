@@ -6,10 +6,7 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.PinPasswordActivityParams
-import org.oppia.android.app.model.PinPasswordActivityStateBundle
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
-import org.oppia.android.util.extensions.getProto
-import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
@@ -24,7 +21,6 @@ class PinPasswordActivity :
   companion object {
     /** Params key for PinPasswordActivity. */
     const val PIN_PASSWORD_ACTIVITY_PARAMS_KEY = "PinPasswordActivity.params"
-    const val PINPASSWORD_ACTIVITY_STATE_KEY = "PINPASSWORD_ACTIVITY_STATE_KEY"
     fun createPinPasswordActivityIntent(
       context: Context,
       adminPin: String,
@@ -44,11 +40,7 @@ class PinPasswordActivity :
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    val savedPin = savedInstanceState?.getProto(
-      PINPASSWORD_ACTIVITY_STATE_KEY,
-      PinPasswordActivityStateBundle.getDefaultInstance()
-    )?.inputPin ?: ""
-    pinPasswordActivityPresenter.handleOnCreate(savedPin)
+    pinPasswordActivityPresenter.handleOnCreate()
   }
 
   override fun routeToResetPinDialog() {
@@ -57,14 +49,6 @@ class PinPasswordActivity :
 
   override fun routeToSuccessDialog() {
     pinPasswordActivityPresenter.handleRouteToSuccessDialog()
-  }
-
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
-    val args = PinPasswordActivityStateBundle.newBuilder()
-      .setInputPin(pinPasswordActivityPresenter.getInputPin())
-      .build()
-    outState.putProto(PINPASSWORD_ACTIVITY_STATE_KEY, args)
   }
 
   override fun onDestroy() {

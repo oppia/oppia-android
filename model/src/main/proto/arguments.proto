@@ -694,12 +694,6 @@ message PinPasswordActivityParams {
   string admin_pin = 2;
 }
 
-// The bundle of properties that are saved on configuration change in PinPasswordActivity.
-message PinPasswordActivityStateBundle {
-// The admin pin entered by the user.
-  string input_pin = 1;
-}
-
 // Arguments required when creating a ResetPinDialogFragment.
 message ResetPinDialogFragmentArguments {
   // ID of the current profile.
