@@ -4,7 +4,6 @@ import android.text.method.PasswordTransformationMethod
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.classroom.ClassroomListActivity
@@ -250,7 +249,6 @@ class PinPasswordActivityPresenter @Inject constructor(
       exitProcess(0)
     }
   }
-
 
   private fun showSuccessDialog() {
     AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
