@@ -1215,7 +1215,25 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_inputPin_configChange_pinIsPersisted() {
+  fun testPinPassword_withAdmin_inputPin_configChange_pinIsPersisted() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .check(matches(withText("1234")))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_inputPin_configChange_pinIsPersisted() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
