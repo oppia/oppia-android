@@ -11,20 +11,22 @@ private const val WARNING_COMMENT =
  * checked in.
  *
  * Usage:
- *   bazel run //scripts:maven_dependencies_list_check -- <path_to_third_party_deps_xml>
+ *   bazel run //scripts:license_texts_check -- <path_to_dir_root> <path_to_third_party_deps_xml>
  *
  * Arguments:
- * - path_to_third_party_deps_xml: path to the third_party_dependencies.xml
+ * - path_to_dir_root: directory path to the root of the Oppia Android repository.
+ * - path_to_third_party_deps_xml: relative path to the third_party_dependencies.xml
  *
  * Example:
- *   bazel run //scripts:maven_dependencies_list_check -- $(pwd)/app/src/main/res/values/third_party_dependencies.xml
+ *   bazel run //scripts:license_texts_check -- $(pwd) app/src/main/res/values/third_party_dependencies.xml
  */
 fun main(args: Array<String>) {
-  if (args.size < 1) {
+  if (args.size < 2) {
     throw Exception("Too few arguments passed")
   }
-  val pathToThirdPartyDepsXml = args[0]
-  val thirdPartyDepsXml = File(pathToThirdPartyDepsXml)
+  val repoRoot = File(args[0]).absoluteFile.normalize()
+  val pathToThirdPartyDepsXml = args[1]
+  val thirdPartyDepsXml = File(repoRoot, pathToThirdPartyDepsXml)
   check(thirdPartyDepsXml.exists()) { "File does not exist: $thirdPartyDepsXml" }
 
   val xmlContent = thirdPartyDepsXml.readText()

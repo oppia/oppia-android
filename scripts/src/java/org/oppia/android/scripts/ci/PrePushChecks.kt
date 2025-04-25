@@ -183,7 +183,7 @@ class PrePushChecks(
       createSuite(
         name = "XML style", target = "//scripts:xml_syntax_check", speed = SuiteSpeed.REASONABLE
       ),
-      createSuite(name = "Proto style", target = "//scripts:buf", speed = SuiteSpeed.SLOW),
+      createSuite(name = "Proto style", target = "//scripts:buf", speed = SuiteSpeed.REASONABLE),
       createSuite(
         name = "Build/Bazel style",
         target = "//scripts:buildifier",
@@ -205,6 +205,16 @@ class PrePushChecks(
         speed = SuiteSpeed.FAST
       ),
       createSuite(
+        name = "TextView style",
+        target = "//scripts:check_textview_styles",
+        speed = SuiteSpeed.FAST
+      ),
+      createSuite(
+        name = "String resource validation",
+        target = "//scripts:string_resource_validation_check",
+        speed = SuiteSpeed.FAST
+      ),
+      createSuite(
         name = "Activity a11y labels presence",
         target = "//scripts:accessibility_label_check",
         speed = SuiteSpeed.REASONABLE,
@@ -221,10 +231,21 @@ class PrePushChecks(
         speed = SuiteSpeed.SLOW
       ),
       createSuite(
+        name = "TODO validation",
+        target = "//scripts:todo_open_check",
+        speed = SuiteSpeed.SLOW
+      ),
+      createSuite(
+        name = "Third-party license text check",
+        target = "//scripts:license_texts_check",
+        speed = SuiteSpeed.FAST,
+        "app/src/main/res/values/third_party_dependencies.xml"
+      ),
+      createSuite(
         name = "Maven license validation",
         target = "//scripts:maven_dependencies_list_check",
         speed = SuiteSpeed.SLOW,
-        "third_party/maven_install.json",
+        "third_party/maven_install.json"
       ),
     )
 
