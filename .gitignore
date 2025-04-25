@@ -26,3 +26,5 @@ bazel-*
 .aswb
 *.pb
 coverage_reports
+buf.yaml
+scripts/pre-push-failures.log

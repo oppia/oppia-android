@@ -138,6 +138,38 @@ HTTP_DEPENDENCY_VERSIONS = {
         "sha": "1e8430002c76f36ce2ddbac8aadfaf2a252a5ffbd534dab64bb255cda63db7ba",
         "version": "1.8.0",
     },
+    "checkstyle": {
+        "sha": "2fdc30f2f55291541cff6bada4c6223c46db4bd9765b347d1c42a6a24f51ed42",
+        "version": "10.10.0",
+    },
+    "ktlint": {
+        "sha": "115d4c5cb3421eae732c42c137f5db8881ff9cc1ef180a01e638283f3ccbae44",
+        "version": "0.37.1",
+    },
+    "buf-darwin-arm64": {
+        "sha": "69432401a4e1676755f8a246f82435c68b194255ede9a3497cf797ee6d96e18e",
+        "version": "1.17.0",
+    },
+    "buf-darwin-x86_64": {
+        "sha": "63d7cdf641a2c21705c065d6c9407225ef846a03be45cdb668ee5eb43990538b",
+        "version": "1.17.0",
+    },
+    "buf-linux-aarch64": {
+        "sha": "6ae166bfcb3eae7642e98e439901b1b94295fc3c7f816d964645087f521fef5f",
+        "version": "1.17.0",
+    },
+    "buf-linux-x86_64": {
+        "sha": "a4b18f4e44fd918847e310b93ad94ea66913f2040956f856520b92f731e52d7f",
+        "version": "1.17.0",
+    },
+    "buf-windows-arm64": {
+        "sha": "bae3ae842ba4c3e38695b82020833f9997a3a0ea18730c6ff6adead3af53e6c6",
+        "version": "1.17.0",
+    },
+    "buf-windows-x86_64": {
+        "sha": "9175bbcae32e45a5e7cda0340d835f918070c8fd03b0e0c3e065c98779195308",
+        "version": "1.17.0",
+    },
     "dagger": {
         "sha": "5c2b22e88e52110178afebda100755f31f5dd505c317be0bfb4f7ad88a88db86",
         "version": "2.41",

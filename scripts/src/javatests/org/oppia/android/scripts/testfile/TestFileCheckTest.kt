@@ -151,10 +151,7 @@ class TestFileCheckTest {
       (testFileExemptions.writeTo(it))
     }
 
-    TestFileCheck(
-      "${tempFolder.root}",
-      "${tempFolder.root}/test_exemption"
-    ).execute()
+    TestFileCheck("${tempFolder.root}").execute()
 
     assertThat(outContent.toString().trim()).isEqualTo(TEST_FILE_CHECK_PASSED_OUTPUT_INDICATOR)
   }
@@ -184,10 +181,7 @@ class TestFileCheckTest {
     }
 
     val exception = assertThrows<Exception>() {
-      TestFileCheck(
-        "${tempFolder.root}",
-        "${tempFolder.root}/test_exemption"
-      ).execute()
+      TestFileCheck("${tempFolder.root}").execute()
     }
 
     assertThat(exception).hasMessageThat().contains(TEST_FILE_CHECK_FAILED_OUTPUT_INDICATOR)

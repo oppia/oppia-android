@@ -18,5 +18,5 @@ kt_jvm_library(
         "SarifRun.kt",
     ],
     visibility = ["//scripts:oppia_script_library_visibility"],
-    deps = ["//scripts/third_party:moshi"],
+    deps = ["//third_party:moshi"],
 )

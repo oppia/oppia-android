@@ -111,12 +111,6 @@ java_binary(
 )
 
 java_binary(
-    name = "validate_maven_dependencies",
-    main_class = "org.oppia.android.scripts.maven.ValidateMavenDependenciesKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/maven:validate_maven_dependencies_lib"],
-)
-
-java_binary(
     name = "license_texts_check",
     testonly = True,
     main_class = "org.oppia.android.scripts.license.LicenseTextsCheckKt",
@@ -170,7 +164,6 @@ java_binary(
 java_binary(
     name = "run_coverage",
     testonly = True,
-    data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.coverage.RunCoverageKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_lib",
@@ -180,7 +173,6 @@ java_binary(
 java_binary(
     name = "coverage_reporter",
     testonly = True,
-    data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.coverage.reporter.CoverageReporterKt",
     runtime_deps = [
         "//scripts/src/java/org/oppia/android/scripts/coverage/reporter:coverage_reporter_lib",
@@ -190,7 +182,6 @@ java_binary(
 java_binary(
     name = "retrieve_changed_files",
     testonly = True,
-    data = TEST_FILE_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.ci.RetrieveChangedFilesKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:retrieve_changed_files_lib"],
 )
@@ -234,38 +225,37 @@ java_binary(
 )
 
 java_binary(
-    name = "verify_file_targets",
-    main_class = "org.oppia.android.scripts.build.VerifyFileTargetsKt",
-    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/build:verify_file_targets_lib"],
-)
-
-java_binary(
     name = "buf",
+    testonly = True,
     main_class = "org.oppia.android.scripts.lint.BufKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:buf_lib"],
 )
 
 java_binary(
     name = "buildifier",
+    testonly = True,
     main_class = "org.oppia.android.scripts.lint.BuildifierKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:buildifier_lib"],
 )
 
 java_binary(
     name = "checkstyle",
+    testonly = True,
     main_class = "org.oppia.android.scripts.lint.CheckstyleKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:checkstyle_lib"],
 )
 
 java_binary(
     name = "ktlint",
+    testonly = True,
     main_class = "org.oppia.android.scripts.lint.KtlintKt",
-    visibility = ["//scripts/third_party:__pkg__"],
+    visibility = ["//third_party:__pkg__"],
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:ktlint_lib"],
 )
 
 java_binary(
     name = "pre_push_checks",
+    testonly = True,
     main_class = "org.oppia.android.scripts.ci.PrePushChecksKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/ci:pre_push_checks_lib"],
 )

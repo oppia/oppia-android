@@ -10,7 +10,6 @@ kt_jvm_test(
     srcs = ["RunCoverageTest.kt"],
     shard_count = 24,
     deps = [
-        "//scripts:test_file_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/coverage:run_coverage_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",

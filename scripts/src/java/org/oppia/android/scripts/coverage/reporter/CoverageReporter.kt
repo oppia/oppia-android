@@ -6,6 +6,7 @@ import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
+import java.io.InputStream
 
 /** Minimum coverage percentage required. */
 const val MIN_THRESHOLD = 70
@@ -96,11 +97,11 @@ class CoverageReporter(
   private val repoRoot: String,
   private val coverageReportContainer: CoverageReportContainer,
   private val reportFormat: ReportFormat,
-  private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb",
   private val mdReportOutputPath: String? = null
 ) {
   private val testFileExemptionList by lazy {
-    loadTestFileExemptionsProto(testFileExemptionTextProtoPath)
+    ResourceLoader.loadResource("assets/test_file_exemptions.pb")
+      .use(InputStream::loadTestFileExemptionsProto)
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
@@ -703,12 +704,13 @@ private fun getFilenameAsDetailsSummary(filePath: String, additionalData: String
   return "<details><summary><b>$fileName</b>$additionalDataPart</summary>$filePath</details>"
 }
 
-private fun loadTestFileExemptionsProto(
-  testFileExemptionTextProtoPath: String
-): TestFileExemptions {
-  return File(testFileExemptionTextProtoPath).inputStream().use { stream ->
-    TestFileExemptions.newBuilder().apply {
-      mergeFrom(stream)
-    }.build()
+private fun InputStream.loadTestFileExemptionsProto(): TestFileExemptions =
+  TestFileExemptions.newBuilder().mergeFrom(this).build()
+
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
+    }
   }
 }

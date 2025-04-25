@@ -20,6 +20,7 @@ import org.oppia.android.scripts.proto.CoverageReportContainer
 import org.oppia.android.scripts.proto.CoveredLine
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 /**
@@ -124,14 +125,14 @@ class RunCoverage(
   private val filePathList: List<String>,
   private val reportFormat: ReportFormat,
   private val commandExecutor: CommandExecutor,
-  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher,
-  private val testFileExemptionTextProtoPath: String = "scripts/assets/test_file_exemptions.pb"
+  private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
   private val bazelClient by lazy { BazelClient(File(repoRoot), commandExecutor) }
   private val rootDirectory = File(repoRoot).absoluteFile
 
   private val testFileExemptionList by lazy {
-    loadTestFileExemptionsProto(testFileExemptionTextProtoPath)
+    ResourceLoader.loadResource("assets/test_file_exemptions.pb")
+      .use(InputStream::loadTestFileExemptionsProto)
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
@@ -165,12 +166,7 @@ class RunCoverage(
     }
 
     val coverageReportContainer = combineCoverageReports(coverageResults)
-    val reporter = CoverageReporter(
-      repoRoot,
-      coverageReportContainer,
-      reportFormat,
-      testFileExemptionTextProtoPath
-    )
+    val reporter = CoverageReporter(repoRoot, coverageReportContainer, reportFormat)
 
     val coverageStatus = reporter.generateRichTextReport()
     when (coverageStatus) {
@@ -367,10 +363,13 @@ private fun findSourceFile(
     .firstOrNull()
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptionProtoPath: String): TestFileExemptions {
-  return File(testFileExemptionProtoPath).inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
+private fun InputStream.loadTestFileExemptionsProto(): TestFileExemptions =
+  TestFileExemptions.newBuilder().mergeFrom(this).build()
+
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
+    }
   }
 }

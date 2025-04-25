@@ -12,6 +12,8 @@ own Bazel macros to automatically set up code generation (which includes pulling
 dependencies).
 """
 
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+load("//scripts/third_party/macros:ktlint.bzl", "extract_ktlint_jar")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
@@ -136,4 +138,33 @@ java_binary(
     main_class = "com.android.tools.build.bundletool.BundleToolMain",
     visibility = ["//visibility:public"],
     runtime_deps = [":android_bundletool"],
+)
+
+java_binary(
+    name = "checkstyle_binary",
+    main_class = "com.puppycrawl.tools.checkstyle.Main",
+    runtime_deps = ["@checkstyle//jar"],
+)
+
+native_binary(
+    name = "buf_binary",
+    src = select(
+        {
+            "@bazel_tools//src/conditions:darwin_arm64": "@buf-darwin-arm64//file",
+            "@bazel_tools//src/conditions:darwin_x86_64": "@buf-darwin-x86_64//file",
+            "@bazel_tools//src/conditions:linux_aarch64": "@buf-linux-aarch64//file",
+            "@bazel_tools//src/conditions:linux_x86_64": "@buf-linux-x86_64//file",
+            "@bazel_tools//src/conditions:windows_arm64": "@buf-windows-arm64//file",
+            "@bazel_tools//src/conditions:windows_x64": "@buf-windows-x86_64//file",
+        },
+        no_match_error = "Buf is not supported on this platform.",
+    ),
+    out = "buf",
+)
+
+extract_ktlint_jar(
+    name = "ktlint_binary",
+    testonly = True,
+    input_ktlint_shell_file = "@ktlint//file",
+    main_class = "com.pinterest.ktlint.Main",
 )

@@ -77,7 +77,7 @@ class Checkstyle(private val repoRoot: File, private val bazelClient: BazelClien
     /** The individual Java directory roots in which to run Checkstyle. */
     private val JAVA_ROOTS = listOf("app", "data", "domain", "utility", "testing", "scripts")
     private const val CHECKSTYLE_BINARY_TARGET =
-      "//scripts/third_party:checkstyle_binary_deploy.jar"
+      "//third_party:checkstyle_binary_deploy.jar"
 
     private fun parseSarif(rawSarifJson: String): SarifOutput {
       val moshi = Moshi.Builder().build()

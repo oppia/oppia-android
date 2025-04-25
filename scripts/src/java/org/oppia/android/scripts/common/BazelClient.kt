@@ -34,27 +34,6 @@ class BazelClient(
     } else executeBazelCommand("build", *args.toTypedArray(), allowAllFailures = allowFailures)
   }
 
-  fun test(
-    vararg patterns: String,
-    keepGoing: Boolean = false,
-    allowFailures: Boolean = false,
-    configProfiles: Set<String> = emptySet(),
-    reportProgress: ((Int, Int) -> Unit)? = null
-  ): Result {
-    val args = listOfNotNull(
-      if (reportProgress == null) "--noshow_progress" else null,
-      "--keep_going".takeIf { keepGoing }
-    ) + configProfiles.map { "--config=$it" } + listOf("--") + patterns
-    return if (reportProgress != null) {
-      executeBazelCommandWithMonitoring(
-        "test",
-        *args.toTypedArray(),
-        allowAllFailures = allowFailures,
-        reportProgress = reportProgress
-      )
-    } else executeBazelCommand("test", *args.toTypedArray(), allowAllFailures = allowFailures)
-  }
-
   fun run(
     target: String,
     vararg args: String,
@@ -94,15 +73,10 @@ class BazelClient(
     }
   }
 
-  fun sync(): Result = executeBazelCommand("sync")
-
-  fun shutdown(): Result = executeBazelCommand("shutdown")
-
   fun query(
     pattern: String, withSkyQuery: Boolean = false, allowFailures: Boolean = false
   ): List<String> {
     val args = listOfNotNull(
-
       "--noshow_progress",
       "--order_output=no".takeIf { withSkyQuery },
       "--universe_scope=$universeScope".takeIf { withSkyQuery },
@@ -191,7 +165,7 @@ class BazelClient(
    * binary depends.
    */
   fun retrieveThirdPartyMavenDepsListForBinary(binaryTarget: String): List<String> =
-    query("deps(deps($binaryTarget) intersect //third_party/...) intersect @maven_app//...")
+    query("deps(deps($binaryTarget) intersect //third_party/...) intersect @maven//...")
 
   private fun retrieveFilteredSiblings(
     filterRuleType: String,
@@ -212,9 +186,13 @@ class BazelClient(
       when {
         line.isEmpty() -> correctedTargets += line
         else -> {
-          val indexes = line.findOccurrencesOf("//")
+          val indexes = ABSOLUTE_TARGET_PATH_PREFIX_PATTERN.findAll(line).map {
+            it.range.first
+          }.toList()
           if (indexes.isEmpty() || indexes.first() != 0) {
-            throw IllegalArgumentException("Invalid line: $line (expected to start with '//')")
+            throw IllegalArgumentException(
+              "Invalid line: $line (expected to start with '//' or '@<name>//')"
+            )
           }
 
           val targetBounds: List<Pair<Int, Int>> = indexes.mapIndexed { arrayIndex, lineIndex ->
@@ -388,6 +366,8 @@ class BazelClient(
 
   private companion object {
     private const val MAX_ALLOWED_ARG_STR_LENGTH = 50_000
+
+    private val ABSOLUTE_TARGET_PATH_PREFIX_PATTERN = "(?:@[\\w\\-_]+?)?//".toRegex()
     private val CHANGE_TERMINAL_TITLE_PATTERN =
       "^\\x1B]0;\\[([\\d,]+)\\s+/\\s+([\\d,]+)].+?$".toRegex()
     private val ANOTHER_COMMAND_RUNNING_PATTERN =
@@ -400,15 +380,4 @@ class BazelClient(
       }
     }
   }
-}
-
-/** Returns a list of indexes where the specified [needle] occurs in this string. */
-private fun String.findOccurrencesOf(needle: String): List<Int> {
-  val indexes = mutableListOf<Int>()
-  var needleIndex = indexOf(needle)
-  while (needleIndex >= 0) {
-    indexes += needleIndex
-    needleIndex = indexOf(needle, startIndex = needleIndex + needle.length)
-  }
-  return indexes
 }

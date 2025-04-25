@@ -21,13 +21,14 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "pre_push_checks_lib",
+    testonly = True,
     srcs = ["PrePushChecks.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
-        "//scripts/third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
     ],
 )
 

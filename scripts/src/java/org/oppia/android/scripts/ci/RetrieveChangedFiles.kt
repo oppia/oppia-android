@@ -8,6 +8,7 @@ import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.proto.ChangedFilesBucket
 import org.oppia.android.scripts.proto.TestFileExemptions
 import java.io.File
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -52,9 +53,9 @@ fun main(args: Array<String>) {
   val fileListOutputFile = File(args[3])
   val fileTestTargetsListOutputFile = File(args[4])
 
-  val testFileExemptionTextProto = "scripts/assets/test_file_exemptions"
   val testFileExemptionList by lazy {
-    loadTestFileExemptionsProto(testFileExemptionTextProto)
+    ResourceLoader.loadResource("assets/test_file_exemptions.pb")
+      .use(InputStream::loadTestFileExemptionsProto)
       .testFileExemptionList
       .associateBy { it.exemptedFilePath }
   }
@@ -118,10 +119,13 @@ private fun findTestFile(rootDirectory: File, filePath: String): List<String> {
     .map { it.toRelativeString(rootDirectory) }
 }
 
-private fun loadTestFileExemptionsProto(testFileExemptiontextProto: String): TestFileExemptions {
-  return File("$testFileExemptiontextProto.pb").inputStream().use { stream ->
-    TestFileExemptions.newBuilder().also { builder ->
-      builder.mergeFrom(stream)
-    }.build()
+private fun InputStream.loadTestFileExemptionsProto(): TestFileExemptions =
+  TestFileExemptions.newBuilder().mergeFrom(this).build()
+
+private object ResourceLoader {
+  fun loadResource(name: String): InputStream {
+    return checkNotNull(ResourceLoader::class.java.getResourceAsStream(name)) {
+      "Failed to find resource corresponding to name: $name."
+    }
   }
 }

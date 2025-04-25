@@ -6,6 +6,7 @@ load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
 kt_jvm_library(
     name = "buf_lib",
+    testonly = True,
     srcs = ["Buf.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -17,6 +18,7 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "buildifier_lib",
+    testonly = True,
     srcs = ["Buildifier.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -28,6 +30,7 @@ kt_jvm_library(
 
 kt_jvm_library(
     name = "checkstyle_lib",
+    testonly = True,
     srcs = ["Checkstyle.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
@@ -35,12 +38,13 @@ kt_jvm_library(
         "//scripts/src/java/org/oppia/android/scripts/common:command_executor",
         "//scripts/src/java/org/oppia/android/scripts/common:script_background_coroutine_dispatcher",
         "//scripts/src/java/org/oppia/android/scripts/lint/model",
-        "//scripts/third_party:moshi",
+        "//third_party:moshi",
     ],
 )
 
 kt_jvm_library(
     name = "ktlint_lib",
+    testonly = True,
     srcs = ["Ktlint.kt"],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [

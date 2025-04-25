@@ -50,7 +50,6 @@ kt_jvm_test(
     name = "RetrieveChangedFilesTest",
     srcs = ["RetrieveChangedFilesTest.kt"],
     deps = [
-        "//scripts:test_file_check_assets",
         "//scripts/src/java/org/oppia/android/scripts/ci:retrieve_changed_files_lib",
         "//scripts/src/java/org/oppia/android/scripts/common:proto_string_encoder",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",

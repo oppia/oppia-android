@@ -25,7 +25,9 @@ class FakeCommandExecutor : CommandExecutor {
     workingDir: File,
     command: String,
     vararg arguments: String,
-    includeErrorOutput: Boolean
+    includeErrorOutput: Boolean,
+    standardOutputMonitor: (String) -> Unit,
+    standardErrorMonitor: (String) -> Unit
   ): CommandResult {
     val handler = handlers[command] ?: DefaultCommandHandler
     val argList = arguments.toList()

@@ -3,7 +3,7 @@ This file lists and imports all external dependencies needed to build Oppia Andr
 """
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file", "http_jar")
 load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
 load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORIES", "get_maven_dependencies")
 
@@ -202,6 +202,57 @@ http_jar(
     name = "android_bundletool",
     sha256 = HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["sha"],
     url = "https://github.com/google/bundletool/releases/download/{0}/bundletool-all-{0}.jar".format(HTTP_DEPENDENCY_VERSIONS["android_bundletool"]["version"]),
+)
+
+# Checkstyle tool.
+http_jar(
+    name = "checkstyle",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["checkstyle"]["sha"],
+    url = "https://github.com/checkstyle/checkstyle/releases/download/checkstyle-{0}/checkstyle-{0}-all.jar".format(HTTP_DEPENDENCY_VERSIONS["checkstyle"]["version"]),
+)
+
+# Ktlint tool.
+http_file(
+    name = "ktlint",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["ktlint"]["sha"],
+    url = "https://github.com/pinterest/ktlint/releases/download/{0}/ktlint".format(HTTP_DEPENDENCY_VERSIONS["ktlint"]["version"]),
+)
+
+# Buf tools (based on architecture).
+http_file(
+    name = "buf-darwin-arm64",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["buf-darwin-arm64"]["sha"],
+    url = "https://github.com/bufbuild/buf/releases/download/v{0}/buf-Darwin-arm64".format(HTTP_DEPENDENCY_VERSIONS["buf-darwin-arm64"]["version"]),
+)
+
+http_file(
+    name = "buf-darwin-x86_64",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["buf-darwin-x86_64"]["sha"],
+    url = "https://github.com/bufbuild/buf/releases/download/v{0}/buf-Darwin-x86_64".format(HTTP_DEPENDENCY_VERSIONS["buf-darwin-x86_64"]["version"]),
+)
+
+http_file(
+    name = "buf-linux-aarch64",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["buf-linux-aarch64"]["sha"],
+    url = "https://github.com/bufbuild/buf/releases/download/v{0}/buf-Linux-aarch64".format(HTTP_DEPENDENCY_VERSIONS["buf-linux-aarch64"]["version"]),
+)
+
+http_file(
+    name = "buf-linux-x86_64",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["buf-linux-x86_64"]["sha"],
+    url = "https://github.com/bufbuild/buf/releases/download/v{0}/buf-Linux-x86_64".format(HTTP_DEPENDENCY_VERSIONS["buf-linux-x86_64"]["version"]),
+)
+
+http_file(
+    name = "buf-windows-arm64",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["buf-windows-arm64"]["sha"],
+    url = "https://github.com/bufbuild/buf/releases/download/v{0}/buf-Windows-arm64.exe".format(HTTP_DEPENDENCY_VERSIONS["buf-windows-arm64"]["version"]),
+)
+
+http_file(
+    name = "buf-windows-x86_64",
+    sha256 = HTTP_DEPENDENCY_VERSIONS["buf-windows-x86_64"]["sha"],
+    url = "https://github.com/bufbuild/buf/releases/download/v{0}/buf-Windows-x86_64.exe".format(HTTP_DEPENDENCY_VERSIONS["buf-windows-x86_64"]["version"]),
 )
 
 # Note to developers: new dependencies should be added to //third_party:versions.bzl, not here.

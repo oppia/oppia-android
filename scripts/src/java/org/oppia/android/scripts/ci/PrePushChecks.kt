@@ -176,15 +176,14 @@ class PrePushChecks(
       FAST(runningCheckFrequencyMs = 35L),
       REASONABLE(runningCheckFrequencyMs = 125L),
       SLOW(runningCheckFrequencyMs = 400L),
-      VERY_SLOW(runningCheckFrequencyMs = 700L)
     }
 
     // These are run in listed order.
     private val SUITES_TO_RUN = listOf(
       createSuite(
-        name = "XML style", target = "//scripts:xml_syntax_check", speed = SuiteSpeed.FAST
+        name = "XML style", target = "//scripts:xml_syntax_check", speed = SuiteSpeed.REASONABLE
       ),
-      createSuite(name = "Proto style", target = "//scripts:buf", speed = SuiteSpeed.FAST),
+      createSuite(name = "Proto style", target = "//scripts:buf", speed = SuiteSpeed.SLOW),
       createSuite(
         name = "Build/Bazel style",
         target = "//scripts:buildifier",
@@ -222,36 +221,10 @@ class PrePushChecks(
         speed = SuiteSpeed.SLOW
       ),
       createSuite(
-        name = "Maven deps validation (app)",
-        target = "//scripts:validate_maven_dependencies",
-        speed = SuiteSpeed.VERY_SLOW,
-        "third_party/versions/direct_maven_versions.bzl",
-        "third_party/versions/transitive_maven_versions.bzl",
-        "third_party/versions/maven_install.json",
-        "//third_party",
-        "//..."
-      ),
-      createSuite(
-        name = "Maven deps validation (scripts)",
-        target = "//scripts:validate_maven_dependencies",
-        speed = SuiteSpeed.REASONABLE,
-        "scripts/third_party/versions/direct_maven_versions.bzl",
-        "scripts/third_party/versions/transitive_maven_versions.bzl",
-        "scripts/third_party/versions/maven_install.json",
-        "//scripts/third_party",
-        "//scripts/..."
-      ),
-      createSuite(
-        name = "Maven license validation (app)",
+        name = "Maven license validation",
         target = "//scripts:maven_dependencies_list_check",
         speed = SuiteSpeed.SLOW,
-        "third_party/versions/maven_install.json",
-      ),
-      createSuite(
-        name = "Maven license validation (scripts)",
-        target = "//scripts:maven_dependencies_list_check",
-        speed = SuiteSpeed.REASONABLE,
-        "scripts/third_party/versions/maven_install.json",
+        "third_party/maven_install.json",
       ),
     )
 

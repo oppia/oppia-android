@@ -143,6 +143,6 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
     private val TARGET_KTLINT_DIRS =
       setOf("app", "data", "domain", "instrumentation", "scripts", "testing", "utility")
 
-    private const val KTLINT_BINARY_TARGET = "//scripts/third_party:ktlint_deploy.jar"
+    private const val KTLINT_BINARY_TARGET = "//third_party:ktlint_binary_deploy.jar"
   }
 }

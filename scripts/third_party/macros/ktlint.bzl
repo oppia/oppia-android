@@ -39,18 +39,21 @@ _extract_ktlint_jar = rule(
     implementation = _extract_ktlint_jar_impl,
 )
 
-def extract_ktlint_jar(name, input_ktlint_shell_file, main_class):
+def extract_ktlint_jar(name, input_ktlint_shell_file, main_class, testonly):
     _extract_ktlint_jar(
         name = "%s_extracted_jar" % name,
         input_file = input_ktlint_shell_file,
         output_file = "%s_extraction.jar" % name,
+        testonly = testonly,
     )
     java_import(
         name = "%s_imported" % name,
+        testonly = testonly,
         jars = [":%s_extraction.jar" % name],
     )
     java_binary(
         name = name,
+        testonly = testonly,
         runtime_deps = [":%s_imported" % name],
         main_class = main_class,
     )

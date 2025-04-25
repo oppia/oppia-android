@@ -856,9 +856,7 @@ class TodoOpenCheckTest {
   // internal helper class for the script.
   private fun runScript(regenerateFile: Boolean = false) {
     val repoRoot = File(tempFolder.root, "testfiles")
-    TodoOpenCheck(repoRoot, scriptBgDispatcher, fakeCommandExecutor).runTodoOpenCheck(
-      pathToProtoBinary = "${tempFolder.root}/$pathToProtoBinary",
-      regenerateFile
-    )
+    TodoOpenCheck(repoRoot, scriptBgDispatcher, fakeCommandExecutor)
+      .runTodoOpenCheck(regenerateFile)
   }
 }
