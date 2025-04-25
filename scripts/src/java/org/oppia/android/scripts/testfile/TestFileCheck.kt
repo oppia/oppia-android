@@ -9,7 +9,7 @@ import java.io.FileInputStream
  * Script for ensuring that all production files have test files present.
  *
  * Usage:
- *   bazel run //scripts:test_file_check -- <path_to_directory_root> <path_to_exemptions>
+ *   bazel run //scripts:test_file_check -- <path_to_directory_root>
  *
  * Arguments:
  * - path_to_directory_root: directory path to the root of the Oppia Android repository.
