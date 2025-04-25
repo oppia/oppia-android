@@ -92,10 +92,22 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
+import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
+import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
+import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
+import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
+import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
+import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
+import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -853,7 +865,7 @@ class EventBundleCreatorTest {
   }
 
   @Test
-  fun testFillEventBundle_featureFlagsContext() {
+  fun testFillEventBundle_fillsFeatureFlagsContext() {
     setUpTestApplicationComponent()
     val bundle = Bundle()
 
@@ -868,9 +880,10 @@ class EventBundleCreatorTest {
     assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
-    assertThat(bundle).string("feature_flag_names").isEqualTo("0,0,0,7")
-    assertThat(bundle).string("feature_flag_enabled_states").isEqualTo("0,1,0,1")
-    assertThat(bundle).string("feature_flag_sync_statuses").isEqualTo("0,1,2,2")
+    assertThat(bundle).string("feature_flag_names").isEqualTo("2,3,4,5,6,7,8,10,11,12,13,14,15,0")
+    assertThat(bundle).string("feature_flag_enabled_states")
+      .isEqualTo("0,1,0,1,0,1,0,1,0,1,0,1,0,0")
+    assertThat(bundle).string("feature_flag_sync_statuses").isEqualTo("0,1,2,0,1,2,0,1,2,0,1,2,0,0")
   }
 
   @Test
@@ -2391,24 +2404,74 @@ class EventBundleCreatorTest {
     .addAllFeatureFlags(
       listOf(
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = "test flag sync status unspecified"
+          this.flagName = LEARNER_STUDY_ANALYTICS
           this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
           this.flagEnabledState = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = "test flag not synced from server"
+          this.flagName = ENABLE_PERFORMANCE_METRICS_COLLECTION
           this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
           this.flagEnabledState = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = "test flag synced from server"
+          this.flagName = EDIT_ACCOUNTS_OPTIONS_UI
           this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = SPOTLIGHT_UI
+          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.flagEnabledState = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = EXTRA_TOPIC_TABS_UI
+          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
           this.flagEnabledState = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
           this.flagName = DOWNLOADS_SUPPORT
           this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
           this.flagEnabledState = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = APP_AND_OS_DEPRECATION
+          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.flagEnabledState = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = FAST_LANGUAGE_SWITCHING_IN_LESSON
+          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = LOGGING_LEARNER_STUDY_IDS
+          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.flagEnabledState = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = ENABLE_NPS_SURVEY
+          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = ENABLE_ONBOARDING_FLOW_V2
+          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.flagEnabledState = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = ENABLE_MULTIPLE_CLASSROOMS
+          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.flagEnabledState = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.flagName = "non-existent name"
+          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.flagEnabledState = false
         }.build(),
       )
     ).build()
