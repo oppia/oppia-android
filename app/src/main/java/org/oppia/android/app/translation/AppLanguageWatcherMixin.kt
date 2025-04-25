@@ -39,12 +39,12 @@ class AppLanguageWatcherMixin @Inject constructor(
    * called before interacting with the locale handler to avoid inadvertent crashes in such
    * situations.
    *
-   * @param languageSource specifies the source of the language to use for this activity:
+   * @param languageMode specifies the mode of the language to use for this activity:
    *   - `USE_SYSTEM_LANGUAGE`: Use the system's default language, as set in the device's settings.
    *   - `USE_APP_LANGUAGE`: Use the language selected in the app's settings, if available; otherwise, fall back to the system language.
    *   - `USE_ENGLISH`: Always use English, overriding both system and app language settings.
    */
-  fun initialize(languageSource: ForcedActivityLanguageMode) {
+  fun initialize(languageMode: ForcedActivityLanguageMode) {
     if (!appLanguageLocaleHandler.isInitialized()) {
       /* The handler might have been de-initialized since bootstrapping. This can generally happen
        * in two cases:
@@ -73,7 +73,7 @@ class AppLanguageWatcherMixin @Inject constructor(
 
     val currentUserProfileId = profileManagementController.getCurrentProfileId()
 
-    val activityLanguageLocaleDataProvider = when (languageSource) {
+    val activityLanguageLocaleDataProvider = when (languageMode) {
       ForcedActivityLanguageMode.USE_SYSTEM_LANGUAGE ->
         translationController.getSystemLanguageLocale()
       ForcedActivityLanguageMode.USE_APP_LANGUAGE -> {
