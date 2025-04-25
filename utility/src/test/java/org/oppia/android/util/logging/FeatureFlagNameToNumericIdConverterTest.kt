@@ -30,14 +30,14 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton
 
-/** Tests for [FeatureFlagNameToIntegerNameConverter]. */
+/** Tests for [FeatureFlagNameToNumericIdConverter]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @LooperMode(LooperMode.Mode.PAUSED)
 @RunWith(OppiaParameterizedTestRunner::class)
 @SelectRunnerPlatform(ParameterizedRobolectricTestRunner::class)
-@Config(application = FeatureFlagNameToIntegerNameConverterTest.TestApplication::class)
-class FeatureFlagNameToIntegerNameConverterTest {
+@Config(application = FeatureFlagNameToNumericIdConverterTest.TestApplication::class)
+class FeatureFlagNameToNumericIdConverterTest {
   @Parameter lateinit var flagName: String
   @Parameter var expectedValue: Int = 0
 
@@ -113,7 +113,7 @@ class FeatureFlagNameToIntegerNameConverterTest {
     "expectedValue=13"
   )
   fun testConvertToIntegerName_returnsCorrectIntegerForEach() {
-    val integerName = FeatureFlagNameToIntegerNameConverter.convertToInteger(flagName)
+    val integerName = FeatureFlagNameToNumericIdConverter.convertToNumericId(flagName)
 
     assertThat(integerName).isEqualTo(expectedValue)
   }
@@ -134,17 +134,17 @@ class FeatureFlagNameToIntegerNameConverterTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: FeatureFlagNameToIntegerNameConverterTest)
+    fun inject(test: FeatureFlagNameToNumericIdConverterTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerFeatureFlagNameToIntegerNameConverterTest_TestApplicationComponent.builder()
+      DaggerFeatureFlagNameToNumericIdConverterTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: FeatureFlagNameToIntegerNameConverterTest) {
+    fun inject(test: FeatureFlagNameToNumericIdConverterTest) {
       component.inject(test)
     }
   }

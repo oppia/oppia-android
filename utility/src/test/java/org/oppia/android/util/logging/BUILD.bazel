@@ -130,10 +130,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "FeatureFlagNameToIntegerNameConverterTest",
-    srcs = ["FeatureFlagNameToIntegerNameConverterTest.kt"],
+    name = "FeatureFlagNameToNumericIdConverterTest",
+    srcs = ["FeatureFlagNameToNumericIdConverterTest.kt"],
     custom_package = "org.oppia.android.util.logging",
-    test_class = "org.oppia.android.util.logging.FeatureFlagNameToIntegerNameConverterTest",
+    test_class = "org.oppia.android.util.logging.FeatureFlagNameToNumericIdConverterTest",
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",

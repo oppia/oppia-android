@@ -690,7 +690,7 @@ class EventBundleCreator @Inject constructor(
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
 
         val featureFlagNames = featureFlagsList.map {
-          FeatureFlagNameToIntegerNameConverter.convertToInteger(it.flagName)
+          FeatureFlagNameToNumericIdConverter.convertToNumericId(it.flagName)
         }
 
         val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus.number }

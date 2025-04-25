@@ -15,23 +15,23 @@ import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 
 /**
- * Converter for feature flag names to integers for more compact logging to address Google
+ * Converter for feature flag names to numeric IDs for more compact logging to address Google
  * Analytics character limits. GA4 limits the characters permitted in a log event parameter value to
  * a maximum of 100 characters as of March 2025.
  *
  * See https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.html#logEvent(java.lang.String,android.os.Bundle)
  */
-object FeatureFlagNameToIntegerNameConverter {
+object FeatureFlagNameToNumericIdConverter {
   /**
-   * Converts a feature flag name to an integer.
+   * Converts a feature flag name to a numeric ID.
    *
-   * These numbers are supposed to be incremented indefinitely and the integer representation of
+   * These numbers are supposed to be incremented indefinitely and the numeric representation of
    * each feature flag name should not be reused even after the feature flag is no longer in use.
    *
    * @param flagName the string constant flag name to convert
-   * @return an integer representation of the flag name
+   * @return a numeric representation of the flag name
    */
-  fun convertToInteger(flagName: String): Int {
+  fun convertToNumericId(flagName: String): Int {
     return when (flagName) {
       LEARNER_STUDY_ANALYTICS -> 1
       ENABLE_PERFORMANCE_METRICS_COLLECTION -> 2
