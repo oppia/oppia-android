@@ -3,6 +3,7 @@ package org.oppia.android.scripts.ci
 import java.io.File
 import java.io.PrintStream
 import java.util.concurrent.TimeUnit
+import kotlin.math.log10
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -13,13 +14,20 @@ import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
+private const val USAGE =
+  "Usage: bazel run //scripts:pre_push_checks -- </path/to/repo_root> [autofix]"
+
 fun main(vararg args: String) {
-  require(args.size == 1) { "Usage: bazel run //scripts:pre_push_checks -- </path/to/repo_root>" }
+  require(args.size in 1..2) { USAGE }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
     check(it.exists() && it.isDirectory) {
       "Expected provided repository root to be an existing directory: ${args[0]}."
     }
   }
+  check(repoRoot.exists()) { USAGE }
+  if (args.size == 2) check(args[1] == "autofix") { USAGE }
+  val autofix = args.size == 2
+
   val prePushLog = File(repoRoot, "scripts/pre-push-failures.log")
   PrintStream(prePushLog.outputStream()).use { prePushStream ->
     val logger = PrePushChecks.Companion.Logger(
@@ -35,7 +43,7 @@ fun main(vararg args: String) {
       val bazelClient = BazelClient(repoRoot, executor)
       val prePushChecker =
         PrePushChecks(repoRoot, prePushLog, bazelClient, executor, logger, scriptBgDispatcher)
-      prePushChecker.runPrePushChecks()
+      prePushChecker.runPrePushChecks(autofix)
     }
   }
 }
@@ -48,17 +56,24 @@ class PrePushChecks(
   private val logger: Logger,
   private val scriptBgDispatcher: ScriptBackgroundCoroutineDispatcher
 ) {
-  fun runPrePushChecks() {
+  fun runPrePushChecks(autofix: Boolean) {
     val preBuildTargetsDeferred = CoroutineScope(scriptBgDispatcher).async {
       val targetsToBuild = SUITES_TO_RUN.map(CheckSuite::deployTarget)
-      bazelClient.build(*targetsToBuild.toTypedArray())
+      bazelClient.build(*targetsToBuild.toTypedArray(), allowFailures = true)
     }
-    logger.printAndAwaitResult(
+    val (buildExitCode, buildOutputLines) = logger.printAndAwaitResult(
       prefix = "Pre-building ${SUITES_TO_RUN.size} static check suites",
       delayMs = SuiteSpeed.REASONABLE.runningCheckFrequencyMs,
       preBuildTargetsDeferred
     )
-    // Failures will result in an exception being thrown.
+    if (buildExitCode != 0) {
+      logger.println("failed!", color = Logger.ConsoleColor.RED)
+      logger.println()
+      buildOutputLines.forEach(logger::println)
+      logger.println()
+      throw Exception("One or more static checks failed to build. See build logs above.")
+    }
+
     logger.println("passed!", color = Logger.ConsoleColor.GREEN)
 
     val startTimeMs = System.currentTimeMillis()
@@ -73,15 +88,21 @@ class PrePushChecks(
       // Bazel internally.
       checkSuite to CoroutineScope(scriptBgDispatcher).async {
         delay(suiteRunOrders.getValue(index) * 10L)
-        val result =
-          commandExecutor.executeCommand(repoRoot, "java", *checkSuite.createJavaRunArgs(repoRoot))
+        val args = if (autofix && checkSuite.hasAutofixCommand) {
+          checkSuite.createAutofixJavaRunArgs(repoRoot)
+        } else checkSuite.createCheckJavaRunArgs(repoRoot)
+        val result = commandExecutor.executeCommand(repoRoot, "java", *args)
         return@async result.exitCode to result.output
       }
     }
+    val longestSuiteNameLength = SUITES_TO_RUN.maxOf { it.name.length }
     val failures = suiteResults.mapIndexedNotNull { index, (checkSuite, runSuiteDeferred) ->
+      val indexPrefix = (index + 1).padToString(SUITES_TO_RUN.size.countDigits())
+      val namePostfix = " ".repeat(longestSuiteNameLength - checkSuite.name.length)
+      val action = if (autofix && checkSuite.hasAutofixCommand) "Fixing" else "Checking"
       val (exitCode, outputLines) =
         logger.printAndAwaitResult(
-          prefix = "[${index + 1}/${SUITES_TO_RUN.size} - ${checkSuite.name}] Checking",
+          prefix = "[$indexPrefix/${SUITES_TO_RUN.size} - ${checkSuite.name}$namePostfix] $action",
           delayMs = checkSuite.speed.runningCheckFrequencyMs,
           runSuiteDeferred
         )
@@ -97,7 +118,7 @@ class PrePushChecks(
       failureLines.forEach(logger::println)
       logger.println()
       logger.println("Re-run command:")
-      logger.println("  ${suite.createBazelRunCommand()}", color = Logger.ConsoleColor.MAGENTA)
+      logger.println("  ${suite.createCheckBazelRunCommand()}", color = Logger.ConsoleColor.MAGENTA)
     }
     logger.println("\n${"*".repeat(n = CONSOLE_COL_LIMIT)}\n")
 
@@ -117,6 +138,12 @@ class PrePushChecks(
       println("  Clickable: file://${prePushLog.path}")
       println("  IntelliJ.log(${prePushLog.toRelativeString(repoRoot)}:1)")
       println()
+
+      if (!autofix && failures.keys.any { it.hasAutofixCommand }) {
+        println("You can try to autofix some of the failures above using:")
+        println("  bazel run //scripts:pre_push_checks -- $(pwd) autofix")
+        println()
+      }
 
       error("Checks failed.")
     } else {
@@ -159,17 +186,27 @@ class PrePushChecks(
     }
 
     private data class CheckSuite(
-      val name: String, val bazelTarget: String, val speed: SuiteSpeed, val extraArgs: List<String>
+      val name: String,
+      val bazelTarget: String,
+      val speed: SuiteSpeed,
+      val extraCheckArgs: List<String>,
+      val autofixArgs: List<String>?
     ) {
       val deployTarget = "${bazelTarget}_deploy.jar"
+      val hasAutofixCommand get() = autofixArgs != null
       private val targetName get() = bazelTarget.substringAfter(':')
       private val deployJarPath get() = "bazel-bin/scripts/${targetName}_deploy.jar"
 
-      fun createBazelRunCommand(): String =
-        "bazel run $bazelTarget -- $(pwd) ${extraArgs.joinToString(separator = " ")}".trim()
+      fun createCheckBazelRunCommand(): String =
+        "bazel run $bazelTarget -- $(pwd) ${extraCheckArgs.joinToString(separator = " ")}".trim()
 
-      fun createJavaRunArgs(repoRoot: File): Array<String> =
-        arrayOf("-jar", File(repoRoot, deployJarPath).path, repoRoot.path) + extraArgs
+      fun createCheckJavaRunArgs(repoRoot: File): Array<String> =
+        arrayOf("-jar", File(repoRoot, deployJarPath).path, repoRoot.path) + extraCheckArgs
+
+      fun createAutofixJavaRunArgs(repoRoot: File): Array<String> {
+        checkNotNull(autofixArgs) { "Expected suite to support auto-fixing." }
+        return arrayOf("-jar", File(repoRoot, deployJarPath).path, repoRoot.path) + autofixArgs
+      }
     }
 
     private enum class SuiteSpeed(val runningCheckFrequencyMs: Long) {
@@ -183,12 +220,19 @@ class PrePushChecks(
       createSuite(
         name = "XML style", target = "//scripts:xml_syntax_check", speed = SuiteSpeed.REASONABLE
       ),
-      createSuite(name = "Proto style", target = "//scripts:buf", speed = SuiteSpeed.REASONABLE),
       createSuite(
-        name = "Build/Bazel style",
+        name = "Proto style",
+        target = "//scripts:buf",
+        speed = SuiteSpeed.REASONABLE,
+        extraCheckArgs = listOf("check"),
+        extraAutofixArgs = listOf("fix")
+      ),
+      createSuite(
+        name = "Bazel style",
         target = "//scripts:buildifier",
         speed = SuiteSpeed.REASONABLE,
-        "check"
+        extraCheckArgs = listOf("check"),
+        extraAutofixArgs = listOf("fix")
       ),
       createSuite(
         name = "Java style", target = "//scripts:checkstyle", speed = SuiteSpeed.REASONABLE
@@ -197,61 +241,66 @@ class PrePushChecks(
         name = "Kotlin style",
         target = "//scripts:ktlint",
         speed = SuiteSpeed.SLOW,
-        "check"
+        extraCheckArgs = listOf("check"),
+        extraAutofixArgs = listOf("fix")
       ),
       createSuite(
-        name = "Test file presence",
+        name = "Test files",
         target = "//scripts:test_file_check",
         speed = SuiteSpeed.FAST
       ),
       createSuite(
-        name = "TextView style",
+        name = "TextView styles",
         target = "//scripts:check_textview_styles",
         speed = SuiteSpeed.FAST
       ),
       createSuite(
-        name = "String resource validation",
+        name = "Translations",
         target = "//scripts:string_resource_validation_check",
         speed = SuiteSpeed.FAST
       ),
       createSuite(
-        name = "Activity a11y labels presence",
+        name = "A11y labels",
         target = "//scripts:accessibility_label_check",
         speed = SuiteSpeed.REASONABLE,
-        "app/src/main/AndroidManifest.xml"
+        extraCheckArgs = listOf("app/src/main/AndroidManifest.xml")
       ),
       createSuite(
-        name = "KDoc validation",
+        name = "KDocs",
         target = "//scripts:kdoc_validity_check",
         speed = SuiteSpeed.REASONABLE
       ),
       createSuite(
-        name = "Regex validation",
+        name = "Regex checks",
         target = "//scripts:regex_pattern_validation_check",
         speed = SuiteSpeed.SLOW
       ),
       createSuite(
-        name = "TODO validation",
+        name = "TODOs",
         target = "//scripts:todo_open_check",
         speed = SuiteSpeed.SLOW
       ),
       createSuite(
-        name = "Third-party license text check",
+        name = "License texts",
         target = "//scripts:license_texts_check",
         speed = SuiteSpeed.FAST,
-        "app/src/main/res/values/third_party_dependencies.xml"
+        extraCheckArgs = listOf("app/src/main/res/values/third_party_dependencies.xml")
       ),
       createSuite(
-        name = "Maven license validation",
+        name = "Maven licenses",
         target = "//scripts:maven_dependencies_list_check",
         speed = SuiteSpeed.SLOW,
-        "third_party/maven_install.json"
+        extraCheckArgs = listOf("third_party/maven_install.json")
       ),
     )
 
     private fun createSuite(
-      name: String, target: String, speed: SuiteSpeed, vararg extraArgs: String
-    ): CheckSuite = CheckSuite(name, target, speed, extraArgs.toList())
+      name: String,
+      target: String,
+      speed: SuiteSpeed,
+      extraCheckArgs: List<String> = emptyList(),
+      extraAutofixArgs: List<String>? = null
+    ): CheckSuite = CheckSuite(name, target, speed, extraCheckArgs, extraAutofixArgs)
 
     private fun Logger.printSection(label: String) {
       val remainingChars = CONSOLE_COL_LIMIT - (label.length + 2)
@@ -287,3 +336,7 @@ class PrePushChecks(
     }
   }
 }
+
+private fun Int.padToString(digitCount: Int): String = " ".repeat(digitCount - countDigits()) + this
+
+private fun Int.countDigits(): Int = log10(toFloat()).toInt() + 1

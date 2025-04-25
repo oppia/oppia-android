@@ -6,21 +6,26 @@ import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 fun main(vararg args: String) {
-  require(args.size == 1) { "Usage: bazel run //scripts:buf -- </path/to/repo_root>" }
+  require(args.size == 2) { "Usage: bazel run //scripts:buf -- </path/to/repo_root> <mode>" }
   val repoRoot = File(args[0]).absoluteFile.normalize().also {
     check(it.exists() && it.isDirectory) {
       "Expected provided repository root to be an existing directory: ${args[0]}."
     }
   }
+  val mode = when (args[1]) {
+    "check" -> Buf.Mode.CHECK
+    "fix" -> Buf.Mode.FIX
+    else -> error("Invalid run mode: ${args[1]}. Expected one of: 'check' or 'fix'.")
+  }
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val commandExecutor = CommandExecutorImpl(scriptBgDispatcher)
     val bazelClient = BazelClient(repoRoot, commandExecutor)
-    Buf(repoRoot, bazelClient).runBuf()
+    Buf(repoRoot, bazelClient).runBuf(mode)
   }
 }
 
 class Buf(private val repoRoot: File, private val bazelClient: BazelClient) {
-  fun runBuf() {
+  fun runBuf(mode: Mode) {
     val bufConfig = File("buf.yaml").also { generateBufConfiguration(it) }.absoluteFile.normalize()
     val rootDirs = PROTO_ROOTS.map { protoRootPath ->
       File(repoRoot, protoRootPath).absoluteFile.normalize().also {
@@ -33,7 +38,7 @@ class Buf(private val repoRoot: File, private val bazelClient: BazelClient) {
       println("Linting protos under ${rootDir.toRelativeString(repoRoot)}...")
       val (exitCode, outputLines) = bazelClient.run(
         BUF_BINARY_TARGET,
-        "lint",
+        mode.subCommand,
         rootDir.path,
         "--config",
         bufConfig.path,
@@ -56,6 +61,11 @@ lint:
   use:${INCLUDED_LINT_CHECKS.joinToString(separator = "\n", prefix = "\n") { "    - $it" }}
   except:${EXCLUDED_LINT_CHECKS.joinToString(separator = "\n", prefix = "\n") { "    - $it" }}
 """)
+  }
+
+  enum class Mode(val subCommand: String) {
+    CHECK("lint"),
+    FIX("format")
   }
 
   private companion object {

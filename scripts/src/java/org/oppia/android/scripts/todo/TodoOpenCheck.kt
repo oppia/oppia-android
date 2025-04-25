@@ -12,6 +12,7 @@ import org.oppia.android.scripts.proto.TodoOpenExemptions
 import org.oppia.android.scripts.todo.model.Todo
 import java.io.File
 import java.io.InputStream
+import java.io.PrintStream
 
 /**
  * Script for ensuring that all TODOs present in the repository are correctly formatted and
@@ -58,7 +59,7 @@ class TodoOpenCheck(
    * correspond to open issues on GitHub.
    *
    * @param regenerateFile whether, regardless of an existing failure, the exemptions file should be
-   *   regenerated and printed to the standard output in textproto format
+   *   regenerated and used to overwrite the TODO exemptions file
    */
   fun runTodoOpenCheck(regenerateFile: Boolean) {
     // List of all the open issues on GitHub of this repository.
@@ -110,12 +111,16 @@ class TodoOpenCheck(
     }
 
     if (regenerateFile) {
-      println("Regenerated exemptions:")
-      println()
+      val fileToRegenerate =
+        File(
+          repoRoot,
+          "scripts/src/java/org/oppia/android/scripts/todo/assets/todo_open_exemptions.textproto"
+        )
+      println("Regenerated exemption file: ${fileToRegenerate.toRelativeString(repoRoot)}.")
       val allProblematicTodos = poorlyFormattedTodos + openIssueFailureTodos
       val newExemptions = allProblematicTodos.convertToExemptions(repoRoot)
-      println(newExemptions.convertToExemptionTextProto())
-      throw Exception("TODO CHECK SKIPPED")
+      PrintStream(fileToRegenerate).use { it.println(newExemptions.convertToExemptionTextProto()) }
+      return
     }
 
     if (
