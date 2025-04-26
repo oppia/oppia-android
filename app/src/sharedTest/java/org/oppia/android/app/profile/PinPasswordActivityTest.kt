@@ -119,6 +119,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.test.espresso.action.ViewActions.replaceText
+
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -127,14 +129,21 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class PinPasswordActivityTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var editTextInputAction: EditTextInputAction
-  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject
+  lateinit var context: Context
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
+  @Inject
+  lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val adminPin = "12345"
   private val adminId = 0
@@ -1215,7 +1224,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_inputPin_configChange_pinIsPersisted() {
+  fun testPinPassword_withAdmin_inputPin_configChange_inputPinIsPersisted() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -1233,7 +1242,7 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withUser_inputPin_configChange_pinIsPersisted() {
+  fun testPinPassword_withUser_inputPin_configChange_inputPinIsPersisted() {
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -1249,6 +1258,41 @@ class PinPasswordActivityTest {
         .check(matches(withText("123")))
     }
   }
+
+  @Test
+  fun testPinPassword_withAdmin_inputPin_exceedMaxLength_textIsTrimmed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("1234567"), closeSoftKeyboard())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .check(matches(withText("12345")))
+    }
+  }
+
+  @Test
+  fun testPinPassword_withUser_inputPin_exceedMaxLength_textIsTrimmed() {
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("1234567"), closeSoftKeyboard())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .check(matches(withText("123")))
+    }
+  }
+
 
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
