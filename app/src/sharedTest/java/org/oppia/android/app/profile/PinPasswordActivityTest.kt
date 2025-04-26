@@ -119,8 +119,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.test.espresso.action.ViewActions.replaceText
-
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -129,21 +127,14 @@ import androidx.test.espresso.action.ViewActions.replaceText
   qualifiers = "port-xxhdpi"
 )
 class PinPasswordActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
-  @Inject
-  lateinit var fakeAccessibilityService: FakeAccessibilityService
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @Inject lateinit var fakeAccessibilityService: FakeAccessibilityService
 
   private val adminPin = "12345"
   private val adminId = 0
@@ -1292,7 +1283,6 @@ class PinPasswordActivityTest {
         .check(matches(withText("123")))
     }
   }
-
 
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
