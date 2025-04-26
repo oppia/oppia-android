@@ -4,8 +4,8 @@ package model;
 
 import "math.proto";
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Structure for any interaction object
 // https://github.com/oppia/oppia/blob/1d85e6dacf055c9138f7f4d32e6702dfaf2f943c/extensions/objects/models/objects.py#L17

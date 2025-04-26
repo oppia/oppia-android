@@ -1,9 +1,5 @@
 package org.oppia.android.scripts.ci
 
-import java.io.File
-import java.io.PrintStream
-import java.util.concurrent.TimeUnit
-import kotlin.math.log10
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -13,6 +9,10 @@ import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
+import java.io.PrintStream
+import java.util.concurrent.TimeUnit
+import kotlin.math.log10
 
 private const val USAGE =
   "Usage: bazel run //scripts:pre_push_checks -- </path/to/repo_root> [autofix]"
@@ -131,19 +131,23 @@ class PrePushChecks(
         "${failures.size}/${SUITES_TO_RUN.size} suites failed.", color = Logger.ConsoleColor.RED
       )
 
+      if (!autofix && failures.keys.any { it.hasAutofixCommand }) {
+        logger.println()
+        logger.println("You can try to autofix some of the failures above using:")
+        logger.println(
+          "  bazel run //scripts:pre_push_checks -- $(pwd) autofix",
+          color = Logger.ConsoleColor.MAGENTA
+        )
+      }
+
       // The IntelliJ-clickable version is a bit hacky. See:
       // https://stackoverflow.com/a/30941328/3689782.
+      println()
       println("Log results can be found at:")
       println("  Relative: ./${prePushLog.toRelativeString(repoRoot)}")
       println("  Clickable: file://${prePushLog.path}")
       println("  IntelliJ.log(${prePushLog.toRelativeString(repoRoot)}:1)")
       println()
-
-      if (!autofix && failures.keys.any { it.hasAutofixCommand }) {
-        println("You can try to autofix some of the failures above using:")
-        println("  bazel run //scripts:pre_push_checks -- $(pwd) autofix")
-        println()
-      }
 
       error("Checks failed.")
     } else {
@@ -155,7 +159,8 @@ class PrePushChecks(
     private const val CONSOLE_COL_LIMIT = 80
 
     class Logger(
-      private val plainStreams: List<PrintStream>, private val colorStreams: List<PrintStream>
+      private val plainStreams: List<PrintStream>,
+      private val colorStreams: List<PrintStream>
     ) {
       private val allStreams by lazy { plainStreams + colorStreams }
 
@@ -278,7 +283,8 @@ class PrePushChecks(
       createSuite(
         name = "TODOs",
         target = "//scripts:todo_open_check",
-        speed = SuiteSpeed.SLOW
+        speed = SuiteSpeed.SLOW,
+        extraAutofixArgs = listOf("regenerate")
       ),
       createSuite(
         name = "License texts",
@@ -314,7 +320,9 @@ class PrePushChecks(
     }
 
     private fun <T> Logger.printAndAwaitResult(
-      prefix: String, delayMs: Long, deferred: Deferred<T>
+      prefix: String,
+      delayMs: Long,
+      deferred: Deferred<T>
     ): T {
       val numberOfChecks = CONSOLE_COL_LIMIT - prefix.length - 7 // 7 chars for the result.
       var completionCheckCount = 0

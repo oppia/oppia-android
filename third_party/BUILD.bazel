@@ -13,9 +13,9 @@ dependencies).
 """
 
 load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
-load("//scripts/third_party/macros:ktlint.bzl", "extract_ktlint_jar")
 load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//scripts/third_party/macros:ktlint.bzl", "extract_ktlint_jar")
 load(":versions.bzl", "MAVEN_PRODUCTION_DEPENDENCY_VERSIONS", "MAVEN_TEST_DEPENDENCY_VERSIONS")
 
 # Create an android library wrapper for all production dependencies. Note that artifact is used so

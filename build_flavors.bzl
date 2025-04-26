@@ -33,6 +33,7 @@ _PRODUCTION_PROGUARD_SPECS = [
 ]
 
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
+# buildifier: disable=unsorted-dict-items
 _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//app:src/main/AndroidManifest.xml",
@@ -132,22 +133,22 @@ def _transform_android_manifest_impl(ctx):
 
 _transform_android_manifest = rule(
     attrs = {
-        "input_file": attr.label(
-            allow_files = True,
-            mandatory = True,
-        ),
-        "output_file": attr.output(
-            mandatory = True,
-        ),
+        "application_relative_qualified_class": attr.string(mandatory = True),
+        "build_flavor": attr.string(mandatory = True),
         "git_meta_dir": attr.label(
             allow_files = True,
             mandatory = True,
         ),
-        "build_flavor": attr.string(mandatory = True),
+        "input_file": attr.label(
+            allow_files = True,
+            mandatory = True,
+        ),
         "major_version": attr.int(mandatory = True),
         "minor_version": attr.int(mandatory = True),
+        "output_file": attr.output(
+            mandatory = True,
+        ),
         "version_code": attr.int(mandatory = True),
-        "application_relative_qualified_class": attr.string(mandatory = True),
         "_transform_android_manifest_tool": attr.label(
             executable = True,
             cfg = "host",
@@ -197,50 +198,49 @@ def transform_android_manifest(
         application_relative_qualified_class = application_relative_qualified_class,
     )
 
-def define_oppia_aab_binary_flavor(flavor):
+def define_oppia_aab_binary_flavor(name):
     """
     Defines a new flavor of the Oppia Android app.
 
     Flavors are defined through properties defined within _FLAVOR_METADATA.
 
     This will define two targets:
-    - //:oppia_<flavor> (the AAB)
-    - //:oppia_<flavor>_universal_apk (the installable binary target--see generate_universal_apk
+    - //:oppia_<name> (the AAB)
+    - //:oppia_<name>_universal_apk (the installable binary target--see generate_universal_apk
       for details)
 
     Args:
-        flavor: str. The name of the flavor of the app. Must correspond to an entry in
-            AVAILABLE_FLAVORS.
+        name: str. The flavor of the app which must correspond to an entry in AVAILABLE_FLAVORS.
     """
     transform_android_manifest(
-        name = "oppia_%s_transformed_manifest" % flavor,
-        application_relative_qualified_class = _FLAVOR_METADATA[flavor]["application_class"],
-        input_file = _FLAVOR_METADATA[flavor]["manifest"],
-        output_file = "AndroidManifest_transformed_%s.xml" % flavor,
-        build_flavor = flavor,
+        name = "oppia_%s_transformed_manifest" % name,
+        application_relative_qualified_class = _FLAVOR_METADATA[name]["application_class"],
+        input_file = _FLAVOR_METADATA[name]["manifest"],
+        output_file = "AndroidManifest_transformed_%s.xml" % name,
+        build_flavor = name,
         major_version = MAJOR_VERSION,
         minor_version = MINOR_VERSION,
-        version_code = _FLAVOR_METADATA[flavor]["version_code"],
+        version_code = _FLAVOR_METADATA[name]["version_code"],
     )
     oppia_android_application(
-        name = "oppia_%s" % flavor,
+        name = "oppia_%s" % name,
         custom_package = "org.oppia.android",
-        testonly = not _FLAVOR_METADATA[flavor]["production_release"],
+        testonly = not _FLAVOR_METADATA[name]["production_release"],
         enable_data_binding = True,
         config_file = "//:bundle_config.pb.json",
-        manifest = ":AndroidManifest_transformed_%s.xml" % flavor,
+        manifest = ":AndroidManifest_transformed_%s.xml" % name,
         manifest_values = {
             "applicationId": "org.oppia.android",
-            "minSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["min_sdk_version"],
-            "targetSdkVersion": "%d" % _FLAVOR_METADATA[flavor]["target_sdk_version"],
+            "minSdkVersion": "%d" % _FLAVOR_METADATA[name]["min_sdk_version"],
+            "targetSdkVersion": "%d" % _FLAVOR_METADATA[name]["target_sdk_version"],
         },
-        multidex = _FLAVOR_METADATA[flavor]["multidex"],
-        proguard_generate_mapping = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
-        proguard_specs = _FLAVOR_METADATA[flavor]["proguard_specs"],
-        shrink_resources = True if len(_FLAVOR_METADATA[flavor]["proguard_specs"]) != 0 else False,
-        deps = _FLAVOR_METADATA[flavor]["deps"],
+        multidex = _FLAVOR_METADATA[name]["multidex"],
+        proguard_generate_mapping = True if len(_FLAVOR_METADATA[name]["proguard_specs"]) != 0 else False,
+        proguard_specs = _FLAVOR_METADATA[name]["proguard_specs"],
+        shrink_resources = True if len(_FLAVOR_METADATA[name]["proguard_specs"]) != 0 else False,
+        deps = _FLAVOR_METADATA[name]["deps"],
     )
     generate_universal_apk(
-        name = "oppia_%s_universal_apk" % flavor,
-        aab_target = ":oppia_%s" % flavor,
+        name = "oppia_%s_universal_apk" % name,
+        aab_target = ":oppia_%s" % name,
     )

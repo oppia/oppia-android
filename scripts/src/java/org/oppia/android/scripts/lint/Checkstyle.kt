@@ -1,13 +1,15 @@
 package org.oppia.android.scripts.lint
 
+import com.squareup.moshi.JsonReader
 import com.squareup.moshi.Moshi
-import java.io.File
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.lint.model.SarifOutput
 import org.oppia.android.scripts.lint.model.SarifResult
 import org.oppia.android.scripts.lint.model.SarifRun
+import java.io.File
+import okio.Buffer
 
 fun main(vararg args: String) {
   require(args.size == 1) { "Usage: bazel run //scripts:checkstyle -- </path/to/repo_root>" }
@@ -47,7 +49,10 @@ class Checkstyle(private val repoRoot: File, private val bazelClient: BazelClien
         "${outputLines.joinToString(separator = "\n")}."
     }
 
-    val sarifOutput = parseSarif(outputLines.joinToString(separator = "\n"))
+    // Skip lines that occur due to Bazel process contention since these can't actually be quieted.
+    // TODO: This is insufficient--there's still a flake that needs to be fixed.
+    val nonBazelLines = outputLines.dropWhile { it.startsWith("Another command") }
+    val sarifOutput = parseSarif(nonBazelLines.joinToString(separator = "\n"))
     val allResults = sarifOutput.runs.flatMap(SarifRun::results)
     val groupedResults = allResults.groupBy(SarifResult::level).toSortedMap()
     groupedResults.forEach { (level, results) ->

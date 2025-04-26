@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package model;
 
-import "profile.proto";
 import "languages.proto";
+import "profile.proto";
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Top-level proto to store feedback reports locally when there is no network connection to upload
 // them to the remote service.
@@ -212,7 +212,6 @@ message TopicsIssue {
   // if the OTHER option is selected.
   string other_user_input = 2;
 }
-
 
 // Represents the user-selected category for an issue with the user's profile.
 message ProfileIssue {

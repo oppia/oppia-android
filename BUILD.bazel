@@ -74,7 +74,7 @@ package_group(
 # directly. However, their binaries can be installed using mobile-install like so:
 #  bazel mobile-install //:oppia_dev_binary
 [
-    define_oppia_aab_binary_flavor(flavor = flavor)
+    define_oppia_aab_binary_flavor(name = flavor)
     for flavor in AVAILABLE_FLAVORS
 ]
 

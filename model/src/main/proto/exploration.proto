@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package model;
 
+import "interaction_object.proto";
 import "subtitled_html.proto";
 import "subtitled_unicode.proto";
-import "interaction_object.proto";
 import "translation.proto";
 import "voiceover.proto";
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Structure for a single exploration.
 // Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeExploration.kt

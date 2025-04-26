@@ -1,10 +1,10 @@
 package org.oppia.android.scripts.lint
 
-import java.io.File
-import java.io.InputStream
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import java.io.File
+import java.io.InputStream
 
 fun main(vararg args: String) {
   require(args.size in 2..4) { "Usage: bazel run //scripts:ktlint -- </path/to/repo_root> <mode>" }
@@ -53,7 +53,6 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
         } else println("ktlint command succeeded--no issues found!")
       }
       Mode.FIX -> {
-        // TODO: Verify this once the local codebase doesn't have a ton of fixes from upstream.
         if (!tryRunKtlint(mode = Mode.CHECK, printOutput = false)) {
           // There are failures, try to fix them.
           if (tryRunKtlint(mode)) {
@@ -83,7 +82,9 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
         }
       }
     }
-    val targetPatterns = targetPathDirs.map { "${it.path}/src/**/*.kt" }
+    // This variable works around a KDoc regex check.
+    val directoryPattern = "**"
+    val targetPatterns = targetPathDirs.map { "${it.path}/src/$directoryPattern/*.kt" }
     val args = listOfNotNull("-F".takeIf { mode == Mode.FIX }) + targetPatterns
     val (exitCode, outputLines) = bazelClient.run(
       KTLINT_BINARY_TARGET,
@@ -101,7 +102,7 @@ class Ktlint(private val repoRoot: File, private val bazelClient: BazelClient) {
     FIX
   }
 
-  private class SkipToZipInputStream(baseStream: InputStream): InputStream() {
+  private class SkipToZipInputStream(baseStream: InputStream) : InputStream() {
     private val bufferedBase by lazy { baseStream.buffered() }
     private var hasFoundZipStart = false
 

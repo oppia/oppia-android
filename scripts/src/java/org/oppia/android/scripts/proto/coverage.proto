@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package proto;
 
-option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.scripts.proto";
 
 // Represents the complete execution of a series of code coverage runs.
 message CoverageReportContainer {
@@ -71,7 +71,7 @@ message CoveredLine {
 
 enum Coverage {
   // Coverage status is unspecified.
-  UNSPECIFIED = 0;
+  COVERAGE_UNSPECIFIED = 0;
   // The line is fully covered in a test, that is, it was executed at least once.
   FULL = 1;
   // The line is not covered at all, that is, it was never executed during a test.

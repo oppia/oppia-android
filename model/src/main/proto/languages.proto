@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // The list of languages partly or fully supported natively by the Android app.
 enum OppiaLanguage {

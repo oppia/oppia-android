@@ -16,8 +16,6 @@ import org.oppia.android.scripts.coverage.reporter.ReportFormat
 import org.oppia.android.scripts.proto.Coverage
 import org.oppia.android.scripts.proto.CoverageReport
 import org.oppia.android.scripts.proto.CoveredLine
-import org.oppia.android.scripts.proto.TestFileExemptions
-import org.oppia.android.scripts.proto.TestFileExemptions.TestFileExemption
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.File

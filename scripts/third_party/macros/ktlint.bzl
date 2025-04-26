@@ -1,3 +1,7 @@
+"""
+Macros pertaining to extracting and managing ktlint binaries.
+"""
+
 load("@rules_java//java:defs.bzl", "java_binary", "java_import")
 
 def _extract_ktlint_jar_impl(ctx):

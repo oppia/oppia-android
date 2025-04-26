@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Top level proto used to store last used id and all profiles.
 message ProfileDatabase {
@@ -21,7 +21,7 @@ message ProfileDatabase {
 }
 
 // Structure for device settings.
-message DeviceSettings{
+message DeviceSettings {
   // Determines whether to download and update content only on wifi.
   bool allow_download_and_update_only_on_wifi = 1;
 
@@ -152,7 +152,7 @@ enum ReadingTextSize {
   SMALL_TEXT_SIZE = 1;
   MEDIUM_TEXT_SIZE = 2;
   LARGE_TEXT_SIZE = 3;
-  EXTRA_LARGE_TEXT_SIZE =  4;
+  EXTRA_LARGE_TEXT_SIZE = 4;
 }
 
 // TODO(#3793): Replace this with OppiaLanguage.

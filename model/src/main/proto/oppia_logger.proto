@@ -3,12 +3,12 @@ syntax = "proto3";
 package model;
 
 import "languages.proto";
+import "platform_parameter.proto";
 import "profile.proto";
 import "survey.proto";
-import "platform_parameter.proto";
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Structure for an event log.
 message EventLog {

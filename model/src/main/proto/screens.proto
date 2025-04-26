@@ -2,12 +2,11 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // The list of names of all the UI-screens that are supported by the Android App.
 enum ScreenName {
-
   // Default screen name value which is used when the screen_name isn't set.
   SCREEN_NAME_UNSPECIFIED = 0;
 

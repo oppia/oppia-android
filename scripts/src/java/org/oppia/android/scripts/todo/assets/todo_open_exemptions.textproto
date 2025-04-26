@@ -1,4 +1,8 @@
 todo_open_exemption {
+  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/CommandExecutor.kt"
+  line_number: 7
+}
+todo_open_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/TodoCollector.kt"
   line_number: 78
 }
@@ -340,10 +344,6 @@ todo_open_exemption {
   line_number: 800
 }
 todo_open_exemption {
-  exempted_file_path: "scripts/static_checks.sh"
-  line_number: 121
-}
-todo_open_exemption {
   exempted_file_path: "wiki/Coding-style-guide.md"
   line_number: 43
 }
@@ -362,3 +362,4 @@ todo_open_exemption {
   line_number: 251
   line_number: 254
 }
+

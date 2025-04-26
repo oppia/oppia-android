@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package proto;
 
-option java_package = "org.oppia.android.scripts.proto";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.scripts.proto";
 
 // Checks to ensure the usage of any prohibited file path naming pattern.
 message FilenameChecks {

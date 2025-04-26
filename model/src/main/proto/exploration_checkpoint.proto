@@ -4,12 +4,11 @@ package model;
 
 import "exploration.proto";
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Top-level proto used to store exploration checkpoint per-profile basis.
 message ExplorationCheckpointDatabase {
-
   // Map from exploration ID to ExplorationCheckpoint.
   map<string, ExplorationCheckpoint> exploration_checkpoint = 1;
 }
@@ -17,7 +16,6 @@ message ExplorationCheckpointDatabase {
 // Corresponds to the exploration checkpoint which will be used to resume the exploration.
 // This model contains information about all states of the deck which have been visited by the user.
 message ExplorationCheckpoint {
-
   // The name of the latest state in the deck.
   string pending_state_name = 1;
 
@@ -53,7 +51,6 @@ message ExplorationCheckpoint {
 
 // Corresponds to exploration states that have been completed.
 message CompletedStateInCheckpoint {
-
   // Corresponds to an exploration state that the learner has previous completed. Contains a list
   // of AnswerAndResponse for a previous state.
   CompletedState completed_state = 1;
@@ -66,7 +63,6 @@ message CompletedStateInCheckpoint {
 // checkpoint. This container is used to return the details required to delete the oldest checkpoint
 // when the space allocated to save the checkpoints runs out.
 message ExplorationCheckpointDetails {
-
   // The ID of the stored exploration checkpoint.
   string exploration_id = 1;
 

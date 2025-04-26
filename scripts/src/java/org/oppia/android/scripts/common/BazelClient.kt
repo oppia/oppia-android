@@ -74,7 +74,9 @@ class BazelClient(
   }
 
   fun query(
-    pattern: String, withSkyQuery: Boolean = false, allowFailures: Boolean = false
+    pattern: String,
+    withSkyQuery: Boolean = false,
+    allowFailures: Boolean = false
   ): List<String> {
     val args = listOfNotNull(
       "--noshow_progress",
@@ -350,7 +352,10 @@ class BazelClient(
   }
 
   private fun maybeUpdateProgress(
-    line: String, reportProgress: ((Int, Int) -> Unit), lastNumerator: Int, lastDenominator: Int
+    line: String,
+    reportProgress: ((Int, Int) -> Unit),
+    lastNumerator: Int,
+    lastDenominator: Int
   ): Pair<Int, Int> {
     val progress = line.parseProgressUpdate() ?: (lastNumerator to lastDenominator)
     val updatedNumerator = progress.first.coerceAtLeast(lastNumerator)

@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // Spotlights are visual elements that are shown during the initial user onboarding experience of
 // the app that highlight certain UI elements and show how/what they should be used for.

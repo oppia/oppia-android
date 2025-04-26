@@ -8,8 +8,8 @@ import "languages.proto";
 import "profile.proto";
 import "translation.proto";
 
-option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
+option java_package = "org.oppia.android.app.model";
 
 // The fragment arguments passed to instances of ExitProfileDialogFragment.
 message ExitProfileDialogArguments {
@@ -350,7 +350,7 @@ message SurveyActivityParams {
 }
 
 // Arguments required when creating a QuestionPlayerFragment.
-message QuestionPlayerFragmentArguments{
+message QuestionPlayerFragmentArguments {
   // The ID of current profile.
   ProfileId profile_id = 1;
 

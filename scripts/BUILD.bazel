@@ -2,7 +2,6 @@
 Kotlin-based scripts to help developers or perform continuous integration tasks.
 """
 
-load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 load("@rules_java//java:defs.bzl", "java_binary")
 
 # Visibility for libraries that should be accessible to script tests.
