@@ -15,6 +15,10 @@ test_file_exemption {
   override_min_coverage_percent_required: 0
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityIntentFactoriesModule.kt"
   test_file_not_required: true
 }
