@@ -1283,9 +1283,9 @@ class PinPasswordActivityTest {
         .check(matches(withText("123")))
     }
   }
-@Test
-fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
-  TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+  @Test
+  fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
@@ -1335,10 +1335,10 @@ fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHom
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("45"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("43"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HomeActivity::class.java.name))
     }
@@ -1355,10 +1355,10 @@ fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHom
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("45"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("3"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ClassroomListActivity::class.java.name))
     }
