@@ -1283,7 +1283,86 @@ class PinPasswordActivityTest {
         .check(matches(withText("123")))
     }
   }
+@Test
+fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
+  TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("45"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+  @Test
+  fun testPinPassword_enableClassroom_withAdmin_inputConfigChangeInput_openClassroomListActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = adminId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("45"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
 
+  fun testPinPassword_withUser_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("45"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+  @Test
+  fun testPinPassword_enableClassroom_withUser_inputConfigChangeInput_opensClassroomListActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    ActivityScenario.launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      onView(isRoot()).perform(orientationLandscape())
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("45"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
