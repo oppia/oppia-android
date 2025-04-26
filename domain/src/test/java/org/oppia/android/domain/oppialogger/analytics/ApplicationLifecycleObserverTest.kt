@@ -39,9 +39,10 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -147,6 +148,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var fakeConsoleLogger: ConsoleLogger
   @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
+  @Inject lateinit var mockWebServer: MockWebServer
 
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
@@ -161,7 +163,6 @@ class ApplicationLifecycleObserverTest {
   lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   private lateinit var retrofit: Retrofit
-  private lateinit var mockWebServer: MockWebServer
   private lateinit var client: OkHttpClient
   private lateinit var mockWebServerUrl: HttpUrl
   private lateinit var request: Request
@@ -637,22 +638,14 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpRetrofitApiCall() {
-    mockWebServer = MockWebServer()
+    mockWebServerUrl = mockWebServer.url(testUrl)
     client = OkHttpClient.Builder()
       .addInterceptor(networkLoggingInterceptor)
       .build()
-
-    mockWebServerUrl = mockWebServer.url(testUrl)
-
     request = Request.Builder()
       .url(mockWebServerUrl)
       .addHeader(testApiKey, testApiKeyValue)
       .build()
-
-    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
-    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
-    // request mocking in different ways and we want to verify the full request is executed here.
-    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
     retrofit = Retrofit.Builder()
       .baseUrl(mockWebServerUrl)
       .addConverterFactory(MoshiConverterFactory.create())
@@ -708,8 +701,9 @@ class ApplicationLifecycleObserverTest {
       SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
       LogReportWorkerModule::class, MetricLogSchedulerModule::class,
       FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
-      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, NetworkModule::class,
-      NetworkConfigProdModule::class, ApplicationModule::class, ExplorationStorageModule::class,
+      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, RetrofitModule::class,
+      RetrofitServiceModule::class,
+      NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageModule::class,
       HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
       InteractionsModule::class, AlgebraicExpressionInputModule::class, ContinueModule::class,
       DragDropSortInputModule::class, FractionInputModule::class, ImageClickInputModule::class,

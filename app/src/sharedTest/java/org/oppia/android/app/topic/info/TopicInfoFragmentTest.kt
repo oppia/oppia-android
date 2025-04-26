@@ -22,7 +22,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import androidx.viewpager2.widget.ViewPager2
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -61,7 +60,8 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -151,25 +151,13 @@ private const val DUMMY_TOPIC_DESCRIPTION_LONG =
   qualifiers = "port-xxhdpi"
 )
 class TopicInfoFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @field:[Inject EnableExtraTopicTabsUi]
   lateinit var enableExtraTopicTabsUi: PlatformParameterValue<Boolean>
-
-  @get:Rule
-  var activityTestRule: ActivityTestRule<TopicActivity> = ActivityTestRule(
-    TopicActivity::class.java, /* initialTouchMode= */ true, /* launchActivity= */ false
-  )
 
   private val topicThumbnail = R.drawable.lesson_thumbnail_graphic_child_with_fractions_homework
   private val profileId = ProfileId.newBuilder().setInternalId(0).build()
@@ -224,41 +212,37 @@ class TopicInfoFragmentTest {
 
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInRtl_isCorrect() {
-    activityTestRule.launchActivity(
-      createTopicActivityIntent(
-        context = context,
-        profileId = profileId,
-        classroomId = TEST_CLASSROOM_ID,
-        topicId = TEST_TOPIC_ID
-      )
-    )
-    testCoroutineDispatchers.runCurrent()
-    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL
-    onView(withId(R.id.topic_description_text_view)).check { view, _ ->
-      val topicDescriptionTextview: TextView = view.findViewById(
-        R.id.topic_description_text_view
-      )
-      assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    launchTopicActivityIntent(
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID,
+      topicId = TEST_TOPIC_ID
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_RTL }
+      onView(withId(R.id.topic_description_text_view)).check { view, _ ->
+        val topicDescriptionTextview: TextView = view.findViewById(
+          R.id.topic_description_text_view
+        )
+        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
     }
   }
 
   @Test
   fun testTopicInfoFragment_loadFragmentWithTestTopicId1_checkTopicDescriptionInLtr_isCorrect() {
-    activityTestRule.launchActivity(
-      createTopicActivityIntent(
-        context = context,
-        profileId = profileId,
-        classroomId = TEST_CLASSROOM_ID,
-        topicId = TEST_TOPIC_ID
-      )
-    )
-    testCoroutineDispatchers.runCurrent()
-    activityTestRule.activity.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR
-    onView(withId(R.id.topic_description_text_view)).check { view, _ ->
-      val topicDescriptionTextview: TextView = view.findViewById(
-        R.id.topic_description_text_view
-      )
-      assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+    launchTopicActivityIntent(
+      profileId = profileId,
+      classroomId = TEST_CLASSROOM_ID,
+      topicId = TEST_TOPIC_ID
+    ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.onActivity { it.window.decorView.layoutDirection = ViewCompat.LAYOUT_DIRECTION_LTR }
+      onView(withId(R.id.topic_description_text_view)).check { view, _ ->
+        val topicDescriptionTextview: TextView = view.findViewById(
+          R.id.topic_description_text_view
+        )
+        assertThat(topicDescriptionTextview.textAlignment).isEqualTo(View.TEXT_ALIGNMENT_VIEW_START)
+      }
     }
   }
 
@@ -568,7 +552,8 @@ class TopicInfoFragmentTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       PlatformParameterSingletonModule::class,

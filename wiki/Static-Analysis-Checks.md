@@ -264,7 +264,7 @@ To fix failing tests from GitHub CI individually, follow the steps below.
 - Alternatively, in Android Studio, go to the `.github` folder and find the [static_checks.yml](https://github.com/oppia/oppia-android/blob/develop/.github/workflows/static_checks.yml) file. Search for the line that corresponds to the name of the job that failed. You can then run the same script on your local terminal.
 - You can also go to scripts/static_checks.sh to view the failing check and run it locally.
 
-Note: Before running the script command in your local terminal, make sure you have Bazel installed. To learn how to set up Bazel for Oppia Android, follow these [instructions](https://github.com/oppia/oppia-android/wiki/Oppia-Bazel-Setup-Instructions). Also make sure you have oppia-android-tools installed since static checks rely on these tools to be able to perform some of the checks. To install oppia-android-tools, run `bash scripts/setup.sh` in the oppia-android directory.
+Note: Before running the script command in your local terminal, make sure you have Bazel installed. To learn how to set up Bazel for Oppia Android, follow these [instructions](https://github.com/oppia/oppia-android/wiki/Installing-Oppia-Android#install-bazel). Also, make sure you have `oppia-android-tools` installed since static checks rely on these tools to be able to perform some of the checks. To install oppia-android-tools, run `bash scripts/setup.sh` in the oppia-android directory.
 
 ### Developer Video - Understanding CI check failures
 Learn how to interpret and troubleshoot oppia-android CI check failures in this insightful [developer video](https://youtu.be/HLzHQULZbJE?si=RLY9_8Yzv5cjYM7q).

@@ -16,7 +16,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.allOf
@@ -47,7 +46,8 @@ import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -116,24 +116,11 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ResumeLessonActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @get:Rule
-  val resumeLessonActivityTestRule = ActivityTestRule(
-    ResumeLessonActivity::class.java,
-    /* initialTouchMode= */ true,
-    /* launchActivity= */ false
-  )
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
@@ -159,12 +146,15 @@ class ResumeLessonActivityTest {
 
   @Test
   fun testResumeLessonActivity_hasCorrectActivityLabel() {
-    resumeLessonActivityTestRule.launchActivity(createResumeLessonActivityIntent())
-    val title = resumeLessonActivityTestRule.activity.title
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
 
-    // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
-    // correct string when it's read out.
-    assertThat(title).isEqualTo(context.getString(R.string.resume_lesson_activity_title))
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.resume_lesson_activity_title))
+      }
+    }
   }
 
   @Test
@@ -195,9 +185,13 @@ class ResumeLessonActivityTest {
 
   @Test
   fun testResumeLessonActivity_onToolbarClosePressed_closesResumeExplorationActivity() {
-    resumeLessonActivityTestRule.launchActivity(createResumeLessonActivityIntent())
-    onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
-    assertThat(resumeLessonActivityTestRule.activity.isFinishing).isTrue()
+    launch<ResumeLessonActivity>(createResumeLessonActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
+          .perform(click())
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
   }
 
   private fun createResumeLessonActivityIntent(): Intent {
@@ -233,7 +227,8 @@ class ResumeLessonActivityTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
       FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
+      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
+      NetworkConfigProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
