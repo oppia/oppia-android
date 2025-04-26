@@ -1283,9 +1283,9 @@ class PinPasswordActivityTest {
         .check(matches(withText("123")))
     }
   }
-@Test
-fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
-  TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+  @Test
+  fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
