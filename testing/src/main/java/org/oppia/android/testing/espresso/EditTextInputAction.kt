@@ -29,7 +29,8 @@ class EditTextInputAction @Inject constructor(
    * [ViewAction].
    */
   fun appendText(text: String): ViewAction = updateText(
-    text, baseAction = typeText(text), isAppend = true)
+    text, baseAction = typeText(text), isAppend = true
+  )
 
   /**
    * Returns a [ViewAction] that replaces the current text in the specified view with the specified
@@ -40,7 +41,8 @@ class EditTextInputAction @Inject constructor(
    * 2. When Unicode text needs to be inputted (since otherwise Espresso will fail to type the text)
    */
   fun replaceText(text: String): ViewAction = updateText(
-    text, baseAction = ViewActions.replaceText(text), isAppend = false)
+    text, baseAction = ViewActions.replaceText(text), isAppend = false
+  )
 
   private fun updateText(text: String, baseAction: ViewAction, isAppend: Boolean): ViewAction {
 
@@ -62,7 +64,6 @@ class EditTextInputAction @Inject constructor(
         } else {
           baseAction.perform(uiController, view)
         }
-
       }
     }
   }

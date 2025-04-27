@@ -1326,7 +1326,7 @@ class PinPasswordActivityTest {
     }
   }
 
-@Test
+  @Test
   fun testPinPassword_withUser_retainPinOnRotation_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
