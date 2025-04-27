@@ -1283,8 +1283,9 @@ class PinPasswordActivityTest {
         .check(matches(withText("123")))
     }
   }
+
   @Test
-  fun testPinPassword_withAdmin_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
+  fun testPinPassword_withAdmin__retainPinOnRotation_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1303,8 +1304,9 @@ class PinPasswordActivityTest {
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
+
   @Test
-  fun testPinPassword_enableClassroom_withAdmin_inputConfigChangeInput_openClassroomListActivity() {
+  fun testPinPassword_enablesClassroom_withAdmin_retainPinOnRotation_openClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1324,7 +1326,8 @@ class PinPasswordActivityTest {
     }
   }
 
-  fun testPinPassword_withUser_inputPartialPin_configChange_inputFullPin_opensHomeActivity() {
+@Test
+  fun testPinPassword_withUser_retainPinOnRotation_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1338,13 +1341,14 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("12"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("43"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("3"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(HomeActivity::class.java.name))
     }
   }
+
   @Test
-  fun testPinPassword_enableClassroom_withUser_inputConfigChangeInput_opensClassroomListActivity() {
+  fun testPinPassword_enablesClassroom_withUser_retainPinOnRotation_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     ActivityScenario.launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
@@ -1363,6 +1367,7 @@ class PinPasswordActivityTest {
       intended(hasComponent(ClassroomListActivity::class.java.name))
     }
   }
+
   private fun getAppName(): String = context.resources.getString(R.string.app_name)
 
   private fun getPinPasswordForgotMessage(): String =
