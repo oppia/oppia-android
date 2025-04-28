@@ -56,7 +56,7 @@ This check is needed so as to prevent a particular type of file from being added
 
 For example: If we want to prevent activities from being added into the any directory except testing and app, then we have to add its regex pattern in the [scripts/assets/filename_pattern_validation_checks.textproto](https://github.com/oppia/oppia-android/blob/2da95a53928bc989f5959fbac211f7f7ca0a753f/scripts/assets/filename_pattern_validation_checks.textproto) file like this:
 
-```
+```textproto
 filename_checks {
   prohibited_filename_regex: "^((?!(app|testing)).)+/src/main/.+?Activity.kt"
   failure_message: "Activities cannot be placed outside the app or testing module"
@@ -67,7 +67,7 @@ filename_checks {
 In general, failures for this check should be fixed by moving the file to the correct directory. In cases where that can’t happen or the check is wrong, please:
 
 1. Add the file as an exemption in [scripts/assets/filename_pattern_validation_checks.textproto](https://github.com/oppia/oppia-android/blob/2da95a53928bc989f5959fbac211f7f7ca0a753f/scripts/assets/filename_pattern_validation_checks.textproto) for the corresponding failing check in <textproto_file_path>, e.g.:
-```
+```textproto
 filename_checks {
   prohibited_filename_regex: "^((?!(app|testing)).)+/src/main/.+?Activity.kt"
   failure_message: "Activities cannot be placed outside the app or testing module"
@@ -84,7 +84,7 @@ This check is needed so as to prevent the use of any prohibited content in a fil
 
 For example: If we want to prevent the use of support library in the repository, then we have to add its regex pattern in the [scripts/assets/file_content_validation_checks.textproto](https://github.com/oppia/oppia-android/blob/2da95a53928bc989f5959fbac211f7f7ca0a753f/scripts/assets/file_content_validation_checks.textproto) file like this:
 
-```
+```textproto
 file_content_checks {
   filename_regex: ".+?.kt"
   prohibited_content_regex: "^import .+?support.+?$"
@@ -99,14 +99,14 @@ In cases where that can’t happen or the check is wrong, please:
 
 1. Add the file as an exemption in [scripts/assets/file_content_validation_checks.textproto](https://github.com/oppia/oppia-android/blob/2da95a53928bc989f5959fbac211f7f7ca0a753f/scripts/assets/file_content_validation_checks.textproto) for the particular check which is failing.
 For example: a file which has relative path to root as app/src/main/java/org/oppia/android/home/SampleActivity.kt, should be added as follows to the corresponding failing check:
-```
-file_content_checks {
-  filename_regex: ".+?.kt"
-  prohibited_content_regex: "^import .+?support.+?$"
-  failure_message: "AndroidX should be used instead of the support library"
-  exempted_file_name: "app/src/main/java/org/oppia/android/home/SampleActivity.kt"
-}
-```
+   ```textproto
+   file_content_checks {
+     filename_regex: ".+?.kt"
+     prohibited_content_regex: "^import .+?support.+?$"
+     failure_message: "AndroidX should be used instead of the support library"
+     exempted_file_name: "app/src/main/java/org/oppia/android/home/SampleActivity.kt"
+   }
+   ```
 2. Add an explanation to your PR description detailing why this exemption is correct
 
 ## XML syntax check
@@ -135,16 +135,23 @@ In cases where a test can’t be added, or the check is wrong, please:
 
 1. Add it as an exemption by providing its relative path to root in [script/assets/test_file_exemptions.textproto](https://github.com/oppia/oppia-android/blob/2da95a53928bc989f5959fbac211f7f7ca0a753f/scripts/assets/test_file_exemptions.textproto).
 Also, note that the file paths in the textproto file are maintained in lexicographical order. While adding any new file, please add it only at the correct lexicographical position, so that the list remains sorted. For example if we want to add the 'ActivityComponent.kt' file to the exemption list, at the correct lexicographical position in the textproto file add:
-```
-exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
-```
+   ```textproto
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityComponent.kt"
+   ```
 2. Add an explanation to your PR description detailing why this exemption is correct.
 
 Following are the cases where its valid to have test file exemptions:
 1. Interface files.
 2. Files with only constants defined (no logic).
 3. Cases when tests fail to pass code coverage.
-4. Cases when a test is verifying additional functionality beyond what can be tested in its usual test suite (for these cases use the 'is_extra_test' property in the exemption structure).
+4. Cases when a test is verifying additional functionality beyond what can be tested in its usual test suite (for these cases use the 'is_extra_test' property in the exemption structure). See the following example:
+   ```textproto
+   test_file_exemption {
+     exempted_file_path: "utility/src/test/java/org/oppia/android/util/math/NumericExpressionParserTest.kt",
+     is_extra_test_file: true
+   }
+   ```
+   In this example, `NumericExpressionParserTest` is an extra test. It doesn't correspond to a production file (i.e. there's no `NumericExpressionParser`). Instead, it's actually testing `MathExpressionParser` with a specific set of numeric expressions to verify the parser's behavior for those cases. There are a number of such 'extra' tests throughout the codebase to either help split up very large test suites (like this case), or to test something highly specific such as integration pathways (example: `PlatformParameterIntegrationTest`).
 
 ## Accessibility label check
 This check ensures that activities are defined with accessibility labels.
@@ -221,7 +228,7 @@ To fix this failure: there are 3 ways:
 #### Case when using ‘TODO’ keyword for documentation purposes
 If it’s a case where a ‘TODO’ keyword has been used for documentation purposes or if it's not meant to correspond to a future work, then please add an exemption for it. Add a new TODO exemption in the [scripts/assets/todo_open_exemptions.textproto](https://github.com/oppia/oppia-android/blob/2da95a53928bc989f5959fbac211f7f7ca0a753f/scripts/assets/todo_open_exemptions.textproto).
 Example:
-```
+```textproto
 todo_open_exemption {
   exempted_file_path: <relative_path_to_file>,
   line_number: <line_number_where_the_todo_is_present>
