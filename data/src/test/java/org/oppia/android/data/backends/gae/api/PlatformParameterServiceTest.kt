@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.Before
 import org.junit.Test
@@ -22,6 +20,8 @@ import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.Boole
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.IntValue
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.StringValue
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
