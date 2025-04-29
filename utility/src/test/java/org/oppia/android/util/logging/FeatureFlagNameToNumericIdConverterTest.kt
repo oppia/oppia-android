@@ -50,32 +50,32 @@ class FeatureFlagNameToNumericIdConverterTest {
   @Iteration(
     "learner_study_analytics",
     "flagName=$LEARNER_STUDY_ANALYTICS",
-    "expectedValue=1"
+    "expectedValue=2"
   )
   @Iteration(
     "enable_performance_metrics_collection",
     "flagName=$ENABLE_PERFORMANCE_METRICS_COLLECTION",
-    "expectedValue=2"
+    "expectedValue=3"
   )
   @Iteration(
     "edit_accounts_options_ui",
     "flagName=$EDIT_ACCOUNTS_OPTIONS_UI",
-    "expectedValue=3"
+    "expectedValue=4"
   )
   @Iteration(
     "spotlight_ui",
     "flagName=$SPOTLIGHT_UI",
-    "expectedValue=4"
+    "expectedValue=5"
   )
   @Iteration(
     "extra_topic_tabs_ui",
     "flagName=$EXTRA_TOPIC_TABS_UI",
-    "expectedValue=5"
+    "expectedValue=6"
   )
   @Iteration(
     "interaction_config_change_state_retention",
     "flagName=$INTERACTION_CONFIG_CHANGE_STATE_RETENTION",
-    "expectedValue=6"
+    "expectedValue=8"
   )
   @Iteration(
     "downloads_support",
@@ -85,32 +85,32 @@ class FeatureFlagNameToNumericIdConverterTest {
   @Iteration(
     "app_and_os_deprecation",
     "flagName=$APP_AND_OS_DEPRECATION",
-    "expectedValue=8"
+    "expectedValue=10"
   )
   @Iteration(
     "fast_language_switching_in_lesson",
     "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON",
-    "expectedValue=9"
+    "expectedValue=11"
   )
   @Iteration(
     "logging_learner_study_ids",
     "flagName=$LOGGING_LEARNER_STUDY_IDS",
-    "expectedValue=10"
+    "expectedValue=12"
   )
   @Iteration(
     "enable_nps_survey",
     "flagName=$ENABLE_NPS_SURVEY",
-    "expectedValue=11"
+    "expectedValue=13"
   )
   @Iteration(
     "enable_onboarding_flow_v2",
     "flagName=$ENABLE_ONBOARDING_FLOW_V2",
-    "expectedValue=12"
+    "expectedValue=14"
   )
   @Iteration(
     "enable_multiple_classrooms",
     "flagName=$ENABLE_MULTIPLE_CLASSROOMS",
-    "expectedValue=13"
+    "expectedValue=15"
   )
   fun testConvertToIntegerName_returnsCorrectIntegerForEach() {
     val integerName = FeatureFlagNameToNumericIdConverter.convertToNumericId(flagName)
