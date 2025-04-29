@@ -3,7 +3,7 @@ package org.oppia.android.app.profile
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -172,7 +172,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_withAdmin_screenReaderOff_keyboardIsVisible() {
     fakeAccessibilityService.setScreenReaderEnabled(false)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -186,7 +186,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_withAdmin_screenReaderOn_keyboardIsNotVisible() {
     fakeAccessibilityService.setScreenReaderEnabled(true)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -200,7 +200,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_withAdmin_inputCorrectPin_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -218,7 +218,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_enableClassrooms_withAdmin_inputCorrectPin_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -237,7 +237,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_withUser_inputCorrectPin_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -255,7 +255,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_enableClassrooms_withUser_inputCorrectPin_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -273,7 +273,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_inputWrongPin_incorrectPinShows() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -294,7 +294,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPasswordActivity_hasCorrectActivityLabel() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -313,7 +313,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_inputWrongPin_incorrectPinShows() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -334,7 +334,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_inputCorrectPin_doesNotShowIncorrectPin() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -356,7 +356,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_forgot_opensAdminForgotDialog() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -377,7 +377,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputWrongAdminPin_wrongAdminPinError() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -421,7 +421,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndShortPin_pinLengthError() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -479,7 +479,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPinAndOldPin_wrongPinError() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -528,7 +528,7 @@ class PinPasswordActivityTest {
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNewPin_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -574,7 +574,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPin_configChange_inputPinIsPresent() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -604,7 +604,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPin_submit_configChange_resetPinDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -633,7 +633,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPin_submit_inputNewPin_pinChanged() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -675,7 +675,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_forgot_configChange_opensAdminForgotDialog() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -694,7 +694,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputWrongAdminPin_configChange_wrongAdminPinError() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -737,7 +737,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndIncorrectPin_errorIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -779,7 +779,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_errorIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -812,7 +812,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_configChange_errorIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -847,7 +847,7 @@ class PinPasswordActivityTest {
   // TODO(#4209): Error -> Expected error text doesn't match the selected view
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndNullPin_imeAction_errorIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -877,7 +877,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_user_forgot_adminPinAndNullPin_configChange_imeAction_errorIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -908,7 +908,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputNullAdminPin_configChange_wrongAdminPinError() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -951,7 +951,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withUser_forgot_inputAdminPinAndInvalidPin_errorIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -996,7 +996,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_inputWrongPin_configChange_incorrectPinIsDisplayed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1020,7 +1020,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_checkShowHidePassword_defaultText() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1035,7 +1035,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_checkShowHidePassword_defaultImage() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1055,7 +1055,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_showHideIcon_hasPasswordHiddenContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1075,7 +1075,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_showHidePassword_textChangesToHide() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1090,7 +1090,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_clickShowHideIcon_hasPasswordShownContentDescription() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1113,7 +1113,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_showHidePassword_imageChangesToShow() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1136,7 +1136,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_withAdmin_showHidePassword_configChange_showViewIsShown() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1161,7 +1161,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_checkInputType_showHidePassword_inputTypeIsSame() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1185,7 +1185,7 @@ class PinPasswordActivityTest {
 
   @Test
   fun testPinPassword_clickForgotPin_enterAdminPin_clickSubmit_dialogMessageIsCorrect() {
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1215,8 +1215,8 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_inputPin_configChange_inputPinIsPersisted() {
-    ActivityScenario.launch<PinPasswordActivity>(
+  fun testPinPassword_adminUser_inputFiveDigitPin_configChange_inputIsPersisted() {
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1225,16 +1225,16 @@ class PinPasswordActivityTest {
     ).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .perform(editTextInputAction.appendText("1234"), closeSoftKeyboard())
+        .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.pin_password_input_pin_edit_text))
-        .check(matches(withText("1234")))
+        .check(matches(withText("12345")))
     }
   }
 
   @Test
-  fun testPinPassword_withUser_inputPin_configChange_inputPinIsPersisted() {
-    ActivityScenario.launch<PinPasswordActivity>(
+  fun testPinPassword_nonAdminUser_inputThreeDigitPin_configChange_inputIsPersisted() {
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1251,8 +1251,8 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin_inputPin_exceedMaxLength_textIsTrimmed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+  fun testPinPassword_adminUser_inputPinExceedsFive_textIsTrimmedToFive() {
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1268,8 +1268,8 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withUser_inputPin_exceedMaxLength_textIsTrimmed() {
-    ActivityScenario.launch<PinPasswordActivity>(
+  fun testPinPassword_nonAdminUser_inputPinExceedsThree_textIsTrimmedToThree() {
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1285,9 +1285,9 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withAdmin__retainPinOnRotation_opensHomeActivity() {
+  fun testActivity_multipleClassroomsDisabled_adminUser_inputPin_changeConfig_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1306,9 +1306,9 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_enablesClassroom_withAdmin_retainPinOnRotation_openClassroomListActivity() {
+  fun testActivity_enablesClassroom_adminUser_inputPin_changeConfig_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1327,9 +1327,9 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_withUser_retainPinOnRotation_opensHomeActivity() {
+  fun testActivity_disableMultipleClassroom_nonAdminUser_inputPin_changeConfig_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
@@ -1348,9 +1348,9 @@ class PinPasswordActivityTest {
   }
 
   @Test
-  fun testPinPassword_enablesClassroom_withUser_retainPinOnRotation_opensClassroomListActivity() {
+  fun testActivity_enableClassroom_nonAdminUser_inputPin_changeConfig_opensClassroomListActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    ActivityScenario.launch<PinPasswordActivity>(
+    launch<PinPasswordActivity>(
       PinPasswordActivity.createPinPasswordActivityIntent(
         context = context,
         adminPin = adminPin,
