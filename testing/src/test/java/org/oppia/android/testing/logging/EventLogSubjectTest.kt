@@ -34,6 +34,7 @@ import org.oppia.android.testing.logging.EventLogSubject.AbandonSurveyContextSub
 import org.oppia.android.testing.logging.EventLogSubject.AppLanguageSelectionSubject
 import org.oppia.android.testing.logging.EventLogSubject.AudioTranslationLanguageSelectionSubject
 import org.oppia.android.testing.logging.EventLogSubject.CardContextSubject
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.EventLogSubject.ExplorationContextSubject
 import org.oppia.android.testing.logging.EventLogSubject.FeatureFlagListContextSubject
 import org.oppia.android.testing.logging.EventLogSubject.HintContextSubject
@@ -58,7 +59,7 @@ class EventLogSubjectTest {
       .setTimestamp(123456789)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasTimestampThat()
       .isEqualTo(123456789)
   }
@@ -70,7 +71,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasTimestampThat()
         .isEqualTo(987654321)
     }
@@ -82,7 +83,7 @@ class EventLogSubjectTest {
       .setPriority(EventLog.Priority.ESSENTIAL)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .isEssentialPriority()
   }
 
@@ -92,7 +93,7 @@ class EventLogSubjectTest {
       .setPriority(EventLog.Priority.OPTIONAL)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .isEssentialPriority()
     }
   }
@@ -103,7 +104,7 @@ class EventLogSubjectTest {
       .setPriority(EventLog.Priority.OPTIONAL)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .isOptionalPriority()
   }
 
@@ -113,7 +114,7 @@ class EventLogSubjectTest {
       .setPriority(EventLog.Priority.ESSENTIAL)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .isOptionalPriority()
     }
   }
@@ -123,7 +124,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasNoProfileId()
   }
 
@@ -136,7 +137,7 @@ class EventLogSubjectTest {
       .setProfileId(profileId)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasNoProfileId()
     }
   }
@@ -150,7 +151,7 @@ class EventLogSubjectTest {
       .setProfileId(profileId)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasProfileIdThat()
       .isEqualTo(profileId)
   }
@@ -167,7 +168,7 @@ class EventLogSubjectTest {
       .setInternalId(2)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasProfileIdThat()
         .isEqualTo(differentProfileId)
     }
@@ -182,7 +183,7 @@ class EventLogSubjectTest {
       .setAppLanguageSelection(appLanguageSelection)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppLanguageSelectionThat()
       .isEqualTo(appLanguageSelection)
   }
@@ -199,7 +200,7 @@ class EventLogSubjectTest {
       .setSelectedLanguage(OppiaLanguage.ARABIC)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppLanguageSelectionThat()
         .isEqualTo(differentAppLanguageSelection)
     }
@@ -214,7 +215,7 @@ class EventLogSubjectTest {
       .setWrittenTranslationLanguageSelection(writtenTranslationLanguageSelection)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasWrittenTranslationLanguageSelectionThat()
       .isEqualTo(writtenTranslationLanguageSelection)
   }
@@ -231,7 +232,7 @@ class EventLogSubjectTest {
       .setSelectedLanguage(OppiaLanguage.ARABIC)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasWrittenTranslationLanguageSelectionThat()
         .isEqualTo(differentLanguageSelection)
     }
@@ -246,7 +247,7 @@ class EventLogSubjectTest {
       .setAudioTranslationLanguageSelection(audioTranslationLanguageSelection)
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAudioTranslationLanguageSelectionThat()
       .isEqualTo(audioTranslationLanguageSelection)
   }
@@ -263,7 +264,7 @@ class EventLogSubjectTest {
       .setSelectedLanguage(OppiaLanguage.ARABIC)
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAudioTranslationLanguageSelectionThat()
         .isEqualTo(differentSelection)
     }
@@ -278,7 +279,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenExplorationActivityContext()
   }
 
@@ -287,7 +288,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenExplorationActivityContext()
     }
   }
@@ -305,9 +306,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenExplorationActivityContextThat()
-    subject.hasExplorationIdThat().isEqualTo("explorationId")
+      .hasExplorationIdThat().isEqualTo("explorationId")
   }
 
   @Test
@@ -323,7 +324,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenExplorationActivityContextThat {
         hasExplorationIdThat().isEqualTo("explorationId")
       }
@@ -338,7 +339,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenInfoTabContext()
   }
 
@@ -347,7 +348,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenInfoTabContext()
     }
   }
@@ -365,10 +366,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenInfoTabContextThat()
-
-    subject.hasTopicIdThat().isEqualTo("topicId")
+      .hasTopicIdThat().isEqualTo("topicId")
   }
 
   @Test
@@ -384,7 +384,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenInfoTabContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -399,7 +399,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenLessonsTabContext()
   }
 
@@ -416,10 +416,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenLessonsTabContextThat()
-
-    subject.hasTopicIdThat().isEqualTo("topicId")
+      .hasTopicIdThat().isEqualTo("topicId")
   }
 
   @Test
@@ -435,7 +434,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenLessonsTabContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -450,12 +449,12 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenPracticeTabContext()
   }
 
   @Test
-  fun testEventLogSubject_contextIsOpenPracticeTab_returnsTopicContextSubject() {
+  fun testEventLogSubject_contextIsOpenPracticeTab_returnsTopicContextSubject_withCorrectTopicId() {
     val topicContext = TopicContext.newBuilder()
       .setTopicId("topicId")
       .build()
@@ -467,10 +466,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenPracticeTabContextThat()
-
-    subject.hasTopicIdThat().isEqualTo("topicId")
+      .hasTopicIdThat().isEqualTo("topicId")
   }
 
   @Test
@@ -486,7 +484,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenPracticeTabContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -501,7 +499,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionTabContext()
   }
 
@@ -510,7 +508,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenRevisionTabContext()
     }
   }
@@ -528,10 +526,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionTabContextThat()
-
-    subject.hasTopicIdThat().isEqualTo("topicId")
+      .hasTopicIdThat().isEqualTo("topicId")
   }
 
   @Test
@@ -547,7 +544,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionTabContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -565,7 +562,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionTabContextThat()
       .isEqualTo(topicContext)
   }
@@ -585,7 +582,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenRevisionTabContextThat()
         .isEqualTo(differentTopicContext)
     }
@@ -602,7 +599,7 @@ class EventLogSubjectTest {
           .setOpenRevisionTab(topicContext)
       )
       .build()
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionTabContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -620,7 +617,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenRevisionTabContextThat {
           hasTopicIdThat().isEqualTo("differentTopicId")
         }
@@ -636,7 +633,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenQuestionPlayerContext()
   }
 
@@ -645,7 +642,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenQuestionPlayerContext()
     }
   }
@@ -662,7 +659,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenQuestionPlayerContextThat()
       .isEqualTo(questionContext)
   }
@@ -682,7 +679,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenQuestionPlayerContextThat()
         .isEqualTo(differentQuestionContext)
     }
@@ -700,7 +697,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenQuestionPlayerContextThat {
         hasQuestionIdThat().isEqualTo("questionId")
       }
@@ -718,7 +715,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenQuestionPlayerContextThat {
           hasQuestionIdThat().isEqualTo("differentQuestionId")
         }
@@ -734,7 +731,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenStoryActivityContext()
   }
 
@@ -743,7 +740,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenStoryActivityContext()
     }
   }
@@ -760,7 +757,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenStoryActivityContextThat()
       .isEqualTo(storyContext)
   }
@@ -780,7 +777,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenStoryActivityContextThat()
         .isEqualTo(differentStoryContext)
     }
@@ -798,7 +795,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenStoryActivityContextThat {
         hasStoryIdThat().isEqualTo("storyId")
       }
@@ -816,7 +813,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenStoryActivityContextThat {
           hasStoryIdThat().isEqualTo("differentStoryId")
         }
@@ -832,7 +829,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenConceptCardContext()
   }
 
@@ -841,7 +838,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenConceptCardContext()
     }
   }
@@ -858,7 +855,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenConceptCardContextThat()
       .isEqualTo(conceptCardContext)
   }
@@ -878,7 +875,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenConceptCardContextThat()
         .isEqualTo(differentConceptCardContext)
     }
@@ -896,7 +893,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenConceptCardContextThat {
         hasSkillIdThat().isEqualTo("SkillId")
       }
@@ -914,7 +911,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenConceptCardContextThat {
           hasSkillIdThat().isEqualTo("differentSkillId")
         }
@@ -930,7 +927,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionCardContext()
   }
 
@@ -939,7 +936,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenRevisionCardContext()
     }
   }
@@ -956,7 +953,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionCardContextThat()
       .isEqualTo(revisionCardContext)
   }
@@ -976,7 +973,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenRevisionCardContextThat()
         .isEqualTo(differentRevisionCardContext)
     }
@@ -994,7 +991,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenRevisionCardContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -1012,7 +1009,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenRevisionCardContextThat {
           hasTopicIdThat().isEqualTo("differentTopicId")
         }
@@ -1028,7 +1025,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasCloseRevisionCardContext()
   }
 
@@ -1037,7 +1034,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasCloseRevisionCardContext()
     }
   }
@@ -1054,7 +1051,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasCloseRevisionCardContextThat()
       .isEqualTo(revisionCardContext)
   }
@@ -1074,7 +1071,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasCloseRevisionCardContextThat()
         .isEqualTo(differentRevisionCardContext)
     }
@@ -1092,7 +1089,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasCloseRevisionCardContextThat {
         hasTopicIdThat().isEqualTo("topicId")
       }
@@ -1110,7 +1107,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasCloseRevisionCardContextThat {
           hasTopicIdThat().isEqualTo("differentTopicId")
         }
@@ -1126,7 +1123,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartCardContext()
   }
 
@@ -1135,7 +1132,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartCardContext()
     }
   }
@@ -1152,7 +1149,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartCardContextThat()
       .isEqualTo(cardContext)
   }
@@ -1172,7 +1169,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartCardContextThat()
         .isEqualTo(differentCardContext)
     }
@@ -1190,7 +1187,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartCardContextThat {
         hasSkillIdThat().isEqualTo("SkillId")
       }
@@ -1208,7 +1205,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartCardContextThat {
           hasSkillIdThat().isEqualTo("differentSkillId")
         }
@@ -1224,7 +1221,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasEndCardContext()
   }
 
@@ -1233,7 +1230,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasEndCardContext()
     }
   }
@@ -1250,7 +1247,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasEndCardContextThat()
       .isEqualTo(cardContext)
   }
@@ -1270,7 +1267,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasEndCardContextThat()
         .isEqualTo(differentCardContext)
     }
@@ -1288,7 +1285,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasEndCardContextThat {
         hasSkillIdThat().isEqualTo("SkillId")
       }
@@ -1306,7 +1303,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasEndCardContextThat {
           hasSkillIdThat().isEqualTo("differentSkillId")
         }
@@ -1322,7 +1319,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasHintUnlockedContext()
   }
 
@@ -1331,7 +1328,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasHintUnlockedContext()
     }
   }
@@ -1348,7 +1345,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasHintUnlockedContextThat()
       .isEqualTo(hintContext)
   }
@@ -1368,7 +1365,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasHintUnlockedContextThat()
         .isEqualTo(differentHintContext)
     }
@@ -1386,7 +1383,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasHintUnlockedContextThat {
         hasHintIndexThat().isEqualTo(1)
       }
@@ -1404,7 +1401,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasHintUnlockedContextThat {
           hasHintIndexThat().isEqualTo(2)
         }
@@ -1420,7 +1417,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasRevealHintContext()
   }
 
@@ -1429,7 +1426,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasRevealHintContext()
     }
   }
@@ -1446,7 +1443,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasRevealHintContextThat()
       .isEqualTo(hintContext)
   }
@@ -1466,7 +1463,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasRevealHintContextThat()
         .isEqualTo(differentHintContext)
     }
@@ -1484,7 +1481,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasRevealHintContextThat {
         hasHintIndexThat().isEqualTo(1)
       }
@@ -1502,7 +1499,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasRevealHintContextThat {
           hasHintIndexThat().isEqualTo(2)
         }
@@ -1518,7 +1515,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasViewExistingHintContext()
   }
 
@@ -1527,7 +1524,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasViewExistingHintContext()
     }
   }
@@ -1544,7 +1541,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasViewExistingHintContextThat()
       .isEqualTo(hintContext)
   }
@@ -1564,7 +1561,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasViewExistingHintContextThat()
         .isEqualTo(differentHintContext)
     }
@@ -1582,7 +1579,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasViewExistingHintContextThat {
         hasHintIndexThat().isEqualTo(1)
       }
@@ -1600,7 +1597,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasViewExistingHintContextThat {
           hasHintIndexThat().isEqualTo(2)
         }
@@ -1616,7 +1613,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSolutionUnlockedContext()
   }
 
@@ -1625,7 +1622,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSolutionUnlockedContext()
     }
   }
@@ -1642,7 +1639,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSolutionUnlockedContextThat()
       .isEqualTo(explorationContext)
   }
@@ -1662,7 +1659,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSolutionUnlockedContextThat()
         .isEqualTo(differentExplorationContext)
     }
@@ -1680,7 +1677,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSolutionUnlockedContextThat {
         hasExplorationIdThat().isEqualTo("explorationId")
       }
@@ -1698,7 +1695,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSolutionUnlockedContextThat {
           hasExplorationIdThat().isEqualTo("differentExplorationId")
         }
@@ -1714,7 +1711,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasRevealSolutionContext()
   }
 
@@ -1723,7 +1720,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasRevealSolutionContext()
     }
   }
@@ -1740,7 +1737,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasRevealSolutionContextThat()
       .isEqualTo(explorationContext)
   }
@@ -1760,7 +1757,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasRevealSolutionContextThat()
         .isEqualTo(differentExplorationContext)
     }
@@ -1778,7 +1775,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasRevealSolutionContextThat {
         hasExplorationIdThat().isEqualTo("explorationId")
       }
@@ -1796,7 +1793,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasRevealSolutionContextThat {
           hasExplorationIdThat().isEqualTo("differentExplorationId")
         }
@@ -1812,7 +1809,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasViewExistingSolutionContext()
   }
 
@@ -1821,7 +1818,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasViewExistingSolutionContext()
     }
   }
@@ -1838,7 +1835,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasViewExistingSolutionContextThat()
       .isEqualTo(explorationContext)
   }
@@ -1855,7 +1852,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasViewExistingSolutionContextThat {
         hasExplorationIdThat().isEqualTo("explorationId")
       }
@@ -1873,7 +1870,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasViewExistingSolutionContextThat {
           hasExplorationIdThat().isEqualTo("differentExplorationId")
         }
@@ -1889,7 +1886,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSubmitAnswerContext()
   }
 
@@ -1898,7 +1895,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSubmitAnswerContext()
     }
   }
@@ -1915,7 +1912,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSubmitAnswerContextThat()
       .isEqualTo(submitAnswerContext)
   }
@@ -1933,7 +1930,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSubmitAnswerContextThat {
         hasAnswerCorrectValueThat().isEqualTo(true)
       }
@@ -1948,7 +1945,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasPlayVoiceOverContext()
   }
 
@@ -1957,7 +1954,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasPlayVoiceOverContext()
     }
   }
@@ -1974,7 +1971,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasPlayVoiceOverContextThat()
       .isEqualTo(voiceoverContext)
   }
@@ -1995,7 +1992,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasPlayVoiceOverContextThat()
         .isEqualTo(differentVoiceoverContext)
     }
@@ -2013,7 +2010,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasPlayVoiceOverContextThat {
         hasContentIdThat().isEqualTo("contentId")
       }
@@ -2031,7 +2028,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasPlayVoiceOverContextThat {
           hasContentIdThat().isEqualTo("differentContentId")
         }
@@ -2047,7 +2044,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasPauseVoiceOverContext()
   }
 
@@ -2056,7 +2053,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasPauseVoiceOverContext()
     }
   }
@@ -2073,7 +2070,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasPauseVoiceOverContextThat()
       .isEqualTo(voiceoverContext)
   }
@@ -2094,7 +2091,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasPauseVoiceOverContextThat()
         .isEqualTo(differentVoiceoverContext)
     }
@@ -2112,7 +2109,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasPauseVoiceOverContextThat {
         hasContentIdThat().isEqualTo("contentId")
       }
@@ -2130,7 +2127,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasPauseVoiceOverContextThat {
           hasContentIdThat().isEqualTo("differentContentId")
         }
@@ -2146,7 +2143,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppInBackgroundContext()
   }
 
@@ -2155,7 +2152,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppInBackgroundContext()
     }
   }
@@ -2172,7 +2169,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppInBackgroundContextThat()
       .isEqualTo(learnerContext)
   }
@@ -2193,7 +2190,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppInBackgroundContextThat()
         .isEqualTo(differentLearnerContext)
     }
@@ -2211,7 +2208,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppInBackgroundContextThat {
         hasLearnerIdThat().isEqualTo("learner123")
       }
@@ -2229,7 +2226,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppInBackgroundContextThat {
           hasLearnerIdThat().isEqualTo("learner456")
         }
@@ -2245,7 +2242,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppInForegroundContext()
   }
 
@@ -2254,7 +2251,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppInForegroundContext()
     }
   }
@@ -2271,7 +2268,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppInForegroundContextThat()
       .isEqualTo(learnerContext)
   }
@@ -2292,7 +2289,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppInForegroundContextThat()
         .isEqualTo(differentLearnerContext)
     }
@@ -2310,7 +2307,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAppInForegroundContextThat {
         hasLearnerIdThat().isEqualTo("learner123")
       }
@@ -2328,7 +2325,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAppInForegroundContextThat {
           hasLearnerIdThat().isEqualTo("learner456")
         }
@@ -2344,7 +2341,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartExplorationContext()
   }
 
@@ -2353,7 +2350,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartExplorationContext()
     }
   }
@@ -2370,7 +2367,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartExplorationContextThat()
       .isEqualTo(explorationContext)
   }
@@ -2391,7 +2388,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartExplorationContextThat()
         .isEqualTo(differentExplorationContext)
     }
@@ -2409,7 +2406,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartExplorationContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -2427,7 +2424,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartExplorationContextThat {
           hasExplorationIdThat().isEqualTo("exploration456")
         }
@@ -2443,7 +2440,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasExitExplorationContext()
   }
 
@@ -2452,7 +2449,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasExitExplorationContext()
     }
   }
@@ -2469,7 +2466,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasExitExplorationContextThat()
       .isEqualTo(explorationContext)
   }
@@ -2490,7 +2487,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasExitExplorationContextThat()
         .isEqualTo(differentExplorationContext)
     }
@@ -2508,7 +2505,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasExitExplorationContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -2526,7 +2523,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasExitExplorationContextThat {
           hasExplorationIdThat().isEqualTo("exploration456")
         }
@@ -2542,7 +2539,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasFinishExplorationContext()
   }
 
@@ -2551,7 +2548,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasFinishExplorationContext()
     }
   }
@@ -2568,7 +2565,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasFinishExplorationContextThat()
       .isEqualTo(explorationContext)
   }
@@ -2589,7 +2586,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasFinishExplorationContextThat()
         .isEqualTo(differentExplorationContext)
     }
@@ -2607,7 +2604,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasFinishExplorationContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -2625,7 +2622,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasFinishExplorationContextThat {
           hasExplorationIdThat().isEqualTo("exploration456")
         }
@@ -2641,7 +2638,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeExplorationContext()
   }
 
@@ -2649,7 +2646,7 @@ class EventLogSubjectTest {
   fun testEventLogSubject_hasResumeExplorationContext_fails() {
     val eventLog = EventLog.newBuilder().build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeExplorationContext()
     }
   }
@@ -2666,7 +2663,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeExplorationContextThat()
       .isEqualTo(learnerDetailsContext)
   }
@@ -2687,7 +2684,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeExplorationContextThat()
         .isEqualTo(differentContext)
     }
@@ -2705,7 +2702,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeExplorationContextThat {
         hasLearnerIdThat().isEqualTo("learner123")
       }
@@ -2724,7 +2721,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeExplorationContextThat {
           hasLearnerIdThat().isEqualTo("learner456")
         }
@@ -2740,7 +2737,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartOverExplorationContext()
   }
 
@@ -2749,7 +2746,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartOverExplorationContext()
     }
   }
@@ -2766,7 +2763,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartOverExplorationContextThat()
       .isEqualTo(learnerDetailsContext)
   }
@@ -2787,7 +2784,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartOverExplorationContextThat()
         .isEqualTo(differentContext)
     }
@@ -2805,7 +2802,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartOverExplorationContextThat {
         hasLearnerIdThat().isEqualTo("learner123")
       }
@@ -2824,7 +2821,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasStartOverExplorationContextThat {
           hasLearnerIdThat().isEqualTo("learner456")
         }
@@ -2840,7 +2837,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasDeleteProfileContext()
   }
 
@@ -2849,7 +2846,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasDeleteProfileContext()
     }
   }
@@ -2866,7 +2863,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasDeleteProfileContextThat()
       .isEqualTo(learnerDetailsContext)
   }
@@ -2887,7 +2884,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasDeleteProfileContextThat()
         .isEqualTo(differentContext)
     }
@@ -2905,7 +2902,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasDeleteProfileContextThat {
         hasLearnerIdThat().isEqualTo("learner123")
       }
@@ -2924,7 +2921,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasDeleteProfileContextThat {
           hasLearnerIdThat().isEqualTo("learner456")
         }
@@ -2940,7 +2937,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenHomeContext()
   }
 
@@ -2949,7 +2946,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenHomeContext()
     }
   }
@@ -2963,10 +2960,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenHomeContextThat()
-
-    subject.isTrue()
+      .isTrue()
   }
 
   @Test
@@ -2978,7 +2974,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenProfileChooserContext()
   }
 
@@ -2987,7 +2983,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder()
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOpenProfileChooserContext()
     }
   }
@@ -3001,10 +2997,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOpenProfileChooserContextThat()
-
-    subject.isTrue()
+      .isTrue()
   }
 
   @Test
@@ -3016,7 +3011,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasReachedInvestedEngagementContext()
   }
 
@@ -3025,7 +3020,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasReachedInvestedEngagementContext()
     }
   }
@@ -3042,7 +3037,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasReachedInvestedEngagementContextThat()
       .isEqualTo(explorationContext)
   }
@@ -3063,7 +3058,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasReachedInvestedEngagementContextThat()
         .isEqualTo(differentContext)
     }
@@ -3081,7 +3076,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasReachedInvestedEngagementContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -3100,7 +3095,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasReachedInvestedEngagementContextThat {
           hasExplorationIdThat().isEqualTo("exploration456")
         }
@@ -3116,7 +3111,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSwitchInLessonLanguageContext()
   }
 
@@ -3125,7 +3120,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSwitchInLessonLanguageContext()
     }
   }
@@ -3142,7 +3137,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSwitchInLessonLanguageContextThat()
       .isEqualTo(switchContext)
   }
@@ -3163,7 +3158,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSwitchInLessonLanguageContextThat()
         .isEqualTo(differentContext)
     }
@@ -3182,7 +3177,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasSwitchInLessonLanguageContextThat {
         hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.ARABIC)
         hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
@@ -3203,7 +3198,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasSwitchInLessonLanguageContextThat {
           hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.HINDI)
           hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ARABIC)
@@ -3220,7 +3215,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasInstallIdForAnalyticsLogFailure()
   }
 
@@ -3229,7 +3224,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasInstallIdForAnalyticsLogFailure()
     }
   }
@@ -3243,7 +3238,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasInstallIdForAnalyticsLogFailureThat()
       .isEqualTo("install123")
   }
@@ -3258,7 +3253,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasInstallIdForAnalyticsLogFailureThat()
         .isEqualTo("install456")
     }
@@ -3273,7 +3268,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAbandonSurveyContext()
   }
 
@@ -3282,7 +3277,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAbandonSurveyContext()
     }
   }
@@ -3299,7 +3294,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAbandonSurveyContextThat()
       .isEqualTo(abandonSurveyContext)
   }
@@ -3320,7 +3315,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAbandonSurveyContextThat()
         .isEqualTo(differentContext)
     }
@@ -3338,7 +3333,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasAbandonSurveyContextThat {
         hasQuestionNameThat().isEqualTo(SurveyQuestionName.QUESTION_NAME_UNSPECIFIED)
       }
@@ -3357,7 +3352,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasAbandonSurveyContextThat {
           hasQuestionNameThat().isEqualTo(SurveyQuestionName.USER_TYPE)
         }
@@ -3373,7 +3368,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasMandatorySurveyResponseContext()
   }
 
@@ -3382,7 +3377,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasMandatorySurveyResponseContext()
     }
   }
@@ -3399,7 +3394,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasMandatorySurveyResponseContextThat()
       .isEqualTo(mandatorySurveyResponseContext)
   }
@@ -3420,7 +3415,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasMandatorySurveyResponseContextThat()
         .isEqualTo(differentContext)
     }
@@ -3438,7 +3433,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasMandatorySurveyResponseContextThat {
         hasUserTypeAnswerThat().isEqualTo(UserTypeAnswer.USER_TYPE_UNSPECIFIED)
       }
@@ -3457,7 +3452,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasMandatorySurveyResponseContextThat {
           hasUserTypeAnswerThat().isEqualTo(UserTypeAnswer.LEARNER)
         }
@@ -3473,7 +3468,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasShowSurveyPopupContext()
   }
 
@@ -3482,7 +3477,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasShowSurveyPopupContext()
     }
   }
@@ -3499,7 +3494,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasShowSurveyPopupContextThat()
       .isEqualTo(surveyContext)
   }
@@ -3520,7 +3515,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasShowSurveyPopupContextThat()
         .isEqualTo(differentContext)
     }
@@ -3538,7 +3533,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasShowSurveyPopupContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -3557,7 +3552,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasShowSurveyPopupContextThat {
           hasExplorationIdThat().isEqualTo("exploration456")
         }
@@ -3573,7 +3568,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasBeginSurveyContext()
   }
 
@@ -3582,7 +3577,7 @@ class EventLogSubjectTest {
     val eventLog = EventLog.newBuilder().build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasBeginSurveyContext()
     }
   }
@@ -3599,7 +3594,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasBeginSurveyContextThat()
       .isEqualTo(surveyContext)
   }
@@ -3620,7 +3615,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasBeginSurveyContextThat()
         .isEqualTo(differentContext)
     }
@@ -3638,7 +3633,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasBeginSurveyContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -3657,7 +3652,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasBeginSurveyContextThat {
           hasExplorationIdThat().isEqualTo("exploration456")
         }
@@ -3676,7 +3671,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasFeatureFlagContextThat()
       .isEqualTo(featureFlagListContext)
   }
@@ -3697,7 +3692,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasFeatureFlagContextThat()
         .isEqualTo(differentContext)
     }
@@ -3715,7 +3710,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasFeatureFlagContextThat {
         isEqualTo(featureFlagListContext)
       }
@@ -3734,7 +3729,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasFeatureFlagContextThat {
           isEqualTo(
             FeatureFlagListContext.newBuilder()
@@ -3757,7 +3752,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOptionalSurveyResponseContextThat()
       .isEqualTo(optionalSurveyResponseContext)
   }
@@ -3778,7 +3773,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOptionalSurveyResponseContextThat()
         .isEqualTo(differentContext)
     }
@@ -3796,7 +3791,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasOptionalSurveyResponseContextThat {
         hasFeedbackAnswerThat().isEqualTo("some_feedback")
       }
@@ -3815,7 +3810,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasOptionalSurveyResponseContextThat {
           hasFeedbackAnswerThat().isEqualTo("wrong_feedback")
         }
@@ -3834,7 +3829,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasProgressSavingSuccessContextThat()
       .isEqualTo(progressSavingSuccessContext)
   }
@@ -3855,7 +3850,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasProgressSavingSuccessContextThat()
         .isEqualTo(differentContext)
     }
@@ -3873,7 +3868,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasProgressSavingSuccessContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -3892,7 +3887,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasProgressSavingSuccessContextThat {
           hasExplorationIdThat().isEqualTo("different_exploration")
         }
@@ -3911,7 +3906,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasProgressSavingFailureContextThat()
       .isEqualTo(progressSavingFailureContext)
   }
@@ -3932,7 +3927,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasProgressSavingFailureContextThat()
         .isEqualTo(differentContext)
     }
@@ -3950,7 +3945,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasProgressSavingFailureContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -3969,7 +3964,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasProgressSavingFailureContextThat {
           hasExplorationIdThat().isEqualTo("different_exploration")
         }
@@ -3988,7 +3983,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasLessonSavedAdvertentlyContextThat()
       .isEqualTo(lessonSavedAdvertentlyContext)
   }
@@ -4009,7 +4004,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasLessonSavedAdvertentlyContextThat()
         .isEqualTo(differentContext)
     }
@@ -4027,7 +4022,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasLessonSavedAdvertentlyContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -4046,7 +4041,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasLessonSavedAdvertentlyContextThat {
           hasExplorationIdThat().isEqualTo("different_exploration")
         }
@@ -4065,7 +4060,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeLessonSubmitCorrectAnswerContextThat()
       .isEqualTo(resumeLessonSubmitCorrectAnswerContext)
   }
@@ -4086,7 +4081,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeLessonSubmitCorrectAnswerContextThat()
         .isEqualTo(differentContext)
     }
@@ -4104,7 +4099,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeLessonSubmitCorrectAnswerContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -4123,7 +4118,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeLessonSubmitCorrectAnswerContextThat {
           hasExplorationIdThat().isEqualTo("different_exploration")
         }
@@ -4142,7 +4137,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeLessonSubmitIncorrectAnswerContextThat()
       .isEqualTo(resumeLessonSubmitIncorrectAnswerContext)
   }
@@ -4163,7 +4158,7 @@ class EventLogSubjectTest {
       .build()
 
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeLessonSubmitIncorrectAnswerContextThat()
         .isEqualTo(differentContext)
     }
@@ -4181,7 +4176,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasResumeLessonSubmitIncorrectAnswerContextThat {
         hasExplorationIdThat().isEqualTo("exploration123")
       }
@@ -4199,7 +4194,7 @@ class EventLogSubjectTest {
       )
       .build()
     assertThrows(AssertionError::class.java) {
-      EventLogSubject.assertThat(eventLog)
+      assertThat(eventLog)
         .hasResumeLessonSubmitIncorrectAnswerContextThat {
           hasExplorationIdThat().isEqualTo("different_exploration")
         }
@@ -4220,7 +4215,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartProfileOnboardingContext()
   }
 
@@ -4238,10 +4233,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartProfileOnboardingContextThat()
-
-    subject.hasProfileIdThat()
+      .hasProfileIdThat()
       .isEqualTo(startProfileOnboardingContext.profileId)
   }
 
@@ -4259,7 +4253,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasStartProfileOnboardingContextThat {
         hasProfileIdThat().isEqualTo(startProfileOnboardingContext.profileId)
       }
@@ -4279,7 +4273,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasEndProfileOnboardingContext()
   }
 
@@ -4297,10 +4291,9 @@ class EventLogSubjectTest {
       )
       .build()
 
-    val subject = EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasEndProfileOnboardingContextThat()
-
-    subject.hasProfileIdThat().isEqualTo(endProfileOnboardingContext.profileId)
+      .hasProfileIdThat().isEqualTo(endProfileOnboardingContext.profileId)
   }
 
   @Test
@@ -4317,7 +4310,7 @@ class EventLogSubjectTest {
       )
       .build()
 
-    EventLogSubject.assertThat(eventLog)
+    assertThat(eventLog)
       .hasEndProfileOnboardingContextThat {
         hasProfileIdThat().isEqualTo(endProfileOnboardingContext.profileId)
       }
@@ -4753,6 +4746,7 @@ class EventLogSubjectTest {
       .hasSurveyIdThat()
       .isEqualTo("survey_id_789")
   }
+
   @Test
   fun testOptionalSurveyResponseContext_hasSurveyDetailsThat_executesBlockCorrectly() {
     val optionalSurveyResponseContext = EventLog.OptionalSurveyResponseContext.newBuilder()
@@ -4797,6 +4791,7 @@ class EventLogSubjectTest {
         hasSurveyIdThat().isEqualTo("survey_id_123")
       }
   }
+
   @Test
   fun testMandatorySurveyResponseContext_hasMarketFitAnswerThat_returnsCorrectMarketFitAnswer() {
     val mandatorySurveyResponseContext = MandatorySurveyResponseContext.newBuilder()
@@ -4810,7 +4805,7 @@ class EventLogSubjectTest {
 
   @Test
   fun testMandatorySurveyResponseContext_hasNpsScoreAnswerThat_returnsCorrectNpsScore() {
-    val mandatorySurveyResponseContext = EventLog.MandatorySurveyResponseContext.newBuilder()
+    val mandatorySurveyResponseContext = MandatorySurveyResponseContext.newBuilder()
       .setNpsScoreAnswer(8)
       .build()
 
@@ -4835,7 +4830,7 @@ class EventLogSubjectTest {
 
   @Test
   fun testAbandonSurveyContext_hasSurveyDetailsThat_executesBlockCorrectly() {
-    val abandonSurveyContext = EventLog.AbandonSurveyContext.newBuilder()
+    val abandonSurveyContext = AbandonSurveyContext.newBuilder()
       .setSurveyDetails(
         EventLog.SurveyResponseContext.newBuilder().setSurveyId("test_id")
       )
@@ -4871,7 +4866,7 @@ class EventLogSubjectTest {
 
   @Test
   fun testFeatureFlagListContext_hasUniqueUserUuidThat_returnsCorrectUuid() {
-    val context = EventLog.FeatureFlagListContext.newBuilder()
+    val context = FeatureFlagListContext.newBuilder()
       .setUniqueUserUuid("uuid-456")
       .build()
 
@@ -4879,9 +4874,10 @@ class EventLogSubjectTest {
       .hasUniqueUserUuidThat()
       .isEqualTo("uuid-456")
   }
+
   @Test
   fun testFeatureFlagListContext_hasSessionIdThat_returnsCorrectSessionId() {
-    val context = EventLog.FeatureFlagListContext.newBuilder()
+    val context = FeatureFlagListContext.newBuilder()
       .setAppSessionId("session-789")
       .build()
 
@@ -4889,6 +4885,7 @@ class EventLogSubjectTest {
       .hasSessionIdThat()
       .isEqualTo("session-789")
   }
+
   @Test
   fun testFeatureFlagListContext_hasFeatureFlagItemCountThat_returnsCorrectCount() {
     val context = FeatureFlagListContext.newBuilder()
@@ -4900,6 +4897,7 @@ class EventLogSubjectTest {
       .hasFeatureFlagItemCountThat()
       .isEqualTo(2)
   }
+
   @Test
   fun testFeatureFlagListContext_hasFeatureFlagItemContextThatAtIndex_returnsCorrectItem() {
     val featureFlagItem = EventLog.FeatureFlagItemContext.newBuilder()
@@ -4916,6 +4914,7 @@ class EventLogSubjectTest {
       .hasFeatureFlagNameThat()
       .isEqualTo("enable_multiple_classrooms")
   }
+
   @Test
   fun testFeatureFlagListContext_hasFeatureFlagItemContextThatAtIndex_executesBlockCorrectly() {
     val featureFlagItem = EventLog.FeatureFlagItemContext.newBuilder()
