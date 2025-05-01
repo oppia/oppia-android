@@ -167,7 +167,7 @@ class StateFragment :
 
   /**
    * Delegates the removal of all [ConceptCardFragment] instances
-   * to the [stateFragmentPresenter].
+   * to the [StateFragmentPresenter].
    */
   fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 

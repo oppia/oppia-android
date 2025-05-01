@@ -1869,7 +1869,7 @@ class ExplorationActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
-  fun testExpActivity_openConceptCard_onHintsAndSolutionDialog_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
+  fun testActivity_openConceptCard_onHintsAndSolutionDialog_selectNavigationUp_conceptCardCloses() {
     markAllSpotlightsSeen()
     runWithLaunchedActivityAndStartedExploration(
       TEST_CLASSROOM_ID_0,
@@ -1907,7 +1907,7 @@ class ExplorationActivityTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testExpActivity_openConceptCard_onStateFragment_selectNavigationUp_conceptCardCloses() {
+  fun testExpActivity_openConceptCard_fromStateFragment_selectNavigationUp_conceptCardCloses() {
     setUpAudioForFractionLesson()
     markAllSpotlightsSeen()
     runWithLaunchedActivityAndStartedExploration(
@@ -1940,6 +1940,56 @@ class ExplorationActivityTest {
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
+  fun testExpActivity_openConceptCard_fromConceptCard_selectNavigationUp_conceptCardCloses() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      clickContinueButton()
+      // Submit two incorrect answers.
+      submitFractionAnswer(answerText = "1/3")
+      submitFractionAnswer(answerText = "1/4")
+
+      // Reveal the hint.
+      openHintsAndSolutionsDialog()
+      pressRevealHintButton(hintPosition = 0)
+
+      onView(withId(R.id.hints_and_solution_summary))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Another important skill")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_toolbar)).check(matches(isDisplayed()))
+
+      // Click on concept card link.
+      onView(withId(R.id.concept_card_explanation_text))
+        .inRoot(isDialog())
+        .perform(openClickableSpan("test_skill_id_0 concept card"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("An important skill")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withText("Hello. Welcome to Oppia.")).inRoot(isDialog()).check(matches(isDisplayed()))
+
+      // Close concept card.
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }

@@ -20,6 +20,7 @@ import org.oppia.android.app.player.exploration.TAG_HINTS_AND_SOLUTION_DIALOG
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
@@ -34,7 +35,8 @@ class StateFragmentTestActivity :
   RouteToHintsAndSolutionListener,
   RevealHintListener,
   RevealSolutionInterface,
-  HintsAndSolutionExplorationManagerListener {
+  HintsAndSolutionExplorationManagerListener,
+  ConceptCardListener {
   @Inject
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
@@ -109,7 +111,9 @@ class StateFragmentTestActivity :
     stateFragmentTestActivityPresenter.stopExploration(isCompletion)
   }
 
-  override fun dismiss() {}
+  override fun dismiss() {
+    getHintsAndSolution()?.dismiss()
+  }
 
   override fun routeToHintsAndSolution(id: String, helpIndex: HelpIndex) {
     if (getHintsAndSolution() == null) {
@@ -144,5 +148,9 @@ class StateFragmentTestActivity :
     return supportFragmentManager.findFragmentByTag(
       TAG_HINTS_AND_SOLUTION_DIALOG
     ) as HintsAndSolutionDialogFragment?
+  }
+
+  override fun dismissConceptCard() {
+    getHintsAndSolution()?.dismissConceptCard() ?: stateFragmentTestActivityPresenter.dismissConceptCard()
   }
 }
