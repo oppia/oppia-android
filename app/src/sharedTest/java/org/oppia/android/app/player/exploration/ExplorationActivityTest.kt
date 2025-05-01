@@ -1989,7 +1989,6 @@ class ExplorationActivityTest {
 
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
-
     }
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
