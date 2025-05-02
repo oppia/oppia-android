@@ -641,6 +641,7 @@ kt_android_library(
         "//third_party:androidx_compose_foundation_foundation-layout",
         "//third_party:androidx_compose_material_material",
         "//third_party:androidx_compose_runtime_runtime",
+        "//third_party:androidx_compose_runtime_runtime-livedata",
         "//third_party:androidx_compose_ui_ui",
         "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_databinding_databinding-adapters",
