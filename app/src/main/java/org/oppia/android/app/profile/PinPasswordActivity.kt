@@ -11,6 +11,7 @@ import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
+// TODO(#5817) Remove when v2 onboarding flow has stabilized.
 /** Activity that allows user to input his or her PIN. */
 class PinPasswordActivity :
   InjectableAutoLocalizedAppCompatActivity(),
