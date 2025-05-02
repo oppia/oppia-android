@@ -1,62 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/profile_login_fragment_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/component_color_shared_state_fragment_background_color"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            style="@style/PinInputHeadingTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="Welcome back, Anna!" />
-
-        <TextView
-            style="@style/PinInputSubHeadingTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Please enter your Manager PIN" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:orientation="horizontal">
-
-            <EditText
-                style="@style/PinInputBoxStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext" />
-
-            <EditText
-                style="@style/PinInputBoxStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext" />
-
-            <EditText
-                style="@style/PinInputBoxStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext" />
-
-            <EditText
-                style="@style/PinInputBoxStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone" />
-        </LinearLayout>
-
-        <Button
-            style="@style/ForgotPinButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="I forgot my pin" />
-    </LinearLayout>
-</layout>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
