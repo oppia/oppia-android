@@ -78,7 +78,6 @@
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
-  <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
@@ -293,6 +292,7 @@
   <string name="get_started">Get Started</string>
   <string name="onboarding_slide_dots_content_description">Slide %1$s of %2$s</string>
   <!-- PinPasswordActivity -->
+  <string name="pin_password_activity_title">PIN verification</string>
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
   <string name="pin_password_user_enter">Please enter your PIN.</string>
@@ -701,4 +701,10 @@
   <!-- AudioLanguageFragment -->
   <string name="arabic_language_display_name_content_description">Arabic</string>
 
+  <!-- Profile Login Activity -->
+  <string name="profile_login_activity_title">Login</string>
+  <string name="profile_login_activity_enter_pin_prompt">Please enter your PIN</string>
+  <string name="profile_login_activity_greeting_text">Welcome back, %s!</string>
+  <string name="profile_login_activity_pin_error">You have entered an incorrect PIN.</string>
+  <string name="profile_login_activity_forgot_pin_text">I forgot my PIN</string>
 </resources>
