@@ -325,12 +325,11 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         }
       }
     } else {
-      val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
-        activity,
-        chooserViewModel.adminPin,
-        profile.id.internalId
+      val profileLoginIntent = ProfileLoginActivity.createProfileLoginActivityIntent(
+        context,
+        profile.id
       )
-      activity.startActivity(pinPasswordIntent)
+      activity.startActivity(profileLoginIntent)
     }
   }
 
