@@ -20,11 +20,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -71,6 +74,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: ProfileLoginFragmentBinding
   private lateinit var profileLiveData: LiveData<Profile>
+  private lateinit var adminProfileLiveData: LiveData<Profile>
 
   /** Creates and returns the view for the [ProfileLoginFragment]. */
   fun handleCreateView(
@@ -83,26 +87,11 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileLiveData =
       getProfileResult(profileManagementController.getProfile(profileId).toLiveData())
 
+    getAdminPin()
+
     createComposeView()
 
     return binding.root
-  }
-
-  private fun getProfileResult(profileResult: LiveData<AsyncResult<Profile>>): LiveData<Profile> {
-    return Transformations.map(profileResult, ::processGetProfileResult)
-  }
-
-  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
-    val profile = when (profileResult) {
-      is AsyncResult.Failure -> {
-        oppiaLogger.e("ProfileLoginActivity", "Failed to retrieve profile", profileResult.error)
-        Profile.getDefaultInstance()
-      }
-
-      is AsyncResult.Pending -> Profile.getDefaultInstance()
-      is AsyncResult.Success -> profileResult.value
-    }
-    return profile
   }
 
   private fun createComposeView() {
@@ -181,7 +170,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        ForgotPinButton()
+        ForgotPinButton(profileType, profileId, profileName)
 
         LaunchedEffect(showError) {
           if (showError) {
@@ -279,7 +268,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  fun PinErrorText(showError: Boolean, errorMessage: String) {
+  private fun PinErrorText(showError: Boolean, errorMessage: String) {
     if (showError) {
       Text(
         text = errorMessage,
@@ -293,8 +282,13 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun ForgotPinButton() {
-    TextButton(onClick = { /* TODO Handle forgot PIN */ }) {
+  private fun ForgotPinButton(profileType: ProfileType, profileId: ProfileId, profileName: String) {
+    val adminProfile:
+      Profile by adminProfileLiveData.observeAsState(initial = Profile.getDefaultInstance())
+    val adminPin = adminProfile.pin
+    val openForgotPinDialog = remember { mutableStateOf(false) }
+
+    TextButton(onClick = { openForgotPinDialog.value = true }) {
       Text(
         text = resourceHandler.getStringInLocaleWithWrapping
         (R.string.profile_login_activity_forgot_pin_text),
@@ -304,5 +298,190 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         )
       )
     }
+
+    if (openForgotPinDialog.value) {
+      if (profileType == ProfileType.SUPERVISOR) {
+        ForgotAdminPinDialogFlow(openForgotPinDialog)
+      } else {
+        showResetNonAdminPinFlow(adminPin, openForgotPinDialog, profileId, profileName)
+      }
+    }
+  }
+
+  @Composable
+  private fun ForgotAdminPinDialogFlow(openForgotPinDialog: MutableState<Boolean>) {
+    val openConfirmationDialog = remember { mutableStateOf(false) }
+
+    if (openForgotPinDialog.value) {
+      ForgotAdminPinDialog(
+        onDismissRequest = { openForgotPinDialog.value = false },
+        onConfirmation = {
+          openConfirmationDialog.value = true
+        }
+      )
+    }
+
+    if (openConfirmationDialog.value) {
+      ConfirmDataResetDialog(
+        onDismissRequest = { openConfirmationDialog.value = false }
+      )
+    }
+  }
+
+  @Composable
+  private fun ForgotAdminPinDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit
+  ) {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+
+    AlertDialog(
+      title = {
+        Text(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.profile_login_forgot_pin_dialog_title
+          )
+        )
+      },
+      text = {
+        Text(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.profile_login_forgot_pin_dialog_message, appName
+          )
+        )
+      },
+      properties = DialogProperties(
+        dismissOnClickOutside = false,
+        dismissOnBackPress = false
+      ),
+      onDismissRequest = {
+        onDismissRequest()
+      },
+      dismissButton = {
+        TextButton(
+          onClick = {
+            onDismissRequest()
+          }
+        ) {
+          Text(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.profile_login_forgot_pin_dialog_cancel_button
+            )
+          )
+        }
+      },
+      confirmButton = {
+        TextButton(
+          onClick = {
+            onConfirmation()
+          }
+        ) {
+          Text(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.profile_login_forgot_pin_dialog_reset_button,
+              appName
+            )
+          )
+        }
+      }
+    )
+  }
+
+  @Composable
+  private fun ConfirmDataResetDialog(
+    onDismissRequest: () -> Unit
+  ) {
+    val appName = resourceHandler.getStringInLocale(R.string.app_name)
+
+    AlertDialog(
+      title = {
+        Text(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_confirm_app_wipe_title, appName
+          )
+        )
+      },
+      text = {
+        Text(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_confirm_app_wipe_message, appName
+          )
+        )
+      },
+      properties = DialogProperties(
+        dismissOnClickOutside = false,
+        dismissOnBackPress = false
+      ),
+      onDismissRequest = {
+        onDismissRequest()
+      },
+      dismissButton = {
+        TextButton(
+          onClick = {
+            onDismissRequest()
+          }
+        ) {
+          Text(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.admin_confirm_app_wipe_negative_button_text
+            )
+          )
+        }
+      },
+      confirmButton = {
+        TextButton(
+          onClick = { deleteAppData() }
+        ) {
+          Text(
+            resourceHandler.getStringInLocaleWithWrapping(
+              R.string.admin_confirm_app_wipe_positive_button_text,
+              appName
+            )
+          )
+        }
+      }
+    )
+  }
+
+  private fun showResetNonAdminPinFlow(
+    correctAdminPin: String,
+    openForgotPinDialog: MutableState<Boolean>,
+    profileId: ProfileId,
+    profileName: String
+  ) {
+    openForgotPinDialog.value = false
+    val dialogFragment = AdminSettingsDialogFragment
+      .newInstance(correctAdminPin, profileId, profileName)
+    dialogFragment.showNow(fragment.parentFragmentManager, TAG_VALIDATE_ADMIN_PIN_DIALOG)
+  }
+
+  private fun deleteAppData() {
+    profileManagementController.deleteAllProfiles().toLiveData().observe(fragment) {
+      activity.finishAffinity()
+    }
+  } // TODO something weird happens when the default profile is created after this == wrong type maybe?
+
+  private fun getAdminPin() {
+    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    adminProfileLiveData =
+      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
+  }
+
+  private fun getProfileResult(profileResult: LiveData<AsyncResult<Profile>>): LiveData<Profile> {
+    return Transformations.map(profileResult, ::processGetProfileResult)
+  }
+
+  private fun processGetProfileResult(profileResult: AsyncResult<Profile>): Profile {
+    val profile = when (profileResult) {
+      is AsyncResult.Failure -> {
+        oppiaLogger.e("ProfileLoginActivity", "Failed to retrieve profile", profileResult.error)
+        Profile.getDefaultInstance()
+      }
+
+      is AsyncResult.Pending -> Profile.getDefaultInstance()
+      is AsyncResult.Success -> profileResult.value
+    }
+    return profile
   }
 }
