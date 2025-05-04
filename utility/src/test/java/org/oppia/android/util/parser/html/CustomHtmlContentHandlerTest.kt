@@ -305,7 +305,6 @@ class CustomHtmlContentHandlerTest {
 
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html = "<outer-tag>before <inner-tag>nested</inner-tag> after</outer-tag>",
-      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf(
         "outer-tag" to outerHandler,
         "inner-tag" to innerHandler
@@ -321,7 +320,6 @@ class CustomHtmlContentHandlerTest {
     val secondHandler = FakeContentDescriptionTagHandler("Second ")
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html = "Start <first-tag>one</first-tag> middle <second-tag>two</second-tag> end",
-      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf(
         "first-tag" to firstHandler,
         "second-tag" to secondHandler
@@ -336,13 +334,12 @@ class CustomHtmlContentHandlerTest {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html =
         """
-        <p>First    paragraph</p>
-        
-        <p>Second     paragraph</p>
-        
-        <p>Third    paragraph</p>
+              <p>First    paragraph</p>
+              
+              <p>Second     paragraph</p>
+              
+              <p>Third    paragraph</p>
         """.trimIndent(),
-      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
     )
 
@@ -358,13 +355,12 @@ class CustomHtmlContentHandlerTest {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html =
         """
-        <header>Header text</header>
-        <article>Article content</article>
-        <section>Section text</section>
-        <aside>Aside content</aside>
-        <footer>Footer text</footer>
+              <header>Header text</header>
+              <article>Article content</article>
+              <section>Section text</section>
+              <aside>Aside content</aside>
+              <footer>Footer text</footer>
         """.trimIndent(),
-      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
     )
 
@@ -382,13 +378,12 @@ class CustomHtmlContentHandlerTest {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html =
         """
-        <p>Regular paragraph</p>
-        <custom-tag>Custom content</custom-tag>
-        <ul><li>List item 1</li><li>List item 2</li></ul>
-        <custom-tag>More custom</custom-tag>
-        <p>Final paragraph</p>
+              <p>Regular paragraph</p>
+              <custom-tag>Custom content</custom-tag>
+              <ul><li>List item 1</li><li>List item 2</li></ul>
+              <custom-tag>More custom</custom-tag>
+              <p>Final paragraph</p>
         """.trimIndent(),
-      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
     )
 
@@ -407,10 +402,9 @@ class CustomHtmlContentHandlerTest {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       html =
         """
-        <p>Visit <a href="https://example.com">Example</a> for more info.</p>
-        <a href="https://another.com">Another Link</a>
+              <p>Visit <a href="https://example.com">Example</a> for more info.</p>
+              <a href="https://another.com">Another Link</a>
         """.trimIndent(),
-      imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf()
     )
 

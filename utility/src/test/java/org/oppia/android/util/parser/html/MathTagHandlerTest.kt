@@ -434,7 +434,6 @@ class MathTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = MATH_MARKUP_1,
-        imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithCachedMathSupport
       )
 
