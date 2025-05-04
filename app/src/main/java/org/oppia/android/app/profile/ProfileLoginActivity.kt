@@ -7,14 +7,15 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Activity that allows user to log in to their profile by inputting their PIN. */
-class ProfileLoginActivity : InjectableAutoLocalizedAppCompatActivity() {
+class ProfileLoginActivity :
+  InjectableAutoLocalizedAppCompatActivity(),
+  ProfileRouteDialogInterface {
 
   @Inject
   lateinit var profileLoginActivityPresenter: ProfileLoginActivityPresenter
@@ -29,19 +30,28 @@ class ProfileLoginActivity : InjectableAutoLocalizedAppCompatActivity() {
   }
 
   companion object {
-    /** Params key for ProfileLoginActivity. */
-    const val PROFILE_LOGIN_ACTIVITY_PARAMS_KEY = "ProfileLoginActivity.params"
-
     /** Creates and returns an Intent to open a new [ProfileLoginActivity]. */
     fun createProfileLoginActivityIntent(
       context: Context,
       profileId: ProfileId
     ): Intent {
       return Intent(context, ProfileLoginActivity::class.java).apply {
-        putProtoExtra(PROFILE_LOGIN_ACTIVITY_PARAMS_KEY, args)
         decorateWithUserProfileId(profileId)
         decorateWithScreenName(ScreenName.PROFILE_LOGIN_ACTIVITY)
       }
     }
+  }
+
+  override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {
+    profileLoginActivityPresenter.handleRouteToResetPinDialog(profileId, profileName)
+  }
+
+  override fun routeToSuccessDialog() {
+    profileLoginActivityPresenter.handleRouteToSuccessDialog()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    // profileLoginActivityPresenter.handleOnDestroy()
   }
 }
