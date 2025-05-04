@@ -146,7 +146,7 @@ class PinPasswordActivityPresenter @Inject constructor(
           activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
         }
         val dialogFragment = AdminSettingsDialogFragment
-          .newInstance(adminPin!!, profileId, pinViewModel.name.get()!!) // todo verify
+          .newInstance(adminPin!!, profileId, pinViewModel.name.get()!!)
         dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
       }
     }

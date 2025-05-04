@@ -49,9 +49,4 @@ class ProfileLoginActivity :
   override fun routeToSuccessDialog() {
     profileLoginActivityPresenter.handleRouteToSuccessDialog()
   }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    // profileLoginActivityPresenter.handleOnDestroy()
-  }
 }

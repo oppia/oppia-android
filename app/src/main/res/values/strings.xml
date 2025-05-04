@@ -711,4 +711,6 @@
   <string name="profile_login_forgot_pin_dialog_message">To reset your PIN, you\'ll need to clear all saved data for %s.\n\nKeep in mind that this action will cause all profiles and user progress to be deleted, and it cannot be undone. Also, the app will close when this completes and will need to be reopened.</string>
   <string name="profile_login_forgot_pin_dialog_reset_button">Reset %s Data</string>
   <string name="profile_login_forgot_pin_dialog_cancel_button">Cancel</string>
+  <string name="profile_login_reset_pin_success_dialog_close">Close</string>
+  <string name="profile_login_reset_pin_success_dialog_message">PIN changed successfully!</string>
 </resources>

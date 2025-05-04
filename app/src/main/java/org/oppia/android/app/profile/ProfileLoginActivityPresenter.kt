@@ -1,6 +1,7 @@
 package org.oppia.android.app.profile
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import org.oppia.android.app.activity.ActivityScope
@@ -37,12 +38,7 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
     }
   }
 
-  private fun getProfileLoginFragment(): ProfileLoginFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
-      TAG_PROFILE_LOGIN_FRAGMENT
-    ) as? ProfileLoginFragment
-  }
-
+  /** Handles showing the [ResetPinDialogFragment]. */
   fun handleRouteToResetPinDialog(profileId: ProfileId, profileName: String) {
     (
       activity
@@ -58,6 +54,29 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
     dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_RESET_PIN_DIALOG)
   }
 
+  /** Handles showing the reset pin success dialog. */
   fun handleRouteToSuccessDialog() {
+    (
+      activity
+        .supportFragmentManager
+        .findFragmentByTag(
+          TAG_ADMIN_RESET_PIN_DIALOG
+        ) as DialogFragment
+      ).dismiss()
+    showSuccessDialog()
+  }
+
+  private fun showSuccessDialog() {
+    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      .setMessage(R.string.profile_login_reset_pin_success_dialog_message)
+      .setPositiveButton(R.string.profile_login_reset_pin_success_dialog_close) { dialog, _ ->
+        dialog.dismiss()
+      }.create().show()
+  }
+
+  private fun getProfileLoginFragment(): ProfileLoginFragment? {
+    return activity.supportFragmentManager.findFragmentByTag(
+      TAG_PROFILE_LOGIN_FRAGMENT
+    ) as? ProfileLoginFragment
   }
 }
