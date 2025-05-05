@@ -716,4 +716,7 @@
 
   <!-- Onboarding Learner Intro Activity -->
   <string name="admin_intro_activity_title">Introduction</string>
+  <string name="admin_intro_activity_header">As the administrator of the app, you can</string>
+  <string name="admin_intro_activity_settings_text">Manage profile settings for all learners on this device</string>
+  <string name="admin_intro_activity_learners_text">Add new learners to this device (up to 10)</string>
 </resources>
