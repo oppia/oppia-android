@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.OnboardingProfileTypeFragmentBinding
-import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.AdminIntroActivityParams
+import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -73,8 +73,6 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
           )
         }
         fragment.startActivity(intent)
-        // Clear back stack so that user cannot go back to the onboarding flow.
-        fragment.activity?.finishAffinity()
       }
 
       onboardingNavigationBack.setOnClickListener {

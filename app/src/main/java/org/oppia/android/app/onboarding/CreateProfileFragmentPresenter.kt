@@ -161,56 +161,61 @@ class CreateProfileFragmentPresenter @Inject constructor(
       newName = profileName,
       isAdmin = true
     ).toLiveData().observe(
-      fragment,
-      { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            createProfileViewModel.hasErrorMessage.set(false)
+      fragment
+    ) { result ->
+      when (result) {
+        is AsyncResult.Success -> {
+          createProfileViewModel.hasErrorMessage.set(false)
 
-            val params = IntroActivityParams.newBuilder()
-              .setProfileNickname(profileName)
-              .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
-              .build()
+          // TODO(#4938): Add navigation to the PIN creation screen for ProfileType.SUPERVISOR
+          // once the screen has been created.
+          val params = IntroActivityParams.newBuilder()
+            .setProfileNickname(profileName)
+            .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+            .build()
 
-            val intent =
-              IntroActivity.createIntroActivity(activity).apply {
-                putProtoExtra(IntroActivity.PARAMS_KEY, params)
-                decorateWithUserProfileId(profileId)
-              }
-
-            fragment.startActivity(intent)
-          }
-          is AsyncResult.Failure -> {
-            createProfileViewModel.hasErrorMessage.set(true)
-
-            val errorMessage = when (result.error) {
-              is ProfileManagementController.ProfileNameOnlyLettersException ->
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_error_name_only_letters
-                )
-              is ProfileManagementController.UnknownProfileTypeException ->
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_error_missing_profile_type
-                )
-              else -> {
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_default_error_message
-                )
-              }
+          val intent =
+            IntroActivity.createIntroActivity(activity).apply {
+              putProtoExtra(IntroActivity.PARAMS_KEY, params)
+              decorateWithUserProfileId(profileId)
             }
 
-            createProfileViewModel.errorMessage.set(errorMessage)
-
-            oppiaLogger.e(
-              "CreateProfileFragment",
-              "Failed to update profile details.",
-              result.error
-            )
-          }
-          is AsyncResult.Pending -> {}
+          fragment.startActivity(intent)
         }
+
+        is AsyncResult.Failure -> {
+          createProfileViewModel.hasErrorMessage.set(true)
+
+          val errorMessage = when (result.error) {
+            is ProfileManagementController.ProfileNameOnlyLettersException ->
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters
+              )
+
+            is ProfileManagementController.UnknownProfileTypeException ->
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_missing_profile_type
+              )
+
+            else -> {
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_default_error_message
+              )
+            }
+          }
+
+          createProfileViewModel.errorMessage.set(errorMessage)
+
+          oppiaLogger.e(
+            "CreateProfileFragment",
+            "Failed to update profile details.",
+            result.error
+          )
+        }
+
+        is AsyncResult.Pending -> {}
       }
-    )
+    }
   }
 
   /** Randomly selects a color for the new profile that is not already in use. */

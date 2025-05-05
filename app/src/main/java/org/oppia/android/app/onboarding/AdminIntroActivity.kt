@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.ScreenName.ADMIN_INTRO_ACTIVITY
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
@@ -22,8 +24,11 @@ class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val profileId = intent.extractCurrentUserProfileId()
+    val profileType = intent.getProtoExtra(
+      ADMIN_INTRO_PARAMS_KEY, AdminIntroActivityParams.getDefaultInstance()
+    ).profileType
 
-    adminIntroActivityPresenter.handleOnCreate(profileId)
+    adminIntroActivityPresenter.handleOnCreate(profileId, profileType)
   }
 
   /** Returns a new [Intent] to open an [AdminIntroActivity] with the specified params. */
