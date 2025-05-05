@@ -459,7 +459,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileManagementController.deleteAllProfiles().toLiveData().observe(fragment) {
       activity.finishAffinity()
     }
-  }// TODO something weird happens when the default profile is created after this == wrong type maybe?
+  } // TODO something weird happens when the default profile is created after this == wrong type maybe?
 
   private fun getAdminPin() {
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()

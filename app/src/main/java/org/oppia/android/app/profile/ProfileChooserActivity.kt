@@ -7,11 +7,11 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ScreenName.PROFILE_CHOOSER_ACTIVITY
-import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
 
 /** Activity that controls profile creation and selection. */
 class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
@@ -30,9 +30,9 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-
+    // TODO(#4938): Remove once admin profile onboarding is implemented.
     val profileType = intent.getProtoExtra(
-      PROFILE_CHOOSER_PARAMS_KEY,
+      ADMIN_INTRO_PARAMS_KEY,
       ProfileChooserActivityParams.getDefaultInstance()
     ).profileType
 

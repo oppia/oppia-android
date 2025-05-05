@@ -7,10 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.OnboardingProfileTypeFragmentBinding
 import org.oppia.android.app.model.CreateProfileActivityParams
-import org.oppia.android.app.model.ProfileChooserActivityParams
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -19,8 +18,8 @@ import javax.inject.Inject
 /** Argument key for [CreateProfileActivity] intent parameters. */
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 
-/** Argument key for [ProfileChooserActivity] intent parameters. */
-const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
+/** Argument key for [AdminIntroActivity] intent parameters. */
+const val ADMIN_INTRO_PARAMS_KEY = "AdminIntroActivityParams.params"
 
 /** The presenter for [OnboardingProfileTypeFragment]. */
 class OnboardingProfileTypeFragmentPresenter @Inject constructor(
@@ -30,7 +29,7 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
 ) {
   private lateinit var binding: OnboardingProfileTypeFragmentBinding
 
-  /** Handle creation and binding of the  OnboardingProfileTypeFragment layout. */
+  /** Handle creation and binding of the [OnboardingProfileTypeFragment] layout. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
@@ -63,12 +62,12 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
         // TODO(#4938): Remove once admin profile onboarding is implemented.
         profileManagementController.markProfileOnboardingStarted(profileId)
 
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
+        val intent = AdminIntroActivity.createAdminIntroActivityIntent(activity)
         intent.apply {
           decorateWithUserProfileId(profileId)
           putProtoExtra(
-            PROFILE_CHOOSER_PARAMS_KEY,
-            ProfileChooserActivityParams.newBuilder()
+            ADMIN_INTRO_PARAMS_KEY,
+            AdminIntroActivityParams.newBuilder()
               .setProfileType(ProfileType.SUPERVISOR)
               .build()
           )
