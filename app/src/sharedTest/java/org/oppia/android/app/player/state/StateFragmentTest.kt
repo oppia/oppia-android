@@ -2120,6 +2120,65 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_clickLinkText_opensConceptCard_selectNavigationUp_conceptCardCloses() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_landscape_clickLinkText_opensConceptCard_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testStateFragment_interactions_initialStateIsContinueInteraction() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {

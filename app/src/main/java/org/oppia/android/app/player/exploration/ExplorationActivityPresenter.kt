@@ -333,6 +333,10 @@ class ExplorationActivityPresenter @Inject constructor(
     showDialogFragmentBasedOnCurrentCheckpointState()
   }
 
+  fun dismissConceptCard() {
+    getExplorationFragment()?.dismissConceptCard()
+  }
+
   private fun updateToolbarTitle(explorationId: String) {
     subscribeToExploration(
       explorationDataController.getExplorationById(profileId, explorationId).toLiveData()
