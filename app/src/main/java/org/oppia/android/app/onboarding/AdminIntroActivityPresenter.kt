@@ -1,10 +1,10 @@
 package org.oppia.android.app.onboarding
 
 import androidx.appcompat.app.AppCompatActivity
-import javax.inject.Inject
-import org.oppia.android.app.ui.R
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.ui.R
+import javax.inject.Inject
 
 /** The presenter for [AdminIntroActivity]. */
 @ActivityScope
