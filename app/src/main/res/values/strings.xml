@@ -713,4 +713,7 @@
   <string name="profile_login_forgot_pin_dialog_cancel_button">Cancel</string>
   <string name="profile_login_reset_pin_success_dialog_close">Close</string>
   <string name="profile_login_reset_pin_success_dialog_message">PIN changed successfully!</string>
+
+  <!-- Onboarding Learner Intro Activity -->
+  <string name="admin_intro_activity_title">Introduction</string>
 </resources>

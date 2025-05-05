@@ -32,6 +32,7 @@ import org.oppia.android.app.help.thirdparty.ThirdPartyDependencyListActivity
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.home.recentlyplayed.RecentlyPlayedActivity
 import org.oppia.android.app.mydownloads.MyDownloadsActivity
+import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
@@ -224,4 +225,5 @@ interface ActivityComponentImpl :
   fun inject(createProfileActivity: CreateProfileActivity)
   fun inject(introActivity: IntroActivity)
   fun inject(profileLoginActivity: ProfileLoginActivity)
+  fun inject(adminIntroActivity: AdminIntroActivity)
 }
