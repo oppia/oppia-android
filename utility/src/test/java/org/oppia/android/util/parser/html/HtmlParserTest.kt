@@ -770,6 +770,59 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testContentDescription_withConceptCard_includesTextValueInDescription() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
+            "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview> to learn more.",
+          textView,
+          supportsConceptCards = true
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "Visit refresher lesson to learn more."
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withImage_includesAltText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "Here is an image: <oppia-noninteractive-image alt-with-value=\"A diagram showing the water cycle\" " +
+            "caption-with-value=\"Figure 1: The Water Cycle\" filepath-with-value=\"water_cycle.png\">" +
+            "</oppia-noninteractive-image>",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).contains("A diagram showing the water cycle")
+      }
+    }
+  }
+
+  @Test
   fun testHtmlContent_withConceptCard_clickSpan_noTagListener_doesNothing() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
