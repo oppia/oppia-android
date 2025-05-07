@@ -770,6 +770,84 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testContentDescription_withBasicHtml_returnsCorrectDescription() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "This is a <b>bold</b> and <i>italic</i> text.",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "This is a bold " +
+            "and italic text."
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withLinks_includesHrefInDescription() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "Visit <a href=\"https://www.example.com\">this website</a>" +
+            " for more information.",
+          textView,
+          supportsLinks = true
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "Visit https://www.example.com this website for more information."
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withBulletList_containsListItems() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).contains("First item")
+        assertThat(textView.contentDescription.toString()).contains("Second item")
+        assertThat(textView.contentDescription.toString()).contains("Third item")
+      }
+    }
+  }
+
+  @Test
   fun testContentDescription_withConceptCard_includesTextValueInDescription() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -784,7 +862,8 @@ class HtmlParserTest {
         val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
         val htmlResult: Spannable = htmlParser.parseOppiaHtml(
           "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
-            "text-with-value=\"refresher lesson\"></oppia-noninteractive-skillreview> to learn more.",
+            "text-with-value=\"refresher lesson\">" +
+            "</oppia-noninteractive-skillreview> to learn more.",
           textView,
           supportsConceptCards = true
         )
@@ -810,14 +889,46 @@ class HtmlParserTest {
       onActivity {
         val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
         val htmlResult: Spannable = htmlParser.parseOppiaHtml(
-          "Here is an image: <oppia-noninteractive-image alt-with-value=\"A diagram showing the water cycle\" " +
-            "caption-with-value=\"Figure 1: The Water Cycle\" filepath-with-value=\"water_cycle.png\">" +
+          "Here is an image: <oppia-noninteractive-image " +
+            "alt-with-value=\"A diagram showing the water cycle\" " +
+            "caption-with-value=\"Figure 1: The Water Cycle\"" +
+            " filepath-with-value=\"water_cycle.png\">" +
             "</oppia-noninteractive-image>",
           textView
         )
         textView.text = htmlResult
 
-        assertThat(textView.contentDescription.toString()).contains("A diagram showing the water cycle")
+        assertThat(textView.contentDescription.toString())
+          .contains("A diagram showing the water cycle")
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withMathTag_includesRawLatex() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "The fraction is <oppia-noninteractive-math render-type=\"inline\"" +
+            " math_content-with-value=\"{" +
+            "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;}\">" +
+            "</oppia-noninteractive-math> which equals 0.4",
+          textView
+        )
+        textView.text = htmlResult
+
+        // Verify that the content description includes the LaTeX representation
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "The fraction is Math content {\"raw_latex\":\"\\\\frac{2}{5}\"} which equals 0.4"
+        )
       }
     }
   }
