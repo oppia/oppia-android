@@ -56,6 +56,11 @@ message TestFileExemptions {
       // that of its test(s), are not compatible with the current code coverage tooling and thus
       // should be ignored.
       bool source_file_is_incompatible_with_code_coverage = 4;
+
+      // A special exemption type for test suites that are providing additional, specific testing
+      // coverage for a production file. These have names that deviate from the normal naming style
+      // and thus are not easily detected by the test file check script.
+      bool is_extra_test_file = 5;
     }
   }
 }

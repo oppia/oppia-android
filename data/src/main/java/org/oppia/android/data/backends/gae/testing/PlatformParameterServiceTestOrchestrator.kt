@@ -1,4 +1,4 @@
-package data.src.main.java.org.oppia.android.data.backends.gae.testing
+package org.oppia.android.data.backends.gae.testing
 
 import com.squareup.moshi.Moshi
 import okhttp3.mockwebserver.MockResponse
