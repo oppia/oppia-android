@@ -7,7 +7,7 @@
   "topic_id": "test_topic_id_2",
   "version": -1,
   "published": false,
-  "enable_practice_tab": false,
+  "has_practice_questions": false,
   "skill_descriptions": {},
   "subtopics": []
 }

@@ -485,7 +485,7 @@ class TopicController @Inject constructor(
               availableToPlayNow = true
             } else availableToPlayInFuture = true
           }.build()
-          enablePracticeTab = topicRecord.enablePracticeTab
+          hasPracticeQuestions = topicRecord.hasPracticeQuestions
         }.build()
       }
     } else createTopicFromJson(topicId)
@@ -563,7 +563,7 @@ class TopicController @Inject constructor(
       html = topicData.getStringFromObject("topic_description")
     }.build()
     val classroomId = classroomController.getClassroomIdByTopicId(topicId)
-    val enablePracticeTab = topicData.getBoolean("enable_practice_tab")
+    val hasPracticeQuestions = topicData.getBoolean("has_practice_questions")
     // No written translations are included since none are retrieved from JSON.
     return Topic.newBuilder()
       .setTopicId(topicId)
@@ -575,7 +575,7 @@ class TopicController @Inject constructor(
       .setDiskSizeBytes(computeTopicSizeBytes(getJsonAssetFileNameList(topicId)).toLong())
       .addAllSubtopic(subtopicList)
       .setTopicPlayAvailability(topicPlayAvailability)
-      .setEnablePracticeTab(enablePracticeTab)
+      .setHasPracticeQuestions(hasPracticeQuestions)
       .build()
   }
 

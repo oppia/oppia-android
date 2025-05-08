@@ -2,7 +2,7 @@ id: "test_topic_id_0"
 canonical_story_ids: "test_story_id_0"
 subtopic_ids: 1
 is_published: true
-enable_practice_tab: true
+has_practice_questions: true
 topic_thumbnail {
 }
 written_translations {

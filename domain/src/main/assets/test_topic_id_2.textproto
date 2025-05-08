@@ -1,5 +1,5 @@
 id: "test_topic_id_2"
-enable_practice_tab: false
+has_practice_questions: false
 translatable_title {
   html: "Third Test Topic"
   content_id: "title"
