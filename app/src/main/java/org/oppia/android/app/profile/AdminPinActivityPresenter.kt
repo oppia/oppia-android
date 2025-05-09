@@ -21,6 +21,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
+// TODO(#5817): Remove when v2 onboarding flow has stabilized.
 /** The presenter for [AdminPinActivity]. */
 @ActivityScope
 class AdminPinActivityPresenter @Inject constructor(

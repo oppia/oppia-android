@@ -31,6 +31,7 @@ import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.profile.PinSetupActivity
 
 /** Presenter for [CreateProfileFragment]. */
 @FragmentScope
@@ -95,7 +96,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
       if (!checkNicknameAndUpdateError(nickname)) {
-        updateProfileDetails(nickname)
+        updateProfileDetails(nickname, profileType)
       }
     }
 
@@ -152,7 +153,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun updateProfileDetails(profileName: String) {
+  private fun updateProfileDetails(profileName: String, profileType: ProfileType) {
     profileManagementController.updateNewProfileDetails(
       profileId = profileId,
       profileType = profileType,
@@ -167,18 +168,21 @@ class CreateProfileFragmentPresenter @Inject constructor(
         is AsyncResult.Success -> {
           createProfileViewModel.hasErrorMessage.set(false)
 
-          // TODO(#4938): Add navigation to the PIN creation screen for ProfileType.SUPERVISOR
-          // once the screen has been created.
-          val params = IntroActivityParams.newBuilder()
-            .setProfileNickname(profileName)
-            .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
-            .build()
+          val intent = if (profileType == ProfileType.SOLE_LEARNER) {
+            val params = IntroActivityParams.newBuilder()
+              .setProfileNickname(profileName)
+              .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+              .build()
 
-          val intent =
             IntroActivity.createIntroActivity(activity).apply {
               putProtoExtra(IntroActivity.PARAMS_KEY, params)
               decorateWithUserProfileId(profileId)
             }
+          } else {
+            PinSetupActivity.createPinSetupActivityIntent(activity).also {
+              it.decorateWithUserProfileId(profileId)
+            }
+          }
 
           fragment.startActivity(intent)
         }
