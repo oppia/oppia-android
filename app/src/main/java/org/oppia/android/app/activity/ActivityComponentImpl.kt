@@ -49,6 +49,7 @@ import org.oppia.android.app.profile.AddProfileActivity
 import org.oppia.android.app.profile.AdminAuthActivity
 import org.oppia.android.app.profile.AdminPinActivity
 import org.oppia.android.app.profile.PinPasswordActivity
+import org.oppia.android.app.profile.PinSetupActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.profile.ProfileLoginActivity
 import org.oppia.android.app.profileprogress.ProfilePictureActivity
@@ -226,4 +227,5 @@ interface ActivityComponentImpl :
   fun inject(introActivity: IntroActivity)
   fun inject(profileLoginActivity: ProfileLoginActivity)
   fun inject(adminIntroActivity: AdminIntroActivity)
+  fun inject(pinSetupActivity: PinSetupActivity)
 }
