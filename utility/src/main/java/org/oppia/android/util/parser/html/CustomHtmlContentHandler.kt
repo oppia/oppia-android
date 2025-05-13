@@ -20,8 +20,7 @@ import org.xml.sax.XMLReader
  */
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?,
-  private val isContentDescriptionMode: Boolean = false
+  private val imageRetriever: ImageRetriever?
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -147,7 +146,10 @@ class CustomHtmlContentHandler private constructor(
         }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
 
-        if (!isContentDescriptionMode) {
+        if (imageRetriever == null) {
+          customTagHandlers.getValue(tag)
+            .handleTagForContentDescription(attributes, openTagIndex, output.length, output)
+        } else {
           customTagHandlers.getValue(tag)
             .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
         }
@@ -205,6 +207,22 @@ class CustomHtmlContentHandler private constructor(
       closeIndex: Int,
       output: Editable,
       imageRetriever: ImageRetriever?
+    ) {
+    }
+
+    /**
+     * Called when a custom tag is encountered during content description generation.
+     *
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which content can be added
+     */
+    fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
     ) {
     }
 
@@ -279,8 +297,7 @@ class CustomHtmlContentHandler private constructor(
     ): String {
       val handler = CustomHtmlContentHandler(
         customTagHandlers,
-        null,
-        true
+        null
       )
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
