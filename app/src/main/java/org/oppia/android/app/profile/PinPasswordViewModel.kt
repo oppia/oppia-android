@@ -27,6 +27,7 @@ class PinPasswordViewModel @Inject constructor(
   val showPassword = ObservableField(false)
   val correctPin = ObservableField<String>("")
   val isAdmin = ObservableField<Boolean>(false)
+  val maxPinLength = ObservableField<Int>(5)
   val name = ObservableField<String>("")
   val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
 
@@ -58,6 +59,7 @@ class PinPasswordViewModel @Inject constructor(
     }
     correctPin.set(profile.pin)
     isAdmin.set(profile.isAdmin)
+    maxPinLength.set(profile.pin.length)
     name.set(profile.name)
     return profile
   }
