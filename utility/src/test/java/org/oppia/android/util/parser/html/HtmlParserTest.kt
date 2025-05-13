@@ -787,10 +787,8 @@ class HtmlParserTest {
         )
         textView.text = htmlResult
 
-        assertThat(textView.contentDescription.toString()).isEqualTo(
-          "This is a bold " +
-            "and italic text."
-        )
+        assertThat(textView.contentDescription.toString())
+          .isEqualTo("This is a bold and italic text.")
       }
     }
   }
@@ -925,9 +923,38 @@ class HtmlParserTest {
         )
         textView.text = htmlResult
 
-        // Verify that the content description includes the LaTeX representation
         assertThat(textView.contentDescription.toString()).isEqualTo(
           "The fraction is Math content {\"raw_latex\":\"\\\\frac{2}{5}\"} which equals 0.4"
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withPolicyTag_includesPolicyDescription() {
+    val htmlParser = htmlParserFactory.create(
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView =
+          it.findViewById(R.id.test_html_content_text_view)
+
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "By using %s, you agree to our <br> " +
+            "<oppia-noninteractive-policy link=\"tos\">Terms of Service" +
+            "</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">" +
+            "Privacy Policy</oppia-noninteractive-policy>.",
+          textView,
+          supportsLinks = true,
+          supportsConceptCards = false
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "By using %s, you agree to our " +
+            " Link to Terms of Service and Link to Privacy Policy."
         )
       }
     }
