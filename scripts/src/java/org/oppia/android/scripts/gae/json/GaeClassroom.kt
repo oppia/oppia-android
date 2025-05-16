@@ -16,5 +16,6 @@ data class GaeClassroom(
   @Json(name = "is_published") val isPublished: Boolean,
   @Json(name = "thumbnail_data") val thumbnailData: Any,
   @Json(name = "banner_data") val bannerData: Any,
+  @Json(name = "diagnostic_test_is_enabled") val diagnosticTestIsEnabled: Boolean,
   @Json(name = "index") val index: Int
 )
