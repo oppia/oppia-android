@@ -220,7 +220,6 @@ VIEW_MODELS = [
     "src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeItemViewModel.kt",
     "src/main/java/org/oppia/android/app/home/HomeViewModel.kt",
-    "src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt",
     "src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicListViewModel.kt",
     "src/main/java/org/oppia/android/app/home/promotedlist/ComingSoonTopicsViewModel.kt",

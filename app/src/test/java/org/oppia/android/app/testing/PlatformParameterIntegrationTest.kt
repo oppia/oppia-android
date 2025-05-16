@@ -15,8 +15,6 @@ import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +39,8 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
