@@ -64,7 +64,7 @@ class NetworkConfigProdModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkConfigTestModule::class
+      TestModule::class, NetworkConfigProdModule::class
     ]
   )
 

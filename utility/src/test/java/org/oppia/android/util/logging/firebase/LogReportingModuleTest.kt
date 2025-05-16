@@ -108,7 +108,7 @@ class LogReportingModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
+      TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
       TestPlatformParameterModule::class, LoggerModule::class, SyncStatusTestModule::class,
