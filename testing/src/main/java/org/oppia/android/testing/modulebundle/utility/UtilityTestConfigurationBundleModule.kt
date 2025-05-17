@@ -1,7 +1,6 @@
 package org.oppia.android.testing.modulebundle.utility
 
 import dagger.Module
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.modulebundle.BaseTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -23,8 +22,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
   includes = [
     AccessibilityTestModule::class, LocaleTestModule::class,
     NetworkConnectionDebugUtilModule::class, NetworkConnectionUtilDebugModule::class,
-    RobolectricModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-    BaseTestModule::class
+    RobolectricModule::class, TestDispatcherModule::class, BaseTestModule::class
   ]
 )
 interface UtilityTestConfigurationBundleModule

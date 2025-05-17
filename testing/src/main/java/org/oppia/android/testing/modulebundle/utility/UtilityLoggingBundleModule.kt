@@ -1,11 +1,10 @@
 package org.oppia.android.testing.modulebundle.utility
 
 import dagger.Module
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.logging.firebase.LogReportingModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 
 /**
@@ -17,9 +16,9 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfi
  */
 @Module(
   includes = [
-    FirebaseLogUploaderModule::class, LoggerModule::class, LogReportingModule::class,
-    PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-    SyncStatusTestModule::class
+    FirebaseLogUploaderModule::class, LoggerModule::class, TestLogReportingModule::class,
+    // TODO: Is PerformanceMetricsConfigurationsModule actually needed?
+    PerformanceMetricsConfigurationsModule::class, SyncStatusTestModule::class
   ]
 )
 interface UtilityLoggingBundleModule
