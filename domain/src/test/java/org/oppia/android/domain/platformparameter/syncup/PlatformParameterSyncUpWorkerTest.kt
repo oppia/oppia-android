@@ -17,8 +17,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
-import data.src.main.java.org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +25,8 @@ import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule

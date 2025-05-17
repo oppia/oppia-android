@@ -1,6 +1,7 @@
 package org.oppia.android.data.backends.gae.testing
 
 import android.content.Context
+import android.content.pm.PackageManager
 import androidx.test.core.content.pm.ApplicationInfoBuilder
 import androidx.test.core.content.pm.PackageInfoBuilder
 import dagger.Module
@@ -23,6 +24,8 @@ class NetworkConfigTestModule {
       // particularly for this case. However, MockWebServer is only ever realistically going to be
       // used for interacting with Retrofit, and Retrofit's setup requires the following to be
       // configured (due to RemoteAuthNetworkInterceptor).
+      val existingPackageInfo =
+        context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_ACTIVITIES)
       val packageManager = Shadows.shadowOf(context.packageManager)
       val applicationInfo =
         ApplicationInfoBuilder.newBuilder()
@@ -37,6 +40,10 @@ class NetworkConfigTestModule {
       @Suppress("DEPRECATION") // versionCode is needed to test production code.
       packageInfo.versionCode = TEST_APP_VERSION_CODE
       packageManager.installPackage(packageInfo)
+
+      // Reinstall all activities that were previously registered (since installPackage above
+      // overrides them).
+      existingPackageInfo.activities.forEach(packageManager::addOrUpdateActivity)
     }
   }
 

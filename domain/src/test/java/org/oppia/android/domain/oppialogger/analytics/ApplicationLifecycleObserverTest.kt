@@ -148,6 +148,7 @@ class ApplicationLifecycleObserverTest {
   @Inject lateinit var fakeConsoleLogger: ConsoleLogger
   @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
+  @Inject lateinit var mockWebServer: MockWebServer
 
   @field:[JvmField Inject ForegroundCpuLoggingTimePeriodMillis]
   var foregroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
@@ -162,7 +163,6 @@ class ApplicationLifecycleObserverTest {
   lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   private lateinit var retrofit: Retrofit
-  private lateinit var mockWebServer: MockWebServer
   private lateinit var client: OkHttpClient
   private lateinit var mockWebServerUrl: HttpUrl
   private lateinit var request: Request
@@ -638,22 +638,14 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpRetrofitApiCall() {
-    mockWebServer = MockWebServer()
+    mockWebServerUrl = mockWebServer.url(testUrl)
     client = OkHttpClient.Builder()
       .addInterceptor(networkLoggingInterceptor)
       .build()
-
-    mockWebServerUrl = mockWebServer.url(testUrl)
-
     request = Request.Builder()
       .url(mockWebServerUrl)
       .addHeader(testApiKey, testApiKeyValue)
       .build()
-
-    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
-    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
-    // request mocking in different ways and we want to verify the full request is executed here.
-    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
     retrofit = Retrofit.Builder()
       .baseUrl(mockWebServerUrl)
       .addConverterFactory(MoshiConverterFactory.create())

@@ -3,8 +3,6 @@ package org.oppia.android.data.backends.gae
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Json
@@ -25,13 +23,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Call
@@ -60,7 +58,6 @@ class RetrofitModuleTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    setUpApplicationForContext()
   }
 
   @After
@@ -145,10 +142,10 @@ class RetrofitModuleTest {
     service.fetchTestObject().execute()
 
     val request = mockWebServer.takeRequest()
-    assertThat(request.getHeader("api_key")).isEmpty() // Verifies presence, but value is empty.
+    assertThat(request.getHeader("api_key")).isEqualTo("test_api_key")
     assertThat(request.getHeader("app_package_name")).isEqualTo("org.oppia.android.data")
-    assertThat(request.getHeader("app_version_name")).isEqualTo(TEST_APP_VERSION_NAME)
-    assertThat(request.getHeader("app_version_code")).isEqualTo("$TEST_APP_VERSION_CODE")
+    assertThat(request.getHeader("app_version_name")).isEqualTo("oppia-android-test-0123456789")
+    assertThat(request.getHeader("app_version_code")).isEqualTo("1")
   }
 
   @Test
@@ -184,48 +181,18 @@ class RetrofitModuleTest {
     getTestApplication().inject(this)
   }
 
-  private fun setUpApplicationForContext() {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = TEST_APP_VERSION_NAME
-    @Suppress("DEPRECATION") // versionCode is needed to test production code.
-    packageInfo.versionCode = TEST_APP_VERSION_CODE
-    packageManager.installPackage(packageInfo)
-  }
-
   @Module
   class TestModule {
     @Provides
     @Singleton
     fun provideContext(application: Application): Context = application
-
-    @Provides
-    @Singleton
-    fun provideMockWebServer() = MockWebServer().also { it.start() }
-
-    @Provides
-    @BaseUrl
-    fun provideNetworkBaseUrl(mockWebServer: MockWebServer): String =
-      mockWebServer.url("/").toUrl().toString()
-
-    @Provides
-    @XssiPrefix
-    fun provideXssiPrefix() = XSSI_PREFIX
   }
 
   @Singleton
   @Component(
     modules = [
       TestModule::class, RetrofitModule::class, TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -236,7 +203,7 @@ class RetrofitModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(networkModuleTest: RetrofitModuleTest)
+    fun inject(test: RetrofitModuleTest)
   }
 
   class TestApplication : Application() {
@@ -246,8 +213,8 @@ class RetrofitModuleTest {
         .build()
     }
 
-    fun inject(networkModuleTest: RetrofitModuleTest) {
-      component.inject(networkModuleTest)
+    fun inject(test: RetrofitModuleTest) {
+      component.inject(test)
     }
   }
 
@@ -268,7 +235,5 @@ class RetrofitModuleTest {
 
   private companion object {
     private const val XSSI_PREFIX = ")]}'"
-    private const val TEST_APP_VERSION_NAME = "oppia-android-test-0123456789"
-    private const val TEST_APP_VERSION_CODE = 1
   }
 }
