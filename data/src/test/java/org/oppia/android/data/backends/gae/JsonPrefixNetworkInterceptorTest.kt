@@ -13,6 +13,7 @@ import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton

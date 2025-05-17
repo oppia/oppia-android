@@ -43,8 +43,9 @@ import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
+import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
+import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -70,6 +71,8 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNO
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
+import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
@@ -591,6 +594,16 @@ class LogUploadWorkerTest {
     fun bindFakeFirestoreEventLogger(
       @MockFirestoreEventLogger delegate: FirestoreEventLogger
     ): FirestoreEventLogger = delegate
+
+    @Provides
+    fun bindFakePerformanceMetricsAssessor(
+      fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
+    ): PerformanceMetricsAssessor = fakePerformanceMetricAssessor
+
+    @Provides
+    fun bindFirebaseFirestoreInstanceWrapper(
+      wrapperImpl: FakeFirestoreInstanceWrapperImpl
+    ): FirestoreInstanceWrapper = wrapperImpl
   }
 
   @Module
@@ -630,7 +643,7 @@ class LogUploadWorkerTest {
       NetworkConnectionUtilDebugModule::class, LocaleTestModule::class, LoggerModule::class,
       AssetModule::class, TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, TestLogReportingModule::class,
+      SyncStatusTestModule::class,
       ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
       TestAuthenticationModule::class,
     ]

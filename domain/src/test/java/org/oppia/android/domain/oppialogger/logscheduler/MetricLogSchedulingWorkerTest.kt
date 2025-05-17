@@ -37,8 +37,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
-import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
@@ -52,12 +50,9 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
-import org.oppia.android.util.logging.AnalyticsEventLogger
-import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -223,18 +218,6 @@ class MetricLogSchedulingWorkerTest {
   class TestModule {
     @Provides
     fun provideContext(application: Application): Context = application
-
-    @Provides
-    fun bindFakeEventLogger(fakeAnalyticsEventLogger: FakeAnalyticsEventLogger):
-      AnalyticsEventLogger = fakeAnalyticsEventLogger
-
-    @Provides
-    fun bindFakeExceptionLogger(fakeLogger: FakeExceptionLogger): ExceptionLogger = fakeLogger
-
-    @Provides
-    fun bindFakePerformanceMetricsEventLogger(
-      fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
-    ): PerformanceMetricsEventLogger = fakePerformanceMetricsEventLogger
   }
 
   @Module
