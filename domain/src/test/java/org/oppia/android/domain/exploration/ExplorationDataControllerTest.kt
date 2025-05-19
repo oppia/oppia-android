@@ -68,7 +68,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -474,7 +474,7 @@ class ExplorationDataControllerTest {
       AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
+      SyncStatusProdModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
       TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class
     ]

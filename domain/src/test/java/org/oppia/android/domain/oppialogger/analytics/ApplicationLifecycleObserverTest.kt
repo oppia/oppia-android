@@ -58,7 +58,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
-import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageProdModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
@@ -100,7 +100,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -698,12 +698,12 @@ class ApplicationLifecycleObserverTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
+      SyncStatusProdModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
       LogReportWorkerModule::class, MetricLogSchedulerModule::class,
       FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
       WorkManagerConfigurationModule::class, TestAuthenticationModule::class, RetrofitModule::class,
       RetrofitServiceModule::class,
-      NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageModule::class,
+      NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageProdModule::class,
       HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
       InteractionsModule::class, AlgebraicExpressionInputModule::class, ContinueModule::class,
       DragDropSortInputModule::class, FractionInputModule::class, ImageClickInputModule::class,

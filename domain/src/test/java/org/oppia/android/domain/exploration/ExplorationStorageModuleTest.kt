@@ -35,14 +35,14 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [ExplorationStorageModule]. */
+/** Tests for [ExplorationStorageProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -107,11 +107,11 @@ class ExplorationStorageModuleTest {
   @Component(
     modules = [
       TestModule::class, TestLogReportingModule::class,
-      ExplorationStorageModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      ExplorationStorageProdModule::class, TestDispatcherModule::class, RobolectricModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
+      SyncStatusProdModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

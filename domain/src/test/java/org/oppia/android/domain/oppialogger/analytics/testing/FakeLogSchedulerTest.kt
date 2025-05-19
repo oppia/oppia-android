@@ -39,7 +39,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.MetricLogScheduler
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.system.OppiaClockModule
@@ -181,7 +181,7 @@ class FakeLogSchedulerTest {
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
+      SyncStatusProdModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]
   )

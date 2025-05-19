@@ -60,7 +60,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -560,7 +560,7 @@ class ExplorationActiveTimeControllerTest {
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, NumericExpressionInputModule::class,
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
+      RatioInputModule::class, SyncStatusProdModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, PlatformParameterSingletonModule::class,
       TestPlatformParameterModule::class, ExplorationStorageTestModule::class,
       LogStorageModule::class

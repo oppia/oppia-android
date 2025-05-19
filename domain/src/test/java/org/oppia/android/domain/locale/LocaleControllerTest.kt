@@ -47,7 +47,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -897,7 +897,7 @@ class LocaleControllerTest {
       TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
       AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
+      SyncStatusProdModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

@@ -31,7 +31,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -429,7 +429,7 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
       TestDispatcherModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
       TestModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
+      SyncStatusProdModule::class, PlatformParameterModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

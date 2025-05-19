@@ -61,7 +61,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -1764,7 +1764,7 @@ class StoryProgressTestHelperTest {
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class,
+      ApplicationLifecycleModule::class, SyncStatusProdModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )

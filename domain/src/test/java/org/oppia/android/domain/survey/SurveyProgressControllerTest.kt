@@ -41,7 +41,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
@@ -565,7 +565,7 @@ class SurveyProgressControllerTest {
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
       ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
-      NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
     ]
   )

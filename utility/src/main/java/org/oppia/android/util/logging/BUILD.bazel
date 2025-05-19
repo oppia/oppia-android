@@ -125,7 +125,7 @@ kt_android_library(
     name = "prod_module",
     srcs = [
         "LoggerModule.kt",
-        "SyncStatusModule.kt",
+        "SyncStatusProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [

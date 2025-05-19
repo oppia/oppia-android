@@ -54,7 +54,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
@@ -430,7 +430,7 @@ class PlatformParameterSyncUpWorkerTest {
       RetrofitServiceModule::class, FakeOppiaClockModule::class, NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class
+      SyncStatusProdModule::class, PlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

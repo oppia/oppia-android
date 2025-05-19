@@ -121,7 +121,7 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
       TestModule::class, TestLogReportingModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, SyncStatusModule::class
+      TestPlatformParameterModule::class, SyncStatusProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

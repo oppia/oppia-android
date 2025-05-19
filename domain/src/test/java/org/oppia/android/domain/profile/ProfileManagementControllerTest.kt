@@ -61,7 +61,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
@@ -2177,7 +2177,7 @@ class ProfileManagementControllerTest {
       TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
       TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
+      TestLoggingIdentifierModule::class, SyncStatusProdModule::class, AssetModule::class,
       ApplicationLifecycleModule::class
     ]
   )

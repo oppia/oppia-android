@@ -56,7 +56,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -277,7 +277,7 @@ class QuestionTrainingControllerTest {
       NetworkConnectionUtilDebugModule::class, AssetModule::class, LocaleProdModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class,
+      ApplicationLifecycleModule::class, SyncStatusProdModule::class,
       PlatformParameterModule::class, PlatformParameterSingletonModule::class
     ]
   )

@@ -48,10 +48,10 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
-import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageProdModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
@@ -78,7 +78,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -222,12 +222,12 @@ class DateTimeUtilTest {
       GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
       RetrofitModule::class, RetrofitServiceModule::class, PlatformParameterModule::class,
       HintsAndSolutionProdModule::class,
-      CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
+      CachingTestModule::class, InteractionsModule::class, ExplorationStorageProdModule::class,
       QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
-      HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
+      HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverProdModule::class,
       GlideImageLoaderModule::class,
       HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
@@ -236,7 +236,7 @@ class DateTimeUtilTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, TestingBuildFlavorModule::class,
+      SyncStatusProdModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
       ExplorationProgressModule::class, TestAuthenticationModule::class
