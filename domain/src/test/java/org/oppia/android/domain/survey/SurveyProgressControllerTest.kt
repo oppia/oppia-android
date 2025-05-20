@@ -26,13 +26,12 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -43,6 +42,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
@@ -565,7 +565,8 @@ class SurveyProgressControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AssetModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, AuthenticationTestModule::class,
     ]

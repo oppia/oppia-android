@@ -33,10 +33,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "PerformanceMetricsAssessorModuleTest",
-    srcs = ["PerformanceMetricsAssessorModuleTest.kt"],
+    name = "PerformanceMetricsAssessorProdModuleTest",
+    srcs = ["PerformanceMetricsAssessorProdModuleTest.kt"],
     custom_package = "org.oppia.android.util.logging.performancemetrics",
-    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModuleTest",
+    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",

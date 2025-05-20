@@ -16,7 +16,6 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -28,6 +27,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -86,7 +86,8 @@ class ExplorationProgressModuleTest {
     modules = [
       TestModule::class, TestLogModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, ExplorationProgressModule::class, DispatcherTestModule::class,
-      LocaleProdModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
+      LocaleProdModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
       PlatformParameterTestModule::class
     ]

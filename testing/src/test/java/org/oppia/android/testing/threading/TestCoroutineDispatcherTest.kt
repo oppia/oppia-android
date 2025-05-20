@@ -15,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -23,6 +22,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config

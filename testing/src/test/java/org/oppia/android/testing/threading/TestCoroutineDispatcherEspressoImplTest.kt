@@ -16,7 +16,6 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.timeout
 import org.mockito.Mockito.verify
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -24,6 +23,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Singleton

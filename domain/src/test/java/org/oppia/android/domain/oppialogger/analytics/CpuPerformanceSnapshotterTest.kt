@@ -22,13 +22,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -42,6 +41,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.UNINITIALIZED
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -483,7 +483,8 @@ class CpuPerformanceSnapshotterTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
       DispatcherTestModule::class, TestLogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,

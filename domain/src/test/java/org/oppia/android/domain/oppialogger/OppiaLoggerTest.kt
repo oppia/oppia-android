@@ -39,7 +39,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -50,6 +49,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -485,7 +485,8 @@ class OppiaLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, TestLogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      TestLogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,

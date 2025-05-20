@@ -23,9 +23,8 @@ import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_2
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
@@ -44,6 +43,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.DefaultGcsPrefix
 import org.oppia.android.util.parser.image.ImageDownloadUrlTemplate
@@ -378,7 +378,8 @@ class ClassroomControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      LogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

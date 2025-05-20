@@ -75,17 +75,16 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
-import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
+import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -103,6 +102,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -694,7 +694,8 @@ class ApplicationLifecycleObserverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      LogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,

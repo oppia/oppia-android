@@ -39,11 +39,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
@@ -54,6 +53,7 @@ import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -318,14 +318,16 @@ class LogReportWorkManagerInitializerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
       TestLogStorageModule::class, DispatcherTestModule::class,
       LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
       FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusProdModule::class, ApplicationLifecycleModule::class,
-      CpuPerformanceSnapshotterModule::class, AuthenticationTestModule::class,
+      LoggerModule::class, AssetModule::class, LoggerModule::class,
+      PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class, SyncStatusProdModule::class,
+      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
+      AuthenticationTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

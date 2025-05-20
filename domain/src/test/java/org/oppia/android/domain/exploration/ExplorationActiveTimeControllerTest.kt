@@ -42,14 +42,13 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -62,6 +61,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -554,7 +554,8 @@ class ExplorationActiveTimeControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, ContinueModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, ContinueModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class, FractionInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, ImageClickInputModule::class,

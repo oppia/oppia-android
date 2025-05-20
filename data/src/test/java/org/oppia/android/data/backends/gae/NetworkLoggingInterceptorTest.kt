@@ -24,14 +24,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -188,8 +188,8 @@ class NetworkLoggingInterceptorTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      DispatcherTestModule::class
+      RobolectricModule::class, TestModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, DispatcherTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

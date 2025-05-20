@@ -40,8 +40,8 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = LogReportingModuleTest.TestApplication::class)
-class LogReportingModuleTest {
+@Config(application = LogReportingProdModuleTest.TestApplication::class)
+class LogReportingProdModuleTest {
 
   @Inject
   lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
@@ -121,17 +121,17 @@ class LogReportingModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(logReportingModuleTest: LogReportingModuleTest)
+    fun inject(logReportingModuleTest: LogReportingProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLogReportingModuleTest_TestApplicationComponent.builder()
+      DaggerLogReportingProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: LogReportingModuleTest) {
+    fun inject(test: LogReportingProdModuleTest) {
       component.inject(test)
     }
 

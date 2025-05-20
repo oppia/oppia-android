@@ -31,7 +31,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -42,6 +41,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
@@ -178,12 +178,13 @@ class FakeLogSchedulerTest {
   @Component(
     modules = [
       TestModule::class, LoggerModule::class, DispatcherTestModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
-      SyncStatusProdModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, AssetModule::class
+      SyncStatusProdModule::class, ApplicationLifecycleModule::class,
+      LoggingIdentifierModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

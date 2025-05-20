@@ -74,14 +74,13 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -92,6 +91,7 @@ import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -335,7 +335,8 @@ class ActivityLanguageLocaleHandlerTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, ImageLoaderProdModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,

@@ -77,14 +77,13 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -95,6 +94,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -391,7 +391,8 @@ class LicenseListFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, ImageLoaderProdModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -405,7 +406,8 @@ class LicenseListFragmentTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusProdModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusProdModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,

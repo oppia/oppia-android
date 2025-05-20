@@ -134,10 +134,9 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -150,8 +149,8 @@ import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -164,6 +163,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extrac
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
@@ -2351,7 +2351,8 @@ class ExplorationActivityTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, ImageLoaderProdModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -2365,7 +2366,8 @@ class ExplorationActivityTest {
       AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusProdModule::class,
+      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      SyncStatusProdModule::class,
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,

@@ -34,8 +34,8 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PerformanceMetricsAssessorModuleTest.TestApplication::class)
-class PerformanceMetricsAssessorModuleTest {
+@Config(application = PerformanceMetricsAssessorProdModuleTest.TestApplication::class)
+class PerformanceMetricsAssessorProdModuleTest {
 
   @Inject
   lateinit var performanceMetricsAssessor: PerformanceMetricsAssessor
@@ -95,17 +95,17 @@ class PerformanceMetricsAssessorModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: PerformanceMetricsAssessorModuleTest)
+    fun inject(test: PerformanceMetricsAssessorProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsAssessorModuleTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsAssessorProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: PerformanceMetricsAssessorModuleTest) {
+    fun inject(test: PerformanceMetricsAssessorProdModuleTest) {
       component.inject(test)
     }
 

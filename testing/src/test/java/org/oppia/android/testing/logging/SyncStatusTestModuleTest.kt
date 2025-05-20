@@ -14,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -23,6 +22,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -67,7 +67,8 @@ class SyncStatusTestModuleTest {
   @Component(
     modules = [
       TestModule::class, SyncStatusTestModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, LoggerModule::class,
       DispatcherTestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       RobolectricModule::class
     ]

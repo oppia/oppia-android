@@ -52,13 +52,12 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -70,6 +69,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -467,7 +467,8 @@ class ExplorationDataControllerTest {
       TestModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      DragDropSortInputModule::class, InteractionsModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, DispatcherTestModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,

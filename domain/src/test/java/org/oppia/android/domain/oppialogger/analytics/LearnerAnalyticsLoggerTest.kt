@@ -44,7 +44,6 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -55,8 +54,8 @@ import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -64,6 +63,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -2093,7 +2093,8 @@ class LearnerAnalyticsLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
       DispatcherTestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class, SyncStatusTestModule::class, LoggerModule::class,

@@ -381,7 +381,8 @@ class FakeAnalyticsEventLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
       DispatcherTestModule::class, LogStorageModule::class, FakeOppiaClockModule::class
     ]
   )

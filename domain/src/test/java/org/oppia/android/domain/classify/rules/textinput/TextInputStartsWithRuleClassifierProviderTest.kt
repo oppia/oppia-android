@@ -24,7 +24,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -33,6 +32,7 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -423,7 +423,8 @@ class TextInputStartsWithRuleClassifierProviderTest {
     modules = [
       LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
       DispatcherTestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AssetModule::class, RobolectricModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      AssetModule::class, RobolectricModule::class,
       TestModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusProdModule::class, PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class

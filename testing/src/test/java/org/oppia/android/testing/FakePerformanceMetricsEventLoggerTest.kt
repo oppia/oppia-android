@@ -20,6 +20,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -307,7 +308,8 @@ class FakePerformanceMetricsEventLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
       DispatcherTestModule::class, LogStorageModule::class, FakeOppiaClockModule::class
     ]
   )

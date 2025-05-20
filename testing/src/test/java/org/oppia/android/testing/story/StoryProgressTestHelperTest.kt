@@ -48,12 +48,11 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -63,6 +62,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -1761,7 +1761,8 @@ class StoryProgressTestHelperTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      LogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
       AssetModule::class, LocaleProdModule::class, LoggingIdentifierModule::class,

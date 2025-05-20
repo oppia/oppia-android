@@ -52,8 +52,8 @@ import org.oppia.android.util.caching.CachingProdModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
-import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule

@@ -137,11 +137,10 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
-import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
+import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -154,8 +153,8 @@ import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.accessibility.FakeAccessibilityService
@@ -167,6 +166,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -3024,7 +3024,8 @@ class StateFragmentLocalTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, ImageLoaderTestModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,

@@ -28,10 +28,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "AuthenticationModuleTest",
-    srcs = ["AuthenticationModuleTest.kt"],
+    name = "AuthenticationProdModuleTest",
+    srcs = ["AuthenticationProdModuleTest.kt"],
     custom_package = "org.oppia.android.domain.auth",
-    test_class = "org.oppia.android.domain.auth.AuthenticationModuleTest",
+    test_class = "org.oppia.android.domain.auth.AuthenticationProdModuleTest",
     test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",

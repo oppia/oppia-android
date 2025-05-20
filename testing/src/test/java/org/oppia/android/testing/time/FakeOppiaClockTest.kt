@@ -18,11 +18,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_WALL_CLOCK_TIME
@@ -30,6 +29,7 @@ import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -291,7 +291,8 @@ class FakeOppiaClockTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      LogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, CachingTestModule::class, LoggerModule::class
     ]

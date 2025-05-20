@@ -31,12 +31,11 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
@@ -45,6 +44,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.data.DataProviders.Companion.transformNested
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -3366,8 +3366,9 @@ class DataProvidersTest {
   @Singleton
   @Component(
     modules = [
-      DispatcherTestModule::class, TestModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      DispatcherTestModule::class, TestModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
+      FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -27,11 +27,10 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -39,6 +38,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -177,10 +177,12 @@ class PerformanceMetricsLogSchedulerTest {
       RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       DispatcherTestModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
+      AssetModule::class, PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, PerformanceMetricsConfigurationsModule::class,
+      LogStorageModule::class, ApplicationLifecycleModule::class,
+      CpuPerformanceSnapshotterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

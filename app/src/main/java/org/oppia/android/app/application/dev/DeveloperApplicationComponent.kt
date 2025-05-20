@@ -53,8 +53,8 @@ import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
-import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -74,15 +74,15 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
-    ApplicationModule::class, DispatcherProdModule::class, LoggerModule::class, OppiaClockModule::class,
-    ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-    MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-    NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
-    InteractionsModule::class, GcsResourceModule::class, ImageLoaderProdModule::class,
-    ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingProdModule::class,
-    QuestionModule::class, LogReportingDebugModule::class, AccessibilityProdModule::class,
-    ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class,
+    ApplicationModule::class, DispatcherProdModule::class, LoggerModule::class,
+    OppiaClockModule::class, ContinueModule::class, FractionInputModule::class,
+    ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
+    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
+    DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
+    ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+    CachingProdModule::class, QuestionModule::class, LogReportingDebugModule::class,
+    AccessibilityProdModule::class, ImageClickInputModule::class, LogStorageModule::class,
+    IntentFactoryShimModule::class, ViewBindingShimModule::class,
     ExpirationMetaDataRetrieverProdModule::class, RatioInputModule::class,
     UncaughtExceptionLoggerModule::class, ApplicationStartupListenerModule::class,
     LogReportWorkerModule::class, WorkManagerConfigurationModule::class,

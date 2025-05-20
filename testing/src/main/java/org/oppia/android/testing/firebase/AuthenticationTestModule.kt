@@ -2,9 +2,9 @@ package org.oppia.android.testing.firebase
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.domain.auth.FirebaseAuthInstanceWrapper
 import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import javax.inject.Singleton
-import org.oppia.android.domain.auth.FirebaseAuthInstanceWrapper
 
 /** Provides test authentication dependencies. */
 @Module

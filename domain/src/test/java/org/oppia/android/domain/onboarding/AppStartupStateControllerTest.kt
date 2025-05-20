@@ -44,7 +44,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -52,8 +51,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -63,6 +62,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
 import org.oppia.android.util.platformparameter.FORCED_APP_UPDATE_VERSION_CODE
@@ -1074,10 +1074,10 @@ class AppStartupStateControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class,
-      TestModule::class, DispatcherTestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      NetworkConnectionUtilDebugModule::class,
+      TestModule::class, DispatcherTestModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverProdModule::class, // Use real implementation to test closer to prod.
+      ExpirationMetaDataRetrieverProdModule::class, // Use real impl to test closer to prod.
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusProdModule::class, PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class, AssetModule::class

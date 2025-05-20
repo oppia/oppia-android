@@ -17,9 +17,9 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.DispatcherTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit

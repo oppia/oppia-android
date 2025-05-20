@@ -35,7 +35,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
@@ -45,8 +44,8 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VAL
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -56,6 +55,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
@@ -427,7 +427,8 @@ class PlatformParameterSyncUpWorkerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, DispatcherTestModule::class,
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RetrofitModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RetrofitModule::class,
       RetrofitServiceModule::class, FakeOppiaClockModule::class, NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

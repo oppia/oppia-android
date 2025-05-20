@@ -42,11 +42,10 @@ import org.oppia.android.domain.topic.TEST_SKILL_ID_1
 import org.oppia.android.domain.topic.TEST_SKILL_ID_2
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -58,6 +57,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -271,7 +271,8 @@ class QuestionTrainingControllerTest {
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       DragDropSortInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, InteractionsModule::class,
-      TestQuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, ImageClickInputModule::class,
+      TestQuestionModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, ImageClickInputModule::class,
       LogStorageModule::class, DispatcherTestModule::class, RatioInputModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class, CachingTestModule::class,
       HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,

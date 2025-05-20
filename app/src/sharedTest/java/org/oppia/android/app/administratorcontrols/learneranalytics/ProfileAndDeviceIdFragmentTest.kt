@@ -101,9 +101,8 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.EventLogSubject
@@ -114,8 +113,8 @@ import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -127,6 +126,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
@@ -1126,7 +1126,8 @@ class ProfileAndDeviceIdFragmentTest {
       NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AccessibilityTestModule::class,
+      QuestionModule::class, LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class, AccessibilityTestModule::class,
       LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, WorkManagerConfigurationModule::class,

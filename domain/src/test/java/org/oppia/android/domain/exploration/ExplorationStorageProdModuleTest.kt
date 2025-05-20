@@ -22,7 +22,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -37,6 +36,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -48,8 +48,8 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = ExplorationStorageModuleTest.TestApplication::class)
-class ExplorationStorageModuleTest {
+@Config(application = ExplorationStorageProdModuleTest.TestApplication::class)
+class ExplorationStorageProdModuleTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
   @field:[Inject JvmField ExplorationStorageDatabaseSize] var databaseSize: Int = Int.MIN_VALUE
@@ -124,17 +124,17 @@ class ExplorationStorageModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(explorationStorageModuleTest: ExplorationStorageModuleTest)
+    fun inject(explorationStorageModuleTest: ExplorationStorageProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerExplorationStorageModuleTest_TestApplicationComponent.builder()
+      DaggerExplorationStorageProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(explorationStorageModuleTest: ExplorationStorageModuleTest) {
+    fun inject(explorationStorageModuleTest: ExplorationStorageProdModuleTest) {
       component.inject(explorationStorageModuleTest)
     }
 

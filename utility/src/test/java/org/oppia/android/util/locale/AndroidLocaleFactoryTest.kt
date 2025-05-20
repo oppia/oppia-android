@@ -27,8 +27,8 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config

@@ -22,13 +22,13 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
-import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -146,8 +146,8 @@ class RemoteAuthNetworkInterceptorTest {
   @Component(
     modules = [
       RobolectricModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, DispatcherTestModule::class,
-      NetworkConfigTestModule::class
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      DispatcherTestModule::class, NetworkConfigTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

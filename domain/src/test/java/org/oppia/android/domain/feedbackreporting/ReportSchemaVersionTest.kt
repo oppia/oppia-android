@@ -23,10 +23,10 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.logging.SyncStatusProdModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -173,8 +173,8 @@ class ReportSchemaVersionTest {
   @Component(
     modules = [
       TestModule::class, FeedbackReportingModule::class, DispatcherTestModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusProdModule::class, PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class
     ]

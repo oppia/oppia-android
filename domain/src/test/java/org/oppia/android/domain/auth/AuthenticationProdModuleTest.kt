@@ -1,4 +1,4 @@
-package org.oppia.android.testing.firebase
+package org.oppia.android.domain.auth
 
 import android.app.Application
 import android.content.Context
@@ -12,23 +12,23 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AuthenticationTestModule]. */
+/** Tests for [AuthenticationProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(manifest = Config.NONE)
-class TestAuthenticationModuleTest {
+@Config(application = AuthenticationProdModuleTest.TestApplication::class)
+class AuthenticationProdModuleTest {
 
   @Inject
   lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
@@ -39,17 +39,15 @@ class TestAuthenticationModuleTest {
   }
 
   @Test
-  fun testModule_injectsFakeInstanceOfFirebaseAuthWrapper() {
-    assertThat(firebaseAuthWrapper).isInstanceOf(FakeFirebaseAuthWrapperImpl::class.java)
+  fun testModule_injectsProductionImplementationOfFirebaseAuthWrapper() {
+    assertThat(firebaseAuthWrapper).isInstanceOf(FirebaseAuthWrapperImpl::class.java)
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTestAuthenticationModuleTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
-      .inject(this)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
     @Provides
@@ -59,12 +57,11 @@ class TestAuthenticationModuleTest {
     }
   }
 
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
-      LogReportingDebugModule::class, AuthenticationTestModule::class
+      TestModule::class, DispatcherTestModule::class, AuthenticationProdModule::class,
+      RobolectricModule::class, LogReportingDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -76,6 +73,20 @@ class TestAuthenticationModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: TestAuthenticationModuleTest)
+    fun inject(test: AuthenticationProdModuleTest)
+  }
+
+  class TestApplication : Application(), DataProvidersInjectorProvider {
+    private val component: TestApplicationComponent by lazy {
+      DaggerAuthenticationProdModuleTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: AuthenticationProdModuleTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
