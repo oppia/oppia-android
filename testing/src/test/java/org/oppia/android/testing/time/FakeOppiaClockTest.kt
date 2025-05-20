@@ -18,6 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -290,7 +291,7 @@ class FakeOppiaClockTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, LogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, CachingTestModule::class, LoggerModule::class
     ]

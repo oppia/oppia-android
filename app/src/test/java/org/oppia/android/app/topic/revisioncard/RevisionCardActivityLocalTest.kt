@@ -64,6 +64,7 @@ import org.oppia.android.domain.topic.SUBTOPIC_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -142,7 +143,7 @@ class RevisionCardActivityLocalTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, LogReportingTestModule::class, AccessibilityTestModule::class,
+      QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,

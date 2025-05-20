@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
@@ -152,7 +153,7 @@ class ConsoleLoggerTest {
   @Component(
     modules = [
       RobolectricModule::class, TestModule::class, LocaleTestModule::class,
-      LogReportingTestModule::class, DispatcherTestModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, DispatcherTestModule::class,
       FakeOppiaClockModule::class,
     ]
   )

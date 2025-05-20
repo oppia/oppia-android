@@ -23,6 +23,7 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
@@ -661,7 +662,7 @@ class SurveyGatingControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, LogReportingTestModule::class, AssetModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, PlatformParameterTestModule::class
     ]

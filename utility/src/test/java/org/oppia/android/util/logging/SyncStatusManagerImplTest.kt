@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -118,7 +119,7 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, SyncStatusProdModule::class

@@ -29,7 +29,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PerformanceMetricsAssessorModule]. */
+/** Tests for [PerformanceMetricsAssessorProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -81,7 +81,7 @@ class PerformanceMetricsAssessorModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
+      TestModule::class, PerformanceMetricsAssessorProdModule::class, LoggerModule::class,
       DispatcherTestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class,
       LocaleProdModule::class

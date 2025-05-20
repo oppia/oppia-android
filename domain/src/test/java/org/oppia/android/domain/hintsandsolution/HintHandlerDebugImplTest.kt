@@ -34,6 +34,7 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -428,7 +429,7 @@ class HintHandlerDebugImplTest {
   @Component(
     modules = [
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
-      LogReportingTestModule::class, DispatcherTestModule::class, RobolectricModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, DispatcherTestModule::class, RobolectricModule::class,
       LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
       ExplorationStorageTestModule::class
     ]

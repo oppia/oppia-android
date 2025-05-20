@@ -19,6 +19,7 @@ import org.junit.runner.RunWith
 import org.mockito.exceptions.verification.NeverWantedButInvoked
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -1136,7 +1137,7 @@ class DataProviderTestMonitorTest {
   @Component(
     modules = [
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LogReportingTestModule::class, LoggerModule::class, DispatcherTestModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LoggerModule::class, DispatcherTestModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class
     ]
   )

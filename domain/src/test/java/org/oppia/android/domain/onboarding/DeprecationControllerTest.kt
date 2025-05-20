@@ -29,6 +29,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
@@ -337,7 +338,7 @@ class DeprecationControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class,
-      TestModule::class, DispatcherTestModule::class, LogReportingTestModule::class,
+      TestModule::class, DispatcherTestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class, LocaleProdModule::class,
       ExpirationMetaDataRetrieverProdModule::class, // Use real implementation to test closer to prod.

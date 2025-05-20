@@ -42,6 +42,7 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
@@ -553,7 +554,7 @@ class ExplorationActiveTimeControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, LogReportingTestModule::class, ContinueModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, ContinueModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class, FractionInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, ImageClickInputModule::class,

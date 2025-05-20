@@ -35,6 +35,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
@@ -426,7 +427,7 @@ class PlatformParameterSyncUpWorkerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, DispatcherTestModule::class,
-      TestModule::class, LogReportingTestModule::class, RetrofitModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RetrofitModule::class,
       RetrofitServiceModule::class, FakeOppiaClockModule::class, NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

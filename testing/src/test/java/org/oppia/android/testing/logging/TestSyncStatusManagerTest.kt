@@ -16,6 +16,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -902,7 +903,7 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   @Component(
     modules = [
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LogReportingTestModule::class, LoggerModule::class, DispatcherTestModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LoggerModule::class, DispatcherTestModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class
     ]
   )

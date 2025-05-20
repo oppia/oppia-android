@@ -15,6 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.hintsandsolution.HintHandlerDebugImpl.FactoryDebugImpl
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -59,7 +60,7 @@ class HintsAndSolutionDebugModuleTest {
   @Component(
     modules = [
       TestModule::class, HintsAndSolutionDebugModule::class, HintsAndSolutionConfigModule::class,
-      LogReportingTestModule::class, DispatcherTestModule::class, RobolectricModule::class
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, DispatcherTestModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

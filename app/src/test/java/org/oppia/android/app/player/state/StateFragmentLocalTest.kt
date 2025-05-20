@@ -141,6 +141,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
@@ -3023,7 +3024,7 @@ class StateFragmentLocalTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, ImageLoaderTestModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,

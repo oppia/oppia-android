@@ -18,6 +18,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -467,7 +468,7 @@ class PerformanceMetricsAssessorImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       PlatformParameterTestModule::class, SyncStatusProdModule::class,

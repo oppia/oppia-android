@@ -5,8 +5,7 @@ import dagger.Provides
 
 /** Provides production-specific performance metrics utilities related dependencies. */
 @Module
-class PerformanceMetricsAssessorModule {
-
+class PerformanceMetricsAssessorProdModule {
   @Provides
   fun providePerformanceMetricsAssessor(
     performanceMetricsAssessorImpl: PerformanceMetricsAssessorImpl

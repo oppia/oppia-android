@@ -59,6 +59,7 @@ import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -1658,7 +1659,7 @@ class QuestionAssessmentProgressControllerTest {
       TestModule::class, TestQuestionModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      InteractionsModule::class, DragDropSortInputModule::class, LogReportingTestModule::class,
+      InteractionsModule::class, DragDropSortInputModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, DispatcherTestModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       CachingTestModule::class, HintsAndSolutionConfigModule::class,

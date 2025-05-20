@@ -69,7 +69,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNO
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
@@ -630,7 +630,7 @@ class LogUploadWorkerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterTestModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
+      SyncStatusTestModule::class, PerformanceMetricsAssessorProdModule::class,
       ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
       AuthenticationTestModule::class,
     ]

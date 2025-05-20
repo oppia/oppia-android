@@ -20,6 +20,7 @@ import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.DataProvidersInjector
@@ -372,7 +373,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     modules = [
       DispatcherTestModule::class,
       TestModule::class,
-      LogReportingTestModule::class
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

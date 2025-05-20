@@ -92,6 +92,7 @@ import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -613,7 +614,7 @@ class AudioLanguageFragmentTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, LogReportingTestModule::class, AccessibilityTestModule::class,
+      QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,

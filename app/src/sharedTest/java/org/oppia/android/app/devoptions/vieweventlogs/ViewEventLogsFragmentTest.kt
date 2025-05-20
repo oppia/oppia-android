@@ -108,7 +108,7 @@ import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
@@ -756,7 +756,7 @@ class ViewEventLogsFragmentTest {
       NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
       MathEquationInputModule::class, SplitScreenInteractionModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class, SyncStatusProdModule::class,
-      MetricLogSchedulerModule::class, PerformanceMetricsAssessorModule::class,
+      MetricLogSchedulerModule::class, PerformanceMetricsAssessorProdModule::class,
       PerformanceMetricsConfigurationsModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,

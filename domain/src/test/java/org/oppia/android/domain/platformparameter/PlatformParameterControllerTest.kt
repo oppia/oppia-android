@@ -14,6 +14,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -220,7 +221,7 @@ class PlatformParameterControllerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, DispatcherTestModule::class,
-      TestModule::class, LogReportingTestModule::class, NetworkConnectionUtilDebugModule::class
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, NetworkConnectionUtilDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

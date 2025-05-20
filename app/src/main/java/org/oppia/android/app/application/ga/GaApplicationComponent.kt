@@ -54,7 +54,7 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.LogReportingProdModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
@@ -98,7 +98,7 @@ import javax.inject.Singleton
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsConfigurationsModule::class, GaBuildFlavorModule::class,
     ActivityRouterModule::class,
-    CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
+    CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorProdModule::class,
     ExplorationProgressModule::class, AuthenticationProdModule::class,
   ]
 )

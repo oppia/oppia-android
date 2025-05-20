@@ -22,6 +22,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -106,7 +107,7 @@ class ExplorationStorageModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       ExplorationStorageProdModule::class, DispatcherTestModule::class, RobolectricModule::class,
       LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class,

@@ -43,6 +43,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -343,7 +344,7 @@ class SpotlightStateControllerTest {
       TestModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, LogReportingTestModule::class,
+      DragDropSortInputModule::class, InteractionsModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, DispatcherTestModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       HintsAndSolutionConfigModule::class,

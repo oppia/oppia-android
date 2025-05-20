@@ -15,6 +15,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -224,7 +225,7 @@ class TestCoroutineDispatcherTest {
     modules = [
       DispatcherTestModule::class,
       TestModule::class,
-      LogReportingTestModule::class
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

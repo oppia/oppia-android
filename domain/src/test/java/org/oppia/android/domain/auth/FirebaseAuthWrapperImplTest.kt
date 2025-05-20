@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.FakeFirebaseAuthInstanceWrapperImpl
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -81,7 +82,7 @@ class FirebaseAuthWrapperImplTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherTestModule::class,
-      AuthenticationModule::class, LogReportingTestModule::class,
+      AuthenticationModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

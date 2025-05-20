@@ -65,6 +65,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -166,7 +167,7 @@ class CompletedStoryListSpanTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
       ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, LogReportingTestModule::class, AccessibilityTestModule::class,
+      QuestionModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
       ViewBindingShimModule::class, CachingTestModule::class, RatioInputModule::class,
       ExpirationMetaDataRetrieverProdModule::class,

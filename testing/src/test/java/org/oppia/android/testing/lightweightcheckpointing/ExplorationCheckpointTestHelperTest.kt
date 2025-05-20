@@ -39,6 +39,7 @@ import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -247,7 +248,7 @@ class ExplorationCheckpointTestHelperTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, LogStorageModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ExplorationStorageProdModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,

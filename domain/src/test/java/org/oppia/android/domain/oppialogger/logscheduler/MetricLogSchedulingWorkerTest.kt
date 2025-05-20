@@ -55,7 +55,7 @@ import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
@@ -270,7 +270,7 @@ class MetricLogSchedulingWorkerTest {
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
-      PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
+      PerformanceMetricsAssessorProdModule::class, PerformanceMetricsConfigurationsModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
     ]
   )

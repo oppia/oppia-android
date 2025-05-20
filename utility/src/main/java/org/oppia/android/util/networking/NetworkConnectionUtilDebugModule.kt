@@ -10,10 +10,4 @@ interface NetworkConnectionUtilDebugModule {
   /** Binds [NetworkConnectionUtilDebugImpl] to [NetworkConnectionUtil]. */
   @Binds
   fun bindsNetworkConnectionUtil(impl: NetworkConnectionUtilDebugImpl): NetworkConnectionUtil
-
-  /** Binds [NetworkConnectionUtilDebugImpl] to [NetworkConnectionDebugUtil]. */
-  @Binds
-  fun bindsNetworkConnectionDebugUtil(
-    impl: NetworkConnectionUtilDebugImpl
-  ): NetworkConnectionDebugUtil
 }

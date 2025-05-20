@@ -34,6 +34,7 @@ import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
 import org.oppia.android.data.persistence.PersistentCacheStoreTest.SubscriptionCallback.Companion.toAsyncChange
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -1702,7 +1703,7 @@ class PersistentCacheStoreTest {
       RobolectricModule::class,
       DispatcherTestModule::class,
       TestModule::class,
-      LogReportingTestModule::class
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

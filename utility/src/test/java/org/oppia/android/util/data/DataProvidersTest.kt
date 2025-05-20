@@ -31,6 +31,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -3366,7 +3367,7 @@ class DataProvidersTest {
   @Component(
     modules = [
       DispatcherTestModule::class, TestModule::class,
-      LogReportingTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

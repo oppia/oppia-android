@@ -26,6 +26,7 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject
@@ -564,7 +565,7 @@ class SurveyProgressControllerTest {
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, LogReportingTestModule::class, AssetModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
       TestLoggingIdentifierModule::class, AuthenticationTestModule::class,
     ]

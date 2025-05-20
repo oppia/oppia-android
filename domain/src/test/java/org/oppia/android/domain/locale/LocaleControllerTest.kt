@@ -36,6 +36,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -894,7 +895,7 @@ class LocaleControllerTest {
   @Component(
     modules = [
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LogReportingTestModule::class, LoggerModule::class, DispatcherTestModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, LoggerModule::class, DispatcherTestModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
       AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusProdModule::class, PlatformParameterProdModule::class,

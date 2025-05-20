@@ -28,6 +28,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -164,7 +165,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   @Component(
     modules = [
       LogStorageModule::class, RobolectricModule::class, DispatcherTestModule::class,
-      TestModule::class, LogReportingTestModule::class, RetrofitModule::class,
+      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RetrofitModule::class,
       RetrofitServiceModule::class, FakeOppiaClockModule::class, PlatformParameterProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       NetworkConfigTestModule::class, PlatformParameterSingletonModule::class,

@@ -31,6 +31,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -177,7 +178,7 @@ class FakeLogSchedulerTest {
   @Component(
     modules = [
       TestModule::class, LoggerModule::class, DispatcherTestModule::class,
-      LogReportingTestModule::class, RobolectricModule::class,
+      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
       PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,

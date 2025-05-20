@@ -89,7 +89,7 @@ class PerformanceMetricsConfigurationsModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
+      TestModule::class, PerformanceMetricsAssessorProdModule::class, LoggerModule::class,
       DispatcherTestModule::class, LogReportingProdModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class
     ]
