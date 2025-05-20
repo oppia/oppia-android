@@ -41,14 +41,14 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_STORY_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -100,7 +100,7 @@ class ExplorationActiveTimeControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    PlatformParameterTestModule.forceEnableNpsSurvey(true)
   }
 
   @Test
@@ -552,8 +552,8 @@ class ExplorationActiveTimeControllerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, TestLogReportingModule::class, ContinueModule::class,
+      ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class, ContinueModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class, FractionInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, ImageClickInputModule::class,
@@ -562,7 +562,7 @@ class ExplorationActiveTimeControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       RatioInputModule::class, SyncStatusProdModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, PlatformParameterSingletonModule::class,
-      TestPlatformParameterModule::class, ExplorationStorageTestModule::class,
+      PlatformParameterTestModule::class, ExplorationStorageTestModule::class,
       LogStorageModule::class
     ]
   )

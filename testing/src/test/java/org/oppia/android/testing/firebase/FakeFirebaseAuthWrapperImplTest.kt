@@ -14,10 +14,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseUserWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImpl.FakeAuthState
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -92,8 +92,8 @@ class FakeFirebaseAuthWrapperImplTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class,
-      TestAuthenticationModule::class, TestLogReportingModule::class,
+      ApplicationLifecycleModule::class, DispatcherTestModule::class,
+      AuthenticationTestModule::class, LogReportingTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

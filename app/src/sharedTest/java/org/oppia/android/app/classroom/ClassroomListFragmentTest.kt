@@ -102,17 +102,17 @@ import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -192,7 +192,7 @@ class ClassroomListFragmentTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     scenario.close()
   }
@@ -1105,7 +1105,7 @@ class ClassroomListFragmentTest {
   }
 
   private fun setUpTestApplicationComponent(onboardingV2Enabled: Boolean = false) {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
+    PlatformParameterTestModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -1116,14 +1116,14 @@ class ClassroomListFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestPlatformParameterModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterTestModule::class, RobolectricModule::class,
+      DispatcherTestModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
       GcsResourceModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -1142,7 +1142,7 @@ class ClassroomListFragmentTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class, TestImageLoaderModule::class,
+      AuthenticationTestModule::class, ImageLoaderTestModule::class,
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

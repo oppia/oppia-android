@@ -29,7 +29,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Call
@@ -191,7 +191,7 @@ class RetrofitModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RetrofitModule::class, TestDispatcherModule::class,
+      TestModule::class, RetrofitModule::class, DispatcherTestModule::class,
       RobolectricModule::class, NetworkConfigTestModule::class
     ]
   )

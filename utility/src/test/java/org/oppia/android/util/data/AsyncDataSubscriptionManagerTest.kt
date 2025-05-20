@@ -25,7 +25,7 @@ import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManagerTest.SubscriptionCallback.Companion.toAsyncChange
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -541,7 +541,7 @@ class AsyncDataSubscriptionManagerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class
+      TestModule::class, DispatcherTestModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

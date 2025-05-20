@@ -28,7 +28,7 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -1110,7 +1110,7 @@ class CoroutineExecutorServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, TestModule::class, TestLogReportingModule::class,
+      DispatcherTestModule::class, TestModule::class, LogReportingTestModule::class,
       RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )

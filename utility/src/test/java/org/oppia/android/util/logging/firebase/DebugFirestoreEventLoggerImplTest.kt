@@ -16,7 +16,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -176,7 +176,7 @@ class DebugFirestoreEventLoggerImplTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, FakeOppiaClockModule::class, LocaleTestModule::class
+      DispatcherTestModule::class, FakeOppiaClockModule::class, LocaleTestModule::class
     ]
   )
 

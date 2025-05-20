@@ -88,16 +88,16 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -153,7 +153,7 @@ class ProfileEditFragmentTest {
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
-    TestPlatformParameterModule.reset()
+    PlatformParameterTestModule.reset()
   }
 
   @After
@@ -219,7 +219,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(false)
     profileManagementController
       .addProfile(
         name = "James",
@@ -236,7 +236,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadDisabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(false)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -244,7 +244,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -262,7 +262,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     val addProfileProvider =
       profileManagementController.addProfile(
         name = "James",
@@ -281,7 +281,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -300,7 +300,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -317,7 +317,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -334,7 +334,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     profileManagementController
       .addProfile(
         name = "James",
@@ -351,7 +351,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -359,7 +359,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(false)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button))
         .check(matches(not(isDisplayed())))
@@ -368,7 +368,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_hasMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
     }
@@ -377,7 +377,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
@@ -386,7 +386,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(true)
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
@@ -404,7 +404,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOff_doesNotHaveEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(false)
 
     // Without the study feature enabled, the switch should not be visible.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -415,7 +415,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
@@ -426,7 +426,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_featureOn_landscape_hasEnableQuickSwitchingSwitch() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -442,7 +442,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_doNotHaveSwitchingPermission_enableLanguageSwitchingIsOff() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     // Without the permission to switch languages, the setting should be off by default.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -453,7 +453,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     val updateLangProvider =
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -471,7 +471,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_featureOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
     // Open the UI, but don't interact with it.
     launchFragmentTestActivity(internalProfileId = 0).use {}
 
@@ -487,7 +487,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testProfileEdit_studyOn_clickEnableLanguageSwitching_hasSwitchingPermission() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
 
     // Enable language switching in the UI.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -547,14 +547,14 @@ class ProfileEditFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,
+      DispatcherTestModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      GcsResourceModule::class, ImageLoaderTestModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -572,7 +572,7 @@ class ProfileEditFragmentTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class,
+      AuthenticationTestModule::class,
     ],
   )
   interface TestApplicationComponent : ApplicationComponent {

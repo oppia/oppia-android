@@ -18,12 +18,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.exceptions.verification.NeverWantedButInvoked
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
@@ -1136,7 +1136,7 @@ class DataProviderTestMonitorTest {
   @Component(
     modules = [
       TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
+      LogReportingTestModule::class, LoggerModule::class, DispatcherTestModule::class,
       LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class
     ]
   )

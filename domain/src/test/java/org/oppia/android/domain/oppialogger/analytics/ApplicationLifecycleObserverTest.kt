@@ -73,18 +73,18 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
 import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -169,7 +169,7 @@ class ApplicationLifecycleObserverTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    PlatformParameterTestModule.reset()
   }
 
   @Test
@@ -601,12 +601,12 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+    PlatformParameterTestModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationWithPerformanceMetricsCollection() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    PlatformParameterTestModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
   }
 
@@ -693,15 +693,15 @@ class ApplicationLifecycleObserverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      TestModule::class, LogReportingTestModule::class, LogStorageModule::class,
+      DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,
       TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusProdModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
       LogReportWorkerModule::class, MetricLogSchedulerModule::class,
       FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
-      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, RetrofitModule::class,
+      WorkManagerConfigurationModule::class, AuthenticationTestModule::class, RetrofitModule::class,
       RetrofitServiceModule::class,
       NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageProdModule::class,
       HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
@@ -713,7 +713,7 @@ class ApplicationLifecycleObserverTest {
       TextInputRuleModule::class, QuestionModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverTestModule::class, ActivityRecreatorTestModule::class,
       ActivityRouterModule::class, AccessibilityTestModule::class, GcsResourceModule::class,
-      ImageParsingModule::class, TestImageLoaderModule::class, HtmlParserEntityTypeModule::class,
+      ImageParsingModule::class, ImageLoaderTestModule::class, HtmlParserEntityTypeModule::class,
       SplitScreenInteractionModule::class, NetworkConnectionDebugUtilModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
       HintsAndSolutionConfigModule::class

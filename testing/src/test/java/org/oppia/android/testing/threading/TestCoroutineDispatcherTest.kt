@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -222,9 +222,9 @@ class TestCoroutineDispatcherTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class,
+      DispatcherTestModule::class,
       TestModule::class,
-      TestLogReportingModule::class
+      LogReportingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

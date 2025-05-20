@@ -13,16 +13,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AuthenticationModule]. */
+/** Tests for [AuthenticationProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -60,8 +60,8 @@ class AuthenticationModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, AuthenticationModule::class,
-      RobolectricModule::class, DebugLogReportingModule::class
+      TestModule::class, DispatcherTestModule::class, AuthenticationProdModule::class,
+      RobolectricModule::class, LogReportingDebugModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

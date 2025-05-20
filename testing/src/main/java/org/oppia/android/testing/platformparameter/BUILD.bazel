@@ -22,12 +22,8 @@ kt_android_library(
 kt_android_library(
     name = "test_module",
     testonly = True,
-    srcs = [
-        "TestPlatformParameterModule.kt",
-    ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
+    srcs = ["PlatformParameterTestModule.kt"],
+    visibility = ["//:oppia_testing_visibility"],
     deps = [
         ":test_constants",
         "//:dagger",

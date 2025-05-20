@@ -17,7 +17,7 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.HIGH_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.robolectric.annotation.Config
@@ -307,8 +307,8 @@ class FakePerformanceMetricsEventLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
+      TestModule::class, LogReportingTestModule::class, RobolectricModule::class,
+      DispatcherTestModule::class, LogStorageModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

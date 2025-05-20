@@ -19,12 +19,12 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -209,10 +209,10 @@ class SurveyControllerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
+      ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
+      TestLoggingIdentifierModule::class, AuthenticationTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

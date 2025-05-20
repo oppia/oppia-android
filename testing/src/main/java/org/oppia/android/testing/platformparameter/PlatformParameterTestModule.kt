@@ -68,7 +68,7 @@ import javax.inject.Singleton
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
-class TestPlatformParameterModule {
+class PlatformParameterTestModule {
   @Provides
   @EnableTestFeatureFlag
   fun provideEnableTestFeatureFlag(

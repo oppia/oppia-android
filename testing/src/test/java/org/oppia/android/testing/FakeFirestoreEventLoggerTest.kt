@@ -16,7 +16,7 @@ import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Priority
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.robolectric.annotation.Config
@@ -285,8 +285,8 @@ class FakeFirestoreEventLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
+      TestModule::class, LogReportingTestModule::class, RobolectricModule::class,
+      DispatcherTestModule::class, LogStorageModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent {

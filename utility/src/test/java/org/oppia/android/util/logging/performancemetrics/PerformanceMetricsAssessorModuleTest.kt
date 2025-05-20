@@ -16,7 +16,7 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -82,7 +82,7 @@ class PerformanceMetricsAssessorModuleTest {
   @Component(
     modules = [
       TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
-      TestDispatcherModule::class, TestLogReportingModule::class, RobolectricModule::class,
+      DispatcherTestModule::class, TestLogReportingModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class,
       LocaleProdModule::class
     ]

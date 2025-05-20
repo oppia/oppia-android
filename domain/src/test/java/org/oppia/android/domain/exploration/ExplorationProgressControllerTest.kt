@@ -90,16 +90,16 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -3884,8 +3884,8 @@ class ExplorationProgressControllerTest {
       TestModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
+      DragDropSortInputModule::class, InteractionsModule::class, LogReportingTestModule::class,
+      ImageClickInputModule::class, LogStorageModule::class, DispatcherTestModule::class,
       RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
@@ -3893,7 +3893,7 @@ class ExplorationProgressControllerTest {
       AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
       LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
       SyncStatusProdModule::class, PlatformParameterSingletonModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      ExplorationProgressModule::class, AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

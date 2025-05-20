@@ -19,7 +19,7 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.DataProvidersInjector
@@ -370,9 +370,9 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class,
+      DispatcherTestModule::class,
       TestModule::class,
-      TestLogReportingModule::class
+      LogReportingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

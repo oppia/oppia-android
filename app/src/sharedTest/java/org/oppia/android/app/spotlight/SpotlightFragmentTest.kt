@@ -73,13 +73,13 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -142,7 +142,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_disableSpotlights_requestSpotlight_shouldNotShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(false)
+    PlatformParameterTestModule.forceEnableSpotlightUi(false)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -164,7 +164,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -186,7 +186,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_requestDelayedSpotlight_shouldShowSpotlight() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       testCoroutineDispatchers.runCurrent()
       it.onActivity { activity ->
@@ -208,7 +208,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_markSpotlightSeen_checkSpotlightIsNotShowAgain() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -244,7 +244,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightFragment_exitSpotlightWithoutClickingDone_checkSpotlightIsShowAgain() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(createSpotlightFragmentTestActivity(context)).use {
       it.onActivity { activity ->
         val spotlightTarget = SpotlightTarget(
@@ -279,7 +279,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_checkFirstSpotlightShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -310,7 +310,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testSpotlightQueuing_requestTwoSpotlights_pressDone_checkSecondSpotlightShown() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use {
@@ -343,7 +343,7 @@ class SpotlightFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    TestPlatformParameterModule.forceEnableSpotlightUi(true)
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     launch<SpotlightFragmentTestActivity>(
       createSpotlightFragmentTestActivity(context)
     ).use { scenario ->
@@ -369,14 +369,14 @@ class SpotlightFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,
+      DispatcherTestModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      GcsResourceModule::class, ImageLoaderTestModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -394,7 +394,7 @@ class SpotlightFragmentTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

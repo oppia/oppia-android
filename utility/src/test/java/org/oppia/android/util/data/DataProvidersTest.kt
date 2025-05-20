@@ -30,12 +30,12 @@ import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
@@ -3365,8 +3365,8 @@ class DataProvidersTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, TestModule::class,
-      TestLogReportingModule::class, RobolectricModule::class, FakeOppiaClockModule::class
+      DispatcherTestModule::class, TestModule::class,
+      LogReportingTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

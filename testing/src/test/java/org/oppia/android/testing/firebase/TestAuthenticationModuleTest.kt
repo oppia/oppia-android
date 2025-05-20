@@ -14,15 +14,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseAuthWrapper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
-import org.oppia.android.util.logging.firebase.DebugLogReportingModule
+import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TestAuthenticationModule]. */
+/** Tests for [AuthenticationTestModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
@@ -63,8 +63,8 @@ class TestAuthenticationModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      DebugLogReportingModule::class, TestAuthenticationModule::class
+      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
+      LogReportingDebugModule::class, AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

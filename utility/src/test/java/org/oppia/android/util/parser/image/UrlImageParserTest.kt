@@ -17,9 +17,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
@@ -284,8 +284,8 @@ class UrlImageParserTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, TestImageLoaderModule::class,
+      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
+      FakeOppiaClockModule::class, LoggerModule::class, ImageLoaderTestModule::class,
       CachingTestModule::class, ImageParsingModule::class, AssetModule::class,
       LocaleProdModule::class
     ]

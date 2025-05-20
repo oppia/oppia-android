@@ -29,7 +29,7 @@ import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VAL
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -179,7 +179,7 @@ class PlatformParameterServiceTest {
   @Component(
     modules = [
       TestModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      TestDispatcherModule::class, NetworkConfigTestModule::class, RobolectricModule::class
+      DispatcherTestModule::class, NetworkConfigTestModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

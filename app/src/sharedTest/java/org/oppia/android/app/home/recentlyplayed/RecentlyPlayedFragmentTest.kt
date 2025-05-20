@@ -99,19 +99,19 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.lightweightcheckpointing.FRACTIONS_STORY_0_EXPLORATION_0_CURRENT_VERSION
 import org.oppia.android.testing.mockito.capture
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -309,7 +309,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_disableClassrooms_recommendedSection_classroomNameIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -333,7 +333,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_enableClassrooms_recommendedSection_classroomNameIsCorrect() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -663,7 +663,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_disableClassrooms_classroomNameIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -691,7 +691,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_enableClassrooms_classroomNameIsCorrect() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1101,7 +1101,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_disableClassrooms_configChange_classroomNameIsNotDisplayed() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1130,7 +1130,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_enableClassrooms_configChange_classroomNameIsCorrect() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(true)
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1416,14 +1416,14 @@ class RecentlyPlayedFragmentTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
+      PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,
+      DispatcherTestModule::class, ApplicationModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      GcsResourceModule::class, ImageLoaderTestModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -1441,7 +1441,7 @@ class RecentlyPlayedFragmentTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

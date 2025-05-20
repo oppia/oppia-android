@@ -25,7 +25,7 @@ import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.TranslatableHtmlContentId
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.LocaleProdModule
@@ -720,7 +720,7 @@ class StateRetrieverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, AssetModule::class, LocaleProdModule::class
     ]
   )

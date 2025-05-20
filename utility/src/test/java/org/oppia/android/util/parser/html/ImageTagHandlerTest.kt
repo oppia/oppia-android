@@ -29,7 +29,7 @@ import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.ConsoleLogger
@@ -358,7 +358,7 @@ class ImageTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
     ]
   )

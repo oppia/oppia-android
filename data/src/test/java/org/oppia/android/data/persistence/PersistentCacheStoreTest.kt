@@ -33,13 +33,13 @@ import org.oppia.android.data.persistence.PersistentCacheStore.PublishMode.PUBLI
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_ALWAYS
 import org.oppia.android.data.persistence.PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE
 import org.oppia.android.data.persistence.PersistentCacheStoreTest.SubscriptionCallback.Companion.toAsyncChange
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders
@@ -1700,9 +1700,9 @@ class PersistentCacheStoreTest {
   @Component(
     modules = [
       RobolectricModule::class,
-      TestDispatcherModule::class,
+      DispatcherTestModule::class,
       TestModule::class,
-      TestLogReportingModule::class
+      LogReportingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

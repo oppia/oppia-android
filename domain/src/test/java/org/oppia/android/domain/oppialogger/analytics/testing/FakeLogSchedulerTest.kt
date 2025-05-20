@@ -28,11 +28,11 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -176,11 +176,11 @@ class FakeLogSchedulerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class,
-      TestLogReportingModule::class, RobolectricModule::class,
+      TestModule::class, LoggerModule::class, DispatcherTestModule::class,
+      LogReportingTestModule::class, RobolectricModule::class,
       PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
       OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+      PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
       SyncStatusProdModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
       CpuPerformanceSnapshotterModule::class, AssetModule::class
     ]

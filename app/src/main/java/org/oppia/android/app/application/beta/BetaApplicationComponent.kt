@@ -13,7 +13,7 @@ import org.oppia.android.app.translation.ActivityRecreatorProdModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
-import org.oppia.android.domain.auth.AuthenticationModule
+import org.oppia.android.domain.auth.AuthenticationProdModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -40,7 +40,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
@@ -53,16 +53,16 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.logging.firebase.LogReportingModule
+import org.oppia.android.util.logging.firebase.LogReportingProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilProdModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
-import org.oppia.android.util.threading.DispatcherModule
+import org.oppia.android.util.threading.DispatcherProdModule
 import javax.inject.Singleton
 
 /**
@@ -73,11 +73,11 @@ import javax.inject.Singleton
 @Singleton
 @Component(
   modules = [
-    ApplicationModule::class, DispatcherModule::class, LoggerModule::class, OppiaClockModule::class,
+    ApplicationModule::class, DispatcherProdModule::class, LoggerModule::class, OppiaClockModule::class,
     ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
     MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
     NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
-    InteractionsModule::class, GcsResourceModule::class, GlideImageLoaderModule::class,
+    InteractionsModule::class, GcsResourceModule::class, ImageLoaderProdModule::class,
     ImageParsingModule::class, HtmlParserEntityTypeModule::class, CachingProdModule::class,
     QuestionModule::class, AccessibilityProdModule::class, ImageClickInputModule::class,
     LogStorageModule::class, IntentFactoryShimModule::class, ViewBindingShimModule::class,
@@ -86,7 +86,7 @@ import javax.inject.Singleton
     ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
     WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
     FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
+    PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageProdModule::class, DeveloperOptionsModule::class,
     PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class,
@@ -94,12 +94,12 @@ import javax.inject.Singleton
     MathEquationInputModule::class, SplitScreenInteractionModule::class,
     LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
     NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
-    SyncStatusProdModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
+    SyncStatusProdModule::class, LogReportingProdModule::class, NetworkConnectionUtilProdModule::class,
     HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
     PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
     ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
-    ExplorationProgressModule::class, AuthenticationModule::class,
+    ExplorationProgressModule::class, AuthenticationProdModule::class,
   ]
 )
 interface BetaApplicationComponent : ApplicationComponent {

@@ -22,16 +22,16 @@ import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImpl
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.threading.BackgroundDispatcher
-import org.oppia.android.util.threading.DispatcherModule
+import org.oppia.android.util.threading.DispatcherProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -120,8 +120,8 @@ class AuthenticationControllerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, DispatcherModule::class,
-      TestLogReportingModule::class, TestAuthenticationModule::class,
+      ApplicationLifecycleModule::class, DispatcherProdModule::class,
+      LogReportingTestModule::class, AuthenticationTestModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

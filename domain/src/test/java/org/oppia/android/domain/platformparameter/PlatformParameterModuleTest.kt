@@ -25,7 +25,7 @@ import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
 import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.platformparameter.TestBooleanParam
 import org.oppia.android.testing.platformparameter.TestIntegerParam
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.platformparameter.TestStringParam
 import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
@@ -42,7 +42,7 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * [PlatformParameterModuleTest] verifies the working of [PlatformParameterModule] by testing
+ * [PlatformParameterModuleTest] verifies the working of [PlatformParameterProdModule] by testing
  * the [PlatformParameterValue] received in different cases
  */
 @RunWith(AndroidJUnit4::class)
@@ -232,7 +232,7 @@ class PlatformParameterModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestPlatformParameterModule::class
+      TestModule::class, PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent {

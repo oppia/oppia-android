@@ -32,7 +32,7 @@ import org.oppia.android.data.backends.gae.model.GaeFeedbackReportingSystemConte
 import org.oppia.android.data.backends.gae.model.GaeUserSuppliedFeedback
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -291,7 +291,7 @@ class FeedbackReportingServiceTestOrchestratorTest {
   @Component(
     modules = [
       TestModule::class, RetrofitModule::class, NetworkConfigTestModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      DispatcherTestModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

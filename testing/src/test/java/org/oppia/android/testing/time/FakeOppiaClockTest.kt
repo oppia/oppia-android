@@ -17,11 +17,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS
 import org.oppia.android.testing.time.FakeOppiaClock.FakeTimeMode.MODE_WALL_CLOCK_TIME
@@ -290,8 +290,8 @@ class FakeOppiaClockTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      TestModule::class, LogReportingTestModule::class, LogStorageModule::class,
+      DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       ImageParsingModule::class, CachingTestModule::class, LoggerModule::class
     ]
   )

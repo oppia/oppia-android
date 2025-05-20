@@ -12,12 +12,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -118,8 +118,8 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
+      TestModule::class, LogReportingTestModule::class,
+      DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
       TestPlatformParameterModule::class, SyncStatusProdModule::class
     ]

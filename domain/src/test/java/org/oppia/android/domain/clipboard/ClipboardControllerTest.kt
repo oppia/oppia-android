@@ -16,13 +16,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.clipboard.ClipboardController.CurrentClip
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
@@ -264,9 +264,9 @@ class ClipboardControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
-      FakeOppiaClockModule::class, PlatformParameterModule::class,
+      TestModule::class, LogReportingTestModule::class, RobolectricModule::class,
+      DispatcherTestModule::class, NetworkConnectionUtilDebugModule::class,
+      FakeOppiaClockModule::class, PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class
     ]

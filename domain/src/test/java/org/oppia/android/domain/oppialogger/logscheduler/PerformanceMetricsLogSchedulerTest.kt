@@ -24,13 +24,13 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -174,10 +174,10 @@ class PerformanceMetricsLogSchedulerTest {
     modules = [
       TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
       RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
+      DispatcherTestModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
+      AssetModule::class, PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
+      LoggingIdentifierModule::class, SyncStatusTestModule::class, LogReportingTestModule::class,
       PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
     ]

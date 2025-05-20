@@ -41,10 +41,10 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
@@ -99,7 +99,7 @@ class MetricLogSchedulingWorkerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    PlatformParameterTestModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -265,10 +265,10 @@ class MetricLogSchedulingWorkerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class,
+      DispatcherTestModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
       NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, TestPlatformParameterModule::class, LoggingIdentifierModule::class,
+      AssetModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
       PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
       ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class

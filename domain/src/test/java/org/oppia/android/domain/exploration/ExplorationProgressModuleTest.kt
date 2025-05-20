@@ -15,10 +15,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -84,10 +84,10 @@ class ExplorationProgressModuleTest {
   @Component(
     modules = [
       TestModule::class, TestLogModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
+      FakeOppiaClockModule::class, ExplorationProgressModule::class, DispatcherTestModule::class,
+      LocaleProdModule::class, LogReportingTestModule::class, LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
-      TestPlatformParameterModule::class
+      PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

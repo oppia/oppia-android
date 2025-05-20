@@ -11,7 +11,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEvent
 
 /** Provides fake log reporting dependencies. */
 @Module
-interface TestLogReportingModule {
+interface LogReportingTestModule {
 
   @Binds
   fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger

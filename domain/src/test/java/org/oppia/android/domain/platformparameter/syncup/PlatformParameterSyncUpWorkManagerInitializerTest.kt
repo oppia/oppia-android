@@ -25,12 +25,12 @@ import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
@@ -163,13 +163,13 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   @Singleton
   @Component(
     modules = [
-      LogStorageModule::class, RobolectricModule::class, TestDispatcherModule::class,
-      TestModule::class, TestLogReportingModule::class, RetrofitModule::class,
-      RetrofitServiceModule::class, FakeOppiaClockModule::class, PlatformParameterModule::class,
+      LogStorageModule::class, RobolectricModule::class, DispatcherTestModule::class,
+      TestModule::class, LogReportingTestModule::class, RetrofitModule::class,
+      RetrofitServiceModule::class, FakeOppiaClockModule::class, PlatformParameterProdModule::class,
       NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
       NetworkConfigTestModule::class, PlatformParameterSingletonModule::class,
       LocaleProdModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterModule::class,
+      SyncStatusProdModule::class, PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class
     ]
   )

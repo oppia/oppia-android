@@ -159,7 +159,7 @@ class FakeExceptionLoggerTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, TestLogReportingModule::class])
+  @Component(modules = [TestModule::class, LogReportingTestModule::class])
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

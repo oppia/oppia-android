@@ -102,19 +102,19 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.EventLogSubject.LearnerDetailsContextSubject
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -131,7 +131,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -174,9 +174,9 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+    PlatformParameterTestModule.forceEnableEditAccountsOptionsUi(true)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(true)
+    PlatformParameterTestModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1117,15 +1117,15 @@ class ProfileAndDeviceIdFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestPlatformParameterModule::class,
+      PlatformParameterTestModule::class,
       TestModule::class, RobolectricModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
+      DispatcherTestModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
+      ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, LogReportingTestModule::class, AccessibilityTestModule::class,
       LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, WorkManagerConfigurationModule::class,
@@ -1143,7 +1143,7 @@ class ProfileAndDeviceIdFragmentTest {
       TestingBuildFlavorModule::class,
       ActivityRouterModule::class, CpuPerformanceSnapshotterModule::class,
       ApplicationLifecycleModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

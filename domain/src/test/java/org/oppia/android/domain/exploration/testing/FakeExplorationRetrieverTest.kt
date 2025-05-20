@@ -21,7 +21,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -207,7 +207,7 @@ class FakeExplorationRetrieverTest {
   @Component(
     modules = [
       TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class, AssetModule::class,
-      LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class
+      LoggerModule::class, DispatcherTestModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

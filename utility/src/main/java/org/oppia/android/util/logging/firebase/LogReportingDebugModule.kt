@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 /** Provides debug log reporting dependencies. */
 @Module
-class DebugLogReportingModule {
+class LogReportingDebugModule {
   @Provides
   @Singleton
   fun provideExceptionLogger(): ExceptionLogger =

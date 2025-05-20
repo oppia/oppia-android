@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -63,7 +63,7 @@ class AssetModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, AssetModule::class, LoggerModule::class, TestDispatcherModule::class,
+      TestModule::class, AssetModule::class, LoggerModule::class, DispatcherTestModule::class,
       RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
     ]
   )

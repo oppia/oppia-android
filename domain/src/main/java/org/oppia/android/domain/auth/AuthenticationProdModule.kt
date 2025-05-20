@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 /** Provides an implementation of [FirebaseAuthWrapper]. */
 @Module
-class AuthenticationModule {
+class AuthenticationProdModule {
   @Provides
   @Singleton
   fun provideFirebaseAuthWrapper(firebaseAuthInstanceWrapper: FirebaseAuthInstanceWrapper):

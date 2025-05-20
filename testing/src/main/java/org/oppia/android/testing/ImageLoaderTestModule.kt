@@ -7,7 +7,7 @@ import org.oppia.android.util.parser.image.TestGlideImageLoader
 
 /** Provides image loading dependencies for unit tests. */
 @Module
-abstract class TestImageLoaderModule {
+abstract class ImageLoaderTestModule {
   @Binds
   abstract fun provideFakeImageLoader(impl: TestGlideImageLoader): ImageLoader
 }

@@ -41,7 +41,7 @@ kt_android_library(
     name = "prod_module",
     srcs = [
         "FirebaseLogUploaderModule.kt",
-        "LogReportingModule.kt",
+        "LogReportingProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
@@ -77,7 +77,7 @@ kt_android_library(
 kt_android_library(
     name = "debug_module",
     srcs = [
-        "DebugLogReportingModule.kt",
+        "LogReportingDebugModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [

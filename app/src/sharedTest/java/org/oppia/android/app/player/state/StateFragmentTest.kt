@@ -157,23 +157,23 @@ import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.espresso.EditTextInputAction
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.lightweightcheckpointing.ExplorationCheckpointTestHelper
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.CoroutineExecutorService
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -6016,22 +6016,22 @@ class StateFragmentTest {
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOn() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(true)
     setUpTest()
   }
 
   private fun setUpTestWithLanguageSwitchingFeatureOff() {
-    TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
+    PlatformParameterTestModule.forceEnableFastLanguageSwitchingInLesson(false)
     setUpTest()
   }
 
   private fun setUpTestWithSurveyFeatureOn() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    PlatformParameterTestModule.forceEnableNpsSurvey(true)
     setUpTest()
   }
 
   private fun setUpTestWithSurveyFeatureOff() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    PlatformParameterTestModule.forceEnableNpsSurvey(false)
     setUpTest()
   }
 
@@ -6220,14 +6220,14 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestPlatformParameterModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
+      TestModule::class, RobolectricModule::class, PlatformParameterTestModule::class,
+      DispatcherTestModule::class, ApplicationModule::class, LoggerModule::class,
       ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
       MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
       NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
       ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
+      ImageLoaderTestModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, LogReportingTestModule::class, AccessibilityTestModule::class,
       LogStorageModule::class,
       ExpirationMetaDataRetrieverProdModule::class, ViewBindingShimModule::class,
       RatioInputModule::class, ApplicationStartupListenerModule::class,
@@ -6246,7 +6246,7 @@ class StateFragmentTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

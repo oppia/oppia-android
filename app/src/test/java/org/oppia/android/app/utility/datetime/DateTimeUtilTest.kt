@@ -57,16 +57,16 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -82,7 +82,7 @@ import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -216,11 +216,11 @@ class DateTimeUtilTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, ApplicationModule::class,
+      LogReportingTestModule::class, DispatcherTestModule::class, ApplicationModule::class,
       ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
       ImageParsingModule::class, AccessibilityTestModule::class,
       GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      RetrofitModule::class, RetrofitServiceModule::class, PlatformParameterModule::class,
+      RetrofitModule::class, RetrofitServiceModule::class, PlatformParameterProdModule::class,
       HintsAndSolutionProdModule::class,
       CachingTestModule::class, InteractionsModule::class, ExplorationStorageProdModule::class,
       QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
@@ -228,7 +228,7 @@ class DateTimeUtilTest {
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
       HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverProdModule::class,
-      GlideImageLoaderModule::class,
+      ImageLoaderProdModule::class,
       HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
       DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
       LocaleProdModule::class, ActivityRecreatorTestModule::class,
@@ -239,7 +239,7 @@ class DateTimeUtilTest {
       SyncStatusProdModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      ExplorationProgressModule::class, AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

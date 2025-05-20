@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.MathEquationInputRules
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -88,7 +88,7 @@ class MathEquationInputModuleTest {
   @Component(
     modules = [
       TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
+      DispatcherTestModule::class, LoggerModule::class, RobolectricModule::class,
       MathEquationInputModule::class
     ]
   )

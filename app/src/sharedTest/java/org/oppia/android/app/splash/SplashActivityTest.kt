@@ -101,20 +101,20 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.TestPlatform
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedAutoAndroidTestRunner
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -128,7 +128,7 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
@@ -189,7 +189,7 @@ class SplashActivityTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -1091,7 +1091,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     initializeTestApplication(onboardingV2Enabled = true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
@@ -1117,7 +1117,7 @@ class SplashActivityTest {
   @Test
   fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(true)
     initializeTestApplication(onboardingV2Enabled = true)
     testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -1230,7 +1230,7 @@ class SplashActivityTest {
 
   private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
+    PlatformParameterTestModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
@@ -1318,13 +1318,13 @@ class SplashActivityTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, TestPlatformParameterModule::class,
+      DispatcherTestModule::class, ApplicationModule::class, PlatformParameterTestModule::class,
       LoggerModule::class, ContinueModule::class, FractionInputModule::class,
       ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
+      GcsResourceModule::class, ImageLoaderProdModule::class, ImageParsingModule::class,
+      HtmlParserEntityTypeModule::class, QuestionModule::class, LogReportingTestModule::class,
       AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverTestModule::class,
       ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
@@ -1343,7 +1343,7 @@ class SplashActivityTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

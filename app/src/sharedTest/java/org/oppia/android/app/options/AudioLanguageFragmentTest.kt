@@ -91,15 +91,15 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.TestPlatform
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -112,7 +112,7 @@ import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -148,7 +148,7 @@ class AudioLanguageFragmentTest {
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
-    TestPlatformParameterModule.reset()
+    PlatformParameterTestModule.reset()
     Intents.release()
   }
 
@@ -322,7 +322,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -339,7 +339,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -356,7 +356,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_multipleClassroomsEnabled_continueButtonClicked_launchesClassroomScreen() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -373,7 +373,7 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testFragment_landscapeMode_multipleClassroomsEnabled_continueButtonLaunchesClassroomScreen() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(true)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -391,7 +391,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_selectionIsUpdated() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -421,7 +421,7 @@ class AudioLanguageFragmentTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
   fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    PlatformParameterTestModule.forceEnableMultipleClassrooms(false)
     initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
     launch<AudioLanguageActivity>(
       createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
@@ -592,7 +592,7 @@ class AudioLanguageFragmentTest {
   }
 
   private fun initializeTestApplicationComponent(enableOnboardingFlowV2: Boolean) {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
+    PlatformParameterTestModule.forceEnableOnboardingFlowV2(enableOnboardingFlowV2)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -607,13 +607,13 @@ class AudioLanguageFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class, TestPlatformParameterModule::class, ApplicationModule::class,
+      DispatcherTestModule::class, PlatformParameterTestModule::class, ApplicationModule::class,
       RobolectricModule::class, LoggerModule::class, ContinueModule::class,
       FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
       NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
       DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      GlideImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
+      ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
+      QuestionModule::class, LogReportingTestModule::class, AccessibilityTestModule::class,
       ImageClickInputModule::class, LogStorageModule::class, CachingTestModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       ViewBindingShimModule::class, ApplicationStartupListenerModule::class,
@@ -632,7 +632,7 @@ class AudioLanguageFragmentTest {
       SyncStatusProdModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AuthenticationTestModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

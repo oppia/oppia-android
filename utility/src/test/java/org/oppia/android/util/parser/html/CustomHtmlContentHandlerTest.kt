@@ -28,7 +28,7 @@ import org.oppia.android.app.model.OppiaLocaleContext
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.AndroidLocaleFactory
 import org.oppia.android.util.locale.DisplayLocaleImpl
@@ -530,7 +530,7 @@ class CustomHtmlContentHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
+      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
       FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
     ]
   )

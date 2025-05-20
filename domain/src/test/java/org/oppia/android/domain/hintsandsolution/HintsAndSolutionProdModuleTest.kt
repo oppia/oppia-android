@@ -12,9 +12,9 @@ import dagger.Module
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.robolectric.annotation.Config
@@ -58,7 +58,7 @@ class HintsAndSolutionProdModuleTest {
   @Component(
     modules = [
       TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class
+      LogReportingTestModule::class, DispatcherTestModule::class, RobolectricModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

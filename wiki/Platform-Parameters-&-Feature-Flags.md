@@ -56,7 +56,7 @@ In order to release these types of features in a smooth manner, we need to be ab
         ```
 
 2. Provide your Platform Parameter
-    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterProdModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterProdModule.kt)`
     - The return type for this @Provides annotated method will be equal to either `PlatformPrameterValue\<String\>`, `PlatformPrameterValue\<Integer\>` Or `PlatformPrameterValue\<Boolean\>` depending on the data type of the Platform Parameter you intend to create. Any other type will cause the platform parameter sync to fail. For eg- here we provide `SyncUpTimePeriodInHours` platform parameter, which is actually of integer type.
 
     <br>
@@ -64,7 +64,7 @@ In order to release these types of features in a smooth manner, we need to be ab
     ```kotlin
     /* Dagger module that provides values for individual Platform Parameters. */
     @Module
-    class PlatformParameterModule {
+    class PlatformParameterProdModule {
     ...
     @Provides
     @SyncUpWorkerTimePeriodInHours
@@ -123,7 +123,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
         ```
 
 2. Provide your Feature Flag
-    - Feature Flags are still a special type of Platform Parameter and are provided in a similar manner. For providing your Feature Flag in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - Feature Flags are still a special type of Platform Parameter and are provided in a similar manner. For providing your Feature Flag in the App, we need to first make a @Provides annotated method in the `PlatformParameterProdModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterProdModule.kt)`
     - Since feature flags can only be booleans, The return type for this @Provides annotated method will be equal to `PlatformPrameterValue<Boolean>`. Any other type will cause the platform parameter sync to fail. For eg- here we provide `EnableAppAndOsDeprecation` feature flag.
 
     <br>
@@ -131,7 +131,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
     ```kotlin
     /* Dagger module that provides values for individual Platform Parameters. */
     @Module
-    class PlatformParameterModule {
+    class PlatformParameterProdModule {
       ...
       @Provides
       @EnableAppAndOsDeprecation

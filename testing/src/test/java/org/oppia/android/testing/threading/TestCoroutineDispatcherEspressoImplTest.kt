@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.timeout
 import org.mockito.Mockito.verify
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -149,9 +149,9 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class,
+      DispatcherTestModule::class,
       TestModule::class,
-      TestLogReportingModule::class
+      LogReportingTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

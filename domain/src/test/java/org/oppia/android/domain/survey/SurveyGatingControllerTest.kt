@@ -22,13 +22,13 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -82,7 +82,7 @@ class SurveyGatingControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    PlatformParameterTestModule.forceEnableNpsSurvey(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
   }
@@ -660,10 +660,10 @@ class SurveyGatingControllerTest {
   @Component(
     modules = [
       TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
+      ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
+      ExplorationProgressModule::class, LogReportingTestModule::class, AssetModule::class,
       NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestPlatformParameterModule::class
+      TestLoggingIdentifierModule::class, PlatformParameterTestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
