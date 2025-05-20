@@ -65,6 +65,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNO
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -1392,7 +1393,8 @@ class AnalyticsControllerTest {
       TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       RobolectricModule::class,
       DispatcherTestModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class, FakeOppiaClockModule::class,
       PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,
       LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
     ]

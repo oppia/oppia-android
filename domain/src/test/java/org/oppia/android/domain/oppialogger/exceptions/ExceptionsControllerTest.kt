@@ -31,6 +31,7 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -343,7 +344,8 @@ class ExceptionsControllerTest {
       TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       DispatcherTestModule::class,
       TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

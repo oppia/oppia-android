@@ -41,6 +41,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -82,6 +83,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -123,6 +125,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -164,6 +167,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -205,6 +209,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -246,6 +251,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -287,6 +293,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -322,6 +329,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -363,6 +371,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -404,6 +413,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -445,6 +455,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/data:data_providers",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )

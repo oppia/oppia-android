@@ -161,7 +161,7 @@ class FakeExceptionLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class
+      TestModule::class, LogReportingTestModule::class
     ]
   )
   interface TestApplicationComponent {

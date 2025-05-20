@@ -27,6 +27,7 @@ import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -114,7 +115,8 @@ class UncaughtExceptionLoggerStartupListenerTest {
       TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       RobolectricModule::class,
       DispatcherTestModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, UncaughtExceptionLoggerModule::class
     ]
   )

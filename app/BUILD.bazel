@@ -783,6 +783,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/caching:asset_prod_module",
     "//utility/src/main/java/org/oppia/android/util/caching/testing:caching_test_module",
     "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     "//utility/src/main/java/org/oppia/android/util/math:math_expression_parser",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/parser/html:html_parser",

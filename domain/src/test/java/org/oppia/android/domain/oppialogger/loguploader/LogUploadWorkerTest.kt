@@ -73,6 +73,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -627,7 +628,8 @@ class LogUploadWorkerTest {
       TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
       DispatcherTestModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterTestModule::class,
       PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PerformanceMetricsAssessorProdModule::class,

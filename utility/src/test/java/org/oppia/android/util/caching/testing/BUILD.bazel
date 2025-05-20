@@ -19,6 +19,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:asset_test_no_op_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
 
@@ -40,5 +41,6 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/caching:asset_repository",
         "//utility/src/main/java/org/oppia/android/util/caching/testing:asset_test_no_op_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )

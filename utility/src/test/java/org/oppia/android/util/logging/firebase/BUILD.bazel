@@ -24,6 +24,7 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:debug_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -47,6 +48,7 @@ oppia_android_test(
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )

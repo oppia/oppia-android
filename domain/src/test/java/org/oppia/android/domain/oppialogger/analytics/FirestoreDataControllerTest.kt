@@ -47,6 +47,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.threading.BackgroundDispatcher
@@ -455,7 +456,8 @@ class FirestoreDataControllerTest {
       TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
       TestLogStorageModule::class,
       DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class,
       PlatformParameterSingletonModule::class, SyncStatusProdModule::class,
       ApplicationLifecycleModule::class, PlatformParameterProdModule::class,
       CpuPerformanceSnapshotterModule::class, AuthenticationTestModule::class,

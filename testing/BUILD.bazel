@@ -128,6 +128,7 @@ TEST_DEPS = [
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
     "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor",
     "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_event_logger",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     "//utility/src/main/java/org/oppia/android/util/system:prod_module",
 ]

@@ -59,6 +59,7 @@ import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAsses
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -267,7 +268,8 @@ class MetricLogSchedulingWorkerTest {
       TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
       DispatcherTestModule::class, LogReportWorkerModule::class,
       TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
+      LocaleProdModule::class, LoggerModule::class,
       AssetModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
       SyncStatusTestModule::class, PlatformParameterSingletonModule::class,
       PerformanceMetricsAssessorProdModule::class, PerformanceMetricsConfigurationsModule::class,
