@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,9 +34,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,6 +70,24 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
+
+/** Test tag for the greeting text. */
+const val GREETING_TEST_TAG = "TEST_TAG.greeting"
+
+/** Test tag for the prompt. */
+const val PROMPT_TEST_TAG = "TEST_TAG.prompt"
+
+/** Test tag for the pin input boxes. */
+const val PIN_INPUT_TEST_TAG = "TEST_TAG.input"
+
+/** Test tag for the pin error text. */
+const val PIN_ERROR_TEST_TAG = "TEST_TAG.error"
+
+/** Test tag for the forgot pin button. */
+const val FORGOT_PIN_TEST_TAG = "TEST_TAG.forgot_pin"
+
+/** Test tag for the forgot pin button. */
+const val PIN_BOX_TEST_TAG = "TEST_TAG.pin_box_"
 
 /** The presenter for [ProfileLoginFragment]. */
 class ProfileLoginFragmentPresenter @Inject constructor(
@@ -105,6 +131,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     }
   }
 
+  @OptIn(ExperimentalComposeUiApi::class)
   @Composable
   fun PinEntryScreen() {
     var showError by remember { mutableStateOf(false) }
@@ -115,6 +142,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     var pinValue by remember { mutableStateOf("") }
     var shakeOffset by remember { mutableStateOf(0f) }
     val pinLength = if (profileType == ProfileType.SUPERVISOR) 5 else 3
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Box(
       modifier = Modifier
@@ -156,8 +185,16 @@ class ProfileLoginFragmentPresenter @Inject constructor(
             }
           },
           pinLength = pinLength,
-          modifier = Modifier.offset(x = shakeOffset.dp)
+          modifier = Modifier
+            .offset(x = shakeOffset.dp)
+            .focusRequester(focusRequester)
+            .focusable()
         )
+
+        LaunchedEffect(Unit) {
+          focusRequester.requestFocus()
+          keyboardController?.show()
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -181,12 +218,13 @@ class ProfileLoginFragmentPresenter @Inject constructor(
               shakeOffset = 10f
               delay(50)
             }
+
             shakeOffset = 0f
 
-            // Clear PIN and hide the error message after delay.
-            delay(1000)
-            pinValue = ""
+            // Clear the incorrect PIN and hide the error message after a 3s delay.
+            delay(3000)
             showError = false
+            pinValue = ""
           }
         }
       }
@@ -203,7 +241,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
         color = colorResource(id = R.color.component_color_profile_login_primary_text_color)
-      )
+      ),
+      modifier = Modifier.testTag(GREETING_TEST_TAG),
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -216,7 +255,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       style = TextStyle(
         fontSize = 16.sp,
         color = colorResource(id = R.color.component_color_profile_login_primary_text_color)
-      )
+      ),
+      modifier = Modifier.testTag(PROMPT_TEST_TAG)
     )
   }
 
@@ -228,6 +268,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     modifier: Modifier = Modifier
   ) {
     BasicTextField(
+      modifier =  modifier.testTag(PIN_INPUT_TEST_TAG),
       value = pinValue,
       onValueChange = { newValue ->
         if (newValue.length <= pinLength && newValue.all { it.isDigit() }) {
@@ -256,7 +297,9 @@ class ProfileLoginFragmentPresenter @Inject constructor(
                 )
                 .background(
                   colorResource(id = R.color.component_color_profile_login_shared_white_color)
-                ),
+                )
+                .testTag(PIN_BOX_TEST_TAG + index)
+              .semantics { contentDescription = char },
               contentAlignment = Alignment.Center
             ) {
               Text(text = char, style = MaterialTheme.typography.h6)
@@ -276,7 +319,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         style = TextStyle(
           fontSize = 14.sp,
           color = colorResource(id = R.color.component_color_shared_error_color)
-        )
+        ),
+        modifier = Modifier.testTag(PIN_ERROR_TEST_TAG)
       )
     }
   }
@@ -288,10 +332,12 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     val adminPin = adminProfile.pin
     val openForgotPinDialog = remember { mutableStateOf(false) }
 
-    TextButton(onClick = { openForgotPinDialog.value = true }) {
+    TextButton(
+      modifier = Modifier.testTag(FORGOT_PIN_TEST_TAG),
+      onClick = { openForgotPinDialog.value = true }) {
       Text(
         text = resourceHandler.getStringInLocaleWithWrapping
-        (R.string.profile_login_activity_forgot_pin_text),
+          (R.string.profile_login_activity_forgot_pin_text),
         style = TextStyle(
           fontSize = 16.sp,
           color = colorResource(id = R.color.component_color_profile_login_shared_primary_color)
@@ -459,7 +505,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileManagementController.deleteAllProfiles().toLiveData().observe(fragment) {
       activity.finishAffinity()
     }
-  }// TODO something weird happens when the default profile is created after this == wrong type maybe?
+  } // TODO something weird happens when the default profile is created after this == wrong type maybe?
 
   private fun getAdminPin() {
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
