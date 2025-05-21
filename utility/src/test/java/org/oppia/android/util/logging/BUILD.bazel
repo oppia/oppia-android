@@ -134,3 +134,22 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
+
+oppia_android_test(
+    name = "FeatureFlagNameToNumericIdConverterTest",
+    srcs = ["FeatureFlagNameToNumericIdConverterTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.FeatureFlagNameToNumericIdConverterTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
