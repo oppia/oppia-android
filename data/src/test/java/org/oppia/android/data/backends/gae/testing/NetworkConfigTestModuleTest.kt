@@ -133,7 +133,12 @@ class NetworkConfigTestModuleTest {
   }
 
   @Singleton
-  @Component(modules = [TestModule::class, NetworkConfigTestModule::class])
+  @Component(
+    modules = [
+      NetworkConfigTestModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
