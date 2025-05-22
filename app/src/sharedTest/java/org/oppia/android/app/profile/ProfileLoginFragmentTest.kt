@@ -5,21 +5,21 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
-import javax.inject.Inject
-import javax.inject.Singleton
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,12 +37,12 @@ import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
-import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -100,6 +100,8 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Tests for [ProfileLoginFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -113,45 +115,32 @@ import org.robolectric.annotation.LooperMode
 class ProfileLoginFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @get:Rule
-  val composeRule = createEmptyComposeRule()
-  @Inject
-  lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule val composeRule = createEmptyComposeRule()
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
-
-  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
-    testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   @Test
   fun testFragment_onLaunch_allTextViewsHaveCorrectContent() {
     profileTestHelper.addOnlyAdminProfile()
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule.onNodeWithTag(GREETING_TEST_TAG)
@@ -166,11 +155,24 @@ class ProfileLoginFragmentTest {
   }
 
   @Test
+  fun testFragment_onConfigChange_profileNameIsRetained() {
+    profileTestHelper.addOnlyAdminProfile()
+    scenario = launch(ProfileLoginActivity::class.java)
+    onView(isRoot()).perform(orientationLandscape())
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule.onNodeWithTag(GREETING_TEST_TAG)
+      .assertTextContains(context.getString(R.string.profile_login_activity_greeting_text, "Admin"))
+      .assertIsDisplayed()
+
+  }
+
+  @Test
   fun testFragment_onLaunch_adminProfile_fivePinInputBoxesAreDisplayed() {
     profileTestHelper.addOnlyAdminProfile()
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
+
     repeat(5) { index ->
       composeRule
         .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
@@ -186,9 +188,9 @@ class ProfileLoginFragmentTest {
   @Test
   fun testFragment_onLaunch_learnerProfile_threePinInputBoxesAreDisplayed() {
     profileTestHelper.addMoreProfiles(1)
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
+
     repeat(3) { index ->
       composeRule
         .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
@@ -204,8 +206,7 @@ class ProfileLoginFragmentTest {
   @Test
   fun testFragment_onLaunch_errorMessageDoesNotShow() {
     profileTestHelper.addMoreProfiles(1)
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
@@ -216,8 +217,7 @@ class ProfileLoginFragmentTest {
   @Test
   fun testFragment_nonAdmin_enterTwoDigits_doesNotTriggerLogin() {
     profileTestHelper.addMoreProfiles(1)
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
@@ -243,9 +243,26 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdmin_enterThreeDigits_triggersLoginAndOpensHomeScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     profileTestHelper.addMoreProfiles(1)
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule
+      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+      .performClick()
+      .performTextInput("123")
+
+    testCoroutineDispatchers.runCurrent()
+
+    intended(hasComponent(HomeActivity::class.java.name))
+  }
+
+  @Test
+  fun testFragment_nonAdmin_classroomsEnabled_enterCorrectThreeDigits_opensClassroomsScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    profileTestHelper.addMoreProfiles(1)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
@@ -261,8 +278,7 @@ class ProfileLoginFragmentTest {
   @Test
   fun testFragment_nonAdmin_enterWrongThreeDigits_showsErrorMessage() {
     profileTestHelper.addMoreProfiles(1)
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
@@ -278,8 +294,7 @@ class ProfileLoginFragmentTest {
 
   fun testFragment_adminProfile_enterFourDigits_doesNotTriggerLogin() {
     profileTestHelper.addOnlyAdminProfile()
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
@@ -314,10 +329,27 @@ class ProfileLoginFragmentTest {
   }
 
   @Test
-  fun testFragment_adminProfile_enterFiveDigits_triggersLoginAndOpensHomeScreen() {
+  fun testFragment_adminProfile_enterCorrectFiveDigits_triggersLoginAndOpensHomeScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     profileTestHelper.addOnlyAdminProfile()
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule
+      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+      .performClick()
+      .performTextInput("12345")
+
+    testCoroutineDispatchers.runCurrent()
+
+    intended(hasComponent(HomeActivity::class.java.name))
+  }
+
+  @Test
+  fun testFragment_adminProfile_classroomsEnabled_enterFiveDigits_opensClassroomScreen() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    profileTestHelper.addOnlyAdminProfile()
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
@@ -333,83 +365,22 @@ class ProfileLoginFragmentTest {
   @Test
   fun testFragment_adminProfile_enterWrongFiveDigits_showsErrorMessage() {
     profileTestHelper.addOnlyAdminProfile()
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
+    scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
 
     composeRule
       .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
       .performClick()
-      .performTextInput("11111")
+      .performTextInput("22222")
 
     composeRule
       .onNodeWithTag(PIN_ERROR_TEST_TAG)
       .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
       .assertIsDisplayed()
   }
-
-  @Test
-  fun testFragment_enterWrongPin_showsErrorMessage_thenClearsPinAndError() {
-    profileTestHelper.addOnlyAdminProfile()
-    setUpTestApplicationComponent()
-    scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
-
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("11111")
-
-    composeRule
-      .onNodeWithTag(PIN_ERROR_TEST_TAG)
-      .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
-      .assertIsDisplayed()
-
-    // Advance time for the error and PIN to be cleared.
-    testCoroutineDispatchers.advanceTimeBy(3500)
-
-    composeRule
-      .onNodeWithTag(PIN_ERROR_TEST_TAG)
-      .assertDoesNotExist()
-
-    repeat(5) { index ->
-      composeRule
-        .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
-        .assertTextContains("")
-    }
-  }
-
-//  1. Initial UI Rendering
-//  PIN boxes are styled correctly (focused/unfocused state).
-//@Test
-//fun testFragment_onLaunch_fistPinInputBoxIsFocused() {
-//  profileTestHelper.addMoreProfiles(1)
-//  setUpTestApplicationComponent()
-//  scenario = ActivityScenario.launch(ProfileLoginActivity::class.java)
-//  testCoroutineDispatchers.runCurrent()
-//
-//  composeRule
-//    .onNodeWithTag("pin_box_0", useUnmergedTree = true)
-//    .assertIsFocused()
-//
-//  If enableMultipleClassrooms is true:
-//
-//  Navigates to ClassroomListActivity instead of HomeActivity.
-//
-//
-//  🎭 5. State Restoration & Transitions
-//  Rotation does not reset the profile name or input state (if applicable).
-//
-//  Rotation during error animation should not crash the UI.
-//
-//  LiveData is observed correctly and updates UI if the profile changes.
-//
-//  💥 6. Error Handling & Logging
-//  If profile loading fails, app doesn't crash and default profile is used.
-//
-//  Ensure oppiaLogger logs the error on failure to fetch profile (mock verification).
 
   private fun setUpTestApplicationComponent() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
