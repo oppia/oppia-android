@@ -11,22 +11,18 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -34,6 +30,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -91,6 +88,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -116,9 +114,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers
-import org.oppia.android.testing.espresso.EditTextInputAction
 
 /** Tests for [ProfileLoginFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -184,7 +179,6 @@ class ProfileLoginFragmentTest {
     composeRule.onNodeWithTag(GREETING_TEST_TAG)
       .assertTextContains(context.getString(R.string.profile_login_activity_greeting_text, "Admin"))
       .assertIsDisplayed()
-
   }
 
   @Test
@@ -560,16 +554,11 @@ class ProfileLoginFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-
-      println("activity destroyed ${scenario.state}")
-      assertThat(scenario.result.resultCode).isEqualTo(1)
-//    scenario.onActivity {
-//
-//      assertThat(it.isDestroyed).isTrue()
-//    }
+    println("activity destroyed ${scenario.state}")
+    assertThat(scenario.result.resultCode).isEqualTo(1)
   }
 
-  //@Test
+  // @Test
   fun testFragment_nonAdminUser_clickForgotPin_opensNonAdminForgotPinDialogFlow() {
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
@@ -581,7 +570,7 @@ class ProfileLoginFragmentTest {
       .check(matches(isDisplayed()))
   }
 
-  //@Test
+  // @Test
   fun testFragment_nonAdminUser_clickCancel_dismissesTheDialog() {
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
@@ -600,7 +589,7 @@ class ProfileLoginFragmentTest {
       .check(matches(not(isDisplayed())))
   }
 
-  //@Test
+  // @Test
   fun testFragment_nonAdminUser_enterWrongAdminPin_showsWrongAdminPinError() {
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
@@ -622,7 +611,7 @@ class ProfileLoginFragmentTest {
       .check(matches(isDisplayed()))
   }
 
-  //@Test
+  // @Test
   fun testFragment_nonAdminUser_enterCorrectAdminPin_opensPinResetDialog() {
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
@@ -640,7 +629,7 @@ class ProfileLoginFragmentTest {
       .check(matches(isDisplayed()))
   }
 
-  //@Test
+  // @Test
   fun testFragment_nonAdminUser_enterAndSubmitNewPin_opensSuccessDialog() {
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)

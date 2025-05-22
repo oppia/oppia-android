@@ -23,7 +23,8 @@ fun ConfirmDataResetDialog(
   AlertDialog(
     title = {
       Text(
-        stringResource(R.string.admin_confirm_app_wipe_title, appName))
+        stringResource(R.string.admin_confirm_app_wipe_title, appName)
+      )
     },
     text = {
       Text(stringResource(R.string.admin_confirm_app_wipe_message, appName))
@@ -48,10 +49,11 @@ fun ConfirmDataResetDialog(
       TextButton(
         onClick = { deleteAppData() }
       ) {
-        Text(stringResource(
-          R.string.admin_confirm_app_wipe_positive_button_text,
-          appName
-        )
+        Text(
+          stringResource(
+            R.string.admin_confirm_app_wipe_positive_button_text,
+            appName
+          )
         )
       }
     },
