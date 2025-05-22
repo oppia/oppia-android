@@ -1855,15 +1855,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileClickListener.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileItemViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1907,7 +1899,15 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ConfirmDataResetDialog.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/DynamicProfileItemMarginsDecorator.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ForgotAdminPinDialog.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1944,6 +1944,14 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileItemViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
