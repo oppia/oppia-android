@@ -44,9 +44,11 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -166,22 +168,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
           onPinChanged = { newValue ->
             pinValue = newValue
             if (newValue.length == pinLength) {
-              if (newValue == profile.pin) {
-                profileManagementController.loginToProfile(profileId).toLiveData()
-                  .observe(fragment) {
-                    if (it is AsyncResult.Success) {
-                      activity.startActivity(
-                        if (enableMultipleClassrooms.value)
-                          ClassroomListActivity.createClassroomListActivity(activity, profileId)
-                        else
-                          HomeActivity.createHomeActivity(activity, profileId)
-                      )
-                      activity.finish()
-                    }
-                  }
-              } else {
-                showError = true
-              }
+              showError = maybeShowValidationError(newValue, profile.pin, profileId)
             }
           },
           pinLength = pinLength,
@@ -202,33 +189,47 @@ class ProfileLoginFragmentPresenter @Inject constructor(
           showError = showError,
           errorMessage = resourceHandler.getStringInLocale(
             R.string.profile_login_activity_pin_error
-          )
+          ),
+          setShakeOffset = { shakeOffset = it },
+          onErrorDismissed = { showError = false },
+          resetPin = { pinValue = "" }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         ForgotPinButton(profileType, profileId, profileName)
-
-        LaunchedEffect(showError) {
-          if (showError) {
-            // Shake animation using offset
-            repeat(3) {
-              shakeOffset = -10f
-              delay(50)
-              shakeOffset = 10f
-              delay(50)
-            }
-
-            shakeOffset = 0f
-
-            // Clear the incorrect PIN and hide the error message after a 3s delay.
-            delay(3000)
-            showError = false
-            pinValue = ""
-          }
-        }
       }
     }
+  }
+
+  private fun maybeShowValidationError(
+    enteredPin: String,
+    profilePin: String,
+    profileId: ProfileId
+  ): Boolean {
+    val showError: Boolean
+    if (enteredPin == profilePin) {
+      loginToProfile(profileId)
+      showError = false
+    } else {
+      showError = true
+    }
+    return showError
+  }
+
+  private fun loginToProfile(profileId: ProfileId) {
+    profileManagementController.loginToProfile(profileId).toLiveData()
+      .observe(fragment) {
+        if (it is AsyncResult.Success) {
+          activity.startActivity(
+            if (enableMultipleClassrooms.value)
+              ClassroomListActivity.createClassroomListActivity(activity, profileId)
+            else
+              HomeActivity.createHomeActivity(activity, profileId)
+          )
+          activity.finish()
+        }
+      }
   }
 
   @Composable
@@ -268,42 +269,22 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     modifier: Modifier = Modifier
   ) {
     BasicTextField(
-      modifier =  modifier.testTag(PIN_INPUT_TEST_TAG),
+      modifier = modifier.testTag(PIN_INPUT_TEST_TAG),
       value = pinValue,
       onValueChange = { newValue ->
         if (newValue.length <= pinLength && newValue.all { it.isDigit() }) {
           onPinChanged(newValue)
         }
       },
+      visualTransformation = PasswordVisualTransformation(),
       keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
       decorationBox = {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = modifier) {
+        Row(
+          horizontalArrangement = Arrangement.spacedBy(8.dp),
+          modifier = modifier
+        ) {
           repeat(pinLength) { index ->
-            val char = pinValue.getOrNull(index)?.toString() ?: ""
-            val isFocused = pinValue.length == index
-            Box(
-              modifier = Modifier
-                .size(48.dp)
-                .aspectRatio(0.7F)
-                .border(
-                  width = if (isFocused) 2.dp else 1.dp,
-                  color = if (isFocused)
-                    colorResource(id = R.color.component_color_profile_login_shared_primary_color)
-                  else
-                    colorResource(
-                      id = R.color.component_color_profile_login_unfocused_outline_color
-                    ),
-                  shape = RoundedCornerShape(4.dp)
-                )
-                .background(
-                  colorResource(id = R.color.component_color_profile_login_shared_white_color)
-                )
-                .testTag(PIN_BOX_TEST_TAG + index)
-              .semantics { contentDescription = char },
-              contentAlignment = Alignment.Center
-            ) {
-              Text(text = char, style = MaterialTheme.typography.h6)
-            }
+            PinInputBox(index, pinValue)
           }
         }
       }
@@ -311,7 +292,45 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun PinErrorText(showError: Boolean, errorMessage: String) {
+  private fun PinInputBox(index: Int, pinValue: String) {
+    val transformedPin = PasswordVisualTransformation().filter(AnnotatedString(pinValue))
+    val pinChar = pinValue.getOrNull(index)?.toString() ?: ""
+    val maskedChar = transformedPin.text.getOrNull(index)?.toString() ?: ""
+    val isFocused = pinValue.length == index
+
+    Box(
+      modifier = Modifier
+        .size(48.dp)
+        .aspectRatio(0.7F)
+        .border(
+          width = if (isFocused) 2.dp else 1.dp,
+          color = if (isFocused)
+            colorResource(id = R.color.component_color_profile_login_shared_primary_color)
+          else
+            colorResource(
+              id = R.color.component_color_profile_login_unfocused_outline_color
+            ),
+          shape = RoundedCornerShape(4.dp)
+        )
+        .background(
+          colorResource(id = R.color.component_color_profile_login_shared_white_color)
+        )
+        .testTag(PIN_BOX_TEST_TAG + index)
+        .semantics { contentDescription = pinChar },
+      contentAlignment = Alignment.Center
+    ) {
+      Text(text = maskedChar, style = MaterialTheme.typography.h6)
+    }
+  }
+
+  @Composable
+  private fun PinErrorText(
+    showError: Boolean,
+    errorMessage: String,
+    setShakeOffset: (Float) -> Unit,
+    resetPin: () -> Unit,
+    onErrorDismissed: () -> Unit
+  ) {
     if (showError) {
       Text(
         text = errorMessage,
@@ -322,6 +341,23 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         ),
         modifier = Modifier.testTag(PIN_ERROR_TEST_TAG)
       )
+
+      LaunchedEffect(true) {
+        // Shake animation using offset.
+        repeat(3) {
+          setShakeOffset(-10f)
+          delay(50)
+          setShakeOffset(10f)
+          delay(50)
+        }
+
+        setShakeOffset(0f)
+
+        // Clear the incorrect PIN and hide the error message after a 2s delay.
+        delay(2000)
+        resetPin()
+        onErrorDismissed()
+      }
     }
   }
 
@@ -334,10 +370,11 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
     TextButton(
       modifier = Modifier.testTag(FORGOT_PIN_TEST_TAG),
-      onClick = { openForgotPinDialog.value = true }) {
+      onClick = { openForgotPinDialog.value = true }
+    ) {
       Text(
         text = resourceHandler.getStringInLocaleWithWrapping
-          (R.string.profile_login_activity_forgot_pin_text),
+        (R.string.profile_login_activity_forgot_pin_text),
         style = TextStyle(
           fontSize = 16.sp,
           color = colorResource(id = R.color.component_color_profile_login_shared_primary_color)
