@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -52,7 +51,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -120,6 +118,13 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     createComposeView()
 
     return binding.root
+  }
+
+  private fun getAdminPin() {
+    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    adminProfileLiveData =
+      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
   }
 
   private fun createComposeView() {
@@ -406,124 +411,10 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
     if (openConfirmationDialog.value) {
       ConfirmDataResetDialog(
-        onDismissRequest = { openConfirmationDialog.value = false }
+        onDismissRequest = { openConfirmationDialog.value = false },
+        deleteAppData = { deleteAppData() }
       )
     }
-  }
-
-  @Composable
-  private fun ForgotAdminPinDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit
-  ) {
-    val appName = resourceHandler.getStringInLocale(R.string.app_name)
-
-    AlertDialog(
-      title = {
-        Text(
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.profile_login_forgot_pin_dialog_title
-          )
-        )
-      },
-      text = {
-        Text(
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.profile_login_forgot_pin_dialog_message, appName
-          )
-        )
-      },
-      properties = DialogProperties(
-        dismissOnClickOutside = false,
-        dismissOnBackPress = false
-      ),
-      onDismissRequest = {
-        onDismissRequest()
-      },
-      dismissButton = {
-        TextButton(
-          onClick = {
-            onDismissRequest()
-          }
-        ) {
-          Text(
-            resourceHandler.getStringInLocaleWithWrapping(
-              R.string.profile_login_forgot_pin_dialog_cancel_button
-            )
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-          onClick = {
-            onConfirmation()
-          }
-        ) {
-          Text(
-            resourceHandler.getStringInLocaleWithWrapping(
-              R.string.profile_login_forgot_pin_dialog_reset_button,
-              appName
-            )
-          )
-        }
-      }
-    )
-  }
-
-  @Composable
-  private fun ConfirmDataResetDialog(
-    onDismissRequest: () -> Unit
-  ) {
-    val appName = resourceHandler.getStringInLocale(R.string.app_name)
-
-    AlertDialog(
-      title = {
-        Text(
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.admin_confirm_app_wipe_title, appName
-          )
-        )
-      },
-      text = {
-        Text(
-          resourceHandler.getStringInLocaleWithWrapping(
-            R.string.admin_confirm_app_wipe_message, appName
-          )
-        )
-      },
-      properties = DialogProperties(
-        dismissOnClickOutside = false,
-        dismissOnBackPress = false
-      ),
-      onDismissRequest = {
-        onDismissRequest()
-      },
-      dismissButton = {
-        TextButton(
-          onClick = {
-            onDismissRequest()
-          }
-        ) {
-          Text(
-            resourceHandler.getStringInLocaleWithWrapping(
-              R.string.admin_confirm_app_wipe_negative_button_text
-            )
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(
-          onClick = { deleteAppData() }
-        ) {
-          Text(
-            resourceHandler.getStringInLocaleWithWrapping(
-              R.string.admin_confirm_app_wipe_positive_button_text,
-              appName
-            )
-          )
-        }
-      }
-    )
   }
 
   private fun showResetNonAdminPinFlow(
@@ -542,13 +433,6 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileManagementController.deleteAllProfiles().toLiveData().observe(fragment) {
       activity.finishAffinity()
     }
-  } // TODO something weird happens when the default profile is created after this == wrong type maybe?
-
-  private fun getAdminPin() {
-    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
-
-    adminProfileLiveData =
-      getProfileResult(profileManagementController.getProfile(adminProfileId).toLiveData())
   }
 
   private fun getProfileResult(profileResult: LiveData<AsyncResult<Profile>>): LiveData<Profile> {
