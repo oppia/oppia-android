@@ -167,8 +167,9 @@ class DirectoryManagementUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

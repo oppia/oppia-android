@@ -893,12 +893,21 @@ class LocaleControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class, RobolectricModule::class,
-      AssetModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterModule::class,
-      PlatformParameterSingletonModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

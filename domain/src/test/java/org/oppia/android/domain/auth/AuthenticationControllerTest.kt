@@ -119,9 +119,13 @@ class AuthenticationControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, DispatcherModule::class,
-      TestLogReportingModule::class, TestAuthenticationModule::class,
+      ApplicationLifecycleModule::class,
+      DispatcherModule::class,
+      FakeOppiaClockModule::class,
+      RobolectricModule::class,
+      TestAuthenticationModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

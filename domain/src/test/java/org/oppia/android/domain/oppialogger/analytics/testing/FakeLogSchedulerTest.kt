@@ -176,13 +176,23 @@ class FakeLogSchedulerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class,
-      TestLogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
-      OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, AssetModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilProdModule::class,
+      OppiaClockModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

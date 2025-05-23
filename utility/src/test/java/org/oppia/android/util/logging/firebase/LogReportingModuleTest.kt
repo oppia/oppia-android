@@ -107,10 +107,16 @@ class LogReportingModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingModule::class,
+      LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
