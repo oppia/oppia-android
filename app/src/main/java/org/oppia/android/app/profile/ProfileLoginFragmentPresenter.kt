@@ -424,9 +424,9 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileName: String
   ) {
     openForgotPinDialog.value = false
-    val dialogFragment = AdminSettingsDialogFragment
+    AdminSettingsDialogFragment
       .newInstance(correctAdminPin, profileId, profileName)
-    dialogFragment.showNow(fragment.parentFragmentManager, TAG_VALIDATE_ADMIN_PIN_DIALOG)
+      .showNow(activity.supportFragmentManager, TAG_VALIDATE_ADMIN_PIN_DIALOG)
   }
 
   private fun deleteAppData() {

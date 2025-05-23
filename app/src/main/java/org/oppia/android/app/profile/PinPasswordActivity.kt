@@ -3,7 +3,6 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.PinPasswordActivityParams
@@ -11,6 +10,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.PIN_PASSWORD_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import javax.inject.Inject
 
 // TODO(#5817): Remove when v2 onboarding flow has stabilized.
 /** Activity that allows user to input his or her PIN. */
