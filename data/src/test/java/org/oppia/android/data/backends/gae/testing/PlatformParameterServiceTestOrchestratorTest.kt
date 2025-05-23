@@ -223,8 +223,11 @@ class PlatformParameterServiceTestOrchestratorTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RetrofitModule::class, NetworkConfigTestModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      NetworkConfigTestModule::class,
+      RetrofitModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

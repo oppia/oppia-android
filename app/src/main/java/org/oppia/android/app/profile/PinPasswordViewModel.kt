@@ -15,7 +15,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
-// TODO(#5817) Remove along with PinPasswordActivity when v2 onboarding flow has stabilized.
+// TODO(#5817): Remove along with PinPasswordActivity when v2 onboarding flow has stabilized.
 /** The ViewModel for [PinPasswordActivity]. */
 @ActivityScope
 class PinPasswordViewModel @Inject constructor(
@@ -28,6 +28,7 @@ class PinPasswordViewModel @Inject constructor(
   val showPassword = ObservableField(false)
   val correctPin = ObservableField<String>("")
   val isAdmin = ObservableField<Boolean>(false)
+  val maxPinLength = ObservableField<Int>(5)
   val name = ObservableField<String>("")
   val showAdminPinForgotPasswordPopUp = ObservableField<Boolean>(false)
 
@@ -59,6 +60,7 @@ class PinPasswordViewModel @Inject constructor(
     }
     correctPin.set(profile.pin)
     isAdmin.set(profile.isAdmin)
+    maxPinLength.set(profile.pin.length)
     name.set(profile.name)
     return profile
   }

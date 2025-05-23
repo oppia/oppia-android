@@ -83,10 +83,17 @@ class ExplorationProgressModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
       TestPlatformParameterModule::class
     ]
   )
