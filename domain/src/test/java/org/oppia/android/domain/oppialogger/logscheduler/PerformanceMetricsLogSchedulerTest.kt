@@ -172,14 +172,25 @@ class PerformanceMetricsLogSchedulerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
-      PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MetricLogSchedulerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

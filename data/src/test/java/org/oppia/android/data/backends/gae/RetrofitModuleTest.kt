@@ -191,8 +191,11 @@ class RetrofitModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RetrofitModule::class, TestDispatcherModule::class,
-      RobolectricModule::class, NetworkConfigTestModule::class
+      NetworkConfigTestModule::class,
+      RetrofitModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
