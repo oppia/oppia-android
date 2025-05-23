@@ -78,8 +78,11 @@ class LanguageConfigRetrieverWithoutAssetsTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, DispatcherTestModule::class, RobolectricModule::class,
-      AssetTestNoOpModule::class
+      AssetTestNoOpModule::class,
+      DispatcherTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

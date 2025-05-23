@@ -209,13 +209,21 @@ class ProfileTestHelperTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
       LogStorageModule::class,
-      DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class, AssetModule::class
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

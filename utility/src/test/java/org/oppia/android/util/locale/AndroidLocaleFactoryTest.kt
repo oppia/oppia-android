@@ -1664,8 +1664,11 @@ class AndroidLocaleFactoryTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      DispatcherTestModule::class, RobolectricModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -188,8 +188,11 @@ class NetworkLoggingInterceptorTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class, DispatcherTestModule::class
+      DispatcherTestModule::class,
+      LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

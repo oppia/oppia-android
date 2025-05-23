@@ -178,8 +178,12 @@ class PlatformParameterServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      DispatcherTestModule::class, NetworkConfigTestModule::class, RobolectricModule::class
+      DispatcherTestModule::class,
+      NetworkConfigTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

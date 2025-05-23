@@ -493,13 +493,20 @@ class LoggingIdentifierControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      ApplicationLifecycleModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
       TestLogStorageModule::class,
-      DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class
+      TestLoggingIdentifierModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

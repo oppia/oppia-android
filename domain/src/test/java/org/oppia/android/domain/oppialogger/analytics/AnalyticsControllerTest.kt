@@ -1390,13 +1390,21 @@ class AnalyticsControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RobolectricModule::class,
-      DispatcherTestModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class,
-      PlatformParameterTestModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
+      SyncStatusTestModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

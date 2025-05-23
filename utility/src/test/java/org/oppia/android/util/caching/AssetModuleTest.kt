@@ -63,8 +63,13 @@ class AssetModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, AssetModule::class, LoggerModule::class, DispatcherTestModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

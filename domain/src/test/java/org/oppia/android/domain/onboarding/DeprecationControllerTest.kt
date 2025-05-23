@@ -337,15 +337,21 @@ class DeprecationControllerTest {
   @Singleton
   @Component(
     modules = [
-      LogStorageModule::class, RobolectricModule::class,
-      TestModule::class, DispatcherTestModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class,
+      ApplicationLifecycleModule::class,
+      DispatcherTestModule::class,
+      ExpirationMetaDataRetrieverProdModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverProdModule::class, // Use real impl to test closer to prod.
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class
+      OppiaClockModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

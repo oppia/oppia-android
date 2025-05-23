@@ -209,12 +209,21 @@ class SurveyControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, DispatcherTestModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class, AssetModule::class,
-      NetworkConnectionUtilDebugModule::class, SyncStatusProdModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, AuthenticationTestModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      AuthenticationTestModule::class,
+      DispatcherTestModule::class,
+      ExplorationProgressModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestLoggingIdentifierModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

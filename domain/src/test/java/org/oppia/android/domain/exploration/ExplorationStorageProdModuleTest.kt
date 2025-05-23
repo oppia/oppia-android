@@ -107,13 +107,22 @@ class ExplorationStorageProdModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      ExplorationStorageProdModule::class, DispatcherTestModule::class, RobolectricModule::class,
-      LogStorageModule::class, NetworkConnectionUtilDebugModule::class, AssetModule::class,
-      LocaleProdModule::class, FakeOppiaClockModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      DispatcherTestModule::class,
+      ExplorationStorageProdModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

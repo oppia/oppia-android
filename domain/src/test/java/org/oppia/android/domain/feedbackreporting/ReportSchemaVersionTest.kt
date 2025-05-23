@@ -172,11 +172,17 @@ class ReportSchemaVersionTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, FeedbackReportingModule::class, DispatcherTestModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      RobolectricModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class
+      ApplicationLifecycleModule::class,
+      DispatcherTestModule::class,
+      FeedbackReportingModule::class,
+      LogReportingTestModule::class,
+      LoggingIdentifierModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

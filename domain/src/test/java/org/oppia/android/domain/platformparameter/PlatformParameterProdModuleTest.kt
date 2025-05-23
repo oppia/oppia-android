@@ -232,7 +232,8 @@ class PlatformParameterProdModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PlatformParameterTestModule::class
+      PlatformParameterTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

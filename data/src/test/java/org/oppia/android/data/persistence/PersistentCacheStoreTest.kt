@@ -1700,10 +1700,11 @@ class PersistentCacheStoreTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
       DispatcherTestModule::class,
-      TestModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class
+      LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -87,9 +87,13 @@ class MathEquationInputModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      DispatcherTestModule::class, LoggerModule::class, RobolectricModule::class,
-      MathEquationInputModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      MathEquationInputModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -66,11 +66,17 @@ class SyncStatusTestModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, SyncStatusTestModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class, LoggerModule::class,
-      DispatcherTestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      RobolectricModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

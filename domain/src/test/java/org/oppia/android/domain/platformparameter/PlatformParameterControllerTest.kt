@@ -220,9 +220,13 @@ class PlatformParameterControllerTest {
   @Singleton
   @Component(
     modules = [
-      LogStorageModule::class, RobolectricModule::class, DispatcherTestModule::class,
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      NetworkConnectionUtilDebugModule::class
+      DispatcherTestModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

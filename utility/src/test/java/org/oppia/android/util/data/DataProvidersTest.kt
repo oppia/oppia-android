@@ -3366,9 +3366,12 @@ class DataProvidersTest {
   @Singleton
   @Component(
     modules = [
-      DispatcherTestModule::class, TestModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

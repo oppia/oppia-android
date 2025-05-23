@@ -87,9 +87,13 @@ class AlgebraicExpressionInputModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      DispatcherTestModule::class, LoggerModule::class, RobolectricModule::class,
-      AlgebraicExpressionInputModule::class
+      AlgebraicExpressionInputModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

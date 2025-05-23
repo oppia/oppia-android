@@ -426,13 +426,22 @@ class TextInputFuzzyEqualsRuleClassifierProviderTest {
   @Singleton
   @Component(
     modules = [
-      LocaleProdModule::class, FakeOppiaClockModule::class, LoggerModule::class,
-      DispatcherTestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      AssetModule::class, RobolectricModule::class,
-      TestModule::class, LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

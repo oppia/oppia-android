@@ -1073,14 +1073,22 @@ class AppStartupStateControllerTest {
   @Singleton
   @Component(
     modules = [
-      LogStorageModule::class, RobolectricModule::class,
-      TestModule::class, DispatcherTestModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class, NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverProdModule::class, // Use real impl to test closer to prod.
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class, AssetModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      DispatcherTestModule::class,
+      ExpirationMetaDataRetrieverProdModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      OppiaClockModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -112,12 +112,19 @@ class UncaughtExceptionLoggerStartupListenerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LoggerModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       RobolectricModule::class,
-      DispatcherTestModule::class, TestLogStorageModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, UncaughtExceptionLoggerModule::class
+      TestLogStorageModule::class,
+      TestModule::class,
+      UncaughtExceptionLoggerModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

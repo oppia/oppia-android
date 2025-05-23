@@ -206,8 +206,13 @@ class FakeExplorationRetrieverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class, AssetModule::class,
-      LoggerModule::class, DispatcherTestModule::class, RobolectricModule::class
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

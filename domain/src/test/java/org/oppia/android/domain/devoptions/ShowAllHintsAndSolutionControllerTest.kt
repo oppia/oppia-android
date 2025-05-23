@@ -64,10 +64,13 @@ class ShowAllHintsAndSolutionControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusProdModule::class, PlatformParameterProdModule::class,
-      PlatformParameterSingletonModule::class
+      ApplicationLifecycleModule::class,
+      LoggingIdentifierModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

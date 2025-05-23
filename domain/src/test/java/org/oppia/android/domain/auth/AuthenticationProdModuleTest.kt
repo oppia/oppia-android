@@ -60,8 +60,11 @@ class AuthenticationProdModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, DispatcherTestModule::class, AuthenticationProdModule::class,
-      RobolectricModule::class, LogReportingDebugModule::class
+      AuthenticationProdModule::class,
+      DispatcherTestModule::class,
+      LogReportingDebugModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

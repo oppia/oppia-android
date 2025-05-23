@@ -162,7 +162,8 @@ class FakePerformanceMetricAssessorTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class
+      LogReportingTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -296,8 +296,12 @@ class ConceptCardTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -80,10 +80,14 @@ class FirebaseAuthWrapperImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, DispatcherTestModule::class,
-      AuthenticationModule::class, LogReportingTestModule::class,
+      ApplicationLifecycleModule::class,
+      AuthenticationModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LogReportingTestModule::class,
       PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

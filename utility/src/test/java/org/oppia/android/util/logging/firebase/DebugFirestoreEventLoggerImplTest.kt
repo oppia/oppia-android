@@ -175,8 +175,11 @@ class DebugFirestoreEventLoggerImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
-      DispatcherTestModule::class, FakeOppiaClockModule::class, LocaleTestModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
 

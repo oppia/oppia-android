@@ -58,9 +58,13 @@ class HintsAndSolutionProdModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
-      LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      DispatcherTestModule::class, RobolectricModule::class
+      DispatcherTestModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      LogReportingTestModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

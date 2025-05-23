@@ -291,10 +291,16 @@ class FakeOppiaClockTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
+      CachingTestModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      ImageParsingModule::class,
+      LogReportingTestModule::class,
       LogStorageModule::class,
-      DispatcherTestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class, CachingTestModule::class, LoggerModule::class
+      LoggerModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

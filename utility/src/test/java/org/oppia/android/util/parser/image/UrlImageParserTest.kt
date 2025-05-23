@@ -284,10 +284,16 @@ class UrlImageParserTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, DispatcherTestModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, ImageLoaderTestModule::class,
-      CachingTestModule::class, ImageParsingModule::class, AssetModule::class,
-      LocaleProdModule::class
+      AssetModule::class,
+      CachingTestModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      ImageLoaderTestModule::class,
+      ImageParsingModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

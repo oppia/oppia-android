@@ -319,17 +319,27 @@ class LogReportWorkManagerInitializerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingTestModule::class, PerformanceMetricsAssessorTestModule::class,
-      RobolectricModule::class,
-      TestLogStorageModule::class, DispatcherTestModule::class,
-      LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, LocaleProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class,
-      PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusProdModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
       AuthenticationTestModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogReportingTestModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusProdModule::class,
+      TestFirebaseLogUploaderModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

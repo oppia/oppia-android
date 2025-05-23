@@ -541,7 +541,9 @@ class AsyncDataSubscriptionManagerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, DispatcherTestModule::class, RobolectricModule::class
+      DispatcherTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

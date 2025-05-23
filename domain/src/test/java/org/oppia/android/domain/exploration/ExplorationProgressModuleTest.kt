@@ -84,12 +84,19 @@ class ExplorationProgressModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, ExplorationProgressModule::class, DispatcherTestModule::class,
-      LocaleProdModule::class, LogReportingTestModule::class,
-      PerformanceMetricsAssessorTestModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
-      PlatformParameterTestModule::class
+      DispatcherTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      TestLogModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
