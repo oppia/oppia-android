@@ -370,7 +370,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
+  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.initializeProfiles(autoLogIn = true)
     profileTestHelper.updateProfileType(testProfileId, ProfileType.SUPERVISOR)
@@ -383,7 +383,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -1348,7 +1348,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_clickProfileWithPin_checkOpensPinPasswordActivity() {
+  fun testFragment_enableOnboardingV2_clickProfileWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.updateProfileType(testProfileId, ProfileType.SUPERVISOR)
@@ -1360,7 +1360,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
