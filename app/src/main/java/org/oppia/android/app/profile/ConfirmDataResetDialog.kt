@@ -13,6 +13,7 @@ import org.oppia.android.app.ui.R
 /** Test tag for the confirm reset pin dialog. */
 const val ADMIN_RESET_PIN_DIALOG_TEST_TAG = "TEST_TAG.admin_reset_pin"
 
+/** Composable that represents the admin's reset pin confirmation dialog. */
 @Composable
 fun ConfirmDataResetDialog(
   onDismissRequest: () -> Unit,

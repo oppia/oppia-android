@@ -140,7 +140,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
   @OptIn(ExperimentalComposeUiApi::class)
   @Composable
-  fun PinEntryScreen() {
+  private fun PinEntryScreen() {
     var showError by remember { mutableStateOf(false) }
     val profile: Profile by profileLiveData.observeAsState(initial = Profile.getDefaultInstance())
     val profileName = profile.name

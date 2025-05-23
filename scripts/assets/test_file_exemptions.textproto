@@ -1955,6 +1955,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileLoginActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileLoginFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileRouteDialogInterface.kt"
   test_file_not_required: true
 }
