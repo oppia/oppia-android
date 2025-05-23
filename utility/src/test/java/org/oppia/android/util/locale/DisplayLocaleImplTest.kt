@@ -636,8 +636,11 @@ class DisplayLocaleImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, RobolectricModule::class
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
