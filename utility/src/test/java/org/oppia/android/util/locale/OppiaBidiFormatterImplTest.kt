@@ -14,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.ShadowBidiFormatter
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -139,7 +140,7 @@ class OppiaBidiFormatterImplTest {
   @Singleton
   @Component(
     modules = [
-      LocaleProdModule::class,
+      LocaleTestModule::class,
       TestModule::class
     ]
   )

@@ -44,7 +44,6 @@ import org.oppia.android.util.logging.MetricLogScheduler
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.system.OppiaClockModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
@@ -188,7 +187,6 @@ class FakeLogSchedulerTest {
       LoggerModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class,
       PerformanceMetricsAssessorTestModule::class,
       PerformanceMetricsConfigurationsModule::class,
       PlatformParameterProdModule::class,

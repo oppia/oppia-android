@@ -35,6 +35,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -55,6 +56,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",
@@ -101,6 +103,7 @@ oppia_android_test(
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",
         "//third_party:androidx_test_ext_junit",
         "//third_party:com_google_truth_truth",

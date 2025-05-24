@@ -28,6 +28,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -722,7 +723,7 @@ class StateRetrieverTest {
       AssetModule::class,
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
-      LocaleProdModule::class,
+      LocaleTestModule::class,
       RobolectricModule::class,
       TestModule::class
     ]

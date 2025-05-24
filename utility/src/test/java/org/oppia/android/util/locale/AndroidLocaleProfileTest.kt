@@ -26,6 +26,7 @@ import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageAndWildcardReg
 import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageOnlyProfile
 import org.oppia.android.util.locale.AndroidLocaleProfile.RegionOnlyProfile
 import org.oppia.android.util.locale.AndroidLocaleProfile.RootProfile
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -935,7 +936,7 @@ class AndroidLocaleProfileTest {
     modules = [
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
-      LocaleProdModule::class,
+      LocaleTestModule::class,
       TestModule::class
     ]
   )

@@ -82,6 +82,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -725,6 +726,7 @@ class ViewEventLogsFragmentTest {
       ItemSelectionInputModule::class,
       LocaleTestModule::class,
       LogReportWorkerModule::class,
+      LogReportingTestModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
       MathEquationInputModule::class,

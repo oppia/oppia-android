@@ -44,7 +44,6 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
-import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
@@ -72,10 +71,9 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVI
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
@@ -598,11 +596,6 @@ class LogUploadWorkerTest {
     ): FirestoreEventLogger = delegate
 
     @Provides
-    fun bindFakePerformanceMetricsAssessor(
-      fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
-    ): PerformanceMetricsAssessor = fakePerformanceMetricAssessor
-
-    @Provides
     fun bindFirebaseFirestoreInstanceWrapper(
       wrapperImpl: FakeFirestoreInstanceWrapperImpl
     ): FirestoreInstanceWrapper = wrapperImpl
@@ -650,7 +643,7 @@ class LogUploadWorkerTest {
       LoggingIdentifierModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PerformanceMetricsAssessorProdModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       PerformanceMetricsConfigurationsModule::class,
       PlatformParameterSingletonModule::class,
       PlatformParameterTestModule::class,

@@ -31,6 +31,7 @@ import org.oppia.android.util.locale.AndroidLocaleFactory
 import org.oppia.android.util.locale.DisplayLocaleImpl
 import org.oppia.android.util.locale.OppiaBidiFormatter
 import org.oppia.android.util.locale.OppiaLocale
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -197,7 +198,7 @@ class LiTagHandlerTest {
     modules = [
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
-      LocaleProdModule::class,
+      LocaleTestModule::class,
       LoggerModule::class,
       RobolectricModule::class,
       TestModule::class

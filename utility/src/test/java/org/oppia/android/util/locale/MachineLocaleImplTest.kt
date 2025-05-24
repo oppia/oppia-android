@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -303,7 +304,7 @@ class MachineLocaleImplTest {
     modules = [
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
-      LocaleProdModule::class,
+      LocaleTestModule::class,
       TestModule::class
     ]
   )

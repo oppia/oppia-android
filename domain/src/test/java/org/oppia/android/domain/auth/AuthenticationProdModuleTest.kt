@@ -60,6 +60,7 @@ class AuthenticationProdModuleTest {
   @Singleton
   @Component(
     modules = [
+      AuthenticationProdModule::class,
       DispatcherTestModule::class,
       LogReportingDebugModule::class,
       RobolectricModule::class,
