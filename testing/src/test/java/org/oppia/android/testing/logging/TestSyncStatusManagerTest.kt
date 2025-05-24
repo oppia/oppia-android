@@ -24,6 +24,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -901,6 +902,7 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   @Singleton
   @Component(
     modules = [
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
       LogReportingTestModule::class,

@@ -15,6 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -65,6 +66,7 @@ class SyncStatusTestModuleTest {
   @Singleton
   @Component(
     modules = [
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
       LogReportingTestModule::class,

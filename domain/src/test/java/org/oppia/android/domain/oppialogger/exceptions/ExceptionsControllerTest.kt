@@ -18,6 +18,7 @@ import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProviders
@@ -339,6 +340,7 @@ class ExceptionsControllerTest {
   @Singleton
   @Component(
     modules = [
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleProdModule::class,
       LogReportingTestModule::class,

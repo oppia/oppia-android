@@ -13,6 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -167,6 +168,7 @@ class DirectoryManagementUtilTest {
   @Singleton
   @Component(
     modules = [
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       RobolectricModule::class,
       TestModule::class

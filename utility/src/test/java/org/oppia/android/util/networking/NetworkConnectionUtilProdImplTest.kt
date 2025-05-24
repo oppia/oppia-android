@@ -179,6 +179,7 @@ class NetworkConnectionUtilProdImplTest {
   @Singleton
   @Component(
     modules = [
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       NetworkConnectionUtilProdModule::class,
       RobolectricModule::class,

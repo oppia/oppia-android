@@ -19,6 +19,7 @@ import org.oppia.android.app.model.LanguageSupportDefinition.MacaronicLanguageId
 import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.model.RegionSupportDefinition.IetfBcp47RegionId
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageAndRegionProfile
 import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageAndWildcardRegionProfile
@@ -932,6 +933,7 @@ class AndroidLocaleProfileTest {
   @Singleton
   @Component(
     modules = [
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleProdModule::class,
       TestModule::class
