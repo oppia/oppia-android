@@ -16,7 +16,7 @@ import javax.inject.Singleton
  * [BlockingDispatcher] qualifiers.
  */
 @Module
-class TestDispatcherModule {
+class DispatcherTestModule {
   @Provides
   @BackgroundDispatcher
   fun provideBackgroundDispatcher(

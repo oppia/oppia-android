@@ -19,6 +19,7 @@ kt_android_library(
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//utility/src/main/java/org/oppia/android/util/logging:sync_status_manager",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
 
@@ -36,6 +37,7 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:current_app_screen_name_intent_decorator",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
 
@@ -56,6 +58,7 @@ oppia_android_test(
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
 
@@ -78,9 +81,9 @@ oppia_android_test(
         "//third_party:com_google_truth_truth",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -107,10 +110,10 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging:event_bundle_creator",
         "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
@@ -125,6 +128,26 @@ oppia_android_test(
         "//:dagger",
         "//testing",
         "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
+    ],
+)
+
+oppia_android_test(
+    name = "FeatureFlagNameToNumericIdConverterTest",
+    srcs = ["FeatureFlagNameToNumericIdConverterTest.kt"],
+    custom_package = "org.oppia.android.util.logging",
+    test_class = "org.oppia.android.util.logging.FeatureFlagNameToNumericIdConverterTest",
+    test_manifest = "//utility:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/junit:oppia_parameterized_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/junit:parameterized_robolectric_test_runner",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//third_party:com_google_truth_truth",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",

@@ -15,9 +15,9 @@ import org.junit.runner.RunWith
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.testing.time.FakeSystemClock
 import org.oppia.android.util.data.AsyncResult.ChainedFailureException
@@ -986,8 +986,9 @@ class AsyncResultTest {
   @Singleton
   @Component(
     modules = [
-      TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      RobolectricModule::class
     ]
   )
   interface TestApplicationComponent {

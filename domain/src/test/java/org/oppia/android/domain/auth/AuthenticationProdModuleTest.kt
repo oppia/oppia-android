@@ -12,23 +12,23 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [AuthenticationModule]. */
+/** Tests for [AuthenticationProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = AuthenticationModuleTest.TestApplication::class)
-class AuthenticationModuleTest {
+@Config(application = AuthenticationProdModuleTest.TestApplication::class)
+class AuthenticationProdModuleTest {
 
   @Inject
   lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
@@ -60,8 +60,10 @@ class AuthenticationModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, AuthenticationModule::class,
-      RobolectricModule::class, TestLogReportingModule::class
+      DispatcherTestModule::class,
+      LogReportingDebugModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -73,17 +75,17 @@ class AuthenticationModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: AuthenticationModuleTest)
+    fun inject(test: AuthenticationProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAuthenticationModuleTest_TestApplicationComponent.builder()
+      DaggerAuthenticationProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: AuthenticationModuleTest) {
+    fun inject(test: AuthenticationProdModuleTest) {
       component.inject(test)
     }
 

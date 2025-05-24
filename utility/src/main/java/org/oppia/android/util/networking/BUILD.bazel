@@ -84,11 +84,10 @@ kt_android_library(
 # we can then directly exclude debug files from the build and thus won't be requiring this module.
 kt_android_library(
     name = "debug_util_module",
-    srcs = [
-        "NetworkConnectionDebugUtilModule.kt",
-    ],
+    srcs = ["NetworkConnectionDebugUtilModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
+        ":debug_impl",
         ":network_connection_debug_util",
         "//:dagger",
     ],

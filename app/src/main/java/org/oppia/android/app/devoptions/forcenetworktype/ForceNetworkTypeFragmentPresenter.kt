@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.common.base.Optional
 import org.oppia.android.app.databinding.databinding.ForceNetworkTypeFragmentBinding
 import org.oppia.android.app.databinding.databinding.ForceNetworkTypeNetworkItemViewBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class ForceNetworkTypeFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val networkConnectionUtil: Optional<NetworkConnectionDebugUtil>,
+  private val networkConnectionUtil: NetworkConnectionDebugUtil,
   private val forceNetworkTypeViewModel: ForceNetworkTypeViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
@@ -73,13 +72,11 @@ class ForceNetworkTypeFragmentPresenter @Inject constructor(
     model: NetworkTypeItemViewModel
   ) {
     binding.viewModel = model
-    if (networkConnectionUtil.isPresent) {
-      binding.isNetworkSelected =
-        networkConnectionUtil.get().getForcedConnectionStatus() == model.networkType
-      binding.networkTypeLayout.setOnClickListener {
-        networkConnectionUtil.get().setCurrentConnectionStatus(model.networkType)
-        bindingAdapter.notifyDataSetChanged()
-      }
+    binding.isNetworkSelected =
+      networkConnectionUtil.getForcedConnectionStatus() == model.networkType
+    binding.networkTypeLayout.setOnClickListener {
+      networkConnectionUtil.setCurrentConnectionStatus(model.networkType)
+      bindingAdapter.notifyDataSetChanged()
     }
   }
 }

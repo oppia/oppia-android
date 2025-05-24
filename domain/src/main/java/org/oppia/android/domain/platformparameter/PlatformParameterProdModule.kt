@@ -79,7 +79,7 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
 /** Dagger module that provides bindings for platform parameters. */
 @Module
-class PlatformParameterModule {
+class PlatformParameterProdModule {
   @Provides
   @EnableDownloadsSupport
   fun provideEnableDownloadsSupport(

@@ -51,13 +51,9 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "glide_image_loader_module",
-    srcs = [
-        "GlideImageLoaderModule.kt",
-    ],
-    visibility = [
-        "//:oppia_prod_module_visibility",
-    ],
+    name = "image_loader_prod_module",
+    srcs = ["ImageLoaderProdModule.kt"],
+    visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":glide_image_loader",
         ":image_loader",

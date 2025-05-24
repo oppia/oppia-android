@@ -56,7 +56,7 @@ In order to release these types of features in a smooth manner, we need to be ab
         ```
 
 2. Provide your Platform Parameter
-    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - For providing your Platform Parameter in the App, we need to first make a @Provides annotated method in the `PlatformParameterProdModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterProdModule.kt)`
     - The return type for this @Provides annotated method will be equal to either `PlatformPrameterValue\<String\>`, `PlatformPrameterValue\<Integer\>` Or `PlatformPrameterValue\<Boolean\>` depending on the data type of the Platform Parameter you intend to create. Any other type will cause the platform parameter sync to fail. For eg- here we provide `SyncUpTimePeriodInHours` platform parameter, which is actually of integer type.
 
     <br>
@@ -64,7 +64,7 @@ In order to release these types of features in a smooth manner, we need to be ab
     ```kotlin
     /* Dagger module that provides values for individual Platform Parameters. */
     @Module
-    class PlatformParameterModule {
+    class PlatformParameterProdModule {
     ...
     @Provides
     @SyncUpWorkerTimePeriodInHours
@@ -123,7 +123,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
         ```
 
 2. Provide your Feature Flag
-    - Feature Flags are still a special type of Platform Parameter and are provided in a similar manner. For providing your Feature Flag in the App, we need to first make a @Provides annotated method in the `PlatformParameterModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterModule.kt)`
+    - Feature Flags are still a special type of Platform Parameter and are provided in a similar manner. For providing your Feature Flag in the App, we need to first make a @Provides annotated method in the `PlatformParameterProdModule(domain\src\main\java\org\oppia\android\domain\platformparameter\PlatformParameterProdModule.kt)`
     - Since feature flags can only be booleans, The return type for this @Provides annotated method will be equal to `PlatformPrameterValue<Boolean>`. Any other type will cause the platform parameter sync to fail. For eg- here we provide `EnableAppAndOsDeprecation` feature flag.
 
     <br>
@@ -131,7 +131,7 @@ Note: If the Platform Parameter that you are creating will only be a Compile Tim
     ```kotlin
     /* Dagger module that provides values for individual Platform Parameters. */
     @Module
-    class PlatformParameterModule {
+    class PlatformParameterProdModule {
       ...
       @Provides
       @EnableAppAndOsDeprecation
@@ -216,6 +216,28 @@ Besides the feature-flag logger, the `FeatureFlagLoggerTest` located at `domain/
 - The first test that should be updated is the `testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged` test. For this, only the constant `expectedFeatureFlagCount` will need to be updated. If a new feature flag was added, increment the count and if one was removed, decrement the count.
 
 - The second test that will need to be updated is the `testLogFeatureFlags_allFeatureFlagNamesAreLogged`. This is a parameterized test that iterates through each currently existing feature flag to ensure each one of them is logged as expected. To update this test and ensure it passes after a feature flag change, modify the `RunParameterized()` section and either add the expected values for the new flag or remove the expected values for a removed feature flag.
+
+### 4. Update the FeatureFlagNameToIntegerNameConverter
+After updating the `FeatureFlagsLogger`, the `EventBundleCreator` will no longer be able to parse all feature flag events. This is because it depends on the `FeatureFlagNameToIntegerNameConverter` to convert feature flag names into integer. The conversion is necessary to meet [Google Analytics (GA) 4 character limit requirements](https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.html#logEvent(java.lang.String,android.os.Bundle)). GA 4 sets a 100 character limit to an event parameter value. By converting feature flag names to integer representations, we increase the number of feature flags that can be logged in one event before we hit the limit.
+
+For this reason, You need to modify the `FeatureFlagNameToIntegerNameConverter` so that the `EventBundleCreator` knows how to parse any newly-added feature flag name. Open the `utility/src/main/java/org/oppia/android/util/logging/FeatureFlagNameToIntegerNameConverter.kt` file and add your feature flag name to the `fun convertToInteger(flagName: String): Int` method. Increment the last digit on the list before assigning it to your feature flag name i.e.;
+
+```kotlin
+fun convertToInteger(flagName: String): Int {
+  return when (flagName) {
+  DOWNLOADS_SUPPORT -> 1
+  ...
+  ENABLE_MULTIPLE_CLASSROOMS -> n // Current maximum integer
+  YOUR_NEW_FEATURE_FLAG_NAME -> n + 1  // Your new flag name and integer representation
+  else -> 0
+  }
+}
+```
+
+**DO NOT** reuse any of the digits that have already been used.
+
+### 5. Update the FeatureFlagNameToIntegerNameConverter test
+Ensure you also add a test for the latest addition to the `FeatureFlagNameToIntegerNameConverter` in the `FeatureFlagNameToIntegerNameConverterTest` file. Simply open the `utility/src/test/java/org/oppia/android/util/logging/FeatureFlagNameToIntegerNameConverterTest.kt` and add a new `@Iteration` to the `testConvertToIntegerName_returnsCorrectIntegerForEach` test. It is a parameterized test that runs by running through the list of testable iterations annotated to it.
 
 ## How to write tests related to Platform Parameters
 Before writing a test we must understand the purpose of the platform parameter in our class/classes (that needs to be tested). After verifying this we can divide testing procedures into following groups - 

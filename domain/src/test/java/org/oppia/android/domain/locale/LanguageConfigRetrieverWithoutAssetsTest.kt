@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.caching.testing.AssetTestNoOpModule
 import org.oppia.android.util.logging.LoggerModule
 import org.robolectric.annotation.Config
@@ -78,8 +78,11 @@ class LanguageConfigRetrieverWithoutAssetsTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetTestNoOpModule::class
+      AssetTestNoOpModule::class,
+      DispatcherTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

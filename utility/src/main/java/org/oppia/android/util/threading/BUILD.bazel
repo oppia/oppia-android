@@ -45,9 +45,7 @@ kt_android_library(
 
 kt_android_library(
     name = "prod_module",
-    srcs = [
-        "DispatcherModule.kt",
-    ],
+    srcs = ["DispatcherProdModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":annotations",

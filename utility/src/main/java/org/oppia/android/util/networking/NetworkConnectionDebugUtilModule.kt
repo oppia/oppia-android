@@ -1,6 +1,6 @@
 package org.oppia.android.util.networking
 
-import dagger.BindsOptionalOf
+import dagger.Binds
 import dagger.Module
 
 // TODO(#59): Remove this module once we completely migrate to Bazel from Gradle as we can then
@@ -9,7 +9,8 @@ import dagger.Module
 @Module
 interface NetworkConnectionDebugUtilModule {
 
-  /** Provides optional binding for [NetworkConnectionDebugUtil]. */
-  @BindsOptionalOf
-  fun bindsNetworkConnectionDebugUtil(): NetworkConnectionDebugUtil
+  @Binds
+  fun bindsNetworkConnectionDebugUtil(
+    impl: NetworkConnectionUtilDebugImpl
+  ): NetworkConnectionDebugUtil
 }

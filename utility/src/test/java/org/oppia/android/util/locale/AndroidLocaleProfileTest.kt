@@ -25,7 +25,6 @@ import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageAndWildcardReg
 import org.oppia.android.util.locale.AndroidLocaleProfile.LanguageOnlyProfile
 import org.oppia.android.util.locale.AndroidLocaleProfile.RegionOnlyProfile
 import org.oppia.android.util.locale.AndroidLocaleProfile.RootProfile
-import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -931,7 +930,13 @@ class AndroidLocaleProfileTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class])
+  @Component(
+    modules = [
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

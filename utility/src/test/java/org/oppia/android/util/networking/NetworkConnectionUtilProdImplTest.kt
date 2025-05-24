@@ -177,7 +177,14 @@ class NetworkConnectionUtilProdImplTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(
+    modules = [
+      FakeOppiaClockModule::class,
+      NetworkConnectionUtilProdModule::class,
+      RobolectricModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

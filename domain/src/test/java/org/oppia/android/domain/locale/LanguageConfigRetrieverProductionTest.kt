@@ -20,7 +20,7 @@ import org.oppia.android.app.model.RegionSupportDefinition
 import org.oppia.android.app.model.SupportedLanguages
 import org.oppia.android.app.model.SupportedRegions
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
@@ -264,8 +264,13 @@ class LanguageConfigRetrieverProductionTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
