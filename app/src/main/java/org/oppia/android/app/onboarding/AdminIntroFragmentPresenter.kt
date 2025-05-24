@@ -40,20 +40,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
-import org.oppia.android.app.model.CreateProfileActivityParams
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+
+/** Argument key for [ProfileChooserActivity] intent parameters. */
+const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 
 /** The presenter for [AdminIntroFragment]. */
 class AdminIntroFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val profileManagementController: ProfileManagementController
 ) {
 
   private lateinit var binding: AdminIntroFragmentBinding
@@ -66,7 +72,11 @@ class AdminIntroFragmentPresenter @Inject constructor(
     profileType: ProfileType
   ): View? {
     binding = AdminIntroFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
+
     createComposeView(profileId, profileType)
+
+    profileManagementController.markProfileOnboardingStarted(profileId)
+
     return binding.root
   }
 
@@ -82,7 +92,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  fun AdminIntroScreen(profileId: ProfileId, profileType: ProfileType) {
+  private fun AdminIntroScreen(profileId: ProfileId, profileType: ProfileType) {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
     val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
 
@@ -210,7 +220,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
           Button(
             onClick = {
-              navigateToCreateProfileActivity(profileId, profileType)
+              navigateToProfileChooserActivity(profileId, profileType)
             },
             colors = ButtonDefaults.buttonColors(backgroundColor = tealColor),
             modifier = Modifier
@@ -229,17 +239,22 @@ class AdminIntroFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun navigateToCreateProfileActivity(profileId: ProfileId, profileType: ProfileType) {
-    val intent = CreateProfileActivity.createProfileActivityIntent(activity)
+  // TODO(#4938): Refactor to create profile nickname screen, the next onboarding step.
+  private fun navigateToProfileChooserActivity(profileId: ProfileId, profileType: ProfileType) {
+    val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
     intent.apply {
       decorateWithUserProfileId(profileId)
       putProtoExtra(
-        CREATE_PROFILE_PARAMS_KEY,
-        CreateProfileActivityParams.newBuilder()
+        PROFILE_CHOOSER_PARAMS_KEY,
+        ProfileChooserActivityParams.newBuilder()
           .setProfileType(profileType)
           .build()
       )
     }
     fragment.startActivity(intent)
+    // Finish this activity as well as all activities immediately below it in the current
+    // task so that the user cannot navigate back to the onboarding flow by pressing the
+    // back button once onboarding is complete.
+    fragment.activity?.finishAffinity()
   }
 }

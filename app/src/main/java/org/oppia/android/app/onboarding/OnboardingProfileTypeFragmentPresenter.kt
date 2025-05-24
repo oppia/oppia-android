@@ -59,9 +59,6 @@ class OnboardingProfileTypeFragmentPresenter @Inject constructor(
       }
 
       profileTypeSupervisorNavigationCard.setOnClickListener {
-        // TODO(#4938): Remove once admin profile onboarding is implemented.
-        profileManagementController.markProfileOnboardingStarted(profileId)
-
         val intent = AdminIntroActivity.createAdminIntroActivityIntent(activity)
         intent.apply {
           decorateWithUserProfileId(profileId)
