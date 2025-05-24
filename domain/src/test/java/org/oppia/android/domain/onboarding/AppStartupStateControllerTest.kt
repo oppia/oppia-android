@@ -40,7 +40,6 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
@@ -51,6 +50,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -1084,8 +1084,8 @@ class AppStartupStateControllerTest {
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
       PerformanceMetricsAssessorTestModule::class,
-      PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,
       TestModule::class

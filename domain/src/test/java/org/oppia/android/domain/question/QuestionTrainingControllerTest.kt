@@ -32,7 +32,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_0
 import org.oppia.android.domain.topic.TEST_QUESTION_ID_1
@@ -44,6 +43,7 @@ import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -292,8 +292,8 @@ class QuestionTrainingControllerTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PerformanceMetricsAssessorTestModule::class,
-      PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RatioInputModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,

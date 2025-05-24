@@ -38,7 +38,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
@@ -53,6 +52,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -2120,8 +2120,8 @@ class LearnerAnalyticsLoggerTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PerformanceMetricsAssessorTestModule::class,
-      PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RatioInputModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,

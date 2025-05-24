@@ -70,6 +70,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
@@ -91,7 +92,6 @@ import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetr
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -217,7 +217,7 @@ class TopicTestActivityForStoryTest {
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
       ImageClickInputModule::class,
-      ImageLoaderProdModule::class,
+      ImageLoaderTestModule::class,
       ImageParsingModule::class,
       InteractionsModule::class,
       ItemSelectionInputModule::class,

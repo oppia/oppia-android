@@ -77,16 +77,17 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.story.StoryProgressTestHelper
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -105,7 +106,6 @@ import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetr
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
@@ -480,7 +480,7 @@ class OngoingTopicListActivityTest {
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
       ImageClickInputModule::class,
-      ImageLoaderProdModule::class,
+      ImageLoaderTestModule::class,
       ImageParsingModule::class,
       InteractionsModule::class,
       ItemSelectionInputModule::class,
@@ -500,8 +500,8 @@ class OngoingTopicListActivityTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PerformanceMetricsAssessorTestModule::class,
-      PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,

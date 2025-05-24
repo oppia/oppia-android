@@ -88,6 +88,7 @@ import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
@@ -113,7 +114,6 @@ import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetr
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
@@ -634,7 +634,7 @@ class SurveyFragmentTest {
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
       ImageClickInputModule::class,
-      ImageLoaderProdModule::class,
+      ImageLoaderTestModule::class,
       ImageParsingModule::class,
       InteractionsModule::class,
       ItemSelectionInputModule::class,
