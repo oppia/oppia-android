@@ -27,12 +27,12 @@ import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImpl
 import org.oppia.android.testing.mockito.capture
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.threading.BackgroundDispatcher
-import org.oppia.android.util.threading.DispatcherProdModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -122,7 +122,7 @@ class AuthenticationControllerTest {
     modules = [
       ApplicationLifecycleModule::class,
       AuthenticationTestModule::class,
-      DispatcherProdModule::class,
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LogReportingTestModule::class,
       PerformanceMetricsAssessorTestModule::class,

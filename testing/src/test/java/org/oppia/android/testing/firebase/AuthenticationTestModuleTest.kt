@@ -13,10 +13,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseAuthWrapper
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
-import org.oppia.android.util.logging.firebase.LogReportingDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -63,8 +63,9 @@ class AuthenticationTestModuleTest {
   @Singleton
   @Component(
     modules = [
+      AuthenticationTestModule::class,
       DispatcherTestModule::class,
-      LogReportingDebugModule::class,
+      LogReportingTestModule::class,
       RobolectricModule::class,
       TestModule::class
     ]

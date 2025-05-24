@@ -38,6 +38,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -51,8 +52,8 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LogUploader
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -255,11 +256,12 @@ class MetricLogSchedulingWorkerTest {
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
       LogReportWorkerModule::class,
+      LogReportingTestModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PerformanceMetricsAssessorProdModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       PerformanceMetricsConfigurationsModule::class,
       PlatformParameterSingletonModule::class,
       PlatformParameterTestModule::class,

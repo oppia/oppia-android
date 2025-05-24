@@ -43,7 +43,7 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SyncStatusManagerImplTest.TestApplication::class)
 class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
-  @Inject override lateinit var impl: SyncStatusManager
+  @Inject override lateinit var impl: SyncStatusManagerImpl
   @Inject override lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject override lateinit var persistentCacheStoreFactory: PersistentCacheStore.Factory
   @Inject override lateinit var networkConnectionTestUtil: NetworkConnectionTestUtil
@@ -126,7 +126,6 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
       NetworkConnectionUtilDebugModule::class,
       PerformanceMetricsAssessorTestModule::class,
       RobolectricModule::class,
-      SyncStatusProdModule::class,
       TestModule::class,
       TestPlatformParameterModule::class
     ]

@@ -68,6 +68,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -83,9 +84,8 @@ import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
-import org.oppia.android.util.logging.firebase.LogReportingDebugModule
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -193,7 +193,7 @@ class ViewEventLogsActivityTest {
       ItemSelectionInputModule::class,
       LocaleTestModule::class,
       LogReportWorkerModule::class,
-      LogReportingDebugModule::class,
+      LogReportingTestModule::class,
       LogStorageModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
@@ -206,7 +206,7 @@ class ViewEventLogsActivityTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PerformanceMetricsAssessorProdModule::class,
+      PerformanceMetricsAssessorTestModule::class,
       PerformanceMetricsConfigurationsModule::class,
       PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
