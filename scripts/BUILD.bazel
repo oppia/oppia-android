@@ -319,3 +319,10 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.xml.TextViewStyleCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:check_textview_styles"],
 )
+
+kt_jvm_binary(
+    name = "dagger_module_consistency_and_correctness_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.build.DaggerModuleConsistencyAndCorrectnessCheckKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/build:dagger_module_consistency_and_correctness_check_lib"],
+)
