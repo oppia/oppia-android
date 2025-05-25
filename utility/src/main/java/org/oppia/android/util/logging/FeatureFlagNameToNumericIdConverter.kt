@@ -7,7 +7,8 @@ import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
@@ -37,7 +38,6 @@ object FeatureFlagNameToNumericIdConverter {
       ENABLE_PERFORMANCE_METRICS_COLLECTION -> 3
       EDIT_ACCOUNTS_OPTIONS_UI -> 4
       SPOTLIGHT_UI -> 5
-      EXTRA_TOPIC_TABS_UI -> 6
       DOWNLOADS_SUPPORT -> 7
       INTERACTION_CONFIG_CHANGE_STATE_RETENTION -> 8
       APP_AND_OS_DEPRECATION -> 10
@@ -46,6 +46,8 @@ object FeatureFlagNameToNumericIdConverter {
       ENABLE_NPS_SURVEY -> 13
       ENABLE_ONBOARDING_FLOW_V2 -> 14
       ENABLE_MULTIPLE_CLASSROOMS -> 15
+      ENABLE_TOPIC_INFO_TAB -> 16
+      ENABLE_TOPIC_PRACTICE_TAB -> 17
       else -> 0
     }
   }

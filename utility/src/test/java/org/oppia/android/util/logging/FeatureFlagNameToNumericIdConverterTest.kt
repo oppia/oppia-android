@@ -20,7 +20,8 @@ import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
 import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
 import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
 import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_INFO_TAB
+import org.oppia.android.util.platformparameter.ENABLE_TOPIC_PRACTICE_TAB
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
@@ -110,6 +111,16 @@ class FeatureFlagNameToNumericIdConverterTest {
   @Iteration(
     "enable_multiple_classrooms",
     "flagName=$ENABLE_MULTIPLE_CLASSROOMS",
+    "expectedValue=15"
+  )
+  @Iteration(
+    "enable_topic_info_tab",
+    "flagName=$ENABLE_TOPIC_INFO_TAB",
+    "expectedValue=15"
+  )
+  @Iteration(
+    "enable_topic_practice_tab",
+    "flagName=$ENABLE_TOPIC_PRACTICE_TAB",
     "expectedValue=15"
   )
   fun testConvertToIntegerName_returnsCorrectIntegerForEach() {
