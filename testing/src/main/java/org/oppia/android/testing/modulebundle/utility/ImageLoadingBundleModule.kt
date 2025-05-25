@@ -1,7 +1,7 @@
 package org.oppia.android.testing.modulebundle.utility
 
 import dagger.Module
-import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
@@ -16,7 +16,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 @Module(
   includes = [
     GcsResourceModule::class, HtmlParserEntityTypeModule::class, ImageParsingModule::class,
-    TestImageLoaderModule::class
+    ImageLoaderTestModule::class
   ]
 )
 interface ImageLoadingBundleModule

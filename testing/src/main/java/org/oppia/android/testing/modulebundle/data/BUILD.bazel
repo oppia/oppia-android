@@ -14,7 +14,8 @@ kt_android_library(
     ],
     deps = [
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
         "//testing/src/main/java/org/oppia/android/testing/modulebundle/utility:utility_test_configuration_bundle_module",
-        "//testing/src/main/java/org/oppia/android/testing/network:test_module",
     ],
 )

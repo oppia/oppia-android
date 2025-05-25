@@ -15,16 +15,6 @@ kt_android_library(
     ],
 )
 
-kt_android_library(
-    name = "clock_bundle_module",
-    testonly = True,
-    srcs = ["ClockBundleModule.kt"],
-    visibility = ["//utility:utility_testing_visibility"],
-    deps = [
-        "//testing/src/main/java/org/oppia/android/testing/time:test_module",
-    ],
-)
-
 # Note that RepositoryGlideModule is essentially a runtime dependency.
 kt_android_library(
     name = "image_loading_bundle_module",
@@ -53,6 +43,7 @@ kt_android_library(
         "//testing/src/main/java/org/oppia/android/testing/logging:sync_status_test_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
 

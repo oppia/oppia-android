@@ -4,7 +4,7 @@ import dagger.Module
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.modulebundle.data.DataTestConfigurationBundleModule
 
 /**
@@ -18,7 +18,7 @@ import org.oppia.android.testing.modulebundle.data.DataTestConfigurationBundleMo
   includes = [
     DataTestConfigurationBundleModule::class, ExpirationMetaDataRetrieverTestModule::class,
     ExplorationProgressModule::class, ExplorationStorageTestModule::class,
-    TestAuthenticationModule::class
+    AuthenticationTestModule::class
   ]
 )
 interface DomainTestConfigurationBundleModule
