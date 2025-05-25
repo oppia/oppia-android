@@ -15,11 +15,11 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProvidersInjector
@@ -29,7 +29,9 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -339,9 +341,16 @@ class ExceptionsControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      TestLogStorageModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

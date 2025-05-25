@@ -5,7 +5,7 @@ import dagger.Provides
 
 /** Provides dependencies corresponding to the app's caching policies. */
 @Module
-class CachingModule {
+class CachingProdModule {
   @Provides
   @LoadLessonProtosFromAssets
   fun provideLoadLessonProtosFromAssets(): Boolean = false

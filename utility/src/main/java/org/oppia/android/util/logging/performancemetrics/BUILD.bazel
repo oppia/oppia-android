@@ -28,9 +28,7 @@ kt_android_library(
 
 kt_android_library(
     name = "performance_metrics_assessor_module",
-    srcs = [
-        "PerformanceMetricsAssessorModule.kt",
-    ],
+    srcs = ["PerformanceMetricsAssessorProdModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":performance_metrics_assessor_impl",

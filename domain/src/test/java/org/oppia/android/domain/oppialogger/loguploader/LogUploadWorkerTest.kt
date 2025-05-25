@@ -44,17 +44,16 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
-import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
 import org.oppia.android.testing.mockito.anyOrNull
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProviders
@@ -72,10 +71,11 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVI
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -527,7 +527,7 @@ class LogUploadWorkerTest {
     map { elem -> listOf(elem.fileName, elem.methodName, elem.lineNumber, elem.className) }
 
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -596,11 +596,6 @@ class LogUploadWorkerTest {
     ): FirestoreEventLogger = delegate
 
     @Provides
-    fun bindFakePerformanceMetricsAssessor(
-      fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
-    ): PerformanceMetricsAssessor = fakePerformanceMetricAssessor
-
-    @Provides
     fun bindFirebaseFirestoreInstanceWrapper(
       wrapperImpl: FakeFirestoreInstanceWrapperImpl
     ): FirestoreInstanceWrapper = wrapperImpl
@@ -637,15 +632,26 @@ class LogUploadWorkerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class,
-      TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class, LoggerModule::class,
-      AssetModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      AuthenticationTestModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportWorkerModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
       SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
-      TestAuthenticationModule::class,
+      TestFirebaseLogUploaderModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -35,13 +35,13 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [LogReportingModule]. */
+/** Tests for [LogReportingProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = LogReportingModuleTest.TestApplication::class)
-class LogReportingModuleTest {
+@Config(application = LogReportingProdModuleTest.TestApplication::class)
+class LogReportingProdModuleTest {
 
   @Inject
   lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
@@ -107,10 +107,16 @@ class LogReportingModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogReportingModule::class, TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
-      TestPlatformParameterModule::class, LoggerModule::class, SyncStatusTestModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingProdModule::class,
+      LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -121,17 +127,17 @@ class LogReportingModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(logReportingModuleTest: LogReportingModuleTest)
+    fun inject(logReportingModuleTest: LogReportingProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerLogReportingModuleTest_TestApplicationComponent.builder()
+      DaggerLogReportingProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: LogReportingModuleTest) {
+    fun inject(test: LogReportingProdModuleTest) {
       component.inject(test)
     }
 

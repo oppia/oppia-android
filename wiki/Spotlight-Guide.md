@@ -149,10 +149,10 @@ In order to bypass a spotlight without any UI interaction, the ``SpotlightStateC
 If the spotlights need to be disabled, the platform parameter value should be set:
 
 ### In tests
-If the spotlights need to be disabled in the tests, use the ``TestPlatformParameterModule`` to turn off the [enableSpotlightUi](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterConstants.kt#L218) platform parameter.
+If the spotlights need to be disabled in the tests, use the ``PlatformParameterTestModule`` to turn off the [enableSpotlightUi](https://github.com/oppia/oppia-android/blob/d2c37dc547f3e5d12dfe62fa97b9b16fbf0fed6e/utility/src/main/java/org/oppia/android/util/platformparameter/PlatformParameterConstants.kt#L218) platform parameter.
 
 ```kotlin
-TestPlatformParameterModule.forceEnableSpotlightUi(false)
+PlatformParameterTestModule.forceEnableSpotlightUi(false)
 ```
 ###  In production
 In order to do it in production, turn the value of ``ENABLE_SPOTLIGHT_UI_DEFAULT_VALUE`` to ``false``.

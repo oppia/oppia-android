@@ -13,22 +13,22 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseAuthWrapper
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [TestAuthenticationModule]. */
+/** Tests for [AuthenticationTestModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
-class TestAuthenticationModuleTest {
+class AuthenticationTestModuleTest {
 
   @Inject
   lateinit var firebaseAuthWrapper: FirebaseAuthWrapper
@@ -44,7 +44,7 @@ class TestAuthenticationModuleTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerTestAuthenticationModuleTest_TestApplicationComponent.builder()
+    DaggerAuthenticationTestModuleTest_TestApplicationComponent.builder()
       .setApplication(ApplicationProvider.getApplicationContext())
       .build()
       .inject(this)
@@ -63,8 +63,11 @@ class TestAuthenticationModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      TestLogReportingModule::class, TestAuthenticationModule::class
+      AuthenticationTestModule::class,
+      DispatcherTestModule::class,
+      LogReportingTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -76,6 +79,6 @@ class TestAuthenticationModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: TestAuthenticationModuleTest)
+    fun inject(test: AuthenticationTestModuleTest)
   }
 }

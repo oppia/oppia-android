@@ -1,4 +1,4 @@
-package org.oppia.android.domain.platformparameter
+package org.oppia.android.testing.platformparameter
 
 import android.app.Application
 import android.content.Context
@@ -14,19 +14,7 @@ import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_DEFAULT_VALUE
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_DEFAULT_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_DEFAULT_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TestBooleanParam
-import org.oppia.android.testing.platformparameter.TestIntegerParam
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.platformparameter.TestStringParam
+import org.oppia.android.domain.platformparameter.PlatformParameterSingletonImpl
 import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
@@ -42,13 +30,13 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * [PlatformParameterModuleTest] verifies the working of [PlatformParameterModule] by testing
+ * [PlatformParameterTestModuleTest] verifies the working of [PlatformParameterTestModule] by testing
  * the [PlatformParameterValue] received in different cases
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PlatformParameterModuleTest.TestApplication::class)
-class PlatformParameterModuleTest {
+@Config(application = PlatformParameterTestModuleTest.TestApplication::class)
+class PlatformParameterTestModuleTest {
 
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
@@ -232,7 +220,8 @@ class PlatformParameterModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestPlatformParameterModule::class
+      PlatformParameterTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
@@ -243,17 +232,17 @@ class PlatformParameterModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(platformParameterModuleTest: PlatformParameterModuleTest)
+    fun inject(platformParameterModuleTest: PlatformParameterTestModuleTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlatformParameterModuleTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterTestModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(platformParameterModuleTest: PlatformParameterModuleTest) {
+    fun inject(platformParameterModuleTest: PlatformParameterTestModuleTest) {
       component.inject(platformParameterModuleTest)
     }
   }

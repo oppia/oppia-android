@@ -12,7 +12,7 @@ import javax.inject.Singleton
  * qualifiers.
  */
 @Module
-class DispatcherModule {
+class DispatcherProdModule {
   @Provides
   @BackgroundDispatcher
   @Singleton

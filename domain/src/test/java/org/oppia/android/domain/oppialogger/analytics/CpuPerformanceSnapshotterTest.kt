@@ -21,13 +21,13 @@ import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSiz
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -41,6 +41,7 @@ import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.UNINITIALIZED
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -83,7 +84,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    PlatformParameterTestModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
   }
 
@@ -482,12 +483,22 @@ class CpuPerformanceSnapshotterTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      CpuPerformanceSnapshotterModule::class, ApplicationLifecycleModule::class, AssetModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

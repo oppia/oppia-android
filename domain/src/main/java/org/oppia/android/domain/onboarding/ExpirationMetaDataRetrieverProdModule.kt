@@ -5,7 +5,7 @@ import dagger.Module
 
 /** Module for providing a real [ExpirationMetaDataRetriever] implementation. */
 @Module
-interface ExpirationMetaDataRetrieverModule {
+interface ExpirationMetaDataRetrieverProdModule {
   @Binds
   fun bindExpirationMetadataRetriever(
     impl: ExpirationMetaDataRetrieverImpl

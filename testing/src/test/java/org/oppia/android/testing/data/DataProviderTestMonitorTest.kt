@@ -18,12 +18,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.exceptions.verification.NeverWantedButInvoked
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
@@ -33,6 +33,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -1135,9 +1136,16 @@ class DataProviderTestMonitorTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
-      LocaleTestModule::class, FakeOppiaClockModule::class, RobolectricModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

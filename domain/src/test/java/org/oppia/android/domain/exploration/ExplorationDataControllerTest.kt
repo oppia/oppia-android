@@ -50,15 +50,15 @@ import org.oppia.android.domain.topic.TEST_STORY_ID_2
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -69,6 +69,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -463,20 +464,40 @@ class ExplorationDataControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleTestModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusTestModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class, TestDispatcherModule::class, RobolectricModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      AuthenticationTestModule::class,
+      ContinueModule::class,
+      DispatcherTestModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

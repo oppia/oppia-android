@@ -6,7 +6,7 @@ import org.oppia.android.domain.exploration.lightweightcheckpointing.Exploration
 
 /** Module to provide dependencies corresponding to exploration storage utilities. */
 @Module
-class ExplorationStorageModule {
+class ExplorationStorageProdModule {
   @Provides
   @ExplorationStorageDatabaseSize
   fun provideExplorationStorageDatabaseSize(): Int = 2097152

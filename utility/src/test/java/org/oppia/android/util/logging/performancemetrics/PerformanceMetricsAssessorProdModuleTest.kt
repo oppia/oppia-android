@@ -16,7 +16,7 @@ import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -29,13 +29,13 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [PerformanceMetricsAssessorModule]. */
+/** Tests for [PerformanceMetricsAssessorProdModule]. */
 // FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PerformanceMetricsAssessorModuleTest.TestApplication::class)
-class PerformanceMetricsAssessorModuleTest {
+@Config(application = PerformanceMetricsAssessorProdModuleTest.TestApplication::class)
+class PerformanceMetricsAssessorProdModuleTest {
 
   @Inject
   lateinit var performanceMetricsAssessor: PerformanceMetricsAssessor
@@ -81,10 +81,15 @@ class PerformanceMetricsAssessorModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
-      TestDispatcherModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class, FakeOppiaClockModule::class,
-      LocaleTestModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      PerformanceMetricsAssessorProdModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      RobolectricModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -95,17 +100,17 @@ class PerformanceMetricsAssessorModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(test: PerformanceMetricsAssessorModuleTest)
+    fun inject(test: PerformanceMetricsAssessorProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPerformanceMetricsAssessorModuleTest_TestApplicationComponent.builder()
+      DaggerPerformanceMetricsAssessorProdModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(test: PerformanceMetricsAssessorModuleTest) {
+    fun inject(test: PerformanceMetricsAssessorProdModuleTest) {
       component.inject(test)
     }
 

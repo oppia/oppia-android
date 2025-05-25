@@ -26,19 +26,19 @@ oppia_android_test(
         "//third_party:com_google_truth_truth",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_impl",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/networking:debug_module",
     ],
 )
 
 oppia_android_test(
-    name = "PerformanceMetricsAssessorModuleTest",
-    srcs = ["PerformanceMetricsAssessorModuleTest.kt"],
+    name = "PerformanceMetricsAssessorProdModuleTest",
+    srcs = ["PerformanceMetricsAssessorProdModuleTest.kt"],
     custom_package = "org.oppia.android.util.logging.performancemetrics",
-    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorModuleTest",
+    test_class = "org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessorProdModuleTest",
     test_manifest = "//utility:test_manifest",
     deps = [
         "//:dagger",
@@ -51,11 +51,11 @@ oppia_android_test(
         "//third_party:com_google_truth_truth",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
-        "//utility/src/main/java/org/oppia/android/util/locale:prod_module",
         "//utility/src/main/java/org/oppia/android/util/locale/testing:test_module",
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )
 
@@ -78,5 +78,6 @@ oppia_android_test(
         "//utility/src/main/java/org/oppia/android/util/logging/firebase:prod_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_assessor_module",
         "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics:performance_metrics_configurations_module",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )

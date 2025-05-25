@@ -36,9 +36,7 @@ kt_android_library(
 
 kt_android_library(
     name = "auth_module",
-    srcs = [
-        "AuthenticationModule.kt",
-    ],
+    srcs = ["AuthenticationProdModule.kt"],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
         ":authentication_controller",

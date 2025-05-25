@@ -12,6 +12,7 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.MachineLocaleImpl
 import org.oppia.android.util.locale.OppiaBidiFormatter
@@ -70,7 +71,10 @@ class LocaleTestModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

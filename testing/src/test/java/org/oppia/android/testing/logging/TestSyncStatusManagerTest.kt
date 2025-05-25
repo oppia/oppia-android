@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
@@ -24,8 +24,8 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
@@ -39,6 +39,7 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVI
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.UPLOAD_ERROR
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.WAITING_TO_START_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManagerTestBase
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -901,9 +902,16 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, LoggerModule::class, TestDispatcherModule::class,
-      LocaleTestModule::class, FakeOppiaClockModule::class, RobolectricModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

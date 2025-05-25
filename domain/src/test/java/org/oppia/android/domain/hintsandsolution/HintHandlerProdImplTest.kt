@@ -32,12 +32,12 @@ import org.oppia.android.app.model.HelpIndex
 import org.oppia.android.app.model.State
 import org.oppia.android.domain.exploration.ExplorationRetriever
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
@@ -45,6 +45,7 @@ import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.threading.BlockingDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -2122,10 +2123,18 @@ class HintHandlerProdImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class
+      AssetModule::class,
+      DispatcherTestModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LoggerModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

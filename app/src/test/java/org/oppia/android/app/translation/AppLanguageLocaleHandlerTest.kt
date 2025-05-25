@@ -25,13 +25,13 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -39,6 +39,7 @@ import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -327,13 +328,24 @@ class AppLanguageLocaleHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      RobolectricModule::class, LoggerModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusTestModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, CpuPerformanceSnapshotterModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

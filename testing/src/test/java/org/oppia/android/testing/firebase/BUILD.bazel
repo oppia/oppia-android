@@ -5,10 +5,10 @@ Tests for test-only Firebase utilities.
 load("//:oppia_android_test.bzl", "oppia_android_test")
 
 oppia_android_test(
-    name = "FakeFirebaseAuthWrapperImplTest",
-    srcs = ["FakeFirebaseAuthWrapperImplTest.kt"],
+    name = "AuthenticationTestModuleTest",
+    srcs = ["AuthenticationTestModuleTest.kt"],
     custom_package = "org.oppia.android.testing.firebase",
-    test_class = "org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImplTest",
+    test_class = "org.oppia.android.testing.firebase.AuthenticationTestModuleTest",
     test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
@@ -25,10 +25,10 @@ oppia_android_test(
 )
 
 oppia_android_test(
-    name = "TestAuthenticationModuleTest",
-    srcs = ["TestAuthenticationModuleTest.kt"],
+    name = "FakeFirebaseAuthWrapperImplTest",
+    srcs = ["FakeFirebaseAuthWrapperImplTest.kt"],
     custom_package = "org.oppia.android.testing.firebase",
-    test_class = "org.oppia.android.testing.firebase.TestAuthenticationModuleTest",
+    test_class = "org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImplTest",
     test_manifest = "//testing:test_manifest",
     deps = [
         "//:dagger",
@@ -41,5 +41,6 @@ oppia_android_test(
         "//third_party:junit_junit",
         "//third_party:org_robolectric_robolectric",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     ],
 )

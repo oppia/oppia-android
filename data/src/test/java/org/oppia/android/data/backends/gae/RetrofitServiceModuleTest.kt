@@ -17,9 +17,9 @@ import org.oppia.android.data.backends.gae.api.PlatformParameterService
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.BackgroundTestDispatcher
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatcher
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import retrofit2.Retrofit
@@ -80,8 +80,12 @@ class RetrofitServiceModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, NetworkConfigTestModule::class
+      DispatcherTestModule::class,
+      NetworkConfigTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

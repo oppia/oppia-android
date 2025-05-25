@@ -12,12 +12,13 @@ import dagger.Module
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -89,9 +90,13 @@ class PerformanceMetricsConfigurationsModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class,
-      TestDispatcherModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class
+      DispatcherTestModule::class,
+      LogReportingTestModule::class,
+      LoggerModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

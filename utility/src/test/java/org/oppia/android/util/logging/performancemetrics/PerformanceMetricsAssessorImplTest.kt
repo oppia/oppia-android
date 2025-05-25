@@ -17,18 +17,18 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.testing.FakeExceptionLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.OppiaShadowActivityManager
 import org.oppia.android.testing.robolectric.OppiaShadowTrafficStats
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -38,6 +38,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -467,10 +468,16 @@ class PerformanceMetricsAssessorImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
-      TestPlatformParameterModule::class, SyncStatusTestModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class,
       TestPerformanceMetricsAssessorModule::class
     ]
   )

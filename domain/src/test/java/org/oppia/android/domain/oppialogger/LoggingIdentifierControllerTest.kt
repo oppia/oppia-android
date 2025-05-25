@@ -24,12 +24,12 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.DeviceContextDatabase
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
@@ -41,6 +41,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.PlatformParameterValue
@@ -492,12 +493,20 @@ class LoggingIdentifierControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusTestModule::class
+      ApplicationLifecycleModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestLogStorageModule::class,
+      TestLoggingIdentifierModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

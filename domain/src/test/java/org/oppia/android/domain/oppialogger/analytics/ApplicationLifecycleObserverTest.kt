@@ -73,19 +73,19 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -102,6 +102,7 @@ import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -169,7 +170,7 @@ class ApplicationLifecycleObserverTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    PlatformParameterTestModule.reset()
   }
 
   @Test
@@ -601,12 +602,12 @@ class ApplicationLifecycleObserverTest {
   }
 
   private fun setUpTestApplicationWithLearnerStudy() {
-    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+    PlatformParameterTestModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationWithPerformanceMetricsCollection() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    PlatformParameterTestModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
   }
 
@@ -693,30 +694,64 @@ class ApplicationLifecycleObserverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusTestModule::class, CpuPerformanceSnapshotterModule::class, AssetModule::class,
-      LogReportWorkerModule::class, MetricLogSchedulerModule::class,
-      FirebaseLogUploaderModule::class, TestingBuildFlavorModule::class,
-      WorkManagerConfigurationModule::class, TestAuthenticationModule::class, RetrofitModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      AssetModule::class,
+      AuthenticationTestModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DispatcherTestModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageLoaderTestModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleTestModule::class,
+      LogReportWorkerModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
       RetrofitServiceModule::class,
-      NetworkConfigTestModule::class, ApplicationModule::class, ExplorationStorageTestModule::class,
-      HintsAndSolutionProdModule::class, ExplorationProgressModule::class,
-      InteractionsModule::class, AlgebraicExpressionInputModule::class, ContinueModule::class,
-      DragDropSortInputModule::class, FractionInputModule::class, ImageClickInputModule::class,
-      ItemSelectionInputModule::class, MathEquationInputModule::class,
-      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-      NumericExpressionInputModule::class, NumericInputRuleModule::class, RatioInputModule::class,
-      TextInputRuleModule::class, QuestionModule::class, CachingTestModule::class,
-      ExpirationMetaDataRetrieverTestModule::class, ActivityRecreatorTestModule::class,
-      ActivityRouterModule::class, AccessibilityTestModule::class, GcsResourceModule::class,
-      ImageParsingModule::class, TestImageLoaderModule::class, HtmlParserEntityTypeModule::class,
-      SplitScreenInteractionModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      HintsAndSolutionConfigModule::class
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusTestModule::class,
+      TestLoggingIdentifierModule::class,
+      TestModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector, ApplicationComponent {

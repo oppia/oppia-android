@@ -17,6 +17,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.CELLULAR
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
@@ -177,7 +180,15 @@ class NetworkConnectionUtilProdImplTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(
+    modules = [
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      NetworkConnectionUtilProdModule::class,
+      RobolectricModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

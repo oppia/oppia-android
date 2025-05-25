@@ -14,6 +14,7 @@ oppia_android_test(
         "//third_party:com_google_truth_truth",
         "//third_party:junit_junit",
         "//third_party:robolectric_android-all",
+        "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
         "//utility/src/main/java/org/oppia/android/util/parser/math:math_latex_model",
     ],
 )

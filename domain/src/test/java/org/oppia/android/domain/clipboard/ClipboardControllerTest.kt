@@ -17,16 +17,17 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.clipboard.ClipboardController.CurrentClip
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -264,11 +265,17 @@ class ClipboardControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
-      FakeOppiaClockModule::class, TestPlatformParameterModule::class,
-      PlatformParameterSingletonModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LogReportingTestModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -6,12 +6,11 @@ import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
 import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
-import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 
 /** Provides fake log reporting dependencies. */
 @Module
-interface TestLogReportingModule {
+interface LogReportingTestModule {
 
   @Binds
   fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
@@ -23,11 +22,6 @@ interface TestLogReportingModule {
   fun bindFakePerformanceMetricsEventLogger(
     fakePerformanceMetricsEventLogger: FakePerformanceMetricsEventLogger
   ): PerformanceMetricsEventLogger
-
-  @Binds
-  fun bindFakePerformanceMetricsAssessor(
-    fakePerformanceMetricAssessor: FakePerformanceMetricAssessor
-  ): PerformanceMetricsAssessor
 
   @Binds
   fun bindFakeFirestoreEventLogger(

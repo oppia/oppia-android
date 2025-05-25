@@ -15,7 +15,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.classify.RuleClassifier
 import org.oppia.android.domain.classify.rules.AlgebraicExpressionInputRules
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
@@ -87,9 +87,13 @@ class AlgebraicExpressionInputModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
-      AlgebraicExpressionInputModule::class
+      AlgebraicExpressionInputModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

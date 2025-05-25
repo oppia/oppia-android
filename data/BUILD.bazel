@@ -62,6 +62,7 @@ TEST_DEPS = [
     "//third_party:robolectric_android-all",
     "//utility",
     "//utility/src/main/java/org/oppia/android/util/logging:prod_module",
+    "//utility/src/main/java/org/oppia/android/util/logging/performancemetrics/testing:performance_metrics_assessor_test_module",
     "//utility/src/main/java/org/oppia/android/util/threading:annotations",
 ]
 

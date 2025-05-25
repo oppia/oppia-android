@@ -98,8 +98,8 @@
 /testing/src/main/java/org/oppia/android/testing/FakeFirestoreInstanceWrapperImpl.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricAssessor.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/main/java/org/oppia/android/testing/FakePerformanceMetricsEventLogger.kt @oppia/android-app-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/TestImageLoaderModule.kt @oppia/android-app-infrastructure-reviewers
-/testing/src/main/java/org/oppia/android/testing/TestLogReportingModule.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/ImageLoaderTestModule.kt @oppia/android-app-infrastructure-reviewers
+/testing/src/main/java/org/oppia/android/testing/LogReportingTestModule.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeAnalyticsEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeExceptionLoggerTest.kt @oppia/android-app-infrastructure-reviewers
 /testing/src/test/java/org/oppia/android/testing/FakeFirestoreEventLoggerTest.kt @oppia/android-app-infrastructure-reviewers

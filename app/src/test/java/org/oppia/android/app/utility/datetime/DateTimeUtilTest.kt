@@ -60,15 +60,15 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestImageLoaderModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.ImageLoaderTestModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -80,6 +80,7 @@ import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
@@ -215,31 +216,63 @@ class DateTimeUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
-      ImageParsingModule::class, AccessibilityTestModule::class,
-      GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      RetrofitModule::class, RetrofitServiceModule::class, TestPlatformParameterModule::class,
-      HintsAndSolutionProdModule::class,
-      CachingTestModule::class, InteractionsModule::class, ExplorationStorageTestModule::class,
-      QuestionModule::class, NetworkConfigTestModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
-      HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverTestModule::class,
-      TestImageLoaderModule::class,
-      HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
-      LocaleTestModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusTestModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      AnalyticsStartupListenerTestModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      AuthenticationTestModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DispatcherTestModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageLoaderTestModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusTestModule::class,
+      TestModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

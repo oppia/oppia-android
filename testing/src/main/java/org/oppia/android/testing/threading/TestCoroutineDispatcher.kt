@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
  * multiple dispatchers for execution synchronization.
  *
  * Developers should never use this dispatcher directly. Integrating with it should be done via
- * [TestDispatcherModule] and ensuring thread synchronization should be done via
+ * [DispatcherTestModule] and ensuring thread synchronization should be done via
  * [TestCoroutineDispatchers]. Attempting to interact directly with this dispatcher may cause timing
  * inconsistencies between the UI thread and other application coroutine dispatchers.
  *

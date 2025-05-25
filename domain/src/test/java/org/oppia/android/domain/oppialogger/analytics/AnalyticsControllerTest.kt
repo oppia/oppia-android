@@ -38,16 +38,16 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.AsyncResultSubject.Companion.assertThat
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.logging.TestSyncStatusManager
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
@@ -63,7 +63,9 @@ import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADED
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.DATA_UPLOADING
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.INITIAL_UNKNOWN
 import org.oppia.android.util.logging.SyncStatusManager.SyncStatus.NO_CONNECTIVITY
+import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtil
+import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.LOCAL
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus.NONE
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -1178,7 +1180,7 @@ class AnalyticsControllerTest {
   }
 
   private fun setUpTestApplicationComponent(enableLearnerStudyAnalytics: Boolean = false) {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(enableLearnerStudyAnalytics)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
@@ -1388,11 +1390,21 @@ class AnalyticsControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleTestModule::class, FakeOppiaClockModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, AssetModule::class
+      AssetModule::class,
+      DispatcherTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LogReportingTestModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
