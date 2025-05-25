@@ -42,13 +42,13 @@ import javax.inject.Provider
 import javax.inject.Singleton
 
 /**
- * [PlatformParameterProdModuleTest] verifies the working of [PlatformParameterProdModule] by testing
+ * [PlatformParameterTestModuleTest] verifies the working of [PlatformParameterTestModule] by testing
  * the [PlatformParameterValue] received in different cases
  */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PlatformParameterProdModuleTest.TestApplication::class)
-class PlatformParameterProdModuleTest {
+@Config(application = PlatformParameterTestModuleTest.TestApplication::class)
+class PlatformParameterTestModuleTest {
 
   @Inject
   lateinit var platformParameterSingleton: PlatformParameterSingleton
@@ -244,17 +244,17 @@ class PlatformParameterProdModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(platformParameterModuleTest: PlatformParameterProdModuleTest)
+    fun inject(platformParameterModuleTest: PlatformParameterTestModuleTest)
   }
 
   class TestApplication : Application() {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlatformParameterProdModuleTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterTestModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(platformParameterModuleTest: PlatformParameterProdModuleTest) {
+    fun inject(platformParameterModuleTest: PlatformParameterTestModuleTest) {
       component.inject(platformParameterModuleTest)
     }
   }
