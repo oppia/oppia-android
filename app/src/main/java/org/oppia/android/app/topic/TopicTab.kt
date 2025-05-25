@@ -99,11 +99,9 @@ enum class TopicTab(
      *  Returns the number of active tabs considering [enableTopicInfoTab] and
      *  [enableTopicPracticeTab].
      */
-    fun getTabCount(enableTopicInfoTab: Boolean, enableTopicPracticeTab: Boolean) =
-      if (enableTopicInfoTab && enableTopicPracticeTab)
-        values().size
-      else if (enableTopicInfoTab || enableTopicPracticeTab)
-        values().size - 1
-      else values().size - 2
+    fun getTabCount(enableTopicInfoTab: Boolean, enableTopicPracticeTab: Boolean): Int {
+      val config = TabConfig.getConfig(enableTopicInfoTab, enableTopicPracticeTab)
+      return values().count { it.positions[config] != -1 } // -1 indicates that the tab is disabled
+    }
   }
 }
