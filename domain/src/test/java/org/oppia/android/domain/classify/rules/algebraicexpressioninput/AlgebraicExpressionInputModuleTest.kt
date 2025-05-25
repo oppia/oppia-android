@@ -87,6 +87,7 @@ class AlgebraicExpressionInputModuleTest {
   @Singleton
   @Component(
     modules = [
+      AlgebraicExpressionInputModule::class,
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,

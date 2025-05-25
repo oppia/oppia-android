@@ -16,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -81,6 +82,7 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
 import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
@@ -97,11 +99,18 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
+import org.oppia.android.util.logging.AnalyticsEventLogger
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.LoggerModule
+import org.oppia.android.util.logging.firebase.DebugAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.DebugFirestoreEventLoggerImpl
+import org.oppia.android.util.logging.firebase.FirebaseAnalyticsEventLogger
+import org.oppia.android.util.logging.firebase.FirebaseExceptionLogger
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
-import org.oppia.android.util.logging.firebase.LogReportingDebugModule
+import org.oppia.android.util.logging.firebase.FirestoreInstanceWrapper
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsConfigurationsModule
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
@@ -689,6 +698,36 @@ class ViewEventLogsFragmentTest {
     fun provideFirestoreLogStorageCacheSize(): Int = 2
   }
 
+  @Module
+  class TestLogReportingModule {
+    @Provides
+    @Singleton
+    fun provideExceptionLogger(): ExceptionLogger =
+      FirebaseExceptionLogger(FirebaseCrashlytics.getInstance())
+
+    @Provides
+    @Singleton
+    fun provideDebugEventLogger(debugAnalyticsEventLogger: DebugAnalyticsEventLogger):
+      AnalyticsEventLogger = debugAnalyticsEventLogger
+
+    @Provides
+    @Singleton
+    fun providePerformanceMetricsEventLogger(
+      factory: FirebaseAnalyticsEventLogger.Factory
+    ): PerformanceMetricsEventLogger =
+      factory.createPerformanceMetricEventLogger()
+
+    @Provides
+    @Singleton
+    fun provideDebugFirestoreLogger(debugFirestoreEventLogger: DebugFirestoreEventLoggerImpl):
+      FirestoreEventLogger = debugFirestoreEventLogger
+
+    @Provides
+    @Singleton
+    fun provideFirebaseFirestoreInstanceWrapper(wrapperImpl: FakeFirestoreInstanceWrapperImpl):
+      FirestoreInstanceWrapper = wrapperImpl
+  }
+
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
@@ -726,7 +765,6 @@ class ViewEventLogsFragmentTest {
       ItemSelectionInputModule::class,
       LocaleTestModule::class,
       LogReportWorkerModule::class,
-      LogReportingDebugModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
       MathEquationInputModule::class,
@@ -749,6 +787,7 @@ class ViewEventLogsFragmentTest {
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
       SyncStatusTestModule::class,
+      TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
