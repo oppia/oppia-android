@@ -10,7 +10,6 @@ import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
-import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
@@ -24,8 +23,7 @@ const val ADMIN_INTRO_PARAMS_KEY = "AdminIntroActivityParams.params"
 /** The presenter for [OnboardingProfileTypeFragment]. */
 class OnboardingProfileTypeFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
-  private val activity: AppCompatActivity,
-  private val profileManagementController: ProfileManagementController
+  private val activity: AppCompatActivity
 ) {
   private lateinit var binding: OnboardingProfileTypeFragmentBinding
 

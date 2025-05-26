@@ -11,6 +11,7 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.SplashActivityBinding
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -19,6 +20,7 @@ import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
@@ -29,9 +31,12 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
+import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
+import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.IntroActivity.Companion.PARAMS_KEY
 import org.oppia.android.app.onboarding.OnboardingActivity
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.ui.R
@@ -104,6 +109,7 @@ class SplashActivityPresenter @Inject constructor(
         deprecationNoticeType = noticeActionResponse.deprecationNoticeType,
         deprecatedVersion = noticeActionResponse.deprecatedVersion
       )
+
       is DeprecationNoticeActionResponse.Update -> handleOnDeprecationNoticeUpdateButtonClicked()
     }
   }
@@ -189,11 +195,13 @@ class SplashActivityPresenter @Inject constructor(
                 processInitState(SplashInitState.computeDefault(localeController))
               }
             }
+
             is AsyncResult.Failure -> {
               oppiaLogger.e(
                 "SplashActivity", "Failed to compute initial state", initStateResult.error
               )
             }
+
             is AsyncResult.Success -> {
               // It's possible for the observer to still be active & change due to the next activity
               // causing a notification to be posted. That's always invalid to process here: the
@@ -231,6 +239,7 @@ class SplashActivityPresenter @Inject constructor(
             BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
             BuildFlavor.TESTING, BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY ->
               processStartupMode()
+
             BuildFlavor.ALPHA, BuildFlavor.BETA -> {
               lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(activity) {
                 processStartupMode()
@@ -238,8 +247,10 @@ class SplashActivityPresenter @Inject constructor(
             }
           }
         }
+
         BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
           showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
+
         BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
           showDialog(
             GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
@@ -267,18 +278,21 @@ class SplashActivityPresenter @Inject constructor(
           ForcedAppDeprecationNoticeDialogFragment::newInstance
         )
       }
+
       StartupMode.OPTIONAL_UPDATE_AVAILABLE -> {
         showDialog(
           OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
           OptionalAppDeprecationNoticeDialogFragment::newInstance
         )
       }
+
       StartupMode.OS_IS_DEPRECATED -> {
         showDialog(
           OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
           OsDeprecationNoticeDialogFragment::newInstance
         )
       }
+
       StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
@@ -298,6 +312,7 @@ class SplashActivityPresenter @Inject constructor(
           AutomaticAppDeprecationNoticeDialogFragment::newInstance
         )
       }
+
       StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
       else -> {
         // In all other cases (including errors when the startup state fails to load or is
@@ -327,6 +342,7 @@ class SplashActivityPresenter @Inject constructor(
             "Encountered unexpected non-successful result when fetching onboarding state",
             result.error
           )
+
           is AsyncResult.Pending -> {}
         }
       }
@@ -338,7 +354,10 @@ class SplashActivityPresenter @Inject constructor(
       ProfileOnboardingMode.NEW_INSTALL -> {
         launchOnboardingActivity()
       }
-      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY -> fetchProfile()
+
+      ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY,
+      ProfileOnboardingMode.SUPERVISOR_PROFILE_ONLY -> fetchProfile()
+
       else -> {
         activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
         activity.finish()
@@ -360,9 +379,11 @@ class SplashActivityPresenter @Inject constructor(
               // updates to the profiles DataProvider.
               liveData.removeObserver(this)
             }
+
             is AsyncResult.Failure -> oppiaLogger.e(
               "SplashActivity", "Failed to retrieve the list of profiles", result.error
             )
+
             is AsyncResult.Pending -> {} // no-op
           }
         }
@@ -371,27 +392,40 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun handleProfiles(profiles: List<Profile>) {
-    val soleLearnerProfile = profiles.find { it.profileType == ProfileType.SOLE_LEARNER }
-    if (soleLearnerProfile != null) {
-      proceedBasedOnProfileState(soleLearnerProfile)
+    val profile = profiles.firstOrNull {
+      it.profileType == ProfileType.SOLE_LEARNER || it.profileType == ProfileType.SUPERVISOR
+    }
+
+    if (profile != null) {
+      proceedBasedOnProfileOnboardingState(profile)
     } else {
       launchOnboardingActivity()
     }
   }
 
-  private fun proceedBasedOnProfileState(profile: Profile) {
+  private fun proceedBasedOnProfileOnboardingState(profile: Profile) {
+    val (onboardingStarted, onboardingCompleted, profileType) = Triple(
+      profile.startedProfileOnboarding,
+      profile.completedProfileOnboarding,
+      profile.profileType
+    )
+
     when {
-      profile.startedProfileOnboarding && !profile.completedProfileOnboarding -> {
-        resumeOnboarding(profile.id, profile.name)
+      onboardingStarted && !onboardingCompleted -> when (profileType) {
+        ProfileType.SOLE_LEARNER -> resumeLearnerOnboarding(profile.id, profile.name)
+        ProfileType.SUPERVISOR -> resumeSupervisorOnboarding(profile.id)
+        else -> {}
       }
-      profile.startedProfileOnboarding && profile.completedProfileOnboarding -> {
-        logInToProfile(profile.id)
+
+      onboardingStarted && onboardingCompleted -> when (profileType) {
+        ProfileType.SOLE_LEARNER -> logInToProfile(profile.id)
+        ProfileType.SUPERVISOR -> launchProfileChooserScreen()
+        else -> {}
       }
-      else -> launchOnboardingActivity()
     }
   }
 
-  private fun resumeOnboarding(profileId: ProfileId, profileName: String) {
+  private fun resumeLearnerOnboarding(profileId: ProfileId, profileName: String) {
     val introActivityParams = IntroActivityParams.newBuilder()
       .setProfileNickname(profileName)
       .build()
@@ -402,6 +436,32 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     activity.startActivity(intent)
+  }
+
+  private fun resumeSupervisorOnboarding(profileId: ProfileId) {
+    val introActivityParams = AdminIntroActivityParams.newBuilder()
+      .setProfileType(ProfileType.SUPERVISOR)
+      .build()
+
+    val intent = AdminIntroActivity.createAdminIntroActivityIntent(activity).apply {
+      putProtoExtra(ADMIN_INTRO_PARAMS_KEY, introActivityParams)
+      decorateWithUserProfileId(profileId)
+    }
+
+    activity.startActivity(intent)
+  }
+
+  private fun launchProfileChooserScreen() {
+    val intentParams = ProfileChooserActivityParams.newBuilder()
+      .setProfileType(ProfileType.SUPERVISOR)
+      .build()
+
+    val intent = ProfileChooserActivity.createProfileChooserActivity(activity).apply {
+      putProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, intentParams)
+    }
+
+    activity.startActivity(intent)
+    activity.finish()
   }
 
   private fun logInToProfile(profileId: ProfileId) {

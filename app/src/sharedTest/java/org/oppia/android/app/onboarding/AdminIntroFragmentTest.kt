@@ -2,25 +2,23 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
-import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -37,15 +35,12 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -82,6 +77,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -101,254 +97,145 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [OnboardingProfileTypeFragment]. */
-// FunctionName: test names are conventionally named with underscores.
+/** Tests for [AdminIntroFragment]. */
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = OnboardingProfileTypeFragmentTest.TestApplication::class,
+  application = AdminIntroFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class OnboardingProfileTypeFragmentTest {
+class AdminIntroFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule val composeRule = createEmptyComposeRule()
   @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
 
-  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+  private lateinit var scenario: ActivityScenario<AdminIntroActivity>
 
   @Before
   fun setUp() {
     Intents.init()
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
+    TestPlatformParameterModule.reset()
     Intents.release()
   }
 
   @Test
-  fun testFragment_portraitMode_headerTextIsDisplayed() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_title))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              withText(
-                R.string.onboarding_profile_type_activity_header
-              )
-            )
-          )
-        )
-    }
+  fun testIntroFragment_onLaunch_allViewsAreCorrectlyDisplayed() {
+    scenario = launch(AdminIntroActivity::class.java)
+
+    composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_three))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(OTTER_TEST_TAG)
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(BACK_BUTTON_TEST_TAG)
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
+      .assertIsDisplayed()
   }
 
   @Test
-  fun testFragment_landscapeMode_headerTextIsDisplayed() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_type_title))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              withText(
-                R.string.onboarding_profile_type_activity_header
-              )
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testFragment_portraitMode_navigationCardsAreDisplayed() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_student_text)
-              )
-            )
-          )
-        )
-
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_parent_text)
-              )
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testFragment_landscapeMode_navigationCardsAreDisplayed() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_type_learner_navigation_card))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_student_text)
-              )
-            )
-          )
-        )
-
-      onView(withId(R.id.profile_type_supervisor_navigation_card))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              hasDescendant(
-                withText(R.string.onboarding_profile_type_activity_parent_text)
-              )
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testFragment_portrait_stepCountTextIsDisplayed() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.onboarding_steps_count))
-        .check(
-          matches(
-            allOf(
-              isDisplayed(),
-              withText(
-                R.string.onboarding_step_count_two
-              )
-            )
-          )
-        )
-    }
-  }
-
-  @Test
-  fun testFragment_studentNavigationCardClicked_launchesCreateProfileScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val params = CreateProfileActivityParams.newBuilder()
-        .setProfileType(ProfileType.SOLE_LEARNER)
-        .build()
-
-      intended(hasComponent(CreateProfileActivity::class.java.name))
-      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
-      intended(hasProtoExtra(CREATE_PROFILE_PARAMS_KEY, params))
-    }
-  }
-
-  @Test
-  fun testFragment_orientationChange_studentNavigationCardClicked_launchesCreateProfileScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.profile_type_learner_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      val params = CreateProfileActivityParams.newBuilder()
-        .setProfileType(ProfileType.SOLE_LEARNER)
-        .build()
-
-      intended(hasComponent(CreateProfileActivity::class.java.name))
-      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
-      intended(hasProtoExtra(CREATE_PROFILE_PARAMS_KEY, params))
-    }
-  }
-
-  @Test
-  fun testFragment_supervisorNavigationCardClicked_launchesAdminIntroScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(AdminIntroActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(AdminIntroActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testFragment_backButtonPressed_currentScreenIsDestroyed() {
-    launchOnboardingProfileTypeActivity().use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      scenario?.onActivity { activity ->
-        assertThat(activity.isFinishing).isTrue()
+  fun testIntroFragment_onLaunch_landscapeMode_allViewsAreCorrectlyDisplayed() {
+    launch(AdminIntroActivity::class.java).use {
+      it.onActivity { activity ->
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
       }
     }
+
+    composeRule.waitForIdle()
+
+    composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_three))
+      .assertIsNotDisplayed()
+
+    composeRule.onNodeWithTag(OTTER_TEST_TAG)
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(BACK_BUTTON_TEST_TAG)
+      .assertIsDisplayed()
+
+    composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
+      .assertIsDisplayed()
   }
 
   @Test
-  fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
-    launchOnboardingProfileTypeActivity().use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      scenario?.onActivity { activity ->
-        assertThat(activity.isFinishing).isTrue()
-      }
+  fun testIntroFragment_onBackButtonClicked_currentScreenIsDestroyed() {
+    scenario = launch(AdminIntroActivity::class.java)
+
+    composeRule.onNodeWithTag(BACK_BUTTON_TEST_TAG)
+      .assertIsDisplayed()
+      .performClick()
+
+    testCoroutineDispatchers.runCurrent()
+
+    scenario.onActivity { activity ->
+      assertThat(activity.isFinishing).isTrue()
     }
   }
 
-  private fun launchOnboardingProfileTypeActivity():
-    ActivityScenario<OnboardingProfileTypeActivity>? {
-      val scenario = ActivityScenario.launch<OnboardingProfileTypeActivity>(
-        OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(context).apply {
-          decorateWithUserProfileId(testProfileId)
-        }
-      )
-      testCoroutineDispatchers.runCurrent()
-      return scenario
+  @Test
+  fun testIntroFragment_continueButtonClicked_launchesProfileChooserActivity() {
+    scenario = launch(AdminIntroActivity::class.java)
+
+    composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
+      .assertIsDisplayed()
+      .performClick()
+
+    testCoroutineDispatchers.runCurrent()
+
+    intended(hasComponent(ProfileChooserActivity::class.java.name))
+  }
+
+  @Test
+  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
+    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+    scenario = launch(AdminIntroActivity::class.java)
+    testCoroutineDispatchers.runCurrent()
+    val event = fakeAnalyticsEventLogger.getMostRecentEvent()
+    EventLogSubject.assertThat(event).hasStartProfileOnboardingContextThat {
+      hasProfileIdThat().isEqualTo(testProfileId)
     }
+  }
 
   private fun setUpTestApplicationComponent() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
@@ -415,20 +302,22 @@ class OnboardingProfileTypeFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder
+    interface Builder : ApplicationComponent.Builder {
+      override fun build(): TestApplicationComponent
+    }
 
-    fun inject(onboardingProfileTypeFragmentTest: OnboardingProfileTypeFragmentTest)
+    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerOnboardingProfileTypeFragmentTest_TestApplicationComponent.builder()
+      DaggerAdminIntroFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(onboardingProfileTypeFragmentTest: OnboardingProfileTypeFragmentTest) {
-      component.inject(onboardingProfileTypeFragmentTest)
+    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest) {
+      component.inject(adminIntroFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

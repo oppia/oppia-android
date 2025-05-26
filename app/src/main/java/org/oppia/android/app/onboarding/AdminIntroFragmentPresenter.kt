@@ -1,5 +1,7 @@
 package org.oppia.android.app.onboarding
 
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,9 +29,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -54,6 +61,15 @@ import javax.inject.Inject
 /** Argument key for [ProfileChooserActivity] intent parameters. */
 const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 
+/** Test tag for the otter image. */
+const val OTTER_TEST_TAG = "TEST_TAG.otter"
+
+/** Test tag for the otter image. */
+const val BACK_BUTTON_TEST_TAG = "TEST_TAG.back_button"
+
+/** Test tag for the otter image. */
+const val CONTINUE_BUTTON_TEST_TAG = "TEST_TAG.continue_button"
+
 /** The presenter for [AdminIntroFragment]. */
 class AdminIntroFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -63,6 +79,8 @@ class AdminIntroFragmentPresenter @Inject constructor(
 ) {
 
   private lateinit var binding: AdminIntroFragmentBinding
+
+  private val orientation = Resources.getSystem().configuration.orientation
 
   /** Creates and returns the view for the [AdminIntroFragment]. */
   fun handleCreateView(
@@ -95,6 +113,8 @@ class AdminIntroFragmentPresenter @Inject constructor(
   private fun AdminIntroScreen(profileId: ProfileId, profileType: ProfileType) {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
     val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
+    var stepCountIsVisible by remember { mutableStateOf(true) }
+    stepCountIsVisible = orientation != Configuration.ORIENTATION_LANDSCAPE
 
     Box(
       modifier = Modifier
@@ -185,6 +205,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
             .size(120.dp)
             .align(Alignment.TopCenter)
             .offset(y = (-32).dp)
+            .testTag(OTTER_TEST_TAG)
         )
       }
 
@@ -197,18 +218,21 @@ class AdminIntroFragmentPresenter @Inject constructor(
           .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
-        Text(
-          text = stringResource(R.string.onboarding_step_count_three),
-          color = tealColor,
-          fontSize = 16.sp,
-          modifier = Modifier.padding(bottom = 16.dp)
-        )
+        if (stepCountIsVisible) {
+          Text(
+            text = stringResource(R.string.onboarding_step_count_three),
+            color = tealColor,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
+          )
+        }
 
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween
         ) {
           TextButton(
+            modifier = Modifier.testTag(BACK_BUTTON_TEST_TAG),
             onClick = { activity.finish() }
           ) {
             Text(
@@ -227,6 +251,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
               .height(48.dp)
               .width(160.dp)
               .padding(top = 12.dp)
+              .testTag(CONTINUE_BUTTON_TEST_TAG)
           ) {
             Text(
               text = stringResource(R.string.onboarding_navigation_continue),
