@@ -852,7 +852,8 @@
   <dimen name="onboarding_shared_text_size_large">20sp</dimen>
   <dimen name="onboarding_shared_text_size_xl">32sp</dimen>
 
-  <dimen name="onboarding_admin_intro_card_padding">32dp</dimen>
+  <dimen name="onboarding_admin_intro_horizontal_card_padding">32dp</dimen>
+  <dimen name="onboarding_admin_intro_vertical_card_padding">12dp</dimen>
 
   <!-- Shared Margins -->
   <dimen name="phone_shared_margin_x_small">4dp</dimen>

@@ -530,4 +530,8 @@
   <dimen name="classrooms_card_icon_size">100dp</dimen>
   <dimen name="classrooms_card_margin_start">0dp</dimen>
   <dimen name="classrooms_card_margin_end">16dp</dimen>
+
+  <!-- Onboarding V2 -->
+  <dimen name="onboarding_admin_intro_horizontal_card_padding">108dp</dimen>
+  <dimen name="onboarding_admin_intro_vertical_card_padding">108dp</dimen>
 </resources>

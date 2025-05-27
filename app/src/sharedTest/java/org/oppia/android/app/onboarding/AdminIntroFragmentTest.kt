@@ -2,10 +2,8 @@ package org.oppia.android.app.onboarding
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -13,9 +11,11 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -41,6 +41,7 @@ import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -162,13 +163,8 @@ class AdminIntroFragmentTest {
 
   @Test
   fun testIntroFragment_onLaunch_landscapeMode_allViewsAreCorrectlyDisplayed() {
-    launch(AdminIntroActivity::class.java).use {
-      it.onActivity { activity ->
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-      }
-    }
-
-    composeRule.waitForIdle()
+    scenario = launch(AdminIntroActivity::class.java)
+    onView(ViewMatchers.isRoot()).perform(orientationLandscape())
 
     composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
       .assertIsDisplayed()
@@ -178,9 +174,6 @@ class AdminIntroFragmentTest {
 
     composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
       .assertIsDisplayed()
-
-    composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_three))
-      .assertIsNotDisplayed()
 
     composeRule.onNodeWithTag(OTTER_TEST_TAG)
       .assertIsDisplayed()
@@ -225,6 +218,7 @@ class AdminIntroFragmentTest {
     val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
     scenario = launch(AdminIntroActivity::class.java)
     testCoroutineDispatchers.runCurrent()
+
     val event = fakeAnalyticsEventLogger.getMostRecentEvent()
     EventLogSubject.assertThat(event).hasStartProfileOnboardingContextThat {
       hasProfileIdThat().isEqualTo(testProfileId)

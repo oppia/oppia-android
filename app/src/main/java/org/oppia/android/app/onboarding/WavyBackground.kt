@@ -22,10 +22,10 @@ fun WavyBackground(backgroundColorResId: Int) {
       val wavyPath = Path().apply {
         moveTo(0f, canvasHeight)
 
-        val amplitude = 40.dp.toPx() // Height of the waves.
+        val amplitude = 50.dp.toPx() // Height of the waves.
 
-        // Waves start at ~55% of the screen height.
-        val wavesStartY = canvasHeight * 0.55f
+        // Waves start at ~50% of the screen height.
+        val wavesStartY = canvasHeight * 0.5f
         lineTo(0f, wavesStartY)
 
         var x = 0f

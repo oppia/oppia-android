@@ -1,7 +1,6 @@
 package org.oppia.android.app.onboarding
 
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,12 +28,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
@@ -80,8 +79,6 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
   private lateinit var binding: AdminIntroFragmentBinding
 
-  private val orientation = Resources.getSystem().configuration.orientation
-
   /** Creates and returns the view for the [AdminIntroFragment]. */
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -113,8 +110,12 @@ class AdminIntroFragmentPresenter @Inject constructor(
   private fun AdminIntroScreen(profileId: ProfileId, profileType: ProfileType) {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
     val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
-    var stepCountIsVisible by remember { mutableStateOf(true) }
-    stepCountIsVisible = orientation != Configuration.ORIENTATION_LANDSCAPE
+    val orientation = LocalConfiguration.current.orientation
+    val stepCountIsVisible by remember {
+      derivedStateOf {
+        orientation == Configuration.ORIENTATION_PORTRAIT
+      }
+    }
 
     Box(
       modifier = Modifier
@@ -126,75 +127,14 @@ class AdminIntroFragmentPresenter @Inject constructor(
       Box(
         modifier = Modifier
           .wrapContentWidth()
-          .padding(horizontal = dimensionResource(R.dimen.onboarding_admin_intro_card_padding))
           .align(Alignment.Center)
+          .padding(
+            horizontal = dimensionResource(R.dimen.onboarding_admin_intro_horizontal_card_padding),
+            vertical = dimensionResource(R.dimen.onboarding_admin_intro_vertical_card_padding)
+          )
       ) {
-        Card(
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 64.dp),
-          shape = RoundedCornerShape(4.dp),
-          backgroundColor = tealColor,
-          elevation = 8.dp
-        ) {
-          Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-          ) {
-            Text(
-              text = resourceHandler.getStringInLocaleWithWrapping(
-                R.string.admin_intro_activity_header
-              ),
-              color = colorResource(R.color.component_color_onboarding_shared_white_color),
-              fontSize = 20.sp,
-              fontWeight = FontWeight.Bold,
-              textAlign = TextAlign.Center,
-              modifier = Modifier.padding(bottom = 16.dp, top = 16.dp)
-            )
 
-            Row(
-              verticalAlignment = Alignment.Top,
-              modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-              Text(
-                text = "✓",
-                color = colorResource(R.color.component_color_onboarding_shared_white_color),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(end = 8.dp)
-              )
-              Text(
-                text = resourceHandler.getStringInLocaleWithWrapping(
-                  R.string.admin_intro_activity_settings_text
-                ),
-                color = colorResource(R.color.component_color_onboarding_shared_white_color),
-                fontSize = 16.sp
-              )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-              verticalAlignment = Alignment.Top,
-              modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-              Text(
-                text = "✓",
-                color = colorResource(R.color.component_color_onboarding_shared_white_color),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(end = 8.dp)
-              )
-              Text(
-                text = resourceHandler.getStringInLocaleWithWrapping(
-                  R.string.admin_intro_activity_learners_text
-                ),
-                color = colorResource(R.color.component_color_onboarding_shared_white_color),
-                fontSize = 16.sp
-              )
-            }
-          }
-        }
+        InformationCard()
 
         Image(
           painter = painterResource(id = R.drawable.otter),
@@ -227,39 +167,122 @@ class AdminIntroFragmentPresenter @Inject constructor(
           )
         }
 
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-          TextButton(
-            modifier = Modifier.testTag(BACK_BUTTON_TEST_TAG),
-            onClick = { activity.finish() }
-          ) {
-            Text(
-              text = stringResource(R.string.onboarding_navigation_back),
-              color = tealColor,
-              fontWeight = FontWeight.Bold
-            )
-          }
+        Spacer(modifier = Modifier.height(8.dp))
 
-          Button(
-            onClick = {
-              navigateToProfileChooserActivity(profileId, profileType)
-            },
-            colors = ButtonDefaults.buttonColors(backgroundColor = tealColor),
-            modifier = Modifier
-              .height(48.dp)
-              .width(160.dp)
-              .padding(top = 12.dp)
-              .testTag(CONTINUE_BUTTON_TEST_TAG)
-          ) {
-            Text(
-              text = stringResource(R.string.onboarding_navigation_continue),
-              color = colorResource(R.color.component_color_onboarding_shared_white_color),
-              fontWeight = FontWeight.Bold
-            )
-          }
+        NavigationRow(profileId, profileType)
+      }
+    }
+  }
+
+  @Composable
+  private fun InformationCard() {
+    Card(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 64.dp, bottom = 64.dp),
+      shape = RoundedCornerShape(4.dp),
+      backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color),
+      elevation = 8.dp
+    ) {
+      Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        Text(
+          text = resourceHandler.getStringInLocaleWithWrapping(
+            R.string.admin_intro_activity_header
+          ),
+          color = colorResource(R.color.component_color_onboarding_shared_white_color),
+          fontSize = 20.sp,
+          fontWeight = FontWeight.Bold,
+          textAlign = TextAlign.Center,
+          modifier = Modifier.padding(bottom = 16.dp, top = 16.dp)
+        )
+
+        Row(
+          verticalAlignment = Alignment.Top,
+          modifier = Modifier.padding(vertical = 4.dp)
+        ) {
+          Text(
+            text = "✓",
+            color = colorResource(R.color.component_color_onboarding_shared_white_color),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(end = 8.dp)
+          )
+          Text(
+            text = resourceHandler.getStringInLocaleWithWrapping(
+              R.string.admin_intro_activity_settings_text
+            ),
+            color = colorResource(R.color.component_color_onboarding_shared_white_color),
+            fontSize = 16.sp
+          )
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+          verticalAlignment = Alignment.Top,
+          modifier = Modifier.padding(vertical = 4.dp)
+        ) {
+          Text(
+            text = "✓",
+            color = colorResource(R.color.component_color_onboarding_shared_white_color),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(end = 8.dp)
+          )
+          Text(
+            text = resourceHandler.getStringInLocaleWithWrapping(
+              R.string.admin_intro_activity_learners_text
+            ),
+            color = colorResource(R.color.component_color_onboarding_shared_white_color),
+            fontSize = 16.sp
+          )
+        }
+      }
+    }
+  }
+
+  @Composable
+  private fun NavigationRow(profileId: ProfileId, profileType: ProfileType) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(20.dp),
+      horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+      TextButton(
+        modifier = Modifier.testTag(BACK_BUTTON_TEST_TAG),
+        onClick = { activity.finish() }
+      ) {
+        Text(
+          text = stringResource(R.string.onboarding_navigation_back),
+          color = colorResource(R.color.component_color_onboarding_shared_green_color),
+          fontWeight = FontWeight.Bold
+        )
+      }
+
+      Button(
+        onClick = {
+          navigateToProfileChooserActivity(profileId, profileType)
+        },
+        colors = ButtonDefaults.buttonColors(
+          backgroundColor = colorResource(
+            R.color.component_color_onboarding_shared_green_color
+          )
+        ),
+        modifier = Modifier
+          .height(48.dp)
+          .width(160.dp)
+          .padding(top = 12.dp)
+          .testTag(CONTINUE_BUTTON_TEST_TAG)
+      ) {
+        Text(
+          text = stringResource(R.string.onboarding_navigation_continue),
+          color = colorResource(R.color.component_color_onboarding_shared_white_color),
+          fontWeight = FontWeight.Bold
+        )
       }
     }
   }
