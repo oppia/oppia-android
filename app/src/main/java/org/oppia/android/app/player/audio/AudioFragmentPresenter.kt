@@ -188,6 +188,15 @@ class AudioFragmentPresenter @Inject constructor(
   fun languageSelected(language: String) {
     if (audioViewModel.selectedLanguageCode != language) {
       audioViewModel.setAudioLanguageCode(language)
+      val audioLanguage = when (language) {
+        "hi" -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+        "pt", "pt-br" -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+        "ar" -> AudioLanguage.ARABIC_LANGUAGE
+        "pcm" -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+        else -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      }
+      profileManagementController.updateAudioLanguage(profileId, audioLanguage)
+        .toLiveData().observe(fragment) { }
     }
   }
 
