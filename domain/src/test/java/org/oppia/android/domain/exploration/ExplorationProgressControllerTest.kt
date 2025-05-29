@@ -3347,7 +3347,6 @@ class ExplorationProgressControllerTest {
       .isEqualTo("Ratio shows relative relationship 2")
   }
 
-
   @Test
   fun testFlashback_onSubmit_wrongMultipleChoiceAnswers_noHintIsVisible() {
     startPlayingNewExploration(
