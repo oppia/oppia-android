@@ -698,15 +698,26 @@ class ExplorationProgressController @Inject constructor(
         val ephemeralState = computeBaseCurrentEphemeralState()
         when {
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
-            endState()
-            val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-            explorationProgress.stateDeck.pushState(
-              newState,
-              prohibitSameStateName = true,
-              timestamp = startSessionTimeMs + continueButtonAnimationDelay,
-              isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
-            )
-            hintHandler.finishState(newState)
+            val wasVisited = explorationProgress.stateDeck
+              .wasPreviouslyVisited(answerOutcome.stateName)
+
+            // Checks whether Learner submits wrong answer and destination name was previously
+            // visited by Learner.
+            if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
+              !answerOutcome.labelledAsCorrectAnswer && wasVisited
+            ) {
+              explorationProgress.stateDeck.addFlashbackState(answerOutcome.stateName)
+            } else {
+              endState()
+              val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
+              explorationProgress.stateDeck.pushState(
+                newState,
+                prohibitSameStateName = true,
+                timestamp = startSessionTimeMs + continueButtonAnimationDelay,
+                isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
+              )
+              hintHandler.finishState(newState)
+            }
           }
           ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
             // Schedule, or show immediately, a new hint or solution based on the current
