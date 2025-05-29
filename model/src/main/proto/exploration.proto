@@ -331,6 +331,10 @@ message AnswerAndResponse {
 
   // Whether the answer was labelled by the creator as correct.
   bool is_correct_answer = 3;
+
+  // Indicates that a flashback button should be shown. Contains the name of the state the learner
+  // can revisit.
+  string state_name_to_revisit = 4;
 }
 
 message AnswerOutcome {
