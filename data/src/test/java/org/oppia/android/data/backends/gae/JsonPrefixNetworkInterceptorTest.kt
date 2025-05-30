@@ -1,18 +1,20 @@
 package org.oppia.android.data.backends.gae
 
 import android.app.Application
+import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.testing.OppiaTestRule
-import org.oppia.android.testing.network.ApiMockLoader
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,11 +23,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 class JsonPrefixNetworkInterceptorTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor
 
   @Before
   fun setUp() {
@@ -69,10 +69,12 @@ class JsonPrefixNetworkInterceptorTest {
   }
 
   private fun loadUnformattedFakeJson(filename: String): String =
-    ApiMockLoader.getFakeJson(filename)
+    openAssetInputStream(filename).bufferedReader().use { it.readText() }
 
   private fun loadFormattedFakeJson(filename: String): String =
     formatJson(loadUnformattedFakeJson(filename))
+
+  private fun openAssetInputStream(jsonPath: String) = context.assets.open("api_mocks/$jsonPath")
 
   private fun formatJson(rawJson: String): String = JSONObject(rawJson).toString()
 
@@ -83,9 +85,23 @@ class JsonPrefixNetworkInterceptorTest {
       .inject(this)
   }
 
+  @Module
+  class TestModule {
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+      return application
+    }
+  }
+
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [NetworkConfigProdModule::class])
+  @Component(
+    modules = [
+      NetworkConfigProdModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

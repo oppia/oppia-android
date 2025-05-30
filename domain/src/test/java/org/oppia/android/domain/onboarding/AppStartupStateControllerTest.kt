@@ -35,7 +35,8 @@ import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION
 import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.onboarding.AppStartupStateControllerTest.TestModule.Companion.appDeprecationResponse
 import org.oppia.android.domain.onboarding.AppStartupStateControllerTest.TestModule.Companion.osDeprecationResponse
@@ -1035,14 +1036,24 @@ class AppStartupStateControllerTest {
   @Singleton
   @Component(
     modules = [
-      LogStorageModule::class, RobolectricModule::class,
-      TestModule::class, TestDispatcherModule::class, TestLogReportingModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class,
-      OppiaClockModule::class, LocaleProdModule::class,
-      ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterTestModule::class, AssetModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      OppiaClockModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

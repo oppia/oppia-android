@@ -96,12 +96,20 @@ class CpuPerformanceSnapshotterModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
-      TestLoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      LoggerModule::class, SyncStatusModule::class, CpuPerformanceSnapshotterModule::class
+      ApplicationLifecycleModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLoggingIdentifierModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

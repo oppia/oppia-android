@@ -21,7 +21,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -177,15 +178,28 @@ class PerformanceMetricsLogSchedulerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterTestModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class, TestLogReportingModule::class,
-      PerformanceMetricsConfigurationsModule::class, LogStorageModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MetricLogSchedulerModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

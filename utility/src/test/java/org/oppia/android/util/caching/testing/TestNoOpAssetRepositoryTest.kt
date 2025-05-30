@@ -187,7 +187,8 @@ class TestNoOpAssetRepositoryTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, AssetTestNoOpModule::class
+      AssetTestNoOpModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

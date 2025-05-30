@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.content.pm.ApplicationInfoBuilder
-import androidx.test.core.content.pm.PackageInfoBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.Configuration
 import androidx.work.Data
@@ -14,9 +12,6 @@ import androidx.work.WorkManager
 import androidx.work.impl.utils.SynchronousExecutor
 import androidx.work.testing.WorkManagerTestInitHelper
 import dagger.Component
-import dagger.Module
-import dagger.Provides
-import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -35,14 +30,12 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.data.backends.gae.BaseUrl
-import org.oppia.android.data.backends.gae.JsonPrefixNetworkInterceptor
-import org.oppia.android.data.backends.gae.NetworkApiKey
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.OppiaRetrofit
-import org.oppia.android.data.backends.gae.RemoteAuthNetworkInterceptor
-import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -72,14 +65,11 @@ import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.network.MockPlatformParameterService
-import org.oppia.android.testing.network.RetrofitTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -97,12 +87,8 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.mock.MockRetrofit
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -112,23 +98,14 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterIntegrationTest.TestApplication::class)
 class PlatformParameterIntegrationTest {
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var platformParameterController: PlatformParameterController
-
-  @Inject
-  lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
-
-  @Inject
-  lateinit var context: Context
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var platformParameterController: PlatformParameterController
+  @Inject lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
+  @Inject lateinit var serviceOrchestrator: PlatformParameterServiceTestOrchestrator
 
   @Before
   fun setUp() {
@@ -139,6 +116,7 @@ class PlatformParameterIntegrationTest {
       .setWorkerFactory(platformParameterSyncUpWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+    TestActivity.registerWithPackageManager<SplashTestActivity>(context)
   }
 
   @After
@@ -187,6 +165,16 @@ class PlatformParameterIntegrationTest {
 
   // @Test
   // fun testIntegration_executeSyncUpWorkerCorrectly_readDatabase_checkWelcomeMsgIsVisible() {
+//    serviceOrchestrator.setNextResponseAsSuccess(
+//      parameterValues = mapOf(SPLASH_SCREEN_WELCOME_MSG to SPLASH_SCREEN_WELCOME_MSG_SERVER_VALUE)
+//    )
+//
+//    launch(SplashTestActivity::class.java).use { scenario ->
+//      // Set up versionName to get correct network response from mock platform parameter service.
+//      platformParameterController.updatePlatformParameterDatabase(
+//        mockPlatformParameterListWithToastDisabled
+//      )
+
   //   launch(SplashTestActivity::class.java).use { scenario ->
   //     // Set up versionName to get correct network response from mock platform parameter service.
   //     setUpApplicationForVersionName(MockPlatformParameterService.appVersionForCorrectResponse)
@@ -217,7 +205,11 @@ class PlatformParameterIntegrationTest {
   // }
 
   // @Test
-  // fun testIntegration_executeSyncUpWorkerIncorrectly_readDatabase_checkWelcomeMsgIsInvisible() {
+  // fun testIntegration_executeSyncUpWorkerIncorrectly_readDatabase_checkWelcomeMsgIsInvisible() {    serviceOrchestrator.setNextResponseAsSuccess(REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE)
+//    launch(SplashTestActivity::class.java).use { scenario ->
+//      platformParameterController.updatePlatformParameterDatabase(
+//        mockPlatformParameterListWithToastDisabled
+//      )
   //   launch(SplashTestActivity::class.java).use { scenario ->
   //     // Set up versionName to get incorrect network response from mock platform parameter service.
   //     setUpApplicationForVersionName(MockPlatformParameterService.appVersionForWrongResponse)
@@ -247,21 +239,6 @@ class PlatformParameterIntegrationTest {
   //   }
   // }
 
-  private fun setUpApplicationForVersionName(testAppVersionName: String) {
-    val packageManager = Shadows.shadowOf(context.packageManager)
-    val applicationInfo =
-      ApplicationInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .build()
-    val packageInfo =
-      PackageInfoBuilder.newBuilder()
-        .setPackageName(context.packageName)
-        .setApplicationInfo(applicationInfo)
-        .build()
-    packageInfo.versionName = testAppVersionName
-    packageManager.installPackage(packageInfo)
-  }
-
   private fun setUpAndEnqueueSyncUpWorkerRequest(workManager: WorkManager): UUID {
     val inputData = Data.Builder().putString(
       PlatformParameterSyncUpWorker.WORKER_TYPE_KEY,
@@ -281,71 +258,68 @@ class PlatformParameterIntegrationTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  @Module
-  class TestNetworkModule {
-
-    @OppiaRetrofit
-    @Provides
-    @Singleton
-    fun provideRetrofitInstance(
-      jsonPrefixNetworkInterceptor: JsonPrefixNetworkInterceptor,
-      remoteAuthNetworkInterceptor: RemoteAuthNetworkInterceptor,
-      @BaseUrl baseUrl: String
-    ): Retrofit {
-      val client = OkHttpClient.Builder()
-        .addInterceptor(jsonPrefixNetworkInterceptor)
-        .addInterceptor(remoteAuthNetworkInterceptor)
-        .build()
-
-      return Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .client(client)
-        .build()
-    }
-
-    @Provides
-    @NetworkApiKey
-    fun provideNetworkApiKey(): String = ""
-
-    @Provides
-    fun provideMockPlatformParameterService(
-      mockRetrofit: MockRetrofit
-    ): PlatformParameterService {
-      return MockPlatformParameterService(mockRetrofit.create(PlatformParameterService::class.java))
-    }
-  }
-
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, TestNetworkModule::class, RetrofitTestModule::class,
-      NetworkConfigProdModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, AssetModule::class, LocaleProdModule::class,
-      ActivityRecreatorTestModule::class, PlatformParameterTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

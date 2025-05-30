@@ -374,8 +374,12 @@ class MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProviderTest
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

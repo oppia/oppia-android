@@ -30,7 +30,8 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.app.model.ScreenName.HOME_ACTIVITY
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
@@ -343,13 +344,22 @@ class PerformanceMetricsLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, TestLogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      PlatformParameterTestModule::class, PlatformParameterTestModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class,
-      ApplicationLifecycleModule::class, NetworkModule::class, NetworkConfigTestModule::class,
-      AssetModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -31,7 +31,8 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -57,7 +58,6 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -215,30 +215,61 @@ class DateTimeUtilTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, ApplicationModule::class,
-      ApplicationStartupListenerModule::class, WorkManagerConfigurationModule::class,
-      ImageParsingModule::class, AccessibilityTestModule::class,
-      GcsResourceModule::class, NetworkConnectionUtilDebugModule::class, LogStorageModule::class,
-      NetworkModule::class, HintsAndSolutionProdModule::class,
-      CachingTestModule::class, InteractionsModule::class, ExplorationStorageModule::class,
-      QuestionModule::class, NetworkConfigProdModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, RatioInputModule::class,
-      HintsAndSolutionConfigModule::class, ExpirationMetaDataRetrieverModule::class,
-      GlideImageLoaderModule::class,
-      HtmlParserEntityTypeModule::class, NetworkConnectionDebugUtilModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class, AssetModule::class,
-      LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, AnalyticsStartupListenerTestModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      AnalyticsStartupListenerTestModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

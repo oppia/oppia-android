@@ -2126,10 +2126,17 @@ class HintHandlerProdImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, HintsAndSolutionProdModule::class, HintsAndSolutionConfigModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      LoggerModule::class, AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class
+      AssetModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

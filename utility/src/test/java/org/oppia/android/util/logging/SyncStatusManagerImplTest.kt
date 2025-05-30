@@ -84,9 +84,15 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, SyncStatusModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -56,15 +56,11 @@ class NetworkLoggingInterceptorTest {
     private const val headerString = "$testApiKey: $testApiKeyValue"
   }
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  @Inject
-  lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
-  @Inject
-  lateinit var context: Context
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var context: Context
+  @Inject lateinit var networkLoggingInterceptor: NetworkLoggingInterceptor
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
@@ -81,7 +77,6 @@ class NetworkLoggingInterceptorTest {
     setUpRetrofit()
 
     mockWebServerUrl = mockWebServer.url(testUrl)
-
     request = Request.Builder().url(mockWebServerUrl).addHeader(testApiKey, testApiKeyValue).build()
   }
 
@@ -175,11 +170,6 @@ class NetworkLoggingInterceptorTest {
     client = OkHttpClient.Builder()
       .addInterceptor(networkLoggingInterceptor)
       .build()
-
-    // Use retrofit with the MockWebServer here instead of MockRetrofit so that we can verify that
-    // the full network request properly executes. MockRetrofit and MockWebServer perform the same
-    // request mocking in different ways and we want to verify the full request is executed here.
-    // See https://github.com/square/retrofit/issues/2340#issuecomment-302856504 for more context.
     retrofit = Retrofit.Builder()
       .baseUrl(mockWebServer.url(testUrl))
       .addConverterFactory(MoshiConverterFactory.create())
@@ -201,8 +191,10 @@ class NetworkLoggingInterceptorTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestModule::class, TestLogReportingModule::class,
-      TestDispatcherModule::class
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

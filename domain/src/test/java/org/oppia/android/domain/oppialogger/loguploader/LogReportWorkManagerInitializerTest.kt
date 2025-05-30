@@ -24,7 +24,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -325,15 +326,28 @@ class LogReportWorkManagerInitializerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestLogStorageModule::class, TestDispatcherModule::class,
-      LogReportWorkerModule::class, TestFirebaseLogUploaderModule::class,
-      FakeOppiaClockModule::class, NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      LoggerModule::class, AssetModule::class, LoggerModule::class,
-      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class,
-      CpuPerformanceSnapshotterModule::class, TestAuthenticationModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestFirebaseLogUploaderModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

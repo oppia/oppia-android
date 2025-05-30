@@ -85,10 +85,15 @@ class PerformanceMetricsAssessorModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
-      TestDispatcherModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class, OppiaClockModule::class,
-      LocaleProdModule::class
+      LocaleProdModule::class,
+      LoggerModule::class,
+      OppiaClockModule::class,
+      PerformanceMetricsAssessorModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

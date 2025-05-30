@@ -93,9 +93,13 @@ class PerformanceMetricsConfigurationsModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, PerformanceMetricsAssessorModule::class, LoggerModule::class,
-      TestDispatcherModule::class, LogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class
+      LogReportingModule::class,
+      LoggerModule::class,
+      PerformanceMetricsAssessorModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -66,7 +66,8 @@ class EndToEndTestGcsResourceModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, EndToEndTestGcsResourceModule::class
+      EndToEndTestGcsResourceModule::class,
+      TestModule::class
     ]
   )
 

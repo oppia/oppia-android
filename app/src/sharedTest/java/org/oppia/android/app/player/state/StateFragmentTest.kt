@@ -116,7 +116,8 @@ import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientati
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.app.utility.clickPoint
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -145,7 +146,6 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
 import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
@@ -2157,6 +2157,64 @@ class StateFragmentTest {
 
   @Test
   @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  fun testStateFragment_clickLinkText_opensConceptCard_selectNavigationUp_conceptCardCloses() {
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  @DisableFeatureFlag(FAST_LANGUAGE_SWITCHING_IN_LESSON)
+  fun testStateFragment_landscape_clickLinkText_opensConceptCard_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testStateFragment_interactions_initialStateIsContinueInteraction() {
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -6178,32 +6236,63 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, PlatformParameterTestModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
-      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
-      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      LogStorageModule::class,
-      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
-      RatioInputModule::class, ApplicationStartupListenerModule::class,
-      HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
-      WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterTestModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

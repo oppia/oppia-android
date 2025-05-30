@@ -73,7 +73,12 @@ class LoggingIdentifierModuleTest {
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class, LoggingIdentifierModule::class])
+  @Component(
+    modules = [
+      LoggingIdentifierModule::class,
+      TestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

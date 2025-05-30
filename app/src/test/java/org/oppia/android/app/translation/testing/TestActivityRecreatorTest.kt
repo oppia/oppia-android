@@ -88,8 +88,10 @@ class TestActivityRecreatorTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, TestDispatcherModule::class,
-      RobolectricModule::class
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -79,7 +79,8 @@ class NetworkConnectionUtilDebugModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, NetworkConnectionUtilDebugModule::class
+      NetworkConnectionUtilDebugModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

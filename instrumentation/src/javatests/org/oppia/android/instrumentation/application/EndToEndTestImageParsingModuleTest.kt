@@ -75,7 +75,8 @@ class EndToEndTestImageParsingModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, EndToEndTestImageParsingModule::class
+      EndToEndTestImageParsingModule::class,
+      TestModule::class
     ]
   )
 

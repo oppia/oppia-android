@@ -17,7 +17,8 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -568,19 +569,41 @@ class ExplorationActiveTimeControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, TestLogReportingModule::class, ContinueModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class, FractionInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, ImageClickInputModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class, AssetModule::class,
-      NetworkConnectionUtilDebugModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      RatioInputModule::class, SyncStatusModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, PlatformParameterTestModule::class,
-      PlatformParameterTestModule::class, ExplorationStorageTestModule::class,
-      LogStorageModule::class, NetworkModule::class, NetworkConfigTestModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterTestModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

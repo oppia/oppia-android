@@ -15,7 +15,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
@@ -92,12 +93,22 @@ class ExplorationProgressModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
-      PlatformParameterTestModule::class, NetworkModule::class, NetworkConfigTestModule::class,
-      AssetModule::class
+      AssetModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

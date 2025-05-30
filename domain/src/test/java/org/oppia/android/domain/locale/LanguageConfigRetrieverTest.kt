@@ -312,8 +312,13 @@ class LanguageConfigRetrieverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      AssetModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

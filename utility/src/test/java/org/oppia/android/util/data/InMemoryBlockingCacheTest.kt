@@ -700,9 +700,10 @@ class InMemoryBlockingCacheTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class,
+      FakeOppiaClockModule::class,
+      RobolectricModule::class,
       TestDispatcherModule::class,
-      RobolectricModule::class, FakeOppiaClockModule::class
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

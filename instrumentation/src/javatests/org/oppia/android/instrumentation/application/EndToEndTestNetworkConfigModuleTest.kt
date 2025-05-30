@@ -66,7 +66,8 @@ class EndToEndTestNetworkConfigModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, EndToEndTestNetworkConfigModule::class
+      EndToEndTestNetworkConfigModule::class,
+      TestModule::class
     ]
   )
 

@@ -39,6 +39,7 @@ import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListen
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
 import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.SplitScreenManager
@@ -426,6 +427,11 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
+  }
+
+  /** Removes all [ConceptCardFragment] in the given FragmentManager. */
+  fun dismissConceptCard() {
+    ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
 
   private fun moveToNextState() {

@@ -165,6 +165,12 @@ class StateFragment :
     stateFragmentPresenter.viewSolution()
   }
 
+  /**
+   * Delegates the removal of all [ConceptCardFragment] instances
+   * to the [StateFragmentPresenter].
+   */
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
+
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
 
   override fun onSaveInstanceState(outState: Bundle) {

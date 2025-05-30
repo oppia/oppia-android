@@ -155,8 +155,8 @@ class TestCoroutineDispatcherEspressoImplTest : TestCoroutineDispatcherTestBase(
   @Component(
     modules = [
       TestDispatcherModule::class,
-      TestModule::class,
-      TestLogReportingModule::class
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

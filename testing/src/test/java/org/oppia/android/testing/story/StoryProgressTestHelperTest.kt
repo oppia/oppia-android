@@ -1764,12 +1764,22 @@ class StoryProgressTestHelperTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ImageParsingModule::class, LoggerModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterTestModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      ImageParsingModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

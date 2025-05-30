@@ -18,7 +18,8 @@ import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -220,13 +221,24 @@ class SurveyControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class, LocaleProdModule::class,
-      ExplorationProgressModule::class, TestLogReportingModule::class, AssetModule::class,
-      NetworkConnectionUtilDebugModule::class, SyncStatusModule::class, LogStorageModule::class,
-      TestLoggingIdentifierModule::class, TestAuthenticationModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ExplorationProgressModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
       PlatformParameterTestModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLoggingIdentifierModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

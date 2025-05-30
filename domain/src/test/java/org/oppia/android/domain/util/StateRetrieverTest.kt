@@ -725,8 +725,12 @@ class StateRetrieverTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, AssetModule::class, LocaleProdModule::class
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

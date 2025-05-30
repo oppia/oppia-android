@@ -32,7 +32,8 @@ import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
@@ -637,16 +638,27 @@ class LogUploadWorkerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class,
-      TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterTestModule::class,
-      PlatformParameterTestModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, PerformanceMetricsAssessorModule::class,
-      ApplicationLifecycleModule::class, PerformanceMetricsConfigurationsModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
       TestAuthenticationModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      TestDispatcherModule::class,
+      TestFirebaseLogUploaderModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

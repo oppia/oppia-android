@@ -91,9 +91,13 @@ class NumericExpressionInputModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class,
-      TestDispatcherModule::class, LoggerModule::class, RobolectricModule::class,
-      NumericExpressionInputModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      NumericExpressionInputModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

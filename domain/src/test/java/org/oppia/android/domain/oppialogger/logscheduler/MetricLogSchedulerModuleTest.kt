@@ -65,8 +65,12 @@ class MetricLogSchedulerModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, MetricLogSchedulerModule::class, LoggerModule::class,
-      RobolectricModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      MetricLogSchedulerModule::class,
+      RobolectricModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -21,7 +21,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -184,14 +185,26 @@ class FakeLogSchedulerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LoggerModule::class, TestDispatcherModule::class,
-      TestLogReportingModule::class, RobolectricModule::class,
-      PerformanceMetricsConfigurationsModule::class, LocaleProdModule::class,
-      OppiaClockModule::class, NetworkConnectionUtilProdModule::class, TestLogStorageModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilProdModule::class,
+      OppiaClockModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
-      SyncStatusModule::class, ApplicationLifecycleModule::class, LoggingIdentifierModule::class,
-      CpuPerformanceSnapshotterModule::class, AssetModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

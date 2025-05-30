@@ -155,7 +155,8 @@ class TestOppiaBidiFormatterTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class
+      LocaleTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

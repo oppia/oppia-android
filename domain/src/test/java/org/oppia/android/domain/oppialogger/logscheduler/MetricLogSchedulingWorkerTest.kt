@@ -29,7 +29,8 @@ import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricT
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.NETWORK_USAGE_METRIC
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric.LoggableMetricTypeCase.STORAGE_USAGE_METRIC
 import org.oppia.android.data.backends.gae.NetworkConfigTestModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -280,15 +281,27 @@ class MetricLogSchedulingWorkerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestLogStorageModule::class,
-      TestDispatcherModule::class, LogReportWorkerModule::class,
-      TestFirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class, LoggerModule::class,
-      AssetModule::class, PlatformParameterTestModule::class, LoggingIdentifierModule::class,
-      SyncStatusTestModule::class, PlatformParameterTestModule::class,
-      PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
-      ApplicationLifecycleModule::class, CpuPerformanceSnapshotterModule::class,
-      NetworkModule::class, NetworkConfigTestModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConfigTestModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PerformanceMetricsAssessorModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestDispatcherModule::class,
+      TestFirebaseLogUploaderModule::class,
+      TestLogStorageModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

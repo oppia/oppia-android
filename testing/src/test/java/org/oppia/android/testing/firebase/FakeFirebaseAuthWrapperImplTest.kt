@@ -96,9 +96,13 @@ class FakeFirebaseAuthWrapperImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ApplicationLifecycleModule::class, TestDispatcherModule::class,
-      TestAuthenticationModule::class, TestLogReportingModule::class,
+      ApplicationLifecycleModule::class,
+      FakeOppiaClockModule::class,
+      RobolectricModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

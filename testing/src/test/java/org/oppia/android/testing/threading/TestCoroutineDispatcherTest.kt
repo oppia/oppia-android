@@ -228,8 +228,8 @@ class TestCoroutineDispatcherTest {
   @Component(
     modules = [
       TestDispatcherModule::class,
-      TestModule::class,
-      TestLogReportingModule::class
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

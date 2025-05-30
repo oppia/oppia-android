@@ -268,10 +268,16 @@ class ClipboardControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, NetworkConnectionUtilDebugModule::class,
-      FakeOppiaClockModule::class, PlatformParameterTestModule::class,
-      LoggingIdentifierModule::class, SyncStatusTestModule::class
+      FakeOppiaClockModule::class,
+      LoggingIdentifierModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterTestModule::class,
+      RobolectricModule::class,
+      SyncStatusTestModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

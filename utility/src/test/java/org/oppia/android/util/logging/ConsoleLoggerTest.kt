@@ -156,9 +156,12 @@ class ConsoleLoggerTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class, TestModule::class, LocaleTestModule::class,
-      TestLogReportingModule::class, TestDispatcherModule::class,
       FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -190,8 +190,12 @@ class PolicyPageTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

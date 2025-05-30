@@ -687,15 +687,14 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagListEventContext
     ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
+        // TODO: Remove the utility.
         val featureFlagIds = featureFlagsList.map { it.id.number }
-        val featureFlagSyncStatuses = featureFlagsList.map { it.syncStatus }
-        val featureFlagEnabledStates = featureFlagsList.map { it.isEnabled }
+        val featureFlagSyncStatuses = featureFlagsList.map { it.syncStatus.number }
+        val featureFlagEnabledStates = featureFlagsList.map { if (it.isEnabled) 1 else 0 }
 
-        store.putNonSensitiveValue("uuid", uniqueUserUuid)
-        store.putNonSensitiveValue("app_session_id", appSessionId)
-        store.putNonSensitiveValue("feature_flag_ids", featureFlagIds)
         store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
         store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)
+        store.putNonSensitiveValue("feature_flag_names", featureFlagIds)
       }
     }
 
