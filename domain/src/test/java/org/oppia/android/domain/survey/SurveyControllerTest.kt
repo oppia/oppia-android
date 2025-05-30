@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule

@@ -341,7 +341,6 @@ class AppLanguageLocaleHandlerTest {
       LoggingIdentifierModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,

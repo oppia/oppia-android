@@ -89,7 +89,7 @@ import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer

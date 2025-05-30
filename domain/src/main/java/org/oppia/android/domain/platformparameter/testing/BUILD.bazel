@@ -6,6 +6,20 @@ load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("//scripts/src/java/org/oppia/android/scripts/codegen:generate_platform_config_module.bzl", "generate_platform_config_module")
 
 kt_android_library(
+    name = "platform_parameter_initializer_injector",
+    testonly = True,
+    srcs = [
+        "PlatformParameterInitializationInjector.kt",
+        "PlatformParameterInitializationInjectorProvider.kt",
+    ],
+    visibility = ["//:oppia_testing_visibility"],
+    deps = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:controller",
+        "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
+    ],
+)
+
+kt_android_library(
     name = "test_platform_parameter_config_retriever",
     testonly = True,
     srcs = ["TestPlatformParameterConfigRetriever.kt"],

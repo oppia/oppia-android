@@ -34,7 +34,8 @@ class PlatformParameterProcessState @Inject constructor() {
 
   fun retrievePlatformParameterBooleanState(id: PlatformParameterId): Boolean {
     check(::platformParameters.isInitialized) {
-      "Attempting to access platform parameter $id before initialization."
+      "Attempting to access platform parameter $id before initialization." +
+        " If this is a test, is it using OppiaTestRule?"
     }
     val value = platformParameters.getValue(id)
     check(value.valueTypeCase == PlatformParameterValue.ValueTypeCase.BOOLEAN) {
@@ -45,7 +46,8 @@ class PlatformParameterProcessState @Inject constructor() {
 
   fun retrievePlatformParameterIntegerState(id: PlatformParameterId): Int {
     check(::platformParameters.isInitialized) {
-      "Attempting to access platform parameter $id before initialization."
+      "Attempting to access platform parameter $id before initialization." +
+        " If this is a test, is it using OppiaTestRule?"
     }
     val value = platformParameters.getValue(id)
     check(value.valueTypeCase == PlatformParameterValue.ValueTypeCase.INTEGER) {
@@ -56,7 +58,8 @@ class PlatformParameterProcessState @Inject constructor() {
 
   fun retrievePlatformParameterStringState(id: PlatformParameterId): String {
     check(::platformParameters.isInitialized) {
-      "Attempting to access platform parameter $id before initialization."
+      "Attempting to access platform parameter $id before initialization." +
+        " If this is a test, is it using OppiaTestRule?"
     }
     val value = platformParameters.getValue(id)
     check(value.valueTypeCase == PlatformParameterValue.ValueTypeCase.STRING) {
@@ -67,14 +70,16 @@ class PlatformParameterProcessState @Inject constructor() {
 
   fun retrieveFeatureFlagState(id: FeatureFlagId): Boolean {
     check(::featureFlags.isInitialized) {
-      "Attempting to access feature flag $id before initialization."
+      "Attempting to access feature flag $id before initialization." +
+        " If this is a test, is it using OppiaTestRule?"
     }
     return featureFlags.getValue(id)
   }
 
   fun retrieveFeatureFlagSyncStatus(id: FeatureFlagId): SyncStatus {
     check(::featureFlagSyncStatuses.isInitialized) {
-      "Attempting to access feature flag $id sync status before initialization."
+      "Attempting to access feature flag $id sync status before initialization." +
+        " If this is a test, is it using OppiaTestRule?"
     }
     return featureFlagSyncStatuses.getValue(id)
   }

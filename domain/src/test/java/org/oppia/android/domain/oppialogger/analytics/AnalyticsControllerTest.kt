@@ -32,7 +32,7 @@ import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.SWAHILI
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.persistence.PersistentCacheStore

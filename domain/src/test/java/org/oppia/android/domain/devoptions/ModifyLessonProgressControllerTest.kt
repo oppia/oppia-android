@@ -442,7 +442,6 @@ class ModifyLessonProgressControllerTest {
       LogStorageModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,

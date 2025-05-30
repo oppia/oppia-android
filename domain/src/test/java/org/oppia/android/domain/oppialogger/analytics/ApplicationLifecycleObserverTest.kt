@@ -44,7 +44,7 @@ import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.NetworkLoggingInterceptor
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule

@@ -578,7 +578,6 @@ class PerformanceMetricsControllerTest {
       LoggingIdentifierModule::class,
       MetricLogSchedulerModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,

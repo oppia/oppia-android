@@ -174,7 +174,6 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
       NetworkConfigTestModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,

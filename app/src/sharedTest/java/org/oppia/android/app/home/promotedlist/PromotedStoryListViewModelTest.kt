@@ -395,7 +395,6 @@ class PromotedStoryListViewModelTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RatioInputModule::class,
       RetrofitModule::class,

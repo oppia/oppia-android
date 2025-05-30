@@ -204,7 +204,6 @@ class ViewEventLogsActivityTest {
       NumericInputRuleModule::class,
       PerformanceMetricsAssessorModule::class,
       PerformanceMetricsConfigurationsModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RatioInputModule::class,
       RetrofitModule::class,

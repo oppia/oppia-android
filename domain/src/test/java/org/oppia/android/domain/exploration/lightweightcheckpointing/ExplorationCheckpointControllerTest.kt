@@ -20,7 +20,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_I
 import org.oppia.android.app.model.InteractionObject
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.UserAnswer
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -1012,7 +1012,6 @@ class ExplorationCheckpointControllerTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RatioInputModule::class,
       RetrofitModule::class,

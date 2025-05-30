@@ -24,7 +24,7 @@ import org.oppia.android.app.model.OnboardingState
 import org.oppia.android.app.model.PlatformParameterId.FORCED_APP_UPDATE_VERSION_CODE
 import org.oppia.android.app.model.PlatformParameterId.LOWEST_SUPPORTED_API_LEVEL
 import org.oppia.android.app.model.PlatformParameterId.OPTIONAL_APP_UPDATE_VERSION_CODE
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -314,7 +314,6 @@ class DeprecationControllerTest {
       NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class,
       OppiaClockModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,

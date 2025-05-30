@@ -535,7 +535,6 @@ class QuestionPlayerActivityLocalTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       QuestionPlayerActivityLocalTestModule::class,
       RatioInputModule::class,

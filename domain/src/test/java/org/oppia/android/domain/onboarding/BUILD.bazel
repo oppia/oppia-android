@@ -12,8 +12,8 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
@@ -48,8 +48,8 @@ oppia_android_test(
     test_manifest = "//domain:test_manifest",
     deps = [
         "//:dagger",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_test_module",
-        "//data/src/main/java/org/oppia/android/data/backends/gae:prod_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae:retrofit_module",
+        "//data/src/main/java/org/oppia/android/data/backends/gae/testing:network_config_test_module",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:deprecation_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:retriever_prod_module",

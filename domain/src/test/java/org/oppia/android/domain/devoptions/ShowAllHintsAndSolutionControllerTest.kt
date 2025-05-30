@@ -69,7 +69,6 @@ class ShowAllHintsAndSolutionControllerTest {
     modules = [
       ApplicationLifecycleModule::class,
       LoggingIdentifierModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,

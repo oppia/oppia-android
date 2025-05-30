@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExplorationCheckpoint
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
@@ -496,7 +496,6 @@ class ExplorationDataControllerTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RatioInputModule::class,
       RetrofitModule::class,

@@ -1,6 +1,8 @@
 package org.oppia.android.testing
 
+import android.content.Context
 import android.os.Build
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.accessibility.AccessibilityChecks
 import androidx.test.espresso.matcher.ViewMatchers.withClassName
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
@@ -13,11 +15,23 @@ import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
 
 /** JUnit rule to enable [RunOn] test targeting. */
+/**
+ * The primary JUnit rule for enabling most test-only functionality for Oppia tests.
+ *
+ * Including this rule enables two sets of functionality:
+ * - The ability to use [RunOn] for selectively disabling tests in certain conditions.
+ * - The ability to override platform parameters and feature flags.
+ *
+ * Note that if you run into an error like: 'Attempting to access feature flag ... before
+ * initialization' then you need to include this rule in order to ensure platform parameters and
+ * feature flags are correctly initialized for production code.
+ */
 class OppiaTestRule : TestRule {
 
   override fun apply(base: Statement?, description: Description?): Statement {
@@ -29,7 +43,10 @@ class OppiaTestRule : TestRule {
         val currentPlatform = getCurrentPlatform()
         val currentEnvironment = getCurrentBuildEnvironment()
 
+        // Note that the order is important here: flag and parameter overrides must happen before
+        // any injection-level initialization occurs.
         overridePlatformParameterAnnotations(description)
+        initializeTestForPlatformParameterOverrides()
 
         try {
           when {
@@ -51,6 +68,7 @@ class OppiaTestRule : TestRule {
               }
               base?.evaluate()
             }
+
             currentPlatform !in targetPlatforms -> {
               // See https://github.com/junit-team/junit4/issues/116 for context.
               throw AssumptionViolatedException(
@@ -58,12 +76,14 @@ class OppiaTestRule : TestRule {
                   " $currentPlatform"
               )
             }
+
             currentEnvironment !in targetEnvironments -> {
               throw AssumptionViolatedException(
                 "Test targeting ${targetEnvironments.toPluralEnvironmentDescription()} ignored on" +
                   " $currentEnvironment"
               )
             }
+
             else -> throw AssertionError("Reached impossible state in test rule")
           }
         } finally {
@@ -285,6 +305,25 @@ class OppiaTestRule : TestRule {
       boolOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
       intOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
       strOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
+    }
+
+    private fun initializeTestForPlatformParameterOverrides() {
+      val application = ApplicationProvider.getApplicationContext<Context>()
+      check(application is PlatformParameterInitializationInjectorProvider) {
+        "Application class needs to implement PlatformParameterInitializationInjectorProvider:" +
+          " ${application.javaClass.name}."
+      }
+
+      // Wait for parameters to successfully load. Note that this is particularly ordered to avoid a
+      // race condition on priming the underlying platform parameter database and trying to load
+      // parameters too quickly (which can cause a redundant initialization of
+      // PlatformParameterProcessState).
+      val injector = application.getPlatformParameterInitializationInjector()
+      val paramsProvider = injector.getPlatformParameterController().loadParameters()
+      injector.getTestCoroutineDispatchers().runCurrent()
+      injector.getDataProviderTestMonitorFactory()
+        .createMonitor(paramsProvider)
+        .waitForNextSuccessResult()
     }
 
     private fun validatePlatformParameterConflicts(

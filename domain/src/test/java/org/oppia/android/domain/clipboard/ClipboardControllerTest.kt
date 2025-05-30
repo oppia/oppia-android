@@ -271,7 +271,6 @@ class ClipboardControllerTest {
       FakeOppiaClockModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,

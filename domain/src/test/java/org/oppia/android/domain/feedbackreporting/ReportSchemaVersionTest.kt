@@ -177,7 +177,6 @@ class ReportSchemaVersionTest {
       ApplicationLifecycleModule::class,
       FeedbackReportingModule::class,
       LoggingIdentifierModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,

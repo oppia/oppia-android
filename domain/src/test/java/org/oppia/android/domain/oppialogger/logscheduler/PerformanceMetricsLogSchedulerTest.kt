@@ -20,7 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.data.backends.gae.NetworkConfigTestModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
@@ -191,7 +191,6 @@ class PerformanceMetricsLogSchedulerTest {
       NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class,
       PerformanceMetricsConfigurationsModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
