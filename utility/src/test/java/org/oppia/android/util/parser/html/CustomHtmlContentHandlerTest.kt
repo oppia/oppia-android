@@ -414,6 +414,55 @@ class CustomHtmlContentHandlerTest {
     )
   }
 
+
+  @Test
+  fun testParseHtml_withCustomTag_handlesContentDescriptionCorrectly() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.getContentDescription(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
+    assertThat(fakeTagHandler.handleTagCalled).isFalse()
+    assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_withCustomTag_normalParsingCallsHandleTag() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.fromHtml(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleTagCalled).isTrue()
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isFalse()
+    assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_contentDescriptionGeneration_methodCallOrder() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.getContentDescription(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
+    assertThat(fakeTagHandler.handleClosingTagCalled).isTrue()
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
+
+    assertThat(fakeTagHandler.handleOpeningTagCallIndex)
+      .isLessThan(fakeTagHandler.handleClosingTagCallIndex)
+    assertThat(fakeTagHandler.handleClosingTagCallIndex)
+      .isLessThan(fakeTagHandler.handleTagForContentDescriptionCallIndex)
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
@@ -450,6 +499,8 @@ class CustomHtmlContentHandlerTest {
   private class FakeTagHandler : CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1
+    var handleTagForContentDescriptionCalled = false
+    var handleTagForContentDescriptionCallIndex = -1
     var handleOpeningTagCalled = false
     var handleOpeningTagCallIndex = -1
     var handleClosingTagCalled = false
@@ -466,6 +517,17 @@ class CustomHtmlContentHandlerTest {
     ) {
       handleTagCalled = true
       handleTagCallIndex = methodCallCount++
+      this.attributes = attributes
+    }
+
+    override fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
+    ) {
+      handleTagForContentDescriptionCalled = true
+      handleTagForContentDescriptionCallIndex = methodCallCount++
       this.attributes = attributes
     }
 
