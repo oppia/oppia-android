@@ -414,7 +414,6 @@ class CustomHtmlContentHandlerTest {
     )
   }
 
-
   @Test
   fun testParseHtml_withCustomTag_handlesContentDescriptionCorrectly() {
     val fakeTagHandler = FakeTagHandler()
@@ -441,6 +440,21 @@ class CustomHtmlContentHandlerTest {
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
     assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isFalse()
+    assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
+  }
+
+  @Test
+  fun testParseHtml_withNullImageRetriever_callsHandleTagForContentDescription() {
+    val fakeTagHandler = FakeTagHandler()
+
+    CustomHtmlContentHandler.fromHtml(
+      html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
+      imageRetriever = null,
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+    )
+
+    assertThat(fakeTagHandler.handleTagCalled).isFalse()
+    assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
     assertThat(fakeTagHandler.attributes.getValue("custom-attribute")).isEqualTo("value")
   }
 
