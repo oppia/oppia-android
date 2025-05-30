@@ -492,7 +492,7 @@ class MathTagHandlerTest {
   }
 
   @Test
-  fun testHandleTagForContentDescription_withMathMarkupMissingContent_replacesWithGenericDescription() {
+  fun testHandleTagForContentDescription_withMathMarkupMissingContent_replacesWithDescription() {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
       imageRetriever = null,
