@@ -5,7 +5,6 @@ import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.ui.R
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
 /**

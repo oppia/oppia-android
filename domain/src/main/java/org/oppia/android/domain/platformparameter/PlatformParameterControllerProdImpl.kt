@@ -23,6 +23,7 @@ import org.oppia.android.util.extensions.getVersionName
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 
 /**
  * Production implementation for the controller to manage and synchronize platform parameters and
@@ -89,9 +90,7 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     ) { params ->
       // Server names are guaranteed to be unique.
       val paramsByName = params.associateBy { it.remoteServerName }
-      val remoteParametersResponse = checkNotNull(fetchPlatformParametersFromRemote()) {
-        "Failed to fetch platform parameters. Perhaps no network stack is available?"
-      }
+      val remoteParametersResponse = fetchParamsFromRemote()
       check(remoteParametersResponse.isSuccessful) {
         "Failed to fetch platform parameters. Error: ${remoteParametersResponse.errorBody()}."
       }
@@ -100,7 +99,7 @@ class PlatformParameterControllerProdImpl @Inject constructor(
       }
       remoteParameters.forEach { (name, syncValue) ->
         // Only save results corresponding to known flags.
-        paramsByName[name]?.updateFromServer(parseRemoteParameterValue(name, syncValue))
+        paramsByName[name]?.updateFromServer(syncValue.toProto(name))
       }
 
       // Recompute and save the parameters to the local database (but do not update the local memory
@@ -170,7 +169,7 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     ) { platformParameters, featureFlags -> platformParameters + featureFlags }
   }
 
-  private suspend fun fetchPlatformParametersFromRemote(): Response<Map<String, Any>>? {
+  private suspend fun fetchParamsFromRemote(): Response<Map<String, GaePlatformParameterValue>> {
     return withContext(Dispatchers.IO) {
       platformParameterService.getPlatformParametersByVersion(context.getVersionName()).execute()
     }
@@ -261,7 +260,6 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     private const val DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID = "download_remote_parameters"
     private const val SUPPORTED_PLATFORM_PARAMS_PROV_ID = "supported_platform_params"
     private const val SUPPORTED_FEATURE_FLAGS_PROVIDER_ID = "supported_feature_flags"
-    private const val FETCH_FEATURE_FLAG_SYNC_STATUSES_PROVIDER_ID = "feature_flag_sync_statuses"
     private const val LOAD_REMOTE_AND_LOCAL_PLATFORM_PARAMS_PROVIDER_ID =
       "load_remote_and_local_platform_params"
     private const val LOAD_REMOTE_AND_LOCAL_FEATURE_FLAGS_PROVIDER_ID =
@@ -272,23 +270,17 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     private const val LOAD_REMOTE_FEATURE_FLAGS_PROVIDER_ID = "load_remote_feature_flags"
     private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
 
-    private fun parseRemoteParameterValue(name: String, value: Any): PlatformParameterValue {
-      return when (value) {
-        is Boolean -> createBooleanParameterValue(value)
-        is Int -> createIntegerParameterValue(value)
-        is String -> createStringParameterValue(value)
-        else -> error("Remote parameter '$name' has an unsupported value type: $value.")
-      }
+    private fun GaePlatformParameterValue.toProto(name: String): PlatformParameterValue {
+      return PlatformParameterValue.newBuilder().apply {
+        when (this@toProto) {
+          is GaePlatformParameterValue.StringValue -> this.string = value
+          is GaePlatformParameterValue.IntValue -> this.integer = value
+          is GaePlatformParameterValue.BooleanValue -> this.boolean = value
+          GaePlatformParameterValue.UnsupportedValue ->
+            error("Remote parameter '$name' has an unsupported value type: $this.")
+        }
+      }.build()
     }
-
-    private fun createBooleanParameterValue(value: Boolean): PlatformParameterValue =
-      PlatformParameterValue.newBuilder().apply { this.boolean = value }.build()
-
-    private fun createIntegerParameterValue(value: Int): PlatformParameterValue =
-      PlatformParameterValue.newBuilder().apply { this.integer = value }.build()
-
-    private fun createStringParameterValue(value: String): PlatformParameterValue =
-      PlatformParameterValue.newBuilder().apply { this.string = value }.build()
 
     @JvmName("serializeListOfRemotePlatformParameter")
     private fun List<ParameterState.PlatformParameter>.serialize(): List<RemotePlatformParameter> =

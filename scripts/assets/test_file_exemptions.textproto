@@ -4163,10 +4163,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/PlatformParameterTestConstantsModule.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/profile/ProfileTestHelper.kt"
   source_file_is_incompatible_with_code_coverage: true
 }

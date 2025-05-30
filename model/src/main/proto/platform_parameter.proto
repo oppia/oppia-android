@@ -10,7 +10,7 @@ enum PlatformParameterId {
   // Corresponds to a platform parameter whose ID is not known (e.g. invalid or undefined).
   PLATFORM_PARAMETER_ID_UNSPECIFIED = 0;
 
-  // TODO: Finish documentation & update the indexes based on creation date of each.
+  // TODO: Finish documentation.
   SPLASH_SCREEN_WELCOME_MESSAGE = 1;
   SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = 2;
   CACHE_LATEX_RENDERING = 3;
@@ -29,20 +29,22 @@ enum FeatureFlagId {
   // Corresponds to a feature flag whose ID is not known (e.g. invalid or undefined).
   FEATURE_FLAG_ID_UNSPECIFIED = 0;
 
-  // TODO: Finish documentation & update the indexes based on creation date of each.
-  DOWNLOADS_SUPPORT = 1;
-  EXTRA_TOPIC_TABS_UI = 2;
-  LEARNER_STUDY_ANALYTICS = 3;
-  FAST_LANGUAGE_SWITCHING_IN_LESSON = 4;
-  LOGGING_LEARNER_STUDY_IDS = 5;
-  EDIT_ACCOUNTS_OPTIONS_UI = 6;
-  PERFORMANCE_METRICS_COLLECTION = 7;
-  SPOTLIGHT_UI = 8;
-  INTERACTION_CONFIG_CHANGE_STATE_RETENTION = 9;
+  // TODO: Finish documentation.
+  reserved 1; // LANGUAGE_SELECTION_UI.
+  LEARNER_STUDY_ANALYTICS = 2;
+  PERFORMANCE_METRICS_COLLECTION = 3;
+  EDIT_ACCOUNTS_OPTIONS_UI = 4;
+  SPOTLIGHT_UI = 5;
+  EXTRA_TOPIC_TABS_UI = 6;
+  DOWNLOADS_SUPPORT = 7;
+  INTERACTION_CONFIG_CHANGE_STATE_RETENTION = 8;
+  reserved 9; // CONTINUE_BUTTON_ANIMATION.
   APP_AND_OS_DEPRECATION = 10;
-  NPS_SURVEY = 11;
-  ONBOARDING_FLOW_V2 = 12;
-  MULTIPLE_CLASSROOMS = 13;
+  FAST_LANGUAGE_SWITCHING_IN_LESSON = 11;
+  LOGGING_LEARNER_STUDY_IDS = 12;
+  NPS_SURVEY = 13;
+  ONBOARDING_FLOW_V2 = 14;
+  MULTIPLE_CLASSROOMS = 15;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to

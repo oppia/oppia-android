@@ -687,7 +687,10 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagListEventContext
     ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
-        // TODO: Remove the utility.
+        // Note that flag IDs are used instead of names for more compact logging to address Google
+        // Analytics character limits. GA4 limits the characters permitted in a log event parameter
+        // value to a maximum of 100 characters as of March 2025. See:
+        // https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.html#logEvent(java.lang.String,android.os.Bundle)
         val featureFlagIds = featureFlagsList.map { it.id.number }
         val featureFlagSyncStatuses = featureFlagsList.map { it.syncStatus.number }
         val featureFlagEnabledStates = featureFlagsList.map { if (it.isEnabled) 1 else 0 }
