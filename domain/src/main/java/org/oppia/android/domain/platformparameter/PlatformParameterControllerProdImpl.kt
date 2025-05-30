@@ -11,6 +11,7 @@ import org.oppia.android.app.model.RemotePlatformParameter
 import org.oppia.android.app.model.RemotePlatformParameterAndFeatureFlagDatabase
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.backends.gae.api.PlatformParameterService
+import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
@@ -23,7 +24,6 @@ import org.oppia.android.util.extensions.getVersionName
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
 
 /**
  * Production implementation for the controller to manage and synchronize platform parameters and
