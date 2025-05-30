@@ -92,7 +92,6 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
-import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -135,6 +134,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
+import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.question.QuestionModule
 
 /** Tests for [AdministratorControlsActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -173,7 +176,6 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -228,8 +230,6 @@ class AdministratorControlsActivityTest {
   @Test
   @DisableFeatureFlag(EDIT_ACCOUNTS_OPTIONS_UI)
   fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, false)
-
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -613,7 +613,6 @@ class AdministratorControlsActivityTest {
   @Config(qualifiers = "sw600dp")
   @EnableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testAdminControls_selectAdmin_tabletConfigChange_downloadsEnabled_hasNoDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -633,7 +632,6 @@ class AdministratorControlsActivityTest {
   @Config(qualifiers = "sw600dp")
   @EnableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testAdminControls_selectUser_tabletConfigChange_downloadsEnabled_hasDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -654,7 +652,6 @@ class AdministratorControlsActivityTest {
   @Config(qualifiers = "sw600dp")
   @EnableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testAdminControls_selectAdmin_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -676,7 +673,6 @@ class AdministratorControlsActivityTest {
   @Config(qualifiers = "sw600dp")
   @DisableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testAdminControls_selectUser_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -945,6 +941,7 @@ class AdministratorControlsActivityTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
@@ -960,7 +957,8 @@ class AdministratorControlsActivityTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent : ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -969,7 +967,8 @@ class AdministratorControlsActivityTest {
     fun inject(administratorControlsActivityTest: AdministratorControlsActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerAdministratorControlsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -985,5 +984,7 @@ class AdministratorControlsActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

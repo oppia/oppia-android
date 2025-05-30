@@ -38,7 +38,6 @@ kt_android_library(
     visibility = ["//:oppia_testing_visibility"],
     deps = [
         "//data/src/main/java/org/oppia/android/data/backends/gae:network_config_annotations",
-        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_constants",
         "//third_party:com_squareup_okhttp3_mockwebserver",
         "//third_party:javax_inject_javax_inject",
         "//third_party:moshi",

@@ -134,6 +134,7 @@ import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigFastShowTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -6278,6 +6279,7 @@ class StateFragmentTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,

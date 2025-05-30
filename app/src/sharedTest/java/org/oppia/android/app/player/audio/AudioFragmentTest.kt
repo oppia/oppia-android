@@ -76,6 +76,7 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
@@ -600,6 +601,7 @@ class AudioFragmentTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,

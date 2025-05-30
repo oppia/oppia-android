@@ -40,6 +40,7 @@ import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationDataController
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.ExplorationCheckpointNotFoundException
 import org.oppia.android.domain.exploration.lightweightcheckpointing.ExplorationCheckpointController.OutdatedExplorationCheckpointException
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
@@ -1013,6 +1014,7 @@ class ExplorationCheckpointControllerTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,

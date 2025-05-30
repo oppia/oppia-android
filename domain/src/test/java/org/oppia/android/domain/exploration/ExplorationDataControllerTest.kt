@@ -497,6 +497,7 @@ class ExplorationDataControllerTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,

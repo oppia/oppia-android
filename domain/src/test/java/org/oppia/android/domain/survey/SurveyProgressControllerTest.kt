@@ -25,6 +25,7 @@ import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
+import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -579,6 +580,7 @@ class SurveyProgressControllerTest {
       NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,

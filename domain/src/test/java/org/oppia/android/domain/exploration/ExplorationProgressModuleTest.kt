@@ -102,6 +102,7 @@ class ExplorationProgressModuleTest {
       NetworkConfigTestModule::class,
       NetworkConnectionUtilDebugModule::class,
       PlatformParameterTestModule::class,
+      QuestionModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,
