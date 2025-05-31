@@ -33,8 +33,154 @@ message PlatformParameter {
   }
 }
 
-// Format of platform parameters stored on disk. It closely resembles the JSON response in cache.
-message RemotePlatformParameterDatabase {
-  // Platform parameters cached from the backend.
-  repeated PlatformParameter platform_parameter = 1;
+// Represents a forever-unique reference to a specific platform parameter.
+enum PlatformParameterId {
+  // Corresponds to a platform parameter whose ID is not known (e.g. invalid or undefined).
+  PLATFORM_PARAMETER_ID_UNSPECIFIED = 0;
+
+  // TODO: Finish documentation.
+  SPLASH_SCREEN_WELCOME_MESSAGE = 1;
+  SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = 2;
+  CACHE_LATEX_RENDERING = 3;
+  PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES = 4;
+  PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES = 5;
+  PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES = 6;
+  OPTIONAL_APP_UPDATE_VERSION_CODE = 7;
+  FORCED_APP_UPDATE_VERSION_CODE = 8;
+  LOWEST_SUPPORTED_API_LEVEL = 9;
+  NPS_SURVEY_GRACE_PERIOD_IN_DAYS = 10;
+  NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES = 11;
+}
+
+// Represents a forever-unique reference to a specific feature flag.
+enum FeatureFlagId {
+  // Corresponds to a feature flag whose ID is not known (e.g. invalid or undefined).
+  FEATURE_FLAG_ID_UNSPECIFIED = 0;
+
+  // TODO: Finish documentation.
+  reserved 1; // LANGUAGE_SELECTION_UI.
+  LEARNER_STUDY_ANALYTICS = 2;
+  PERFORMANCE_METRICS_COLLECTION = 3;
+  EDIT_ACCOUNTS_OPTIONS_UI = 4;
+  SPOTLIGHT_UI = 5;
+  EXTRA_TOPIC_TABS_UI = 6;
+  DOWNLOADS_SUPPORT = 7;
+  INTERACTION_CONFIG_CHANGE_STATE_RETENTION = 8;
+  reserved 9; // CONTINUE_BUTTON_ANIMATION.
+  APP_AND_OS_DEPRECATION = 10;
+  FAST_LANGUAGE_SWITCHING_IN_LESSON = 11;
+  LOGGING_LEARNER_STUDY_IDS = 12;
+  NPS_SURVEY = 13;
+  ONBOARDING_FLOW_V2 = 14;
+  MULTIPLE_CLASSROOMS = 15;
+}
+
+// Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to
+// configure application behavior.
+message PlatformParameterDefinition {
+  // The unique ID of this platform parameter.
+  PlatformParameterId id = 1;
+
+  // The textual name used to identify the parameter in Oppia web. Note that this must be a forever
+  // unique representation among all platform parameters and feature flags. If absent then the
+  // parameter will never be remotely synced.
+  string remote_server_name = 2;
+
+  // The default value of the parameter that should be used if there's no remotely synced version.
+  PlatformParameterValue default_value = 3;
+}
+
+// Corresponds to a remotely synced platform parameter.
+message RemotePlatformParameter {
+  // The unique ID of this platform parameter which corresponds to a PlatformParameterDefinition.
+  PlatformParameterId id = 1;
+
+  // The remotely synced value of this parameter, or absent/default if never yet synced.
+  PlatformParameterValue remote_value = 2;
+
+  // Indicates the sync status of the platform parameter.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to an actual platform parameter value that directly tweaks particular app behavior.
+message PlatformParameterValue {
+  // The specific value type of the parameter.
+  oneof value_type {
+    // The boolean-typed value of the parameter.
+    bool boolean = 1;
+
+    // The integer-typed value of the parameter.
+    int32 integer = 2;
+
+    // The string-typed value of the parameter.
+    string string = 3;
+  }
+}
+
+// Corresponds to a compile-time definition of a feature flag which is a mechanism by which to gate
+// whether a specific feature is enabled.
+message FeatureFlagDefinition {
+  // The unique ID of this feature flag.
+  FeatureFlagId id = 1;
+
+  // The textual name used to identify the flag in Oppia web. Note that this must be a forever
+  // unique representation among all platform parameters and feature flags. If absent then the flag
+  // will never be remotely synced.
+  string remote_server_name = 2;
+
+  // Whether or not the feature is enabled by default if there's no remotely synced record.
+  bool default_is_enabled = 3;
+}
+
+message RemoteFeatureFlag {
+  // The unique ID of this feature flag which corresponds to a FeatureFlagDefinition.
+  FeatureFlagId id = 1;
+
+  // Whether or not the feature flag should be enabled as indicated by the remote server. Note that
+  // this value only has meaning if SyncStatus indicates that there's been at least one successful
+  // remote sync for this feature flag.
+  bool remote_is_enabled = 2;
+
+  // Indicates the sync status of the feature flag.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to the latest sync status for platform parameters and feature flags.
+enum SyncStatus {
+  // Indicates that the sync status isn't yet known.
+  SYNC_STATUS_UNSPECIFIED = 0;
+
+  // Indicates that the parameter/flag isn't yet synced with the remote server.
+  NOT_SYNCED_FROM_SERVER = 1;
+
+  // Indicates the parameter/flag's value has been successfully synced with the remote server.
+  SYNCED_FROM_SERVER = 2;
+}
+
+// Defines the list of supported platform parameters in the app.
+message SupportedPlatformParameters {
+  // The list of platform parameter definitions, one for each supported parameter. If any parameters
+  // are not represented in this list then it's assumed that they are not supported (even if there
+  // are corresponding definitions in Oppia web). Duplicate references to the same
+  // PlatformParameterId will result in a runtime test failure.
+  repeated PlatformParameterDefinition platform_parameter_definition = 1;
+}
+
+// Defines the list of supported feature flags in the app.
+message SupportedFeatureFlags {
+  // The list of feature flag definitions, one for each supported flag. If any flags are not
+  // represented in this list then it's assumed that they are not supported (even if there are
+  // corresponding definitions in Oppia web). Duplicate references to the same FeatureFlagId will
+  // result in a runtime test failure.
+  repeated FeatureFlagDefinition feature_flag_definition = 1;
+}
+
+// The database for storing results from remotely syncing platform parameters and feature flags with
+// the Oppia web server.
+message RemotePlatformParameterAndFeatureFlagDatabase {
+  // The remotely synced platform parameters.
+  repeated RemotePlatformParameter remote_platform_parameter = 1;
+
+  // The remotely synced feature flags.
+  repeated RemoteFeatureFlag remote_feature_flag = 2;
 }

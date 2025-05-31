@@ -15,6 +15,12 @@ _LANGUAGE_SUPPORT_LEVELS = [
     "production",
 ]
 
+_FEATURE_FLAG_OVERRIDE_TYPES = [
+    "alpha",
+    "beta",
+    "ga",
+]
+
 _SUPPORTED_LANGUAGES_CONFIG_ASSETS = {
     support_level: generate_proto_binary_assets(
         name = "%s_supported_languages_config_assets" % support_level,
@@ -43,6 +49,60 @@ _SUPPORTED_REGIONS_CONFIG_ASSETS = {
     for support_level in _LANGUAGE_SUPPORT_LEVELS
 }
 
+_PLATFORM_PARAMETERS_CONFIG_ASSETS = generate_proto_binary_assets(
+    name = "platform_parameters_config_assets",
+    asset_dir = "platform",
+    name_prefix = "platform_parameters_config_assets",
+    names = ["platform_parameters"],
+    proto_dep_bazel_target_prefix = "//model/src/main/proto",
+    proto_dep_name = "platform_parameter",
+    proto_package = "model",
+    proto_type_name = "SupportedPlatformParameters",
+)
+
+_FEATURE_FLAG_CONFIG_ASSETS = generate_proto_binary_assets(
+    name = "feature_flag_config_assets",
+    asset_dir = "platform",
+    name_prefix = "feature_flag_config_assets",
+    names = ["feature_flags"],
+    proto_dep_bazel_target_prefix = "//model/src/main/proto",
+    proto_dep_name = "platform_parameter",
+    proto_package = "model",
+    proto_type_name = "SupportedFeatureFlags",
+)
+
+_FEATURE_FLAG_OVERRIDE_CONFIG_ASSETS = {
+    override_type: generate_proto_binary_assets(
+        name = "%s_feature_flag_override_config_assets" % override_type,
+        asset_dir = "platform/featureoverrides/%s" % override_type,
+        name_prefix = "%s_feature_flag_override_config_assets" % override_type,
+        names = ["feature_flags_overrides"],
+        proto_dep_bazel_target_prefix = "//model/src/main/proto",
+        proto_dep_name = "platform_parameter",
+        proto_package = "model",
+        proto_type_name = "SupportedFeatureFlags",
+    )
+    for override_type in _FEATURE_FLAG_OVERRIDE_TYPES
+}
+
+filegroup(
+    name = "platform_parameter_definitions",
+    srcs = _PLATFORM_PARAMETERS_CONFIG_ASSETS,
+    visibility = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:__subpackages__",
+        "//scripts:oppia_script_binary_visibility",
+    ],
+)
+
+filegroup(
+    name = "feature_flag_definitions",
+    srcs = _FEATURE_FLAG_CONFIG_ASSETS,
+    visibility = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:__subpackages__",
+        "//scripts:oppia_script_binary_visibility",
+    ],
+)
+
 [
     android_library(
         name = "%s_languages_config" % support_level,
@@ -56,4 +116,40 @@ _SUPPORTED_REGIONS_CONFIG_ASSETS = {
         ],
     )
     for support_level in _LANGUAGE_SUPPORT_LEVELS
+]
+
+android_library(
+    name = "platform_parameters_config",
+    assets = [":platform_parameter_definitions"],
+    assets_dir = "platform",
+    manifest = "AndroidManifest.xml",
+    visibility = [
+        "//:oppia_binary_visibility",
+        "//:oppia_testing_visibility",
+    ],
+)
+
+android_library(
+    name = "feature_flags_config",
+    assets = [":feature_flag_definitions"],
+    assets_dir = "platform",
+    manifest = "AndroidManifest.xml",
+    visibility = [
+        "//:oppia_binary_visibility",
+        "//:oppia_testing_visibility",
+    ],
+)
+
+[
+    android_library(
+        name = "%s_feature_flags_override_config" % override_type,
+        assets = _FEATURE_FLAG_OVERRIDE_CONFIG_ASSETS[override_type],
+        assets_dir = "platform/featureoverrides/%s" % override_type,
+        manifest = "AndroidManifest.xml",
+        visibility = [
+            "//:oppia_binary_visibility",
+            "//:oppia_testing_visibility",
+        ],
+    )
+    for override_type in _FEATURE_FLAG_OVERRIDE_TYPES
 ]
