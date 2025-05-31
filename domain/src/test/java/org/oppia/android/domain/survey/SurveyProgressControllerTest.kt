@@ -9,7 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,10 +27,11 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.FakeFirestoreEventLogger
@@ -63,11 +63,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SurveyProgressControllerTest.TestApplication::class)
+@EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
 class SurveyProgressControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -94,14 +92,7 @@ class SurveyProgressControllerTest {
 
   @Before
   fun setUp() {
-    // Enable the study by default in tests.
-    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -593,7 +584,9 @@ class SurveyProgressControllerTest {
     ]
   )
 
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -605,7 +598,10 @@ class SurveyProgressControllerTest {
     fun inject(surveyProgressControllerTest: SurveyProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerSurveyProgressControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -617,6 +613,8 @@ class SurveyProgressControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   companion object {

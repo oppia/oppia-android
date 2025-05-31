@@ -51,7 +51,8 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.TEST_SKILL_ID_0
 import org.oppia.android.domain.topic.TEST_SKILL_ID_1
@@ -98,8 +99,6 @@ private const val TOLERANCE = 1e-5
 class QuestionAssessmentProgressControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var questionTrainingController: QuestionTrainingController
   @Inject lateinit var questionAssessmentProgressController: QuestionAssessmentProgressController
@@ -1696,7 +1695,9 @@ class QuestionAssessmentProgressControllerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1708,7 +1709,10 @@ class QuestionAssessmentProgressControllerTest {
     fun inject(controllerTest: QuestionAssessmentProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerQuestionAssessmentProgressControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1720,6 +1724,8 @@ class QuestionAssessmentProgressControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   private companion object {

@@ -38,7 +38,8 @@ import org.oppia.android.domain.oppialogger.analytics.testing.FakeLogScheduler
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeExceptionLogger
@@ -70,9 +71,6 @@ import javax.inject.Singleton
 @Config(application = LogReportWorkManagerInitializerTest.TestApplication::class)
 class LogReportWorkManagerInitializerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var logUploadWorkerFactory: LogUploadWorkerFactory
@@ -349,7 +347,9 @@ class LogReportWorkManagerInitializerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -360,7 +360,10 @@ class LogReportWorkManagerInitializerTest {
     fun inject(logUploadWorkRequestTest: LogReportWorkManagerInitializerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLogReportWorkManagerInitializerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -372,5 +375,7 @@ class LogReportWorkManagerInitializerTest {
     }
 
     override fun getDataProvidersInjector() = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

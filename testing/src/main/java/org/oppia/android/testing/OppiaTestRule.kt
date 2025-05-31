@@ -1,5 +1,6 @@
 package org.oppia.android.testing
 
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import androidx.test.core.app.ApplicationProvider
@@ -15,12 +16,13 @@ import org.junit.AssumptionViolatedException
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
+import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.robolectric.annotation.Config
 
 private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
 
-/** JUnit rule to enable [RunOn] test targeting. */
 /**
  * The primary JUnit rule for enabling most test-only functionality for Oppia tests.
  *
@@ -33,10 +35,13 @@ private const val DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE = true
  * feature flags are correctly initialized for production code.
  */
 class OppiaTestRule : TestRule {
+  private lateinit var currentDescription: Description
 
   override fun apply(base: Statement?, description: Description?): Statement {
     return object : Statement() {
       override fun evaluate() {
+        currentDescription = checkNotNull(description) { "Failed to receive description for test." }
+
         val areAccessibilityChecksEnabled = description.areAccessibilityChecksEnabled()
         val targetPlatforms = description.getTargetPlatforms()
         val targetEnvironments = description.getTargetEnvironments()
@@ -46,7 +51,7 @@ class OppiaTestRule : TestRule {
         // Note that the order is important here: flag and parameter overrides must happen before
         // any injection-level initialization occurs.
         overridePlatformParameterAnnotations(description)
-        initializeTestForPlatformParameterOverrides()
+        initializeTestForPlatformParameterOverrides(ApplicationProvider.getApplicationContext())
 
         try {
           when {
@@ -93,6 +98,68 @@ class OppiaTestRule : TestRule {
     }
   }
 
+  // TODO: Replace all other execute/simulate in previous app calls with this one.
+  /**
+   * Creates a separate test application component and executes the specified block in a way that
+   * complies with existing platform parameter and feature flag overrides for the current test.
+   *
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * This should be called before any primary application setup to avoid undefined behavior in
+   * production code (i.e. it should be run at the very beginning of the test).
+   *
+   * Note that only dependencies fetched from the specified [C] application component should be
+   * used, not any class-level injected dependencies as these won't yet be defined.
+   */
+  inline fun <reified C : ApplicationComponent> executeInPreviousAppInstance(block: (C) -> Unit) {
+    val testClass = getCurrentTestClass()
+    val applicationClass = checkNotNull(testClass.getAnnotation(Config::class.java)) {
+      "Expected test class to include Robolectric configuration: ${testClass.name}."
+    }.application.java
+    val testApplication = applicationClass.getDeclaredConstructor().newInstance()
+
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
+    val attachBaseContext =
+      applicationClass.getDeclaredMethod("attachBaseContext", Context::class.java)
+    // Force attachBaseContext to be accessible to avoid tests needing to do it manually.
+    attachBaseContext.isAccessible = true
+    attachBaseContext.invoke(testApplication, ApplicationProvider.getApplicationContext())
+
+    // The test application already creates its own component. Reuse that to avoid creating multiple
+    // copies of the Dagger graph since only two should exist: one for the "previous application"
+    // run and one for the main part of the test.
+    val initializationProvider = testApplication as PlatformParameterInitializationInjectorProvider
+    val applicationComponent =
+      initializationProvider.getPlatformParameterInitializationInjector() as C
+
+    // Ensure overrides are initialized, then run the block that should be run in a "prior app run."
+    initializeTestForPlatformParameterOverrides(testApplication)
+    block(applicationComponent)
+  }
+
+  fun getCurrentTestClass(): Class<*> =
+    checkNotNull(currentDescription.testClass) { "Expected test class from JUnit description." }
+
+  fun initializeTestForPlatformParameterOverrides(application: Application) {
+    check(application is PlatformParameterInitializationInjectorProvider) {
+      "Application class needs to implement PlatformParameterInitializationInjectorProvider:" +
+        " ${application.javaClass.name}."
+    }
+
+    // Wait for parameters to successfully load. Note that this is particularly ordered to avoid a
+    // race condition on priming the underlying platform parameter database and trying to load
+    // parameters too quickly (which can cause a redundant initialization of
+    // PlatformParameterProcessState).
+    val injector = application.getPlatformParameterInitializationInjector()
+    val paramsProvider = injector.getPlatformParameterController().loadParameters()
+    injector.getTestCoroutineDispatchers().runCurrent()
+    injector.getDataProviderTestMonitorFactory()
+      .createMonitor(paramsProvider)
+      .waitForNextSuccessResult()
+  }
+
   private fun getCurrentPlatform(): TestPlatform {
     val fingerprint = try {
       Build.FINGERPRINT
@@ -121,9 +188,9 @@ class OppiaTestRule : TestRule {
       return if (size > 1) "platforms ${this.joinToString()}" else "platform ${this.first()}"
     }
 
-    private fun Description?.getTargetPlatforms(): List<TestPlatform> {
-      val methodTargetPlatforms = this?.getTargetTestPlatforms()
-      val classTargetPlatforms = this?.testClass?.getTargetTestPlatforms()
+    private fun Description.getTargetPlatforms(): List<TestPlatform> {
+      val methodTargetPlatforms = this.getTargetTestPlatforms()
+      val classTargetPlatforms = this.testClass?.getTargetTestPlatforms()
       return methodTargetPlatforms ?: classTargetPlatforms ?: TestPlatform.values().toList()
     }
 
@@ -139,9 +206,9 @@ class OppiaTestRule : TestRule {
       return if (size > 1) "environments ${this.joinToString()}" else "environment ${this.first()}"
     }
 
-    private fun Description?.getTargetEnvironments(): List<BuildEnvironment> {
-      val methodBuildEnvironments = this?.getTargetBuildEnvironments()
-      val classBuildEnvironments = this?.testClass?.getTargetBuildEnvironments()
+    private fun Description.getTargetEnvironments(): List<BuildEnvironment> {
+      val methodBuildEnvironments = this.getTargetBuildEnvironments()
+      val classBuildEnvironments = this.testClass?.getTargetBuildEnvironments()
       return methodBuildEnvironments ?: classBuildEnvironments ?: BuildEnvironment.values().toList()
     }
 
@@ -153,28 +220,27 @@ class OppiaTestRule : TestRule {
       return getAnnotation(RunOn::class.java)?.buildEnvironments?.toList()
     }
 
-    private fun Description?.areAccessibilityChecksEnabled(): Boolean {
-      val methodAccessibilityStatus = this?.areAccessibilityTestsEnabledForMethod()
-      val classAccessibilityStatus = this?.testClass?.areAccessibilityTestsEnabledForClass()
-      return methodAccessibilityStatus ?: classAccessibilityStatus
-        ?: DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE
+    private fun Description.areAccessibilityChecksEnabled(): Boolean {
+      return areAccessibilityTestsEnabledForMethod() ||
+        testClass.areAccessibilityTestsEnabledForClass() ||
+        DEFAULT_ACCESSIBILITY_CHECKS_ENABLED_STATE
     }
 
     private fun Description.areAccessibilityTestsEnabledForMethod(): Boolean {
       return getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
 
-    private fun <T> Class<T>.areAccessibilityTestsEnabledForClass(): Boolean {
-      return getAnnotation(DisableAccessibilityChecks::class.java) == null
+    private fun <T> Class<T>?.areAccessibilityTestsEnabledForClass(): Boolean {
+      return this?.getAnnotation(DisableAccessibilityChecks::class.java) == null
     }
 
-    private fun overridePlatformParameterAnnotations(description: Description?) {
+    private fun overridePlatformParameterAnnotations(description: Description) {
       val enabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
+        description.testClass?.annotations?.toList(),
         EnableFeatureFlag::class.java
       )
       val disabledClassLevelFeatureFlags = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
+        description.testClass?.annotations?.toList(),
         DisableFeatureFlag::class.java
       )
       validatePlatformParameterConflicts(
@@ -183,15 +249,15 @@ class OppiaTestRule : TestRule {
       )
 
       val enabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(
-        description?.annotations,
+        description.annotations,
         EnableFeatureFlag::class.java
       )
       val disabledMethodLevelFeatureFlags = extractParametersAndFeatureFlags(
-        description?.annotations,
+        description.annotations,
         DisableFeatureFlag::class.java
       )
       val resetFeatureFlagToDefault = extractParametersAndFeatureFlags(
-        description?.annotations,
+        description.annotations,
         ResetFeatureFlagToDefault::class.java
       )
       validatePlatformParameterConflicts(
@@ -201,15 +267,15 @@ class OppiaTestRule : TestRule {
       )
 
       val overriddenClassLevelBoolParameters = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
+        description.testClass?.annotations?.toList(),
         OverrideBoolParameter::class.java
       )
       val overriddenClassLevelIntParameters = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
+        description.testClass?.annotations?.toList(),
         OverrideIntParameter::class.java
       )
       val overriddenClassLevelStringParameters = extractParametersAndFeatureFlags(
-        description?.testClass?.annotations?.toList(),
+        description.testClass?.annotations?.toList(),
         OverrideStringParameter::class.java
       )
       validatePlatformParameterConflicts(
@@ -224,15 +290,15 @@ class OppiaTestRule : TestRule {
       )
 
       val overriddenMethodLevelBoolParameters = extractParametersAndFeatureFlags(
-        description?.annotations,
+        description.annotations,
         OverrideBoolParameter::class.java
       )
       val overriddenMethodLevelIntParameters = extractParametersAndFeatureFlags(
-        description?.annotations,
+        description.annotations,
         OverrideIntParameter::class.java
       )
       val overriddenMethodLevelStringParameters = extractParametersAndFeatureFlags(
-        description?.annotations,
+        description.annotations,
         OverrideStringParameter::class.java
       )
       validatePlatformParameterConflicts(
@@ -305,25 +371,6 @@ class OppiaTestRule : TestRule {
       boolOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
       intOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
       strOverrides.forEach(TestPlatformParameterConfigRetriever.Companion::setParameterOverride)
-    }
-
-    private fun initializeTestForPlatformParameterOverrides() {
-      val application = ApplicationProvider.getApplicationContext<Context>()
-      check(application is PlatformParameterInitializationInjectorProvider) {
-        "Application class needs to implement PlatformParameterInitializationInjectorProvider:" +
-          " ${application.javaClass.name}."
-      }
-
-      // Wait for parameters to successfully load. Note that this is particularly ordered to avoid a
-      // race condition on priming the underlying platform parameter database and trying to load
-      // parameters too quickly (which can cause a redundant initialization of
-      // PlatformParameterProcessState).
-      val injector = application.getPlatformParameterInitializationInjector()
-      val paramsProvider = injector.getPlatformParameterController().loadParameters()
-      injector.getTestCoroutineDispatchers().runCurrent()
-      injector.getDataProviderTestMonitorFactory()
-        .createMonitor(paramsProvider)
-        .waitForNextSuccessResult()
     }
 
     private fun validatePlatformParameterConflicts(

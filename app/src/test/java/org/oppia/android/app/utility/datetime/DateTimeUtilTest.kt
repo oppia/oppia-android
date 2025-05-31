@@ -57,6 +57,8 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -273,7 +275,9 @@ class DateTimeUtilTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -285,7 +289,11 @@ class DateTimeUtilTest {
     fun inject(dateTimeUtilTest: DateTimeUtilTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerDateTimeUtilTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -301,5 +309,7 @@ class DateTimeUtilTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

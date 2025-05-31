@@ -40,7 +40,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_1
@@ -90,8 +91,6 @@ import javax.inject.Singleton
 class ExplorationDataControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -510,7 +509,9 @@ class ExplorationDataControllerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -522,7 +523,10 @@ class ExplorationDataControllerTest {
     fun inject(explorationDataControllerTest: ExplorationDataControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerExplorationDataControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -534,5 +538,7 @@ class ExplorationDataControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

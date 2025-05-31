@@ -19,6 +19,7 @@ kt_android_library(
     ],
 )
 
+# TODO: Remove references to this.
 kt_android_library(
     name = "test_platform_parameter_config_retriever",
     testonly = True,

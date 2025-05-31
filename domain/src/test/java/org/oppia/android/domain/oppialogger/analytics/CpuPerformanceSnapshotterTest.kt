@@ -9,7 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,9 +23,9 @@ import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakePerformanceMetricAssessor
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
@@ -70,9 +69,6 @@ private const val TEST_CPU_USAGE_TWO = 0.32192
 class CpuPerformanceSnapshotterTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
-
   @Inject
   lateinit var cpuPerformanceSnapshotter: CpuPerformanceSnapshotter
 
@@ -102,13 +98,7 @@ class CpuPerformanceSnapshotterTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(PERFORMANCE_METRICS_COLLECTION, true)
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -525,7 +515,9 @@ class CpuPerformanceSnapshotterTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -536,7 +528,10 @@ class CpuPerformanceSnapshotterTest {
     fun inject(cpuPerformanceSnapshotterTest: CpuPerformanceSnapshotterTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerCpuPerformanceSnapshotterTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -548,5 +543,7 @@ class CpuPerformanceSnapshotterTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

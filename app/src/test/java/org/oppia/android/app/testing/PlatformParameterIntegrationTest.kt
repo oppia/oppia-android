@@ -64,6 +64,8 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorker
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerFactory
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -323,7 +325,9 @@ class PlatformParameterIntegrationTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -332,7 +336,11 @@ class PlatformParameterIntegrationTest {
     fun inject(platformParameterIntegrationTest: PlatformParameterIntegrationTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerPlatformParameterIntegrationTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -348,5 +356,7 @@ class PlatformParameterIntegrationTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

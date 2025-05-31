@@ -72,6 +72,8 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -550,7 +552,9 @@ class ThirdPartyDependencyListFragmentTest {
     ]
   )
 
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
 
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
@@ -560,7 +564,11 @@ class ThirdPartyDependencyListFragmentTest {
     fun inject(thirdPartyDependencyListFragmentTest: ThirdPartyDependencyListFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerThirdPartyDependencyListFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -576,5 +584,7 @@ class ThirdPartyDependencyListFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

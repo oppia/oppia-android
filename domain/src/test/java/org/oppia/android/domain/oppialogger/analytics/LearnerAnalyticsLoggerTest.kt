@@ -42,7 +42,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
@@ -97,9 +98,6 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var learnerAnalyticsLogger: LearnerAnalyticsLogger
@@ -2141,7 +2139,9 @@ class LearnerAnalyticsLoggerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -2152,7 +2152,10 @@ class LearnerAnalyticsLoggerTest {
     fun inject(test: LearnerAnalyticsLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLearnerAnalyticsLoggerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -2164,5 +2167,7 @@ class LearnerAnalyticsLoggerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

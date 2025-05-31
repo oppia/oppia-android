@@ -19,6 +19,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.exceptions.verification.NeverWantedButInvoked
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.assertThrows
@@ -1151,7 +1153,9 @@ class DataProviderTestMonitorTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1163,7 +1167,10 @@ class DataProviderTestMonitorTest {
     fun inject(dataProviderTestMonitorTest: DataProviderTestMonitorTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerDataProviderTestMonitorTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1175,5 +1182,7 @@ class DataProviderTestMonitorTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

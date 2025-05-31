@@ -67,7 +67,8 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -119,8 +120,6 @@ class ProfileAndDeviceIdActivityTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
@@ -265,7 +264,9 @@ class ProfileAndDeviceIdActivityTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -274,7 +275,11 @@ class ProfileAndDeviceIdActivityTest {
     fun inject(test: ProfileAndDeviceIdActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileAndDeviceIdActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -290,5 +295,7 @@ class ProfileAndDeviceIdActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

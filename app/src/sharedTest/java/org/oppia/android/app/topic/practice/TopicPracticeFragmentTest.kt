@@ -90,8 +90,9 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.FeatureFlag
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
@@ -156,7 +157,6 @@ class TopicPracticeFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     skillIdList.add("5RM9KPfQxobH")
@@ -579,7 +579,9 @@ class TopicPracticeFragmentTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -588,7 +590,11 @@ class TopicPracticeFragmentTest {
     fun inject(topicPracticeFragmentTest: TopicPracticeFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerTopicPracticeFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -604,5 +610,7 @@ class TopicPracticeFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

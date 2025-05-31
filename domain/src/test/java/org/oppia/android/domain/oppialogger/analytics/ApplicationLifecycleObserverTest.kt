@@ -16,7 +16,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -72,9 +71,8 @@ import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -141,8 +139,6 @@ class ApplicationLifecycleObserverTest {
 
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var loggingIdentifierController: LoggingIdentifierController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -172,11 +168,6 @@ class ApplicationLifecycleObserverTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -437,8 +428,8 @@ class ApplicationLifecycleObserverTest {
   }
 
   @Test
+  @EnableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testObserver_onAppInForeground_logsFeatureFlags() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
 
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
     val sessionIdProvider = loggingIdentifierController.getAppSessionId()
@@ -742,7 +733,8 @@ class ApplicationLifecycleObserverTest {
     Application(),
     DataProvidersInjectorProvider,
     ActivityComponentFactory,
-    ApplicationInjectorProvider {
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerApplicationLifecycleObserverTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -760,5 +752,7 @@ class ApplicationLifecycleObserverTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

@@ -32,6 +32,7 @@ kt_android_library(
     manifest = "src/main/AndroidManifest.xml",
     visibility = ["//visibility:public"],
     deps = [
+        "//app/src/main/java/org/oppia/android/app/application:application_component",
         "//domain",
         "//domain/src/main/java/org/oppia/android/domain/classify:interactions_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:platform_parameter_initializer_injector",

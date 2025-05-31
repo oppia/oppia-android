@@ -8,7 +8,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,9 +20,9 @@ import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -65,8 +64,6 @@ import javax.inject.Singleton
 class FeatureFlagsLoggerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
@@ -75,11 +72,6 @@ class FeatureFlagsLoggerTest {
   @Parameter lateinit var flagId: String
 
   private val flagIdParam get() = FeatureFlagId.valueOf(flagId)
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
-  }
 
   @Test
   fun testLogFeatureFlags_logFeatureFlags_hasEmptyUserUuid() {
@@ -109,8 +101,8 @@ class FeatureFlagsLoggerTest {
   }
 
   @Test
+  @EnableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testLogFeatureFlags_withEnabled_logsCorrectValues() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
     setUpTestApplicationComponent()
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
@@ -127,8 +119,8 @@ class FeatureFlagsLoggerTest {
   }
 
   @Test
+  @DisableFeatureFlag(DOWNLOADS_SUPPORT)
   fun testLogFeatureFlags_withDisabled_logsCorrectValues() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, false)
     setUpTestApplicationComponent()
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
@@ -255,7 +247,9 @@ class FeatureFlagsLoggerTest {
     ]
   )
 
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -266,7 +260,10 @@ class FeatureFlagsLoggerTest {
     fun inject(featureFlagLoggerTest: FeatureFlagsLoggerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerFeatureFlagsLoggerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -278,5 +275,7 @@ class FeatureFlagsLoggerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

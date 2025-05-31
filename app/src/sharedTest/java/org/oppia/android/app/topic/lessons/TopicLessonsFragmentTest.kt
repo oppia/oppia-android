@@ -105,8 +105,9 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.FeatureFlag
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.spotlight.SpotlightStateController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -193,7 +194,6 @@ class TopicLessonsFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, true)
     Intents.init()
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1476,7 +1476,9 @@ class TopicLessonsFragmentTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -1485,7 +1487,11 @@ class TopicLessonsFragmentTest {
     fun inject(topicLessonsFragmentTest: TopicLessonsFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerTopicLessonsFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1501,5 +1507,7 @@ class TopicLessonsFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

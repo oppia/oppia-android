@@ -15,6 +15,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.ExceptionLog.ExceptionType
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -354,7 +356,9 @@ class ExceptionsControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -365,7 +369,10 @@ class ExceptionsControllerTest {
     fun inject(exceptionsControllerTest: ExceptionsControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerExceptionsControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -377,5 +384,7 @@ class ExceptionsControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

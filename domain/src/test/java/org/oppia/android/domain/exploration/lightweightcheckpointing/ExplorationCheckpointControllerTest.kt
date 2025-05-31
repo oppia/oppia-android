@@ -49,7 +49,8 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
@@ -116,8 +117,6 @@ private const val TEST_CHECKPOINTING_FAKE_EXP_ID = "test_checkpointing_fake_expl
 class ExplorationCheckpointControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
   @Inject lateinit var fakeOppiaClock: FakeOppiaClock
@@ -1027,7 +1026,9 @@ class ExplorationCheckpointControllerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1038,7 +1039,10 @@ class ExplorationCheckpointControllerTest {
     fun inject(explorationCheckpointControllerTest: ExplorationCheckpointControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerExplorationCheckpointControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1050,5 +1054,7 @@ class ExplorationCheckpointControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

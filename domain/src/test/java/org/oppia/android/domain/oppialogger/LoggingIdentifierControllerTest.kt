@@ -24,6 +24,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.DeviceContextDatabase
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -485,7 +487,9 @@ class LoggingIdentifierControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -496,7 +500,10 @@ class LoggingIdentifierControllerTest {
     fun inject(loggingIdentifierControllerTest: LoggingIdentifierControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLoggingIdentifierControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -508,6 +515,8 @@ class LoggingIdentifierControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   companion object {

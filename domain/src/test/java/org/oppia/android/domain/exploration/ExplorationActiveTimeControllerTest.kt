@@ -9,8 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,6 +40,8 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleObserver
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
@@ -89,9 +89,6 @@ private const val SESSION_LENGTH_3 = 100000L
 class ExplorationActiveTimeControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
-
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
@@ -112,16 +109,6 @@ class ExplorationActiveTimeControllerTest {
 
   private val firstTestProfile = ProfileId.newBuilder().setInternalId(0).build()
   private val secondTestProfile = ProfileId.newBuilder().setInternalId(1).build()
-
-  @Before
-  fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, true)
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
-  }
 
   @Test
   fun testSessionTimer_explorationStartedCallbackReceived_startsSessionTimer() {
@@ -607,7 +594,9 @@ class ExplorationActiveTimeControllerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -622,12 +611,13 @@ class ExplorationActiveTimeControllerTest {
 
     fun getExplorationActiveTimeController(): ExplorationActiveTimeController
 
-    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
-
     fun getOppiaClock(): FakeOppiaClock
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     val component: TestApplicationComponent by lazy {
       DaggerExplorationActiveTimeControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -643,5 +633,7 @@ class ExplorationActiveTimeControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

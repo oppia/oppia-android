@@ -14,6 +14,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -128,7 +130,9 @@ class UncaughtExceptionLoggerStartupListenerTest {
       UncaughtExceptionLoggerModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -139,7 +143,10 @@ class UncaughtExceptionLoggerStartupListenerTest {
     fun inject(startupListenerTest: UncaughtExceptionLoggerStartupListenerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerUncaughtExceptionLoggerStartupListenerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -151,5 +158,7 @@ class UncaughtExceptionLoggerStartupListenerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

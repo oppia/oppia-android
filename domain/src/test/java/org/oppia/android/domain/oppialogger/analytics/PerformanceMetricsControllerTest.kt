@@ -29,6 +29,8 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -587,7 +589,9 @@ class PerformanceMetricsControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -598,7 +602,10 @@ class PerformanceMetricsControllerTest {
     fun inject(performanceMetricsControllerTest: PerformanceMetricsControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerPerformanceMetricsControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -610,5 +617,7 @@ class PerformanceMetricsControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

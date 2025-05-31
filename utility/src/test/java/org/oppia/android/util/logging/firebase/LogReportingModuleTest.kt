@@ -18,7 +18,8 @@ import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.data.DataProviderTestMonitor
@@ -48,9 +49,6 @@ import javax.inject.Singleton
 class LogReportingModuleTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject lateinit var performanceMetricsEventLogger: PerformanceMetricsEventLogger
   @Inject lateinit var analyticsEventLogger: AnalyticsEventLogger
@@ -101,7 +99,9 @@ class LogReportingModuleTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -116,7 +116,10 @@ class LogReportingModuleTest {
     fun inject(logReportingModuleTest: LogReportingModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLogReportingModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -137,5 +140,7 @@ class LogReportingModuleTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

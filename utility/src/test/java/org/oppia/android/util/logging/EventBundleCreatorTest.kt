@@ -12,7 +12,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -92,9 +91,12 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
+import org.oppia.android.testing.DisableFeatureFlag
+import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -120,7 +122,6 @@ import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
 import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
 import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
 import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
@@ -186,9 +187,6 @@ class EventBundleCreatorTest {
 
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
-
   @Inject lateinit var context: Context
   @Inject lateinit var eventBundleCreator: EventBundleCreator
 
@@ -199,11 +197,6 @@ class EventBundleCreatorTest {
 
   private val screenName by lazy { ScreenName.valueOf(name) }
   private val inputLanguage by lazy { OppiaLanguage.valueOf(inLang) }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
-  }
 
   @Test
   fun testFillEventBundle_defaultEvent_defaultsBundleAndReturnsUnknownActivityContext() {
@@ -594,8 +587,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_openExpActivityEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createOpenExplorationActivity())
@@ -619,8 +613,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_openExpActivityEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createOpenExplorationActivity())
@@ -1006,8 +1001,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_startCardContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createStartCardContext())
@@ -1032,8 +1028,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_startCardContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createStartCardContext())
@@ -1060,8 +1057,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_endCardContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createEndCardContext())
@@ -1086,8 +1084,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_endCardContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createEndCardContext())
@@ -1114,8 +1113,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_hintUnlockedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createHintUnlockedContext())
@@ -1140,8 +1140,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_hintUnlockedEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createHintUnlockedContext())
@@ -1168,8 +1169,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_revealHintContextEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createRevealHintContext())
@@ -1194,8 +1196,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_revealHintContextEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createRevealHintContext())
@@ -1221,8 +1224,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_viewExistingHintEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createViewExistingHintContext())
@@ -1247,8 +1251,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_viewExistingHintEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createViewExistingHintContext())
@@ -1275,8 +1280,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_solutionUnlockedEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createSolutionUnlockedContext())
@@ -1300,8 +1306,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_solutionUnlockedEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createSolutionUnlockedContext())
@@ -1327,8 +1334,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_accessSolutionEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createRevealSolutionContext())
@@ -1352,8 +1360,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_accessSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createRevealSolutionContext())
@@ -1378,8 +1387,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_viewExistingSolutionEvent_studyOff_fillsNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createViewExistingSolutionContext())
@@ -1403,8 +1413,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_viewExistingSolutionEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createViewExistingSolutionContext())
@@ -1430,8 +1441,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_submitAnswerEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createSubmitAnswerContext())
@@ -1457,8 +1469,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_submitAnswerEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createSubmitAnswerContext())
@@ -1486,8 +1499,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_playVoiceOverEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createPlayVoiceOverContext())
@@ -1513,8 +1527,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_playVoiceOverEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createPlayVoiceOverContext())
@@ -1542,8 +1557,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_pauseVoiceOverEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createPauseVoiceOverContext())
@@ -1569,8 +1585,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_pauseVoiceOverEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createPauseVoiceOverContext())
@@ -1598,8 +1615,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_appInBackgroundEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createAppInBackgroundContext())
@@ -1616,8 +1634,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_appInBackgroundEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createAppInBackgroundContext())
@@ -1636,8 +1655,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_appInForegroundEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createAppInForegroundContext())
@@ -1654,8 +1674,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_appInForegroundEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createAppInForegroundContext())
@@ -1674,8 +1695,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_exitExplorationEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createExitExplorationContext())
@@ -1699,8 +1721,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_exitExplorationEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createExitExplorationContext())
@@ -1726,8 +1749,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_finishExplorationEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createFinishExplorationContext())
@@ -1751,8 +1775,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_finishExplorationEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createFinishExplorationContext())
@@ -1778,8 +1803,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_resumeExplorationEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createResumeExplorationContext())
@@ -1796,8 +1822,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_resumeExplorationEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createResumeExplorationContext())
@@ -1816,8 +1843,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_startOverExpEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createStartOverExplorationContext())
@@ -1834,8 +1862,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_startOverExpEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createStartOverExplorationContext())
@@ -1854,8 +1883,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_deleteProfileEvent_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createDeleteProfileContext())
@@ -1872,8 +1902,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_deleteProfileEvent_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createDeleteProfileContext())
@@ -1953,8 +1984,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_reachInvestedEngagementEvent_studyOn_fillsNonSensitiveDataAndRetsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createReachInvestedEngagementContext())
@@ -2007,8 +2039,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_switchInLessonLanguageEvent_studyOn_fillsNonSensitiveDataAndRetsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createSwitchInLessonLanguageContext())
@@ -2036,8 +2069,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @DisableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_failedEventInstallId_studyOff_fillsOnlyNonSensitiveFieldsAndRetsName() {
-    setUpTestApplicationComponentWithoutLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
@@ -2054,8 +2088,9 @@ class EventBundleCreatorTest {
   }
 
   @Test
+  @EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
   fun testFillEventBundle_failedEventInstallId_studyOn_fillsAllFieldsAndReturnsName() {
-    setUpTestApplicationComponentWithLearnerAnalyticsStudy()
+    setUpTestApplicationComponent()
     val bundle = Bundle()
 
     val eventLog = createEventLog(context = createInstallationIdForFailedAnalyticsLogContext())
@@ -2636,16 +2671,6 @@ class EventBundleCreatorTest {
         .build()
     ).build()
 
-  private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, false)
-    setUpTestApplicationComponent()
-  }
-
-  private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
-    setUpTestApplicationComponent()
-  }
-
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     registerTestApplication(context)
@@ -2688,7 +2713,9 @@ class EventBundleCreatorTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -2704,7 +2731,10 @@ class EventBundleCreatorTest {
     fun inject(test: EventBundleCreatorTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     val component: TestApplicationComponent by lazy {
       DaggerEventBundleCreatorTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -2720,5 +2750,7 @@ class EventBundleCreatorTest {
     }
 
     override fun getDataProvidersInjector() = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

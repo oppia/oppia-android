@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,11 +29,11 @@ import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever.Companion.setParameterOverride
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.OverrideIntParameter
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -68,18 +67,10 @@ import javax.inject.Singleton
 class DeprecationControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
-
   @Inject lateinit var context: Context
   @Inject lateinit var deprecationController: DeprecationController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
-  }
 
   @Test
   fun testController_initialAppLaunch_returnsDefaultDeprecationResponseDatabase() {
@@ -152,8 +143,8 @@ class DeprecationControllerTest {
   }
 
   @Test
+  @OverrideIntParameter(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
   fun testController_osIsDeprecated_returnsOsIsDeprecatedStartUpMode() {
-    setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
     setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
@@ -164,8 +155,8 @@ class DeprecationControllerTest {
   }
 
   @Test
+  @OverrideIntParameter(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
   fun testController_osIsDeprecated_previousResponseExists_returnsUserIsOnboardedStartUpMode() {
-    setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, Int.MAX_VALUE)
     setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
@@ -175,8 +166,8 @@ class DeprecationControllerTest {
   }
 
   @Test
+  @OverrideIntParameter(OPTIONAL_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
   fun testController_hasOptionalUpdate_returnsOptionalUpdateAvailableStartupMode() {
-    setParameterOverride(OPTIONAL_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
     setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
@@ -186,8 +177,8 @@ class DeprecationControllerTest {
   }
 
   @Test
+  @OverrideIntParameter(OPTIONAL_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
   fun testController_hasOptionalUpdate_previousResponseExists_returnsUserIsOnboardedStartupMode() {
-    setParameterOverride(OPTIONAL_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
     setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
@@ -197,8 +188,8 @@ class DeprecationControllerTest {
   }
 
   @Test
+  @OverrideIntParameter(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
   fun testController_hasForcedUpdate_returnsAppIsDeprecatedStartupMode() {
-    setParameterOverride(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
     setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
@@ -208,8 +199,8 @@ class DeprecationControllerTest {
   }
 
   @Test
+  @OverrideIntParameter(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
   fun testController_hasForcedUpdate_previousResponseExists_returnsUserIsOnboardedStartupMode() {
-    setParameterOverride(FORCED_APP_UPDATE_VERSION_CODE, Int.MAX_VALUE)
     setUpDefaultTestApplicationComponent()
 
     val startupMode = deprecationController.processStartUpMode(
@@ -324,7 +315,9 @@ class DeprecationControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -335,14 +328,15 @@ class DeprecationControllerTest {
 
     fun getDeprecationController(): DeprecationController
 
-    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
-
     fun getContext(): Context
 
     fun inject(deprecationControllerTest: DeprecationControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     val component: TestApplicationComponent by lazy {
       DaggerDeprecationControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -358,6 +352,8 @@ class DeprecationControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   companion object {

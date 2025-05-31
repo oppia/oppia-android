@@ -19,7 +19,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,9 +44,9 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.FirestoreDataController
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -106,8 +105,6 @@ private const val TEST_APK_SIZE = Long.MAX_VALUE
 class LogUploadWorkerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -155,11 +152,6 @@ class LogUploadWorkerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -661,7 +653,9 @@ class LogUploadWorkerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -672,7 +666,10 @@ class LogUploadWorkerTest {
     fun inject(logUploadWorkerTest: LogUploadWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerLogUploadWorkerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -684,5 +681,7 @@ class LogUploadWorkerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

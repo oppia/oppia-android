@@ -20,6 +20,8 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.IsOnRobolectric
@@ -380,7 +382,9 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -391,7 +395,10 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     fun inject(test: TestCoroutineDispatcherRobolectricImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerTestCoroutineDispatcherRobolectricImplTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -403,5 +410,7 @@ class TestCoroutineDispatcherRobolectricImplTest : TestCoroutineDispatcherTestBa
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

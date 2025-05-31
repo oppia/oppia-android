@@ -15,6 +15,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.hintsandsolution.HintHandlerDebugImpl.FactoryDebugImpl
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -71,7 +73,9 @@ class HintsAndSolutionDebugModuleTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -83,7 +87,10 @@ class HintsAndSolutionDebugModuleTest {
     fun inject(hintsAndSolutionDebugModuleTest: HintsAndSolutionDebugModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerHintsAndSolutionDebugModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -95,5 +102,7 @@ class HintsAndSolutionDebugModuleTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

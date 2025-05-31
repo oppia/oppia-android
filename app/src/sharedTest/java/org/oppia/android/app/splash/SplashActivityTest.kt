@@ -97,6 +97,8 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
@@ -200,7 +202,6 @@ class SplashActivityTest {
 
   @After
   fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -1105,7 +1106,6 @@ class SplashActivityTest {
   @DisableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testSplashActivity_onboardingV2Enabled_onboardedSoleLearnerProfile_routesToHomeActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, false)
     initializeTestApplication()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     testCoroutineDispatchers.runCurrent()
@@ -1133,7 +1133,6 @@ class SplashActivityTest {
   @EnableFeatureFlag(MULTIPLE_CLASSROOMS)
   fun testSplashActivity_onboardingV2_onboardedSoleLearnerProfile_routesToClassroomListActivity() {
     simulateAppAlreadyOnboarded()
-    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     initializeTestApplication()
     testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
@@ -1395,7 +1394,9 @@ class SplashActivityTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1406,8 +1407,6 @@ class SplashActivityTest {
 
     fun getAppStartupStateController(): AppStartupStateController
 
-    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
-
     fun getMonitorFactory(): DataProviderTestMonitor.Factory
 
     fun getProfieTestHelper(): ProfileTestHelper
@@ -1415,7 +1414,11 @@ class SplashActivityTest {
     fun inject(splashActivityTest: SplashActivityTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private var component: TestApplicationComponent = createTestApplicationComponent()
 
     val appStartupStateController: AppStartupStateController
@@ -1436,6 +1439,8 @@ class SplashActivityTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
 
     fun recreateDaggerGraph() {
       component = createTestApplicationComponent()

@@ -10,7 +10,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -79,9 +78,9 @@ import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
@@ -146,6 +145,10 @@ private const val INVALID_EXPLORATION_ID = "invalid_exp_id"
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ExplorationProgressControllerTest.TestApplication::class)
+@EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
+@EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
+@EnableFeatureFlag(NPS_SURVEY)
+@EnableFeatureFlag(ONBOARDING_FLOW_V2)
 class ExplorationProgressControllerTest {
   // TODO(#3646): Add much more thorough tests for the integration pathway.
 
@@ -157,8 +160,6 @@ class ExplorationProgressControllerTest {
   //  - testMoveToPrevious_whileSubmittingAnswer_failsWithError
 
   @get:Rule val oppiaTestRule = OppiaTestRule()
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var explorationDataController: ExplorationDataController
   @Inject lateinit var explorationProgressController: ExplorationProgressController
@@ -176,16 +177,7 @@ class ExplorationProgressControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, true)
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -3930,7 +3922,9 @@ class ExplorationProgressControllerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -3942,7 +3936,10 @@ class ExplorationProgressControllerTest {
     fun inject(explorationProgressControllerTest: ExplorationProgressControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerExplorationProgressControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -3954,6 +3951,8 @@ class ExplorationProgressControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   private companion object {

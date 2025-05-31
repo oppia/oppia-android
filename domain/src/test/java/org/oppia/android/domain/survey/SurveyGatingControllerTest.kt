@@ -9,7 +9,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,9 +23,9 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -65,11 +64,9 @@ private const val SESSION_LENGTH_MINIMUM = 300000L
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = SurveyGatingControllerTest.TestApplication::class)
+@EnableFeatureFlag(NPS_SURVEY)
 class SurveyGatingControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -97,14 +94,8 @@ class SurveyGatingControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -707,7 +698,9 @@ class SurveyGatingControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -719,7 +712,10 @@ class SurveyGatingControllerTest {
     fun inject(surveyGatingControllerTest: SurveyGatingControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerSurveyGatingControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -731,6 +727,8 @@ class SurveyGatingControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   private companion object {

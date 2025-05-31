@@ -18,6 +18,8 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -112,7 +114,9 @@ class CpuPerformanceSnapshotterModuleTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -123,7 +127,10 @@ class CpuPerformanceSnapshotterModuleTest {
     fun inject(test: CpuPerformanceSnapshotterModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerCpuPerformanceSnapshotterModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -135,5 +142,7 @@ class CpuPerformanceSnapshotterModuleTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

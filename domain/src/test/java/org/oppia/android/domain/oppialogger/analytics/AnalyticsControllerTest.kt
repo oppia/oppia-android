@@ -15,7 +15,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
@@ -41,9 +40,9 @@ import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.testing.EnableFeatureFlag
@@ -107,8 +106,6 @@ class AnalyticsControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var analyticsControllerProvider: Provider<AnalyticsController>
   @Inject lateinit var oppiaLogger: OppiaLogger
   @Inject lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
@@ -131,11 +128,6 @@ class AnalyticsControllerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -1382,7 +1374,9 @@ class AnalyticsControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -1393,7 +1387,10 @@ class AnalyticsControllerTest {
     fun inject(analyticsControllerTest: AnalyticsControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerAnalyticsControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1405,5 +1402,7 @@ class AnalyticsControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

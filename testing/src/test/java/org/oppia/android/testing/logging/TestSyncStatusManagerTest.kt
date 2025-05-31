@@ -15,6 +15,8 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
@@ -913,7 +915,9 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -924,7 +928,10 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
     fun inject(test: TestSyncStatusManagerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerTestSyncStatusManagerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -936,6 +943,8 @@ class TestSyncStatusManagerTest : SyncStatusManagerTestBase() {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   private companion object {

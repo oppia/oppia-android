@@ -19,7 +19,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -41,9 +40,9 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsController
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.EnableFeatureFlag
 import org.oppia.android.testing.FakeAnalyticsEventLogger
@@ -86,9 +85,6 @@ private const val INCORRECT_WORKER_CASE = "incorrect_worker_case"
 class MetricLogSchedulingWorkerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
-
   @Inject
   lateinit var networkConnectionUtil: NetworkConnectionDebugUtil
 
@@ -114,7 +110,6 @@ class MetricLogSchedulingWorkerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(PERFORMANCE_METRICS_COLLECTION, true)
     setUpTestApplicationComponent()
     context = InstrumentationRegistry.getInstrumentation().targetContext
     val config = Configuration.Builder()
@@ -122,11 +117,6 @@ class MetricLogSchedulingWorkerTest {
       .setWorkerFactory(metricLogSchedulingWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -304,7 +294,9 @@ class MetricLogSchedulingWorkerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -315,7 +307,10 @@ class MetricLogSchedulingWorkerTest {
     fun inject(metricLogSchedulingWorkerTest: MetricLogSchedulingWorkerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerMetricLogSchedulingWorkerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -327,5 +322,7 @@ class MetricLogSchedulingWorkerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

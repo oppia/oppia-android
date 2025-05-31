@@ -22,7 +22,8 @@ import org.oppia.android.domain.exploration.ExplorationActiveTimeController
 import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -50,9 +51,6 @@ import javax.inject.Singleton
 @Config(application = ApplicationLifecycleModuleTest.TestApplication::class)
 class ApplicationLifecycleModuleTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var startupListeners: Set<@JvmSuppressWildcards ApplicationStartupListener>
@@ -136,7 +134,9 @@ class ApplicationLifecycleModuleTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -147,7 +147,10 @@ class ApplicationLifecycleModuleTest {
     fun inject(applicationLifecycleObserverImplTest: ApplicationLifecycleModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerApplicationLifecycleModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -159,5 +162,7 @@ class ApplicationLifecycleModuleTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

@@ -20,7 +20,8 @@ import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.testing.OppiaTestRule
@@ -55,8 +56,6 @@ import javax.inject.Singleton
 class ProfileTestHelperTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
@@ -235,7 +234,9 @@ class ProfileTestHelperTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -247,7 +248,10 @@ class ProfileTestHelperTest {
     fun inject(profileTestHelperTest: ProfileTestHelperTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileTestHelperTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -259,5 +263,7 @@ class ProfileTestHelperTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

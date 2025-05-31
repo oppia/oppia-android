@@ -25,6 +25,8 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakeFirestoreEventLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -470,7 +472,9 @@ class FirestoreDataControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -481,7 +485,10 @@ class FirestoreDataControllerTest {
     fun inject(dataControllerTest: FirestoreDataControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerFirestoreDataControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -493,5 +500,7 @@ class FirestoreDataControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

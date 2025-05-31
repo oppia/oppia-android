@@ -32,7 +32,8 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorker
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulingWorkerFactory
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -62,9 +63,6 @@ import javax.inject.Singleton
 @Config(application = FakeLogSchedulerTest.TestApplication::class)
 class FakeLogSchedulerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
-
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
 
   @Inject
   lateinit var fakeLogScheduler: FakeLogScheduler
@@ -206,7 +204,9 @@ class FakeLogSchedulerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -217,7 +217,10 @@ class FakeLogSchedulerTest {
     fun inject(test: FakeLogSchedulerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerFakeLogSchedulerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -229,5 +232,7 @@ class FakeLogSchedulerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

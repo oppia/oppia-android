@@ -19,7 +19,8 @@ import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
@@ -49,8 +50,6 @@ import javax.inject.Singleton
 class ExplorationProgressModuleTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var progressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
 
   @Before
@@ -112,7 +111,9 @@ class ExplorationProgressModuleTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -123,7 +124,10 @@ class ExplorationProgressModuleTest {
     fun inject(moduleTest: ExplorationProgressModuleTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerExplorationProgressModuleTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -135,5 +139,7 @@ class ExplorationProgressModuleTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

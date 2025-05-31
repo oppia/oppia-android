@@ -15,11 +15,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
 import org.oppia.android.domain.topic.TEST_TOPIC_ID_0
@@ -75,7 +79,6 @@ class ClassroomControllerTest {
   @Before
   fun setUp() {
     profileId0 = ProfileId.newBuilder().setInternalId(0).build()
-    TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, true)
     setUpTestApplicationComponent()
   }
 
@@ -386,7 +389,10 @@ class ClassroomControllerTest {
       LogStorageModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
+      NetworkConfigTestModule::class,
       PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,
       TestDispatcherModule::class,
@@ -394,7 +400,9 @@ class ClassroomControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -406,7 +414,10 @@ class ClassroomControllerTest {
     fun inject(classroomControllerTest: ClassroomControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerClassroomControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -418,5 +429,7 @@ class ClassroomControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

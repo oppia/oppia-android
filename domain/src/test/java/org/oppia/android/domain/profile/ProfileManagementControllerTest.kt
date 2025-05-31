@@ -16,7 +16,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,6 +42,8 @@ import org.oppia.android.domain.oppialogger.ApplicationIdSeed
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
@@ -92,8 +93,6 @@ import javax.inject.Singleton
 class ProfileManagementControllerTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
 
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
@@ -128,11 +127,6 @@ class ProfileManagementControllerTest {
     private const val DEFAULT_AVATAR_COLOR_RGB = -10710042
     private const val DEFAULT_SURVEY_LAST_SHOWN_TIMESTAMP_MILLIS = 0L
     private const val CURRENT_TIMESTAMP = 1556094120000
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -2208,7 +2202,9 @@ class ProfileManagementControllerTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -2224,11 +2220,12 @@ class ProfileManagementControllerTest {
     fun getProfileManagementController(): ProfileManagementController
 
     fun getMonitorFactory(): DataProviderTestMonitor.Factory
-
-    fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     val component: TestApplicationComponent by lazy {
       DaggerProfileManagementControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -2244,5 +2241,7 @@ class ProfileManagementControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

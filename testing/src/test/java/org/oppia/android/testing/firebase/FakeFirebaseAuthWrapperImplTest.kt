@@ -15,6 +15,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.auth.FirebaseUserWrapper
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.FakeFirebaseAuthWrapperImpl.FakeAuthState
@@ -105,7 +107,9 @@ class FakeFirebaseAuthWrapperImplTest {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -117,7 +121,10 @@ class FakeFirebaseAuthWrapperImplTest {
     fun inject(test: FakeFirebaseAuthWrapperImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerFakeFirebaseAuthWrapperImplTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -129,5 +136,7 @@ class FakeFirebaseAuthWrapperImplTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

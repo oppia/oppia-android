@@ -100,8 +100,9 @@ import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModul
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorker
 import org.oppia.android.domain.oppialogger.loguploader.LogUploadWorkerFactory
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.EnableFeatureFlag
@@ -205,9 +206,6 @@ class ProfileAndDeviceIdFragmentTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
     setUpTestApplicationComponent()
     Intents.init()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1208,7 +1206,9 @@ class ProfileAndDeviceIdFragmentTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  interface TestApplicationComponent : ApplicationComponent {
+  interface TestApplicationComponent :
+    ApplicationComponent,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
@@ -1217,7 +1217,11 @@ class ProfileAndDeviceIdFragmentTest {
     fun inject(test: ProfileAndDeviceIdFragmentTest)
   }
 
-  class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
+  class TestApplication :
+    Application(),
+    ActivityComponentFactory,
+    ApplicationInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerProfileAndDeviceIdFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -1233,6 +1237,8 @@ class ProfileAndDeviceIdFragmentTest {
     }
 
     override fun getApplicationInjector(): ApplicationInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 
   private companion object {

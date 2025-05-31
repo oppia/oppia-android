@@ -11,7 +11,6 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
@@ -56,9 +55,9 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
-import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_5
@@ -101,6 +100,8 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioPlayerControllerTest.TestApplication::class)
+@EnableFeatureFlag(LEARNER_STUDY_ANALYTICS)
+@EnableFeatureFlag(LOGGING_LEARNER_STUDY_IDS)
 class AudioPlayerControllerTest {
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
@@ -108,8 +109,6 @@ class AudioPlayerControllerTest {
   @field:[Rule JvmField] val mockitoRule: MockitoRule = MockitoJUnit.rule()
   @Mock lateinit var mockAudioPlayerObserver: Observer<AsyncResult<PlayProgress>>
   @Captor lateinit var audioPlayerResultCaptor: ArgumentCaptor<AsyncResult<PlayProgress>>
-  // This initializes platform parameters and feature flags at injection, so it's unused.
-  @[Inject Suppress("unused")] lateinit var flagInitializer: PlatformParameterTestInitializer
   @Inject lateinit var context: Context
   @Inject lateinit var audioPlayerController: AudioPlayerController
   @Inject lateinit var fakeExceptionLogger: FakeExceptionLogger
@@ -130,14 +129,7 @@ class AudioPlayerControllerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, true)
-    TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, true)
     setUpMediaReadyApplication()
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterConfigRetriever.reset()
   }
 
   @Test
@@ -936,7 +928,9 @@ class AudioPlayerControllerTest {
       TextInputRuleModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -947,7 +941,10 @@ class AudioPlayerControllerTest {
     fun inject(test: AudioPlayerControllerTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerAudioPlayerControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -959,5 +956,7 @@ class AudioPlayerControllerTest {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

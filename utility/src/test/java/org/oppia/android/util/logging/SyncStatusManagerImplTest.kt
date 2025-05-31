@@ -12,6 +12,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.networking.NetworkConnectionTestUtil
@@ -95,7 +97,9 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
       TestModule::class
     ]
   )
-  interface TestApplicationComponent : DataProvidersInjector {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -106,7 +110,10 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
     fun inject(syncStatusControllerTest: SyncStatusManagerImplTest)
   }
 
-  class TestApplication : Application(), DataProvidersInjectorProvider {
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerSyncStatusManagerImplTest_TestApplicationComponent.builder()
         .setApplication(this)
@@ -118,5 +125,7 @@ class SyncStatusManagerImplTest : SyncStatusManagerTestBase() {
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }

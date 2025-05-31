@@ -14,17 +14,30 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.EventLog
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjector
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterInitializationInjectorProvider
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestInitializer
+import org.oppia.android.domain.platformparameter.testing.PlatformParameterTestModule
 import org.oppia.android.testing.FakeFirestoreInstanceWrapperImpl
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
-import org.oppia.android.util.locale.testing.LocaleTestModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.AnalyticsEventLogger
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
+import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
+import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -174,28 +187,65 @@ class DebugFirestoreEventLoggerImplTest {
     fun provideFirebaseFirestoreInstanceWrapper(
       debugWrapperImpl: FakeFirestoreInstanceWrapperImpl
     ): FirestoreInstanceWrapper = debugWrapperImpl
+
+    @Provides
+    fun provideCrashLogger(): ExceptionLogger = error("Not used in test.")
+
+    @Provides
+    fun provideFirebaseAnalyticsEventLogger(): AnalyticsEventLogger = error("Not used in test.")
+
+    @Provides
+    fun providePerformanceMetricsEventLogger(): PerformanceMetricsEventLogger =
+      error("Not used in test.")
   }
 
-  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
+      AssetModule::class,
       FakeOppiaClockModule::class,
-      LocaleTestModule::class,
+      LocaleProdModule::class,
+      NetworkConfigTestModule::class,
+      PlatformParameterTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestModule::class
     ]
   )
-
-  interface TestApplicationComponent {
+  interface TestApplicationComponent :
+    DataProvidersInjector,
+    PlatformParameterInitializationInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
       fun setApplication(application: Application): Builder
+
       fun build(): TestApplicationComponent
     }
 
-    fun inject(debugEventLoggerTest: DebugFirestoreEventLoggerImplTest)
+    fun getPlatformParameterTestInitializer(): PlatformParameterTestInitializer
+
+    fun inject(test: DebugFirestoreEventLoggerImplTest)
+  }
+
+  class TestApplication :
+    Application(),
+    DataProvidersInjectorProvider,
+    PlatformParameterInitializationInjectorProvider {
+    val component: TestApplicationComponent by lazy {
+      DaggerDebugFirestoreEventLoggerImplTest_TestApplicationComponent.builder()
+        .setApplication(this)
+        .build()
+    }
+
+    fun inject(test: DebugFirestoreEventLoggerImplTest) {
+      component.inject(test)
+    }
+
+    override fun getDataProvidersInjector() = component
+
+    override fun getPlatformParameterInitializationInjector() = component
   }
 }
