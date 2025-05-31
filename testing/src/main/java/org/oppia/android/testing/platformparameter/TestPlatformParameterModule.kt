@@ -2,6 +2,7 @@ package org.oppia.android.testing.platformparameter
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.app.model.PlatformParameter
@@ -65,10 +66,24 @@ import org.oppia.android.util.platformparameter.SYNC_UP_WORKER_TIME_PERIOD_IN_HO
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdImpl
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module
 class TestPlatformParameterModule {
+  @Provides
+  fun providePlatformParameterController(
+    impl: PlatformParameterControllerProdImpl
+  ): PlatformParameterController = impl
+
+  @Provides
+  fun providePlatformParameterConfigRetriever(
+    impl: TestPlatformParameterConfigRetriever
+  ): PlatformParameterConfigRetriever = impl
+
   @Provides
   @EnableTestFeatureFlag
   fun provideEnableTestFeatureFlag(

@@ -81,6 +81,16 @@ import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 @Module
 class PlatformParameterModule {
   @Provides
+  fun providePlatformParameterController(
+    impl: PlatformParameterControllerProdImpl
+  ): PlatformParameterController = impl
+
+  @Provides
+  fun providePlatformParameterConfigRetriever(
+    impl: PlatformParameterConfigRetrieverProdImpl
+  ): PlatformParameterConfigRetriever = impl
+
+  @Provides
   @EnableDownloadsSupport
   fun provideEnableDownloadsSupport(
     platformParameterSingleton: PlatformParameterSingleton
