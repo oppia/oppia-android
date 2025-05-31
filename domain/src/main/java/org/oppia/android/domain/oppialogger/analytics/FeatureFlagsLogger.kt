@@ -32,6 +32,9 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.SyncStatus
 
 /**
  * Convenience logger for feature flags.
@@ -73,22 +76,23 @@ class FeatureFlagsLogger @Inject constructor(
   /**
    * A variable containing a list of all the feature flags in the app.
    *
-   * @return a list of key-value pairs of [String] and [PlatformParameterValue]
+   * @return a list of key-value pairs of [FeatureFlagId] and [PlatformParameterValue]
    */
-  private var featureFlagItemMap: Map<String, PlatformParameterValue<Boolean>> = mapOf(
-    DOWNLOADS_SUPPORT to enableDownloadsSupport,
-    EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
-    LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,
-    FAST_LANGUAGE_SWITCHING_IN_LESSON to enableFastLanguageSwitchingInLesson,
-    LOGGING_LEARNER_STUDY_IDS to enableLoggingLearnerStudyIds,
-    EDIT_ACCOUNTS_OPTIONS_UI to enableEditAccountsOptionsUi,
-    ENABLE_PERFORMANCE_METRICS_COLLECTION to enablePerformanceMetricsCollection,
-    SPOTLIGHT_UI to enableSpotlightUi,
-    INTERACTION_CONFIG_CHANGE_STATE_RETENTION to enableInteractionConfigChangeStateRetention,
-    APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
-    ENABLE_NPS_SURVEY to enableNpsSurvey,
-    ENABLE_ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
-    ENABLE_MULTIPLE_CLASSROOMS to enableMultipleClassrooms,
+  private var featureFlagItemMap: Map<FeatureFlagId, PlatformParameterValue<Boolean>> = mapOf(
+    FeatureFlagId.DOWNLOADS_SUPPORT to enableDownloadsSupport,
+    FeatureFlagId.EXTRA_TOPIC_TABS_UI to enableExtraTopicTabsUi,
+    FeatureFlagId.LEARNER_STUDY_ANALYTICS to enableLearnerStudyAnalytics,
+    FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON to enableFastLanguageSwitchingInLesson,
+    FeatureFlagId.LOGGING_LEARNER_STUDY_IDS to enableLoggingLearnerStudyIds,
+    FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI to enableEditAccountsOptionsUi,
+    FeatureFlagId.PERFORMANCE_METRICS_COLLECTION to enablePerformanceMetricsCollection,
+    FeatureFlagId.SPOTLIGHT_UI to enableSpotlightUi,
+    FeatureFlagId.INTERACTION_CONFIG_CHANGE_STATE_RETENTION to
+      enableInteractionConfigChangeStateRetention,
+    FeatureFlagId.APP_AND_OS_DEPRECATION to enableAppAndOsDeprecation,
+    FeatureFlagId.NPS_SURVEY to enableNpsSurvey,
+    FeatureFlagId.ONBOARDING_FLOW_V2 to enableOnboardingFlowV2,
+    FeatureFlagId.MULTIPLE_CLASSROOMS to enableMultipleClassrooms,
   )
 
   /**
@@ -97,7 +101,8 @@ class FeatureFlagsLogger @Inject constructor(
    * @param featureFlagItemMap denotes the map of feature flag names to their corresponding
    * [PlatformParameterValue]s
    */
-  fun setFeatureFlagItemMap(featureFlagItemMap: Map<String, PlatformParameterValue<Boolean>>) {
+  fun setFeatureFlagItemMap(
+    featureFlagItemMap: Map<FeatureFlagId, PlatformParameterValue<Boolean>>) {
     this.featureFlagItemMap = featureFlagItemMap
   }
 
@@ -136,12 +141,17 @@ class FeatureFlagsLogger @Inject constructor(
    * @return an [EventLog.Context] for the feature flags to be logged
    */
   private fun createFeatureFlagItemContext(
-    flagDetails: Map.Entry<String, PlatformParameterValue<Boolean>>,
+    flagDetails: Map.Entry<FeatureFlagId, PlatformParameterValue<Boolean>>,
   ): FeatureFlagItemContext {
-    return FeatureFlagItemContext.newBuilder()
-      .setFlagName(flagDetails.key)
-      .setFlagEnabledState(flagDetails.value.value)
-      .setFlagSyncStatus(flagDetails.value.syncStatus)
-      .build()
+    return FeatureFlagItemContext.newBuilder().apply {
+      id = flagDetails.key
+      isEnabled = flagDetails.value.value
+      this.syncStatus = when (flagDetails.value.syncStatus) {
+        PlatformParameter.SyncStatus.SYNC_STATUS_UNSPECIFIED -> SyncStatus.SYNC_STATUS_UNSPECIFIED
+        PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER -> SyncStatus.NOT_SYNCED_FROM_SERVER
+        PlatformParameter.SyncStatus.SYNCED_FROM_SERVER -> SyncStatus.SYNCED_FROM_SERVER
+        PlatformParameter.SyncStatus.UNRECOGNIZED -> SyncStatus.UNRECOGNIZED
+      }
+    }.build()
   }
 }

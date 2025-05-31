@@ -136,6 +136,8 @@ private const val TEST_ANDROID_SDK_VERSION = 30
   sdk = [TEST_ANDROID_SDK_VERSION]
 )
 class EventBundleCreatorTest {
+  // TODO: Audit to see if any checks from FeatureFlagNameToNumericIdConverterTest should be moved here.
+
   private companion object {
     private const val TEST_TIMESTAMP_1 = 1556094120000
     private const val TEST_TIMESTAMP_2 = 1234567898765

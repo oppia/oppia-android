@@ -80,7 +80,6 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
 import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
-import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -115,6 +114,7 @@ import java.net.HttpURLConnection
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
 
 private const val TEST_TIMESTAMP_IN_MILLIS_ONE = 1556094000000
 private const val TEST_TIMESTAMP_IN_MILLIS_TWO = 1556094100000
@@ -446,7 +446,7 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
 
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+      mapOf(FeatureFlagId.DOWNLOADS_SUPPORT to testFeatureFlag)
     )
 
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
@@ -462,7 +462,7 @@ class ApplicationLifecycleObserverTest {
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasSessionIdThat().isEqualTo(sessionId)
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
+        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
         hasFeatureFlagSyncStateThat().isEqualTo(PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER)
       }

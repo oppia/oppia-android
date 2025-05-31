@@ -4911,7 +4911,7 @@ class EventLogSubjectTest {
 
     FeatureFlagListContextSubject.assertThat(context)
       .hasFeatureFlagItemContextThatAtIndex(0)
-      .hasFeatureFlagNameThat()
+      .hasFeatureFlagIdThat()
       .isEqualTo("enable_multiple_classrooms")
   }
 
@@ -4929,7 +4929,7 @@ class EventLogSubjectTest {
 
     FeatureFlagListContextSubject.assertThat(context)
       .hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo("new_dashboard")
+        hasFeatureFlagIdThat().isEqualTo("new_dashboard")
         hasFeatureFlagEnabledStateThat().isEqualTo(true)
         hasFeatureFlagSyncStateThat().isEqualTo(
           SyncStatus.SYNCED_FROM_SERVER

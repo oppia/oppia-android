@@ -61,6 +61,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.FeatureFlagId
 
 /** Tests for [FeatureFlagsLogger]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -116,7 +117,7 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlag_hasCorrectDefaultValues() {
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+      mapOf(FeatureFlagId.DOWNLOADS_SUPPORT to testFeatureFlag)
     )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
@@ -125,7 +126,7 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
+        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
       }
@@ -144,7 +145,7 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
+        hasFeatureFlagIdThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
         hasFeatureFlagEnabledStateThat().isEqualTo(true)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
       }
@@ -195,7 +196,7 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThatAtIndex(index) {
-        hasFeatureFlagNameThat().isEqualTo(flagName)
+        hasFeatureFlagIdThat().isEqualTo(flagName)
       }
     }
   }
