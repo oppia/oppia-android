@@ -381,8 +381,12 @@ class FakeAnalyticsEventLoggerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, LogStorageModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      LogStorageModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
