@@ -2,9 +2,6 @@ package org.oppia.android.app.testing
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.platformparameter.PlatformParameterController

@@ -1,11 +1,11 @@
 package org.oppia.android.domain.platformparameter
 
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.SyncStatus
 
 /** Singleton which helps in storing and providing Platform Parameters at runtime. */
 @Singleton

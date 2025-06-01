@@ -1,6 +1,5 @@
 package org.oppia.android.domain.platformparameter
 
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -19,6 +18,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.threading.BackgroundDispatcher
+import javax.inject.Inject
 
 /**
  * Production implementation for the controller to manage and synchronize platform parameters and

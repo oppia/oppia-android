@@ -2,8 +2,17 @@ package org.oppia.android.testing.platformparameter
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
-import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
+import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
+import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
+import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
+import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
+import org.oppia.android.app.model.FeatureFlagId.NPS_SURVEY
+import org.oppia.android.app.model.FeatureFlagId.ONBOARDING_FLOW_V2
+import org.oppia.android.app.model.FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
+import org.oppia.android.app.model.FeatureFlagId.SPOTLIGHT_UI
 import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
 import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
 import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
@@ -13,6 +22,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerPro
 import org.oppia.android.domain.platformparameter.PlatformParameterProcessState
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
+import javax.inject.Singleton
 
 /* Fake Platform Parameter Module that provides individual Platform Parameters for testing. */
 @Module(
@@ -51,47 +61,47 @@ class TestPlatformParameterModule {
 
   companion object {
     fun forceEnableDownloadsSupport(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.DOWNLOADS_SUPPORT, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, value)
     }
 
     fun forceEnableEditAccountsOptionsUi(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(EDIT_ACCOUNTS_OPTIONS_UI, value)
     }
 
     fun forceEnableLearnerStudyAnalytics(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LEARNER_STUDY_ANALYTICS, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(LEARNER_STUDY_ANALYTICS, value)
     }
 
     fun forceEnableFastLanguageSwitchingInLesson(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(FAST_LANGUAGE_SWITCHING_IN_LESSON, value)
     }
 
     fun forceEnableLoggingLearnerStudyIds(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.LOGGING_LEARNER_STUDY_IDS, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(LOGGING_LEARNER_STUDY_IDS, value)
     }
 
     fun forceEnableExtraTopicTabsUi(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.EXTRA_TOPIC_TABS_UI, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(EXTRA_TOPIC_TABS_UI, value)
     }
 
     fun forceEnablePerformanceMetricsCollection(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.PERFORMANCE_METRICS_COLLECTION, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(PERFORMANCE_METRICS_COLLECTION, value)
     }
 
     fun forceEnableSpotlightUi(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.SPOTLIGHT_UI, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(SPOTLIGHT_UI, value)
     }
 
     fun forceEnableNpsSurvey(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.NPS_SURVEY, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(NPS_SURVEY, value)
     }
 
     fun forceEnableOnboardingFlowV2(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.ONBOARDING_FLOW_V2, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(ONBOARDING_FLOW_V2, value)
     }
 
     fun forceEnableMultipleClassrooms(value: Boolean) {
-      TestPlatformParameterConfigRetriever.setFlagOverride(FeatureFlagId.MULTIPLE_CLASSROOMS, value)
+      TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, value)
     }
 
     fun reset() {

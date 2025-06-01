@@ -63,7 +63,9 @@ class FeatureFlagBindingModule {
 
   @Provides
   @EnableInteractionConfigChangeStateRetention
-  fun provideEnableInteractionConfigChangeStateRetention(processState: PlatformParameterProcessState) =
+  fun provideEnableInteractionConfigChangeStateRetention(
+    processState: PlatformParameterProcessState
+  ) =
     processState.retrieveFeatureFlag(FeatureFlagId.INTERACTION_CONFIG_CHANGE_STATE_RETENTION)
 
   @Provides

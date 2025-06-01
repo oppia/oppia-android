@@ -4,8 +4,6 @@ import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SyncStatus
-import javax.inject.Inject
-import javax.inject.Singleton
 
 class PlatformParameterProcessState {
   private lateinit var platformParameters: Map<PlatformParameterId, PlatformParameterValue>

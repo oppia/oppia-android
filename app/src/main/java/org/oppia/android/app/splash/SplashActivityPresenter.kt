@@ -40,6 +40,7 @@ import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.DeprecationController
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -55,7 +56,6 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 import javax.inject.Provider
-import org.oppia.android.domain.platformparameter.PlatformParameterController
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -183,18 +183,22 @@ class SplashActivityPresenter @Inject constructor(
 
   private fun subscribeToPlatformParameterInitialization() {
     val liveData = platformParameterController.getParameterInitializationStatus().toLiveData()
-    liveData.observe(activity, object : Observer<AsyncResult<Boolean>>  {
-      override fun onChanged(result: AsyncResult<Boolean>) {
-        if (result !is AsyncResult.Success) {
-          oppiaLogger.e(
-            "SplashActivity", "Encountered non-successful parameter initialization result: $result."
-          )
-          // Attempt to continue.
-        } else if (!result.value) return // Parameter initialization hasn't completed yet.
-        liveData.removeObserver(this)
-        subscribeToOnboardingFlow()
+    liveData.observe(
+      activity,
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(result: AsyncResult<Boolean>) {
+          if (result !is AsyncResult.Success) {
+            oppiaLogger.e(
+              "SplashActivity",
+              "Encountered non-successful parameter initialization result: $result."
+            )
+            // Attempt to continue.
+          } else if (!result.value) return // Parameter initialization hasn't completed yet.
+          liveData.removeObserver(this)
+          subscribeToOnboardingFlow()
+        }
       }
-    })
+    )
   }
 
   private fun subscribeToOnboardingFlow() {

@@ -1,14 +1,14 @@
 package org.oppia.android.domain.oppialogger.analytics
 
-import javax.inject.Inject
-import javax.inject.Provider
-import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.domain.platformparameter.FeatureFlags
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import javax.inject.Inject
+import javax.inject.Provider
+import javax.inject.Singleton
 
 /**
  * Convenience logger for feature flags.
@@ -34,7 +34,8 @@ class FeatureFlagsLogger @Inject constructor(
    * [PlatformParameterValue]s
    */
   fun setFeatureFlagItemMap(
-    featureFlagItemMap: Map<FeatureFlagId, PlatformParameterValue<Boolean>>) {
+    featureFlagItemMap: Map<FeatureFlagId, PlatformParameterValue<Boolean>>
+  ) {
     featureFlagOverride = featureFlagItemMap
   }
 
