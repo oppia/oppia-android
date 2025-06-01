@@ -172,12 +172,13 @@ class TopicFragmentTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     Intents.init()
-    TestPlatformParameterModule.reset()
   }
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }

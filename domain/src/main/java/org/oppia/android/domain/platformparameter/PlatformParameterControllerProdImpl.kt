@@ -1,7 +1,6 @@
 package org.oppia.android.domain.platformparameter
 
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -25,14 +24,13 @@ import org.oppia.android.util.threading.BackgroundDispatcher
  * Production implementation for the controller to manage and synchronize platform parameters and
  * feature flags.
  */
-@Singleton
-class PlatformParameterControllerProdImpl @Inject constructor(
+class PlatformParameterControllerProdImpl(
   cacheStoreFactory: PersistentCacheStore.Factory,
   private val dataProviders: DataProviders,
   private val configRetriever: PlatformParameterConfigRetriever,
   private val processState: PlatformParameterProcessState,
   private val oppiaLogger: OppiaLogger,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  private val backgroundCoroutineDispatcher: CoroutineDispatcher,
 ) : PlatformParameterController {
   private val databaseStore by lazy {
     cacheStoreFactory.create(
@@ -127,6 +125,22 @@ class PlatformParameterControllerProdImpl @Inject constructor(
       ParameterState.PlatformParameter(paramDefinition, remoteParamById[paramDefinition.id])
     } + loadSupportedFeatureFlags().map { flagDefinition ->
       ParameterState.FeatureFlag(flagDefinition, remoteFlagById[flagDefinition.id])
+    }
+  }
+
+  // TODO(#5835): Remove this factory once the hack for initializing parameters in tests is gone.
+  class Factory @Inject constructor(
+    private val cacheStoreFactory: PersistentCacheStore.Factory,
+    private val dataProviders: DataProviders,
+    private val configRetriever: PlatformParameterConfigRetriever,
+    private val oppiaLogger: OppiaLogger,
+    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  ) {
+    fun create(processState: PlatformParameterProcessState): PlatformParameterControllerProdImpl {
+      return PlatformParameterControllerProdImpl(
+        cacheStoreFactory, dataProviders, configRetriever, processState, oppiaLogger,
+        backgroundCoroutineDispatcher
+      )
     }
   }
 

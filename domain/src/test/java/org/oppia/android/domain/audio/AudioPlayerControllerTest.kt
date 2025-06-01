@@ -86,6 +86,9 @@ import org.robolectric.shadows.util.DataSource
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.junit.Before
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [AudioPlayerControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -116,6 +119,17 @@ class AudioPlayerControllerTest {
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
   private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+
+  @Before
+  fun setUp() {
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
@@ -870,7 +884,8 @@ class AudioPlayerControllerTest {
   }
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpMediaReadyApplication()
   }
 
@@ -896,50 +911,10 @@ class AudioPlayerControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    companion object {
-      var enableLearnerStudyAnalytics: Boolean = false
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
 
@@ -980,6 +955,7 @@ class AudioPlayerControllerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
+      TestPlatformParameterModule::class,
       TextInputRuleModule::class
     ]
   )

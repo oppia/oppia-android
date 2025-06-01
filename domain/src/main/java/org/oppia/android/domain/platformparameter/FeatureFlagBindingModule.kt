@@ -2,7 +2,6 @@ package org.oppia.android.domain.platformparameter
 
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
@@ -83,7 +82,6 @@ class FeatureFlagBindingModule {
     processState.retrieveFeatureFlag(FeatureFlagId.ONBOARDING_FLOW_V2)
 
   @Provides
-  @Singleton
   @EnableMultipleClassrooms
   fun provideEnableMultipleClassrooms(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.MULTIPLE_CLASSROOMS)
@@ -92,9 +90,10 @@ class FeatureFlagBindingModule {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(
       featureFlagId: FeatureFlagId
     ): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createForFeatureFlag(
-        retrieveFeatureFlagState(featureFlagId), retrieveFeatureFlagSyncStatus(featureFlagId)
-      )
+      return object : PlatformParameterValue<Boolean> {
+        override val value = retrieveFeatureFlagState(featureFlagId)
+        override val syncStatus = retrieveFeatureFlagSyncStatus(featureFlagId)
+      }
     }
   }
 }

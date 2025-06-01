@@ -76,6 +76,7 @@ import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [ProfileManagementControllerTest]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -125,8 +126,7 @@ class ProfileManagementControllerTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLearnerStudyAnalytics = false
-    TestModule.enableOnboardingFlowV2 = false
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -2063,17 +2063,19 @@ class ProfileManagementControllerTest {
   private fun <T> DataProvider<T>.ensureExecutes() = monitorFactory.ensureDataProviderExecutes(this)
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = false
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestWithOnboardingV2Enabled(enableOnboardingV2: Boolean) {
-    TestModule.enableOnboardingFlowV2 = enableOnboardingV2
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingV2)
     setUpTestApplicationComponent()
   }
 
@@ -2097,13 +2099,6 @@ class ProfileManagementControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-      var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -2123,40 +2118,6 @@ class ProfileManagementControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableOnboardingFlowV2
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
   }
 
   @Module
@@ -2185,7 +2146,8 @@ class ProfileManagementControllerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestLoggingIdentifierModule::class,
-      TestModule::class
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

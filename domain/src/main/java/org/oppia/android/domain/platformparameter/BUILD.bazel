@@ -45,6 +45,8 @@ kt_android_library(
     ],
 )
 
+# TODO(#5835): Remove the extra visibility exposure needed here once the test platform parameter
+#  module can be moved to part of the platform parameter testing package.
 kt_android_library(
     name = "prod_impl",
     srcs = [
@@ -52,7 +54,10 @@ kt_android_library(
         "PlatformParameterControllerProdImpl.kt",
         "PlatformParameterSingletonImpl.kt",
     ],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:__pkg__"],
+    visibility = [
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:__pkg__",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:__pkg__",
+    ],
     deps = [
         ":config_retriever",
         ":controller",
@@ -77,6 +82,7 @@ kt_android_library(
     name = "prod_module",
     srcs = [
         "FeatureFlagBindingModule.kt",
+        "FeatureFlagsMapBindingModule.kt",
         "PlatformParameterBindingModule.kt",
         "PlatformParameterModule.kt",
         "PlatformParameterSingletonModule.kt",

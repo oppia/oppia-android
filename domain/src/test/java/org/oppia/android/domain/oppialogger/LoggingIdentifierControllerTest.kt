@@ -56,6 +56,8 @@ import java.io.FileOutputStream
 import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [LoggingIdentifierController]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
@@ -458,34 +460,6 @@ class LoggingIdentifierControllerTest {
     @Provides
     @ApplicationIdSeed
     fun provideApplicationIdSeed(): Long = applicationIdSeed!! // Fail if not initialized.
-  }
-
-  @Module
-  class TestPlatformParameterModule {
-
-    companion object {
-      var forceLearnerAnalyticsStudy: Boolean = false
-    }
-
-    @Provides
-    @SplashScreenWelcomeMsg
-    fun provideSplashScreenWelcomeMsgParam(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(SPLASH_SCREEN_WELCOME_MSG_DEFAULT_VALUE)
-    }
-
-    @Provides
-    @SyncUpWorkerTimePeriodHours
-    fun provideSyncUpWorkerTimePeriod(): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createDefaultParameter(
-        SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS_DEFAULT_VALUE
-      )
-    }
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(forceLearnerAnalyticsStudy)
-    }
   }
 
   // TODO(#89): Move this to a common test application component.

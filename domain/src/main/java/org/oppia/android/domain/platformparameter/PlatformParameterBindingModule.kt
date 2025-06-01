@@ -3,6 +3,7 @@ package org.oppia.android.domain.platformparameter
 import dagger.Module
 import dagger.Provides
 import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.ForcedAppUpdateVersionCode
 import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
@@ -90,17 +91,19 @@ class PlatformParameterBindingModule {
     private fun PlatformParameterProcessState.retrieveIntParameter(
       platformParameterId: PlatformParameterId
     ): PlatformParameterValue<Int> {
-      return PlatformParameterValue.createForPlatformParameter(
-        retrievePlatformParameterIntegerState(platformParameterId)
-      )
+      return object : PlatformParameterValue<Int> {
+        override val value = retrievePlatformParameterIntegerState(platformParameterId)
+        override val syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+      }
     }
 
     private fun PlatformParameterProcessState.retrieveBooleanParameter(
       platformParameterId: PlatformParameterId
     ): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createForPlatformParameter(
-        retrievePlatformParameterBooleanState(platformParameterId)
-      )
+      return object : PlatformParameterValue<Boolean> {
+        override val value = retrievePlatformParameterBooleanState(platformParameterId)
+        override val syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+      }
     }
   }
 }

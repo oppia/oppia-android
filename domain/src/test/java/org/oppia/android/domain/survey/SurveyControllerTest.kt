@@ -42,6 +42,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [SurveyController]. */
 @RunWith(AndroidJUnit4::class)
@@ -72,7 +74,13 @@ class SurveyControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -184,13 +192,6 @@ class SurveyControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Enable the study by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
   }
 
   @Module
@@ -221,7 +222,8 @@ class SurveyControllerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestLoggingIdentifierModule::class,
-      TestModule::class
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

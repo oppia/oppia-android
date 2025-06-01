@@ -31,6 +31,10 @@ kt_android_library(
     deps = [
         ":test_constants",
         "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_platform_parameter_config_retriever",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
         "//utility",
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],

@@ -114,6 +114,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.oppia.android.app.model.EventLog.Context.Builder as EventContextBuilder
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 private const val TEST_ANDROID_SDK_VERSION = 30
 
@@ -185,7 +186,7 @@ class EventBundleCreatorTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -2619,12 +2620,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = false
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = true
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
   }
 
@@ -2650,29 +2651,10 @@ class EventBundleCreatorTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLoggingLearnerStudyIds
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
     }
   }
 
@@ -2680,7 +2662,8 @@ class EventBundleCreatorTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent {

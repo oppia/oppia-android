@@ -7,8 +7,7 @@ import org.oppia.android.app.model.SyncStatus
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
-class PlatformParameterProcessState @Inject constructor() {
+class PlatformParameterProcessState {
   private lateinit var platformParameters: Map<PlatformParameterId, PlatformParameterValue>
   private lateinit var featureFlags: Map<FeatureFlagId, Boolean>
   private lateinit var featureFlagSyncStatuses: Map<FeatureFlagId, SyncStatus>
