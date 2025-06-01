@@ -1,9 +1,7 @@
 package org.oppia.android.domain.platformparameter
 
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.app.model.PlatformParameter
 
 /** Controller for managing and synchronizing platform parameters and feature flags. */
 interface PlatformParameterController {
@@ -45,22 +43,4 @@ interface PlatformParameterController {
    *    that the actual value returned does not have any significant meaning.
    */
   fun downloadRemoteParameters(): DataProvider<Any?>
-
-  // TODO: Figure out what to do with this (remove or add TODO to remove).
-  /**
-   * Updates the platform parameter database in cache store.
-   *
-   * @param platformParameterList list of [PlatformParameter] objects which needs to be cached
-   * @return a [DataProvider] that indicates the success/failure of this update operation
-   */
-  fun updatePlatformParameterDatabase(
-    platformParameterList: List<PlatformParameter>
-  ): DataProvider<Any?>
-
-  // TODO: Figure out what to do with this (remove or add TODO to remove).
-  /**
-   * Returns a [DataProvider] which can be used to confirm that PlatformParameterDatabase read
-   * process has been completed.
-   */
-  fun getParameterDatabase(): DataProvider<Unit>
 }
