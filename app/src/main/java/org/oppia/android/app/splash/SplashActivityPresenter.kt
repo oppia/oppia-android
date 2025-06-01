@@ -54,6 +54,8 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+import javax.inject.Provider
+import org.oppia.android.domain.platformparameter.PlatformParameterController
 
 private const val AUTO_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "auto_deprecation_notice_dialog"
 private const val FORCED_DEPRECATION_NOTICE_DIALOG_FRAGMENT_TAG = "forced_deprecation_notice_dialog"
@@ -75,11 +77,14 @@ class SplashActivityPresenter @Inject constructor(
   private val appLanguageLocaleHandler: AppLanguageLocaleHandler,
   private val lifecycleSafeTimerFactory: LifecycleSafeTimerFactory,
   private val currentBuildFlavor: BuildFlavor,
-  @EnableAppAndOsDeprecation
-  private val enableAppAndOsDeprecation: PlatformParameterValue<Boolean>,
   private val profileManagementController: ProfileManagementController,
-  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>,
-  @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
+  private val platformParameterController: PlatformParameterController,
+  @EnableAppAndOsDeprecation
+  private val enableAppAndOsDeprecationProvider: Provider<PlatformParameterValue<Boolean>>,
+  @EnableOnboardingFlowV2
+  private val enableOnboardingFlowV2Provider: Provider<PlatformParameterValue<Boolean>>,
+  @EnableMultipleClassrooms
+  private val enableMultipleClassroomsProvider: Provider<PlatformParameterValue<Boolean>>
 ) {
   lateinit var startupMode: StartupMode
 
@@ -92,7 +97,9 @@ class SplashActivityPresenter @Inject constructor(
       isOnBetaFlavor = currentBuildFlavor == BuildFlavor.BETA
     }
 
-    subscribeToOnboardingFlow()
+    // The very first thing that must be done during app initialization is loading platform
+    // parameters and feature flags (since even the onboarding logic can depend on these).
+    subscribeToPlatformParameterInitialization()
   }
 
   fun handleOnDeprecationNoticeActionClicked(
@@ -174,6 +181,22 @@ class SplashActivityPresenter @Inject constructor(
     processStartupMode()
   }
 
+  private fun subscribeToPlatformParameterInitialization() {
+    val liveData = platformParameterController.getParameterInitializationStatus().toLiveData()
+    liveData.observe(activity, object : Observer<AsyncResult<Boolean>>  {
+      override fun onChanged(result: AsyncResult<Boolean>) {
+        if (result !is AsyncResult.Success) {
+          oppiaLogger.e(
+            "SplashActivity", "Encountered non-successful parameter initialization result: $result."
+          )
+          // Attempt to continue.
+        } else if (!result.value) return // Parameter initialization hasn't completed yet.
+        liveData.removeObserver(this)
+        subscribeToOnboardingFlow()
+      }
+    })
+  }
+
   private fun subscribeToOnboardingFlow() {
     val liveData = computeInitStateDataProvider().toLiveData()
     liveData.observe(
@@ -251,7 +274,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun processStartupMode() {
-    if (enableAppAndOsDeprecation.value) {
+    if (enableAppAndOsDeprecationProvider.get().value) {
       processAppAndOsDeprecationEnabledStartUpMode()
     } else {
       processLegacyStartupMode()
@@ -308,7 +331,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun handleUserOnboarded() {
-    if (enableOnboardingFlowV2.value) {
+    if (enableOnboardingFlowV2Provider.get().value) {
       getProfileOnboardingState()
     } else {
       activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
@@ -413,7 +436,7 @@ class SplashActivityPresenter @Inject constructor(
   }
 
   private fun launchHomeScreen(profileId: ProfileId) {
-    val intent = if (enableMultipleClassrooms.value) {
+    val intent = if (enableMultipleClassroomsProvider.get().value) {
       ClassroomListActivity.createClassroomListActivity(activity, profileId)
     } else {
       HomeActivity.createHomeActivity(activity, profileId)

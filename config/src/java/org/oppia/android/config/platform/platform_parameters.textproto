@@ -1,3 +1,4 @@
+# TODO: Make sure all of these defaults are correct. Ditto for feature flags.
 platform_parameter_definition {
   id: SPLASH_SCREEN_WELCOME_MESSAGE
   default_value: {

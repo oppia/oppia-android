@@ -5,6 +5,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterSingleton
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.SyncStatus
 
 /** Singleton which helps in storing and providing Platform Parameters at runtime. */
 @Singleton
@@ -25,7 +26,7 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.STRING)) return null
     return object : PlatformParameterValue<String> {
       override val value = parameter.string
-      override val syncStatus = parameter.syncStatus
+      override val syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
     }
   }
 
@@ -37,7 +38,7 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.INTEGER)) return null
     return object : PlatformParameterValue<Int> {
       override val value = parameter.integer
-      override val syncStatus = parameter.syncStatus
+      override val syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
     }
   }
 
@@ -49,7 +50,7 @@ class PlatformParameterSingletonImpl @Inject constructor() : PlatformParameterSi
     if (!parameter.valueTypeCase.equals(PlatformParameter.ValueTypeCase.BOOLEAN)) return null
     return object : PlatformParameterValue<Boolean> {
       override val value = parameter.boolean
-      override val syncStatus = parameter.syncStatus
+      override val syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
     }
   }
 }

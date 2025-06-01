@@ -1,6 +1,7 @@
 package org.oppia.android.domain.platformparameter
 
 import android.content.Context
+import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.oppia.android.app.model.FeatureFlagDefinition
@@ -17,14 +18,19 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.extensions.getVersionName
 import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.PlatformParameter
+import org.oppia.android.util.threading.BackgroundDispatcher
 
 /**
  * Production implementation for the controller to manage and synchronize platform parameters and
@@ -38,13 +44,17 @@ class PlatformParameterControllerProdImpl @Inject constructor(
   private val platformParameterService: PlatformParameterService,
   private val processState: PlatformParameterProcessState,
   private val oppiaLogger: OppiaLogger,
-  private val context: Context
+  private val context: Context,
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
 ) : PlatformParameterController {
   private val databaseStore by lazy {
     cacheStoreFactory.create(
       DATABASE_NAME, RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
     )
   }
+  // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
+  private val initializationDeferred by lazy { loadParametersInternalAsync() }
+  private val areParametersLoadedFlow by lazy { MutableStateFlow(false) }
 
   init {
     // Ensure that parameters and flags are fully loaded ahead of a call to retrieveData() since
@@ -62,33 +72,23 @@ class PlatformParameterControllerProdImpl @Inject constructor(
     }
   }
 
-  override fun loadParameters(): DataProvider<Any?> {
-    // Note that the returned provider will be guaranteed to happen after loading due to the
-    // datastore being primed upon controller initialization. The provider may still block if the
-    // attempt to load parameters happens very quickly after controller creation, but it should
-    // never return pending. There's very likely to be at least some I/O blocking for loading the
-    // asset definitions for the first time.
-    return loadAllParameterStates().transform(LOAD_PARAMETERS_PROVIDER_ID) { params ->
-      // Synchronize injectable parameter and flag state.
-      val platformParams = params.filterIsInstance<ParameterState.PlatformParameter>()
-      val featureFlags = params.filterIsInstance<ParameterState.FeatureFlag>()
-      val platStatesById = platformParams.associate { it.definition.id to it.computeCurrentState() }
-      val flagStatesById = featureFlags.associate { it.definition.id to it.computeCurrentState() }
-      val statusesById = featureFlags.associate { it.definition.id to it.computeCurrentStatus() }
-      processState.initializePlatformParameters(platStatesById)
-      processState.initializeFeatureFlags(flagStatesById)
-      processState.initializeFeatureFlagSyncStatuses(statusesById)
+  override fun loadParametersAsync() = initializationDeferred
 
-      // Erase the data provider's value so that callers cannot inadvertently depend on the actual
-      // list of parameters available.
-      return@transform Unit
+  override fun getParameterInitializationStatus(): DataProvider<Boolean> {
+    return dataProviders.run {
+      areParametersLoadedFlow.convertToAutomaticDataProvider(
+        GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID
+      )
     }
   }
 
   override fun downloadRemoteParameters(): DataProvider<Any?> {
-    return loadAllParameterStates().transformAsync(
-      DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID
-    ) { params ->
+    check(areParametersLoadedFlow.value) {
+      "Can only remotely download parameters after they have been loaded."
+    }
+    return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
+      val params = loadAllParameterStates()
+
       // Server names are guaranteed to be unique.
       val paramsByName = params.associateBy { it.remoteServerName }
       val remoteParametersResponse = fetchParamsFromRemote()
@@ -120,7 +120,7 @@ class PlatformParameterControllerProdImpl @Inject constructor(
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.
-      return@transformAsync AsyncResult.Success(Unit)
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
@@ -130,52 +130,54 @@ class PlatformParameterControllerProdImpl @Inject constructor(
   }
 
   // TODO: Remove this?
-  override fun getParameterDatabase(): DataProvider<Unit> = loadParameters().transform("temp") { }
+  override fun getParameterDatabase(): DataProvider<Unit> = getParameterInitializationStatus().transform("temp") { }
 
-  fun loadRemotePlatformParameters(): DataProvider<List<RemotePlatformParameter>> {
-    return databaseStore.transform(LOAD_REMOTE_PLATFORM_PARAMETERS_PROVIDER_ID) { database ->
-      database.remotePlatformParameterList
+  suspend fun loadRemotePlatformParameters(): List<RemotePlatformParameter> {
+    return databaseStore.readDataAsync().await().remotePlatformParameterList
+  }
+
+  suspend fun loadRemoteFeatureFlags(): List<RemoteFeatureFlag> {
+    return databaseStore.readDataAsync().await().remoteFeatureFlagList
+  }
+
+  fun loadSupportedPlatformParameters(): List<PlatformParameterDefinition> {
+    return configRetriever.loadSupportedPlatformParameters().platformParameterDefinitionList
+  }
+
+  fun loadSupportedFeatureFlags(): List<FeatureFlagDefinition> {
+    return configRetriever.loadSupportedFeatureFlags().featureFlagDefinitionList
+  }
+
+  private fun loadParametersInternalAsync(): Deferred<Any?> {
+    return CoroutineScope(backgroundCoroutineDispatcher).async {
+      val params = loadAllParameterStates()
+
+      // Synchronize injectable parameter and flag state.
+      val platformParams = params.filterIsInstance<ParameterState.PlatformParameter>()
+      val featureFlags = params.filterIsInstance<ParameterState.FeatureFlag>()
+      val platStatesById = platformParams.associate { it.definition.id to it.computeCurrentState() }
+      val flagStatesById = featureFlags.associate { it.definition.id to it.computeCurrentState() }
+      val statusesById = featureFlags.associate { it.definition.id to it.computeCurrentStatus() }
+      processState.initializePlatformParameters(platStatesById)
+      processState.initializeFeatureFlags(flagStatesById)
+      processState.initializeFeatureFlagSyncStatuses(statusesById)
+
+      // Let observers know that parameters have been initialized.
+      areParametersLoadedFlow.value = true
+
+      // Erase the data provider's value so that callers cannot inadvertently depend on the actual
+      // list of parameters available.
     }
   }
 
-  fun loadRemoteFeatureFlags(): DataProvider<List<RemoteFeatureFlag>> {
-    return databaseStore.transform(LOAD_REMOTE_FEATURE_FLAGS_PROVIDER_ID) { database ->
-      database.remoteFeatureFlagList
+  private suspend fun loadAllParameterStates(): List<ParameterState> {
+    val remoteParamById = loadRemotePlatformParameters().associateBy { it.id }
+    val remoteFlagById = loadRemoteFeatureFlags().associateBy { it.id }
+    return loadSupportedPlatformParameters().map { paramDefinition ->
+      ParameterState.PlatformParameter(paramDefinition, remoteParamById[paramDefinition.id])
+    } + loadSupportedFeatureFlags().map { flagDefinition ->
+      ParameterState.FeatureFlag(flagDefinition, remoteFlagById[flagDefinition.id])
     }
-  }
-
-  fun loadSupportedPlatformParameters(): DataProvider<List<PlatformParameterDefinition>> {
-    return dataProviders.createInMemoryDataProviderAsync(SUPPORTED_PLATFORM_PARAMS_PROV_ID) {
-      AsyncResult.Success(
-        configRetriever.loadSupportedPlatformParameters().platformParameterDefinitionList
-      )
-    }
-  }
-
-  fun loadSupportedFeatureFlags(): DataProvider<List<FeatureFlagDefinition>> {
-    return dataProviders.createInMemoryDataProviderAsync(SUPPORTED_FEATURE_FLAGS_PROVIDER_ID) {
-      AsyncResult.Success(configRetriever.loadSupportedFeatureFlags().featureFlagDefinitionList)
-    }
-  }
-
-  private fun loadAllParameterStates(): DataProvider<List<ParameterState>> {
-    val platformParameterStates =
-      loadSupportedPlatformParameters().combineWith(
-        loadRemotePlatformParameters(), LOAD_REMOTE_AND_LOCAL_PLATFORM_PARAMS_PROVIDER_ID
-      ) { definitions, remote ->
-        val remoteById = remote.associateBy { it.id }
-        definitions.map { ParameterState.PlatformParameter(it, remoteById[it.id]) }
-      }
-    val featureFlagStates =
-      loadSupportedFeatureFlags().combineWith(
-        loadRemoteFeatureFlags(), LOAD_REMOTE_AND_LOCAL_FEATURE_FLAGS_PROVIDER_ID
-      ) { definitions, remote ->
-        val remoteById = remote.associateBy { it.id }
-        definitions.map { ParameterState.FeatureFlag(it, remoteById[it.id]) }
-      }
-    return platformParameterStates.combineWith(
-      featureFlagStates, LOAD_ALL_PARAMETER_STATES_PROVIDER_ID
-    ) { platformParameters, featureFlags -> platformParameters + featureFlags }
   }
 
   private suspend fun fetchParamsFromRemote(): Response<Map<String, GaePlatformParameterValue>> {
@@ -265,6 +267,8 @@ class PlatformParameterControllerProdImpl @Inject constructor(
   }
 
   private companion object {
+    private const val GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID =
+      "get_parameter_initialization_status"
     private const val LOAD_PARAMETERS_PROVIDER_ID = "load_parameters"
     private const val DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID = "download_remote_parameters"
     private const val SUPPORTED_PLATFORM_PARAMS_PROV_ID = "supported_platform_params"

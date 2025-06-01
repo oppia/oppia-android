@@ -1,10 +1,15 @@
 package org.oppia.android.domain.platformparameter
 
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.StateFlow
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.app.model.PlatformParameter
 
 /** Controller for managing and synchronizing platform parameters and feature flags. */
 interface PlatformParameterController {
+  // TODO: Update this to explain that the returned deferred never changes so it can be used to
+  //  safely synchronize loading from multiple parts of the app simultaneously. Also, multiple calls
+  //  is actually safe now. Ditto for flow & deferred versions below.
   /**
    * Ensures platform parameter and feature flag states are properly loaded and able to be directly
    * injected through Dagger.
@@ -20,7 +25,9 @@ interface PlatformParameterController {
    * @return a [DataProvider] that indicates the success/failure of parameter loading. Note that the
    *    actual value returned does not have any significant meaning.
    */
-  fun loadParameters(): DataProvider<Any?>
+  fun loadParametersAsync(): Deferred<Any?>
+
+  fun getParameterInitializationStatus(): DataProvider<Boolean>
 
   /**
    * Downloads all Android app-specific platform parameters and feature flag states from the remote

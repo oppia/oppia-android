@@ -8,6 +8,7 @@ import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsStartupListener
 import javax.inject.Provider
+import org.oppia.android.domain.platformparameter.PlatformParameterController
 
 /**
  * Root Dagger component for the application. All application-scoped modules should be included in
@@ -27,6 +28,8 @@ interface ApplicationComponent : ApplicationInjector {
   fun getActivityComponentBuilderProvider(): Provider<ActivityComponentImpl.Builder>
 
   fun getApplicationStartupListeners(): Set<ApplicationStartupListener>
+
+  fun getPlatformParameterController(): PlatformParameterController
 
   fun getAnalyticsStartupListenerStartupListeners(): Set<AnalyticsStartupListener>
 
