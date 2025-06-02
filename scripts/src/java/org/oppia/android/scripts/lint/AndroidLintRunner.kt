@@ -54,15 +54,15 @@ class AndroidLintRunner {
     projectDescriptionPath: String
   ): Array<String> {
 
-    return listOf(
+    return arrayOf(
       "-Wall",
-      "--quite",
+      "--quiet",
       "--fullpath",
       "--showall",
       "--exitcode",
       "--offline",
       "--project", projectDescriptionPath,
       "--xml", reportPath,
-    ).toTypedArray()
+    )
   }
 }

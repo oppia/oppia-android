@@ -71,4 +71,31 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("lint_analysis_")
     assertThat(output).contains("as an intermediary working directory")
   }
+
+  @Test
+  fun testPrepareLintArguments_includesRequiredFlags() {
+    val lintRunner = AndroidLintRunner()
+    val reportPath = "/path/to/report.xml"
+    val projectPath = "/path/to/project.xml"
+
+    val method = AndroidLintRunner::class.java.getDeclaredMethod(
+      "prepareLintArguments",
+      String::class.java,
+      String::class.java
+    )
+    method.isAccessible = true
+
+    val result = method.invoke(lintRunner, reportPath, projectPath) as Array<*>
+
+    assertThat(result).asList().containsAtLeast(
+      "-Wall",
+      "--quiet",
+      "--fullpath",
+      "--showall",
+      "--exitcode",
+      "--offline",
+      "--project", projectPath,
+      "--xml", reportPath
+    )
+  }
 }
