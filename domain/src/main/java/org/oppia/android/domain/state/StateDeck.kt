@@ -253,8 +253,8 @@ class StateDeck constructor(
   }
 
   /** Returns whether the given state was previously visited. */
-  fun wasPreviouslyVisited(stateName: String): Boolean {
-    return previousStates.asReversed().any { it.state.name == stateName }
+  fun wasStatePreviouslyVisited(stateName: String): Boolean {
+    return previousStates.any { it.state.name == stateName }
   }
 
   /**

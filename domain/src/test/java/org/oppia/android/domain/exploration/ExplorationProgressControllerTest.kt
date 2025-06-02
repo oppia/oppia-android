@@ -3286,13 +3286,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmit_wrongMultipleChoiceAnswer_returnsOutcomeWithTransition() {
+  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_returnsFlashbackAttributes() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    navigateToFlashbackMultipleChoiceState()
+    playThroughToMultipleChoiceStateWithFlashbackDest()
 
     // Submit a wrong answer.
     val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(1))
@@ -3309,13 +3309,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmit_wrongMultipleChoiceAnswer_returnsPendingState() {
+  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_returnsPendingState() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    navigateToFlashbackMultipleChoiceState()
+    playThroughToMultipleChoiceStateWithFlashbackDest()
 
     // Submit a wrong answer.
     val ephemeralState = submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
@@ -3327,13 +3327,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmit_wrongMultipleChoiceAnswer_verifyFlashbackStateName_isAdded() {
+  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_verifyFlashbackStateNameIsAdded() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    navigateToFlashbackMultipleChoiceState()
+    playThroughToMultipleChoiceStateWithFlashbackDest()
 
     // Submit a wrong answer.
     val ephemeralState = submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
@@ -3348,13 +3348,13 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmit_wrongMultipleChoiceAnswers_noHintIsVisible() {
+  fun testFlashback_onSubmitWrongMultipleChoiceAnswers_noHintIsVisible() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    navigateToFlashbackMultipleChoiceState()
+    playThroughToMultipleChoiceStateWithFlashbackDest()
 
     // Submit 2 wrong answers.
     submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
@@ -3373,7 +3373,7 @@ class ExplorationProgressControllerTest {
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    navigateToFlashbackMultipleChoiceState()
+    playThroughToMultipleChoiceStateWithFlashbackDest()
 
     // Submit a wrong answer.
     submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
@@ -3396,7 +3396,7 @@ class ExplorationProgressControllerTest {
       .isEqualTo("Ratio shows relative relationship 2")
   }
 
-  private fun navigateToFlashbackMultipleChoiceState() {
+  private fun playThroughToMultipleChoiceStateWithFlashbackDest() {
     playThroughRatioExplorationState1()
     playThroughRatioExplorationState2()
     playThroughRatioExplorationState3()

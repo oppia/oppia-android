@@ -698,13 +698,13 @@ class ExplorationProgressController @Inject constructor(
         val ephemeralState = computeBaseCurrentEphemeralState()
         when {
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
-            val wasVisited = explorationProgress.stateDeck
-              .wasPreviouslyVisited(answerOutcome.stateName)
+            val wasVisitedBefore = explorationProgress.stateDeck
+              .wasStatePreviouslyVisited(answerOutcome.stateName)
 
-            // Checks whether Learner submits wrong answer and destination name was previously
-            // visited by Learner.
+            // Checks whether the learner submitted a wrong answer and the expected destination name
+            // was previously visited.
             if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
-              !answerOutcome.labelledAsCorrectAnswer && wasVisited
+              !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
             ) {
               explorationProgress.stateDeck.addFlashbackState(answerOutcome.stateName)
             } else {
