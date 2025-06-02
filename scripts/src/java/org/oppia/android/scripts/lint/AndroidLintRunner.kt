@@ -31,13 +31,15 @@ fun main(vararg args: String) {
 /** Runs the Android lint tool to generate reports. */
 class AndroidLintRunner {
 
-  /** Prepares arguments for Lint and invokes the tool. */
+  /** Invokes the tool to run Lint analysis. */
   fun runLint() {
 
     val parentDestDir = Files.createTempDirectory("lint_analysis_").toFile()
     println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
     val reportFile = File(parentDestDir, "lint-report.xml")
-    val cliArgs = prepareLintArguments(reportFile.absolutePath)
+    val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
+    val cliArgs = prepareLintArguments(reportFile.absolutePath, projectDescriptionFile.absolutePath)
+
     LintCli().run(cliArgs)
   }
 
@@ -47,15 +49,19 @@ class AndroidLintRunner {
    * @param reportPath path to the XML report file
    * @return array of command line arguments
    */
-  private fun prepareLintArguments(reportPath: String): Array<String> {
+  private fun prepareLintArguments(
+    reportPath: String,
+    projectDescriptionPath: String
+  ): Array<String> {
 
     return listOf(
       "-Wall",
-      "--quiet",
+      "--quite",
       "--fullpath",
       "--showall",
       "--exitcode",
       "--offline",
+      "--project", projectDescriptionPath,
       "--xml", reportPath,
     ).toTypedArray()
   }
