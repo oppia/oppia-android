@@ -6,20 +6,6 @@ Package for test-specific platform parameter utilities and helpers.
 load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
 kt_android_library(
-    name = "test_constants",
-    testonly = True,
-    srcs = [
-        "TestPlatformParameterConstants.kt",
-    ],
-    visibility = [
-        "//:oppia_testing_visibility",
-    ],
-    deps = [
-        "//third_party:javax_inject_javax_inject",
-    ],
-)
-
-kt_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
@@ -29,7 +15,6 @@ kt_android_library(
         "//:oppia_testing_visibility",
     ],
     deps = [
-        ":test_constants",
         "//:dagger",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",

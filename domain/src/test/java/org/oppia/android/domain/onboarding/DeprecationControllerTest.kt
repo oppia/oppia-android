@@ -38,7 +38,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
@@ -337,8 +336,7 @@ class DeprecationControllerTest {
   @Component(
     modules = [
       ApplicationLifecycleModule::class,
-      ExpirationMetaDataRetrieverModule::class, // Use real implementation to test closer to prod.
-      LocaleProdModule::class,
+      ExpirationMetaDataRetrieverModule::class,
       LogStorageModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,

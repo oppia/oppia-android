@@ -4,12 +4,6 @@ import com.squareup.moshi.Moshi
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.oppia.android.data.backends.gae.XssiPrefix
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import javax.inject.Inject
 
 /**
@@ -29,9 +23,7 @@ class PlatformParameterServiceTestOrchestrator @Inject constructor(
    * @param parameterValues the name-to-value mapping that should be returned (representing the
    *     latest remote parameter values being sent from the server)
    */
-  fun setNextResponseAsSuccess(
-    parameterValues: Map<String, Any> = DEFAULT_REMOTE_PLATFORM_PARAMETERS
-  ) {
+  fun setNextResponseAsSuccess(parameterValues: Map<String, Any> = emptyMap()) {
     val paramValuesJson = mapAdapter.toJson(parameterValues)
     mockWebServer.enqueue(MockResponse().setBody("$xssiPrefix\n$paramValuesJson"))
   }
@@ -39,21 +31,5 @@ class PlatformParameterServiceTestOrchestrator @Inject constructor(
   /** Sets the next web response to be a 500 server error. */
   fun setNextResponseAsServerError() {
     mockWebServer.enqueue(MockResponse().setResponseCode(500))
-  }
-
-  companion object {
-    /** A default map of parameters that can be orchestrated using [setNextResponseAsSuccess]. */
-    val DEFAULT_REMOTE_PLATFORM_PARAMETERS = mapOf(
-      TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
-      TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
-      TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE
-    )
-
-    /** A version of [DEFAULT_REMOTE_PLATFORM_PARAMETERS] with unsupported parameter types. */
-    val REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE = mapOf(
-      TEST_STRING_PARAM_NAME to TEST_STRING_PARAM_SERVER_VALUE,
-      TEST_INTEGER_PARAM_NAME to TEST_INTEGER_PARAM_SERVER_VALUE,
-      TEST_BOOLEAN_PARAM_NAME to emptyList<String>()
-    )
   }
 }

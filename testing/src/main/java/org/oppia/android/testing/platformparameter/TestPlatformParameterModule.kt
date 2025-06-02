@@ -2,6 +2,7 @@ package org.oppia.android.testing.platformparameter
 
 import dagger.Module
 import dagger.Provides
+import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.FeatureFlagId.EXTRA_TOPIC_TABS_UI
@@ -102,6 +103,10 @@ class TestPlatformParameterModule {
 
     fun forceEnableMultipleClassrooms(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(MULTIPLE_CLASSROOMS, value)
+    }
+
+    fun forceEnableAppAndOsDeprecation(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(APP_AND_OS_DEPRECATION, value)
     }
 
     fun reset() {

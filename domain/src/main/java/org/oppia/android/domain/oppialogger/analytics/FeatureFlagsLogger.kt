@@ -48,17 +48,10 @@ class FeatureFlagsLogger @Inject constructor(
    * @param appSessionId denotes the id of the current appInForeground session
    */
   fun logAllFeatureFlags(appSessionId: String) {
-    val featureFlagItemList = mutableListOf<FeatureFlagItemContext>()
-    for (flag in featureFlagItemMap) {
-      featureFlagItemList.add(
-        createFeatureFlagItemContext(flag)
-      )
-    }
-
     // TODO(#5341): Set the UUID value for this context
     val featureFlagContext = FeatureFlagListContext.newBuilder()
       .setAppSessionId(appSessionId)
-      .addAllFeatureFlags(featureFlagItemList)
+      .addAllFeatureFlags(featureFlagItemMap.map(::createFeatureFlagItemContext).sortedBy { it.id })
       .build()
 
     analyticsController.logLowPriorityEvent(
