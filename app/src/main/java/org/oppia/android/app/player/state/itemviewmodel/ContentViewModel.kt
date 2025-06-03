@@ -1,6 +1,5 @@
 package org.oppia.android.app.player.state.itemviewmodel
 
-import android.util.Log
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 /** [StateItemViewModel] for content-card state. */

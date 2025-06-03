@@ -179,7 +179,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
             it
           )
         }.width()
-        //computedLeadingMargin = longestTextWidth + spacingBeforeNumberPrefix + spacingBeforeText
 
         // Compute the prefix's start x value such that it is right-aligned with other numbers in
         // the list.
@@ -190,6 +189,7 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       }
     }
 
-    override fun getLeadingMargin(first: Boolean) = longestTextWidth + spacingBeforeText + spacingBeforeNumberPrefix
+    override fun getLeadingMargin(first: Boolean) =
+      longestTextWidth + spacingBeforeText + spacingBeforeNumberPrefix
   }
 }

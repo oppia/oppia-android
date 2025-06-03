@@ -2,7 +2,6 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -996,7 +995,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val binding = DataBindingUtil.findBinding<ContentItemBinding>(view)!!
           val contentViewModel = viewModel as ContentViewModel
           binding.viewModel = contentViewModel
-          binding.htmlContent = htmlParserFactory.create(
+          binding.htmlContent =
+            htmlParserFactory.create(
               resourceBucketName,
               entityType,
               contentViewModel.gcsEntityId,
