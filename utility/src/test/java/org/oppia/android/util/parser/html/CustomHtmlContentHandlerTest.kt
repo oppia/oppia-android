@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.Html
 import android.text.Spannable
 import android.text.style.StyleSpan
+import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -486,7 +487,8 @@ class CustomHtmlContentHandlerTest {
     override fun handleClosingTag(
       output: Editable,
       indentation: Int,
-      tag: String
+      tag: String,
+      textView: TextView?
     ) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++
