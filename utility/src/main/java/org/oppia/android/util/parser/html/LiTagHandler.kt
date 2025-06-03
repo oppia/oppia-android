@@ -53,7 +53,8 @@ class LiTagHandler(
 
   override fun handleClosingTag(
     output: Editable,
-    indentation: Int, tag: String,
+    indentation: Int,
+    tag: String,
     textView: TextView?
   ) {
     when (tag) {
