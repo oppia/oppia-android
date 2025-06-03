@@ -110,7 +110,7 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
     "com.android.tools.apkparser:apkanalyzer": "30.0.4",
-    "com.android.tools.lint:lint": "30.3.1", # Updated for improved Lint API compatibility
+    "com.android.tools.lint:lint": "30.3.1",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.protobuf:protobuf-java-util": "3.17.3",
