@@ -47,6 +47,7 @@ class AndroidLintRunner {
    * Prepares the command line arguments for the Android Lint tool.
    *
    * @param reportPath path to the XML report file
+   * @param projectDescriptionPath path to the XML project description file
    * @return array of command line arguments
    */
   private fun prepareLintArguments(
