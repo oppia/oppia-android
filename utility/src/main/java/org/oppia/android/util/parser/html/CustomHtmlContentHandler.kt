@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Html
 import android.text.Spannable
+import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
@@ -20,7 +21,8 @@ import org.xml.sax.XMLReader
  */
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
-  private val imageRetriever: ImageRetriever?
+  private val imageRetriever: ImageRetriever?,
+  private val textView: TextView?
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -144,7 +146,7 @@ class CustomHtmlContentHandler private constructor(
             tagContentDescriptions[openTagIndex] = contentDesc
           }
         }
-        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
+        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag, textView)
         customTagHandlers.getValue(tag)
           .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
       }
@@ -223,7 +225,7 @@ class CustomHtmlContentHandler private constructor(
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
+    fun handleClosingTag(output: Editable, indentation: Int, tag: String, textView: TextView?) {}
   }
 
   /** Handler Interface for tag handlers that provide content descriptions. */
@@ -274,7 +276,7 @@ class CustomHtmlContentHandler private constructor(
       imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>
     ): String where T : Html.ImageGetter, T : ImageRetriever {
-      val handler = CustomHtmlContentHandler(customTagHandlers, imageRetriever)
+      val handler = CustomHtmlContentHandler(customTagHandlers, imageRetriever, null)
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
       // intercept and populate the contentDescriptionBuilder.
@@ -295,7 +297,8 @@ class CustomHtmlContentHandler private constructor(
     fun <T> fromHtml(
       html: String,
       imageRetriever: T?,
-      customTagHandlers: Map<String, CustomTagHandler>
+      customTagHandlers: Map<String, CustomTagHandler>,
+      textView: TextView? = null
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking. Also, make sure that paragraph tags are always preceded by newlines since that's
@@ -313,7 +316,7 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(customTagHandlers, imageRetriever),
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever, textView),
       ) as Spannable
     }
   }

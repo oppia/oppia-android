@@ -133,7 +133,8 @@ class HtmlParser private constructor(
     val htmlSpannable = CustomHtmlContentHandler.fromHtml(
       htmlContent,
       imageGetter,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView),
+      htmlContentTextView
     )
 
     val urlPattern = Patterns.WEB_URL
