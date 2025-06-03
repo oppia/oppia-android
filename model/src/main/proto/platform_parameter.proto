@@ -184,3 +184,27 @@ message RemotePlatformParameterAndFeatureFlagDatabase {
   // The remotely synced feature flags.
   repeated RemoteFeatureFlag remote_feature_flag = 2;
 }
+
+// Corresponds to an ephemeral representation of a platform parameter.
+message EphemeralPlatformParameter {
+  // The unique ID of this platform parameter which corresponds to a PlatformParameterDefinition.
+  PlatformParameterId id = 1;
+
+  // The current value of this platform parameter, determined from the latest synced or default value.
+  PlatformParameterValue current_value = 2;
+
+  // Indicates the sync status of the platform parameter.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to an ephemeral representation of a feature flag.
+message EphemeralFeatureFlag {
+  // The unique ID of this feature flag which corresponds to a FeatureFlagDefinition.
+  FeatureFlagId id = 1;
+
+  // Whether or not the feature is currently enabled, based on the latest synced or default value.
+  bool current_value = 2;
+
+  // Indicates the sync status of the feature flag.
+  SyncStatus sync_status = 3;
+}
