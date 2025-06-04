@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.text.Spannable
 import android.view.View
 import android.widget.TextView
@@ -135,6 +136,9 @@ class ListItemLeadingMarginSpanTest {
   private val spacingBeforeText by lazy {
     context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_text)
   }
+  private val spacingBeforeNumberPrefix by lazy {
+    context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_number_prefix)
+  }
 
   @Inject
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
@@ -262,8 +266,9 @@ class ListItemLeadingMarginSpanTest {
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     runWithLaunchedActivity {
+      lateinit var textView: TextView
       val htmlResult = onActivityWithResult {
-        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+        textView = it.findViewById(R.id.test_list_content_text_view)
         return@onActivityWithResult htmlParser.parseOppiaHtml(
           "<ol>" +
             "        <li>" +
@@ -296,8 +301,18 @@ class ListItemLeadingMarginSpanTest {
       assertThat(bulletSpans.size.toLong()).isEqualTo(5)
 
       val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
-      val leadingText = "1."
-      val expectedMargin = 2 * leadingText.length + spacingBeforeText
+
+      val longestNumberedItemPrefix = "4."
+      val paint = textView.paint
+      val longestTextWidth = Rect().also {
+        paint?.getTextBounds(
+          longestNumberedItemPrefix,
+          /* start= */ 0,
+          /* end= */ longestNumberedItemPrefix.length,
+          it
+        )
+      }.width()
+      val expectedMargin = longestTextWidth + spacingBeforeText + spacingBeforeNumberPrefix
 
       val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
       assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
@@ -319,8 +334,9 @@ class ListItemLeadingMarginSpanTest {
       displayLocale = appLanguageLocaleHandler.getDisplayLocale()
     )
     runWithLaunchedActivity {
-      val htmlResult = onActivityWithResult {
-        val textView: TextView = it.findViewById(R.id.test_list_content_text_view)
+      lateinit var textView: TextView
+      val htmlResult = onActivityWithResult{
+        textView = it.findViewById(R.id.test_list_content_text_view)
         return@onActivityWithResult htmlParser.parseOppiaHtml(
           "<p>You should know the following before going on:<br></p>" +
             "<ol><li>The counting numbers (1, 2, 3, 4, 5 ….)</li>" +
@@ -339,8 +355,19 @@ class ListItemLeadingMarginSpanTest {
         )
       assertThat(bulletSpans.size.toLong()).isEqualTo(2)
       val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
-      val leadingText = "1."
-      val expectedMargin = 2 * leadingText.length + spacingBeforeText
+
+      val longestNumberedItemPrefix = "2."
+      val paint = textView.paint
+      val longestTextWidth = Rect().also {
+        paint?.getTextBounds(
+          longestNumberedItemPrefix,
+          /* start= */ 0,
+          /* end= */ longestNumberedItemPrefix.length,
+          it
+        )
+      }.width()
+
+      val expectedMargin = longestTextWidth + spacingBeforeText + spacingBeforeNumberPrefix
 
       val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
       assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)

@@ -130,11 +130,6 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
       resources.getDimensionPixelSize(R.dimen.spacing_before_number_prefix)
 
     private val paint = textView?.paint
-    private val textWidth = Rect().also {
-      paint?.getTextBounds(
-        numberedItemPrefix, /* start= */ 0, /* end= */ numberedItemPrefix.length, it
-      )
-    }.width()
     private val longestTextWidth = Rect().also {
       paint?.getTextBounds(
         longestNumberedItemPrefix,
