@@ -3348,7 +3348,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongMultipleChoiceAnswers_noHintIsVisible() {
+  fun testController_enterTwoWrongAnswers_destinationStatePreviouslyVisited_noHintIsVisible() {
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
     )
