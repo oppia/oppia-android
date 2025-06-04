@@ -98,3 +98,25 @@ kt_android_library(
         "//utility",
     ],
 )
+kt_android_library(
+    name = "debug_impl",
+    srcs = [
+        "PlatformParameterControllerDebugImpl.kt",
+    ],
+      visibility = ["//:oppia_api_visibility"],
+    deps = [
+            ":prod_impl",
+    ],
+)
+
+kt_android_library(
+    name = "debug_module",
+    srcs = [
+        "PlatformParameterControllerDebugModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":debug_impl",
+        "//:dagger",
+    ],
+)
