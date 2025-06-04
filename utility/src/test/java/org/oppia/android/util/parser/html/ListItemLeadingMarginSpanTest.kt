@@ -134,10 +134,10 @@ class ListItemLeadingMarginSpanTest {
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   private val spacingBeforeText by lazy {
-    context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_text)
+    context.resources.getDimensionPixelSize(R.dimen.spacing_before_text)
   }
   private val spacingBeforeNumberPrefix by lazy {
-    context.resources.getDimensionPixelSize(org.oppia.android.util.R.dimen.spacing_before_number_prefix)
+    context.resources.getDimensionPixelSize(R.dimen.spacing_before_number_prefix)
   }
 
   @Inject
@@ -335,7 +335,7 @@ class ListItemLeadingMarginSpanTest {
     )
     runWithLaunchedActivity {
       lateinit var textView: TextView
-      val htmlResult = onActivityWithResult{
+      val htmlResult = onActivityWithResult {
         textView = it.findViewById(R.id.test_list_content_text_view)
         return@onActivityWithResult htmlParser.parseOppiaHtml(
           "<p>You should know the following before going on:<br></p>" +
