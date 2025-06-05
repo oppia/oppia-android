@@ -32,6 +32,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 /** Tests for [ExplorationProgressModule]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -83,6 +84,7 @@ class ExplorationProgressModuleTest {
   @Singleton
   @Component(
     modules = [
+      AssetModule::class,
       ExplorationProgressModule::class,
       ExplorationStorageTestModule::class,
       FakeOppiaClockModule::class,

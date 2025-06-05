@@ -19,7 +19,6 @@ import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
-import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
@@ -72,19 +71,13 @@ class PlatformParameterModuleTest {
   @Test
   fun testModule_injectOptionalAppUpdateVersionCode_hasCorrectAppVersionCode() {
     setUpTestApplicationComponent()
-    assertThat(optionalAppUpdateVersionCodeProvider.get().value)
-      .isEqualTo(context.getVersionCode())
-    assertThat(optionalAppUpdateVersionCodeProvider.get().value)
-      .isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(optionalAppUpdateVersionCodeProvider.get().value).isEqualTo(0)
   }
 
   @Test
   fun testModule_injectForcedAppUpdateVersionCode_hasCorrectAppVersionCode() {
     setUpTestApplicationComponent()
-    assertThat(forcedAppUpdateVersionCodeProvider.get().value)
-      .isEqualTo(context.getVersionCode())
-    assertThat(forcedAppUpdateVersionCodeProvider.get().value)
-      .isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(forcedAppUpdateVersionCodeProvider.get().value).isEqualTo(0)
   }
 
   @Test

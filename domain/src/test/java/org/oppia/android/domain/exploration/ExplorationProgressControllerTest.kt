@@ -165,11 +165,11 @@ class ExplorationProgressControllerTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponent()
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
     TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
   }
 
   @After

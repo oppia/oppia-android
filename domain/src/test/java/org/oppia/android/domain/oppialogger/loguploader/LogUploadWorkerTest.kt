@@ -81,6 +81,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import org.junit.After
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_TOPIC_ID = "test_topicId"
@@ -136,6 +137,11 @@ class LogUploadWorkerTest {
     ).build()
 
   private val exception = Exception("TEST")
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyFailed() {

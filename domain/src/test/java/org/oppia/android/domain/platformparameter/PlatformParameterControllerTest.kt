@@ -27,6 +27,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
 /** Tests for [PlatformParameterController]. */
@@ -38,12 +39,15 @@ import javax.inject.Singleton
 class PlatformParameterControllerTest {
   @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var platformParamProcessStateProvider: Provider<PlatformParameterProcessState>
 
   // TODO(#5835): Finish these tests.
 
   @Test
-  fun testGetParameterInitializationStatus_initialState_isFalse() {
+  fun testGetParameterInitializationStatus_initialState_isTrue() {
     setUpTestApplicationComponent()
+    // TODO(#5835): Remove this. It's needed to force parameters to load via the test param module.
+    platformParamProcessStateProvider.get()
 
     val initStatusProvider = platformParameterController.getParameterInitializationStatus()
 

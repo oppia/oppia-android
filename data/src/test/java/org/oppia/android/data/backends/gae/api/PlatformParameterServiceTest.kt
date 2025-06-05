@@ -22,18 +22,19 @@ import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.Strin
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
 import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_SERVER_VALUE
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_SERVER_VALUE
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_SERVER_VALUE
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 
 /**
  * Tests for [PlatformParameterService] using [PlatformParameterServiceTestOrchestrator].
@@ -94,7 +95,7 @@ class PlatformParameterServiceTest {
     val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
 
     val param = response.body()?.get(TEST_STRING_PARAM_NAME) as? StringValue
-    assertThat(param?.value).isEqualTo(TEST_STRING_PARAM_SERVER_VALUE)
+    assertThat(param?.value).isEqualTo("test_string_param_value")
   }
 
   @Test
@@ -104,7 +105,7 @@ class PlatformParameterServiceTest {
     val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
 
     val param = response.body()?.get(TEST_INTEGER_PARAM_NAME) as? IntValue
-    assertThat(param?.value).isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
+    assertThat(param?.value).isEqualTo(1)
   }
 
   @Test
@@ -114,7 +115,7 @@ class PlatformParameterServiceTest {
     val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
 
     val param = response.body()?.get(TEST_BOOLEAN_PARAM_NAME) as? BooleanValue
-    assertThat(param?.value).isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
+    assertThat(param?.value).isTrue()
   }
 
   @Test
@@ -124,7 +125,7 @@ class PlatformParameterServiceTest {
     val response = parameterService.getPlatformParametersByVersion(version = "1.0").execute()
 
     // Invalid/unsupported parameter types should be correctly processed.
-    val param = response.body()?.get(TEST_BOOLEAN_PARAM_NAME)
+    val param = response.body()?.get(TEST_UNKNOWN_PARAM_NAME)
     assertThat(param).isEqualTo(GaePlatformParameterValue.UnsupportedValue)
   }
 

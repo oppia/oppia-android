@@ -46,6 +46,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
 
 private const val SESSION_LENGTH_SHORT = 120000L
 private const val SESSION_LENGTH_LONG = 360000L
@@ -85,6 +86,11 @@ class SurveyGatingControllerTest {
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test

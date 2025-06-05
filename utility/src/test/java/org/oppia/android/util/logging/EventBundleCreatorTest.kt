@@ -100,15 +100,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
-import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
-import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
-import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
-import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
-import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -2620,12 +2611,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 

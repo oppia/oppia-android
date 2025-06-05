@@ -1,4 +1,3 @@
-# TODO: Make sure all of these defaults are correct. Ditto for feature flags.
 platform_parameter_definition {
   id: SPLASH_SCREEN_WELCOME_MESSAGE
   default_value: {
@@ -14,7 +13,7 @@ platform_parameter_definition {
 platform_parameter_definition {
   id: CACHE_LATEX_RENDERING
   default_value: {
-    boolean: false
+    boolean: true
   }
 }
 platform_parameter_definition {

@@ -75,6 +75,7 @@ import java.lang.IllegalStateException
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.junit.After
 
 private const val TEST_TIMESTAMP = 1556094120000
 private const val TEST_CLASSROOM_ID = "test_classroomId"
@@ -112,6 +113,11 @@ class AnalyticsControllerTest {
   // for an explanation of why these are provided via indirect injection.
   private val profileManagementController by lazy { profileManagementControllerProvider.get() }
   private val analyticsController by lazy { analyticsControllerProvider.get() }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testController_logImportantEvent_withQuestionContext_checkLogsEvent() {

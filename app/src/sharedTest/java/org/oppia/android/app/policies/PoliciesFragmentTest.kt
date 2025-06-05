@@ -119,6 +119,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KClass
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [PoliciesFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -372,7 +373,7 @@ class PoliciesFragmentTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
+      TestPlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       QuestionModule::class,
       RatioInputModule::class,

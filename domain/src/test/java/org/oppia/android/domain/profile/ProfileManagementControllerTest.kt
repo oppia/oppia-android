@@ -1741,6 +1741,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)
@@ -1770,6 +1771,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)
@@ -1791,6 +1793,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)

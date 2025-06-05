@@ -52,6 +52,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.caching.AssetModule
 
 private const val TEST_TIMESTAMP = Long.MAX_VALUE
 private const val TEST_CPU_USAGE = Double.MAX_VALUE
@@ -333,6 +334,7 @@ class PerformanceMetricsLoggerTest {
   @Singleton
   @Component(
     modules = [
+      AssetModule::class,
       ApplicationLifecycleModule::class,
       FakeOppiaClockModule::class,
       LocaleProdModule::class,

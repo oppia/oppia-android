@@ -67,6 +67,7 @@ import org.robolectric.annotation.LooperMode
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
 
 private const val SESSION_LENGTH_1 = 300000L
 private const val SESSION_LENGTH_2 = 600000L
@@ -101,6 +102,11 @@ class ExplorationActiveTimeControllerTest {
   @Before
   fun setUp() {
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
