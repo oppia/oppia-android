@@ -15,3 +15,12 @@ kt_jvm_library(
         "//third_party:com_android_tools_lint_lint",
     ],
 )
+
+kt_jvm_library(
+    name = "lint_reporter_lib",
+    testonly = True,
+    srcs = [
+        "LintAnalysisReporter.kt",
+    ],
+    visibility = ["//visibility:public"],
+)
