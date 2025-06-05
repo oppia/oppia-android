@@ -62,7 +62,7 @@ class LintAnalysisReporterTest {
     explanation = "The check failed to run as it encountered unknown failure.",
     locations = listOf(
       LintLocation(
-        file = "/home/manas-yu/oppia-android/app",
+        file = "test.xml",
         lineNumber = ""
       )
     )
