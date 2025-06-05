@@ -64,6 +64,7 @@
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
   <string name="submit_button_text">Submit</string>
+  <string name="flashback_button">See example</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
