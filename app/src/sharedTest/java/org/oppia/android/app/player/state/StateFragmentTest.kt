@@ -89,6 +89,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
@@ -5394,6 +5395,88 @@ class StateFragmentTest {
         assertThat(reveivedExplorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
       }
     }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_flashbackButtonIsVisible() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughToMultipleChoiceStateWithFlashbackDest()
+
+      // Select an incorrect answer in a multiple-choice interaction and submit.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).perform(click())
+      clickSubmitAnswerButton()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_retainStateOnConfigurationChange() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughToMultipleChoiceStateWithFlashbackDest()
+
+      // Select an incorrect answer in a multiple-choice interaction and submit.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).perform(click())
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  private fun playThroughToMultipleChoiceStateWithFlashbackDest() {
+    playThroughRatioExplorationState1()
+    playThroughRatioExplorationState2()
+    playThroughRatioExplorationState3()
+    playThroughRatioExplorationState4()
+    playThroughRatioExplorationState5()
+    playThroughRatioExplorationState6()
+    playThroughRatioExplorationState7()
+    playThroughRatioExplorationState8()
+    playThroughRatioExplorationState9()
+    playThroughRatioExplorationState10()
+    playThroughRatioExplorationState11()
+    playThroughRatioExplorationState12()
+    playThroughRatioExplorationState13()
+    playThroughRatioExplorationState14()
+    playThroughRatioExplorationState15()
   }
 
   private fun playThroughRatioExplorationState1() {

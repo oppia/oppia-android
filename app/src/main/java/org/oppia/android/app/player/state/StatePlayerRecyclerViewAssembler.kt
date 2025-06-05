@@ -24,6 +24,7 @@ import org.oppia.android.app.databinding.databinding.ContinueInteractionItemBind
 import org.oppia.android.app.databinding.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.android.app.databinding.databinding.DragDropInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.FeedbackItemBinding
+import org.oppia.android.app.databinding.databinding.FlashbackButtonItemBinding
 import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
