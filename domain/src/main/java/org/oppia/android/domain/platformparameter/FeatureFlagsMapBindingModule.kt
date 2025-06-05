@@ -19,6 +19,7 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
+/** Dagger module for providing a map of feature flags, per [FeatureFlags]. */
 // TODO(#5835): Remove this module.
 @Module
 interface FeatureFlagsMapBindingModule {

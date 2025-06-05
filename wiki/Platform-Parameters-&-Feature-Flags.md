@@ -1,7 +1,5 @@
 ## Table of Contents
 
-TODO: Update this page.
-
 - [Introduction](#introduction)
 - [How to create a Platform Parameter](#how-to-create-a-platform-parameter)
 - [How to create a Feature Flag](#how-to-create-a-feature-flag)

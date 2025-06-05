@@ -22,19 +22,16 @@ import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue.Strin
 import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator
 import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_NAME
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_SERVER_VALUE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 
 /**
  * Tests for [PlatformParameterService] using [PlatformParameterServiceTestOrchestrator].

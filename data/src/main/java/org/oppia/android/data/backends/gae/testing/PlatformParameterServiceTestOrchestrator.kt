@@ -6,8 +6,8 @@ import com.squareup.moshi.Types
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.oppia.android.data.backends.gae.XssiPrefix
-import javax.inject.Inject
 import org.oppia.android.data.backends.gae.model.GaePlatformParameterValue
+import javax.inject.Inject
 
 /**
  * Orchestrator for configuring [MockWebServer] to properly respond to requests via
@@ -41,6 +41,15 @@ class PlatformParameterServiceTestOrchestrator @Inject constructor(
     mockWebServer.enqueue(MockResponse().setBody("$xssiPrefix\n$paramValuesJson"))
   }
 
+  /**
+   * Sets the next web response to be a success, but for a set of parameters that can include
+   * non-[GaePlatformParameterValue]s.
+   *
+   * Note that this method will fail if the provided map includes any [GaePlatformParameterValue]s.
+   *
+   * @param parameterValues the name-to-value mapping that should be returned (representing the
+   *     latest remote parameter values being sent from the server)
+   */
   @JvmName("setNextResponseAsSuccessForNonGaePlatformParameterValues")
   fun setNextResponseAsSuccess(parameterValues: Map<String, Any>) {
     val paramValuesJson = genericMapAdapter.toJson(parameterValues)
@@ -53,14 +62,34 @@ class PlatformParameterServiceTestOrchestrator @Inject constructor(
   }
 
   companion object {
+    /**
+     * The parameter name for [TEST_STRING_PARAM_SERVER_VALUE] included in
+     * [DEFAULT_REMOTE_PLATFORM_PARAMETERS].
+     */
     const val TEST_STRING_PARAM_NAME = "test_string_param_name"
-    const val TEST_BOOLEAN_PARAM_NAME = "test_boolean_param_name"
+
+    /**
+     * The parameter name for [TEST_INTEGER_PARAM_SERVER_VALUE] included in
+     * [DEFAULT_REMOTE_PLATFORM_PARAMETERS].
+     */
     const val TEST_INTEGER_PARAM_NAME = "test_integer_param_name"
+
+    /**
+     * The parameter name for [TEST_BOOLEAN_PARAM_SERVER_VALUE] included in
+     * [DEFAULT_REMOTE_PLATFORM_PARAMETERS].
+     */
+    const val TEST_BOOLEAN_PARAM_NAME = "test_boolean_param_name"
+
+    /**
+     * The parameter name for the unknown parameter included in
+     * [REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE].
+     */
     const val TEST_UNKNOWN_PARAM_NAME = "test_unknown_param_name"
-    val TEST_STRING_PARAM_SERVER_VALUE =
-      GaePlatformParameterValue.StringValue(value = "test_string_param_value")
-    val TEST_INTEGER_PARAM_SERVER_VALUE = GaePlatformParameterValue.IntValue(value = 1)
-    val TEST_BOOLEAN_PARAM_SERVER_VALUE = GaePlatformParameterValue.BooleanValue(value = true)
+
+    private val TEST_STRING_PARAM_SERVER_VALUE =
+      GaePlatformParameterValue.StringValue("test_string_param_value")
+    private val TEST_INTEGER_PARAM_SERVER_VALUE = GaePlatformParameterValue.IntValue(1)
+    private val TEST_BOOLEAN_PARAM_SERVER_VALUE = GaePlatformParameterValue.BooleanValue(true)
 
     /** A default map of parameters that can be orchestrated using [setNextResponseAsSuccess]. */
     val DEFAULT_REMOTE_PLATFORM_PARAMETERS = mapOf(
@@ -69,8 +98,7 @@ class PlatformParameterServiceTestOrchestrator @Inject constructor(
       TEST_BOOLEAN_PARAM_NAME to TEST_BOOLEAN_PARAM_SERVER_VALUE
     )
 
-    /** A map of parameters that contain an unsupported parameter type. */
-    /** A version of [DEFAULT_REMOTE_PLATFORM_PARAMETERS] with unsupported parameter types. */
+    /** A map of parameters that contains an unsupported parameter type. */
     val REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE = mapOf(
       TEST_UNKNOWN_PARAM_NAME to emptyList<String>()
     )

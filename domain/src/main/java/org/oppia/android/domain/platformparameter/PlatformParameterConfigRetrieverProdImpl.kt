@@ -5,10 +5,12 @@ import org.oppia.android.app.model.SupportedPlatformParameters
 import org.oppia.android.util.caching.AssetRepository
 import javax.inject.Inject
 
-/** Retriever for platform parameter and feature flag definitions from the app's embedded assets. */
+/** Production implementation of [PlatformParameterConfigRetriever]. */
 class PlatformParameterConfigRetrieverProdImpl @Inject constructor(
   private val assetRepository: AssetRepository
 ) : PlatformParameterConfigRetriever {
+  // TODO(#5835): Add tests for this class.
+
   override fun loadSupportedPlatformParameters(): SupportedPlatformParameters {
     return assetRepository.tryLoadProtoFromLocalAssets(
       "platform_parameters", SupportedPlatformParameters.getDefaultInstance()

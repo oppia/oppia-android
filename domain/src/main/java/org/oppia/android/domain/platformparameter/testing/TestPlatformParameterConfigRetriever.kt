@@ -18,21 +18,26 @@ import javax.inject.Singleton
  * A test-only variant of [PlatformParameterConfigRetriever] that can be used to orchestrate
  * platform parameter and feature flag overrides in tests.
  *
- * Platform parameter and feature flag overrides must happen statically such as follows:
+ * Platform parameter and feature flag overrides must happen statically, e.g.:
  *
  * ```kotlin
  * TestPlatformParameterConfigRetriever.setParameterOverride(LOWEST_SUPPORTED_API_LEVEL, 23)
  * TestPlatformParameterConfigRetriever.setFlagOverride(DOWNLOADS_SUPPORT, true)
  * ```
  *
- * After overriding, [PlatformParameterTestInitializer] can be injected to ensure that platform
- * parameters and feature flags are correctly initialized for use in production code executed by the
- * orchestrated tests.
+ * After overriding, parameters can be properly synchronized ahead of attempting parameter or flag
+ * injection to ensure that the overridden values are properly prepared for production code use.
+ *
+ * This class requires the presence of
+ * [org.oppia.android.testing.platformparameter.TestPlatformParameterModule] in order to function
+ * correctly.
  */
 @Singleton
 class TestPlatformParameterConfigRetriever @Inject constructor(
   private val prodImpl: PlatformParameterConfigRetrieverProdImpl
 ) : PlatformParameterConfigRetriever {
+  // TODO(#5835): Add tests for this class.
+
   override fun loadSupportedPlatformParameters(): SupportedPlatformParameters {
     isFrozen.set(true)
     val baseParams = prodImpl.loadSupportedPlatformParameters()
@@ -53,26 +58,66 @@ class TestPlatformParameterConfigRetriever @Inject constructor(
     private val flagOverrides = CopyOnWriteArrayList<Pair<FeatureFlagId, Boolean>>()
     private val isFrozen = AtomicBoolean()
 
+    /**
+     * Sets an override value of [value] for the platform parameter corresponding to [id].
+     *
+     * This method throws an exception if it's called more than once for the same parameter until
+     * [reset] is called.
+     *
+     * This cannot be called after platform parameters have been loaded.
+     */
     fun setParameterOverride(id: PlatformParameterId, value: Boolean) {
       check(!isFrozen.get()) { "Cannot override a platform parameter after values are loaded." }
       paramOverrides += id to PlatformParameterValue.newBuilder().setBoolean(value).build()
     }
 
+    /**
+     * Sets an override value of [value] for the platform parameter corresponding to [id].
+     *
+     * This method throws an exception if it's called more than once for the same parameter until
+     * [reset] is called.
+     *
+     * This cannot be called after platform parameters have been loaded.
+     */
     fun setParameterOverride(id: PlatformParameterId, value: Int) {
       check(!isFrozen.get()) { "Cannot override a platform parameter after values are loaded." }
       paramOverrides += id to PlatformParameterValue.newBuilder().setInteger(value).build()
     }
 
+    /**
+     * Sets an override value of [value] for the platform parameter corresponding to [id].
+     *
+     * This method throws an exception if it's called more than once for the same parameter until
+     * [reset] is called.
+     *
+     * This cannot be called after platform parameters have been loaded.
+     */
     fun setParameterOverride(id: PlatformParameterId, value: String) {
       check(!isFrozen.get()) { "Cannot override a platform parameter after values are loaded." }
       paramOverrides += id to PlatformParameterValue.newBuilder().setString(value).build()
     }
 
+    /**
+     * Sets an override state of [isEnabled] for the feature flag corresponding to [id].
+     *
+     * This method throws an exception if it's called more than once for the same flag until [reset]
+     * is called.
+     *
+     * This cannot be called after feature flags have been loaded.
+     */
     fun setFlagOverride(id: FeatureFlagId, isEnabled: Boolean) {
       check(!isFrozen.get()) { "Cannot override a feature flag after values are loaded." }
       flagOverrides += id to isEnabled
     }
 
+    /**
+     * Clears all platform parameter and feature flag overrides, reenabling more overrides to happen
+     * again.
+     *
+     * Note that it's possible to call this after parameters and flags have been loaded. Doing so
+     * may have unpredictable effects in tests, and thus should only be done carefully and when
+     * necessary (such as when testing code in a 'previous' application instance).
+     */
     fun reset() {
       paramOverrides.clear()
       flagOverrides.clear()

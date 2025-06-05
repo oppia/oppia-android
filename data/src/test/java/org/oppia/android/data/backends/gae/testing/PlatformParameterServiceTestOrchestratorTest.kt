@@ -22,6 +22,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -32,14 +37,6 @@ import java.io.InterruptedIOException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_SERVER_VALUE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_NAME
-import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 
 /** Tests for [PlatformParameterServiceTestOrchestrator]. */
 // Function name: test names are conventionally named with underscores.

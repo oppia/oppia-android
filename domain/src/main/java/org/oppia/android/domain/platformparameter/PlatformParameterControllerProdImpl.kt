@@ -67,12 +67,12 @@ class PlatformParameterControllerProdImpl(
     }
   }
 
-  override fun downloadRemoteParameters(): DataProvider<Any?> {
+  override fun downloadRemoteParameters(): DataProvider<Unit> {
     check(areParametersLoadedFlow.value) {
       "Can only remotely download parameters after they have been loaded."
     }
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
-      // TODO(#5725): Finish implementing forcing remote parameter downloads.
+      // TODO(#5835): Finish implementing forcing remote parameter downloads.
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.
@@ -80,23 +80,51 @@ class PlatformParameterControllerProdImpl(
     }
   }
 
+  /**
+   * Synchronously loads and returns the known remotely downloaded platform parameters.
+   *
+   * The returned value should be fixed even if [downloadRemoteParameters] is called.
+   *
+   * This should only ever be called by package-specific implementations of
+   * [PlatformParameterController].
+   */
   suspend fun loadRemotePlatformParameters(): List<RemotePlatformParameter> {
     return databaseStore.readDataAsync().await().remotePlatformParameterList
   }
 
+  /**
+   * Synchronously loads and returns the known remotely downloaded feature flags.
+   *
+   * The returned value should be fixed even if [downloadRemoteParameters] is called.
+   *
+   * This should only ever be called by package-specific implementations of
+   * [PlatformParameterController].
+   */
   suspend fun loadRemoteFeatureFlags(): List<RemoteFeatureFlag> {
     return databaseStore.readDataAsync().await().remoteFeatureFlagList
   }
 
+  /**
+   * Returns the list of [PlatformParameterDefinition]s configured for this build of the app.
+   *
+   * This should only ever be called by package-specific implementations of
+   * [PlatformParameterController].
+   */
   fun loadSupportedPlatformParameters(): List<PlatformParameterDefinition> {
     return configRetriever.loadSupportedPlatformParameters().platformParameterDefinitionList
   }
 
+  /**
+   * Returns the list of [FeatureFlagDefinition]s configured for this build of the app.
+   *
+   * This should only ever be called by package-specific implementations of
+   * [PlatformParameterController].
+   */
   fun loadSupportedFeatureFlags(): List<FeatureFlagDefinition> {
     return configRetriever.loadSupportedFeatureFlags().featureFlagDefinitionList
   }
 
-  private fun loadParametersInternalAsync(): Deferred<Any?> {
+  private fun loadParametersInternalAsync(): Deferred<Unit> {
     return CoroutineScope(backgroundCoroutineDispatcher).async {
       val params = loadAllParameterStates()
 
@@ -128,6 +156,7 @@ class PlatformParameterControllerProdImpl(
     }
   }
 
+  /** An application-scoped factory for building new [PlatformParameterControllerProdImpl]s. */
   // TODO(#5835): Remove this factory once the hack for initializing parameters in tests is gone.
   class Factory @Inject constructor(
     private val cacheStoreFactory: PersistentCacheStore.Factory,
@@ -136,6 +165,12 @@ class PlatformParameterControllerProdImpl(
     private val oppiaLogger: OppiaLogger,
     @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   ) {
+    /**
+     * Returns a new [PlatformParameterControllerProdImpl] for the specified [processState].
+     *
+     * This method should only ever be called once since there should only ever be one instance of
+     * [PlatformParameterController] for the lifetime of an Oppia Android application process.
+     */
     fun create(processState: PlatformParameterProcessState): PlatformParameterControllerProdImpl {
       return PlatformParameterControllerProdImpl(
         cacheStoreFactory, dataProviders, configRetriever, processState, oppiaLogger,
@@ -144,83 +179,53 @@ class PlatformParameterControllerProdImpl(
     }
   }
 
+  /**
+   * An abstract representation of either a platform parameter or feature flag, incorporating both
+   * the default and remote versions.
+   */
   private sealed class ParameterState {
-    abstract val remoteServerName: String
-
-    abstract fun updateFromServer(value: PlatformParameterValue)
-
+    /**
+     * A representation of a single platform parameter incorporating both its local definition state
+     * and its remotely downloaded state, if any.
+     *
+     * @property definition the definition of the parameter
+     * @property remote the remotely downloaded version of the parameter, or null if none
+     */
     data class PlatformParameter(
       val definition: PlatformParameterDefinition,
       val remote: RemotePlatformParameter?
     ) : ParameterState() {
-      private var latestSyncFromServer: PlatformParameterValue? = null
-
-      override val remoteServerName = definition.remoteServerName
-
-      override fun updateFromServer(value: PlatformParameterValue) {
-        latestSyncFromServer = value
-      }
-
-      // Always compute based on the remote value, if any, and fall back to the definition.
+      /**
+       * Returns the current value of the parameter, first prioritizing its remotely downloaded
+       * value (if any) and falling back to its default value.
+       */
       fun computeCurrentState(): PlatformParameterValue =
         remote?.remoteValue ?: definition.defaultValue
-
-      fun serialize(): RemotePlatformParameter {
-        // Ensure there's always a record of the parameter.
-        val remoteValue = latestSyncFromServer
-        val remote = this.remote ?: computeRemote()
-        return if (remoteValue != null) {
-          remote.toBuilder().apply {
-            this.remoteValue = remoteValue
-            this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
-          }.build()
-        } else remote // Nothing changes.
-      }
-
-      private fun computeRemote() = RemotePlatformParameter.newBuilder().apply {
-        this.id = definition.id
-        this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-      }.build()
     }
 
+    /**
+     * A representation of a single feature flag incorporating both its local definition state and
+     * its remotely downloaded state, if any.
+     *
+     * @property definition the definition of the flag
+     * @property remote the remotely downloaded version of the flag, or null if none
+     */
     data class FeatureFlag(
       val definition: FeatureFlagDefinition,
       val remote: RemoteFeatureFlag?
     ) : ParameterState() {
-      private var latestSyncFromServer: Boolean? = null
-
-      override val remoteServerName = definition.remoteServerName
-
-      override fun updateFromServer(value: PlatformParameterValue) {
-        check(value.valueTypeCase == PlatformParameterValue.ValueTypeCase.BOOLEAN) {
-          "Expected feature flag corresponding to ${definition.id} (remote: $remoteServerName) to" +
-            " be a boolean, but received from server: $value"
-        }
-        latestSyncFromServer = value.boolean
-      }
-
-      // Always compute based on the remote value, if any, and fall back to the definition.
+      /**
+       * Returns the current enabled state of the flag, first prioritizing its remotely downloaded
+       * value (if any) and falling back to its default value.
+       */
       fun computeCurrentState(): Boolean = remote?.remoteIsEnabled ?: definition.defaultIsEnabled
 
+      /**
+       * Returns the [SyncStatus] of this flag depending on whether it has been successfully synced
+       * remotely from the Oppia web server.
+       */
       fun computeCurrentStatus(): SyncStatus =
         remote?.syncStatus ?: SyncStatus.NOT_SYNCED_FROM_SERVER
-
-      fun serialize(): RemoteFeatureFlag {
-        // Ensure there's always a record of the parameter.
-        val remoteValue = latestSyncFromServer
-        val remote = this.remote ?: computeRemote()
-        return if (remoteValue != null) {
-          remote.toBuilder().apply {
-            this.remoteIsEnabled = remoteValue
-            this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
-          }.build()
-        } else remote // Nothing changes.
-      }
-
-      private fun computeRemote() = RemoteFeatureFlag.newBuilder().apply {
-        this.id = definition.id
-        this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-      }.build()
     }
   }
 

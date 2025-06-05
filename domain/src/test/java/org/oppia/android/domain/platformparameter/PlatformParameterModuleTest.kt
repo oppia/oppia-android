@@ -59,8 +59,6 @@ class PlatformParameterModuleTest {
 
   // TODO(#5835): Finish the tests for this suite & the test module version.
 
-  // TODO: Update to use non-zero parameters in prod module.
-
   @Test
   fun testModule_injectEnableAppAndOsDeprecation_hasCorrectDefaultValue() {
     setUpTestApplicationComponent()

@@ -35,8 +35,8 @@ import javax.inject.Singleton
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(application = PlatformParameterControllerTest.TestApplication::class)
-class PlatformParameterControllerTest {
+@Config(application = PlatformParameterControllerProdImplTest.TestApplication::class)
+class PlatformParameterControllerProdImplTest {
   @Inject lateinit var platformParameterController: PlatformParameterController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var platformParamProcessStateProvider: Provider<PlatformParameterProcessState>
@@ -94,17 +94,17 @@ class PlatformParameterControllerTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(platformParameterControllerTest: PlatformParameterControllerTest)
+    fun inject(platformParameterControllerTest: PlatformParameterControllerProdImplTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerPlatformParameterControllerTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterControllerProdImplTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build()
     }
 
-    fun inject(platformParameterControllerTest: PlatformParameterControllerTest) {
+    fun inject(platformParameterControllerTest: PlatformParameterControllerProdImplTest) {
       component.inject(platformParameterControllerTest)
     }
 

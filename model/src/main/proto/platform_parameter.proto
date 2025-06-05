@@ -38,17 +38,44 @@ enum PlatformParameterId {
   // Corresponds to a platform parameter whose ID is not known (e.g. invalid or undefined).
   PLATFORM_PARAMETER_ID_UNSPECIFIED = 0;
 
-  // TODO: Finish documentation.
+  // Corresponds to a test-only splash screen welcome message used when testing platform parameters.
   SPLASH_SCREEN_WELCOME_MESSAGE = 1;
+
+  // Corresponds to the time, in hours, between attempts to remotely download platform parameters.
   SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = 2;
+
+  // Corresponds to whether LaTeX rendering should be cached via Glide.
   CACHE_LATEX_RENDERING = 3;
+
+  // Corresponds to the interval, in minutes, at which performance metrics should be uploaded.
   PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES = 4;
+
+  // Corresponds to the period, in minutes, at which 'high frequency' performance metrics should be
+  // collected.
   PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES = 5;
+
+  // Corresponds to the period, in minutes, at which 'low frequency' performance metrics should be
+  // collected.
   PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES = 6;
+
+  // Corresponds to the version code below which a user should be prompted with a suggestion to
+  // update their version of the app.
   OPTIONAL_APP_UPDATE_VERSION_CODE = 7;
+
+  // Corresponds to the version code below which a user should be required to update their version
+  // of the app.
   FORCED_APP_UPDATE_VERSION_CODE = 8;
+
+  // Corresponds to the minimum Android SDK version supported, enabling a flow for suggesting that
+  // the user upgrade their device to a newer version of Android.
   LOWEST_SUPPORTED_API_LEVEL = 9;
+
+  // Corresponds to the period, in days, between attempts to request the user to fill out the NPS
+  // survey.
   NPS_SURVEY_GRACE_PERIOD_IN_DAYS = 10;
+
+  // Corresponds to the time, in minutes, that a user must have accumulated performing learning
+  // activities before they qualify for seeing the NPS survey.
   NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES = 11;
 }
 
@@ -57,21 +84,60 @@ enum FeatureFlagId {
   // Corresponds to a feature flag whose ID is not known (e.g. invalid or undefined).
   FEATURE_FLAG_ID_UNSPECIFIED = 0;
 
-  // TODO: Finish documentation.
-  reserved 1; // LANGUAGE_SELECTION_UI.
+  // Previously used for a feature that enabled a UI for changing the user's app language.
+  reserved 1;
+
+  // Corresponds to a feature for enabling logging special usage analytics for learner user studies.
   LEARNER_STUDY_ANALYTICS = 2;
+
+  // Corresponds to a feature for enabling collection of app performance metrics.
   PERFORMANCE_METRICS_COLLECTION = 3;
+
+  // Corresponds to a feature that enables the 'edit accounts' section of the administrator controls
+  // screen. See #4006.
   EDIT_ACCOUNTS_OPTIONS_UI = 4;
+
+  // Corresponds to an app-wide feature for enabling spotlights.
   SPOTLIGHT_UI = 5;
+
+  // Corresponds to a topic activity feature that enables two extra tabs: info and practice.
   EXTRA_TOPIC_TABS_UI = 6;
+
+  // Corresponds to a feature enabling the ability to remotely download lessons.
   DOWNLOADS_SUPPORT = 7;
+
+  // Corresponds to a series of functionality improvements that ensure configuration changes
+  // correctly retain state for interactions so that unsubmitted answers are kept across device
+  // rotations and other configuration changes.
   INTERACTION_CONFIG_CHANGE_STATE_RETENTION = 8;
-  reserved 9; // CONTINUE_BUTTON_ANIMATION.
+
+  // Previously used for a feature that animated to continue button in a lesson.
+  reserved 9;
+
+  // Corresponds to UIs that show in select scenarios where the app or the user's OS are no longer
+  // supported or recommended for use by the Oppia Android team.
   APP_AND_OS_DEPRECATION = 10;
+
+  // Corresponds to a user study-specific feature that enables a special button in the lesson player
+  // for quickly switching between different content and app languages mid-lesson.
   FAST_LANGUAGE_SWITCHING_IN_LESSON = 11;
+
+  // Corresponds to a feature for whether learner study IDs should be included in analytics logs for
+  // the purpose of analyzing logs for study results.
   LOGGING_LEARNER_STUDY_IDS = 12;
+
+  // Corresponds to a feature enabling an in-app survey for requesting feedback from learners their
+  // overall opinion of the app and their current learning experience (as part of understanding
+  // Oppia Android's product market fit).
   NPS_SURVEY = 13;
+
+  // Corresponds to a new onboarding flow that completely replaces the first onboarding flow
+  // introduced in the app. The new flow includes earlier language selections, and distinct
+  // onboarding pathways for different types of users (including learners added later on).
   ONBOARDING_FLOW_V2 = 14;
+
+  // Corresponds to a new version of the home screen that supports multiple classrooms (such as
+  // mathematics and science).
   MULTIPLE_CLASSROOMS = 15;
 }
 
