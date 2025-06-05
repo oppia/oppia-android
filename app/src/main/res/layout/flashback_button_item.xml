@@ -39,9 +39,8 @@
         <Button
             android:id="@+id/flashback_button"
             style="@style/StateButtonActive"
-            android:background="@{@drawable/state_button_primary_background}"
-            android:button="@drawable/state_button_primary_background"
-            android:text="@string/flashback_button"
+            android:background="@drawable/state_button_orange_background"
+            android:text="@string/state_flashback_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_min="48dp"
