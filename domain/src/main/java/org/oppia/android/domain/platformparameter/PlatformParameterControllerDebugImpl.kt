@@ -1,13 +1,13 @@
 package org.oppia.android.domain.platformparameter
 
 import kotlinx.coroutines.Deferred
-import org.oppia.android.util.data.DataProvider
-import javax.inject.Inject
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.SyncStatus
-import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.data.DataProviders
+import javax.inject.Inject
 
 /**
  * Debug implementation for the controller to manage and synchronize platform parameters and
@@ -27,11 +27,12 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   override fun downloadRemoteParameters(): DataProvider<Any?> {
-   return platformParameterControllerProdImpl.downloadRemoteParameters()
+    return platformParameterControllerProdImpl.downloadRemoteParameters()
   }
 
   override fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
-    return dataProviders.createInMemoryDataProviderAsync(LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(
+      LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID) {
       val defaultParameters = platformParameterControllerProdImpl.loadSupportedPlatformParameters()
       val remoteParameters = platformParameterControllerProdImpl.loadRemotePlatformParameters()
       val remoteParamById = remoteParameters.associateBy { it.id }
@@ -40,8 +41,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         val remoteParam = remoteParamById[paramDefinition.id]
 
         val currentValue = remoteParam?.remoteValue ?: paramDefinition.defaultValue
-        val syncStatus = remoteParam?.syncStatus ?:
-        SyncStatus.NOT_SYNCED_FROM_SERVER
+        val syncStatus = remoteParam?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         EphemeralPlatformParameter.newBuilder().apply {
           this.id = paramDefinition.id
@@ -64,8 +65,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         val remoteFlag = remoteFlagById[flagDefinition.id]
 
         val currentValue = remoteFlag?.remoteIsEnabled ?: flagDefinition.defaultIsEnabled
-        val syncStatus = remoteFlag?.syncStatus ?:
-        SyncStatus.NOT_SYNCED_FROM_SERVER
+        val syncStatus = remoteFlag?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         EphemeralFeatureFlag.newBuilder().apply {
           this.id = flagDefinition.id
@@ -79,7 +80,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   private companion object {
-    private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID = "load_ephemeral_platform_parameters"
+    private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
+      "load_ephemeral_platform_parameters"
     private const val LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID = "load_ephemeral_feature_flags"
   }
 }
