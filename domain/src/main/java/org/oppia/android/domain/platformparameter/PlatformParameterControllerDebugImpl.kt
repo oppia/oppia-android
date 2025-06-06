@@ -32,7 +32,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
   override fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
     return dataProviders.createInMemoryDataProviderAsync(
-      LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID) {
+      LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID
+    ) {
       val defaultParameters = platformParameterControllerProdImpl.loadSupportedPlatformParameters()
       val remoteParameters = platformParameterControllerProdImpl.loadRemotePlatformParameters()
       val remoteParamById = remoteParameters.associateBy { it.id }
