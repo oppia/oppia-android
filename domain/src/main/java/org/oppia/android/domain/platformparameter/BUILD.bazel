@@ -86,6 +86,7 @@ kt_android_library(
         "PlatformParameterBindingModule.kt",
         "PlatformParameterModule.kt",
         "PlatformParameterSingletonModule.kt",
+        "PlatformParameterControllerProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
@@ -95,5 +96,28 @@ kt_android_library(
         "//:dagger",
         "//model/src/main/proto:platform_parameter_java_proto_lite",
         "//utility",
+    ],
+)
+
+kt_android_library(
+    name = "debug_impl",
+    srcs = [
+        "PlatformParameterControllerDebugImpl.kt",
+    ],
+      visibility = ["//:oppia_api_visibility"],
+    deps = [
+            ":prod_impl",
+    ],
+)
+
+kt_android_library(
+    name = "debug_module",
+    srcs = [
+        "PlatformParameterControllerDebugModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":debug_impl",
+        "//:dagger",
     ],
 )
