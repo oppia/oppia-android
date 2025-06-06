@@ -34,7 +34,7 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "Usage: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
+      "Expected: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
     )
   }
 
