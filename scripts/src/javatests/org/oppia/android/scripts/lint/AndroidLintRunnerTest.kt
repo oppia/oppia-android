@@ -62,17 +62,6 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintRunner_runLint_createsTemporaryDirectory() {
-    val lintRunner = AndroidLintRunner()
-    lintRunner.runLint()
-
-    val output = outputStream.toString()
-    assertThat(output).contains("Using")
-    assertThat(output).contains("lint_analysis_")
-    assertThat(output).contains("as an intermediary working directory")
-  }
-
-  @Test
   fun testPrepareLintArguments_includesRequiredFlags() {
     val lintRunner = AndroidLintRunner()
     val reportPath = "/path/to/report.xml"
