@@ -12,4 +12,10 @@ interface PlatformParameterControllerDebugModule {
   fun bindsPlatformParameterController(
     impl: PlatformParameterControllerDebugImpl
   ): PlatformParameterController
+
+  /** Binds [PlatformParameterDebugController] to [PlatformParameterControllerDebugImpl]. */
+  @Binds
+  fun bindsPlatformParameterDebugController(
+    impl: PlatformParameterControllerDebugImpl
+  ): PlatformParameterDebugController
 }
