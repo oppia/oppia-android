@@ -23,12 +23,11 @@ class PolicyPageTagHandler(
   private val listener: PolicyPageLinkClickListener,
   private val consoleLogger: ConsoleLogger
 ) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
-  override fun handleTag(
+  override fun handleTagForContentDescription(
     attributes: Attributes,
     openIndex: Int,
     closeIndex: Int,
-    output: Editable,
-    imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    output: Editable
   ) {
     // Replace the custom tag with a clickable piece of text based on the tag's customizations.
     val text = attributes.getJsonStringValue("link")
