@@ -145,7 +145,10 @@ class HtmlParser private constructor(
       val urlSpan = URLSpan(url)
       htmlSpannable.setSpan(urlSpan, start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
     }
-
+    htmlContentTextView.contentDescription = CustomHtmlContentHandler.getContentDescription(
+      htmlContent,
+      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+    )
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }
 
