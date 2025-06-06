@@ -6,7 +6,12 @@ import dagger.Module
 @Module
 interface PlatformParameterControllerDebugModule {
   @Binds
-  fun bindsPlatformParameterControllerDebugImpl(
+  fun bindsPlatformParameterController(
     impl: PlatformParameterControllerDebugImpl
   ): PlatformParameterController
+
+  @Binds
+  fun bindsPlatformParameterDebugController(
+    impl: PlatformParameterControllerDebugImpl
+  ): PlatformParameterDebugController
 }
