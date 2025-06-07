@@ -40,6 +40,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
@@ -64,7 +65,6 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 
 /**
  * Root Dagger component for alpha versions of the application.
@@ -100,7 +100,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerPro
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class,
     PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,
-    AuthenticationModule::class,PlatformParameterControllerProdModule::class
+    AuthenticationModule::class, PlatformParameterControllerProdModule::class
   ]
 )
 interface AlphaApplicationComponent : ApplicationComponent {
