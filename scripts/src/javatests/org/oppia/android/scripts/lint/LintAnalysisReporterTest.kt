@@ -98,7 +98,7 @@ class LintAnalysisReporterTest {
       )
     )
   )
-  val fatalIssue = LintIssue(
+  private val fatalIssue = LintIssue(
     id = "InvalidFragmentVersionForActivityResult",
     severity = LintSeverity.FATAL,
     message = "Upgrade Fragment version to at least 1.3.0.",
@@ -116,7 +116,6 @@ class LintAnalysisReporterTest {
       )
     )
   )
-
 
   @Before
   fun setUp() {
