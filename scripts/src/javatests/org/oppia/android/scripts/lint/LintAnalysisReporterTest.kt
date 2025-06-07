@@ -34,6 +34,8 @@ class LintAnalysisReporterTest {
     priority = "9",
     summary = "Minimum SDK and target SDK attributes not defined",
     explanation = "The manifest should contain a uses-sdk element",
+    errorLine1 = "    <application",
+    errorLine2 = "    ~~~~~~~~~~~~",
     locations = listOf(
       LintLocation(
         file = "src/main/AndroidManifest.xml",
@@ -49,6 +51,8 @@ class LintAnalysisReporterTest {
     priority = "6",
     summary = "Calling new methods on older versions",
     explanation = "This check scans through all the Android API calls",
+    errorLine1 = "        stream.forEach { println(it) }",
+    errorLine2 = "               ~~~~~~~",
     locations = listOf(
       LintLocation(
         file = "src/main/java/MainActivity.kt",
@@ -64,6 +68,8 @@ class LintAnalysisReporterTest {
     priority = "1",
     summary = "Firebase IID Compatibility Check Unable To Run",
     explanation = "The check failed to run as it encountered unknown failure.",
+    errorLine1 = "",
+    errorLine2 = "",
     locations = listOf(
       LintLocation(
         file = "test.xml",
@@ -79,6 +85,8 @@ class LintAnalysisReporterTest {
     priority = "3",
     summary = "Unused resources",
     explanation = "Unused resources make applications larger and slow down builds.",
+    errorLine1 = "    <color name=\"color_palette_save_button_border_color\">#FF0000</color>",
+    errorLine2 = "           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
     locations = listOf(
       LintLocation(
         file = "app/src/main/res/values/color_palette.xml",
@@ -117,6 +125,8 @@ class LintAnalysisReporterTest {
     assertThat(issue.priority).isEqualTo(warningIssue.priority)
     assertThat(issue.summary).isEqualTo(warningIssue.summary)
     assertThat(issue.explanation).isEqualTo(warningIssue.explanation)
+    assertThat(issue.errorLine1).isEqualTo(warningIssue.errorLine1)
+    assertThat(issue.errorLine2).isEqualTo(warningIssue.errorLine2)
     assertThat(issue.locations).hasSize(1)
     assertThat(issue.locations[0].file).isEqualTo("src/main/AndroidManifest.xml")
     assertThat(issue.locations[0].lineNumber).isEqualTo("5")
@@ -131,8 +141,12 @@ class LintAnalysisReporterTest {
     assertThat(issues).hasSize(2)
     assertThat(issues[0].id).isEqualTo(warningIssue.id)
     assertThat(issues[0].severity).isEqualTo(LintSeverity.WARNING)
+    assertThat(issues[0].errorLine1).isEqualTo(warningIssue.errorLine1)
+    assertThat(issues[0].errorLine2).isEqualTo(warningIssue.errorLine2)
     assertThat(issues[1].id).isEqualTo(errorIssue.id)
     assertThat(issues[1].severity).isEqualTo(LintSeverity.ERROR)
+    assertThat(issues[1].errorLine1).isEqualTo(errorIssue.errorLine1)
+    assertThat(issues[1].errorLine2).isEqualTo(errorIssue.errorLine2)
   }
 
   @Test
@@ -144,6 +158,8 @@ class LintAnalysisReporterTest {
     assertThat(issues).hasSize(1)
     val issue = issues[0]
     assertThat(issue.id).isEqualTo("UnusedResources")
+    assertThat(issue.errorLine1).isEqualTo(multiLocationIssue.errorLine1)
+    assertThat(issue.errorLine2).isEqualTo(multiLocationIssue.errorLine2)
     assertThat(issue.locations).hasSize(2)
 
     assertThat(issue.locations[0].file)
@@ -179,6 +195,8 @@ class LintAnalysisReporterTest {
     assertThat(issues[0].locations).hasSize(1)
     assertThat(issues[0].locations[0].file).isEqualTo("test.xml")
     assertThat(issues[0].locations[0].lineNumber).isEmpty()
+    assertThat(issues[0].errorLine1).isEmpty()
+    assertThat(issues[0].errorLine2).isEmpty()
   }
 
   @Test
@@ -221,6 +239,8 @@ class LintAnalysisReporterTest {
       priority = "1",
       summary = "Summary with special chars",
       explanation = "Explanation with <tags> and &amp; symbols",
+      errorLine1 = "val text = \"Hello <world> & friends\"",
+      errorLine2 = "           ~~~~~~~~~~~~~~~~~~~~~~",
       locations = listOf(
         LintLocation(
           file = "path/with spaces/file&name.xml",
@@ -239,7 +259,9 @@ class LintAnalysisReporterTest {
             category="Test"
             priority="1"
             summary="Summary with special chars"
-            explanation="Explanation with &lt;tags&gt; and &amp;amp; symbols">
+            explanation="Explanation with &lt;tags&gt; and &amp;amp; symbols"
+            errorLine1="val text = &quot;Hello &lt;world&gt; &amp; friends&quot;"
+            errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
             <location file="path/with spaces/file&amp;name.xml" line="15"/>
         </issue>
       </issues>
@@ -251,6 +273,8 @@ class LintAnalysisReporterTest {
     assertThat(issues).hasSize(1)
     val issue = issues[0]
     assertThat(issue.message).isEqualTo(specialCharsIssue.message)
+    assertThat(issue.errorLine1).isEqualTo(specialCharsIssue.errorLine1)
+    assertThat(issue.errorLine2).isEqualTo(specialCharsIssue.errorLine2)
     assertThat(issue.locations).hasSize(1)
     assertThat(issue.locations[0].file).isEqualTo(specialCharsIssue.locations[0].file)
     assertThat(issue.locations[0].lineNumber).isEqualTo(specialCharsIssue.locations[0].lineNumber)
@@ -316,6 +340,37 @@ class LintAnalysisReporterTest {
 
     assertThat(exception).hasMessageThat()
       .contains("Issue element is missing required attributes or locations")
+  }
+
+  @Test
+  fun testParseLintReport_issueWithEmptyErrorLines_parsesCorrectly() {
+    val issueWithEmptyErrorLines = LintIssue(
+      id = "EmptyErrorLinesTest",
+      severity = LintSeverity.WARNING,
+      message = "Test issue with empty error lines",
+      category = "Test",
+      priority = "5",
+      summary = "Test summary",
+      explanation = "Test explanation",
+      errorLine1 = "",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation(
+          file = "test.xml",
+          lineNumber = "10"
+        )
+      )
+    )
+
+    val xmlContent = createXmlWithIssues(issueWithEmptyErrorLines)
+    val xmlFile = createXmlFile(xmlContent)
+    val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues).hasSize(1)
+    val issue = issues[0]
+    assertThat(issue.errorLine1).isEmpty()
+    assertThat(issue.errorLine2).isEmpty()
+    assertThat(issue.id).isEqualTo("EmptyErrorLinesTest")
   }
 
   @Test
@@ -631,18 +686,25 @@ class LintAnalysisReporterTest {
   private fun createXmlWithIssues(vararg issues: LintIssue): String {
     val issueElements = issues.joinToString("\n") { issue ->
       val locationElements = issue.locations.joinToString("\n") { location ->
-        "<location file=\"${location.file}\" line=\"${location.lineNumber}\"/>"
+        "<location file=\"${escapeXml(location.file)}\" line=\"${location.lineNumber}\"/>"
       }
+
+      val errorLine1Attr = if (issue.errorLine1.isNotEmpty())
+        "errorLine1=\"${escapeXml(issue.errorLine1)}\"" else ""
+      val errorLine2Attr = if (issue.errorLine2.isNotEmpty())
+        "errorLine2=\"${escapeXml(issue.errorLine2)}\"" else ""
 
       """
         <issue
             id="${issue.id}"
             severity="${issue.severity.displayName}"
-            message="${issue.message}"
+            message="${escapeXml(issue.message)}"
             category="${issue.category}"
             priority="${issue.priority}"
-            summary="${issue.summary}"
-            explanation="${issue.explanation}">
+            summary="${escapeXml(issue.summary)}"
+            explanation="${escapeXml(issue.explanation)}"
+            $errorLine1Attr
+            $errorLine2Attr>
             $locationElements
         </issue>
       """.trimIndent()
@@ -653,5 +715,14 @@ class LintAnalysisReporterTest {
         $issueElements
       </issues>
     """.trimIndent()
+  }
+
+  private fun escapeXml(text: String): String {
+    return text
+      .replace("&", "&amp;")
+      .replace("<", "&lt;")
+      .replace(">", "&gt;")
+      .replace("\"", "&quot;")
+      .replace("'", "&apos;")
   }
 }
