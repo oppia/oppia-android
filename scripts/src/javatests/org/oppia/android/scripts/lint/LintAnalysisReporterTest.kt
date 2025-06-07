@@ -686,13 +686,14 @@ class LintAnalysisReporterTest {
       """
     Error Line: ${warningIssue.errorLine1}
                 ${warningIssue.errorLine2}
-    """.trimIndent()
+      """.trimIndent()
     )
   }
 
   @Test
   fun testParseLintReport_issueWithLocationMissingFileAttribute_filtersOutBadLocations() {
-    val xmlContent = """
+    val xmlContent =
+      """
     <issues format="6" by="lint 7.3.1">
       <issue id="TestIssue" severity="Warning" message="Test message">
         <location file="valid.xml" line="5"/>
@@ -700,7 +701,7 @@ class LintAnalysisReporterTest {
         <location line="15"/>
       </issue>
     </issues>
-  """.trimIndent()
+      """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
     val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
