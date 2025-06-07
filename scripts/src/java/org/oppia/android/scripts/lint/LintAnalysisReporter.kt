@@ -53,6 +53,8 @@ data class LintLocation(
  * @property priority the importance level assigned to the issue
  * @property summary the brief summary title of the issue
  * @property explanation the detailed explanation of the issue
+ * @property errorLine1 the first line of code that caused the issue
+ * @property errorLine2 the second line of code showing context
  * @property locations list of locations where this issue was detected
  */
 data class LintIssue(
@@ -63,6 +65,8 @@ data class LintIssue(
   val priority: String,
   val summary: String,
   val explanation: String,
+  val errorLine1: String = "",
+  val errorLine2: String = "",
   val locations: List<LintLocation>
 )
 
@@ -120,6 +124,8 @@ class LintAnalysisReporter {
       priority = issueElement.getAttribute("priority"),
       summary = issueElement.getAttribute("summary"),
       explanation = issueElement.getAttribute("explanation"),
+      errorLine1 = issueElement.getAttribute("errorLine1"),
+      errorLine2 = issueElement.getAttribute("errorLine2"),
       locations = locations
     )
   }
