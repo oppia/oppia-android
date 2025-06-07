@@ -8,9 +8,13 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 /** Enum representing the severity levels of lint issues. */
 enum class LintSeverity(val displayName: String) {
+  /** Represents critical Lint issue of severity Fatal */
   FATAL("Fatal"),
+  /** Represents critical Lint issue of severity Error */
   ERROR("Error"),
+  /** Represents Lint issue of severity Warning */
   WARNING("Warning"),
+  /** Represents Lint issue of severity Information */
   INFORMATION("Information");
 
   companion object {

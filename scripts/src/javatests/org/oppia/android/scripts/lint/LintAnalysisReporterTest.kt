@@ -393,18 +393,4 @@ class LintAnalysisReporterTest {
       </issues>
     """.trimIndent()
   }
-
-  private fun createMinimalXmlWithIssue(
-    id: String = "TestIssue",
-    severity: String = "Warning",
-    file: String = "test.xml"
-  ): String {
-    return """
-      <issues format="6" by="lint 7.3.1">
-        <issue id="$id" severity="$severity" message="Test message">
-          <location file="$file"/>
-        </issue>
-      </issues>
-    """.trimIndent()
-  }
 }
