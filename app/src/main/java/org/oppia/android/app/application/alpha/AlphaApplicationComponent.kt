@@ -64,6 +64,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 
 /**
  * Root Dagger component for alpha versions of the application.
@@ -99,7 +100,7 @@ import javax.inject.Singleton
     PerformanceMetricsConfigurationsModule::class, AlphaBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class,
     PerformanceMetricsAssessorModule::class, ExplorationProgressModule::class,
-    AuthenticationModule::class,
+    AuthenticationModule::class,PlatformParameterControllerProdModule::class
   ]
 )
 interface AlphaApplicationComponent : ApplicationComponent {

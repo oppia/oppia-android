@@ -87,6 +87,7 @@ kt_android_library(
         "PlatformParameterBindingModule.kt",
         "PlatformParameterModule.kt",
         "PlatformParameterSingletonModule.kt",
+        "PlatformParameterControllerProdModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],
     deps = [
