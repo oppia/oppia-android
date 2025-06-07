@@ -6,6 +6,28 @@ import org.w3c.dom.NodeList
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 
+/** Enum representing the severity levels of lint issues. */
+enum class LintSeverity(val displayName: String) {
+  FATAL("Fatal"),
+  ERROR("Error"),
+  WARNING("Warning"),
+  INFORMATION("Information");
+
+  companion object {
+    /**
+     * Converts a string severity to enum, case-insensitive.
+     * @param severityString the string representation of severity
+     * @return the corresponding LintSeverity enum
+     * @throws IllegalArgumentException if severity is unknown
+     */
+    fun fromString(severityString: String): LintSeverity {
+      return values().find {
+        it.displayName.equals(severityString, ignoreCase = true)
+      } ?: throw IllegalArgumentException("Unknown severity level: $severityString")
+    }
+  }
+}
+
 /**
  * Represents a single location where a lint issue was detected.
  *
@@ -14,7 +36,7 @@ import javax.xml.parsers.DocumentBuilderFactory
  */
 data class LintLocation(
   val file: String,
-  val lineNumber: String
+  val lineNumber: String = ""
 )
 
 /**
@@ -31,7 +53,7 @@ data class LintLocation(
  */
 data class LintIssue(
   val id: String,
-  val severity: String,
+  val severity: LintSeverity,
   val message: String,
   val category: String,
   val priority: String,
@@ -48,66 +70,68 @@ class LintAnalysisReporter {
    *
    * @param xmlFilePath Path to the XML lint report file
    * @return List of LintIssue objects representing all issues found in the report
+   * @throws IllegalArgumentException if file doesn't exist or parsing fails
    */
   fun parseLintReport(xmlFilePath: String): List<LintIssue> {
     val xmlFile = File(xmlFilePath)
     require(xmlFile.exists()) { "Lint report file not found: $xmlFilePath" }
 
-    val issues = mutableListOf<LintIssue>()
-
-    try {
+    return try {
       val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
       val doc: Document = docBuilder.parse(xmlFile)
       doc.documentElement.normalize()
 
       val issueNodes: NodeList = doc.getElementsByTagName("issue")
 
-      for (i in 0 until issueNodes.length) {
-        val issueElement = issueNodes.item(i) as Element
-
-        val id = issueElement.getAttribute("id")
-        val severity = issueElement.getAttribute("severity")
-        val locations = extractLocations(issueElement)
-
-        if (id.isBlank() || severity.isBlank() || locations.isEmpty()) {
-          throw IllegalStateException("Issue element is missing required attributes or locations")
-        }
-
-        val issue = LintIssue(
-          id = id,
-          severity = severity,
-          message = issueElement.getAttribute("message"),
-          category = issueElement.getAttribute("category"),
-          priority = issueElement.getAttribute("priority"),
-          summary = issueElement.getAttribute("summary"),
-          explanation = issueElement.getAttribute("explanation"),
-          locations = locations
-        )
-
-        issues.add(issue)
+      (0 until issueNodes.length).map { index ->
+        parseIssueElement(issueNodes.item(index) as Element)
       }
     } catch (e: Exception) {
-      error("Error processing file $xmlFilePath: ${e.message}")
+      throw IllegalArgumentException("Error processing file $xmlFilePath: ${e.message}")
+    }
+  }
+
+  /**
+   * Parses a single issue element and returns a LintIssue object.
+   * @throws IllegalArgumentException if the issue element is invalid or missing required attributes
+   */
+  private fun parseIssueElement(issueElement: Element): LintIssue {
+    val id = issueElement.getAttribute("id")
+    val severityString = issueElement.getAttribute("severity")
+    val locations = extractLocations(issueElement)
+
+    if (id.isBlank() || severityString.isBlank() || locations.isEmpty()) {
+      throw IllegalArgumentException(
+        "Issue element is missing required attributes or locations"
+      )
     }
 
-    return issues
+    val severity = LintSeverity.fromString(severityString)
+
+    return LintIssue(
+      id = id,
+      severity = severity,
+      message = issueElement.getAttribute("message"),
+      category = issueElement.getAttribute("category"),
+      priority = issueElement.getAttribute("priority"),
+      summary = issueElement.getAttribute("summary"),
+      explanation = issueElement.getAttribute("explanation"),
+      locations = locations
+    )
   }
 
   /** Extracts all locations from the issue's location elements. */
   private fun extractLocations(issueElement: Element): List<LintLocation> {
     val locationNodes = issueElement.getElementsByTagName("location")
-    val locations = mutableListOf<LintLocation>()
 
-    for (i in 0 until locationNodes.length) {
-      val locationElement = locationNodes.item(i) as Element
+    return (0 until locationNodes.length).map { index ->
+      val locationElement = locationNodes.item(index) as Element
       val file = locationElement.getAttribute("file")
-      val lineNumber = locationElement.getAttribute("line")
 
-      if (file.isNotBlank()) {
-        locations.add(LintLocation(file = file, lineNumber = lineNumber))
-      }
-    }
-
-    return locations
+      LintLocation(
+        file = file,
+        lineNumber = locationElement.getAttribute("line")
+      )
+    }.filter { it.file.isNotBlank() }
   }
 }

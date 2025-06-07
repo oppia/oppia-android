@@ -24,7 +24,7 @@ class LintAnalysisReporterTest {
   private val outputStream = ByteArrayOutputStream()
   private val warningIssue = LintIssue(
     id = "UsesMinSdkAttributes",
-    severity = "Warning",
+    severity = LintSeverity.WARNING,
     message = "Manifest should specify a minimum API level",
     category = "Correctness",
     priority = "9",
@@ -39,7 +39,7 @@ class LintAnalysisReporterTest {
   )
   private val errorIssue = LintIssue(
     id = "NewApi",
-    severity = "Error",
+    severity = LintSeverity.ERROR,
     message = "Call requires API level 24 (current min is 19)",
     category = "Correctness",
     priority = "6",
@@ -54,7 +54,7 @@ class LintAnalysisReporterTest {
   )
   private val informationIssue = LintIssue(
     id = "IidCompatibilityCheckFailure",
-    severity = "Information",
+    severity = LintSeverity.INFORMATION,
     message = "Check failed with exception: java.lang.NoSuchMethodException",
     category = "Lint",
     priority = "1",
@@ -69,7 +69,7 @@ class LintAnalysisReporterTest {
   )
   private val multiLocationIssue = LintIssue(
     id = "UnusedResources",
-    severity = "Warning",
+    severity = LintSeverity.WARNING,
     message = "The resource `R.color.color_palette_save_button_border_color` appears to be unused",
     category = "Performance",
     priority = "3",
@@ -126,9 +126,9 @@ class LintAnalysisReporterTest {
 
     assertThat(issues).hasSize(2)
     assertThat(issues[0].id).isEqualTo(warningIssue.id)
-    assertThat(issues[0].severity).isEqualTo("Warning")
+    assertThat(issues[0].severity).isEqualTo(LintSeverity.WARNING)
     assertThat(issues[1].id).isEqualTo(errorIssue.id)
-    assertThat(issues[1].severity).isEqualTo("Error")
+    assertThat(issues[1].severity).isEqualTo(LintSeverity.ERROR)
   }
 
   @Test
@@ -200,7 +200,7 @@ class LintAnalysisReporterTest {
 
     val xmlFile = createXmlFile(malformedXml)
 
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalArgumentException> {
       lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
     }
 
@@ -211,7 +211,7 @@ class LintAnalysisReporterTest {
   fun testParseLintReport_issueWithSpecialCharacters_handlesCorrectly() {
     val specialCharsIssue = LintIssue(
       id = "SpecialCharsTest",
-      severity = "Error",
+      severity = LintSeverity.ERROR,
       message = "Message with <special> & characters \"quoted\"",
       category = "Test",
       priority = "1",
@@ -265,7 +265,7 @@ class LintAnalysisReporterTest {
 
     val xmlFile = createXmlFile(xmlContent)
 
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalArgumentException> {
       lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
     }
 
@@ -286,7 +286,7 @@ class LintAnalysisReporterTest {
 
     val xmlFile = createXmlFile(xmlContent)
 
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalArgumentException> {
       lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
     }
 
@@ -306,12 +306,59 @@ class LintAnalysisReporterTest {
 
     val xmlFile = createXmlFile(xmlContent)
 
-    val exception = assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalArgumentException> {
       lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
     }
 
     assertThat(exception).hasMessageThat()
       .contains("Issue element is missing required attributes or locations")
+  }
+
+  @Test
+  fun testLintSeverity_fromString_validSeverities_returnsCorrectEnum() {
+    assertThat(LintSeverity.fromString("Fatal")).isEqualTo(LintSeverity.FATAL)
+    assertThat(LintSeverity.fromString("Error")).isEqualTo(LintSeverity.ERROR)
+    assertThat(LintSeverity.fromString("Warning")).isEqualTo(LintSeverity.WARNING)
+    assertThat(LintSeverity.fromString("Information"))
+      .isEqualTo(LintSeverity.INFORMATION)
+  }
+
+  @Test
+  fun testLintSeverity_fromString_caseInsensitive_returnsCorrectEnum() {
+    assertThat(LintSeverity.fromString("fatal")).isEqualTo(LintSeverity.FATAL)
+    assertThat(LintSeverity.fromString("ERROR")).isEqualTo(LintSeverity.ERROR)
+    assertThat(LintSeverity.fromString("warning")).isEqualTo(LintSeverity.WARNING)
+    assertThat(LintSeverity.fromString("INFORMATION"))
+      .isEqualTo(LintSeverity.INFORMATION)
+  }
+
+  @Test
+  fun testLintSeverity_fromString_invalidSeverity_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      LintSeverity.fromString("InvalidSeverity")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Unknown severity level: InvalidSeverity")
+  }
+
+  @Test
+  fun testParseLintReport_invalidSeverity_throwsException() {
+    val xmlContent =
+      """
+      <issues format="6" by="lint 7.3.1">
+        <issue id="TestIssue" severity="InvalidSeverity" message="Test message">
+          <location file="test.xml"/>
+        </issue>
+      </issues>
+      """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+
+    val exception = assertThrows<IllegalArgumentException> {
+      lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+    }
+
+    assertThat(exception).hasMessageThat().contains("Unknown severity level: InvalidSeverity")
   }
 
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
@@ -329,7 +376,7 @@ class LintAnalysisReporterTest {
       """
         <issue
             id="${issue.id}"
-            severity="${issue.severity}"
+            severity="${issue.severity.displayName}"
             message="${issue.message}"
             category="${issue.category}"
             priority="${issue.priority}"
