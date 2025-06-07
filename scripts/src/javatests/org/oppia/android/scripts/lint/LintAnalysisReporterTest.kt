@@ -98,6 +98,25 @@ class LintAnalysisReporterTest {
       )
     )
   )
+  val fatalIssue = LintIssue(
+    id = "InvalidFragmentVersionForActivityResult",
+    severity = LintSeverity.FATAL,
+    message = "Upgrade Fragment version to at least 1.3.0.",
+    category = "Correctness",
+    priority = "5",
+    summary = "Update to Fragment 1.3.0 to use ActivityResult APIs",
+    explanation = "In order to use the ActivityResult APIs you must upgrade your" +
+      " Fragment version to 1.3.0. ",
+    errorLine1 = "    addProfileFragmentPresenter.resultLauncher = registerForActivityResult(",
+    errorLine2 = "                                                 ^",
+    locations = listOf(
+      LintLocation(
+        file = "app/src/main/java/org/oppia/android/app/profile/AddProfileActivity.kt",
+        lineNumber = "37"
+      )
+    )
+  )
+
 
   @Before
   fun setUp() {
@@ -504,17 +523,6 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testPrintLintReport_withMixedSeverities_printsByOrderAndFails() {
-    val fatalIssue = LintIssue(
-      id = "FatalIssue",
-      severity = LintSeverity.FATAL,
-      message = "Fatal error occurred",
-      category = "Critical",
-      priority = "10",
-      summary = "Fatal issue summary",
-      explanation = "This is a fatal error",
-      locations = listOf(LintLocation("fatal.xml", "1"))
-    )
-
     val exception = assertThrows<RuntimeException> {
       lintAnalysisReporter
         .printLintReport(listOf(warningIssue, errorIssue, fatalIssue, informationIssue))
@@ -523,7 +531,7 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     // Check that issues appear in severity order: FATAL, ERROR, WARNING, INFORMATION
-    val fatalIndex = output.indexOf("Issue ID: FatalIssue")
+    val fatalIndex = output.indexOf("Issue ID: InvalidFragmentVersionForActivityResult")
     val errorIndex = output.indexOf("Issue ID: NewApi")
     val warningIndex = output.indexOf("Issue ID: UsesMinSdkAttributes")
     val infoIndex = output.indexOf("Issue ID: IidCompatibilityCheckFailure")
