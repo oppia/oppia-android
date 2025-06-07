@@ -4,6 +4,10 @@ import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.util.data.DataProvider
 
+/**
+ * Debug-only controller to manage and synchronize platform parameters and feature flags.
+ */
+
 interface PlatformParameterDebugController {
 
   /**
