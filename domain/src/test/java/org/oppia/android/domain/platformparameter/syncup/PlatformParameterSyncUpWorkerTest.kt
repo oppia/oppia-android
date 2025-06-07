@@ -50,6 +50,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -146,6 +147,7 @@ class PlatformParameterSyncUpWorkerTest {
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
       PlatformParameterModule::class,
+      PlatformParameterControllerProdModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,

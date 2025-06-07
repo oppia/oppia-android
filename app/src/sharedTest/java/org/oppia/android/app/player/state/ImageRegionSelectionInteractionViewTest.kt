@@ -115,6 +115,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 
 /** Tests for [StateFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -490,6 +491,7 @@ class ImageRegionSelectionInteractionViewTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       PlatformParameterModule::class,
+      PlatformParameterControllerProdModule::class,
       PlatformParameterSingletonModule::class,
       QuestionModule::class,
       RatioInputModule::class,
