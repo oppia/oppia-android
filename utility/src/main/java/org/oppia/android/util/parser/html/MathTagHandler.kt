@@ -107,6 +107,22 @@ class MathTagHandler(
     )
   }
 
+  override fun handleTagForContentDescription(
+    attributes: Attributes,
+    openIndex: Int,
+    closeIndex: Int,
+    output: Editable
+  ) {
+    val mathVal = attributes.getJsonObjectValue(CUSTOM_MATH_MATH_CONTENT_ATTRIBUTE)
+    val contentDescription = mathVal?.let { "Math content $it" } ?: "Math content"
+
+    if (openIndex < output.length && closeIndex <= output.length) {
+      output.replace(openIndex, closeIndex, contentDescription)
+    } else {
+      output.append(contentDescription)
+    }
+  }
+
   private sealed class MathContent {
     data class MathAsSvg(val svgFilename: String) : MathContent()
 
