@@ -22,6 +22,10 @@ class LintAnalysisReporterTest {
   private lateinit var lintAnalysisReporter: LintAnalysisReporter
   private val originalOut = System.out
   private val outputStream = ByteArrayOutputStream()
+  private val ANDROID_LINT_CHECK_PASSED_OUTPUT_INDICATOR =
+    "${GREEN}ANDROID LINT CHECK$BOLD PASSED$RESET"
+  private val ANDROID_LINT_CHECK_FAILED_OUTPUT_INDICATOR =
+    "${RED}ANDROID LINT CHECK$BOLD FAILED$RESET"
   private val warningIssue = LintIssue(
     id = "UsesMinSdkAttributes",
     severity = LintSeverity.WARNING,
@@ -361,6 +365,263 @@ class LintAnalysisReporterTest {
     assertThat(exception).hasMessageThat().contains("Unknown severity level: InvalidSeverity")
   }
 
+  @Test
+  fun testPrintLintReport_withWarningIssue_printsCorrectlyAndPasses() {
+    lintAnalysisReporter.printLintReport(listOf(warningIssue))
+    val output = outputStream.toString()
+
+    assertThat(output).contains("Issue ID: UsesMinSdkAttributes")
+    assertThat(output).contains("Severity: ${YELLOW}Warning$RESET")
+    assertThat(output).contains("File: src/main/AndroidManifest.xml")
+    assertThat(output).contains("Line: 5")
+    assertThat(output).contains("Category: Correctness")
+    assertThat(output).contains("Priority: 9")
+    assertThat(output).contains("Summary: Minimum SDK and target SDK attributes not defined")
+    assertThat(output).contains("Message: Manifest should specify a minimum API level")
+    assertThat(output).contains("Explanation: The manifest should contain a uses-sdk element")
+    assertThat(output).contains(ANDROID_LINT_CHECK_PASSED_OUTPUT_INDICATOR)
+    assertThat(output).contains("-".repeat(40))
+  }
+
+  @Test
+  fun testPrintLintReport_withErrorIssue_printsCorrectlyAndFails() {
+    val exception = assertThrows<RuntimeException> {
+      lintAnalysisReporter.printLintReport(listOf(errorIssue))
+    }
+
+    val output = outputStream.toString()
+    assertThat(output).contains("Issue ID: NewApi")
+    assertThat(output).contains("Severity: ${RED}Error$RESET")
+    assertThat(output).contains("File: src/main/java/MainActivity.kt")
+    assertThat(output).contains("Line: 42")
+    assertThat(output).contains("Category: Correctness")
+    assertThat(output).contains("Priority: 6")
+    assertThat(output).contains("Summary: Calling new methods on older versions")
+    assertThat(output).contains("Message: Call requires API level 24 (current min is 19)")
+    assertThat(output).contains("Explanation: This check scans through all the Android API calls")
+    assertThat(exception).hasMessageThat().contains(ANDROID_LINT_CHECK_FAILED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testPrintLintReport_withInformationIssue_printsCorrectlyAndPasses() {
+    lintAnalysisReporter.printLintReport(listOf(informationIssue))
+    val output = outputStream.toString()
+
+    assertThat(output).contains("Issue ID: IidCompatibilityCheckFailure")
+    assertThat(output).contains("Severity: ${YELLOW}Information$RESET")
+    assertThat(output).contains("File: test.xml")
+    assertThat(output).doesNotContain("Line:")
+    assertThat(output).contains("Category: Lint")
+    assertThat(output).contains("Priority: 1")
+    assertThat(output).contains("Summary: Firebase IID Compatibility Check Unable To Run")
+    assertThat(output)
+      .contains("Message: Check failed with exception: java.lang.NoSuchMethodException")
+    assertThat(output)
+      .contains("Explanation: The check failed to run as it encountered unknown failure.")
+    assertThat(output).contains(ANDROID_LINT_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testPrintLintReport_withMultiLocationIssue_printsAllLocations() {
+    lintAnalysisReporter.printLintReport(listOf(multiLocationIssue))
+    val output = outputStream.toString()
+
+    assertThat(output).contains("Issue ID: UnusedResources")
+    assertThat(output).contains("Severity: ${YELLOW}Warning$RESET")
+    assertThat(output).contains("Location 1:")
+    assertThat(output).contains("  File: app/src/main/res/values/color_palette.xml")
+    assertThat(output).contains("  Line: 164")
+    assertThat(output).contains("Location 2:")
+    assertThat(output).contains("  File: app/src/main/res/values-night/color_palette.xml")
+    assertThat(output).contains("  Line: 159")
+    assertThat(output).contains("Category: Performance")
+    assertThat(output).contains("Priority: 3")
+    assertThat(output).contains("Summary: Unused resources")
+    assertThat(output)
+      .contains(
+        "Message: The resource `R.color.color_palette_save_button_border_color`" +
+          " appears to be unused"
+      )
+    assertThat(output)
+      .contains("Explanation: Unused resources make applications larger and slow down builds.")
+    assertThat(output).contains(ANDROID_LINT_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testPrintLintReport_withMixedSeverities_printsByOrderAndFails() {
+    val fatalIssue = LintIssue(
+      id = "FatalIssue",
+      severity = LintSeverity.FATAL,
+      message = "Fatal error occurred",
+      category = "Critical",
+      priority = "10",
+      summary = "Fatal issue summary",
+      explanation = "This is a fatal error",
+      locations = listOf(LintLocation("fatal.xml", "1"))
+    )
+
+    val exception = assertThrows<RuntimeException> {
+      lintAnalysisReporter
+        .printLintReport(listOf(warningIssue, errorIssue, fatalIssue, informationIssue))
+    }
+
+    val output = outputStream.toString()
+
+    // Check that issues appear in severity order: FATAL, ERROR, WARNING, INFORMATION
+    val fatalIndex = output.indexOf("Issue ID: FatalIssue")
+    val errorIndex = output.indexOf("Issue ID: NewApi")
+    val warningIndex = output.indexOf("Issue ID: UsesMinSdkAttributes")
+    val infoIndex = output.indexOf("Issue ID: IidCompatibilityCheckFailure")
+
+    assertThat(fatalIndex).isLessThan(errorIndex)
+    assertThat(errorIndex).isLessThan(warningIndex)
+    assertThat(warningIndex).isLessThan(infoIndex)
+
+    assertThat(output).contains("Severity: ${RED}Fatal$RESET")
+    assertThat(output).contains("Severity: ${RED}Error$RESET")
+    assertThat(output).contains("Severity: ${YELLOW}Warning$RESET")
+    assertThat(output).contains("Severity: ${YELLOW}Information$RESET")
+    assertThat(exception).hasMessageThat().contains(ANDROID_LINT_CHECK_FAILED_OUTPUT_INDICATOR)
+  }
+
+  @Test
+  fun testPrintLintReport_withSameSeverityIssues_sortsByFilePathThenId() {
+    val issue1 = LintIssue(
+      id = "ZIssue",
+      severity = LintSeverity.WARNING,
+      message = "Z issue message",
+      category = "Test",
+      priority = "1",
+      summary = "Z summary",
+      explanation = "Z explanation",
+      locations = listOf(LintLocation("a/file.xml", "1"))
+    )
+
+    val issue2 = LintIssue(
+      id = "AIssue",
+      severity = LintSeverity.WARNING,
+      message = "A issue message",
+      category = "Test",
+      priority = "1",
+      summary = "A summary",
+      explanation = "A explanation",
+      locations = listOf(LintLocation("b/file.xml", "1"))
+    )
+
+    val issue3 = LintIssue(
+      id = "BIssue",
+      severity = LintSeverity.WARNING,
+      message = "B issue message",
+      category = "Test",
+      priority = "1",
+      summary = "B summary",
+      explanation = "B explanation",
+      locations = listOf(LintLocation("a/file.xml", "1"))
+    )
+
+    lintAnalysisReporter.printLintReport(listOf(issue1, issue2, issue3))
+    val output = outputStream.toString()
+
+    // Should be sorted by file path first, then by ID
+    val bIssueIndex = output.indexOf("Issue ID: BIssue")
+    val zIssueIndex = output.indexOf("Issue ID: ZIssue")
+    val aIssueIndex = output.indexOf("Issue ID: AIssue")
+
+    assertThat(bIssueIndex).isLessThan(zIssueIndex)
+    assertThat(zIssueIndex).isLessThan(aIssueIndex)
+  }
+
+  @Test
+  fun testPrintLintReport_emptyList_passesWithoutOutput() {
+    lintAnalysisReporter.printLintReport(emptyList())
+    val output = outputStream.toString()
+
+    assertThat(output).contains(ANDROID_LINT_CHECK_PASSED_OUTPUT_INDICATOR)
+    assertThat(output).doesNotContain("Issue ID:")
+  }
+
+  @Test
+  fun testPrintLintReport_withBlankOptionalFields_omitsBlankFields() {
+    val issueWithBlanks = LintIssue(
+      id = "TestIssue",
+      severity = LintSeverity.WARNING,
+      message = "Test message",
+      category = "",
+      priority = "1",
+      summary = "",
+      explanation = "Test explanation",
+      locations = listOf(LintLocation("test.xml", ""))
+    )
+
+    lintAnalysisReporter.printLintReport(listOf(issueWithBlanks))
+    val output = outputStream.toString()
+
+    assertThat(output).contains("Issue ID: TestIssue")
+    assertThat(output).contains("File: test.xml")
+    assertThat(output).contains("Priority: 1")
+    assertThat(output).contains("Message: Test message")
+    assertThat(output).contains("Explanation: Test explanation")
+
+    assertThat(output).doesNotContain("Category:")
+    assertThat(output).doesNotContain("Summary:")
+    assertThat(output).doesNotContain("Line:")
+  }
+
+  @Test
+  fun testLintSeverity_isCritical_returnsCorrectValues() {
+    assertThat(LintSeverity.FATAL.isCritical()).isTrue()
+    assertThat(LintSeverity.ERROR.isCritical()).isTrue()
+    assertThat(LintSeverity.WARNING.isCritical()).isFalse()
+    assertThat(LintSeverity.INFORMATION.isCritical()).isFalse()
+  }
+
+  @Test
+  fun testLintSeverity_getColor_returnsCorrectColors() {
+    assertThat(LintSeverity.FATAL.getColor()).isEqualTo(RED)
+    assertThat(LintSeverity.ERROR.getColor()).isEqualTo(RED)
+    assertThat(LintSeverity.WARNING.getColor()).isEqualTo(YELLOW)
+    assertThat(LintSeverity.INFORMATION.getColor()).isEqualTo(YELLOW)
+  }
+
+  @Test
+  fun testLintSeverity_orderedSeverities_returnsInCorrectOrder() {
+    val orderedSeverities = LintSeverity.orderedSeverities()
+
+    assertThat(orderedSeverities).hasSize(4)
+    assertThat(orderedSeverities[0]).isEqualTo(LintSeverity.FATAL)
+    assertThat(orderedSeverities[1]).isEqualTo(LintSeverity.ERROR)
+    assertThat(orderedSeverities[2]).isEqualTo(LintSeverity.WARNING)
+    assertThat(orderedSeverities[3]).isEqualTo(LintSeverity.INFORMATION)
+  }
+
+  @Test
+  fun testLintSeverity_displayName_returnsCorrectNames() {
+    assertThat(LintSeverity.FATAL.displayName).isEqualTo("Fatal")
+    assertThat(LintSeverity.ERROR.displayName).isEqualTo("Error")
+    assertThat(LintSeverity.WARNING.displayName).isEqualTo("Warning")
+    assertThat(LintSeverity.INFORMATION.displayName).isEqualTo("Information")
+  }
+
+  @Test
+  fun testPrintLintReport_issueWithNoLocationLineNumber_printsFileWithoutLine() {
+    val issueNoLine = LintIssue(
+      id = "NoLineIssue",
+      severity = LintSeverity.WARNING,
+      message = "Issue without line number",
+      category = "Test",
+      priority = "1",
+      summary = "No line summary",
+      explanation = "No line explanation",
+      locations = listOf(LintLocation("test.xml", ""))
+    )
+
+    lintAnalysisReporter.printLintReport(listOf(issueNoLine))
+    val output = outputStream.toString()
+
+    assertThat(output).contains("File: test.xml")
+    assertThat(output).doesNotContain("Line:")
+  }
+
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
     val xmlFile = tempFolder.newFile(fileName)
     xmlFile.writeText(content)
@@ -390,20 +651,6 @@ class LintAnalysisReporterTest {
     return """
       <issues format="6" by="lint 7.3.1">
         $issueElements
-      </issues>
-    """.trimIndent()
-  }
-
-  private fun createMinimalXmlWithIssue(
-    id: String = "TestIssue",
-    severity: String = "Warning",
-    file: String = "test.xml"
-  ): String {
-    return """
-      <issues format="6" by="lint 7.3.1">
-        <issue id="$id" severity="$severity" message="Test message">
-          <location file="$file"/>
-        </issue>
       </issues>
     """.trimIndent()
   }

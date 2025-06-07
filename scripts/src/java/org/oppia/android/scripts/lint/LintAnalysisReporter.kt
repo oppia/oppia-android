@@ -6,7 +6,23 @@ import org.w3c.dom.NodeList
 import java.io.File
 import javax.xml.parsers.DocumentBuilderFactory
 
-/** Enum representing the severity levels of lint issues. */
+/* ANSI escape codes for colors. */
+
+/** Green text. */
+const val GREEN = "\u001B[32m"
+/** Red text. */
+const val RED = "\u001B[31m"
+/** Default text. */
+const val RESET = "\u001B[0m"
+/** Bold text. */
+const val BOLD = "\u001B[1m"
+/** Yellow text. */
+const val YELLOW = "\u001B[33m"
+
+/**
+ * Enum representing the severity levels of lint issues.
+ * Order matters for prioritization - most severe first.
+ */
 enum class LintSeverity(val displayName: String) {
   FATAL("Fatal"),
   ERROR("Error"),
@@ -25,6 +41,18 @@ enum class LintSeverity(val displayName: String) {
         it.displayName.equals(severityString, ignoreCase = true)
       } ?: throw IllegalArgumentException("Unknown severity level: $severityString")
     }
+
+    /** Returns all severity levels in order of importance. */
+    fun orderedSeverities(): List<LintSeverity> = values().toList()
+  }
+
+  /** Returns true if this severity represents a critical issue. */
+  fun isCritical(): Boolean = this == FATAL || this == ERROR
+
+  /** Returns the ANSI color code for this severity level. */
+  fun getColor(): String = when (this) {
+    FATAL, ERROR -> RED
+    else -> YELLOW
   }
 }
 
@@ -118,6 +146,73 @@ class LintAnalysisReporter {
       explanation = issueElement.getAttribute("explanation"),
       locations = locations
     )
+  }
+
+  /**
+   * Prints the lint issues grouped by severity and sorted by file path and issue ID.
+   * @param issues List of LintIssue objects to print
+   */
+  fun printLintReport(issues: List<LintIssue>) {
+    val groupedIssues = issues.groupBy { it.severity }
+    val criticalIssues = issues.filter { it.severity.isCritical() }
+
+    LintSeverity.orderedSeverities().forEach { severity ->
+      val issuesInSeverity = groupedIssues[severity]
+      if (!issuesInSeverity.isNullOrEmpty()) {
+
+        val sortedIssues = issuesInSeverity.sortedWith(
+          compareBy<LintIssue> { it.locations.firstOrNull()?.file ?: "" }.thenBy { it.id }
+        )
+
+        sortedIssues.forEach { issue ->
+          printIssue(issue)
+          println("-".repeat(40))
+        }
+      }
+    }
+
+    if (criticalIssues.isEmpty()) {
+      println("${GREEN}ANDROID LINT CHECK$BOLD PASSED$RESET")
+    } else {
+      error("${RED}ANDROID LINT CHECK$BOLD FAILED$RESET")
+    }
+  }
+
+  /** Prints a single lint issue with formatted output. */
+  private fun printIssue(issue: LintIssue) {
+    println("Issue ID: ${issue.id}")
+    println("Severity: ${colorizeSeverity(issue.severity)}")
+
+    issue.locations.forEachIndexed { index, location ->
+      if (issue.locations.size > 1) {
+        println("Location ${index + 1}:")
+        println("  File: ${location.file}")
+        if (location.lineNumber.isNotBlank()) {
+          println("  Line: ${location.lineNumber}")
+        }
+      } else {
+        println("File: ${location.file}")
+        if (location.lineNumber.isNotBlank()) {
+          println("Line: ${location.lineNumber}")
+        }
+      }
+    }
+
+    listOf(
+      "Category" to issue.category,
+      "Priority" to issue.priority,
+      "Summary" to issue.summary,
+      "Message" to issue.message,
+      "Explanation" to issue.explanation
+    ).forEach { (label, value) ->
+      if (value.isNotBlank()) println("$label: $value")
+    }
+  }
+
+  /** Returns a colorized version of the severity display name. */
+  private fun colorizeSeverity(severity: LintSeverity): String {
+    val color = severity.getColor()
+    return "$color${severity.displayName}$RESET"
   }
 
   /** Extracts all locations from the issue's location elements. */
