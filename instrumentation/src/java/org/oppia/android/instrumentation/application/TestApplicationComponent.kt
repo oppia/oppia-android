@@ -40,6 +40,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
@@ -63,7 +64,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.system.OppiaClockModule
 import org.oppia.android.util.threading.DispatcherModule
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 
 /**
  * Root Dagger component for the test application. All application-scoped modules should be included
@@ -103,7 +103,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerPro
     PerformanceMetricsAssessorModule::class, PerformanceMetricsConfigurationsModule::class,
     TestingBuildFlavorModule::class,
     ExplorationProgressModule::class, CpuPerformanceSnapshotterModule::class,
-    TestAuthenticationModule::class,PlatformParameterControllerProdModule::class
+    TestAuthenticationModule::class, PlatformParameterControllerProdModule::class
   ]
 )
 interface TestApplicationComponent : ApplicationComponent {

@@ -27,6 +27,7 @@ import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestO
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.TestLogReportingModule
@@ -50,7 +51,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdModule
 
 /** Tests for [PlatformParameterSyncUpWorker]. */
 // FunctionName: test names are conventionally named with underscores.
