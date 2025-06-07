@@ -677,6 +677,40 @@ class LintAnalysisReporterTest {
     assertThat(output).doesNotContain("Line:")
   }
 
+  @Test
+  fun testPrintLintReport_withErrorLines_printsFormattedErrorLines() {
+    lintAnalysisReporter.printLintReport(listOf(warningIssue))
+    val output = outputStream.toString()
+
+    assertThat(output).contains(
+      """
+    Error Line: ${warningIssue.errorLine1}
+                ${warningIssue.errorLine2}
+    """.trimIndent()
+    )
+  }
+
+  @Test
+  fun testParseLintReport_issueWithLocationMissingFileAttribute_filtersOutBadLocations() {
+    val xmlContent = """
+    <issues format="6" by="lint 7.3.1">
+      <issue id="TestIssue" severity="Warning" message="Test message">
+        <location file="valid.xml" line="5"/>
+        <location file="" line="10"/>
+        <location line="15"/>
+      </issue>
+    </issues>
+  """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+    val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues).hasSize(1)
+    assertThat(issues[0].locations).hasSize(1)
+    assertThat(issues[0].locations[0].file).isEqualTo("valid.xml")
+    assertThat(issues[0].locations[0].lineNumber).isEqualTo("5")
+  }
+
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
     val xmlFile = tempFolder.newFile(fileName)
     xmlFile.writeText(content)
