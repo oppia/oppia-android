@@ -207,7 +207,7 @@ class LintAnalysisReporter {
         }
       }
     }
-    val errorLineLabel= "Error Line: "
+    val errorLineLabel = "Error Line: "
     if (issue.errorLine1.isNotBlank()) {
       println("$errorLineLabel${issue.errorLine1}")
       if (issue.errorLine2.isNotBlank()) {
