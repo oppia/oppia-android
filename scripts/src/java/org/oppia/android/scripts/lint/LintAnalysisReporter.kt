@@ -40,7 +40,7 @@ enum class LintSeverity(val displayName: String) {
  */
 data class LintLocation(
   val file: String,
-  val lineNumber: String = ""
+  val lineNumber: String
 )
 
 /**
@@ -65,8 +65,8 @@ data class LintIssue(
   val priority: String,
   val summary: String,
   val explanation: String,
-  val errorLine1: String = "",
-  val errorLine2: String = "",
+  val errorLine1: String,
+  val errorLine2: String,
   val locations: List<LintLocation>
 )
 
