@@ -215,13 +215,6 @@ class LintAnalysisReporter {
       }
     }
 
-    if (issue.errorLine1.isNotBlank()) {
-      println("Error Line: ${issue.errorLine1}")
-      if (issue.errorLine2.isNotBlank()) {
-        println(issue.errorLine2.padStart("Error Line: ".length + issue.errorLine2.length))
-      }
-    }
-
     listOf(
       "Category" to issue.category,
       "Priority" to issue.priority,
