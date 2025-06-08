@@ -556,6 +556,8 @@ class LintAnalysisReporterTest {
       priority = "1",
       summary = "Z summary",
       explanation = "Z explanation",
+      errorLine1="",
+      errorLine2="",
       locations = listOf(LintLocation("a/file.xml", "1"))
     )
 
@@ -567,6 +569,8 @@ class LintAnalysisReporterTest {
       priority = "1",
       summary = "A summary",
       explanation = "A explanation",
+      errorLine1="",
+      errorLine2="",
       locations = listOf(LintLocation("b/file.xml", "1"))
     )
 
@@ -578,6 +582,8 @@ class LintAnalysisReporterTest {
       priority = "1",
       summary = "B summary",
       explanation = "B explanation",
+      errorLine1="",
+      errorLine2="",
       locations = listOf(LintLocation("a/file.xml", "1"))
     )
 
@@ -612,6 +618,8 @@ class LintAnalysisReporterTest {
       priority = "1",
       summary = "",
       explanation = "Test explanation",
+      errorLine1="",
+      errorLine2="",
       locations = listOf(LintLocation("test.xml", ""))
     )
 
@@ -674,6 +682,8 @@ class LintAnalysisReporterTest {
       priority = "1",
       summary = "No line summary",
       explanation = "No line explanation",
+      errorLine1 = "",
+      errorLine2 = "",
       locations = listOf(LintLocation("test.xml", ""))
     )
 

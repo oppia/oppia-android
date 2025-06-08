@@ -68,7 +68,7 @@ enum class LintSeverity(val displayName: String) {
  */
 data class LintLocation(
   val file: String,
-  val lineNumber: String = ""
+  val lineNumber: String
 )
 
 /**
@@ -93,8 +93,8 @@ data class LintIssue(
   val priority: String,
   val summary: String,
   val explanation: String,
-  val errorLine1: String = "",
-  val errorLine2: String = "",
+  val errorLine1: String,
+  val errorLine2: String,
   val locations: List<LintLocation>
 )
 
@@ -207,11 +207,11 @@ class LintAnalysisReporter {
         }
       }
     }
-
+    val errorLineLabel= "Error Line: "
     if (issue.errorLine1.isNotBlank()) {
-      println("Error Line: ${issue.errorLine1}")
+      println("$errorLineLabel${issue.errorLine1}")
       if (issue.errorLine2.isNotBlank()) {
-        println(issue.errorLine2.padStart("Error Line: ".length + issue.errorLine2.length))
+        println(issue.errorLine2.padStart(errorLineLabel.length + issue.errorLine2.length))
       }
     }
 
