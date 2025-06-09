@@ -9,10 +9,12 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -35,12 +37,17 @@ import javax.inject.Singleton
 @Config(application = PlatformParameterControllerDebugImplTest.TestApplication::class)
 class PlatformParameterControllerDebugImplTest {
   @Inject
-  lateinit var platformParameterController: PlatformParameterControllerDebugImpl
+  lateinit var platformParameterDebugController: PlatformParameterControllerDebugImpl
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
+  @Before
+  fun setUp() {
+    setUpTestApplicationComponent()
+  }
   @Test
   fun testDemo() {
-    setUpTestApplicationComponent()
-    assertThat(platformParameterController).isNotNull()
+    assertThat(platformParameterDebugController).isNotNull()
   }
 
   private fun setUpTestApplicationComponent() {
