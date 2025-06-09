@@ -33,9 +33,10 @@ class AndroidLintRunner {
 
   /** Invokes the tool to run Lint analysis. */
   fun runLint() {
-
-    val parentDestDir = Files.createTempDirectory("lint_analysis_").toFile()
+    val tempDir = Files.createTempDirectory("").parent.toFile()
+    val parentDestDir = File(tempDir, "lint_analysis").apply { mkdirs() }
     println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
+
     val reportFile = File(parentDestDir, "lint-report.xml")
     val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
     val cliArgs = prepareLintArguments(reportFile.absolutePath, projectDescriptionFile.absolutePath)

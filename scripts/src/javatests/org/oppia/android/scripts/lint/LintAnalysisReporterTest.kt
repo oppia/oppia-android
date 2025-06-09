@@ -294,7 +294,7 @@ class LintAnalysisReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Issue element is missing required attributes or locations")
+      .contains("Issue element missing required 'id' attribute")
   }
 
   @Test
@@ -315,7 +315,7 @@ class LintAnalysisReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Issue element is missing required attributes or locations")
+      .contains("Issue element missing required 'id' attribute")
   }
 
   @Test
@@ -335,7 +335,7 @@ class LintAnalysisReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Issue element is missing required attributes or locations")
+      .contains("Issue element must contain at least one location")
   }
 
   @Test
