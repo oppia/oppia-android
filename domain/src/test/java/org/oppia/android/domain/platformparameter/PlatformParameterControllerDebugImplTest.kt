@@ -29,13 +29,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [PlatformParameterController]. */
-// FunctionName: test names are conventionally named with underscores.
-@Suppress("FunctionName")
+
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterControllerDebugImplTest.TestApplication::class)
 class PlatformParameterControllerDebugImplTest {
-  @Inject lateinit var platformParameterController: PlatformParameterController
+  @Inject
+  lateinit var platformParameterController: PlatformParameterControllerDebugImpl
 
   @Test
   fun testDemo() {
@@ -55,16 +55,13 @@ class PlatformParameterControllerDebugImplTest {
     fun provideContext(application: Application): Context {
       return application
     }
-    @Provides
-    fun providePlatformParameterController(
-      impl: PlatformParameterControllerDebugImpl,
-    ): PlatformParameterController = impl
 
     @Provides
     @Singleton
-    fun providePlatformParameterDebugController(
-      impl: PlatformParameterControllerDebugImpl,
-    ): PlatformParameterDebugController = impl
+    fun providePlatformParameterControllerProdImpl(
+      platformParameterProcessState: PlatformParameterProcessState,
+      factory: PlatformParameterControllerProdImpl.Factory
+    ) = factory.create(platformParameterProcessState)
   }
 
   // TODO(#89): Move this to a common test application component.
