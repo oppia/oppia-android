@@ -119,7 +119,9 @@ class LintAnalysisReporter {
         val rootElement = document.documentElement
 
         if (rootElement.tagName != "issues") {
-          throw IllegalArgumentException("Invalid lint report format: expected root element 'issues'")
+          throw IllegalArgumentException(
+            "Invalid lint report format: expected root element 'issues'"
+          )
         }
 
         val issueNodes: NodeList = document.getElementsByTagName("issue")

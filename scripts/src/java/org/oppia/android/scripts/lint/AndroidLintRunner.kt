@@ -18,55 +18,68 @@ import com.android.tools.lint.Main as LintCli
  */
 fun main(vararg args: String) {
   require(args.isNotEmpty()) {
-    "Expected: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
+    "<path_to_repository_root argument> is required: \$(pwd)"
   }
 
   val repoRoot = File(args[0])
   require(repoRoot.exists()) { "Repository root path does not exist: ${args[0]}" }
 
-  val lintRunner = AndroidLintRunner()
-  lintRunner.runLint()
+  val tempDir = Files.createTempDirectory("").parent.toFile()
+  val parentDestDir = File(tempDir, "lint_analysis").apply { mkdirs() }
+  println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
+
+  val reportFile = File(parentDestDir, "lint-report.xml")
+  val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
+  val lintRunner = AndroidLintRunner(
+    reportPath = reportFile.absolutePath,
+    projectDescriptionPath = projectDescriptionFile.absolutePath
+  )
+  val cliArgs = lintRunner.prepareLintArguments()
+
+  lintRunner.runLint(cliArgs)
 }
 
-/** Runs the Android lint tool to generate reports. */
-class AndroidLintRunner {
+/** Runs the Android Lint tool and reports issues. */
+class AndroidLintRunner(
+  private val reportPath: String,
+  private val projectDescriptionPath: String
+) {
 
-  /** Invokes the tool to run Lint analysis. */
-  fun runLint() {
-    val tempDir = Files.createTempDirectory("").parent.toFile()
-    val parentDestDir = File(tempDir, "lint_analysis").apply { mkdirs() }
-    println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
+  /**
+   * Invokes the Lint CLI to perform analysis and prints the results.
+   *
+   * @param cliArgs arguments to pass to the Lint CLI
+   */
+  fun runLint(cliArgs: Array<String>) {
 
-    val reportFile = File(parentDestDir, "lint-report.xml")
-    val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
-    val cliArgs = prepareLintArguments(reportFile.absolutePath, projectDescriptionFile.absolutePath)
-
-    // TODO(#5734): Implement the project description for Lint execution and handle exit codes.
-
-    LintCli().run(cliArgs) // Currently returns error code due to missing project description
+    // TODO(#5734): Implement the project description for Lint execution.
+    val exitCode = LintCli().run(cliArgs) // Currently returns error code due to missing description
+    check(exitCode == 0) {
+      val reason = when (exitCode) {
+        1 -> "Lint errors detected."
+        2 -> "Invalid usage of Lint command."
+        3 -> "Cannot overwrite existing file."
+        4 -> "Help command invoked."
+        5 -> "Invalid command-line argument."
+        else -> "Unknown failure or internal error."
+      }
+      "Lint analysis failed with exit code $exitCode: $reason"
+    }
   }
 
   /**
-   * Prepares the command line arguments for the Android Lint tool.
+   * Prepares the command-line arguments for the Lint tool.
    *
-   * @param reportPath path to the XML report file
-   * @param projectDescriptionPath path to the XML project description file
-   * @return array of command line arguments
+   * @return array of arguments to be passed to Lint
    */
-  private fun prepareLintArguments(
-    reportPath: String,
-    projectDescriptionPath: String
-  ): Array<String> {
-
-    return arrayOf(
-      "-Wall",
-      "--quiet",
-      "--fullpath",
-      "--showall",
-      "--exitcode",
-      "--offline",
-      "--project", projectDescriptionPath,
-      "--xml", reportPath,
-    )
-  }
+  fun prepareLintArguments(): Array<String> = arrayOf(
+    "-Wall",
+    "--quiet",
+    "--fullpath",
+    "--showall",
+    "--exitcode",
+    "--offline",
+    "--project", projectDescriptionPath,
+    "--xml", reportPath
+  )
 }
