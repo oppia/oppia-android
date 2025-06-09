@@ -18,7 +18,7 @@ import com.android.tools.lint.Main as LintCli
  */
 fun main(vararg args: String) {
   require(args.isNotEmpty()) {
-    "Usage: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
+    "Expected: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
   }
 
   val repoRoot = File(args[0])
@@ -40,7 +40,9 @@ class AndroidLintRunner {
     val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
     val cliArgs = prepareLintArguments(reportFile.absolutePath, projectDescriptionFile.absolutePath)
 
-    LintCli().run(cliArgs)
+    // TODO(#5734): Implement the project description for Lint execution and handle exit codes.
+
+    LintCli().run(cliArgs) // Currently returns error code due to missing project description
   }
 
   /**

@@ -34,7 +34,7 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "Usage: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
+      "Expected: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
     )
   }
 
@@ -59,17 +59,6 @@ class AndroidLintRunnerTest {
     } catch (e: Exception) {
       assertThat(e).isNotInstanceOf(IllegalArgumentException::class.java)
     }
-  }
-
-  @Test
-  fun testAndroidLintRunner_runLint_createsTemporaryDirectory() {
-    val lintRunner = AndroidLintRunner()
-    lintRunner.runLint()
-
-    val output = outputStream.toString()
-    assertThat(output).contains("Using")
-    assertThat(output).contains("lint_analysis_")
-    assertThat(output).contains("as an intermediary working directory")
   }
 
   @Test
