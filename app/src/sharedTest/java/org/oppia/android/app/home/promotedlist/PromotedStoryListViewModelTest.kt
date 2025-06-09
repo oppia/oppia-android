@@ -87,7 +87,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -399,7 +398,6 @@ class PromotedStoryListViewModelTest {
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
       TestPlatformParameterModule::class,
-      TestPlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
       QuestionModule::class,
       RatioInputModule::class,

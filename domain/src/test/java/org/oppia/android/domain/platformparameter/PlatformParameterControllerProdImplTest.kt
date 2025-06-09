@@ -26,7 +26,6 @@ import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -84,8 +83,7 @@ class PlatformParameterControllerProdImplTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
-      TestPlatformParameterModule::class,
-      TestPlatformParameterProdModule::class
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

@@ -176,7 +176,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowMediaPlayer
 import org.robolectric.shadows.util.DataSource
-import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import java.io.IOException
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -3072,7 +3071,6 @@ class StateFragmentLocalTest {
       TestLogReportingModule::class,
       TestModule::class,
       TestPlatformParameterModule::class,
-      TestPlatformParameterProdModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

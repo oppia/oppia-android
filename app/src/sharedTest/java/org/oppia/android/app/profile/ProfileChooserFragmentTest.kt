@@ -125,7 +125,6 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -1518,7 +1517,6 @@ class ProfileChooserFragmentTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestPlatformParameterModule::class,
-      TestPlatformParameterProdModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

@@ -1,4 +1,4 @@
-# TODO(#1532): Rename file to 'BUILD' post-Gradle migration.
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
 """
 Package for test-specific platform parameter utilities and helpers.
 """
@@ -9,17 +9,13 @@ kt_android_library(
     name = "test_module",
     testonly = True,
     srcs = [
-        "TestPlatformParameterDebugModule.kt",
         "TestPlatformParameterModule.kt",
-        "TestPlatformParameterProdModule.kt",
     ],
     visibility = [
         "//:oppia_testing_visibility",
     ],
     deps = [
         "//:dagger",
-        "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_impl",
-        "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_platform_parameter_config_retriever",
