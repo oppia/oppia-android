@@ -67,6 +67,7 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import java.io.File
 import java.io.FileInputStream
 import javax.inject.Inject
@@ -2144,7 +2145,8 @@ class ProfileManagementControllerTest {
       TestLogReportingModule::class,
       TestLoggingIdentifierModule::class,
       TestModule::class,
-      TestPlatformParameterModule::class
+      TestPlatformParameterModule::class,
+      TestPlatformParameterProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

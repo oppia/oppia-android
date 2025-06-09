@@ -133,6 +133,7 @@ import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -1376,6 +1377,7 @@ class SplashActivityTest {
       TestLogReportingModule::class,
       TestModule::class,
       TestPlatformParameterModule::class,
+      TestPlatformParameterProdModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
       WorkManagerConfigurationModule::class

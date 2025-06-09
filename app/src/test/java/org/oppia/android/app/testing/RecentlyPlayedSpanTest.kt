@@ -91,6 +91,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -353,6 +354,7 @@ class RecentlyPlayedSpanTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestPlatformParameterModule::class,
+      TestPlatformParameterProdModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

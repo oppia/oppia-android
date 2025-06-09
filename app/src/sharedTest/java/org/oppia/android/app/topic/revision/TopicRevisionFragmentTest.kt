@@ -122,6 +122,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -443,6 +444,7 @@ class TopicRevisionFragmentTest {
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
       TestPlatformParameterModule::class,
+      TestPlatformParameterProdModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

@@ -1406,7 +1406,8 @@ class AnalyticsControllerTest {
       TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestModule::class,
-      TestPlatformParameterModule::class
+      TestPlatformParameterModule::class,
+      TestPlatformParameterProdModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

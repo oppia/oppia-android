@@ -81,6 +81,7 @@ import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
+import testing.src.main.java.org.oppia.android.testing.platformparameter.TestPlatformParameterProdModule
 import javax.inject.Singleton
 
 // Devices reference: https://material.io/resources/devices/
@@ -245,6 +246,7 @@ class PlayerSplitScreenTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestPlatformParameterModule::class,
+      TestPlatformParameterProdModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
