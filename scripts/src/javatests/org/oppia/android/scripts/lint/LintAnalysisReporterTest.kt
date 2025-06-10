@@ -199,7 +199,7 @@ class LintAnalysisReporterTest {
   fun testParseLintReport_nonExistentFile_throwsException() {
     val nonExistentPath = "/path/that/does/not/exist/lint-report.xml"
 
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       lintAnalysisReporter.parseLintReport(nonExistentPath)
     }
 
