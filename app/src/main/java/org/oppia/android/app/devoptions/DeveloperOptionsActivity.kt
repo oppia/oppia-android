@@ -19,6 +19,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
@@ -29,7 +30,9 @@ class DeveloperOptionsActivity :
   RouteToMarkTopicsCompletedListener,
   RouteToViewEventLogsListener,
   RouteToForceNetworkTypeListener,
-  RouteToMathExpressionParserTestListener {
+  RouteToMathExpressionParserTestListener,
+  RouteToFeatureFlagsListener
+{
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -95,5 +98,11 @@ class DeveloperOptionsActivity :
 
   override fun forceCrash() {
     developerOptionsActivityPresenter.forceCrash()
+  }
+
+  override fun routeToFeatureFlags() {
+    startActivity(
+      FeatureFlagActivity.createFeatureFlagActivityIntent(this)
+    )
   }
 }

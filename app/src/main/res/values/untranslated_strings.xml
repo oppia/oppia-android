@@ -13,6 +13,7 @@
   <string name="developer_options_show_all_hints_solution" translatable="false">Show all hints/solution</string>
   <string name="developer_options_force_network_type" translatable="false">Force network type</string>
   <string name="developer_options_force_crash" translatable="false">Force crash</string>
+  <string name="developer_options_feature_flags" translatable="false">Feature Flags</string>
   <string name="developer_options_test_parsers_label" translatable="false">Test Parsers</string>
   <string name="developer_options_math_expressions" translatable="false">Math Expressions/Equations</string>
   <string name="modify_lesson_progress_all" translatable="false">All</string>
@@ -30,6 +31,8 @@
   <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
+  <string name="feature_flag_activity_title" translatable="false">Feature Flag</string>
+  <string name="feature_flag_sync_status" translatable="false">Sync Status</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>

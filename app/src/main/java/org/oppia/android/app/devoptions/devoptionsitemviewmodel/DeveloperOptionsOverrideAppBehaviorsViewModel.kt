@@ -2,6 +2,7 @@ package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 
 import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
+import org.oppia.android.app.devoptions.RouteToFeatureFlagsListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 
@@ -12,7 +13,8 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
-  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
+  private val featureFlagsListener: RouteToFeatureFlagsListener
 ) : DeveloperOptionsItemViewModel() {
 
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
@@ -27,6 +29,11 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   /** Routes the user to [ForceNetworkTypeActivity] for forcing the network type of the app. */
   fun onForceNetworkTypeClicked() {
     forceNetworkTypeListener.routeToForceNetworkType()
+  }
+
+  /** Routes the user to [FeatureFlagActivity] for viewing and modifying feature flags. */
+  fun onFeatureFlagsClicked() {
+    featureFlagsListener.routeToFeatureFlags()
   }
 
   /**
