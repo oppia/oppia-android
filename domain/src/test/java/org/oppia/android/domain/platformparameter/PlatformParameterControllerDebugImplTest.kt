@@ -37,7 +37,7 @@ import javax.inject.Singleton
 @Config(application = PlatformParameterControllerDebugImplTest.TestApplication::class)
 class PlatformParameterControllerDebugImplTest {
   @Inject
-  lateinit var platformParameterDebugController: PlatformParameterControllerDebugImpl
+  lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
@@ -45,9 +45,27 @@ class PlatformParameterControllerDebugImplTest {
   fun setUp() {
     setUpTestApplicationComponent()
   }
+
   @Test
-  fun testDemo() {
-    assertThat(platformParameterDebugController).isNotNull()
+  fun testLoadEphemeralPlatformParameters_returnsNonEmptyList() {
+    val ephemeralParamsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+
+    val ephemeralParams =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralParamsProvider)
+
+    assertThat(ephemeralParams).isNotEmpty()
+  }
+
+  @Test
+  fun testLoadEphemeralFeatureFlags_returnsNonEmptyList() {
+    val ephemeralFeatureFlagsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+
+    val ephemeralFeatureFlags =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
+
+    assertThat(ephemeralFeatureFlags).isNotEmpty()
   }
 
   private fun setUpTestApplicationComponent() {
@@ -85,7 +103,7 @@ class PlatformParameterControllerDebugImplTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
-      TestPlatformParameterModule::class
+      TestPlatformParameterModule::class,
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
