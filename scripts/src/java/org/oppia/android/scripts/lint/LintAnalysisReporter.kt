@@ -9,8 +9,22 @@ import java.nio.file.Paths
 import java.security.MessageDigest
 import javax.xml.parsers.DocumentBuilderFactory
 
+/* ANSI escape codes for colors. */
+
+/** Green text. */
+const val GREEN = "\u001B[32m"
+/** Red text. */
+const val RED = "\u001B[31m"
+/** Default text. */
+const val RESET = "\u001B[0m"
+/** Bold text. */
+const val BOLD = "\u001B[1m"
+/** Yellow text. */
+const val YELLOW = "\u001B[33m"
+
 /**
  * Enum representing the severity levels of lint issues.
+ * Order matters for prioritization - most severe first.
  *
  * @property displayName The string representation used in XML reports
  */
@@ -36,6 +50,18 @@ enum class LintSeverity(val displayName: String) {
         it.displayName.equals(severityString, ignoreCase = true)
       } ?: throw IllegalArgumentException("Unknown severity level: $severityString")
     }
+
+    /** Returns all severity levels in order of importance. */
+    fun orderedSeverities(): List<LintSeverity> = values().toList()
+  }
+
+  /** Returns true if this severity represents a critical issue. */
+  fun isCritical(): Boolean = this == FATAL || this == ERROR
+
+  /** Returns the ANSI color code for this severity level. */
+  fun getColor(): String = when (this) {
+    FATAL, ERROR -> RED
+    else -> YELLOW
   }
 }
 
@@ -180,6 +206,196 @@ class LintAnalysisReporter {
       errorLine2 = issueElement.getAttribute("errorLine2"),
       locations = locations
     )
+  }
+
+  /**
+   * Prints the lint issues based on the specified grouping strategy.
+   * @param issues List of LintIssue objects to print
+   * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
+   */
+  fun printLintReport(issues: List<LintIssue>, groupByIssueSeverity: Boolean = false) {
+    printSeveritySummary(issues)
+    println()
+
+    if (groupByIssueSeverity) {
+      printGroupedByIssueSeverity(issues)
+    } else {
+      printGroupedByFilePath(issues)
+    }
+
+    printFinalResult(issues)
+  }
+
+  /**
+   * Prints a summary of issues grouped by severity.
+   */
+  private fun printSeveritySummary(issues: List<LintIssue>) {
+    val severityCounts = issues.groupBy { it.severity }.mapValues { it.value.size }
+
+    println("${BOLD}LINT ANALYSIS SUMMARY$RESET")
+    println("=".repeat(40))
+
+    LintSeverity.orderedSeverities().forEach { severity ->
+      val count = severityCounts[severity] ?: 0
+      if (count > 0) {
+        val color = severity.getColor()
+        println("$color${severity.displayName}: $count$RESET")
+      }
+    }
+
+    val totalIssues = issues.size
+    println("${BOLD}Total Issues: $totalIssues$RESET")
+  }
+
+  /**
+   * Prints issues grouped by issue ID with sorting by severity, then issue ID, then file path and line number.
+   */
+  private fun printGroupedByIssueSeverity(issues: List<LintIssue>) {
+    val groupedBySeverity = issues.groupBy { it.severity }
+      .toSortedMap(compareByDescending { it.ordinal })
+
+    groupedBySeverity.forEach { (severity, issuesInSeverity) ->
+      val color = severity.getColor()
+      println("\n${BOLD}${color}SEVERITY: ${severity.displayName}$RESET")
+
+      // Group issues by ID within this severity
+      val groupedByIssueId = issuesInSeverity.groupBy { it.id }
+        .toSortedMap() // Sort issue IDs alphabetically
+
+      groupedByIssueId.forEach { (issueId, issuesForId) ->
+        val representativeIssue = issuesForId.first()
+        println("\n${BOLD}Issue ID: $issueId$RESET")
+        printIssueDetails(representativeIssue, showLocations = false)
+
+        // Collect and sort all locations
+        val allLocations = issuesForId.flatMap { issue ->
+          issue.locations.map { location -> Pair(issue, location) }
+        }.sortedWith(
+          compareBy(
+            { it.second.file },         // Primary: File path
+            { it.second.lineNumber.toIntOrNull() ?: 0 } // Secondary: Line number
+          )
+        )
+
+        println("Locations:")
+        allLocations.forEachIndexed { index, (_, location) ->
+          println("  ${index + 1}. File: ${location.file}")
+          if (location.lineNumber.isNotBlank()) {
+            println("     Line: ${location.lineNumber}")
+          }
+        }
+        println("-".repeat(60))
+      }
+    }
+  }
+
+  /**
+   * Prints issues grouped by file path with sorting by file path, then line number.
+   */
+  private fun printGroupedByFilePath(issues: List<LintIssue>) {
+
+    // Create a map from file path to list of (issue, location) pairs
+    val fileToIssueLocationMap = mutableMapOf<String, MutableList<Pair<LintIssue, LintLocation>>>()
+
+    issues.forEach { issue ->
+      issue.locations.forEach { location ->
+        fileToIssueLocationMap.getOrPut(location.file) { mutableListOf() }
+          .add(Pair(issue, location))
+      }
+    }
+
+    val sortedFiles = fileToIssueLocationMap.keys.sorted()
+
+    sortedFiles.forEach { filePath ->
+      val issueLocationPairs = fileToIssueLocationMap[filePath] ?: emptyList()
+
+      println("\n${BOLD}File: $filePath$RESET")
+
+      val sortedByLine = issueLocationPairs.sortedWith(
+        compareBy<Pair<LintIssue, LintLocation>> { it.second.lineNumber.toIntOrNull() ?: 0 }
+          .thenBy { it.first.severity.ordinal }
+          .thenBy { it.first.id }
+      )
+
+      sortedByLine.forEach { (issue, location) ->
+        println("  Issue ID: ${issue.id}")
+        println("  Severity: ${colorizeSeverity(issue.severity)}")
+        if (location.lineNumber.isNotBlank()) {
+          println("  Line: ${location.lineNumber}")
+        }
+        printIssueDetails(issue, showLocations = false, indent = "  ")
+        println("  " + "-".repeat(38))
+      }
+
+      println("-".repeat(60))
+    }
+  }
+
+  /**
+   * Prints details of a single lint issue.
+   * @param issue the LintIssue to print
+   * @param showLocations whether to show location information
+   * @param indent prefix for each line
+   */
+  private fun printIssueDetails(
+    issue: LintIssue,
+    showLocations: Boolean = true,
+    indent: String = ""
+  ) {
+    if (showLocations) {
+      issue.locations.forEachIndexed { index, location ->
+        if (issue.locations.size > 1) {
+          println("${indent}Location ${index + 1}:")
+          println("$indent  File: ${location.file}")
+          if (location.lineNumber.isNotBlank()) {
+            println("$indent  Line: ${location.lineNumber}")
+          }
+        } else {
+          println("${indent}File: ${location.file}")
+          if (location.lineNumber.isNotBlank()) {
+            println("${indent}Line: ${location.lineNumber}")
+          }
+        }
+      }
+    }
+
+    val errorLineLabel = "${indent}Error Line: "
+    if (issue.errorLine1.isNotBlank()) {
+      println("$errorLineLabel${issue.errorLine1}")
+      if (issue.errorLine2.isNotBlank()) {
+        println(issue.errorLine2.padStart(errorLineLabel.length + issue.errorLine2.length))
+      }
+    }
+
+    listOf(
+      "Category" to issue.category,
+      "Priority" to issue.priority,
+      "Summary" to issue.summary,
+      "Message" to issue.message,
+      "Explanation" to issue.explanation
+    ).forEach { (label, value) ->
+      if (value.isNotBlank()) println("$indent$label: $value")
+    }
+  }
+
+  /** Returns a colorized version of the severity display name. */
+  private fun colorizeSeverity(severity: LintSeverity): String {
+    val color = severity.getColor()
+    return "$color${severity.displayName}$RESET"
+  }
+
+  /**
+   * Prints the final result summary.
+   */
+  private fun printFinalResult(issues: List<LintIssue>) {
+    val criticalIssues = issues.filter { it.severity.isCritical() }
+
+    println("\n" + "=".repeat(40))
+    if (criticalIssues.isEmpty()) {
+      println("${GREEN}ANDROID LINT CHECK$BOLD PASSED$RESET")
+    } else {
+      error("${RED}ANDROID LINT CHECK$BOLD FAILED$RESET")
+    }
   }
 
   /** Extracts all locations from the issue's location elements. */
