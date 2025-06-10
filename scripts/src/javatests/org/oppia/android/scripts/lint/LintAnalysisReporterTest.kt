@@ -221,7 +221,7 @@ class LintAnalysisReporterTest {
   fun testParseLintReport_nonExistentFile_throwsException() {
     val nonExistentPath = "/path/that/does/not/exist/lint-report.xml"
 
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       lintAnalysisReporter.parseLintReport(nonExistentPath)
     }
 
@@ -316,7 +316,7 @@ class LintAnalysisReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Issue element is missing required attributes or locations")
+      .contains("Issue element missing required 'id' attribute")
   }
 
   @Test
@@ -337,7 +337,7 @@ class LintAnalysisReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Issue element is missing required attributes or locations")
+      .contains("Issue element missing required 'id' attribute")
   }
 
   @Test
@@ -357,7 +357,7 @@ class LintAnalysisReporterTest {
     }
 
     assertThat(exception).hasMessageThat()
-      .contains("Issue element is missing required attributes or locations")
+      .contains("Issue element must contain at least one location")
   }
 
   @Test

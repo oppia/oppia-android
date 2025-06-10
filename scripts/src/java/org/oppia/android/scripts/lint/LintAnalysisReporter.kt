@@ -4,6 +4,9 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.security.MessageDigest
 import javax.xml.parsers.DocumentBuilderFactory
 
 /* ANSI escape codes for colors. */
@@ -22,6 +25,7 @@ const val YELLOW = "\u001B[33m"
 /**
  * Enum representing the severity levels of lint issues.
  * Order matters for prioritization - most severe first.
+ * @property displayName The string representation used in XML reports
  */
 enum class LintSeverity(val displayName: String) {
   /** Represents critical Lint issue of severity Fatal. */
@@ -98,8 +102,15 @@ data class LintIssue(
   val locations: List<LintLocation>
 )
 
+private data class CacheEntry(
+  val fileHash: String,
+  val issues: List<LintIssue>
+)
+
 /** Reporter class for analyzing XML lint reports and extracting issues. */
 class LintAnalysisReporter {
+
+  private val cache = mutableMapOf<String, CacheEntry>()
 
   /**
    * Parses an XML lint report file and returns a list of lint issues.
@@ -109,26 +120,61 @@ class LintAnalysisReporter {
    * @throws IllegalArgumentException if file doesn't exist or parsing fails
    */
   fun parseLintReport(xmlFilePath: String): List<LintIssue> {
-    val xmlFile = File(xmlFilePath)
-    require(xmlFile.exists()) { "Lint report file not found: $xmlFilePath" }
+    val xmlFile = File(xmlFilePath).absoluteFile
+    check(xmlFile.exists()) { "Lint report file not found: $xmlFilePath" }
+
+    val maxFileSize = 50 * 1024 * 1024 // 50MB
+    check(xmlFile.length() <= maxFileSize) {
+      "Lint report file too large: ${xmlFile.length()} bytes (max: $maxFileSize)"
+    }
+
+    val fileHash = calculateSha1(xmlFile.absolutePath)
+    val cachedEntry = cache[xmlFile.absolutePath]
+    if (cachedEntry != null && cachedEntry.fileHash == fileHash) {
+      return cachedEntry.issues
+    }
 
     return try {
-      val docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-      val doc: Document = docBuilder.parse(xmlFile)
-      doc.documentElement.normalize()
+      val documentBuilderFactory = DocumentBuilderFactory.newInstance()
+      val documentBuilder = documentBuilderFactory.newDocumentBuilder()
 
-      val issueNodes: NodeList = doc.getElementsByTagName("issue")
+      xmlFile.inputStream().use { inputStream ->
+        val document: Document = documentBuilder.parse(inputStream)
+        document.documentElement.normalize()
+        val rootElement = document.documentElement
 
-      (0 until issueNodes.length).map { index ->
-        parseIssueElement(issueNodes.item(index) as Element)
+        if (rootElement.tagName != "issues") {
+          throw IllegalArgumentException(
+            "Invalid lint report format: expected root element 'issues'"
+          )
+        }
+
+        val issueNodes: NodeList = document.getElementsByTagName("issue")
+
+        val issues = (0 until issueNodes.length).asSequence().map { index ->
+          parseIssueElement(issueNodes.item(index) as Element)
+        }.toList()
+
+        cache[xmlFile.absolutePath] = CacheEntry(fileHash, issues)
+        issues
       }
     } catch (e: Exception) {
       throw IllegalArgumentException("Error processing file $xmlFilePath: ${e.message}")
     }
   }
 
+  private fun calculateSha1(filePath: String): String {
+    val fileBytes = Files.readAllBytes(Paths.get(filePath))
+    val digest = MessageDigest.getInstance("SHA-1")
+    val hashBytes = digest.digest(fileBytes)
+    return hashBytes.joinToString("") { "%02x".format(it) }
+  }
+
   /**
    * Parses a single issue element and returns a LintIssue object.
+   *
+   * @param issueElement The XML element containing issue data
+   * @return A LintIssue object with all parsed data
    * @throws IllegalArgumentException if the issue element is invalid or missing required attributes
    */
   private fun parseIssueElement(issueElement: Element): LintIssue {
@@ -136,10 +182,13 @@ class LintAnalysisReporter {
     val severityString = issueElement.getAttribute("severity")
     val locations = extractLocations(issueElement)
 
-    if (id.isBlank() || severityString.isBlank() || locations.isEmpty()) {
-      throw IllegalArgumentException(
-        "Issue element is missing required attributes or locations"
-      )
+    when {
+      id.isBlank() ->
+        throw IllegalArgumentException("Issue element missing required 'id' attribute")
+      severityString.isBlank() ->
+        throw IllegalArgumentException("Issue element missing required 'severity' attribute")
+      locations.isEmpty() ->
+        throw IllegalArgumentException("Issue element must contain at least one location")
     }
 
     val severity = LintSeverity.fromString(severityString)
@@ -236,7 +285,7 @@ class LintAnalysisReporter {
   private fun extractLocations(issueElement: Element): List<LintLocation> {
     val locationNodes = issueElement.getElementsByTagName("location")
 
-    return (0 until locationNodes.length).map { index ->
+    return (0 until locationNodes.length).asSequence().map { index ->
       val locationElement = locationNodes.item(index) as Element
       val file = locationElement.getAttribute("file")
 
@@ -244,6 +293,6 @@ class LintAnalysisReporter {
         file = file,
         lineNumber = locationElement.getAttribute("line")
       )
-    }.filter { it.file.isNotBlank() }
+    }.filter { it.file.isNotBlank() }.toList()
   }
 }
