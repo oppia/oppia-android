@@ -24,8 +24,8 @@ fun main(vararg args: String) {
   val repoRoot = File(args[0])
   require(repoRoot.exists()) { "Repository root path does not exist: ${args[0]}" }
 
-  val tempDir = Files.createTempDirectory("").parent.toFile()
-  val parentDestDir = File(tempDir, "lint_analysis").apply { mkdirs() }
+  val temporaryDir = Files.createTempDirectory("").parent.toFile()
+  val parentDestDir = File(temporaryDir, "lint_analysis").apply { mkdirs() }
   println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
 
   val reportFile = File(parentDestDir, "lint-report.xml")

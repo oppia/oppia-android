@@ -22,78 +22,87 @@ class LintAnalysisReporterTest {
   private lateinit var lintAnalysisReporter: LintAnalysisReporter
   private val originalOut = System.out
   private val outputStream = ByteArrayOutputStream()
-  private val warningIssue = LintIssue(
-    id = "UsesMinSdkAttributes",
-    severity = LintSeverity.WARNING,
-    message = "Manifest should specify a minimum API level",
-    category = "Correctness",
-    priority = "9",
-    summary = "Minimum SDK and target SDK attributes not defined",
-    explanation = "The manifest should contain a uses-sdk element",
-    errorLine1 = "    <application",
-    errorLine2 = "    ~~~~~~~~~~~~",
-    locations = listOf(
-      LintLocation(
-        file = "src/main/AndroidManifest.xml",
-        lineNumber = "5"
+
+  companion object {
+    private const val XML_HEADER = """<issues format="6" by="lint 7.3.1">"""
+    private const val XML_FOOTER = """</issues>"""
+
+    private val warningIssue = LintIssue(
+      id = "UsesMinSdkAttributes",
+      severity = LintSeverity.WARNING,
+      message = "Manifest should specify a minimum API level",
+      category = "Correctness",
+      priority = "9",
+      summary = "Minimum SDK and target SDK attributes not defined",
+      explanation = "The manifest should contain a uses-sdk element",
+      errorLine1 = "    <application",
+      errorLine2 = "    ~~~~~~~~~~~~",
+      locations = listOf(
+        LintLocation(
+          file = "src/main/AndroidManifest.xml",
+          lineNumber = "5"
+        )
       )
     )
-  )
-  private val errorIssue = LintIssue(
-    id = "NewApi",
-    severity = LintSeverity.ERROR,
-    message = "Call requires API level 24 (current min is 19)",
-    category = "Correctness",
-    priority = "6",
-    summary = "Calling new methods on older versions",
-    explanation = "This check scans through all the Android API calls",
-    errorLine1 = "        stream.forEach { println(it) }",
-    errorLine2 = "               ~~~~~~~",
-    locations = listOf(
-      LintLocation(
-        file = "src/main/java/MainActivity.kt",
-        lineNumber = "42"
+
+    private val errorIssue = LintIssue(
+      id = "NewApi",
+      severity = LintSeverity.ERROR,
+      message = "Call requires API level 24 (current min is 19)",
+      category = "Correctness",
+      priority = "6",
+      summary = "Calling new methods on older versions",
+      explanation = "This check scans through all the Android API calls",
+      errorLine1 = "        stream.forEach { println(it) }",
+      errorLine2 = "               ~~~~~~~",
+      locations = listOf(
+        LintLocation(
+          file = "src/main/java/MainActivity.kt",
+          lineNumber = "42"
+        )
       )
     )
-  )
-  private val informationIssue = LintIssue(
-    id = "IidCompatibilityCheckFailure",
-    severity = LintSeverity.INFORMATION,
-    message = "Check failed with exception: java.lang.NoSuchMethodException",
-    category = "Lint",
-    priority = "1",
-    summary = "Firebase IID Compatibility Check Unable To Run",
-    explanation = "The check failed to run as it encountered unknown failure.",
-    errorLine1 = "",
-    errorLine2 = "",
-    locations = listOf(
-      LintLocation(
-        file = "test.xml",
-        lineNumber = ""
+
+    private val informationIssue = LintIssue(
+      id = "IidCompatibilityCheckFailure",
+      severity = LintSeverity.INFORMATION,
+      message = "Check failed with exception: java.lang.NoSuchMethodException",
+      category = "Lint",
+      priority = "1",
+      summary = "Firebase IID Compatibility Check Unable To Run",
+      explanation = "The check failed to run as it encountered unknown failure.",
+      errorLine1 = "",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation(
+          file = "test.xml",
+          lineNumber = ""
+        )
       )
     )
-  )
-  private val multiLocationIssue = LintIssue(
-    id = "UnusedResources",
-    severity = LintSeverity.WARNING,
-    message = "The resource `R.color.color_palette_save_button_border_color` appears to be unused",
-    category = "Performance",
-    priority = "3",
-    summary = "Unused resources",
-    explanation = "Unused resources make applications larger and slow down builds.",
-    errorLine1 = "    <color name=\"color_palette_save_button_border_color\">#FF0000</color>",
-    errorLine2 = "           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
-    locations = listOf(
-      LintLocation(
-        file = "app/src/main/res/values/color_palette.xml",
-        lineNumber = "164"
-      ),
-      LintLocation(
-        file = "app/src/main/res/values-night/color_palette.xml",
-        lineNumber = "159"
+
+    private val multiLocationIssue = LintIssue(
+      id = "UnusedResources",
+      severity = LintSeverity.WARNING,
+      message = "The resource `R.color.color_palette_save_button_border_color` appears to be unused",
+      category = "Performance",
+      priority = "3",
+      summary = "Unused resources",
+      explanation = "Unused resources make applications larger and slow down builds.",
+      errorLine1 = "    <color name=\"color_palette_save_button_border_color\">#FF0000</color>",
+      errorLine2 = "           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+      locations = listOf(
+        LintLocation(
+          file = "app/src/main/res/values/color_palette.xml",
+          lineNumber = "164"
+        ),
+        LintLocation(
+          file = "app/src/main/res/values-night/color_palette.xml",
+          lineNumber = "159"
+        )
       )
     )
-  )
+  }
 
   @Before
   fun setUp() {
@@ -169,10 +178,9 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_emptyXml_returnsEmptyList() {
-    val xmlContent =
-      """
-      <issues format="6" by="lint 7.3.1">
-      </issues>
+    val xmlContent = """
+      $XML_HEADER
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
@@ -196,6 +204,58 @@ class LintAnalysisReporterTest {
   }
 
   @Test
+  fun testParseLintReport_issueWithEmptyFileAttributes_filtersOutEmptyLocations() {
+    val xmlContent = """
+      $XML_HEADER
+        <issue
+            id="TestIssueWithEmptyLocations"
+            severity="Warning"
+            message="Test message">
+            <location file="valid_file.xml" line="10"/>
+            <location file="" line="20"/>
+            <location file="another_valid_file.xml" line="30"/>
+            <location file="   " line="40"/>
+        </issue>
+      $XML_FOOTER
+      """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+    val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues).hasSize(1)
+    val issue = issues[0]
+    assertThat(issue.locations).hasSize(2)
+    assertThat(issue.locations[0].file).isEqualTo("valid_file.xml")
+    assertThat(issue.locations[0].lineNumber).isEqualTo("10")
+    assertThat(issue.locations[1].file).isEqualTo("another_valid_file.xml")
+    assertThat(issue.locations[1].lineNumber).isEqualTo("30")
+  }
+
+  @Test
+  fun testParseLintReport_issueWithOnlyEmptyFileAttributes_throwsException() {
+    val xmlContent = """
+      $XML_HEADER
+        <issue
+            id="TestIssueWithOnlyEmptyLocations"
+            severity="Warning"
+            message="Test message">
+            <location file="" line="10"/>
+            <location file="   " line="20"/>
+        </issue>
+      $XML_FOOTER
+      """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+
+    val exception = assertThrows<IllegalArgumentException> {
+      lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Issue element must contain at least one location")
+  }
+
+  @Test
   fun testParseLintReport_nonExistentFile_throwsException() {
     val nonExistentPath = "/path/that/does/not/exist/lint-report.xml"
 
@@ -208,12 +268,11 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_malformedXml_throwsError() {
-    val malformedXml =
-      """
-      <issues format="6" by="lint 7.3.1">
+    val malformedXml = """
+      $XML_HEADER
         <issue id="TestIssue" severity="Warning"
           <!-- Missing closing tag -->
-      </issues>
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(malformedXml)
@@ -227,27 +286,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithSpecialCharacters_handlesCorrectly() {
-    val specialCharsIssue = LintIssue(
-      id = "SpecialCharsTest",
-      severity = LintSeverity.ERROR,
-      message = "Message with <special> & characters \"quoted\"",
-      category = "Test",
-      priority = "1",
-      summary = "Summary with special chars",
-      explanation = "Explanation with <tags> and &amp; symbols",
-      errorLine1 = "val text = \"Hello <world> & friends\"",
-      errorLine2 = "           ~~~~~~~~~~~~~~~~~~~~~~",
-      locations = listOf(
-        LintLocation(
-          file = "path/with spaces/file&name.xml",
-          lineNumber = "15"
-        )
-      )
-    )
-
-    val xmlContent =
-      """
-      <issues format="6" by="lint 7.3.1">
+    val xmlContent = """
+      $XML_HEADER
         <issue
             id="SpecialCharsTest"
             severity="Error"
@@ -260,7 +300,7 @@ class LintAnalysisReporterTest {
             errorLine2="           ~~~~~~~~~~~~~~~~~~~~~~">
             <location file="path/with spaces/file&amp;name.xml" line="15"/>
         </issue>
-      </issues>
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
@@ -268,23 +308,22 @@ class LintAnalysisReporterTest {
 
     assertThat(issues).hasSize(1)
     val issue = issues[0]
-    assertThat(issue.message).isEqualTo(specialCharsIssue.message)
-    assertThat(issue.errorLine1).isEqualTo(specialCharsIssue.errorLine1)
-    assertThat(issue.errorLine2).isEqualTo(specialCharsIssue.errorLine2)
+    assertThat(issue.message).isEqualTo("Message with <special> & characters \"quoted\"")
+    assertThat(issue.errorLine1).isEqualTo("val text = \"Hello <world> & friends\"")
+    assertThat(issue.errorLine2).isEqualTo("           ~~~~~~~~~~~~~~~~~~~~~~")
     assertThat(issue.locations).hasSize(1)
-    assertThat(issue.locations[0].file).isEqualTo(specialCharsIssue.locations[0].file)
-    assertThat(issue.locations[0].lineNumber).isEqualTo(specialCharsIssue.locations[0].lineNumber)
+    assertThat(issue.locations[0].file).isEqualTo("path/with spaces/file&name.xml")
+    assertThat(issue.locations[0].lineNumber).isEqualTo("15")
   }
 
   @Test
   fun testParseLintReport_emptyRequiredAttributes_throwsException() {
-    val xmlContent =
-      """
-      <issues format="6" by="lint 7.3.1">
+    val xmlContent = """
+      $XML_HEADER
         <issue id="" severity="" message="Test message">
-          <location file=""/>
+          <location file="test.xml"/>
         </issue>
-      </issues>
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
@@ -299,13 +338,12 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_missingRequiredAttributes_throwsException() {
-    val xmlContent =
-      """
-      <issues format="6" by="lint 7.3.1">
+    val xmlContent = """
+      $XML_HEADER
         <issue message="Test message">
           <location file="test.xml"/>
         </issue>
-      </issues>
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
@@ -320,12 +358,11 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithoutLocationElements_throwsException() {
-    val xmlContent =
-      """
-      <issues format="6" by="lint 7.3.1">
+    val xmlContent = """
+      $XML_HEADER
         <issue id="TestIssue" severity="Warning" message="Test message">
         </issue>
-      </issues>
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
@@ -340,25 +377,21 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithEmptyErrorLines_parsesCorrectly() {
-    val issueWithEmptyErrorLines = LintIssue(
-      id = "EmptyErrorLinesTest",
-      severity = LintSeverity.WARNING,
-      message = "Test issue with empty error lines",
-      category = "Test",
-      priority = "5",
-      summary = "Test summary",
-      explanation = "Test explanation",
-      errorLine1 = "",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation(
-          file = "test.xml",
-          lineNumber = "10"
-        )
-      )
-    )
+    val xmlContent = """
+      $XML_HEADER
+        <issue
+            id="EmptyErrorLinesTest"
+            severity="Warning"
+            message="Test issue with empty error lines"
+            category="Test"
+            priority="5"
+            summary="Test summary"
+            explanation="Test explanation">
+            <location file="test.xml"/>
+        </issue>
+      $XML_FOOTER
+      """.trimIndent()
 
-    val xmlContent = createXmlWithIssues(issueWithEmptyErrorLines)
     val xmlFile = createXmlFile(xmlContent)
     val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
 
@@ -367,6 +400,7 @@ class LintAnalysisReporterTest {
     assertThat(issue.errorLine1).isEmpty()
     assertThat(issue.errorLine2).isEmpty()
     assertThat(issue.id).isEqualTo("EmptyErrorLinesTest")
+    assertThat(issue.message).isEqualTo("Test issue with empty error lines")
   }
 
   @Test
@@ -397,14 +431,120 @@ class LintAnalysisReporterTest {
   }
 
   @Test
+  fun testParseLintReport_mixedSeverityIssues_parsesAllCorrectly() {
+    val xmlContent = """
+      $XML_HEADER
+        <issue id="Fatal1" severity="Fatal" message="Fatal issue">
+          <location file="file1.xml" line="1"/>
+        </issue>
+        <issue id="Error1" severity="Error" message="Error issue"> 
+          <location file="file2.xml" line="2"/>
+        </issue>
+        <issue id="Warning1" severity="Warning" message="Warning issue">
+          <location file="file3.xml" line="3"/>
+        </issue>
+        <issue id="Info1" severity="Information" message="Info issue">
+          <location file="file4.xml" line="4"/>
+        </issue>
+      $XML_FOOTER
+      """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+    val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues).hasSize(4)
+    assertThat(issues[0].severity).isEqualTo(LintSeverity.FATAL)
+    assertThat(issues[1].severity).isEqualTo(LintSeverity.ERROR)
+    assertThat(issues[2].severity).isEqualTo(LintSeverity.WARNING)
+    assertThat(issues[3].severity).isEqualTo(LintSeverity.INFORMATION)
+  }
+
+  @Test
+  fun testParseLintReport_issueWithMissingOptionalAttributes_usesEmptyStrings() {
+    val xmlContent = """
+      $XML_HEADER
+        <issue id="MinimalIssue" severity="Warning" message="Minimal issue">
+          <location file="test.xml" line="1"/>
+        </issue>
+      $XML_FOOTER
+      """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+    val issues = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues).hasSize(1)
+    val issue = issues[0]
+    assertThat(issue.category).isEmpty()
+    assertThat(issue.priority).isEmpty()
+    assertThat(issue.summary).isEmpty()
+    assertThat(issue.explanation).isEmpty()
+    assertThat(issue.errorLine1).isEmpty()
+    assertThat(issue.errorLine2).isEmpty()
+  }
+
+  @Test
+  fun testParseLintReport_invalidRootElement_throwsException() {
+    val xmlContent = """
+      <wrongRoot format="6" by="lint 7.3.1">
+        <issue id="TestIssue" severity="Warning" message="Test">
+          <location file="test.xml"/>
+        </issue>
+      </wrongRoot>
+      """.trimIndent()
+
+    val xmlFile = createXmlFile(xmlContent)
+
+    val exception = assertThrows<IllegalArgumentException> {
+      lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+    }
+
+    assertThat(exception).hasMessageThat()
+      .contains("Invalid lint report format: expected root element 'issues'")
+  }
+
+  @Test
+  fun testParseLintReport_cacheHit_returnsCachedResult() {
+    val xmlContent = createXmlWithIssues(warningIssue)
+    val xmlFile = createXmlFile(xmlContent)
+
+    val issues1 = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    // Should return cached result
+    val issues2 = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues1).hasSize(1)
+    assertThat(issues2).hasSize(1)
+    assertThat(issues1[0].id).isEqualTo(issues2[0].id)
+    assertThat(issues1[0].severity).isEqualTo(issues2[0].severity)
+  }
+
+  @Test
+  fun testParseLintReport_cacheMiss_afterFileModification() {
+    val originalContent = createXmlWithIssues(warningIssue)
+    val xmlFile = createXmlFile(originalContent)
+
+    val issues1 = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    val modifiedContent = createXmlWithIssues(errorIssue)
+    xmlFile.writeText(modifiedContent)
+
+    // Should detect file change and reparse
+    val issues2 = lintAnalysisReporter.parseLintReport(xmlFile.absolutePath)
+
+    assertThat(issues1).hasSize(1)
+    assertThat(issues2).hasSize(1)
+    assertThat(issues1[0].id).isEqualTo("UsesMinSdkAttributes")
+    assertThat(issues2[0].id).isEqualTo("NewApi")
+  }
+
+  @Test
   fun testParseLintReport_invalidSeverity_throwsException() {
-    val xmlContent =
-      """
-      <issues format="6" by="lint 7.3.1">
+    val xmlContent = """
+      $XML_HEADER
         <issue id="TestIssue" severity="InvalidSeverity" message="Test message">
           <location file="test.xml"/>
         </issue>
-      </issues>
+      $XML_FOOTER
       """.trimIndent()
 
     val xmlFile = createXmlFile(xmlContent)
@@ -450,9 +590,9 @@ class LintAnalysisReporterTest {
     }
 
     return """
-      <issues format="6" by="lint 7.3.1">
+      $XML_HEADER
         $issueElements
-      </issues>
+      $XML_FOOTER
     """.trimIndent()
   }
 
