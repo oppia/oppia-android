@@ -68,7 +68,11 @@ class FakeAccessibilityServiceTest {
   }
 
   @Singleton
-  @Component(modules = [AccessibilityTestModule::class])
+  @Component(
+    modules = [
+      AccessibilityTestModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {
