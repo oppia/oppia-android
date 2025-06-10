@@ -24,8 +24,10 @@ class LintAnalysisReporterTest {
   private val outputStream = ByteArrayOutputStream()
 
   companion object {
-    private const val XML_HEADER = """<issues format="6" by="lint 7.3.1">"""
-    private const val XML_FOOTER = """</issues>"""
+    private const val XML_HEADER =
+      """<issues format="6" by="lint 7.3.1">"""
+    private const val XML_FOOTER =
+      """</issues>"""
 
     private val warningIssue = LintIssue(
       id = "UsesMinSdkAttributes",
@@ -84,7 +86,8 @@ class LintAnalysisReporterTest {
     private val multiLocationIssue = LintIssue(
       id = "UnusedResources",
       severity = LintSeverity.WARNING,
-      message = "The resource `R.color.color_palette_save_button_border_color` appears to be unused",
+      message =
+        "The resource `R.color.color_palette_save_button_border_color` appears to be unused",
       category = "Performance",
       priority = "3",
       summary = "Unused resources",
@@ -178,7 +181,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_emptyXml_returnsEmptyList() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
       $XML_FOOTER
       """.trimIndent()
@@ -205,7 +209,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithEmptyFileAttributes_filtersOutEmptyLocations() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue
             id="TestIssueWithEmptyLocations"
@@ -233,7 +238,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithOnlyEmptyFileAttributes_throwsException() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue
             id="TestIssueWithOnlyEmptyLocations"
@@ -268,7 +274,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_malformedXml_throwsError() {
-    val malformedXml = """
+    val malformedXml =
+      """
       $XML_HEADER
         <issue id="TestIssue" severity="Warning"
           <!-- Missing closing tag -->
@@ -286,7 +293,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithSpecialCharacters_handlesCorrectly() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue
             id="SpecialCharsTest"
@@ -318,7 +326,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_emptyRequiredAttributes_throwsException() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue id="" severity="" message="Test message">
           <location file="test.xml"/>
@@ -338,7 +347,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_missingRequiredAttributes_throwsException() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue message="Test message">
           <location file="test.xml"/>
@@ -358,7 +368,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithoutLocationElements_throwsException() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue id="TestIssue" severity="Warning" message="Test message">
         </issue>
@@ -377,7 +388,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithEmptyErrorLines_parsesCorrectly() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue
             id="EmptyErrorLinesTest"
@@ -432,7 +444,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_mixedSeverityIssues_parsesAllCorrectly() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue id="Fatal1" severity="Fatal" message="Fatal issue">
           <location file="file1.xml" line="1"/>
@@ -461,7 +474,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_issueWithMissingOptionalAttributes_usesEmptyStrings() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue id="MinimalIssue" severity="Warning" message="Minimal issue">
           <location file="test.xml" line="1"/>
@@ -484,7 +498,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_invalidRootElement_throwsException() {
-    val xmlContent = """
+    val xmlContent =
+      """
       <wrongRoot format="6" by="lint 7.3.1">
         <issue id="TestIssue" severity="Warning" message="Test">
           <location file="test.xml"/>
@@ -539,7 +554,8 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testParseLintReport_invalidSeverity_throwsException() {
-    val xmlContent = """
+    val xmlContent =
+      """
       $XML_HEADER
         <issue id="TestIssue" severity="InvalidSeverity" message="Test message">
           <location file="test.xml"/>
