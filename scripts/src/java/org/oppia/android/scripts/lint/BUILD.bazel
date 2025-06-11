@@ -14,6 +14,11 @@ kt_jvm_library(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/lint:lint_reporter_lib",
         "//third_party:com_android_tools_lint_lint",
+        "//third_party:com_google_guava_guava_jre",
+    ],
+    # Added to to push the correct guava version up the dependency chain
+    exports = [
+        "//third_party:com_google_guava_guava_jre",
     ],
 )
 
