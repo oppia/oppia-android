@@ -200,8 +200,7 @@ class LintAnalysisReporter {
 
   /** Prints issues grouped by severity level. */
   private fun printGroupedByIssueSeverity(issues: List<LintIssue>) {
-    val groupedBySeverity = issues.groupBy { it.severity }
-      .toSortedMap(compareByDescending { it.ordinal })
+    val groupedBySeverity = issues.groupBy { it.severity }.toSortedMap()
 
     groupedBySeverity.forEach { (severity, issuesInSeverity) ->
       val color = severity.getColor()
@@ -215,8 +214,8 @@ class LintAnalysisReporter {
       groupedByIssueId.forEach { (issueId, issuesForId) ->
         val representativeIssue = issuesForId.first()
 
-        println("\n$BOLD┌─ Issue ID: $issueId$RESET")
-        println("│  ${colorizeSeverity(representativeIssue.severity)}")
+        println("\n$BOLD Issue ID: $issueId$RESET")
+        println("  ${colorizeSeverity(representativeIssue.severity)}")
 
         val allLocations = issuesForId.flatMap { it.locations }
           .distinctBy { "${it.file}:${it.lineNumber}" }
@@ -224,22 +223,22 @@ class LintAnalysisReporter {
 
         if (allLocations.size == 1) {
           val location = allLocations.first()
-          println("│  File: ${location.file}")
+          println("  File: ${location.file}")
           if (location.lineNumber.isNotBlank()) {
-            println("│  Line: ${location.lineNumber}")
+            println("  Line: ${location.lineNumber}")
           }
         } else {
-          println("│  Locations:")
+          println("  Locations:")
           allLocations.forEachIndexed { index, location ->
-            println("│    ${index + 1}. File: ${location.file}")
+            println("    ${index + 1}. File: ${location.file}")
             if (location.lineNumber.isNotBlank()) {
-              println("│       Line: ${location.lineNumber}")
+              println("       Line: ${location.lineNumber}")
             }
           }
         }
         printIssueBasicInfo(representativeIssue)
 
-        println("└${"─".repeat(58)}")
+        println("-".repeat(58))
       }
     }
   }
@@ -271,19 +270,19 @@ class LintAnalysisReporter {
       )
 
       sortedByLine.forEachIndexed { index, (issue, location) ->
-        println("\n$BOLD┌─ Issue #${index + 1}: ${issue.id}$RESET")
-        println("│  ${colorizeSeverity(issue.severity)}")
+        println("\n$BOLD Issue #${index + 1}: ${issue.id}$RESET")
+        println("  ${colorizeSeverity(issue.severity)}")
         if (location.lineNumber.isNotBlank()) {
-          println("│  Line: ${location.lineNumber}")
+          println("  Line: ${location.lineNumber}")
         }
-        printIssueBasicInfo(issue, indent = "│  ")
-        println("└${"─".repeat(58)}")
+        printIssueBasicInfo(issue, indent = "  ")
+        println("-".repeat(58))
       }
     }
   }
 
   /** Prints basic information about an issue. */
-  private fun printIssueBasicInfo(issue: LintIssue, indent: String = "│  ") {
+  private fun printIssueBasicInfo(issue: LintIssue, indent: String = "  ") {
 
     if (issue.errorLine1.isNotBlank()) {
       println("${indent}Error Line: ${issue.errorLine1}")
