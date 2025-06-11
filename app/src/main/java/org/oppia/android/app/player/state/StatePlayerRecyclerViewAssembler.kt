@@ -246,8 +246,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     var flashbackStateName: String? = null
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
-      val answer = ephemeralState.pendingState.wrongAnswerList.lastOrNull()
-      flashbackStateName = answer?.stateNameToRevisit
+      val latestAnswer = ephemeralState.pendingState.wrongAnswerList.lastOrNull()
+      flashbackStateName = latestAnswer?.stateNameToRevisit
 
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         (fragment as ShowHintAvailabilityListener).onHintAvailable(
