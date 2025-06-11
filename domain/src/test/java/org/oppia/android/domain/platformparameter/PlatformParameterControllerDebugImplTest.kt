@@ -12,11 +12,14 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
@@ -38,8 +41,18 @@ import javax.inject.Singleton
 class PlatformParameterControllerDebugImplTest {
   @Inject
   lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
+  @Inject
+  lateinit var platformParameterConfigRetriever: PlatformParameterConfigRetriever
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @Inject
+  lateinit var platformParameterProcessState: PlatformParameterProcessState
 
   @Before
   fun setUp() {
@@ -66,6 +79,90 @@ class PlatformParameterControllerDebugImplTest {
       monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
 
     assertThat(ephemeralFeatureFlags).isNotEmpty()
+  }
+
+  @Test
+  fun testLoadEphemeralFeatureFlags_returnsCorrectDefaultValue() {
+    val ephemeralFeatureFlagsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+
+    val ephemeralFeatureFlags =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
+
+    val defaultValues = platformParameterConfigRetriever
+      .loadSupportedFeatureFlags()
+      .featureFlagDefinitionList
+
+    val multipleClassroomDefaultFlag = defaultValues
+      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    val multipleClassroomEphemeralFeatureFlag = ephemeralFeatureFlags
+      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+    assertThat(multipleClassroomEphemeralFeatureFlag?.currentValue)
+      .isEqualTo(multipleClassroomDefaultFlag?.defaultIsEnabled)
+  }
+
+  @Test
+  fun testLoadEphemeralPlatformParameters_returnsCorrectDefaultValue() {
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+
+    val defaultValues = platformParameterConfigRetriever
+      .loadSupportedPlatformParameters()
+      .platformParameterDefinitionList
+
+    val splashScreenWelcomeMessageParam = defaultValues
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    val splashScreenWelcomeMessageEphemeralParam = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    assertThat(splashScreenWelcomeMessageEphemeralParam?.currentValue)
+      .isEqualTo(splashScreenWelcomeMessageParam?.defaultValue)
+  }
+
+  @Test
+  fun testLoadParametersAsync_loadsCorrectDefaultFlagValue() {
+    platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+
+    val defaultFlagValues = platformParameterConfigRetriever
+      .loadSupportedFeatureFlags()
+      .featureFlagDefinitionList
+
+    val multipleClassroomDefaultFlag = defaultFlagValues
+      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    val multipleClassroomFlagFromProcessState = platformParameterProcessState
+      .retrieveFeatureFlagState(FeatureFlagId.MULTIPLE_CLASSROOMS)
+
+    assertThat(multipleClassroomDefaultFlag?.defaultIsEnabled)
+      .isEqualTo(multipleClassroomFlagFromProcessState)
+  }
+
+  @Test
+  fun testLoadParametersAsync_loadsCorrectDefaultParameterValue() {
+    platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+
+    val defaultParameterValues = platformParameterConfigRetriever
+      .loadSupportedPlatformParameters()
+      .platformParameterDefinitionList
+
+    val splashScreenWelcomeMessageDefaultParam = defaultParameterValues
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    val splashScreenWelcomeMessageParamFromProcessState = platformParameterProcessState
+      .retrievePlatformParameterIntegerState(
+        PlatformParameterId
+          .SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+      )
+
+    assertThat(splashScreenWelcomeMessageDefaultParam?.defaultValue?.integer)
+      .isEqualTo(splashScreenWelcomeMessageParamFromProcessState)
   }
 
   private fun setUpTestApplicationComponent() {
