@@ -579,20 +579,20 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
     val output = outputStream.toString()
 
-    assertThat(output).contains("${YELLOW}Warning: 1${RESET}")
-    assertThat(output).contains("${YELLOW}Information: 1${RESET}")
-    assertThat(output).contains("${BOLD}Total Issues: 2${RESET}")
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${YELLOW}Information: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
 
     assertThat(output).contains("=".repeat(60))
-    assertThat(output).contains("${BOLD}${YELLOW} SEVERITY: WARNING (1 issues)${RESET}")
-    assertThat(output).contains("${BOLD}${YELLOW} SEVERITY: INFORMATION (1 issues)${RESET}")
+    assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (1 issues)$RESET")
+    assertThat(output).contains("${BOLD}$YELLOW SEVERITY: INFORMATION (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue ID: UsesMinSdkAttributes${RESET}")
-    assertThat(output).contains("${YELLOW}Severity: Warning${RESET}")
+    assertThat(output).contains("$BOLD Issue ID: UsesMinSdkAttributes$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
     assertThat(output).contains("  File: src/main/AndroidManifest.xml")
     assertThat(output).contains("  Line: 5")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED${RESET}")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
   }
 
   @Test
@@ -602,16 +602,16 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
     val output = outputStream.toString()
 
-    assertThat(output).contains("${YELLOW}Warning: 1${RESET}")
-    assertThat(output).contains("${BOLD}Total Issues: 1${RESET}")
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
 
     assertThat(output).contains("=".repeat(80))
-    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)${RESET}")
+    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue #1: UsesMinSdkAttributes${RESET}")
-    assertThat(output).contains("${YELLOW}Severity: Warning${RESET}")
+    assertThat(output).contains("$BOLD Issue #1: UsesMinSdkAttributes$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED${RESET}")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
   }
 
   @Test
@@ -623,10 +623,10 @@ class LintAnalysisReporterTest {
     }
     val output = outputStream.toString()
 
-    assertThat(output).contains("${RED}Error: 1${RESET}")
-    assertThat(output).contains("${BOLD}Total Issues: 1${RESET}")
+    assertThat(output).contains("${RED}Error: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
     assertThat(exception.message)
-      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED${RESET}")
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -636,11 +636,11 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
     val output = outputStream.toString()
 
-    assertThat(output).contains("${YELLOW}Warning: 1${RESET}")
-    assertThat(output).contains("${YELLOW}Information: 1${RESET}")
-    assertThat(output).contains("${BOLD}Total Issues: 2${RESET}")
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${YELLOW}Information: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED${RESET}")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
     assertThat(output).doesNotContain("FAILED")
   }
 
@@ -657,8 +657,8 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("    2. File: app/src/main/res/values/color_palette.xml")
     assertThat(output).contains("       Line: 164")
-    assertThat(output).contains("$BOLD Issue ID: UnusedResources${RESET}")
-    assertThat(output).contains("${YELLOW}Severity: Warning${RESET}")
+    assertThat(output).contains("$BOLD Issue ID: UnusedResources$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
   }
 
   @Test
@@ -669,19 +669,19 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output)
-      .contains("${BOLD}FILE: app/src/main/res/values/color_palette.xml (1 issues)${RESET}")
+      .contains("${BOLD}FILE: app/src/main/res/values/color_palette.xml (1 issues)$RESET")
     assertThat(output)
-      .contains("${BOLD}FILE: app/src/main/res/values-night/color_palette.xml (1 issues)${RESET}")
+      .contains("${BOLD}FILE: app/src/main/res/values-night/color_palette.xml (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue #1: UnusedResources${RESET}")
-    assertThat(output).contains("${YELLOW}Severity: Warning${RESET}")
+    assertThat(output).contains("$BOLD Issue #1: UnusedResources$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
   }
 
   @Test
   fun testPrintLintReport_issueWithErrorLines_groupBySeverity_printsErrorLines() {
     val issues = listOf(errorIssue)
 
-     assertThrows<IllegalStateException> {
+    assertThrows<IllegalStateException> {
       lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
     }
     val output = outputStream.toString()
@@ -724,8 +724,8 @@ class LintAnalysisReporterTest {
 
     assertThat(output).doesNotContain("Error Line:")
 
-    assertThat(output).contains("$BOLD Issue ID: IidCompatibilityCheckFailure${RESET}")
-    assertThat(output).contains("${YELLOW}Severity: Information${RESET}")
+    assertThat(output).contains("$BOLD Issue ID: IidCompatibilityCheckFailure$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Information$RESET")
   }
 
   @Test
@@ -737,8 +737,8 @@ class LintAnalysisReporterTest {
 
     assertThat(output).doesNotContain("Error Line:")
 
-    assertThat(output).contains("${BOLD} Issue #1: IidCompatibilityCheckFailure${RESET}")
-    assertThat(output).contains("${YELLOW}Severity: Information${RESET}")
+    assertThat(output).contains("$BOLD Issue #1: IidCompatibilityCheckFailure$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Information$RESET")
   }
 
   @Test
@@ -748,13 +748,13 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
     val output = outputStream.toString()
 
-    assertThat(output).contains("${BOLD}Total Issues: 0${RESET}")
+    assertThat(output).contains("${BOLD}Total Issues: 0$RESET")
 
     assertThat(output).doesNotContain("Error:")
     assertThat(output).doesNotContain("Warning:")
     assertThat(output).doesNotContain("Information:")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED${RESET}")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
   }
 
   @Test
@@ -764,13 +764,13 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
     val output = outputStream.toString()
 
-    assertThat(output).contains("${BOLD}Total Issues: 0${RESET}")
+    assertThat(output).contains("${BOLD}Total Issues: 0$RESET")
 
     assertThat(output).doesNotContain("Error:")
     assertThat(output).doesNotContain("Warning:")
     assertThat(output).doesNotContain("Information:")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED${RESET}")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
   }
 
   @Test
@@ -781,7 +781,7 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(informationIssue, warningIssue, errorIssue, fatalIssue)
 
-     assertThrows<IllegalStateException> {
+    assertThrows<IllegalStateException> {
       lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
     }
     val output = outputStream.toString()
@@ -795,7 +795,7 @@ class LintAnalysisReporterTest {
     assertThat(errorPos).isLessThan(warningPos)
     assertThat(warningPos).isLessThan(infoPos)
 
-    assertThat(output).contains("${BOLD}${RED} SEVERITY: FATAL")
+    assertThat(output).contains("${BOLD}$RED SEVERITY: FATAL")
   }
 
   @Test
@@ -859,7 +859,7 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("  Line: 5")
-    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)${RESET}")
+    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)$RESET")
   }
 
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {

@@ -205,8 +205,10 @@ class LintAnalysisReporter {
     groupedBySeverity.forEach { (severity, issuesInSeverity) ->
       val color = severity.getColor()
       println("\n${"=".repeat(60)}")
-      println("${BOLD}$color SEVERITY: ${severity.displayName.uppercase()}" +
-        " (${issuesInSeverity.size} issues)$RESET")
+      println(
+        "${BOLD}$color SEVERITY: ${severity.displayName.uppercase()}" +
+          " (${issuesInSeverity.size} issues)$RESET"
+      )
       println("=".repeat(60))
 
       val groupedByIssueId = issuesInSeverity.groupBy { it.id }.toSortedMap()
