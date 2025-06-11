@@ -979,4 +979,147 @@ class AdministratorControlsActivityTest {
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
+   @Test
+  fun testAdministratorControlsActivity_phonePortrait_uiContentIsCorrect() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(profileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.profile_management_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetView = R.id.download_permissions_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 3,
+        targetView = R.id.app_information_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 4,
+        targetView = R.id.account_actions_text_view
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsActivity_phoneLandscape_uiContentIsCorrect() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(profileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.profile_management_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetView = R.id.download_permissions_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 3,
+        targetView = R.id.app_information_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 4,
+        targetView = R.id.account_actions_text_view
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testAdministratorControlsActivity_tablet_uiContentIsCorrect() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(profileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 0,
+        targetView = R.id.general_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetView = R.id.profile_management_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetView = R.id.download_permissions_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 3,
+        targetView = R.id.app_information_text_view
+      )
+      verifyItemDisplayedOnListItem(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 4,
+        targetView = R.id.account_actions_text_view
+      )
+    }
+  }
+
+  @Test
+  fun testAdministratorControlsActivity_allSectionsAreDisplayedInOrder() {
+    launch<AdministratorControlsActivity>(
+      createAdministratorControlsActivityIntent(profileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 0,
+        targetViewId = R.id.edit_account_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_account
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 1,
+        targetViewId = R.id.edit_profiles_text_view,
+        stringIdToMatch = R.string.administrator_controls_edit_profiles
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 2,
+        targetViewId = R.id.download_permissions_text_view,
+        stringIdToMatch = R.string.administrator_controls_download_permissions_label
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 3,
+        targetViewId = R.id.app_version_text_view,
+        stringIdToMatch = R.string.administrator_controls_app_version
+      )
+      verifyTextOnListItemAtPosition(
+        recyclerViewId = administratorControlsListRecyclerViewId,
+        itemPosition = 4,
+        targetViewId = R.id.log_out_text_view,
+        stringIdToMatch = R.string.administrator_controls_log_out
+      )
+    }
+  }
 }
