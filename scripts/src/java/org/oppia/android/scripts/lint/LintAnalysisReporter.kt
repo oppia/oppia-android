@@ -169,7 +169,7 @@ class LintAnalysisReporter {
    * @param issues List of LintIssue objects to print
    * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
    */
-  fun printLintReport(issues: List<LintIssue>, groupByIssueSeverity: Boolean = false) {
+  fun printLintReport(issues: List<LintIssue>, groupByIssueSeverity: Boolean) {
     printSeveritySummary(issues)
     println()
 
