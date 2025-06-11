@@ -26,11 +26,11 @@ interface PlatformParameterModule {
     impl: PlatformParameterConfigRetrieverProdImpl
   ): PlatformParameterConfigRetriever
 
+  // TODO(#5835): Remove this and make PlatformParameterProcessState injectable once the hack for
+  //  initializing platform parameters in tests is no longer needed.
   /**
    * Dagger module for providing the application-wide instance of [PlatformParameterProcessState].
    */
-  // TODO(#5835): Remove this and make PlatformParameterProcessState injectable once the hack for
-  //  initializing platform parameters in tests is no longer needed.
   @Module
   class PlatformParameterProcessStateModule {
     @Provides
@@ -38,12 +38,12 @@ interface PlatformParameterModule {
     fun providePlatformParameterProcessState() = PlatformParameterProcessState()
   }
 
+  // TODO(#5835): Remove this and make PlatformParameterControllerProdImpl injectable once the hack
+  //  for initializing platform parameters in tests is no longer needed.
   /**
    * Dagger module for providing the application-wide instance of
    * [PlatformParameterControllerProdImpl].
    */
-  // TODO(#5835): Remove this and make PlatformParameterControllerProdImpl injectable once the hack
-  //  for initializing platform parameters in tests is no longer needed.
   @Module
   class PlatformParameterControllerProdImplModule {
     @Provides

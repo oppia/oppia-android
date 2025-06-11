@@ -31,8 +31,8 @@ interface PlatformParameterController {
    * even before [loadParametersAsync] is called. Calling this method will not initiate any actual
    * initialization--[loadParametersAsync] must be used for that, instead.
    *
-   * The returned [DataProvider] will never return a pending state, or will it represent the failure
-   * state if parameter loading via [loadParametersAsync] fails.
+   * The returned [DataProvider] will never return a pending state, nor will it represent the
+   * failure state if parameter loading via [loadParametersAsync] fails.
    */
   fun getParameterInitializationStatus(): DataProvider<Boolean>
 
