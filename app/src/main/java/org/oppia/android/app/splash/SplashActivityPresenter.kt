@@ -261,10 +261,11 @@ class SplashActivityPresenter @Inject constructor(
                 )
               }
               is AsyncResult.Success -> {
-                // It's possible for the observer to still be active & change due to the next activity
-                // causing a notification to be posted. That's always invalid to process here: the
-                // splash activity should never do anything after its initial state since it always
-                // finishes (or in the case of the deprecation dialog, blocks) the activity.
+                // It's possible for the observer to still be active & change due to the next
+                // activity causing a notification to be posted. That's always invalid to process
+                // here: the splash activity should never do anything after its initial state since
+                // it always finishes (or in the case of the deprecation dialog, blocks) the
+                // activity.
                 liveData.removeObserver(this)
                 processInitState(initStateResult.value)
               }
@@ -471,11 +472,13 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     private fun logInToProfile(profileId: ProfileId) {
-      profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) { result ->
-        if (result is AsyncResult.Success && !activity.isFinishing) {
-          launchHomeScreen(profileId)
+      profileManagementController.loginToProfile(profileId)
+        .toLiveData()
+        .observe(activity) { result ->
+          if (result is AsyncResult.Success && !activity.isFinishing) {
+            launchHomeScreen(profileId)
+          }
         }
-      }
     }
 
     private fun launchHomeScreen(profileId: ProfileId) {
@@ -503,7 +506,10 @@ class SplashActivityPresenter @Inject constructor(
       }
     }
 
-    private inline fun <reified T : DialogFragment> showDialog(tag: String, createFragment: () -> T) {
+    private inline fun <reified T : DialogFragment> showDialog(
+      tag: String,
+      createFragment: () -> T
+    ) {
       if (activity.supportFragmentManager.findFragmentByTag(tag) as? T == null) {
         activity.supportFragmentManager.beginTransaction().add(createFragment(), tag).commitNow()
       }
