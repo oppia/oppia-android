@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -19,7 +20,6 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
 
 /** Activity for Developer Options. */
 class DeveloperOptionsActivity :
@@ -31,8 +31,7 @@ class DeveloperOptionsActivity :
   RouteToViewEventLogsListener,
   RouteToForceNetworkTypeListener,
   RouteToMathExpressionParserTestListener,
-  RouteToFeatureFlagsListener
-{
+  RouteToFeatureFlagsListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
