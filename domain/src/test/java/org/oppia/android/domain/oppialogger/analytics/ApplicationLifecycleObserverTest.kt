@@ -32,10 +32,11 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OppiaMetricLog
-import org.oppia.android.app.model.PlatformParameter
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -78,9 +79,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
-import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
-import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -106,6 +104,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.ImageParsingModule
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -156,11 +155,8 @@ class ApplicationLifecycleObserverTest {
   @field:[JvmField Inject BackgroundCpuLoggingTimePeriodMillis]
   var backgroundCpuLoggingTimePeriodMillis: Long = Long.MIN_VALUE
 
-  @field:[Inject EnableTestFeatureFlag]
+  @field:[Inject EnableDownloadsSupport]
   lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
-
-  @field:[Inject EnableTestFeatureFlagWithEnabledDefault]
-  lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   private lateinit var retrofit: Retrofit
   private lateinit var client: OkHttpClient
@@ -446,7 +442,7 @@ class ApplicationLifecycleObserverTest {
     setUpTestApplicationComponent()
 
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+      mapOf(FeatureFlagId.DOWNLOADS_SUPPORT to testFeatureFlag)
     )
 
     // TODO(#5341): Replace appSessionId generation to the modified Twitter snowflake algorithm.
@@ -462,9 +458,9 @@ class ApplicationLifecycleObserverTest {
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasSessionIdThat().isEqualTo(sessionId)
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
+        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
-        hasFeatureFlagSyncStateThat().isEqualTo(PlatformParameter.SyncStatus.NOT_SYNCED_FROM_SERVER)
+        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
       }
     }
   }
