@@ -68,6 +68,7 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
@@ -83,31 +84,22 @@ import org.oppia.android.app.model.OppiaMetricLog.Priority.MEDIUM_PRIORITY
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
-import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
-import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
-import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
-import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
-import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
-import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
-import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -183,7 +175,7 @@ class EventBundleCreatorTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -2404,74 +2396,74 @@ class EventBundleCreatorTest {
     .addAllFeatureFlags(
       listOf(
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = LEARNER_STUDY_ANALYTICS
-          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.LEARNER_STUDY_ANALYTICS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = ENABLE_PERFORMANCE_METRICS_COLLECTION
-          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-          this.flagEnabledState = true
+          this.id = FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = EDIT_ACCOUNTS_OPTIONS_UI
-          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = SPOTLIGHT_UI
-          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
-          this.flagEnabledState = true
+          this.id = FeatureFlagId.SPOTLIGHT_UI
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = EXTRA_TOPIC_TABS_UI
-          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.EXTRA_TOPIC_TABS_UI
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = DOWNLOADS_SUPPORT
-          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
-          this.flagEnabledState = true
+          this.id = FeatureFlagId.DOWNLOADS_SUPPORT
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = INTERACTION_CONFIG_CHANGE_STATE_RETENTION
-          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = APP_AND_OS_DEPRECATION
-          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-          this.flagEnabledState = true
+          this.id = FeatureFlagId.APP_AND_OS_DEPRECATION
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = FAST_LANGUAGE_SWITCHING_IN_LESSON
-          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = LOGGING_LEARNER_STUDY_IDS
-          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
-          this.flagEnabledState = true
+          this.id = FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = ENABLE_NPS_SURVEY
-          this.flagSyncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.NPS_SURVEY
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = ENABLE_ONBOARDING_FLOW_V2
-          this.flagSyncStatus = SyncStatus.SYNCED_FROM_SERVER
-          this.flagEnabledState = true
+          this.id = FeatureFlagId.ONBOARDING_FLOW_V2
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = true
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = ENABLE_MULTIPLE_CLASSROOMS
-          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.MULTIPLE_CLASSROOMS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
         }.build(),
         EventLog.FeatureFlagItemContext.newBuilder().apply {
-          this.flagName = "non-existent name"
-          this.flagSyncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
-          this.flagEnabledState = false
+          this.id = FeatureFlagId.FEATURE_FLAG_ID_UNSPECIFIED
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
         }.build(),
       )
     ).build()
@@ -2617,12 +2609,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = false
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = true
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
@@ -2648,29 +2640,10 @@ class EventBundleCreatorTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLoggingLearnerStudyIds
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
     }
   }
 
@@ -2678,7 +2651,15 @@ class EventBundleCreatorTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent {

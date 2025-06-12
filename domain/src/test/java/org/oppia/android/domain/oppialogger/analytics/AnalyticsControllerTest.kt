@@ -15,6 +15,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -112,6 +113,11 @@ class AnalyticsControllerTest {
   // for an explanation of why these are provided via indirect injection.
   private val profileManagementController by lazy { profileManagementControllerProvider.get() }
   private val analyticsController by lazy { analyticsControllerProvider.get() }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testController_logImportantEvent_withQuestionContext_checkLogsEvent() {
