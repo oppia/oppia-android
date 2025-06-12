@@ -11,7 +11,6 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
 
-
 /** Activity for feature flag dashboard of the app. */
 class FeatureFlagActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject

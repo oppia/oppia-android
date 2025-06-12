@@ -5,7 +5,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
-
 /** The presenter for [FeatureFlagActivity]. */
 @ActivityScope
 class FeatureFlagActivityPresenter @Inject constructor(

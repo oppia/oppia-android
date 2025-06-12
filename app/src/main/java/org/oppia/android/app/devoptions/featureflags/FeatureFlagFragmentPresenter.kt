@@ -3,15 +3,14 @@ package org.oppia.android.app.devoptions.featureflags
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagItemBinding
 import org.oppia.android.app.fragment.FragmentScope
-import javax.inject.Inject
 import org.oppia.android.app.recyclerview.BindableAdapter
+import javax.inject.Inject
 
 /** The presenter for [FeatureFlagFragment]. */
 @FragmentScope
@@ -72,11 +71,7 @@ class FeatureFlagFragmentPresenter @Inject constructor(
     model: FeatureFlagItemViewModel
   ) {
     binding.viewModel = model
-    binding.isEnabled = model.currentValue.get()!!
-    binding.downloadsSupportConstraintLayout.setOnClickListener {
-      model.currentValue.set(!model.currentValue.get()!!)
-      binding.isEnabled = !model.currentValue.get()!!
-      bindingAdapter.notifyDataSetChanged()
-    }
+    binding.isEnabled = model.currentValue
+    binding.syncStatusValueTextView.setBackgroundResource(getSyncStatusBackground(model.syncStatus))
   }
 }
