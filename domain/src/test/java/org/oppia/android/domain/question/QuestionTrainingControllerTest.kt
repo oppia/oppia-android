@@ -62,6 +62,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [QuestionTrainingController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -288,7 +289,6 @@ class QuestionTrainingControllerTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       RatioInputModule::class,
       RobolectricModule::class,
@@ -296,6 +296,7 @@ class QuestionTrainingControllerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
+      TestPlatformParameterModule::class,
       TestQuestionModule::class,
       TextInputRuleModule::class
     ]

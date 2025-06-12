@@ -54,6 +54,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 @Suppress("FunctionName", "SameParameterValue")
 @RunWith(AndroidJUnit4::class)
@@ -456,7 +457,6 @@ class FirestoreDataControllerTest {
       FakeOppiaClockModule::class,
       LocaleProdModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,
@@ -464,7 +464,8 @@ class FirestoreDataControllerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestLogStorageModule::class,
-      TestModule::class
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

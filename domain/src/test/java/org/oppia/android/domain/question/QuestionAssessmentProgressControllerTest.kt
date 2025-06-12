@@ -82,6 +82,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 private const val TOLERANCE = 1e-5
 
@@ -1677,7 +1678,6 @@ class QuestionAssessmentProgressControllerTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       RatioInputModule::class,
       RobolectricModule::class,
@@ -1685,6 +1685,7 @@ class QuestionAssessmentProgressControllerTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
+      TestPlatformParameterModule::class,
       TestQuestionModule::class,
       TextInputRuleModule::class
     ]

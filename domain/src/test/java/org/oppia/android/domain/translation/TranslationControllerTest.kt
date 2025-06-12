@@ -74,6 +74,7 @@ import org.oppia.android.app.model.AudioTranslationLanguageSelection.SelectionTy
 import org.oppia.android.app.model.AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE as USE_APP_AUDIO_LANGUAGE
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE as SELECTED_WRITTEN_LANGUAGE
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE as USE_APP_WRITTEN_LANGUAGE
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 
 /** Tests for [TranslationController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -1924,13 +1925,13 @@ class TranslationControllerTest {
       LoggerModule::class,
       LoggingIdentifierModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       RobolectricModule::class,
       SyncStatusModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
