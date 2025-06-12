@@ -312,12 +312,20 @@ class LintAnalysisReporter {
   /** Prints the final result summary. */
   private fun printFinalResult(issues: List<LintIssue>) {
     val criticalIssues = issues.filter { it.severity.isCritical() }
+    // TODO(#5734): Replace LintError ID with LintIssueId Enum from the exemption set up.
+    val hasInternalLintIssues = criticalIssues.any { it.id == "LintError" }
 
     println("\n" + "=".repeat(50))
-    if (criticalIssues.isEmpty()) {
-      println("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
-    } else {
-      error("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    when {
+      criticalIssues.isEmpty() -> {
+        println("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+      }
+      hasInternalLintIssues -> {
+        error("${RED}ANDROID LINT CHECK ${BOLD}FAILED WITH INTERNAL LINT ISSUES$RESET")
+      }
+      else -> {
+        error("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+      }
     }
   }
 

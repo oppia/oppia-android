@@ -59,9 +59,8 @@ class AndroidLintRunner(
 
     // TODO(#5734): Implement the project description for Lint execution.
     val exitCode = LintCli().run(cliArgs) // Currently returns error code due to missing description
-    check(exitCode == 0) {
+    check(exitCode == 0 || exitCode == 1) {
       val reason = when (exitCode) {
-        1 -> "Lint errors detected."
         2 -> "Invalid usage of Lint command."
         3 -> "Cannot overwrite existing file."
         4 -> "Help command invoked."
