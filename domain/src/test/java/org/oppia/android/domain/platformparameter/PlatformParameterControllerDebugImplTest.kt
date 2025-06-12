@@ -14,10 +14,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.RemoteFeatureFlag
+import org.oppia.android.app.model.RemotePlatformParameterAndFeatureFlagDatabase
+import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.LogStorageModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.data.DataProviderTestMonitor
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -88,7 +91,7 @@ class PlatformParameterControllerDebugImplTest {
 
     val ephemeralFeatureFlags =
       monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
-
+    println("Ephemeral Feature Flags: $ephemeralFeatureFlags")
     val defaultValues = platformParameterConfigRetriever
       .loadSupportedFeatureFlags()
       .featureFlagDefinitionList
@@ -172,6 +175,8 @@ class PlatformParameterControllerDebugImplTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    private val processState by lazy { PlatformParameterProcessState() }
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -184,6 +189,49 @@ class PlatformParameterControllerDebugImplTest {
       platformParameterProcessState: PlatformParameterProcessState,
       factory: PlatformParameterControllerProdImpl.Factory
     ) = factory.create(platformParameterProcessState)
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterController(
+      factory: PlatformParameterControllerProdImpl.Factory
+    ): PlatformParameterController = factory.create(processState)
+
+    @Provides
+    fun providePlatformParameterConfigRetriever(
+      impl: TestPlatformParameterConfigRetriever
+    ): PlatformParameterConfigRetriever = impl
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterProcessState(
+      platformParameterController: PlatformParameterController,
+      testCoroutineDispatchers: TestCoroutineDispatchers,
+      persistentCacheStoreFactory: PersistentCacheStore.Factory
+    ): PlatformParameterProcessState {
+      val database =
+        persistentCacheStoreFactory.create(
+          DATABASE_NAME,
+          RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
+        )
+
+      database.storeDataAsync {
+        RemotePlatformParameterAndFeatureFlagDatabase.newBuilder().apply {
+          addRemoteFeatureFlag(
+            RemoteFeatureFlag.newBuilder().apply {
+              id = FeatureFlagId.MULTIPLE_CLASSROOMS
+              remoteIsEnabled = true
+              syncStatus = SyncStatus.SYNCED_FROM_SERVER
+            }.build()
+          )
+        }.build()
+      }
+
+      // TODO(#5835): Remove this blocking hack to ensure tests are properly initialized for params.
+      val loadDeferred = platformParameterController.loadParametersAsync()
+      testCoroutineDispatchers.runCurrent()
+      check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
+      return processState
+    }
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -199,8 +247,7 @@ class PlatformParameterControllerDebugImplTest {
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
-      TestPlatformParameterModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
@@ -232,3 +279,5 @@ class PlatformParameterControllerDebugImplTest {
     override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }
+
+private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
