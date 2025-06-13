@@ -17,8 +17,8 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.platformparameter.SplashScreenWelcomeMsg
 import org.oppia.android.util.platformparameter.SyncUpWorkerTimePeriodHours
 
-/** Dagger module for providing injectable bindings for platform parameters. */
 // TODO(#5835): Remove this module.
+/** Dagger module for providing injectable bindings for platform parameters. */
 @Module
 class PlatformParameterBindingModule {
   @Provides

@@ -18,8 +18,8 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
-/** Dagger module for providing injectable bindings for feature flags. */
 // TODO(#5835): Remove this module.
+/** Dagger module for providing injectable bindings for feature flags. */
 @Module
 class FeatureFlagBindingModule {
   @Provides

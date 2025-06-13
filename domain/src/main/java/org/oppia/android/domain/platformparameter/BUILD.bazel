@@ -19,18 +19,8 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "config_retriever",
-    srcs = ["PlatformParameterConfigRetriever.kt"],
-    visibility = ["//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:__pkg__"],
-    deps = ["//model/src/main/proto:platform_parameter_java_proto_lite"],
-)
-
-kt_android_library(
     name = "controller",
-    srcs = [
-        "PlatformParameterController.kt",
-        "PlatformParameterDebugController.kt",
-    ],
+    srcs = ["PlatformParameterController.kt"],
     visibility = ["//:oppia_api_visibility"],
     deps = [
         "//model/src/main/proto:platform_parameter_java_proto_lite",
@@ -40,20 +30,10 @@ kt_android_library(
 )
 
 kt_android_library(
-    name = "debug_impl",
-    srcs = ["PlatformParameterControllerDebugImpl.kt"],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [":prod_impl"],
-)
-
-kt_android_library(
-    name = "debug_module",
-    srcs = ["PlatformParameterControllerDebugModule.kt"],
-    visibility = ["//:oppia_api_visibility"],
-    deps = [
-        ":debug_impl",
-        "//:dagger",
-    ],
+    name = "config_retriever",
+    srcs = ["PlatformParameterConfigRetriever.kt"],
+    visibility = ["//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:__pkg__"],
+    deps = ["//model/src/main/proto:platform_parameter_java_proto_lite"],
 )
 
 kt_android_library(
@@ -65,6 +45,8 @@ kt_android_library(
     ],
 )
 
+# TODO(#5835): Remove the extra visibility exposure needed here once the test platform parameter
+#  module can be moved to part of the platform parameter testing package.
 kt_android_library(
     name = "prod_impl",
     srcs = [
@@ -102,7 +84,6 @@ kt_android_library(
         "FeatureFlagBindingModule.kt",
         "FeatureFlagsMapBindingModule.kt",
         "PlatformParameterBindingModule.kt",
-        "PlatformParameterControllerProdModule.kt",
         "PlatformParameterModule.kt",
         "PlatformParameterSingletonModule.kt",
     ],
@@ -112,7 +93,6 @@ kt_android_library(
         ":process_state",
         ":prod_impl",
         "//:dagger",
-        "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//model/src/main/proto:platform_parameter_java_proto_lite",
         "//utility",
     ],

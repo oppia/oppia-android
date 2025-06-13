@@ -39,12 +39,13 @@ class PlatformParameterControllerProdImpl(
   }
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
-  private val areParametersLoadedFlow by lazy { MutableStateFlow(false) }
+  private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
 
   init {
     // Ensure that parameters and flags are fully loaded ahead of a call to retrieveData() since
-    // loadParameters() guarantees exactly one non-pending result. Note that this will also
-    // guarantee that the file is created on-disk (which is fine--it will just initially be empty).
+    // loadRemotePlatformParameters() needs to guarantee that the existing parameters are loaded
+    // despite any later calls to downloadRemoteParameters(). Note that this will also guarantee
+    // that the file is created on-disk (which is fine--it will just initially be empty).
     databaseStore.primeInMemoryAndDiskCacheAsync(
       updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
       publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
@@ -61,14 +62,14 @@ class PlatformParameterControllerProdImpl(
 
   override fun getParameterInitializationStatus(): DataProvider<Boolean> {
     return dataProviders.run {
-      areParametersLoadedFlow.convertToAutomaticDataProvider(
+      parametersAreLoadedFlow.convertToAutomaticDataProvider(
         GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID
       )
     }
   }
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
-    check(areParametersLoadedFlow.value) {
+    check(parametersAreLoadedFlow.value) {
       "Can only remotely download parameters after they have been loaded."
     }
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
@@ -139,7 +140,7 @@ class PlatformParameterControllerProdImpl(
       processState.initializeFeatureFlagSyncStatuses(statusesById)
 
       // Let observers know that parameters have been initialized.
-      areParametersLoadedFlow.value = true
+      parametersAreLoadedFlow.value = true
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.

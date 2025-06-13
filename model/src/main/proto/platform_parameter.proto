@@ -273,4 +273,5 @@ message EphemeralFeatureFlag {
 
   // Indicates the sync status of the feature flag.
   SyncStatus sync_status = 3;
+
 }
