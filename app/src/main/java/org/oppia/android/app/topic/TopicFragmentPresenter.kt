@@ -34,8 +34,8 @@ class TopicFragmentPresenter @Inject constructor(
   private val viewModel: TopicViewModel,
   private val oppiaLogger: OppiaLogger,
   private val analyticsController: AnalyticsController,
-  @EnableTopicInfoTab private val enableTopicInfoTab: PlatformParameterValue<Boolean>,
-  @EnableTopicPracticeTab private val enableTopicPracticeTab: PlatformParameterValue<Boolean>,
+  @EnableTopicInfoTab private val enableTopicInfoTabFlag: PlatformParameterValue<Boolean>,
+  @EnableTopicPracticeTab private val enableTopicPracticeTabFlag: PlatformParameterValue<Boolean>,
   private val resourceHandler: AppLanguageResourceHandler
 ) {
   @Inject
@@ -46,6 +46,12 @@ class TopicFragmentPresenter @Inject constructor(
   private lateinit var topicId: String
   private lateinit var storyId: String
   private lateinit var viewPager: ViewPager2
+
+  private var enableTopicInfoTab: Boolean = enableTopicInfoTabFlag.value
+  private var enableTopicPracticeTab: Boolean = false
+    set(hasPracticeQuestions) {
+      field = enableTopicPracticeTabFlag.value && hasPracticeQuestions
+    }
 
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -78,8 +84,15 @@ class TopicFragmentPresenter @Inject constructor(
     viewModel.setTopicId(topicId)
     binding.viewModel = viewModel
 
-    viewModel.enablePracticeTab.observe(fragment) { enablePracticeTab ->
-      setUpViewPager(viewPager, classroomId, topicId, isConfigChanged, enablePracticeTab)
+    viewModel.hasPracticeQuestions.observe(fragment) { hasPracticeQuestions ->
+      enableTopicPracticeTab = hasPracticeQuestions
+
+      setUpViewPager(
+        viewPager,
+        classroomId,
+        topicId,
+        isConfigChanged
+      )
     }
 
     return binding.root
@@ -125,15 +138,14 @@ class TopicFragmentPresenter @Inject constructor(
   }
 
   private fun computeTabPosition(tab: TopicTab): Int {
-    return tab.getPosition(enableTopicInfoTab.value, enableTopicPracticeTab.value)
+    return tab.getPosition(enableTopicInfoTab, enableTopicPracticeTab)
   }
 
   private fun setUpViewPager(
     viewPager2: ViewPager2,
     classroomId: String,
     topicId: String,
-    isConfigChanged: Boolean,
-    enablePracticeTab: Boolean
+    isConfigChanged: Boolean
   ) {
     val adapter =
       ViewPagerAdapter(
@@ -142,22 +154,22 @@ class TopicFragmentPresenter @Inject constructor(
         classroomId,
         topicId,
         storyId,
-        enableTopicInfoTab.value,
-        enableTopicPracticeTab.value && enablePracticeTab
+        enableTopicInfoTab,
+        enableTopicPracticeTab
       )
     viewPager2.adapter = adapter
     TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
       val topicTab = TopicTab.getTabForPosition(
         position,
-        enableTopicInfoTab.value,
-        enableTopicPracticeTab.value && enablePracticeTab
+        enableTopicInfoTab,
+        enableTopicPracticeTab
       )
       tab.text = resourceHandler.getStringInLocale(topicTab.tabLabelResId)
       tab.icon = ContextCompat.getDrawable(activity, topicTab.tabIconResId)
       tab.contentDescription = resourceHandler.getStringInLocale(topicTab.contentDescriptionResId)
     }.attach()
     if (!isConfigChanged && topicId.isNotEmpty()) {
-      if (enableTopicInfoTab.value) {
+      if (enableTopicInfoTab) {
         setCurrentTab(if (storyId.isNotEmpty()) TopicTab.LEARN else TopicTab.INFO)
       } else {
         setCurrentTab(TopicTab.LEARN)
@@ -168,8 +180,8 @@ class TopicFragmentPresenter @Inject constructor(
         logTopicEvents(
           TopicTab.getTabForPosition(
             position,
-            enableTopicInfoTab.value,
-            enableTopicPracticeTab.value && enablePracticeTab
+            enableTopicInfoTab,
+            enableTopicPracticeTab
           )
         )
       }

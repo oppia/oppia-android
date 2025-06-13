@@ -78,7 +78,7 @@ class TopicViewModel @Inject constructor(
     }
   }
 
-  val enablePracticeTab: LiveData<Boolean> by lazy {
+  val hasPracticeQuestions: LiveData<Boolean> by lazy {
     Transformations.map(topicLiveData) { ephemeralTopic ->
       ephemeralTopic.topic.hasPracticeQuestions
     }
