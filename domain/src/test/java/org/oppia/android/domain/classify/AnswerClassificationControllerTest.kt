@@ -844,19 +844,35 @@ class AnswerClassificationControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class,
-      FractionInputModule::class, ItemSelectionInputModule::class,
-      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-      NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class,
-      ImageClickInputModule::class, RatioInputModule::class, LocaleProdModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, TestDispatcherModule::class,
-      LogStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      TestLogReportingModule::class, AssetModule::class, RobolectricModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, LoggingIdentifierModule::class,
-      ApplicationLifecycleModule::class, SyncStatusModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      DragDropSortInputModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent {

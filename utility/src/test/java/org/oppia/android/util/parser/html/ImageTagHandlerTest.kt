@@ -330,7 +330,6 @@ class ImageTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = IMAGE_TAG_MARKUP_1,
-        imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
       )
     assertThat(contentDescription).isEqualTo("Image illustrating alt text 1")
@@ -358,8 +357,12 @@ class ImageTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {
