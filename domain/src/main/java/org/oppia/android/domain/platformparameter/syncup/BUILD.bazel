@@ -1,0 +1,27 @@
+"""
+Package for providing support for downloading platform parameter states from Oppia web.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+
+kt_android_library(
+    name = "syncup",
+    srcs = [
+        "PlatformParameterSyncUpWorkManagerInitializer.kt",
+        "PlatformParameterSyncUpWorker.kt",
+        "PlatformParameterSyncUpWorkerFactory.kt",
+        "PlatformParameterSyncUpWorkerModule.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger:oppia_logger",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:analytics_startup_listener",
+        "//domain/src/main/java/org/oppia/android/domain/oppialogger/exceptions:controller",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:controller",
+        "//domain/src/main/java/org/oppia/android/domain/util:extensions",
+        "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
+        "//utility",
+        "//utility/src/main/java/org/oppia/android/util/threading:annotations",
+    ],
+)
