@@ -17,7 +17,6 @@ kt_jvm_library(
         "//third_party:com_google_guava_guava_jre",
     ],
     exports = [
-    # Added to to push the correct guava version up the dependency chain
         "//third_party:com_google_guava_guava_jre",
     ],
 )
