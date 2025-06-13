@@ -37,17 +37,6 @@ import javax.inject.Singleton
 class TestPlatformParameterModule {
   private val processState by lazy { PlatformParameterProcessState() }
 
-  @TestIntegerParam
-  @Provides
-  @Singleton
-  fun provideTestIntegerParam(
-    platformParameterSingleton: PlatformParameterSingleton
-  ): PlatformParameterValue<Int> {
-    return platformParameterSingleton.getIntegerPlatformParameter(TEST_INTEGER_PARAM_NAME)
-      ?: PlatformParameterValue.createDefaultParameter(TEST_INTEGER_PARAM_DEFAULT_VALUE)
-  }
-
-  @TestBooleanParam
   @Provides
   @Singleton
   fun providePlatformParameterController(
