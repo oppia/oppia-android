@@ -139,6 +139,10 @@ enum FeatureFlagId {
   // Corresponds to a new version of the home screen that supports multiple classrooms (such as
   // mathematics and science).
   MULTIPLE_CLASSROOMS = 15;
+
+  // Corresponds to a feature that enables a UI for quick revision when a learner answers a specific
+  // question incorrectly.
+  FLASHBACK_SUPPORT = 16;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to
@@ -273,4 +277,5 @@ message EphemeralFeatureFlag {
 
   // Indicates the sync status of the feature flag.
   SyncStatus sync_status = 3;
+
 }

@@ -130,7 +130,7 @@ class PlatformParameterModuleTest {
       TestLogReportingModule::class,
       TestModule::class,
       PlatformParameterModule::class,
-      PlatformParameterControllerProdModule::class
+
     ]
   )
   interface TestApplicationComponent {

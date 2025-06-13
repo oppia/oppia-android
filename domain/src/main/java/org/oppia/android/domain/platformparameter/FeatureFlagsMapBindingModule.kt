@@ -9,6 +9,7 @@ import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableExtraTopicTabsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -19,8 +20,8 @@ import org.oppia.android.util.platformparameter.EnablePerformanceMetricsCollecti
 import org.oppia.android.util.platformparameter.EnableSpotlightUi
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 
-/** Dagger module for providing a map of feature flags, per [FeatureFlags]. */
 // TODO(#5835): Remove this module.
+/** Dagger module for providing a map of feature flags, per [FeatureFlags]. */
 @Module
 interface FeatureFlagsMapBindingModule {
   @Binds
@@ -125,5 +126,13 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.MULTIPLE_CLASSROOMS)
   fun bindMultipleClassrooms(
     @EnableMultipleClassrooms param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.FLASHBACK_SUPPORT)
+  fun bindFlashbackSupport(
+    @EnableFlashbackSupport param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 }
