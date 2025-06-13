@@ -3781,8 +3781,9 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerDebugModule.kt"
   test_file_not_required: true
+
 }
-}test_file_exemption {
+test_file_exemption {
    exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterDebugController.kt"
    test_file_not_required: true
  }
