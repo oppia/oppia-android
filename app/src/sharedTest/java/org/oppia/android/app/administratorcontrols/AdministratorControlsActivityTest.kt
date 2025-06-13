@@ -1040,7 +1040,7 @@ class AdministratorControlsActivityTest {
 
     override fun getApplicationInjector(): ApplicationInjector = component
   }
-   @Test
+  @Test
   fun testAdministratorControlsActivity_phonePortrait_uiContentIsCorrect() {
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(profileId)
