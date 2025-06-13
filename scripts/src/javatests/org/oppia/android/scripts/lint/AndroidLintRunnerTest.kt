@@ -209,7 +209,6 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
-
   }
 
   private fun setupAndroidProjectWithDuplicateStrings() {
@@ -228,7 +227,6 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
-
   }
 
   private fun setupAndroidProjectWithUnusedIds() {
