@@ -141,7 +141,7 @@ class FeatureFlagsLoggerTest {
 
   @Test
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
-    val expectedFeatureFlagCount = 13
+    val expectedFeatureFlagCount = 14
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
@@ -166,6 +166,7 @@ class FeatureFlagsLoggerTest {
   @Iteration("nps_survey", "index=10", "flagId=NPS_SURVEY")
   @Iteration("onboarding_flow_v2", "index=11", "flagId=ONBOARDING_FLOW_V2")
   @Iteration("multiple_classrooms", "index=12", "flagId=MULTIPLE_CLASSROOMS")
+  @Iteration("flashback_support", "index=13", "flagId=FLASHBACK_SUPPORT")
   fun testLogFeatureFlags_allFeatureFlagIdsAreLogged() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
