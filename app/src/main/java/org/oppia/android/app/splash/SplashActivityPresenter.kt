@@ -76,14 +76,6 @@ class SplashActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
   private val currentBuildFlavor: BuildFlavor,
-  private val profileManagementController: ProfileManagementController,
-  private val platformParameterController: PlatformParameterController,
-  @EnableAppAndOsDeprecation
-  private val enableAppAndOsDeprecationProvider: Provider<PlatformParameterValue<Boolean>>,
-  @EnableOnboardingFlowV2
-  private val enableOnboardingFlowV2Provider: Provider<PlatformParameterValue<Boolean>>,
-  @EnableMultipleClassrooms
-  private val enableMultipleClassroomsProvider: Provider<PlatformParameterValue<Boolean>>
   private val platformParameterController: PlatformParameterController,
   private val postParamLoadingPresenterProv: Provider<PostParameterLoadingSplashActivityPresenter>
 ) {
@@ -248,40 +240,6 @@ class SplashActivityPresenter @Inject constructor(
       processStartupMode()
     }
 
-  private fun subscribeToPlatformParameterInitialization() {
-    val liveData = platformParameterController.getParameterInitializationStatus().toLiveData()
-    liveData.observe(
-      activity,
-      object : Observer<AsyncResult<Boolean>> {
-        override fun onChanged(result: AsyncResult<Boolean>) {
-          if (result !is AsyncResult.Success) {
-            oppiaLogger.e(
-              "SplashActivity",
-              "Encountered non-successful parameter initialization result: $result."
-            )
-            // Attempt to continue.
-          } else if (!result.value) return // Parameter initialization hasn't completed yet.
-          liveData.removeObserver(this)
-          subscribeToOnboardingFlow()
-        }
-      }
-    )
-  }
-
-  private fun subscribeToOnboardingFlow() {
-    val liveData = computeInitStateDataProvider().toLiveData()
-    liveData.observe(
-      activity,
-      object : Observer<AsyncResult<SplashInitState>> {
-        override fun onChanged(initStateResult: AsyncResult<SplashInitState>) {
-          when (initStateResult) {
-            is AsyncResult.Pending -> {
-              // Ensure that pending states last no longer than 5 seconds. In cases where the app
-              // enters a bad state, this ensures that the user doesn't become stuck on the splash
-              // screen.
-              lifecycleSafeTimerFactory.createTimer(timeoutMillis = 5000).observe(activity) {
-                processInitState(SplashInitState.computeDefault(localeController))
-                
     fun subscribeToOnboardingFlow() {
       val liveData = computeInitStateDataProvider().toLiveData()
       liveData.observe(
@@ -356,25 +314,6 @@ class SplashActivityPresenter @Inject constructor(
             )
           }
         }
-
-        BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
-          showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
-        BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
-          showDialog(
-            GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
-            GeneralAvailabilityUpgradeNoticeDialogFragment::newInstance
-          )
-        }
-      }
-    } else processStartupMode()
-  }
-
-  private fun processStartupMode() {
-    if (enableAppAndOsDeprecationProvider.get().value) {
-      processAppAndOsDeprecationEnabledStartUpMode()
-    } else {
-      processLegacyStartupMode()
-
       } else processStartupMode()
     }
 
@@ -416,16 +355,6 @@ class SplashActivityPresenter @Inject constructor(
         }
       }
     }
-  }
-
-  private fun handleUserOnboarded() {
-    if (enableOnboardingFlowV2Provider.get().value) {
-      getProfileOnboardingState()
-    } else {
-      activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
-      activity.finish()
-    }
-  }
 
     private fun processLegacyStartupMode() {
       when (startupMode) {
@@ -562,11 +491,6 @@ class SplashActivityPresenter @Inject constructor(
       activity.finish()
     }
 
-  private fun launchHomeScreen(profileId: ProfileId) {
-    val intent = if (enableMultipleClassroomsProvider.get().value) {
-      ClassroomListActivity.createClassroomListActivity(activity, profileId)
-    } else {
-      HomeActivity.createHomeActivity(activity, profileId)
     private fun launchOnboardingActivity() {
       activity.startActivity(OnboardingActivity.createOnboardingActivity(activity))
       activity.finish()

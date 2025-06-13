@@ -22,7 +22,6 @@ interface PlatformParameterModule {
     impl: PlatformParameterConfigRetrieverProdImpl
   ): PlatformParameterConfigRetriever
 
-
   // TODO(#5835): Remove this and make PlatformParameterProcessState injectable once the hack for
   //  initializing platform parameters in tests is no longer needed.
   /**
@@ -34,7 +33,6 @@ interface PlatformParameterModule {
     @Singleton
     fun providePlatformParameterProcessState() = PlatformParameterProcessState()
   }
-
 
   // TODO(#5835): Remove this and make PlatformParameterControllerProdImpl injectable once the hack
   //  for initializing platform parameters in tests is no longer needed.
