@@ -1,0 +1,17 @@
+"""
+Libraries corresponding to developer script that help with Android Lint analysis.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "android_lint_runner",
+    testonly = True,
+    srcs = [
+        "AndroidLintRunner.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        "//third_party:com_android_tools_lint_lint",
+    ],
+)

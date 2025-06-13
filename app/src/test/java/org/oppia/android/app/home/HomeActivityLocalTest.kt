@@ -217,6 +217,7 @@ class HomeActivityLocalTest {
       testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(false)
@@ -236,6 +237,7 @@ class HomeActivityLocalTest {
     executeInPreviousAppInstance { testComponent ->
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(false)
@@ -270,6 +272,7 @@ class HomeActivityLocalTest {
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getProfileTestHelper().markProfileOnboardingEnded(profileId)
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)
