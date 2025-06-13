@@ -19,14 +19,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/feature_flag_app_bar_layout">
+        app:layout_constraintTop_toBottomOf="@id/feature_flag_app_bar_layout"
+        android:background="@color/component_color_shared_screen_tertiary_background_color">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/feature_flag_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            android:background="@color/component_color_shared_item_background_solid_color">
 
             <TextView
                 android:id="@+id/feature_flag_label_text_view"
@@ -69,8 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="@color/component_color_shared_screen_tertiary_background_color">
+            android:paddingEnd="16dp">
 
             <TextView
                 android:id="@+id/sync_status_text_view"
@@ -113,7 +114,6 @@
             android:id="@+id/reset_server_defaults_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:background="@color/component_color_shared_screen_tertiary_background_color"
             android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}">
 
             <TextView
