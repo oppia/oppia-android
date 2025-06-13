@@ -10,13 +10,28 @@ import org.oppia.android.domain.platformparameter.PlatformParameterDebugControll
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
+import org.oppia.android.util.locale.OppiaLocale
 
+/**
+ * [ViewModel] for [FeatureFlagFragment]. It populates the recycler view with a list of
+ * [FeatureFlagItemViewModel] which in turn display the available feature flags.
+ */
 @FragmentScope
 class FeatureFlagViewModel @Inject constructor(
-  private val platformParameterDebugController: PlatformParameterDebugController
+  private val platformParameterDebugController: PlatformParameterDebugController,
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val displayLocale: OppiaLocale.DisplayLocale
 ) : ObservableViewModel() {
 
   private val _featureFlagList = MutableLiveData<List<FeatureFlagItemViewModel>>()
+
+  /**
+   * List of [FeatureFlagItemViewModel] used to populate recycler view of [FeatureFlagFragment]
+   * to display the available feature flags.
+   */
   val featureFlagList: LiveData<List<FeatureFlagItemViewModel>> = _featureFlagList
 
   init {
@@ -27,67 +42,73 @@ class FeatureFlagViewModel @Inject constructor(
     val dataProvider = platformParameterDebugController.loadEphemeralFeatureFlags()
     dataProvider.toLiveData().observeForever { result ->
       when (result) {
-        is AsyncResult.Success ->
-          _featureFlagList.value = processFeatureFlagList(result.value)
+        is AsyncResult.Success -> _featureFlagList.value = processFeatureFlagList(result.value)
+        else -> _featureFlagList.value = listOf()
+      }
+    }
+  }
 
-        else -> {
-          _featureFlagList.value = listOf()
-        }
+  private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
+    List<FeatureFlagItemViewModel> {
+
+    return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
+      val featureFlagName = formatFeatureFlagName(ephemeralFeatureFlag.id.name)
+      val syncStatusText = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
+      val isResetAvailable = canReset(ephemeralFeatureFlag)
+
+      FeatureFlagItemViewModel(
+        featureFlagName = featureFlagName,
+        syncStatus = syncStatusText,
+        isResetAvailable = isResetAvailable,
+        currentValue = ephemeralFeatureFlag.currentValue,
+        syncStatusBackground = getSyncStatusBackground(syncStatusText)
+      )
+    }
+  }
+
+private fun formatFeatureFlagName(flagId: String): String {
+  return flagId.replace("_", " ").split(" ").joinToString(" ") { word ->
+    machineLocale.run {
+      word.toMachineLowerCase().capitalizeForMachines()
+    }.let { machineCasedWord ->
+      displayLocale.run {
+        machineCasedWord.capitalizeForHumans()
       }
     }
   }
 }
 
-private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
-  List<FeatureFlagItemViewModel> {
-    val list = mutableListOf<FeatureFlagItemViewModel>()
-    ephemeralFeatureFlags.forEach { ephemeralFeatureFlag ->
-      val featureFlagName = formatFeatureFlagName(ephemeralFeatureFlag.id.name)
-      val syncStatusText = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
-      val isResetAvailable = canReset(ephemeralFeatureFlag)
 
-      list.add(
-        FeatureFlagItemViewModel(
-          featureFlagName = featureFlagName,
-          syncStatus = syncStatusText,
-          isResetAvailable = isResetAvailable,
-          currentValue = ephemeralFeatureFlag.currentValue,
-          syncStatusBackground = getSyncStatusBackground(syncStatusText)
-        )
-      )
+
+  private fun getSyncStatusText(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.SYNC_STATUS_UNSPECIFIED -> "Unknown"
+      SyncStatus.NOT_SYNCED_FROM_SERVER -> "Default"
+      SyncStatus.SYNCED_FROM_SERVER -> "Server"
+      else -> "Unknown"
     }
-    return list
   }
 
-private fun formatFeatureFlagName(flagId: String): String {
-  return flagId.replace("_", " ").split(" ").joinToString(" ") { word ->
-    word.lowercase().replaceFirstChar { it.uppercase() }
+  /**
+   * Returns the background drawable resource ID corresponding to the provided sync status string.
+   *
+   * @param syncStatus the string representation of the sync status for which to retrieve the background.
+   * @return the drawable resource ID to use as the background for this sync status.
+   */
+  fun getSyncStatusBackground(syncStatus: String): Int {
+    return when (syncStatus) {
+      "Server" -> R.drawable.rounded_rec_large_border_radius_green
+      "Overriden" -> R.drawable.rounded_rect_large_border_radius_yellow
+      "Default" -> R.drawable.rounded_rect_large_border_radius
+      else -> R.drawable.rounded_rec_large_border_radius_green
+    }
   }
-}
 
-private fun getSyncStatusText(syncStatus: SyncStatus): String {
-  return when (syncStatus) {
-    SyncStatus.SYNC_STATUS_UNSPECIFIED -> "Unknown"
-    SyncStatus.NOT_SYNCED_FROM_SERVER -> "Default"
-    SyncStatus.SYNCED_FROM_SERVER -> "Server"
-    else -> "Unknown"
+  private fun canReset(ephemeralFeatureFlag: EphemeralFeatureFlag): Boolean {
+    // modify this logic when overriding is enabled.
+    return (
+      ephemeralFeatureFlag.syncStatus != SyncStatus.SYNCED_FROM_SERVER &&
+        ephemeralFeatureFlag.syncStatus != SyncStatus.NOT_SYNCED_FROM_SERVER
+      )
   }
-}
-
-fun getSyncStatusBackground(syncStatus: String): Int {
-  return when (syncStatus) {
-    "Server" -> org.oppia.android.app.R.drawable.rounded_rec_large_border_radius_green
-    "Overriden" -> org.oppia.android.app.R.drawable.rounded_rect_large_border_radius_yellow
-    "Default" -> org.oppia.android.app.R.drawable.rounded_rect_large_border_radius
-    else
-    -> org.oppia.android.app.R.drawable.rounded_rec_large_border_radius_green
-  }
-}
-
-private fun canReset(ephemeralFeatureFlag: EphemeralFeatureFlag): Boolean {
-  // modify this logic when overriding is enabled.
-  return (
-    ephemeralFeatureFlag.syncStatus != SyncStatus.SYNCED_FROM_SERVER &&
-      ephemeralFeatureFlag.syncStatus != SyncStatus.NOT_SYNCED_FROM_SERVER
-    )
 }
