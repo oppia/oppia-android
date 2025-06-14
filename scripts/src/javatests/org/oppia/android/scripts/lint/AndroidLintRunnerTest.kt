@@ -152,6 +152,20 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testRunLint_withExitCode4_throwsException() {
+    val reportPath = File(tempFolder.root, "lint-report.xml")
+    val projectPath = File(tempFolder.root, "lint-project-description.xml")
+    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+
+    // Won't happen in actual usage.
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(arrayOf("--help"))
+    }
+    assertThat(exception.message).contains("Lint analysis failed with exit code 4")
+    assertThat(exception.message).contains("Help command invoked.")
+  }
+
+  @Test
   fun testRunLint_withExitCode5_throwsException() {
     val reportPath = File(tempFolder.root, "lint-report.xml")
     val projectPath = File(tempFolder.root, "lint-project-description.xml")
