@@ -81,6 +81,20 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testRunLint_withInvalidFlag_throwsException() {
+
+    val reportPath = File(tempFolder.root, "report.xml").absolutePath
+    val projectPath = File(tempFolder.root, "project.xml").absolutePath
+    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(arrayOf("--InvalidFlag"))
+    }
+
+    assertThat(exception.message).contains("Lint analysis failed with exit code 5")
+    assertThat(exception.message).contains("Invalid command-line argument")
+  }
+
+  @Test
   fun testRunLint_missingApplicationIcon_detectsIssue() {
     setupAndroidProjectWithoutApplicationIcon()
     val lintRunner = createLintRunner()
