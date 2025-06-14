@@ -52,6 +52,8 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -118,7 +120,8 @@ class ExplorationProgressController @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
+  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -703,7 +706,8 @@ class ExplorationProgressController @Inject constructor(
 
             // Checks whether the learner submitted a wrong answer and the expected destination name
             // was previously visited.
-            if (!doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
+            if (enableFlashbackSupport.value &&
+              !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
               !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
             ) {
               explorationProgress.stateDeck.addFlashbackState(answerOutcome.stateName)
