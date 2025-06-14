@@ -19,7 +19,6 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:cpu_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
-        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/translation:translation_controller",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/data:data_provider_test_monitor",
