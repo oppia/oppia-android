@@ -507,12 +507,12 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagActivityFragment.kt"
-  test_file_not_required: true
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagFragment.kt"
+  source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagFragmentPresenter.kt"
-  source_file_is_incompatible_with_code_coverage: true
+   test_file_not_required: true
  }
 test_file_exemption {
    exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagViewModel.kt"
