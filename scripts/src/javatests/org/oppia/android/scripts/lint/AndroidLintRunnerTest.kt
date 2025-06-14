@@ -62,9 +62,9 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testPrepareLintArguments_includesRequiredFlags() {
-    val reportPath = File(tempFolder.root, "report.xml").absolutePath
-    val projectPath = File(tempFolder.root, "project.xml").absolutePath
-    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     val result = lintRunner.prepareLintArguments()
 
@@ -75,17 +75,185 @@ class AndroidLintRunnerTest {
       "--showall",
       "--exitcode",
       "--offline",
-      "--project", projectPath,
-      "--xml", reportPath
+      "--project", projectFile.absolutePath,
+      "--xml", reportFile.absolutePath
     )
+  }
+
+  @Test
+  fun testRunLint_withExitCode0_handlesErrorsGracefully() {
+    setupAndroidProjectWithUnusedResources()
+    val lintRunner = createLintRunner()
+    lintRunner.runLint(lintRunner.prepareLintArguments())
+
+    val output = outputStream.toString()
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testRunLint_withExitCode1_handlesGracefully() {
+    setupAndroidProjectWithInvalidId()
+    val lintRunner = createLintRunner()
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments())
+    }
+
+    val reportFile = File(tempFolder.root, "lint-report.xml")
+    assertThat(reportFile.exists()).isTrue()
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testRunLint_withExitCode2_throwsException() {
+    setupAndroidProjectWithInvalidId()
+    val lintRunner = createLintRunner()
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(emptyArray())
+    }
+
+    assertThat(exception.message).contains(
+      "Lint analysis failed with exit code 2:" +
+        " Invalid usage of Lint command."
+    )
+  }
+
+  @Test
+  fun testRunLint_withExitCode3_throwsExceptionForFileOverwrite() {
+    val outputDirectory = File(tempFolder.root, "reports")
+    outputDirectory.mkdirs()
+
+    val reportPath = File(outputDirectory, "lint-report.xml")
+    reportPath.createNewFile()
+    reportPath.writeText("existing content")
+
+    val disabledWrite = outputDirectory.setWritable(false)
+    assertThat(disabledWrite).isTrue()
+
+    val projectPath = createProjectDescriptionFile()
+    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments())
+    }
+
+    assertThat(exception.message).contains("Lint analysis failed with exit code 3")
+    assertThat(exception.message).contains("Cannot overwrite existing file")
+
+    outputDirectory.setWritable(true)
+  }
+
+  @Test
+  fun testRunLint_withExitCode5_throwsException() {
+
+    val reportPath = File(tempFolder.root, "lint-report.xml")
+
+    val projectPath = File(tempFolder.root, "lint-project-description.xml")
+    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments())
+    }
+    assertThat(exception.message).contains("Lint analysis failed with exit code 5")
+    assertThat(exception.message).contains("Invalid command-line argument")
+  }
+
+  @Test
+  fun testRunLint_multipleIssueTypes_detectsAll() {
+    testBazelWorkspace.initEmptyWorkspace()
+    createProjectStructure()
+    createBasicManifest()
+
+    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
+    layoutFile.writeText(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+          <!-- Hardcoded text -->
+          <TextView
+              android:id="@+id/unused_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="16dp"
+              android:text="Hardcoded text here" />
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+              <Button
+                  android:id="@+id/another_unused_id"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Click me" />
+          </LinearLayout>
+      </LinearLayout>
+      """.trimIndent()
+    )
+
+    createBasicStringResources()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments())
+
+    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportContent = reportFile.readText()
+    assertThat(reportContent).contains("HardcodedText")
+    assertThat(reportContent).contains("RtlHardcoded")
+    assertThat(reportContent).contains("UnusedIds")
+  }
+
+  @Test
+  fun testRunLint_withProjectDescription_withNonExistentFilePath_throwsInternalIssue() {
+    testBazelWorkspace.initEmptyWorkspace()
+    createProjectStructure()
+    createBasicManifest()
+    createBasicStringResources()
+
+    // Create project description with incorrect source directory path
+    val projectDescriptionFile = File(tempFolder.root, "lint-project-description.xml")
+    val rootPath = tempFolder.root.absolutePath
+    val wrongSrcPath = "$rootPath/app/src/main/nonexistent_java"
+
+    projectDescriptionFile.writeText(
+      """
+      <?xml version="1.0" encoding="UTF-8"?>
+      <project android="true" incomplete="false" desugar="full" client="cli">
+        <root dir="$rootPath"/>
+        <module name="app" library="false" android="true" compile-sdk-version="34"
+                javaLanguage="11" kotlinLanguage="1.6">
+          <manifest file="$rootPath/app/src/main/AndroidManifest.xml"/>
+          <src dir="$wrongSrcPath"/>
+          <resource dir="$rootPath/app/src/main/res"/>
+        </module>
+      </project>
+      """.trimIndent()
+    )
+
+    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val lintRunner = AndroidLintRunner(
+      reportFile = reportFile,
+      projectDescriptionFile = projectDescriptionFile
+    )
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments())
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED WITH INTERNAL LINT ISSUES$RESET")
+    assertThat(reportFile.exists()).isTrue()
+    val report = reportFile.readText()
+    assertThat(report).contains("LintError")
+    assertThat(report).contains("app/src/main/nonexistent_java does not exist")
+    assertThat(report).contains("line=\"7\"")
   }
 
   @Test
   fun testRunLint_withInvalidFlag_throwsException() {
 
-    val reportPath = File(tempFolder.root, "report.xml").absolutePath
-    val projectPath = File(tempFolder.root, "project.xml").absolutePath
-    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(arrayOf("--InvalidFlag"))
     }
@@ -181,8 +349,8 @@ class AndroidLintRunnerTest {
   fun testRunLint_groupBySeverity_reportsIssuesCorrectly() {
     setupAndroidProjectWithHardcodedText()
     val lintRunner = AndroidLintRunner(
-      reportPath = File(tempFolder.root, "lint-report.xml").absolutePath,
-      projectDescriptionPath = createProjectDescriptionFile().absolutePath,
+      reportFile = File(tempFolder.root, "lint-report.xml"),
+      projectDescriptionFile = createProjectDescriptionFile(),
       groupByIssueSeverity = true
     )
 
@@ -196,11 +364,11 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testRunLint_groupByFilePath_reportsIssuesCorrectly() {
+  fun testRunLint_defaultGroupByFilePath_reportsIssuesCorrectly() {
     setupAndroidProjectWithUnusedResources()
     val lintRunner = AndroidLintRunner(
-      reportPath = File(tempFolder.root, "lint-report.xml").absolutePath,
-      projectDescriptionPath = createProjectDescriptionFile().absolutePath,
+      reportFile = File(tempFolder.root, "lint-report.xml"),
+      projectDescriptionFile = createProjectDescriptionFile(),
     )
 
     lintRunner.runLint(lintRunner.prepareLintArguments())
@@ -220,8 +388,8 @@ class AndroidLintRunnerTest {
     val projectDescriptionFile = createProjectDescriptionFile()
 
     return AndroidLintRunner(
-      reportPath = reportFile.absolutePath,
-      projectDescriptionPath = projectDescriptionFile.absolutePath
+      reportFile = reportFile,
+      projectDescriptionFile = projectDescriptionFile
     )
   }
 

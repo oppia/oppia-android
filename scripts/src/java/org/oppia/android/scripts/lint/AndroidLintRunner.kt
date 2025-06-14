@@ -34,8 +34,8 @@ fun main(vararg args: String) {
   val reportFile = File(parentDestDir, "lint-report.xml")
   val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
   val lintRunner = AndroidLintRunner(
-    reportPath = reportFile.absolutePath,
-    projectDescriptionPath = projectDescriptionFile.absolutePath,
+    reportFile = reportFile,
+    projectDescriptionFile = projectDescriptionFile,
     groupByIssueSeverity = groupByIssueSeverity
   )
   val cliArgs = lintRunner.prepareLintArguments()
@@ -45,8 +45,8 @@ fun main(vararg args: String) {
 
 /** Runs the Android Lint tool and reports issues. */
 class AndroidLintRunner(
-  private val reportPath: String,
-  private val projectDescriptionPath: String,
+  private val reportFile: File,
+  private val projectDescriptionFile: File,
   private val groupByIssueSeverity: Boolean = false
 ) {
 
@@ -70,7 +70,7 @@ class AndroidLintRunner(
       "Lint analysis failed with exit code $exitCode: $reason"
     }
     val reporter = LintAnalysisReporter()
-    val issues = reporter.parseLintReport(reportPath)
+    val issues = reporter.parseLintReport(reportFile.absolutePath)
     reporter.printLintReport(
       issues,
       groupByIssueSeverity,
@@ -89,7 +89,7 @@ class AndroidLintRunner(
     "--showall",
     "--exitcode",
     "--offline",
-    "--project", projectDescriptionPath,
-    "--xml", reportPath
+    "--project", projectDescriptionFile.absolutePath,
+    "--xml", reportFile.absolutePath
   )
 }
