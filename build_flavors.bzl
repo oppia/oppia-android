@@ -58,6 +58,7 @@ _FLAVOR_METADATA = {
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
+            "//config/src/java/org/oppia/android/config:alpha_feature_flags_override_config",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
@@ -71,6 +72,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+            "//config/src/java/org/oppia/android/config:beta_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_BETA_VERSION_CODE,
@@ -85,6 +87,7 @@ _FLAVOR_METADATA = {
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+            "//config/src/java/org/oppia/android/config:ga_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_GA_VERSION_CODE,
