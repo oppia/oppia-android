@@ -11,6 +11,7 @@ kt_jvm_test(
         "//scripts/src/java/org/oppia/android/scripts/lint:android_lint_runner",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",
+        "//third_party:com_android_tools_lint_lint-tests",
         "//third_party:com_google_truth_truth",
     ],
 )
