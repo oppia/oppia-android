@@ -179,9 +179,7 @@ class AndroidLintRunnerTest {
     assertThat(outputContent).contains("app/src/main/res/layout/activity_main.xml")
     assertThat(outputContent).contains("Line: 9")
     assertThat(outputContent).contains("android:text=\"Hardcoded text here\" />")
-
   }
-
 
   @Test
   fun testRunLint_groupByFilePath_reportsIssuesCorrectly() {
@@ -197,8 +195,10 @@ class AndroidLintRunnerTest {
     assertThat(outputContent).contains("app/src/main/res/values/strings.xml")
     assertThat(outputContent).contains("Issue #1: UnusedResources")
     assertThat(outputContent).contains("Line: 4")
-    assertThat(outputContent).contains("<string name=\"unused_string\">This" +
-      " string is never used</string>")
+    assertThat(outputContent).contains(
+      "<string name=\"unused_string\">This" +
+        " string is never used</string>"
+    )
   }
 
   private fun createLintRunner(): AndroidLintRunner {
