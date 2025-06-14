@@ -16,6 +16,7 @@ kt_android_library(
     ],
     deps = [
         "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_impl",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//domain/src/main/java/org/oppia/android/domain/platformparameter/testing:test_platform_parameter_config_retriever",
