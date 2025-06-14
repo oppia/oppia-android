@@ -5,14 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.translation.AppLanguageResourceHandler
-import org.oppia.android.app.view.models.R
-import org.oppia.android.util.locale.OppiaLocale
 
 /**
  * [ViewModel] for [FeatureFlagFragment]. It populates the recycler view with a list of
@@ -21,9 +19,6 @@ import org.oppia.android.util.locale.OppiaLocale
 @FragmentScope
 class FeatureFlagViewModel @Inject constructor(
   private val platformParameterDebugController: PlatformParameterDebugController,
-  private val resourceHandler: AppLanguageResourceHandler,
-  private val machineLocale: OppiaLocale.MachineLocale,
-  private val displayLocale: OppiaLocale.DisplayLocale
 ) : ObservableViewModel() {
 
   private val _featureFlagList = MutableLiveData<List<FeatureFlagItemViewModel>>()
@@ -51,34 +46,27 @@ class FeatureFlagViewModel @Inject constructor(
   private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
     List<FeatureFlagItemViewModel> {
 
-    return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
-      val featureFlagName = formatFeatureFlagName(ephemeralFeatureFlag.id.name)
-      val syncStatusText = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
-      val isResetAvailable = canReset(ephemeralFeatureFlag)
+      return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
+        val featureFlagName = formatFeatureFlagName(ephemeralFeatureFlag.id.name)
+        val syncStatusText = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
+        val isResetAvailable = canReset(ephemeralFeatureFlag)
 
-      FeatureFlagItemViewModel(
-        featureFlagName = featureFlagName,
-        syncStatus = syncStatusText,
-        isResetAvailable = isResetAvailable,
-        currentValue = ephemeralFeatureFlag.currentValue,
-        syncStatusBackground = getSyncStatusBackground(syncStatusText)
-      )
-    }
-  }
-
-private fun formatFeatureFlagName(flagId: String): String {
-  return flagId.replace("_", " ").split(" ").joinToString(" ") { word ->
-    machineLocale.run {
-      word.toMachineLowerCase().capitalizeForMachines()
-    }.let { machineCasedWord ->
-      displayLocale.run {
-        machineCasedWord.capitalizeForHumans()
+        FeatureFlagItemViewModel(
+          featureFlagName = featureFlagName,
+          syncStatus = syncStatusText,
+          isResetAvailable = isResetAvailable,
+          currentValue = ephemeralFeatureFlag.currentValue,
+          syncStatusBackground = getSyncStatusBackground(syncStatusText)
+        )
       }
     }
+
+  private fun formatFeatureFlagName(flagId: String): String {
+    // Convert "DOWNLOADS_SUPPORT" to "Downloads Support"
+    return flagId.replace("_", " ").split(" ").joinToString(" ") { word ->
+      word.lowercase().replaceFirstChar { it.uppercase() }
+    }
   }
-}
-
-
 
   private fun getSyncStatusText(syncStatus: SyncStatus): String {
     return when (syncStatus) {

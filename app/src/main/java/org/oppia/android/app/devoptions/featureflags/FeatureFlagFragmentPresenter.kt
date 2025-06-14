@@ -73,6 +73,7 @@ class FeatureFlagFragmentPresenter @Inject constructor(
     binding.viewModel = model
     binding.isEnabled = model.currentValue
     binding.syncStatusValueTextView.setBackgroundResource(
-      featureFlagViewModel.getSyncStatusBackground(model.syncStatus))
+      featureFlagViewModel.getSyncStatusBackground(model.syncStatus)
+    )
   }
 }

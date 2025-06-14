@@ -334,4 +334,8 @@
   <color name="component_color_classroom_topic_list_background_color">@color/color_palette_classroom_topic_list_background_color</color>
   <color name="component_color_classroom_promoted_list_classroom_label_color">@color/color_palette_classroom_promoted_list_classroom_label_color</color>
   <color name="component_color_classroom_promoted_list_card_background_color">@color/color_palette_classroom_promoted_list_card_background_color</color>
+  <!-- Feature Flag Activity -->
+  <color name="component_color_feature_flag_server_sync_status_background_color">@color/color_palette_feature_flag_server_sync_status_background_color</color>
+  <color name="component_color_feature_flag_default_sync_status_background_color">@color/color_palette_feature_flag_default_sync_status_background_color</color>
+  <color name="component_color_feature_flag_overriden_sync_status_background_color">@color/color_palette_feature_flag_overriden_sync_status_background_color</color>
 </resources>
