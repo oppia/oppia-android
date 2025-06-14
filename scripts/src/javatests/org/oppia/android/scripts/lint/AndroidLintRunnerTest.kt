@@ -12,7 +12,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-/** Tests for [AndroidLintRunner] that verify lint issue detection. */
+/** Tests for [AndroidLintRunner]. */
+// Function name: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 class AndroidLintRunnerTest {
   @field:[Rule JvmField]
