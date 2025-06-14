@@ -163,6 +163,44 @@ class AndroidLintRunnerTest {
     verifyLintReportContains("InvalidId")
   }
 
+  @Test
+  fun testRunLint_groupBySeverity_reportsIssuesCorrectly() {
+    setupAndroidProjectWithHardcodedText()
+    val lintRunner = AndroidLintRunner(
+      reportPath = File(tempFolder.root, "lint-report.xml").absolutePath,
+      projectDescriptionPath = createProjectDescriptionFile().absolutePath,
+      groupByIssueSeverity = true
+    )
+
+    lintRunner.runLint(lintRunner.prepareLintArguments())
+    val outputContent = outputStream.toString()
+    assertThat(outputContent).contains("SEVERITY: WARNING")
+    assertThat(outputContent).contains("HardcodedText")
+    assertThat(outputContent).contains("app/src/main/res/layout/activity_main.xml")
+    assertThat(outputContent).contains("Line: 9")
+    assertThat(outputContent).contains("android:text=\"Hardcoded text here\" />")
+
+  }
+
+
+  @Test
+  fun testRunLint_groupByFilePath_reportsIssuesCorrectly() {
+    setupAndroidProjectWithUnusedResources()
+    val lintRunner = AndroidLintRunner(
+      reportPath = File(tempFolder.root, "lint-report.xml").absolutePath,
+      projectDescriptionPath = createProjectDescriptionFile().absolutePath,
+    )
+
+    lintRunner.runLint(lintRunner.prepareLintArguments())
+    val outputContent = outputStream.toString()
+    assertThat(outputContent).contains("FILE:")
+    assertThat(outputContent).contains("app/src/main/res/values/strings.xml")
+    assertThat(outputContent).contains("Issue #1: UnusedResources")
+    assertThat(outputContent).contains("Line: 4")
+    assertThat(outputContent).contains("<string name=\"unused_string\">This" +
+      " string is never used</string>")
+  }
+
   private fun createLintRunner(): AndroidLintRunner {
     val reportFile = File(tempFolder.root, "lint-report.xml")
     val projectDescriptionFile = createProjectDescriptionFile()
