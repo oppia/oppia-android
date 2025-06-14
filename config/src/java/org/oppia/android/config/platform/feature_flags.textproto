@@ -63,3 +63,8 @@ feature_flag_definition {
   remote_server_name: "enable_multiple_classrooms"
   default_is_enabled: false
 }
+feature_flag_definition {
+  id: FLASHBACK_SUPPORT
+  remote_server_name: "android_enable_flashback_support"
+  default_is_enabled: false
+}
