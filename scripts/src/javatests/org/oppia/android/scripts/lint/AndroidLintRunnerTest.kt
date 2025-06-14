@@ -656,7 +656,7 @@ class AndroidLintRunnerTest {
     val rootPath = tempFolder.root.absolutePath
 
     projectDescriptionFile.writeText(
-      createProjectDescriptionContent(
+      createMinimalProjectDescriptionContent(
         rootPath = rootPath,
         srcPath = "$rootPath/app/src/main/java"
       )
@@ -671,7 +671,7 @@ class AndroidLintRunnerTest {
     val wrongSrcPath = "$rootPath/app/src/main/nonexistent_java"
 
     projectDescriptionFile.writeText(
-      createProjectDescriptionContent(
+      createMinimalProjectDescriptionContent(
         rootPath = rootPath,
         srcPath = wrongSrcPath
       )
@@ -680,7 +680,7 @@ class AndroidLintRunnerTest {
     return projectDescriptionFile
   }
 
-  private fun createProjectDescriptionContent(rootPath: String, srcPath: String): String {
+  private fun createMinimalProjectDescriptionContent(rootPath: String, srcPath: String): String {
     return """
       <?xml version="1.0" encoding="UTF-8"?>
       <project android="true" incomplete="false" desugar="full" client="cli">
