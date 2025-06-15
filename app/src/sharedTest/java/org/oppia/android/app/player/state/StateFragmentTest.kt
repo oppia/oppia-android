@@ -5400,7 +5400,7 @@ class StateFragmentTest {
 
   @Test
   fun testFlashback_onSubmitWrongMultipleChoiceAnswer_flashbackButtonIsVisible() {
-    setUpTestWithLanguageSwitchingFeatureOff()
+    setUpTestWithFlashbackFeatureOn()
     launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -5430,8 +5430,39 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testFragment_flashbackFeatureOff_onSubmitWrongMultipleChoiceAnswer_flashbackButtonIsNotVisible() { // ktlint-disable max-line-length
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughToMultipleChoiceStateWithFlashbackDest()
+
+      // Select an incorrect answer in a multiple-choice interaction and submit.
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.selection_interaction_recyclerview,
+          position = 1,
+          targetViewId = R.id.multiple_choice_content_text_view
+        )
+      ).perform(click())
+      clickSubmitAnswerButton()
+
+      // Verify continue button is visible.
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
+
+      // Verify submit button is not visible.
+      onView(withId(R.id.submit_answer_button)).check(doesNotExist())
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testFlashback_onSubmitWrongMultipleChoiceAnswer_retainStateOnConfigurationChange() {
-    setUpTestWithLanguageSwitchingFeatureOff()
+    setUpTestWithFlashbackFeatureOn()
     launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
@@ -6116,6 +6147,16 @@ class StateFragmentTest {
 
   private fun setUpTestWithSurveyFeatureOff() {
     TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOn() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOff() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     setUpTest()
   }
 
