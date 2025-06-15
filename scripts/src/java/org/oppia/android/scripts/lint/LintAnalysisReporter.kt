@@ -225,8 +225,10 @@ class LintAnalysisReporter {
   /** Prints the details for a specific issue ID within a severity group. */
   private fun printIssueGroupBySeverity(issueId: String, issuesForId: List<LintIssue>) {
     val sortedIssues = issuesForId.sortedWith(
-      compareBy({ it.locations.firstOrNull()?.file ?: "" },
-        { it.locations.firstOrNull()?.lineNumber?.toIntOrNull() ?: 0 })
+      compareBy(
+        { it.locations.firstOrNull()?.file ?: "" },
+        { it.locations.firstOrNull()?.lineNumber?.toIntOrNull() ?: 0 }
+      )
     )
 
     sortedIssues.forEach { issue ->
