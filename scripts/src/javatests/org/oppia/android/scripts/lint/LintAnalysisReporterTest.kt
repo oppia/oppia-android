@@ -840,6 +840,40 @@ class LintAnalysisReporterTest {
   }
 
   @Test
+  fun testPrintLintReport_severityGrouping_printsAllIssuesSeparately() {
+    val issue1 = warningIssue.copy(
+      id = "SameIssueId",
+      message = "First issue message",
+      locations = listOf(LintLocation("test_file.kt", "10"))
+    )
+    val issue2 = warningIssue.copy(
+      id = "SameIssueId",
+      message = "Second issue message",
+      locations = listOf(LintLocation("test_file.kt", "10"))
+    )
+    val issue3 = warningIssue.copy(
+      id = "SameIssueId",
+      message = "Third issue message",
+      locations = listOf(LintLocation("another_file.kt", "5"))
+    )
+    val issues = listOf(issue1, issue2, issue3)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
+    assertThat(issueIdCount).isEqualTo(3)
+
+    assertThat(output).contains("First issue message")
+    assertThat(output).contains("Second issue message")
+    assertThat(output).contains("Third issue message")
+
+    val anotherFilePos = output.indexOf("File: another_file.kt")
+    val testFilePos = output.indexOf("File: test_file.kt")
+    assertThat(anotherFilePos).isLessThan(testFilePos)
+  }
+
+  @Test
   fun testPrintLintReport_singleLocationIssue_groupBySeverity_printsFileAndLine() {
     val issues = listOf(warningIssue)
 

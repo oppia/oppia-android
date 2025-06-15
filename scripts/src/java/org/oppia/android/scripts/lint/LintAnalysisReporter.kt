@@ -128,9 +128,8 @@ class LintAnalysisReporter {
     val xmlFile = File(xmlFilePath).absoluteFile
     check(xmlFile.exists()) { "Lint report file not found: $xmlFilePath" }
 
-    val maxFileSize = MAX_FILE_SIZE
-    check(xmlFile.length() <= maxFileSize) {
-      "Lint report file too large: ${xmlFile.length()} bytes (max: $maxFileSize)"
+    check(xmlFile.length() <= MAX_FILE_SIZE) {
+      "Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)"
     }
 
     val fileHash = calculateSha1(xmlFile.absolutePath)
@@ -225,33 +224,37 @@ class LintAnalysisReporter {
 
   /** Prints the details for a specific issue ID within a severity group. */
   private fun printIssueGroupBySeverity(issueId: String, issuesForId: List<LintIssue>) {
-    val representativeIssue = issuesForId.first()
+    val sortedIssues = issuesForId.sortedWith(
+      compareBy({ it.locations.firstOrNull()?.file ?: "" },
+        { it.locations.firstOrNull()?.lineNumber?.toIntOrNull() ?: 0 })
+    )
 
-    println("\n$BOLD Issue ID: $issueId$RESET")
-    println("  ${colorizeSeverity(representativeIssue.severity)}")
+    sortedIssues.forEach { issue ->
+      println("\n$BOLD Issue ID: $issueId$RESET")
+      println("  ${colorizeSeverity(issue.severity)}")
 
-    val allLocations = issuesForId.flatMap { it.locations }
-      .distinctBy { "${it.file}:${it.lineNumber}" }
-      .sortedWith(compareBy({ it.file }, { it.lineNumber.toIntOrNull() ?: 0 }))
-
-    if (allLocations.size == 1) {
-      val location = allLocations.first()
-      println("  File: ${location.file}")
-      if (location.lineNumber.isNotBlank()) {
-        println("  Line: ${location.lineNumber}")
-      }
-    } else {
-      println("  Locations:")
-      allLocations.forEachIndexed { index, location ->
-        println("    ${index + 1}. File: ${location.file}")
+      if (issue.locations.size == 1) {
+        val location = issue.locations.first()
+        println("  File: ${location.file}")
         if (location.lineNumber.isNotBlank()) {
-          println("       Line: ${location.lineNumber}")
+          println("  Line: ${location.lineNumber}")
+        }
+      } else {
+        println("  Locations:")
+        val sortedLocations = issue.locations.sortedWith(
+          compareBy({ it.file }, { it.lineNumber.toIntOrNull() ?: 0 })
+        )
+        sortedLocations.forEachIndexed { index, location ->
+          println("    ${index + 1}. File: ${location.file}")
+          if (location.lineNumber.isNotBlank()) {
+            println("       Line: ${location.lineNumber}")
+          }
         }
       }
-    }
 
-    printIssueBasicInfo(representativeIssue)
-    println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+      printIssueBasicInfo(issue)
+      println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+    }
   }
 
   /** Prints issues grouped by file path. */
