@@ -207,6 +207,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     Intents.init()
+    TestPlatformParameterModule.forceEnableSpotlightUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
     profileTestHelper.initializeProfiles()
@@ -215,6 +216,7 @@ class ExplorationActivityTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
