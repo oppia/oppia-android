@@ -73,11 +73,11 @@ class AndroidLintRunnerTest {
 
     val rootPath = tempFolder.root
     // TODO(#5734): Update test after implementing project description
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       main(rootPath.absolutePath) // Currently returns error code due to missing description
     }
     assertThat(exception.message).contains(
-      "Lint analysis failed with exit code 2: Invalid usage of Lint command."
+      "Lint analysis failed with exit code 5: Invalid command-line argument"
     )
   }
 
