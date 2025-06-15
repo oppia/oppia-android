@@ -312,6 +312,9 @@
         android:name=".app.devoptions.featureflags.testing.FeatureFlagsTestActivity"
         android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+        android:name=".app.devoptions.featureflags.testing.FeatureFlagTestActivity"
+        android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity android:name=".app.policies.PoliciesActivity"
