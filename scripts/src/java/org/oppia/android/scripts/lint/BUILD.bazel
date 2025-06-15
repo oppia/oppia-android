@@ -14,7 +14,8 @@ kt_jvm_library(
     # Added to to push the JRE guava version up the dependency chain
     exports = ["//third_party:com_google_guava_guava_jre"],
     deps = [
-        "//scripts/src/java/org/oppia/android/scripts/lint:lint_reporter_lib",
+        ":lint_reporter_lib",
+        ":lint_project_description_lib",
         "//third_party:com_android_tools_lint_lint",
         "//third_party:com_google_guava_guava_jre",
     ],
@@ -27,4 +28,12 @@ kt_jvm_library(
         "LintAnalysisReporter.kt",
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
+)
+
+kt_jvm_library(
+    name = "lint_project_description_lib",
+    testonly = True,
+    srcs = [
+        "LintProjectDescription.kt",
+    ],
 )

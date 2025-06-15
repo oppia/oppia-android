@@ -32,10 +32,13 @@ fun main(vararg args: String) {
   println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
 
   val reportFile = File(parentDestDir, "lint-report.xml")
-  val projectDescriptionFile = File(parentDestDir, "lint-project-description.xml")
+  val lintProjectDescription = LintProjectDescription(
+    repoRoot = repoRoot,
+    workingDirectory = parentDestDir
+  )
   val lintRunner = AndroidLintRunner(
     reportFile = reportFile,
-    projectDescriptionFile = projectDescriptionFile,
+    projectDescriptionFile = lintProjectDescription.generateProjectDescriptionXml(),
     groupByIssueSeverity = groupByIssueSeverity
   )
   val cliArgs = lintRunner.prepareLintArguments()
