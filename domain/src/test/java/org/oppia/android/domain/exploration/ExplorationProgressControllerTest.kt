@@ -170,6 +170,7 @@ class ExplorationProgressControllerTest {
     TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     TestPlatformParameterModule.forceEnableNpsSurvey(true)
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     setUpTestApplicationComponent()
   }
 
