@@ -704,8 +704,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (!flashbackStateName.isNullOrBlank() && playerFeatureSet.flashbackNavigationSupport) {
       addFlashbackButton(
         conversationPendingItemList,
-        extraInteractionPendingItemList,
-        hasPreviousButton
+        extraInteractionPendingItemList
       )
     }
   }
@@ -832,16 +831,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun addFlashbackButton(
     conversationPendingItemList: MutableList<StateItemViewModel>,
-    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
-    hasPreviousButton: Boolean
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>
   ) {
     val targetList =
       if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
-    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
 
     targetList += FlashbackButtonViewModel(
       hasConversationView,
-      hasPrevious,
       isSplitView.get()!!
     )
   }
