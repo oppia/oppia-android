@@ -19,7 +19,6 @@ class AndroidLintRunnerTest {
   @field:[Rule JvmField]
   var tempFolder = TemporaryFolder()
 
-  private lateinit var mockRepoRoot: File
   private lateinit var outputStream: ByteArrayOutputStream
   private lateinit var originalOut: PrintStream
   private lateinit var testBazelWorkspace: TestBazelWorkspace
@@ -34,7 +33,6 @@ class AndroidLintRunnerTest {
 
   @Before
   fun setUp() {
-    mockRepoRoot = tempFolder.root
     outputStream = ByteArrayOutputStream()
     originalOut = System.out
     sdkPath = System.getenv("ANDROID_HOME")
@@ -68,6 +66,19 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains("Repository root path does not exist")
+  }
+
+  @Test
+  fun testMain_validRootPath_generatesReports() {
+
+    val rootPath = tempFolder.root
+    // TODO(#5734): Update test after implementing project description
+    val exception=assertThrows<IllegalArgumentException> {
+      main(rootPath.absolutePath) // Currently returns error code due to missing description
+    }
+    assertThat(exception.message).contains(
+      "Lint analysis failed with exit code 2: Invalid usage of Lint command."
+    )
   }
 
   @Test
