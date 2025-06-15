@@ -20,6 +20,7 @@ import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
+import org.oppia.android.app.player.state.listener.RevisitButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.util.extensions.getProto
@@ -38,7 +39,8 @@ class StateFragment :
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
-  ShowHintAvailabilityListener {
+  ShowHintAvailabilityListener,
+  RevisitButtonListener {
   companion object {
 
     /** Arguments key for StateFragment. */
@@ -129,6 +131,10 @@ class StateFragment :
     stateFragmentPresenter.onReturnToTopicButtonClicked()
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
+
+  override fun onFlashbackButtonClicked(stateName: String) {
+    stateFragmentPresenter.onFlashbackButtonClicked(stateName)
+  }
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 

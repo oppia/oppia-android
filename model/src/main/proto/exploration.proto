@@ -254,6 +254,9 @@ message EphemeralState {
     // This value is always true in the case where the state type is terminal. This type may change in the future to a
     // message structure if additional data needs to be passed along to the terminal state card.
     bool terminal_state = 6;
+
+    // Indicates whether this state is a flashback state.
+    bool flashback_state = 12;
   }
 
   // The current status of checkpointing the exploration.
