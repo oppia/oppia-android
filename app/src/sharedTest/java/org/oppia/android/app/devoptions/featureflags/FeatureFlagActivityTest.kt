@@ -4,7 +4,12 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -26,7 +31,9 @@ import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -55,7 +62,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -63,6 +69,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
@@ -90,11 +97,11 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
   application = FeatureFlagActivityTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
 )
 class FeatureFlagActivityTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
 
@@ -111,6 +118,38 @@ class FeatureFlagActivityTest {
     val screenName = createFeatureFlagActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.FEATURE_FLAG_ACTIVITY)
+  }
+
+  @Test
+  fun testFeatureFlagActivity_hasCorrectActivityLabel() {
+    launch<FeatureFlagActivity>(createFeatureFlagActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.feature_flag_activity_title))
+      }
+    }
+  }
+
+  @Test
+  fun testFeatureFlagActivity_FeatureFlagFragmentIsDisplayed() {
+    launch(FeatureFlagActivity::class.java).use {
+      onView(withId(R.id.feature_flag_fragment_container)).check(
+        matches(ViewMatchers.isDisplayed())
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagActivity_configChange_FeatureFlagFragmentIsDisplayed() {
+    launch(FeatureFlagActivity::class.java).use {
+      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.feature_flag_fragment_container)).check(
+        matches(ViewMatchers.isDisplayed())
+      )
+    }
   }
 
   private fun setUpTestApplicationComponent() {
@@ -182,7 +221,7 @@ class FeatureFlagActivityTest {
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
       WorkManagerConfigurationModule::class,
-      PlatformParameterControllerDebugModule::class
+      TestPlatformParameterModule::class
     ]
   )
   /** [ApplicationComponent] for [FeatureFlagActivityTest]. */
