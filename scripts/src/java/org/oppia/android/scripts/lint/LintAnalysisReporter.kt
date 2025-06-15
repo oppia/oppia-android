@@ -110,8 +110,12 @@ private data class CacheEntry(
 
 /** Reporter class for analyzing XML lint reports and extracting issues. */
 class LintAnalysisReporter {
-
-  private val cache = mutableMapOf<String, CacheEntry>()
+  companion object {
+    private val cache = mutableMapOf<String, CacheEntry>()
+    private const val MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
+    private const val GROUP_SEPARATOR_LENGTH = 80
+    private const val ISSUE_SEPARATOR_LENGTH = 60
+  }
 
   /**
    * Parses an XML lint report file and returns a list of lint issues.
@@ -124,9 +128,8 @@ class LintAnalysisReporter {
     val xmlFile = File(xmlFilePath).absoluteFile
     check(xmlFile.exists()) { "Lint report file not found: $xmlFilePath" }
 
-    val maxFileSize = 50 * 1024 * 1024 // 50MB
-    check(xmlFile.length() <= maxFileSize) {
-      "Lint report file too large: ${xmlFile.length()} bytes (max: $maxFileSize)"
+    check(xmlFile.length() <= MAX_FILE_SIZE) {
+      "Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)"
     }
 
     val fileHash = calculateSha1(xmlFile.absolutePath)
@@ -204,44 +207,55 @@ class LintAnalysisReporter {
 
     groupedBySeverity.forEach { (severity, issuesInSeverity) ->
       val color = severity.getColor()
-      println("\n${"=".repeat(60)}")
+      println("\n${"=".repeat(GROUP_SEPARATOR_LENGTH)}")
       println(
         "${BOLD}$color SEVERITY: ${severity.displayName.uppercase()}" +
           " (${issuesInSeverity.size} issues)$RESET"
       )
-      println("=".repeat(60))
+      println("=".repeat(GROUP_SEPARATOR_LENGTH))
 
       val groupedByIssueId = issuesInSeverity.groupBy { it.id }.toSortedMap()
 
       groupedByIssueId.forEach { (issueId, issuesForId) ->
-        val representativeIssue = issuesForId.first()
+        printIssueGroupBySeverity(issueId, issuesForId)
+      }
+    }
+  }
 
-        println("\n$BOLD Issue ID: $issueId$RESET")
-        println("  ${colorizeSeverity(representativeIssue.severity)}")
+  /** Prints the details for a specific issue ID within a severity group. */
+  private fun printIssueGroupBySeverity(issueId: String, issuesForId: List<LintIssue>) {
+    val sortedIssues = issuesForId.sortedWith(
+      compareBy(
+        { it.locations.firstOrNull()?.file ?: "" },
+        { it.locations.firstOrNull()?.lineNumber?.toIntOrNull() ?: 0 }
+      )
+    )
 
-        val allLocations = issuesForId.flatMap { it.locations }
-          .distinctBy { "${it.file}:${it.lineNumber}" }
-          .sortedWith(compareBy({ it.file }, { it.lineNumber.toIntOrNull() ?: 0 }))
+    sortedIssues.forEach { issue ->
+      println("\n$BOLD Issue ID: $issueId$RESET")
+      println("  ${colorizeSeverity(issue.severity)}")
 
-        if (allLocations.size == 1) {
-          val location = allLocations.first()
-          println("  File: ${location.file}")
+      if (issue.locations.size == 1) {
+        val location = issue.locations.first()
+        println("  File: ${location.file}")
+        if (location.lineNumber.isNotBlank()) {
+          println("  Line: ${location.lineNumber}")
+        }
+      } else {
+        println("  Locations:")
+        val sortedLocations = issue.locations.sortedWith(
+          compareBy({ it.file }, { it.lineNumber.toIntOrNull() ?: 0 })
+        )
+        sortedLocations.forEachIndexed { index, location ->
+          println("    ${index + 1}. File: ${location.file}")
           if (location.lineNumber.isNotBlank()) {
-            println("  Line: ${location.lineNumber}")
-          }
-        } else {
-          println("  Locations:")
-          allLocations.forEachIndexed { index, location ->
-            println("    ${index + 1}. File: ${location.file}")
-            if (location.lineNumber.isNotBlank()) {
-              println("       Line: ${location.lineNumber}")
-            }
+            println("       Line: ${location.lineNumber}")
           }
         }
-        printIssueBasicInfo(representativeIssue)
-
-        println("-".repeat(58))
       }
+
+      printIssueBasicInfo(issue)
+      println("-".repeat(ISSUE_SEPARATOR_LENGTH))
     }
   }
 
@@ -261,9 +275,9 @@ class LintAnalysisReporter {
     sortedFiles.forEach { filePath ->
       val issueLocationPairs = fileToIssueLocationMap[filePath] ?: emptyList()
 
-      println("\n${"=".repeat(80)}")
+      println("\n${"=".repeat(GROUP_SEPARATOR_LENGTH)}")
       println("${BOLD}FILE: $filePath (${issueLocationPairs.size} issues)$RESET")
-      println("=".repeat(80))
+      println("=".repeat(GROUP_SEPARATOR_LENGTH))
 
       val sortedByLine = issueLocationPairs.sortedWith(
         compareBy<Pair<LintIssue, LintLocation>> { it.second.lineNumber.toIntOrNull() ?: 0 }
@@ -278,7 +292,7 @@ class LintAnalysisReporter {
           println("  Line: ${location.lineNumber}")
         }
         printIssueBasicInfo(issue, indent = "  ")
-        println("-".repeat(58))
+        println("-".repeat(ISSUE_SEPARATOR_LENGTH))
       }
     }
   }
@@ -289,7 +303,7 @@ class LintAnalysisReporter {
     if (issue.errorLine1.isNotBlank()) {
       println("${indent}Error Line: ${issue.errorLine1}")
       if (issue.errorLine2.isNotBlank()) {
-        println("$indent            ${issue.errorLine2}")
+        println("${indent.padEnd(indent.length + "Error Line: ".length)}${issue.errorLine2}")
       }
     }
     listOf(
@@ -315,7 +329,7 @@ class LintAnalysisReporter {
     // TODO(#5734): Replace LintError ID with LintIssueId Enum from the exemption set up.
     val hasInternalLintIssues = criticalIssues.any { it.id == "LintError" }
 
-    println("\n" + "=".repeat(50))
+    println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
     when {
       criticalIssues.isEmpty() -> {
         println("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
