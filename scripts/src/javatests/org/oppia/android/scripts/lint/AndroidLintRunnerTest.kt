@@ -73,7 +73,7 @@ class AndroidLintRunnerTest {
 
     val rootPath = tempFolder.root
     // TODO(#5734): Update test after implementing project description
-    val exception=assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalArgumentException> {
       main(rootPath.absolutePath) // Currently returns error code due to missing description
     }
     assertThat(exception.message).contains(
