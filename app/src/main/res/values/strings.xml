@@ -236,7 +236,6 @@
   <string name="profile_selection_scroll_left_content_description">Scroll left</string>
   <string name="profile_selection_scroll_right_content_description">Scroll right</string>
   <string name="profile_selection_administrator_controls">Administrator Controls</string>
-
   <!-- AdminAuthActivity -->
   <string name="admin_auth_toolbar">Administrator Controls</string>
   <string name="admin_auth_activity_add_profiles_title">Authorise to add profiles</string>
@@ -584,7 +583,6 @@
   <string name="faq_question_update_app">How do I update the app?</string>
   <string name="faq_question_update_os">How do I update my Android OS?</string>
   <string name="faq_question_cant_find_question">I can\'t find my question here. What now?</string>
-
   <string name="faq_answer_whats_oppia">&lt;p&gt;%1$s &lt;i&gt;"O-pee-yah"&lt;/i&gt; (Finnish) - "to learn"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s\'s mission is to help anyone learn anything they want in an effective and enjoyable way.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;By creating a set of free, high-quality, demonstrably effective lessons with the help of educators from around the world, %1$s aims to provide students with quality education — regardless of where they are or what traditional resources they have access to.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;As a student, you can begin your learning adventure by browsing the topics listed on the Home Page!&lt;/p&gt;</string>
   <string name="faq_answer_whos_an_admin">&lt;p&gt;An Administrator is the main user that manages profiles and settings for every profile on their account. They are most likely your parent, teacher, or guardian that created this profile for you.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Administrators have the ability to manage profiles, assign PINs, and change other settings under their account. Depending on your profile, Administrator permissions may be required for certain features such as changing your PIN, and more.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;To see who your Administrator is, go to the Profile Chooser. The first profile listed and has "Administrator" written under their name is the Administrator.&lt;/p&gt;</string>
   <string name="faq_answer_create_profile">&lt;p&gt;If it is your first time creating a profile and you do not have a PIN:&lt;ol&gt;&lt;li&gt;From the Profile Chooser, tap on &lt;strong&gt;Set up Multiple Profiles&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Create a PIN and &lt;strong&gt;Save&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Fill in all fields for the profile.&lt;ol&gt;&lt;li&gt;(Optional) Upload a photo.&lt;/li&gt;&lt;li&gt;Enter a name.&lt;/li&gt;&lt;li&gt;(Optional) Assign a 3-digit PIN.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. This profile is added to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;If you have created a profile before and have a PIN:&lt;ol&gt;&lt;li&gt;From the Profile Chooser, tap on &lt;strong&gt;Add Profile&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Enter your PIN and tap &lt;strong&gt;Submit&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Fill in all fields for the profile.&lt;ol&gt;&lt;li&gt;(Optional) Upload a photo.&lt;/li&gt;&lt;li&gt;Enter a name.&lt;/li&gt;&lt;li&gt;(Optional) Assign a 3-digit PIN.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Tap &lt;strong&gt;Create&lt;/strong&gt;. This profile is added to your Profile Chooser!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Note: Only the &lt;u&gt;Administrator&lt;/u&gt; is able to manage profiles.&lt;/p&gt;</string>
@@ -598,7 +596,6 @@
   <string name="faq_answer_update_app">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Open the Google Play Store app.&lt;/li&gt;&lt;li&gt;Search for the %s app.&lt;/li&gt;&lt;li&gt;Tap Update.&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_update_os">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Tap your phone\'s Settings app.&lt;/li&gt;&lt;li&gt;Tap System updates.&lt;/li&gt;&lt;li&gt;Tap System updates and follow the instructions to update your Android operating system.&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_cant_find_question">&lt;p&gt;If you cannot find your question or would like to report a bug, contact us at &lt;strong&gt;admin@oppia.org.&lt;/strong&gt;&lt;/p&gt;</string>
-
   <string name="profile_edit_fragment_test_activity_label">Profile Edit Fragment Test Activity</string>
   <string name="administrator_controls_fragment_test_activity_label">Administrator Controls Fragment Test Activity</string>
   <string name="revision_navigation_cards_header">Continue Studying</string>
@@ -661,14 +658,12 @@
   <string name="onboarding_language_activity_select_label">Select a language to start</string>
   <string name="onboarding_language_activity_explanation_text">You can change your language selection anytime in the app settings</string>
   <string name="onboarding_language_activity_button_text">Let\'s go!</string>
-
   <!-- Onboarding Profile Type Activity -->
   <string name="onboarding_profile_type_activity_title">Select Profile Type</string>
   <string name="onboarding_profile_type_activity_header">Tell us more about you!</string>
   <string name="onboarding_profile_type_activity_student_text">I\'m a student and I want to learn new things!</string>
   <string name="onboarding_profile_type_activity_parent_text">I\'m the parent, teacher, or guardian of a student.</string>
   <string name="onboarding_step_count_two">STEP 2 OF 5</string>
-
   <!-- Onboarding Create New Profile Activity -->
   <string name="create_profile_activity_title">Create Profile</string>
   <string name="create_profile_activity_header">What should we call you?</string>
@@ -678,7 +673,6 @@
   <string name="create_profile_activity_edit_icon_content_description">Edit profile picture</string>
   <string name="create_profile_activity_current_picture_content_description">Current profile picture</string>
   <string name="onboarding_step_count_three">STEP 3 OF 5</string>
-
   <!-- Onboarding Learner Intro Activity -->
   <string name="onboarding_learner_intro_activity_title">Welcome</string>
   <string name="onboarding_learner_intro_activity_text">Welcome, %s!</string>
@@ -686,20 +680,18 @@
   <string name="onboarding_learner_intro_practice_text">Try practice questions to test your knowledge.</string>
   <string name="onboarding_learner_intro_feedback_text">Get feedback to improve using %s\'s corrections.</string>
   <string name="onboarding_step_count_four">STEP 4 OF 5</string>
-
   <!-- Onboarding Shared Strings -->
   <string name="onboarding_otter_content_description">Cute otter wearing glasses.</string>
   <string name="onboarding_learner_otter_content_description">Cute otter with books.</string>
   <string name="onboarding_parent_otter_content_description">Mama and baby otter.</string>
   <string name="onboarding_navigation_back">Back</string>
   <string name="onboarding_navigation_continue">Continue</string>
-
   <!-- Onboarding Audio Language Fragment -->
   <string name="audio_language_fragment_text">In %s, you can listen to lessons!</string>
   <string name="audio_language_fragment_subtitle">Select the audio language to listen to lessons</string>
   <string name="onboarding_step_count_five">STEP 5 OF 5</string>
-
   <!-- AudioLanguageFragment -->
   <string name="arabic_language_display_name_content_description">Arabic</string>
-
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
