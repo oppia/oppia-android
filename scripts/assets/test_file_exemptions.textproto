@@ -522,6 +522,10 @@ test_file_exemption {
     exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagItemViewModel.kt"
     test_file_not_required: true
  }
+ test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/testing/FeatureFlagTestActivity.kt"
+   test_file_not_required: true
+ }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSummaryViewModel.kt"
   test_file_not_required: true
