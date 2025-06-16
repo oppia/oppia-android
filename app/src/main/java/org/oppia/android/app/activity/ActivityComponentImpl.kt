@@ -9,8 +9,8 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDe
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
-import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagsTestActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
+import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagTestActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
@@ -146,8 +146,8 @@ interface ActivityComponentImpl :
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
-  fun inject(featureFlagsActivity: FeatureFlagsActivity)
-  fun inject(featureFlagsTestActivity: FeatureFlagsTestActivity)
+  fun inject(featureFlagActivity: FeatureFlagActivity)
+  fun inject(featureFlagTestActivity: FeatureFlagTestActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
   fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
   fun inject(fractionInputInteractionViewTestActivity: FractionInputInteractionViewTestActivity)

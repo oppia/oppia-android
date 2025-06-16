@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="org.oppia.android.app.devoptions.platformparameters.PlatformParameterViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/platform_parameter_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/component_color_shared_screen_primary_background_color">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/platform_parameter_app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/platform_parameter_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/component_color_shared_activity_toolbar_color"
+                android:minHeight="?attr/actionBarSize"
+                android:textSize="20sp"
+                app:navigationContentDescription="@string/navigate_up"
+                app:navigationIcon="?attr/homeAsUpIndicator"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/developer_options_platform_parameters"
+                app:titleTextAppearance="@style/ToolbarTextAppearance" />
+        </com.google.android.material.appbar.AppBarLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/platform_parameter_app_bar_layout">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/platform_parameter_recycler_view"
+                list="@{viewModel.platformParameterList}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="40dp"
+                android:scrollbars="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/platform_parameter_shadow_view"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@drawable/toolbar_drop_shadow" />
+
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
