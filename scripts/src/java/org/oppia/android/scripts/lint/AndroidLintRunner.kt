@@ -43,13 +43,33 @@ fun main(vararg args: String) {
   lintRunner.runLint(cliArgs)
 }
 
-/** Runs the Android Lint tool and reports issues. */
+/** Runs the Android Lint tool and reports issues.
+ *
+ * @param reportFile the file where Lint results will be written
+ * @param projectDescriptionFile the file containing the project description for Lint
+ * @param groupByIssueSeverity whether to group issues by severity in the report
+ */
 class AndroidLintRunner(
   private val reportFile: File,
   private val projectDescriptionFile: File,
   private val groupByIssueSeverity: Boolean = false
 ) {
-
+  companion object {
+    private val ERROR_CODE_MESSAGES = mapOf(
+      2 to "Invalid usage of Lint command.",
+      3 to "Cannot overwrite existing file.",
+      4 to "Help command invoked.",
+      5 to "Invalid command-line argument.",
+    )
+  }
+  init {
+    require(projectDescriptionFile.exists()) {
+      "Project description file does not exist: ${projectDescriptionFile.absolutePath}"
+    }
+    require(projectDescriptionFile.extension == "xml") {
+      "Project description file must be an .xml file: ${projectDescriptionFile.name}"
+    }
+  }
   /**
    * Invokes the Lint CLI to perform analysis and prints the results.
    *
@@ -59,14 +79,12 @@ class AndroidLintRunner(
 
     // TODO(#5734): Implement the project description for Lint execution.
     val exitCode = LintCli().run(cliArgs) // Currently returns error code due to missing description
+
+    // Allow exit code 1 since it indicates issues with
+    // severity Error which is being handled by LintAnalysisReporter.
     check(exitCode == 0 || exitCode == 1) {
-      val reason = when (exitCode) {
-        2 -> "Invalid usage of Lint command."
-        3 -> "Cannot overwrite existing file."
-        4 -> "Help command invoked."
-        5 -> "Invalid command-line argument."
-        else -> "Unknown failure or internal error."
-      }
+      val reason = ERROR_CODE_MESSAGES[exitCode]
+        ?: "Unknown failure or internal error."
       "Lint analysis failed with exit code $exitCode: $reason"
     }
     val reporter = LintAnalysisReporter()
