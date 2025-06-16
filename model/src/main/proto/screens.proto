@@ -173,6 +173,9 @@ enum ScreenName {
 
   //  // Screen name value for feature flag screen.
   FEATURE_FLAG_ACTIVITY = 54;
+
+  // Screen name value for platform parameter screen.
+  PLATFORM_PARAMETER_ACTIVITY = 55;
 }
 
 // Defines the current visible UI screen of the application.

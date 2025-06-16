@@ -9,4 +9,8 @@ class PlatformParameterItemViewModel(
   val isResetAvailable: Boolean,
   val currentValue: PlatformParameterValue,
   val syncStatusBackground: Int
+<<<<<<< HEAD
 ) : ObservableViewModel()
+=======
+) : ObservableViewModel()
+>>>>>>> 122672f75 (intial setup)
