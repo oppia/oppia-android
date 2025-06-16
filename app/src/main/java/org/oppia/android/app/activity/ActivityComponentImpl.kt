@@ -20,6 +20,8 @@ import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStories
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParameterActivity
+import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParameterTestActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
@@ -148,6 +150,8 @@ interface ActivityComponentImpl :
   fun inject(faqSingleActivity: FAQSingleActivity)
   fun inject(featureFlagActivity: FeatureFlagActivity)
   fun inject(featureFlagTestActivity: FeatureFlagTestActivity)
+  fun inject(platformParameterActivity: PlatformParameterActivity)
+  fun inject(platformParameterTestActivity: PlatformParameterTestActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
   fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
   fun inject(fractionInputInteractionViewTestActivity: FractionInputInteractionViewTestActivity)

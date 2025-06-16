@@ -16,6 +16,7 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragment
+import org.oppia.android.app.devoptions.platformparameters.PlatformParameterFragment
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
@@ -140,6 +141,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(featureFlagFragment: FeatureFlagFragment)
+  fun inject(platformParameterFragment: PlatformParameterFragment)
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
   fun inject(forcedAppDeprecationNoticeDialogFragment: ForcedAppDeprecationNoticeDialogFragment)
   fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)

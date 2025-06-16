@@ -32,6 +32,7 @@ class DeveloperOptionsViewModel @Inject constructor(
   private val routeToMathExpressionParserTestListener =
     activity as RouteToMathExpressionParserTestListener
   private val routeToFeatureFlagsListener = activity as RouteToFeatureFlagsListener
+  private val routeToPlatformParametersListener = activity as RouteToPlatformParametersListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -53,8 +54,8 @@ class DeveloperOptionsViewModel @Inject constructor(
         forceCrashButtonClickListener,
         routeToForceNetworkTypeListener,
         showAllHintsAndSolutionController,
-        routeToFeatureFlagsListener
-
+        routeToFeatureFlagsListener,
+        routeToPlatformParametersListener
       ),
       DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
     )
