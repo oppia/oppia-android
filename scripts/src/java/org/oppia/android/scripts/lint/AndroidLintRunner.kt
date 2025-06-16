@@ -1,7 +1,12 @@
 package org.oppia.android.scripts.lint
 
+import org.oppia.android.scripts.common.BazelClient
+import org.oppia.android.scripts.common.CommandExecutor
+import org.oppia.android.scripts.common.CommandExecutorImpl
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
 import java.nio.file.Files
+import java.util.concurrent.TimeUnit
 import com.android.tools.lint.Main as LintCli
 
 /**
@@ -12,11 +17,14 @@ import com.android.tools.lint.Main as LintCli
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
- * - --group_by_severity: Optional flag to group issues by severity
+ * - group_by_severity: Optional flag to group issues by severity
+ * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
+ *    in minutes.
  *
  * Examples:
  *    bazel run //scripts:android_lint_check -- $(pwd)
  *    bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
+ *    bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=10
  */
 fun main(vararg args: String) {
   require(args.isNotEmpty()) {
@@ -32,18 +40,28 @@ fun main(vararg args: String) {
   println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
 
   val reportFile = File(parentDestDir, "lint-report.xml")
-  val lintProjectDescription = LintProjectDescription(
-    repoRoot = repoRoot,
-    workingDirectory = parentDestDir
-  )
-  val lintRunner = AndroidLintRunner(
-    reportFile = reportFile,
-    projectDescriptionFile = lintProjectDescription.generateProjectDescriptionXml(),
-    groupByIssueSeverity = groupByIssueSeverity
-  )
-  val cliArgs = lintRunner.prepareLintArguments()
+  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
+      ?.substringAfter("=")
+      ?.toLongOrNull() ?: 5
+    val commandExecutor: CommandExecutor = CommandExecutorImpl(
+      scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
+    )
+    val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
+    val lintProjectDescription = LintProjectDescription(
+      repoRoot = repoRoot,
+      workingDirectory = parentDestDir,
+      bazelClient = bazelClient,
+    )
+    val lintRunner = AndroidLintRunner(
+      reportFile = reportFile,
+      projectDescriptionFile = lintProjectDescription.generateProjectDescriptionXml(),
+      groupByIssueSeverity = groupByIssueSeverity,
+    )
+    val cliArgs = lintRunner.prepareLintArguments()
 
-  lintRunner.runLint(cliArgs)
+    lintRunner.runLint(cliArgs)
+  }
 }
 
 /** Runs the Android Lint tool and reports issues. */
@@ -60,8 +78,7 @@ class AndroidLintRunner(
    */
   fun runLint(cliArgs: Array<String>) {
 
-    // TODO(#5734): Implement the project description for Lint execution.
-    val exitCode = LintCli().run(cliArgs) // Currently returns error code due to missing description
+    val exitCode = LintCli().run(cliArgs)
     check(exitCode == 0 || exitCode == 1) {
       val reason = when (exitCode) {
         2 -> "Invalid usage of Lint command."
