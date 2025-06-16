@@ -54,6 +54,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.CompletedState
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -868,10 +869,6 @@ class ExplorationProgressController @Inject constructor(
     moveToFlashbackStateResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     stateName: String
   ) {
-    // get flashback state name from statedeck’s AnswerAndResponse.
-    // calculate ephemeralState with flashback state.
-    // Updates getCurrentState().
-
     tryOperation(moveToFlashbackStateResultFlow, false) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot navigate to a previous state if an exploration is not being played."
@@ -882,13 +879,7 @@ class ExplorationProgressController @Inject constructor(
       check(explorationProgress.playStage != SUBMITTING_ANSWER) {
         "Cannot navigate to a previous state if an answer submission is pending."
       }
-
-      val state = explorationProgress.stateGraph.getState(stateName)
-      val ephemeralState = EphemeralState.newBuilder()
-        .setState(state)
-        .setFlashbackState(true)
-        .build()
-      recomputeCurrentFlashbackStateAndNotifySync(ephemeralState)
+      recomputeCurrentFlashbackStateAndNotifySync(stateName)
     }
   }
 
@@ -1000,11 +991,23 @@ class ExplorationProgressController @Inject constructor(
     ephemeralStateFlow.emit(retrieveCurrentStateAsync())
   }
 
+  //subha add kdoc
   private suspend fun ControllerState.recomputeCurrentFlashbackStateAndNotifySync(
-    ephemeralState: EphemeralState
+    stateName: String
   ) {
-    recomputeCurrentFlashbackStateAndNotifyImpl(ephemeralState)
+    recomputeCurrentFlashbackStateAndNotifyImpl(computeCurrentFlashbackEphemeralState(stateName))
   }
+
+  //subha add kdoc
+  private fun ControllerState.computeCurrentFlashbackEphemeralState(stateName: String): EphemeralState {
+    // instead of this . find ephemeral state from statedeck
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    return ephemeralState.toBuilder().apply {
+      flashbackState = true
+    }.build()
+  }
+
+  //subha add kdoc
 
   private suspend fun ControllerState.recomputeCurrentFlashbackStateAndNotifyImpl(
     ephemeralState: EphemeralState
@@ -1500,7 +1503,7 @@ class ExplorationProgressController @Inject constructor(
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()
 
-    /** [ControllerMessage] to move to the Flashback state in the exploration. */
+    /** [ControllerMessage] to move to the flashback state in the exploration. */
     data class MoveToFlashback(
       val stateName: String,
       override val sessionId: String,

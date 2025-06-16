@@ -5,22 +5,27 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
-import javax.inject.Inject
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import org.oppia.android.app.model.FlashbackConfirmationDialogFragmentArguments
+import javax.inject.Inject
 
-//subha 1.4 final
-/** Fragment that displays a dialog for survey exit confirmation. */
+/** Fragment that displays a dialog for flashback open confirmation. */
 class FlashbackConfirmationDialogFragment : InjectableDialogFragment() {
+  @Inject
+  lateinit var flashbackConfirmationDialogFragmentPresenter:
+    FlashbackConfirmationDialogFragmentPresenter
 
   companion object {
     /** Arguments key for FlashbackConfirmationDialogFragment. */
-    const val FLASHBACK_CONFIRMATION_DIALOG_FRAGMENT_ARGUMENTS_KEY = "FlashbackConfirmationDialogFragment.arguments"
+    const val FLASHBACK_CONFIRMATION_DIALOG_FRAGMENT_ARGUMENTS_KEY =
+      "FlashbackConfirmationDialogFragment.arguments"
 
     /** Returns a new instance of [FlashbackConfirmationDialogFragment]. */
     fun newInstance(stateName: String): FlashbackConfirmationDialogFragment {
-      val args = FlashbackConfirmationDialogFragmentArguments.newBuilder().setStateName(stateName).build()
+      val args = FlashbackConfirmationDialogFragmentArguments.newBuilder()
+        .setStateName(stateName)
+        .build()
       return FlashbackConfirmationDialogFragment().apply {
         arguments = Bundle().apply {
           putProto(FLASHBACK_CONFIRMATION_DIALOG_FRAGMENT_ARGUMENTS_KEY, args)
@@ -29,8 +34,6 @@ class FlashbackConfirmationDialogFragment : InjectableDialogFragment() {
     }
   }
 
-  @Inject lateinit var presenter: FlashbackConfirmationDialogFragmentPresenter
-
   override fun onAttach(context: Context) {
     super.onAttach(context)
     (fragmentComponent as FragmentComponentImpl).inject(this)
@@ -38,11 +41,11 @@ class FlashbackConfirmationDialogFragment : InjectableDialogFragment() {
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     val args = arguments?.getProto(
-      FlashbackConfirmationDialogFragment.FLASHBACK_CONFIRMATION_DIALOG_FRAGMENT_ARGUMENTS_KEY,
+      FLASHBACK_CONFIRMATION_DIALOG_FRAGMENT_ARGUMENTS_KEY,
       FlashbackConfirmationDialogFragmentArguments.getDefaultInstance()
     )
     val stateName = args?.stateName
     checkNotNull(stateName) { "State name must not be null" }
-    return presenter.handleOnCreateDialog(stateName)
+    return flashbackConfirmationDialogFragmentPresenter.handleOnCreateDialog(stateName)
   }
 }

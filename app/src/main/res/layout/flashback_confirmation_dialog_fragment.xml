@@ -5,12 +5,12 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
-    android:paddingStart="22dp"
-    android:paddingEnd="22dp"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp">
+    android:layout_marginStart="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_margin_start"
+    android:layout_marginEnd="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_margin_end"
+    android:paddingStart="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_start"
+    android:paddingEnd="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_end"
+    android:paddingTop="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_top"
+    android:paddingBottom="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_bottom">
 
     <TextView
       android:id="@+id/open_flashback_confirmation_text"

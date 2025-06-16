@@ -6,24 +6,24 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.fragment.FragmentScope
-import javax.inject.Inject
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.databinding.databinding.FlashbackConfirmationDialogFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
+import javax.inject.Inject
 
 const val TAG_FLASHBACK_CONFIRMATION_DIALOG = "FLASHBACK_CONFIRMATION_DIALOG"
 
-/** Presenter for [FlashbackConfirmationDialogFragment], sets up bindings from ViewModel. */
+/** Presenter for [FlashbackConfirmationDialogFragment]. */
 @FragmentScope
 class FlashbackConfirmationDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val explorationProgressController: ExplorationProgressController,
+  private val explorationProgressController: ExplorationProgressController
 ) {
   fun handleOnCreateDialog(stateName: String): Dialog {
     val binding = FlashbackConfirmationDialogFragmentBinding.inflate(
-      LayoutInflater.from(activity),
-      null,
+      activity.layoutInflater,
+      /* parent= */ null,
       /* attachToRoot= */ false
     )
     binding.lifecycleOwner = fragment
@@ -31,7 +31,6 @@ class FlashbackConfirmationDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()
-
     dialog.setCanceledOnTouchOutside(false)
 
     binding.continueConfirmationButton.setOnClickListener {

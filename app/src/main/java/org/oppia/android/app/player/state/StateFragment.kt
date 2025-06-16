@@ -16,11 +16,11 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
-import org.oppia.android.app.player.state.listener.RevisitButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.util.extensions.getProto
@@ -40,7 +40,7 @@ class StateFragment :
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
   ShowHintAvailabilityListener,
-  RevisitButtonListener {
+  FlashbackButtonListener {
   companion object {
 
     /** Arguments key for StateFragment. */

@@ -215,10 +215,7 @@ class StateFragmentPresenter @Inject constructor(
   fun onFlashbackButtonClicked(stateName: String) {
     val dialogFragment = FlashbackConfirmationDialogFragment.newInstance(stateName)
     dialogFragment.showNow(fragment.childFragmentManager, TAG_FLASHBACK_CONFIRMATION_DIALOG)
-
   }
-
-
 
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(stateViewModel.itemList)

@@ -109,7 +109,7 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.player.state.listener.RevisitButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -706,7 +706,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
       addFlashbackButton(
         conversationPendingItemList,
         extraInteractionPendingItemList,
-        hasPreviousButton,
         flashbackStateName
       )
     }
@@ -835,18 +834,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun addFlashbackButton(
     conversationPendingItemList: MutableList<StateItemViewModel>,
     extraInteractionPendingItemList: MutableList<StateItemViewModel>,
-    hasPreviousButton: Boolean,
     flashbackStateName: String
   ) {
     val targetList =
       if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
-    val hasPrevious = if (isSplitView.get()!!) false else hasPreviousButton
 
     targetList += FlashbackButtonViewModel(
       hasConversationView,
-      hasPrevious,
       isSplitView.get()!!,
-      fragment as RevisitButtonListener,
+      fragment as FlashbackButtonListener,
       flashbackStateName
     )
   }
