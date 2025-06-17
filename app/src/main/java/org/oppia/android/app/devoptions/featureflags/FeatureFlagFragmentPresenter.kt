@@ -12,7 +12,6 @@ import org.oppia.android.app.databinding.databinding.FeatureFlagItemBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject
-import org.oppia.android.domain.oppialogger.OppiaLogger
 
 /** The presenter for [FeatureFlagFragment]. */
 @FragmentScope
