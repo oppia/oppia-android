@@ -10,6 +10,7 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import javax.inject.Inject
 
+/** Tag for displaying the [FlashbackConfirmationDialogFragment]. */
 const val TAG_FLASHBACK_CONFIRMATION_DIALOG = "FLASHBACK_CONFIRMATION_DIALOG"
 
 /** Presenter for [FlashbackConfirmationDialogFragment]. */
@@ -19,6 +20,8 @@ class FlashbackConfirmationDialogFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val explorationProgressController: ExplorationProgressController
 ) {
+
+  /** Sets up data binding. */
   fun handleOnCreateDialog(stateName: String): Dialog {
     val binding = FlashbackConfirmationDialogFragmentBinding.inflate(
       activity.layoutInflater,

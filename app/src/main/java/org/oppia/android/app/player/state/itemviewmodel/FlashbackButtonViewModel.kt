@@ -10,6 +10,7 @@ class FlashbackButtonViewModel(
   val flashbackStateName: String
 ) : StateItemViewModel(ViewType.FLASHBACK_BUTTON) {
 
+  /** Called when the 'See example' button is clicked. */
   fun onFlashbackButtonClicked() {
     flashbackButtonListener.onFlashbackButtonClicked(flashbackStateName)
   }
