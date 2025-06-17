@@ -129,8 +129,7 @@ class PlatformParameterModuleTest {
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestModule::class,
-      PlatformParameterModule::class,
-
+      PlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent {

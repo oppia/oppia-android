@@ -255,7 +255,7 @@ message RemotePlatformParameterAndFeatureFlagDatabase {
   repeated RemoteFeatureFlag remote_feature_flag = 2;
 }
 
-// Corresponds to an ephemeral representation of a platform parameter.
+// Corresponds to the current in-app state of the platform parameter.
 message EphemeralPlatformParameter {
   // The unique ID of this platform parameter which corresponds to a PlatformParameterDefinition.
   PlatformParameterId id = 1;
@@ -267,7 +267,7 @@ message EphemeralPlatformParameter {
   SyncStatus sync_status = 3;
 }
 
-// Corresponds to an ephemeral representation of a feature flag.
+// Corresponds to the current in-app state of the feature flag.
 message EphemeralFeatureFlag {
   // The unique ID of this feature flag which corresponds to a FeatureFlagDefinition.
   FeatureFlagId id = 1;
@@ -277,5 +277,4 @@ message EphemeralFeatureFlag {
 
   // Indicates the sync status of the feature flag.
   SyncStatus sync_status = 3;
-
 }

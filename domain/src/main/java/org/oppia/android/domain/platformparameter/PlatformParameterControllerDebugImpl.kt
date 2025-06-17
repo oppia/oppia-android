@@ -1,12 +1,18 @@
 package org.oppia.android.domain.platformparameter
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
 /**
@@ -16,11 +22,15 @@ import javax.inject.Inject
 class PlatformParameterControllerDebugImpl @Inject constructor(
   private val platformParameterControllerProdImpl: PlatformParameterControllerProdImpl,
   private val dataProviders: DataProviders,
+  private val oppiaLogger: OppiaLogger,
+  private val processState: PlatformParameterProcessState,
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : PlatformParameterController, PlatformParameterDebugController {
 
-  override fun loadParametersAsync(): Deferred<Unit> {
-    return platformParameterControllerProdImpl.loadParametersAsync()
-  }
+  // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
+  private val initializationDeferred by lazy { loadParametersInternalAsync() }
+  private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
+  override fun loadParametersAsync() = initializationDeferred
 
   override fun getParameterInitializationStatus(): DataProvider<Boolean> {
     return platformParameterControllerProdImpl.getParameterInitializationStatus()
@@ -80,9 +90,70 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
+  private fun loadParametersInternalAsync(): Deferred<Unit> {
+    return CoroutineScope(backgroundCoroutineDispatcher).async {
+      val ephemeralPlatformParametersResult =
+        loadEphemeralPlatformParameters().retrieveData()
+      val ephemeralFeatureFlagsResult = loadEphemeralFeatureFlags().retrieveData()
+      val platStatesById = when (ephemeralPlatformParametersResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "PlatformParameterControllerDebugImpl",
+            "Failed to load ephemeral platform parameters:",
+            ephemeralPlatformParametersResult.error
+          )
+          emptyMap()
+        }
+        is AsyncResult.Success ->
+          ephemeralPlatformParametersResult.value.associate { it.id to it.currentValue }
+        is AsyncResult.Pending -> emptyMap()
+      }
+
+      val flagStatesById = when (ephemeralFeatureFlagsResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "PlatformParameterControllerDebugImpl",
+            "Failed to load ephemeral feature flags:",
+            ephemeralFeatureFlagsResult.error
+          )
+          emptyMap()
+        }
+        is AsyncResult.Success ->
+          ephemeralFeatureFlagsResult.value.associate { it.id to it.currentValue }
+        else -> emptyMap()
+      }
+
+      val statusesById = when (ephemeralFeatureFlagsResult) {
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "PlatformParameterControllerDebugImpl",
+            "Failed to load ephemeral feature flag sync statuses:",
+            ephemeralFeatureFlagsResult.error
+          )
+          emptyMap()
+        }
+        is AsyncResult.Success ->
+          ephemeralFeatureFlagsResult.value.associate { it.id to it.syncStatus }
+        else -> emptyMap()
+      }
+
+      processState.initializePlatformParameters(platStatesById)
+      processState.initializeFeatureFlags(flagStatesById)
+      processState.initializeFeatureFlagSyncStatuses(statusesById)
+
+      // Let observers know that parameters have been initialized.
+      parametersAreLoadedFlow.value = true
+
+      // Erase the data provider's value so that callers cannot inadvertently depend on the actual
+      // list of parameters available.
+    }
+  }
+
   private companion object {
     private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
       "load_ephemeral_platform_parameters"
     private const val LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID = "load_ephemeral_feature_flags"
+    private const val GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID =
+      "get_parameter_initialization_status"
   }
 }
