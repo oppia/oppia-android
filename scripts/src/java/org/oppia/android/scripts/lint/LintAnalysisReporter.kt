@@ -127,12 +127,13 @@ class LintAnalysisReporter {
    */
   fun parseLintReport(xmlFilePath: String): List<LintIssue> {
     val xmlFile = File(xmlFilePath).absoluteFile
-    check(xmlFile.exists() && xmlFile.extension == "xml") {
-      "Lint report file not found: $xmlFilePath"
-    }
-
-    check(xmlFile.length() <= MAX_FILE_SIZE) {
-      "Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)"
+    when {
+      !xmlFile.exists() ->
+        error("Lint report file not found: $xmlFilePath")
+      xmlFile.extension != "xml" ->
+        error("Invalid file extension: ${xmlFile.extension}. Expected 'xml'.")
+      xmlFile.length() > MAX_FILE_SIZE ->
+        error("Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)")
     }
 
     val fileHash = calculateSha1(xmlFile.absolutePath)
