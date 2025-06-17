@@ -171,21 +171,19 @@ class RecentlyPlayedFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
-    testCoroutineDispatchers.registerIdlingResource()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
+    // TODO(#5835): Call setUpTestApplicationComponent() here once flag overrides init earlier.
   }
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   @Test
   fun testFragment_sectionDividerIsNotDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -215,6 +213,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_lastWeekSectionTitleIsDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -239,6 +238,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_showsRecommendedSectionTitle() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -264,6 +264,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_showsRecommendedSectionTitle() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -284,6 +285,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_recommendedSection_topicNameIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -310,6 +312,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testFragment_disableClassrooms_recommendedSection_classroomNameIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -334,6 +337,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testFragment_enableClassrooms_recommendedSection_classroomNameIsCorrect() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -360,6 +364,7 @@ class RecentlyPlayedFragmentTest {
   @Config(qualifiers = "port")
   @Test
   fun testFragment_recentlyPlayedItemInRtl_rtlMarginIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -397,6 +402,7 @@ class RecentlyPlayedFragmentTest {
   @Config(qualifiers = "land")
   @Test
   fun testFragment_recentlyPlayedItemInRtl_landscape_rtlMarginIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -445,6 +451,7 @@ class RecentlyPlayedFragmentTest {
   @Config(qualifiers = "sw600dp-port")
   @Test
   fun testFragment_recentlyPlayedItemInRtl_tabletPortrait_rtlMarginIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -493,6 +500,7 @@ class RecentlyPlayedFragmentTest {
   @Config(qualifiers = "sw600dp-land")
   @Test
   fun testFragment_recentlyPlayedItemInRtl_tabletLandscape_rtlMarginIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -554,6 +562,7 @@ class RecentlyPlayedFragmentTest {
   @Config(qualifiers = "port")
   @Test
   fun testFragment_recentlyPlayedItemInLtr_ltrMarginIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -580,6 +589,7 @@ class RecentlyPlayedFragmentTest {
   @Config(qualifiers = "port")
   @Test
   fun testFragment_recommendedSectionItemInRtlMode_rtlMarginIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -605,6 +615,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_storyNameIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -634,6 +645,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_topicNameIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -664,6 +676,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testFragment_disableClassrooms_classroomNameIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -692,6 +705,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testFragment_enableClassrooms_classroomNameIsCorrect() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -721,6 +735,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_lessonThumbnailIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -750,6 +765,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_clickStory_correctCheckpointSaved_callsRouteToResumeLessonListenerCallback() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -801,6 +817,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_clickStory_incompatibleCheckpointSaved_opensExplorationLessonAct() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     fakeExplorationRetriever.setExplorationProxy(
       expIdToLoad = FRACTIONS_EXPLORATION_ID_0,
@@ -850,6 +867,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_clickStory_chapterAsNotStarted_opensExplorationLessonActivity() {
+    setUpTestApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(internalProfileId) {
       onView(withId(R.id.ongoing_story_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(
@@ -886,6 +904,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_clickStory_chapterMarkedAsInProgNotSaved_opensExplorationLessAct() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressNotSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -927,6 +946,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_lastMonthSectionTitleIsDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -956,6 +976,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_sectionDividerIsDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -983,6 +1004,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_sectionDividerIsNotDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1011,6 +1033,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_lastWeekSectionTitleIsDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1041,6 +1064,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_storyNameIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1071,6 +1095,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_topicNameIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1102,6 +1127,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testFragment_disableClassrooms_configChange_classroomNameIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1131,6 +1157,7 @@ class RecentlyPlayedFragmentTest {
   @Test
   fun testFragment_enableClassrooms_configChange_classroomNameIsCorrect() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1161,6 +1188,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_lessonThumbnailIsCorrect() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1192,6 +1220,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_lastMonthSectionTitleIsDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1222,6 +1251,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_checkSpanForItem1_spanSizeIsOne() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1248,6 +1278,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_checkSpanForItem3_spanSizeIsOne() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1274,6 +1305,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_checkSpanForItem1_spanSizeIsOne() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1301,6 +1333,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_configChange_checkSpanForItem3_spanSizeIsOne() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
     storyProgressTestHelper.markInProgressSavedFractionsStory0Exp0(
       profileId = profileId,
@@ -1328,6 +1361,7 @@ class RecentlyPlayedFragmentTest {
 
   @Test
   fun testFragment_argumentsAreCorrect() {
+    setUpTestApplicationComponent()
     runWithLaunchedActivityAndAddedFragment(internalProfileId) {
       onActivity { activity ->
         val recentlyPlayedFragment = activity.supportFragmentManager
@@ -1346,6 +1380,10 @@ class RecentlyPlayedFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_UPTIME_MILLIS)
   }
 
   private fun runWithLaunchedActivityAndAddedFragment(

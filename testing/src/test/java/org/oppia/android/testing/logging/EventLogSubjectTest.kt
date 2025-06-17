@@ -23,11 +23,12 @@ import org.oppia.android.app.model.EventLog.SurveyContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.SurveyQuestionName
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.AbandonSurveyContextSubject
@@ -4901,8 +4902,8 @@ class EventLogSubjectTest {
   @Test
   fun testFeatureFlagListContext_hasFeatureFlagItemContextThatAtIndex_returnsCorrectItem() {
     val featureFlagItem = EventLog.FeatureFlagItemContext.newBuilder()
-      .setFlagName("enable_multiple_classrooms")
-      .setFlagEnabledState(true)
+      .setId(FeatureFlagId.MULTIPLE_CLASSROOMS)
+      .setIsEnabled(true)
       .build()
 
     val context = FeatureFlagListContext.newBuilder()
@@ -4911,16 +4912,16 @@ class EventLogSubjectTest {
 
     FeatureFlagListContextSubject.assertThat(context)
       .hasFeatureFlagItemContextThatAtIndex(0)
-      .hasFeatureFlagNameThat()
-      .isEqualTo("enable_multiple_classrooms")
+      .hasFeatureFlagIdThat()
+      .isEqualTo(FeatureFlagId.MULTIPLE_CLASSROOMS)
   }
 
   @Test
   fun testFeatureFlagListContext_hasFeatureFlagItemContextThatAtIndex_executesBlockCorrectly() {
     val featureFlagItem = EventLog.FeatureFlagItemContext.newBuilder()
-      .setFlagName("new_dashboard")
-      .setFlagEnabledState(true)
-      .setFlagSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
+      .setId(FeatureFlagId.DOWNLOADS_SUPPORT)
+      .setIsEnabled(true)
+      .setSyncStatus(SyncStatus.SYNCED_FROM_SERVER)
       .build()
 
     val context = FeatureFlagListContext.newBuilder()
@@ -4929,11 +4930,9 @@ class EventLogSubjectTest {
 
     FeatureFlagListContextSubject.assertThat(context)
       .hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo("new_dashboard")
-        hasFeatureFlagEnabledStateThat().isEqualTo(true)
-        hasFeatureFlagSyncStateThat().isEqualTo(
-          SyncStatus.SYNCED_FROM_SERVER
-        )
+        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
+        hasFeatureFlagEnabledStateThat().isTrue()
+        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
       }
   }
 }
