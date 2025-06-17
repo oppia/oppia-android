@@ -833,7 +833,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun addFlashbackButton(
     conversationPendingItemList: MutableList<StateItemViewModel>,
-    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    PendingItemList: MutableList<StateItemViewModel>,
     flashbackStateName: String
   ) {
     val targetList =
