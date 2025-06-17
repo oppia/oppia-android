@@ -170,10 +170,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   }
 
   /**
-   * Returns Bazel workspace information as a map of key-value pairs.
-   * This includes paths like output_base, execution_root, etc.
+   * Returns Bazel workspace information.
+   *
+   * @return map of Bazel workspace information
    */
-  fun getBazelInfo(): Map<String, String> {
+  fun retrieveBazelInfo(): Map<String, String> {
     val infoLines = executeBazelCommand("info")
     return infoLines.mapNotNull { line ->
       val parts = line.split(": ", limit = 2)

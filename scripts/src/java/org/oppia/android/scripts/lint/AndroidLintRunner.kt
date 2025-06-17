@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.lint
 
+import com.android.SdkConstants
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -43,7 +44,7 @@ fun main(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
       ?.substringAfter("=")
-      ?.toLongOrNull() ?: 5
+      ?.toLongOrNull() ?: 10
     val commandExecutor: CommandExecutor = CommandExecutorImpl(
       scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
     )
@@ -53,12 +54,20 @@ fun main(vararg args: String) {
       workingDirectory = parentDestDir,
       bazelClient = bazelClient,
     )
+
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
       projectDescriptionFile = lintProjectDescription.generateProjectDescriptionXml(),
       groupByIssueSeverity = groupByIssueSeverity,
     )
-    val cliArgs = lintRunner.prepareLintArguments()
+    val jdkHome = File(
+      bazelClient.retrieveBazelInfo()["java-home"]
+        ?: error("java-home not found in bazel info output")
+    )
+    val cliArgs = lintRunner.prepareLintArguments(
+      repoRoot = repoRoot,
+      jdkHome = jdkHome
+    )
 
     lintRunner.runLint(cliArgs)
   }
@@ -70,7 +79,12 @@ class AndroidLintRunner(
   private val projectDescriptionFile: File,
   private val groupByIssueSeverity: Boolean = false
 ) {
-
+  companion object {
+    private const val LINT_CLIENT_ID = "cli"
+    private const val KOTLIN_LANGUAGE_VERSION = "1.6"
+    private const val JAVA_VERSION = "11"
+    private const val BUILD_VARS_FILE = "build_vars.bzl"
+  }
   /**
    * Invokes the Lint CLI to perform analysis and prints the results.
    *
@@ -102,14 +116,51 @@ class AndroidLintRunner(
    *
    * @return array of arguments to be passed to Lint
    */
-  fun prepareLintArguments(): Array<String> = arrayOf(
-    "-Wall",
-    "--quiet",
-    "--fullpath",
-    "--showall",
-    "--exitcode",
-    "--offline",
-    "--project", projectDescriptionFile.absolutePath,
-    "--xml", reportFile.absolutePath
-  )
+  fun prepareLintArguments(
+    repoRoot: File,
+    jdkHome: File
+  ): Array<String> {
+    val buildVarsFile = File(repoRoot, BUILD_VARS_FILE)
+    return arrayOf(
+      "-Wall",
+      "--quiet",
+      "--fullpath",
+      "--showall",
+      "--exitcode",
+      "--offline",
+      "--client-id", LINT_CLIENT_ID,
+      "--jdk-home", jdkHome.absolutePath,
+      "--sdk-home", getAndroidSdkPath(),
+      "--compile-sdk-version", getBuildSdkVersion(buildVarsFile),
+      "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
+      "--java-language-level", JAVA_VERSION,
+      "--project", projectDescriptionFile.absolutePath,
+      "--xml", reportFile.absolutePath,
+      "--html", "/home/manas-yu/lint-report.html",
+    )
+  }
+
+  private fun getBuildSdkVersion(buildVarsFile: File): String {
+    require(buildVarsFile.exists()) { "File not found: ${buildVarsFile.absolutePath}" }
+
+    val compileSdkLine = buildVarsFile.readLines()
+      .map { it.trim() }
+      .firstOrNull { it.startsWith("BUILD_SDK_VERSION") }
+      ?: error("BUILD_SDK_VERSION not found in file: ${buildVarsFile.absolutePath}")
+
+    val value = compileSdkLine.substringAfter("=").trim().removeSurrounding("\"")
+    require(value.isNotEmpty()) {
+      "BUILD_SDK_VERSION value is empty in file: ${buildVarsFile.absolutePath}"
+    }
+
+    return value
+  }
+
+  private fun getAndroidSdkPath(): String {
+    return System.getenv(SdkConstants.ANDROID_HOME_ENV)
+      ?: throw IllegalStateException(
+        "ANDROID_HOME environment variable is not set. " +
+          "Please set it to the path of your Android SDK."
+      )
+  }
 }

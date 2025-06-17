@@ -4,33 +4,40 @@ import com.android.SdkConstants
 import org.oppia.android.scripts.common.BazelClient
 import java.io.File
 import java.io.IOException
-import java.lang.Module
-import java.lang.ModuleLayer
 import java.util.zip.ZipFile
 
-/**
- * Represents module configuration for lint project description.
- */
-data class ModuleConfig(
+/** Enum representing module names in the project. */
+private enum class ModuleName(val moduleName: String) {
+  APP("app"),
+  DOMAIN("domain"),
+  TESTING("testing"),
+  UTILITY("utility"),
+  DATA("data");
+
+  companion object {
+    val APPLICATION_MODULE = APP
+    val LIBRARY_MODULES = listOf(DOMAIN, TESTING, UTILITY, DATA)
+  }
+}
+
+/** Represents module configuration for lint project description. */
+private data class ModuleConfig(
   val name: String,
   val isAndroid: Boolean,
   val isLibrary: Boolean,
-  val compileSdkVersion: String,
-  val kotlinLanguageVersion: String,
-  val srcDirs: List<String>,
-  val testDirs: List<String>,
+  val srcFiles: List<String>,
+  val testFiles: List<String>,
   val resourceDirs: List<String>,
-  val manifestFile: String? = null,
+  val manifestFile: String,
   val dependencies: List<String>,
   val aarFiles: List<AarFileInfo>,
   val jarFiles: List<String>,
+  val lintCheckJars: List<String>,
   val lintModelDir: File? = null
 )
 
-/**
- * Information about an AAR file and its extraction location.
- */
-data class AarFileInfo(
+/** Information about an AAR file and its extraction location. */
+private data class AarFileInfo(
   val originalPath: String,
   val extractedPath: String
 )
@@ -40,6 +47,7 @@ data class AarFileInfo(
  *
  * @param repoRoot The root directory of the repository
  * @param workingDirectory The working directory where files will be generated
+ * @param bazelClient The Bazel client for dependency resolution
  */
 class LintProjectDescription(
   private val repoRoot: File,
@@ -50,14 +58,33 @@ class LintProjectDescription(
   companion object {
     private const val LINT_PROJECT_DESCRIPTION_FILE_NAME = "lint-project-description.xml"
     private const val LINT_CACHE_DIRECTORY_FILE_NAME = "lint-cache-directory"
-    private const val LINT_JDK_DIRECTORY_NAME = "jdk-home"
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
-    private const val COMPILE_SDK_VERSION = "34"
-    private const val KOTLIN_LANGUAGE_VERSION = "1.6"
-    private const val APPLICATION_MODULE = "app"
-    private val LIBRARY_MODULES = listOf("domain", "testing", "utility", "data")
-    private val MODULES_WITH_MAIN_RES = setOf("app", "utility")
-    private val MODULES_WITH_TEST_RES = setOf("utility")
+
+    private val SUPPORTED_SOURCE_EXTENSIONS = setOf("kt", "java")
+    private val MODULES_WITH_MAIN_RES = setOf(ModuleName.APP, ModuleName.UTILITY)
+    private val MODULES_WITH_TEST_RES = setOf(ModuleName.UTILITY)
+    private val MODULE_DEPENDENCIES = mapOf(
+      ModuleName.APP to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
+      ModuleName.TESTING to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
+      ModuleName.DOMAIN to listOf(ModuleName.UTILITY),
+      ModuleName.DATA to listOf(ModuleName.UTILITY)
+    )
+
+    /** Creates a safe directory name by replacing invalid characters. */
+    private fun createSafeDirectoryName(name: String): String =
+      name.replace(Regex("[^a-zA-Z0-9._-]"), "_")
+
+    /**
+     * Ensures a directory exists, creating it if necessary.
+     *
+     * @throws IllegalStateException if directory creation fails
+     */
+    private fun ensureDirectoryExists(directory: File): File {
+      if (!directory.exists() && !directory.mkdirs()) {
+        throw IllegalStateException("Failed to create directory: ${directory.absolutePath}")
+      }
+      return directory
+    }
   }
 
   /**
@@ -65,375 +92,356 @@ class LintProjectDescription(
    *
    * @return The generated project description file
    * @throws IOException if file operations fail
-   * @throws IllegalStateException if ANDROID_HOME is not set
+   * @throws IllegalStateException if required dependencies are not available
    */
   fun generateProjectDescriptionXml(): File {
-    val projectDescriptionFile = File(workingDirectory, LINT_PROJECT_DESCRIPTION_FILE_NAME)
+    val projectDescriptionFile =
+      File(workingDirectory, LINT_PROJECT_DESCRIPTION_FILE_NAME)
     val cacheDirectory =
       ensureDirectoryExists(File(workingDirectory, LINT_CACHE_DIRECTORY_FILE_NAME))
-    val sdkPath = getAndroidSdkPath()
-    val jdkPath = File(workingDirectory, LINT_JDK_DIRECTORY_NAME)
     val extractedAarsDirectory =
       ensureDirectoryExists(File(workingDirectory, EXTRACTED_AARS_DIRECTORY_NAME))
 
-    prepareJdk(jdkPath)
+    val moduleConfigs = buildModuleConfigurations(extractedAarsDirectory)
+    val xmlContent = generateProjectXmlContent(cacheDirectory, moduleConfigs)
 
-    val moduleConfigs = createModuleConfigs(extractedAarsDirectory)
-    val content = generateXmlContent(cacheDirectory, jdkPath.absolutePath, sdkPath, moduleConfigs)
-
-    return writeProjectDescriptionFile(projectDescriptionFile, content)
+    return writeProjectDescriptionFile(projectDescriptionFile, xmlContent)
   }
 
-  private fun createModuleConfigs(extractedAarsDirectory: File): List<ModuleConfig> {
-    val modules = mutableListOf<ModuleConfig>()
+  /** Builds configurations for all modules in the project. */
+  private fun buildModuleConfigurations(extractedAarsDirectory: File): List<ModuleConfig> =
+    buildList {
+      add(
+        buildModuleConfiguration(
+          ModuleName.APPLICATION_MODULE, isLibrary = false, extractedAarsDirectory
+        )
+      )
 
-    modules.add(createModuleConfig(APPLICATION_MODULE, false, extractedAarsDirectory))
-
-    LIBRARY_MODULES.forEach { module ->
-      modules.add(createModuleConfig(module, true, extractedAarsDirectory))
-    }
-
-    return modules
-  }
-
-  private fun createModuleConfig(
-    moduleName: String,
-    isLibrary: Boolean,
-    extractedAarsDirectory: File
-  ): ModuleConfig {
-    val srcDirs = mutableListOf<String>()
-    val testDirs = mutableListOf<String>()
-    val resourceDirs = mutableListOf<String>()
-
-    addDirectoryIfExists(File(repoRoot, "$moduleName/src/main/java"), srcDirs)
-    addDirectoryIfExists(File(repoRoot, "$moduleName/src/test/java"), testDirs)
-
-    if (moduleName == APPLICATION_MODULE) {
-      addDirectoryIfExists(File(repoRoot, "$moduleName/src/sharedTest/java"), testDirs)
-    }
-
-    if (MODULES_WITH_MAIN_RES.contains(moduleName)) {
-      addDirectoryIfExists(File(repoRoot, "$moduleName/src/main/res"), resourceDirs)
-    }
-
-    if (MODULES_WITH_TEST_RES.contains(moduleName)) {
-      addDirectoryIfExists(File(repoRoot, "$moduleName/src/test/res"), resourceDirs)
-    }
-
-    val manifestFile = findManifestFile(moduleName)
-
-    val dependencies = if (moduleName == APPLICATION_MODULE) LIBRARY_MODULES else emptyList()
-
-    val aarFiles = getAarFilesForModule(moduleName, extractedAarsDirectory)
-    val jarFiles = getJarFilesForModule(moduleName)
-
-    return ModuleConfig(
-      name = moduleName,
-      isAndroid = true,
-      isLibrary = isLibrary,
-      compileSdkVersion = COMPILE_SDK_VERSION,
-      kotlinLanguageVersion = KOTLIN_LANGUAGE_VERSION,
-      srcDirs = srcDirs,
-      testDirs = testDirs,
-      resourceDirs = resourceDirs,
-      manifestFile = manifestFile,
-      dependencies = dependencies,
-      aarFiles = aarFiles,
-      jarFiles = jarFiles
-    )
-  }
-
-  private fun addDirectoryIfExists(directory: File, targetList: MutableList<String>) {
-    if (directory.exists() && directory.isDirectory) {
-      targetList.add(directory.absolutePath)
-    } else {
-      throw IllegalStateException("Directory does not exist: ${directory.absolutePath}")
-    }
-  }
-
-  private fun findManifestFile(moduleName: String): String? {
-    val manifestPath = File(repoRoot, "$moduleName/src/main/AndroidManifest.xml")
-    return if (manifestPath.exists()) {
-      manifestPath.absolutePath
-    } else {
-      null
-    }
-  }
-
-  private fun getAarFilesForModule(
-    moduleName: String,
-    extractedAarsDirectory: File
-  ): List<AarFileInfo> {
-
-    if (moduleName == "data") {
-      return emptyList()
-    }
-
-    val allDependencies = bazelClient.retrieveTargetModuleDependencies(moduleName)
-    val aarFiles = allDependencies.filter { it.endsWith(".${SdkConstants.EXT_AAR}") }
-
-    if (aarFiles.isEmpty()) {
-      return emptyList()
-    }
-
-    val moduleAarsDirectory = ensureDirectoryExists(File(extractedAarsDirectory, moduleName))
-    val processedAars = mutableListOf<AarFileInfo>()
-
-    aarFiles.forEach { aarFile ->
-      val resolvedAarPath = resolveBazelPath(aarFile)
-
-      if (resolvedAarPath != null && File(resolvedAarPath).exists()) {
-        try {
-          val extractedPath = extractAar(resolvedAarPath, moduleAarsDirectory)
-          if (extractedPath != null) {
-            processedAars.add(AarFileInfo(resolvedAarPath, extractedPath))
-          }
-        } catch (e: Exception) {
-          // Continue processing other AARs
-        }
+      ModuleName.LIBRARY_MODULES.forEach { module ->
+        add(buildModuleConfiguration(module, isLibrary = true, extractedAarsDirectory))
       }
     }
 
-    return processedAars
+  /** Builds configuration for a single module. */
+  private fun buildModuleConfiguration(
+    module: ModuleName,
+    isLibrary: Boolean,
+    extractedAarsDirectory: File
+  ): ModuleConfig {
+    val sourceCollector = SourceFileCollector(repoRoot, module)
+    val dependencyResolver = DependencyResolver(bazelClient, extractedAarsDirectory)
+
+    return ModuleConfig(
+      name = module.moduleName,
+      isAndroid = true,
+      isLibrary = isLibrary,
+      srcFiles = sourceCollector.collectSourceFiles(),
+      testFiles = sourceCollector.collectTestFiles(),
+      resourceDirs = sourceCollector.collectResourceDirectories(),
+      manifestFile = findManifestFile(module),
+      dependencies = MODULE_DEPENDENCIES[module]?.map { it.moduleName }.orEmpty(),
+      aarFiles = dependencyResolver.resolveAarFiles(module),
+      jarFiles = dependencyResolver.resolveJarFiles(module),
+      lintCheckJars = dependencyResolver.extractLintCheckJars(
+        dependencyResolver.resolveAarFiles(module)
+      )
+    )
   }
 
-  private fun getJarFilesForModule(moduleName: String): List<String> {
-    if (moduleName == "data") {
-      return emptyList()
+  /** Helper class for collecting source files and resources for a module. */
+  private inner class SourceFileCollector(
+    private val repoRoot: File,
+    private val module: ModuleName
+  ) {
+    private val moduleName = module.moduleName
+
+    fun collectSourceFiles(): List<String> =
+      collectFilesFromDirectory(File(repoRoot, "$moduleName/src/main/java"))
+
+    fun collectTestFiles(): List<String> = buildList {
+      addAll(collectFilesFromDirectory(File(repoRoot, "$moduleName/src/test/java")))
+
+      if (module == ModuleName.APP) {
+        addAll(collectFilesFromDirectory(File(repoRoot, "$moduleName/src/sharedTest/java")))
+      }
     }
 
-    val allDependencies = bazelClient.retrieveTargetModuleDependencies(moduleName)
-    val jarFiles = allDependencies.filter { it.endsWith(".${SdkConstants.EXT_JAR}") }
+    fun collectResourceDirectories(): List<String> = buildList {
+      if (module in MODULES_WITH_MAIN_RES) {
+        addDirectoryIfExists(File(repoRoot, "$moduleName/src/main/res"))
+      }
+      if (module in MODULES_WITH_TEST_RES) {
+        addDirectoryIfExists(File(repoRoot, "$moduleName/src/test/res"))
+      }
+    }
 
-    val validJarFiles = jarFiles.mapNotNull { jarFile ->
-      val resolvedJarPath = resolveBazelPath(jarFile)
+    private fun collectFilesFromDirectory(directory: File): List<String> {
+      if (!directory.exists() || !directory.isDirectory) {
+        return emptyList()
+      }
 
-      if (resolvedJarPath != null && File(resolvedJarPath).exists()) {
-        resolvedJarPath
+      return directory.walkTopDown()
+        .filter { it.isFile && it.extension in SUPPORTED_SOURCE_EXTENSIONS }
+        .map { it.absolutePath }
+        .toList()
+    }
+
+    private fun MutableList<String>.addDirectoryIfExists(directory: File) {
+      if (directory.exists() && directory.isDirectory) {
+        add(directory.absolutePath)
       } else {
+        throw IllegalStateException(
+          "Required resource directory does not exist: ${directory.absolutePath}"
+        )
+      }
+    }
+  }
+
+  /** Helper class for resolving module dependencies. */
+  private inner class DependencyResolver(
+    private val bazelClient: BazelClient,
+    private val extractedAarsDirectory: File
+  ) {
+    fun resolveAarFiles(module: ModuleName): List<AarFileInfo> {
+      if (module == ModuleName.DATA) {
+        return emptyList()
+      }
+
+      val allDependencies = bazelClient.retrieveTargetModuleDependencies(module.moduleName)
+      val aarFiles = allDependencies.filter { it.endsWith(".${SdkConstants.EXT_AAR}") }
+
+      if (aarFiles.isEmpty()) {
+        return emptyList()
+      }
+
+      val moduleAarsDirectory =
+        ensureDirectoryExists(File(extractedAarsDirectory, module.moduleName))
+      return aarFiles.mapNotNull { aarFile ->
+        processAarFile(aarFile, moduleAarsDirectory)
+      }
+    }
+
+    fun resolveJarFiles(module: ModuleName): List<String> {
+      if (module == ModuleName.DATA) {
+        return emptyList()
+      }
+
+      val allDependencies = bazelClient.retrieveTargetModuleDependencies(module.moduleName)
+      return allDependencies
+        .filter { it.endsWith(".${SdkConstants.EXT_JAR}") }
+        .mapNotNull { jarFile ->
+          PathResolver.resolveBazelPath(jarFile, repoRoot, bazelClient)
+        }
+    }
+
+    fun extractLintCheckJars(aarFiles: List<AarFileInfo>): List<String> =
+      aarFiles.mapNotNull { aarInfo ->
+        val lintJar = File(aarInfo.extractedPath, "lint.jar")
+        if (lintJar.exists()) lintJar.absolutePath else null
+      }
+
+    private fun processAarFile(aarFile: String, moduleAarsDirectory: File): AarFileInfo? {
+      val resolvedAarPath = PathResolver.resolveBazelPath(aarFile, repoRoot, bazelClient)
+        ?: return null
+
+      require(File(resolvedAarPath).exists()) {
+        "AAR file does not exist: $resolvedAarPath"
+      }
+
+      return try {
+        val extractedPath = AarExtractor.extractAar(resolvedAarPath, moduleAarsDirectory)
+        AarFileInfo(resolvedAarPath, extractedPath)
+      } catch (e: Exception) {
+        throw IllegalStateException("Failed to extract AAR file: $aarFile", e)
+      }
+    }
+  }
+
+  /** Object for resolving Bazel paths to actual file system locations. */
+  private object PathResolver {
+
+    fun resolveBazelPath(path: String, repoRoot: File, bazelClient: BazelClient): String? {
+      val resolvedPath = when {
+        File(path).isAbsolute -> path
+        path.startsWith("external/") -> resolveExternalPath(path, bazelClient)
+        else -> File(repoRoot, path).absolutePath
+      }
+
+      return if (File(resolvedPath).exists()) {
+        resolvedPath
+      } else {
+        println("Path can not be resolved: $path")
         null
       }
     }
 
-    return validJarFiles
-  }
+    private fun resolveExternalPath(path: String, bazelClient: BazelClient): String {
+      val bazelInfo = bazelClient.retrieveBazelInfo()
+      val outputBase = bazelInfo["output_base"]
+        ?: throw IllegalStateException("Could not retrieve Bazel output_base for path: $path")
 
-  /**
-   * Resolves a Bazel path to its actual file system location.
-   * Handles external dependencies and workspace-relative paths.
-   */
-  private fun resolveBazelPath(path: String): String? {
-    return when {
-      File(path).isAbsolute -> path
-
-      path.startsWith("external/") -> {
-        val bazelInfo = bazelClient.getBazelInfo()
-        val outputBase = bazelInfo["output_base"]
-        val execRoot = bazelInfo["execution_root"]
-
-        val possiblePaths = listOfNotNull(
-          outputBase?.let { File(it, path).absolutePath },
-          execRoot?.let { File(it, path).absolutePath },
-          outputBase?.let {
-            File(it, "external").resolve(path.removePrefix("external/")).absolutePath
-          }
-        )
-
-        possiblePaths.firstOrNull { File(it).exists() }
-      }
-
-      else -> File(repoRoot, path).absolutePath
+      return File(outputBase, path).absolutePath
     }
   }
 
-  private fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String? {
-    val aarFile = File(aarFilePath)
-    if (!aarFile.exists()) {
-      return null
-    }
+  private object AarExtractor {
 
-    val safeName = aarFile.nameWithoutExtension.replace(
-      Regex("[^a-zA-Z0-9._-]"), "_"
-    )
-    val extractedDir = File(moduleAarsDirectory, safeName)
-
-    if (extractedDir.exists()) {
-      return extractedDir.absolutePath
-    }
-
-    return try {
-      ensureDirectoryExists(extractedDir)
-
-      var extractedFileCount = 0
-      ZipFile(aarFile).use { zipFile ->
-        zipFile.entries().asSequence().forEach { entry ->
-          val entryFile = File(extractedDir, entry.name)
-
-          if (entry.isDirectory) {
-            entryFile.mkdirs()
-          } else {
-            entryFile.parentFile?.mkdirs()
-
-            zipFile.getInputStream(entry).use { input ->
-              entryFile.outputStream().use { output ->
-                input.copyTo(output)
-              }
-            }
-            extractedFileCount++
-          }
-        }
+    fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String {
+      val aarFile = File(aarFilePath)
+      if (!aarFile.exists()) {
+        throw IllegalStateException("AAR file does not exist: $aarFilePath")
       }
 
-      if (extractedFileCount == 0) {
-        return null
-      }
+      val safeName = createSafeDirectoryName(aarFile.nameWithoutExtension)
+      val extractedDir = File(moduleAarsDirectory, safeName)
 
-      extractedDir.absolutePath
-    } catch (e: Exception) {
       if (extractedDir.exists()) {
-        try {
-          extractedDir.deleteRecursively()
-        } catch (e: Exception) {
-          throw IllegalStateException(
-            "Failed to delete extracted directory: ${extractedDir.absolutePath}", e
-          )
+        return extractedDir.absolutePath
+      }
+
+      return try {
+        ensureDirectoryExists(extractedDir)
+        val extractedCount = performExtraction(aarFile, extractedDir)
+
+        if (extractedCount > 0) {
+          extractedDir.absolutePath
+        } else {
+
+          if (extractedDir.exists()) {
+            extractedDir.deleteRecursively()
+          }
+          throw IllegalStateException("No files were extracted from AAR: $aarFilePath")
         }
+      } catch (e: Exception) {
+        if (extractedDir.exists()) {
+          extractedDir.deleteRecursively()
+        }
+        throw IllegalStateException("Failed to extract AAR file: $aarFilePath")
       }
-      null
+    }
+
+    private fun performExtraction(aarFile: File, extractedDir: File): Int {
+      var extractedFileCount = 0
+
+      try {
+        ZipFile(aarFile).use { zipFile ->
+          zipFile.entries().asSequence().forEach { entry ->
+            val entryFile = File(extractedDir, entry.name)
+
+            if (entry.isDirectory) {
+              if (!entryFile.mkdirs() && !entryFile.exists()) {
+                throw IOException("Failed to create directory: ${entryFile.absolutePath}")
+              }
+            } else {
+              entryFile.parentFile?.let { parentDir ->
+                if (!parentDir.mkdirs() && !parentDir.exists()) {
+                  throw IOException("Failed to create parent directory: ${parentDir.absolutePath}")
+                }
+              }
+
+              zipFile.getInputStream(entry).use { input ->
+                entryFile.outputStream().use { output ->
+                  input.copyTo(output)
+                }
+              }
+              extractedFileCount++
+            }
+          }
+        }
+      } catch (e: IOException) {
+        throw IOException("Failed to extract AAR file: ${aarFile.absolutePath}")
+      }
+
+      return extractedFileCount
     }
   }
 
-  private fun getAndroidSdkPath(): String {
-    return System.getenv(SdkConstants.ANDROID_HOME_ENV)
-      ?: throw IllegalStateException(
-        "ANDROID_HOME environment variable is not set. " +
-          "Please set it to the path of your Android SDK."
+  private fun findManifestFile(module: ModuleName): String {
+    val manifestPath = File(repoRoot, "${module.moduleName}/src/main/AndroidManifest.xml")
+    return if (manifestPath.exists()) {
+      manifestPath.absolutePath
+    } else {
+      throw IllegalStateException(
+        "Manifest file not found for module: ${module.moduleName} at ${manifestPath.absolutePath}"
       )
+    }
   }
 
-  private fun generateXmlContent(
+  private fun generateProjectXmlContent(
     cacheDirectory: File,
-    jdkPath: String,
-    sdkPath: String,
     moduleConfigs: List<ModuleConfig>
-  ): String {
-    return buildString {
-      appendLine("""<?xml version="1.0" encoding="UTF-8"?>""")
-      appendLine("<project>")
-      appendLine("  <root dir='${repoRoot.absolutePath}'/>")
-      appendLine("  <sdk dir='$sdkPath'/>")
-      appendLine("  <jdk dir='$jdkPath'/>")
-      appendLine("  <cache dir='${cacheDirectory.absolutePath}'/>")
+  ): String = buildString {
+    appendLine("""<?xml version="1.0" encoding="UTF-8"?>""")
+    appendLine("<project>")
+    appendLine("  <root dir='${repoRoot.absolutePath}'/>")
+    appendLine("  <cache dir='${cacheDirectory.absolutePath}'/>")
+    appendLine()
+
+    moduleConfigs.forEach { config ->
+      append(generateModuleXml(config))
       appendLine()
-
-      moduleConfigs.forEach { config ->
-        append(generateModuleXml(config))
-        appendLine()
-      }
-
-      appendLine("</project>")
     }
+
+    appendLine("</project>")
   }
 
-  private fun ensureDirectoryExists(directory: File): File {
-    if (!directory.exists() && !directory.mkdirs()) {
-      throw IOException("Failed to create directory: ${directory.path}")
+  private fun generateModuleXml(config: ModuleConfig): String = buildString {
+    appendLine("  <module")
+    appendLine("""    name="${config.name}"""")
+    appendLine("""    android="${config.isAndroid}"""")
+    appendLine("""    library="${config.isLibrary}"""")
+
+    config.lintModelDir?.let { modelDir ->
+      appendLine("""    model="${modelDir.absolutePath}"""")
     }
-    return directory
+
+    appendLine("""    desugar="full">""")
+
+    appendLine("""    <manifest file="${config.manifestFile}"/>""")
+
+    config.srcFiles.forEach { srcFile ->
+      appendLine("""    <src file="$srcFile"/>""")
+    }
+
+    config.testFiles.forEach { testFile ->
+      appendLine("""    <src file="$testFile" test="true"/>""")
+    }
+
+    config.resourceDirs.forEach { resourceDir ->
+      appendLine("""    <resource dir="$resourceDir"/>""")
+    }
+
+    config.dependencies.forEach { dependency ->
+      appendLine("""    <dep module="$dependency"/>""")
+    }
+
+    config.aarFiles.forEach { aarInfo ->
+      appendLine(
+        """    <aar file="${aarInfo.originalPath}" extracted="${aarInfo.extractedPath}"/>"""
+      )
+    }
+
+    config.jarFiles.forEach { jarFile ->
+      appendLine("""    <classpath jar="$jarFile"/>""")
+    }
+
+    config.lintCheckJars.forEach { lintCheckJar ->
+      appendLine("""    <lint-checks jar="$lintCheckJar"/>""")
+    }
+
+    appendLine("  </module>")
   }
 
-  private fun writeProjectDescriptionFile(file: File, content: String): File {
-    return file.apply {
+  private fun writeProjectDescriptionFile(file: File, content: String): File =
+    file.apply {
       try {
         bufferedWriter().use { writer ->
           writer.write(content)
         }
       } catch (e: Exception) {
-        throw IllegalStateException("Failed to write project description file: ${file.path}", e)
-      }
-    }
-  }
-
-  /**
-   * Prepares JDK information for lint by creating a release file.
-   * Lint uses $JAVA_HOME/release which is not provided by Bazel's JavaRuntimeInfo.
-   */
-  private fun prepareJdk(jdkHome: File) {
-    ensureDirectoryExists(jdkHome)
-    val releaseFile = File(jdkHome, "release")
-
-    try {
-      val modulesString = generateModulesString()
-      releaseFile.writeText(modulesString)
-    } catch (e: Exception) {
-      throw IllegalStateException("Failed to prepare JDK release file: ${releaseFile.path}", e)
-    }
-  }
-
-  private fun generateModulesString(): String {
-    return try {
-      ModuleLayer.boot()
-        .modules()
-        .joinToString(
-          separator = " ",
-          prefix = "MODULES=\"",
-          postfix = "\"",
-          transform = Module::getName
-        )
-    } catch (e: Exception) {
-      throw IllegalStateException("Failed to generate modules string from boot layer", e)
-    }
-  }
-
-  /**
-   * Generates XML configuration for a module.
-   */
-  private fun generateModuleXml(config: ModuleConfig): String {
-    return buildString {
-      appendLine("  <module")
-      appendLine("""    name="${config.name}"""")
-      appendLine("""    android="${config.isAndroid}"""")
-      appendLine("""    library="${config.isLibrary}"""")
-      appendLine("""    compile-sdk-version="${config.compileSdkVersion}"""")
-      appendLine("""    kotlinLanguage="${config.kotlinLanguageVersion}"""")
-
-      config.lintModelDir?.let { modelDir ->
-        appendLine("""    model="${modelDir.absolutePath}"""")
-      }
-
-      appendLine("""    desugar="full">""")
-
-      config.manifestFile?.let { manifestFile ->
-        appendLine("""    <manifest file="$manifestFile"/>""")
-      }
-
-      config.srcDirs.forEach { srcDir ->
-        appendLine("""    <src dir="$srcDir"/>""")
-      }
-
-      config.testDirs.forEach { testDir ->
-        appendLine("""    <src dir="$testDir" test="true"/>""")
-      }
-
-      config.resourceDirs.forEach { resourceDir ->
-        appendLine("""    <resource dir="$resourceDir"/>""")
-      }
-
-      config.dependencies.forEach { dependency ->
-        appendLine("""    <dep module="$dependency"/>""")
-      }
-
-      config.aarFiles.forEach { aarInfo ->
-        appendLine(
-          """    <aar file="${aarInfo.originalPath}" extracted="${aarInfo.extractedPath}"/>"""
+        throw IllegalStateException(
+          "Failed to write project description file: ${file.absolutePath}"
         )
       }
-
-      config.jarFiles.forEach { jarFile ->
-        appendLine("""    <classpath jar="$jarFile"/>""")
-      }
-
-      appendLine("  </module>")
     }
-  }
 }
