@@ -5493,6 +5493,117 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testFlashback_onClickFlashbackButton_verifyConfirmationDialogIsVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughToMultipleChoiceStateWithFlashbackDest()
+
+      // Select an incorrect answer in a multiple-choice interaction and submit.
+      submitIncorrectAnswerToTriggerFlashbackButton()
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).perform(click())
+
+      // Verify flashback confirmation dialog.
+      onView(withText("Need help? No problem.")).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.confirmation_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .check(matches(withText("Review the previous question's solution")))
+
+      // Verify the buttons in the dialog.
+      onView(withId(R.id.not_now_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Not now")))
+      onView(withId(R.id.continue_confirmation_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Continue")))
+    }
+  }
+
+  @Test
+  fun testFlashback_onCancelFlashbackConfirmationDialog_DialogIsNotVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughToMultipleChoiceStateWithFlashbackDest()
+
+      // Select an incorrect answer in a multiple-choice interaction and submit.
+      submitIncorrectAnswerToTriggerFlashbackButton()
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).perform(click())
+
+      // Verify confirmation dialog.
+      onView(withText("Need help? No problem.")).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Click Not now buttons in the dialog
+      onView(withId(R.id.not_now_button))
+        .check(matches(withText("Not now")))
+        .perform(click())
+
+      // Verify dialog is not visible.
+      onView(withText("Need help? No problem.")).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFlashback_onCancelFlashbackConfirmationDialog_returnsToPendingStateAgain() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      playThroughToMultipleChoiceStateWithFlashbackDest()
+
+      // Select an incorrect answer in a multiple-choice interaction and submit.
+      submitIncorrectAnswerToTriggerFlashbackButton()
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).perform(click())
+
+      // Verify confirmation dialog.
+      onView(withText("Need help? No problem.")).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      // Click Not now buttons in the dialog
+      onView(withId(R.id.not_now_button))
+        .check(matches(withText("Not now")))
+        .perform(click())
+
+      // Verify learner returns to the pending state.
+      val expectedText = "“Very good!” said Uncle Berry. He looked at the kitchen table and saw " +
+        "that James had a jug of orange puree that hadn't been used.\n\n“Now, James,\" " +
+        "he said, \"I know a good recipe for orange smoothie. It requires mixing " +
+        "orange puree and milk in the ratio 3:2. Can you tell me which of the following " +
+        "pictures shows a 3:2 ratio of orange puree to milk?\"\n\n(Note: The orange puree " +
+        "is orange, and the milk is white.)"
+      verifyContentContains(expectedText)
+
+      // Verify selection interaction is being displayed.
+      scrollToViewType(SELECTION_INTERACTION)
+      onView(withId(R.id.selection_interaction_recyclerview)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
   private fun playThroughToMultipleChoiceStateWithFlashbackDest() {
     playThroughRatioExplorationState1()
     playThroughRatioExplorationState2()
@@ -5589,6 +5700,19 @@ class StateFragmentTest {
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
   }
+
+  private fun submitIncorrectAnswerToTriggerFlashbackButton() {
+    // Select an incorrect answer in a multiple-choice interaction and submit.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 1,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).perform(click())
+    clickSubmitAnswerButton()
+  }
+
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!

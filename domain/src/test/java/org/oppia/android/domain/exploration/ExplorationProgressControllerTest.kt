@@ -3403,6 +3403,30 @@ class ExplorationProgressControllerTest {
       .isEqualTo("Ratio shows relative relationship 2")
   }
 
+  @Test
+  fun testFlashback_onContinueConfirmationDialog_returnsEphemeralStateWithFlashbackStateTrue() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughToMultipleChoiceStateWithFlashbackDest()
+
+    // Submit a wrong answer.
+    val ephemeralState = submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Trigger flashback dialog and click Continue button.
+    val newEphemeralState =
+      clickContinueOnFlashbackConfirmationDialog(answerAndResponse.stateNameToRevisit)
+
+    // Verify returned EphemeralState is a completed state.
+    assertThat(newEphemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    // Verify flashback state is true in the returned EphemeralState.
+    assertThat(newEphemeralState.flashbackState).isEqualTo(true)
+  }
+
   private fun playThroughToMultipleChoiceStateWithFlashbackDest() {
     playThroughRatioExplorationState1()
     playThroughRatioExplorationState2()
@@ -3486,6 +3510,13 @@ class ExplorationProgressControllerTest {
   private fun playThroughRatioExplorationState15(): EphemeralState {
     submitTextInputAnswer("2:1")
     return moveToNextState()
+  }
+
+  private fun clickContinueOnFlashbackConfirmationDialog(stateName: String): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.moveToFlashback(stateName)
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
   }
 
   private fun getAggregateTopicTime(): Long {

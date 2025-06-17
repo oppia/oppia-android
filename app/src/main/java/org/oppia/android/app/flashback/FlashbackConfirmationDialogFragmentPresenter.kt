@@ -1,13 +1,12 @@
 package org.oppia.android.app.flashback
 
 import android.app.Dialog
-import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import org.oppia.android.app.databinding.databinding.FlashbackConfirmationDialogFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.ui.R
-import org.oppia.android.app.databinding.databinding.FlashbackConfirmationDialogFragmentBinding
 import org.oppia.android.domain.exploration.ExplorationProgressController
 import javax.inject.Inject
 

@@ -2,7 +2,7 @@ package org.oppia.android.app.player.state.itemviewmodel
 
 import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 
-/** [StateItemViewModel] for navigation to old states for revision. */
+/** [StateItemViewModel] for navigation to previously states for revision. */
 class FlashbackButtonViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,

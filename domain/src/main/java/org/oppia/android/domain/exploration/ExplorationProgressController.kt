@@ -722,7 +722,7 @@ class ExplorationProgressController @Inject constructor(
 
             // Checks whether the learner submitted a wrong answer and the expected destination name
             // was previously visited.
-            if (!enableFlashbackSupport.value &&
+            if (enableFlashbackSupport.value &&
               !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
               !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
             ) {
@@ -991,28 +991,31 @@ class ExplorationProgressController @Inject constructor(
     ephemeralStateFlow.emit(retrieveCurrentStateAsync())
   }
 
-  //subha add kdoc
+  /**
+   * Immediately recomputes the current flashback state & notifies it's been changed.
+   *
+   * This should only be called when the caller can guarantee that the current [ControllerState] is
+   * correct and up-to-date (i.e. that this is being called via a direct call path from the actor).
+   */
   private suspend fun ControllerState.recomputeCurrentFlashbackStateAndNotifySync(
     stateName: String
   ) {
     recomputeCurrentFlashbackStateAndNotifyImpl(computeCurrentFlashbackEphemeralState(stateName))
   }
 
-  //subha add kdoc
-  private fun ControllerState.computeCurrentFlashbackEphemeralState(stateName: String): EphemeralState {
-    // instead of this . find ephemeral state from statedeck
-    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
-    return ephemeralState.toBuilder().apply {
-      flashbackState = true
-    }.build()
-  }
-
-  //subha add kdoc
-
   private suspend fun ControllerState.recomputeCurrentFlashbackStateAndNotifyImpl(
     ephemeralState: EphemeralState
   ) {
     ephemeralStateFlow.emit(AsyncResult.Success(ephemeralState))
+  }
+
+  private fun ControllerState.computeCurrentFlashbackEphemeralState(
+    stateName: String
+  ): EphemeralState {
+    val ephemeralState = explorationProgress.stateDeck.getFlashbackEphemeralState(stateName)
+    return ephemeralState.toBuilder().apply {
+      flashbackState = true
+    }.build()
   }
 
   private suspend fun ControllerState.retrieveCurrentStateAsync(): AsyncResult<EphemeralState> {

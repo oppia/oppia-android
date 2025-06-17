@@ -5,12 +5,12 @@ import android.content.Context
 import android.os.Bundle
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import org.oppia.android.app.model.FlashbackConfirmationDialogFragmentArguments
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
-import org.oppia.android.app.model.FlashbackConfirmationDialogFragmentArguments
 import javax.inject.Inject
 
-/** Fragment that displays a dialog for flashback open confirmation. */
+/** Fragment that displays a confirmation dialog for viewing flashback. */
 class FlashbackConfirmationDialogFragment : InjectableDialogFragment() {
   @Inject
   lateinit var flashbackConfirmationDialogFragmentPresenter:

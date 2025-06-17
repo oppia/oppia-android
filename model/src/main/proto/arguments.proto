@@ -955,6 +955,6 @@ message StatePlayerRecyclerViewAssemblerState {
 
 // Arguments required when creating an FlashbackConfirmationDialogFragment.
 message FlashbackConfirmationDialogFragmentArguments {
-  // State name which will be shown as Flashback.
+  // The name of the state that will be shown as a flashback.
   string state_name = 1;
 }
