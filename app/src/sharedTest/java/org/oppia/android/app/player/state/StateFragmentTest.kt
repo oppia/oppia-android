@@ -5713,7 +5713,6 @@ class StateFragmentTest {
     clickSubmitAnswerButton()
   }
 
-
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
     val classLoader = StateFragmentTest::class.java.classLoader!!
     val shadowMediaPlayerClass = classLoader.loadClass("org.robolectric.shadows.ShadowMediaPlayer")

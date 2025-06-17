@@ -81,6 +81,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
@@ -109,7 +110,6 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
