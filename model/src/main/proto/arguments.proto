@@ -952,3 +952,9 @@ message StatePlayerRecyclerViewAssemblerState {
   // Indicates whether the previous responses header is expanded.
   bool has_previous_responses_expanded = 1;
 }
+
+// Arguments that are saved on configuration changes in FeatureFlagFragment.
+message FeatureFlagFragmentArgument {
+  // List of current feature flag states.
+  repeated bool feature_flag_states = 1;
+}
