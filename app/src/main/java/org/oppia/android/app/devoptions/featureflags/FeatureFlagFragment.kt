@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.FeatureFlagFragmentArgument
+import org.oppia.android.util.extensions.getProto
+import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify feature flags of the app. */
@@ -17,6 +20,7 @@ class FeatureFlagFragment : InjectableFragment() {
   companion object {
     /** Returns a new instance of [FeatureFlagFragment]. */
     fun newInstance(): FeatureFlagFragment = FeatureFlagFragment()
+    const val FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
   }
 
   override fun onAttach(context: Context) {
@@ -29,6 +33,26 @@ class FeatureFlagFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return featureFlagFragmentPresenter.handleCreateView(inflater, container)
+    var featureFlagStates = ArrayList<Boolean>()
+    if (savedInstanceState != null) {
+      val args = savedInstanceState.getProto(
+        FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY,
+        FeatureFlagFragmentArgument.getDefaultInstance()
+      )
+      featureFlagStates = args?.featureFlagStatesList?.let { ArrayList(it) } ?: ArrayList()
+    }
+
+    return featureFlagFragmentPresenter.handleCreateView(inflater, container, featureFlagStates)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    val featureFlagStates = featureFlagFragmentPresenter.featureFlagStates
+    outState.putProto(
+      FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY,
+      FeatureFlagFragmentArgument.newBuilder().apply {
+        addAllFeatureFlagStates(featureFlagStates)
+      }.build()
+    )
   }
 }
