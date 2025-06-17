@@ -43,7 +43,8 @@ fun main(vararg args: String) {
   lintRunner.runLint(cliArgs)
 }
 
-/** Runs the Android Lint tool and reports issues.
+/**
+ * Runs the Android Lint tool and reports issues.
  *
  * @param reportFile the file where Lint results will be written
  * @param projectDescriptionFile the file containing the project description for Lint
@@ -62,14 +63,7 @@ class AndroidLintRunner(
       5 to "Invalid command-line argument.",
     )
   }
-  init {
-    require(projectDescriptionFile.exists()) {
-      "Project description file does not exist: ${projectDescriptionFile.absolutePath}"
-    }
-    require(projectDescriptionFile.extension == "xml") {
-      "Project description file must be an .xml file: ${projectDescriptionFile.name}"
-    }
-  }
+
   /**
    * Invokes the Lint CLI to perform analysis and prints the results.
    *
