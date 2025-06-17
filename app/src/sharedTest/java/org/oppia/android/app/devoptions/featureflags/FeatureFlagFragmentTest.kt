@@ -11,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
 import org.junit.After
@@ -97,6 +98,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 
 /** Tests for [FeatureFlagFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -401,6 +406,36 @@ class FeatureFlagFragmentTest {
     }
   }
 
+  @Test
+  fun testFeatureFlagFragment_overrideFeatureFlag_configChange_changesPersists() {
+    launch(FeatureFlagTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 0)
+
+      val initialValue = getFeatureFlagAtPosition(position = 0).currentValue
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flag_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedValue = !initialValue
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flag_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).check(matches(if (expectedValue) isChecked() else isNotChecked()))
+    }
+  }
+
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.feature_flag_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(position)
@@ -412,24 +447,24 @@ class FeatureFlagFragmentTest {
     stringToMatch: String
   ) {
     onView(
-      RecyclerViewMatcher.atPositionOnView(
+      atPositionOnView(
         recyclerViewId = R.id.feature_flag_recycler_view,
         position = itemPosition,
         targetViewId = R.id.feature_flag_label_text_view
       )
-    ).check(ViewAssertions.matches(ViewMatchers.withText(stringToMatch)))
+    ).check(matches(withText(stringToMatch)))
   }
   private fun verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
     itemPosition: Int,
     stringToMatch: String
   ) {
     onView(
-      RecyclerViewMatcher.atPositionOnView(
+      atPositionOnView(
         recyclerViewId = R.id.feature_flag_recycler_view,
         position = itemPosition,
         targetViewId = R.id.sync_status_value_text_view
       )
-    ).check(ViewAssertions.matches(ViewMatchers.withText(stringToMatch)))
+    ).check(matches(withText(stringToMatch)))
   }
 
   private fun getSyncStatusText(syncStatus: SyncStatus): String {
