@@ -7,13 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -34,7 +38,7 @@ import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagTestActi
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -98,10 +102,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 
 /** Tests for [FeatureFlagFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -407,10 +407,8 @@ class FeatureFlagFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_overrideFeatureFlag_configChange_changesPersists() {
+  fun testFeatureFlagFragment_overrideFeatureFlag_configChange_changePersists() {
     launch(FeatureFlagTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
       scrollToPosition(position = 0)
 
       val initialValue = getFeatureFlagAtPosition(position = 0).currentValue
@@ -432,7 +430,7 @@ class FeatureFlagFragmentTest {
           position = 0,
           targetViewId = R.id.feature_flag_switch
         )
-      ).check(matches(if (expectedValue) isChecked() else isNotChecked()))
+      ).check(matches(if (expectedValue) isChecked() else not(isChecked())))
     }
   }
 
