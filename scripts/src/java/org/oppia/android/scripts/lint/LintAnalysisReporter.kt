@@ -27,6 +27,7 @@ enum class LintSeverity(val displayName: String) {
   companion object {
     /**
      * Converts a string severity to enum, case-insensitive.
+     *
      * @param severityString the string representation of severity
      * @return the corresponding LintSeverity enum
      * @throws IllegalArgumentException if severity is unknown
