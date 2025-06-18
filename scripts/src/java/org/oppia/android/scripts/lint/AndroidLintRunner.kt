@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
@@ -99,10 +100,11 @@ class AndroidLintAnalyzer(
 
     val bazelInfo = bazelClient.retrieveBazelInfo()
     val javaConfig = JavaConfiguration(bazelInfo)
+    val buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion
     val cliArgs = lintRunner.prepareLintArguments(
-      repoRoot = repoRoot,
       jdkHome = javaConfig.getJdkHome(),
-      javaVersion = javaConfig.getVersion()
+      javaVersion = javaConfig.getVersion(),
+      buildSdkVersion = buildSdkVersion.toString()
     )
 
     lintRunner.runLint(cliArgs)
@@ -158,9 +160,7 @@ class AndroidLintRunner(
   companion object {
     private const val LINT_CLIENT_ID = "cli"
     private const val KOTLIN_LANGUAGE_VERSION = "1.6"
-    private const val BUILD_VARS_FILE = "build_vars.bzl"
     private const val JDK_RELEASE_FILE = "release"
-    private const val BUILD_SDK_VERSION_KEY = "BUILD_SDK_VERSION"
 
     private const val SUCCESS = 0
     private const val ISSUES_FOUND = 1
@@ -200,17 +200,15 @@ class AndroidLintRunner(
   /**
    * Prepares the command-line arguments for the Lint tool.
    *
-   * @param repoRoot The root directory of the repository
    * @param jdkHome The JDK home directory
    * @param javaVersion The Java version to use for analysis
    * @return Array of command-line arguments for the Lint CLI
    */
   fun prepareLintArguments(
-    repoRoot: File,
     jdkHome: File,
-    javaVersion: String
+    javaVersion: String,
+    buildSdkVersion: String
   ): Array<String> {
-    val buildVarsFile = File(repoRoot, BUILD_VARS_FILE)
     prepareJdkEnvironment(jdkHome)
 
     return arrayOf(
@@ -223,7 +221,7 @@ class AndroidLintRunner(
       "--client-id", LINT_CLIENT_ID,
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", getAndroidSdkPath(),
-      "--compile-sdk-version", getBuildSdkVersion(buildVarsFile),
+      "--compile-sdk-version", buildSdkVersion,
       "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
@@ -267,25 +265,6 @@ class AndroidLintRunner(
     } catch (e: Exception) {
       throw IllegalStateException("Failed to generate modules string from boot layer")
     }
-  }
-
-  /** Retrieves the build SDK version from the build variables file. */
-  private fun getBuildSdkVersion(buildVarsFile: File): String {
-    require(buildVarsFile.exists()) {
-      "Build variables file not found: ${buildVarsFile.absolutePath}"
-    }
-
-    val compileSdkLine = buildVarsFile.readLines()
-      .map { it.trim() }
-      .firstOrNull { it.startsWith(BUILD_SDK_VERSION_KEY) }
-      ?: error("$BUILD_SDK_VERSION_KEY not found in file: ${buildVarsFile.absolutePath}")
-
-    val value = compileSdkLine.substringAfter("=").trim().removeSurrounding("\"")
-    require(value.isNotEmpty()) {
-      "$BUILD_SDK_VERSION_KEY value is empty in file: ${buildVarsFile.absolutePath}"
-    }
-
-    return value
   }
 
   /** Retrieves the Android SDK path from environment variables. */

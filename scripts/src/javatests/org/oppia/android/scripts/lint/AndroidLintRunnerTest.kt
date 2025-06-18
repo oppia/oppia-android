@@ -6,15 +6,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
-import java.util.concurrent.TimeUnit
-import org.oppia.android.scripts.common.BazelClient
-import org.oppia.android.scripts.common.CommandExecutorImpl
-import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 
 /** Tests for [AndroidLintRunner]. */
 // Function name: test names are conventionally named with underscores.
@@ -28,16 +25,12 @@ class AndroidLintRunnerTest {
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var sdkPath: String
   private lateinit var jdkHome: File
-  private lateinit var bazelClient: BazelClient
-  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
-  private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private lateinit var buildSdkVersion: String
 
   companion object {
-    private const val COMPILE_SDK_VERSION = "34"
     private const val MIN_SDK_VERSION = "21"
-    private const val JAVA_LANGUAGE_VERSION = "11"
     private const val KOTLIN_LANGUAGE_VERSION = "1.6"
-    private const val BUILD_VARS_CONTENT = """BUILD_SDK_VERSION = "34""""
+    private const val JAVA_VERSION = "11"
   }
 
   @Before
@@ -46,17 +39,18 @@ class AndroidLintRunnerTest {
     originalOut = System.out
     sdkPath = System.getenv("ANDROID_HOME")
       ?: error("ANDROID_HOME environment variable is not set.")
+    jdkHome = File(
+      System.getProperty("java.home")
+        ?: error("java.home system property is not set.")
+    )
     System.setOut(PrintStream(outputStream))
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
-     bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
-    jdkHome = File(bazelClient.retrieveBazelInfo()["java-home"]?:
-      error("Failed to retrieve JDK home from Bazel info. Ensure Bazel is properly configured."))
+    buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion.toString()
   }
 
   @After
   fun tearDown() {
     System.setOut(originalOut)
-    scriptBgDispatcher.close()
   }
 
   @Test
@@ -84,7 +78,6 @@ class AndroidLintRunnerTest {
   @Test
   fun testMain_validRootPath_generatesReports() {
     val rootPath = tempFolder.root
-    createBuildVarsFile()
 
     // TODO(#5734): Update test after implementing project description
     val exception = assertThrows<IllegalStateException> {
@@ -96,45 +89,12 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testMain_withGroupBySeverityFlag_parsesCorrectly() {
-    val rootPath = tempFolder.root
-    createBuildVarsFile()
-
-    val exception = assertThrows<IllegalStateException> {
-      main(rootPath.absolutePath, "--group_by_severity")
-    }
-    // Should still fail due to missing project description, but flag should be parsed
-    assertThat(exception.message).contains(
-      "Lint analysis failed with exit code 5"
-    )
-  }
-
-  @Test
-  fun testMain_withProcessTimeoutFlag_parsesCorrectly() {
-    val rootPath = tempFolder.root
-    createBuildVarsFile()
-
-    val exception = assertThrows<IllegalStateException> {
-      main(rootPath.absolutePath, "--processTimeout=15")
-    }
-    // Should still fail due to missing project description, but flag should be parsed
-    assertThat(exception.message).contains(
-      "Lint analysis failed with exit code 5"
-    )
-  }
-
-  @Test
   fun testPrepareLintArguments_includesRequiredFlags() {
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
-    createBuildVarsFile()
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
-    val result = lintRunner.prepareLintArguments(
-      repoRoot = tempFolder.root,
-      jdkHome = jdkHome,
-      javaVersion = JAVA_LANGUAGE_VERSION
-    )
+    val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion)
 
     assertThat(result).asList().containsAtLeast(
       "-Wall",
@@ -146,126 +106,41 @@ class AndroidLintRunnerTest {
       "--client-id", "cli",
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", sdkPath,
-      "--compile-sdk-version", COMPILE_SDK_VERSION,
+      "--compile-sdk-version", buildSdkVersion,
       "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
-      "--java-language-level", JAVA_LANGUAGE_VERSION,
+      "--java-language-level", JAVA_VERSION,
       "--project", projectFile.absolutePath,
       "--xml", reportFile.absolutePath
     )
   }
 
   @Test
-  fun testPrepareLintArguments_createsMissingJdkReleaseFile() {
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
-    createBuildVarsFile()
-
-    // Create a temporary JDK directory without release file
-    val tempJdkHome = File(tempFolder.root, "temp_jdk")
-    tempJdkHome.mkdirs()
-
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
-
-    // This should create the release file
-    lintRunner.prepareLintArguments(
-      repoRoot = tempFolder.root,
-      jdkHome = tempJdkHome,
-      javaVersion = JAVA_LANGUAGE_VERSION
-    )
-
-    val releaseFile = File(tempJdkHome, "release")
-    assertThat(releaseFile.exists()).isTrue()
-    assertThat(releaseFile.readText()).contains("MODULES=")
-  }
-
-  @Test
-  fun testPrepareLintArguments_withNonExistentJdkHome_throwsException() {
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
-    createBuildVarsFile()
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
-
-    val nonExistentJdk = File(tempFolder.root, "nonexistent_jdk")
-
-    val exception = assertThrows<IllegalArgumentException> {
-      lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = nonExistentJdk,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      )
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "JDK home path does not exist or is not a directory"
-    )
-  }
-
-  @Test
-  fun testPrepareLintArguments_withMissingBuildVarsFile_throwsException() {
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
-
-    val exception = assertThrows<IllegalArgumentException> {
-      lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      )
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "Build variables file not found"
-    )
-  }
-
-  @Test
-  fun testPrepareLintArguments_withInvalidBuildVarsFile_throwsException() {
-    val buildVarsFile = File(tempFolder.root, "build_vars.bzl")
-    buildVarsFile.writeText("SOME_OTHER_VAR = \"value\"")
-
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
-
-    val exception = assertThrows<IllegalStateException> {
-      lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      )
-    }
-
-    assertThat(exception).hasMessageThat().contains(
-      "BUILD_SDK_VERSION not found in file"
-    )
-  }
-
-  @Test
-  fun testRunLint_withExitCode0_handlesSuccessfully() {
+  fun testRunLint_withExitCode0_handlesErrorsGracefully() {
     setupAndroidProjectWithUnusedResources()
     val lintRunner = createLintRunner()
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
 
-    // Mock successful lint run (this would need actual implementation)
-    // For now, we expect this to fail due to missing proper setup
+    val output = outputStream.toString()
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testRunLint_withExitCode1_handlesGracefully() {
+    setupAndroidProjectWithInvalidId()
+    val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      ))
+      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
     }
 
-    // Should fail with invalid argument since we don't have proper project setup
-    assertThat(exception.message).contains("Lint analysis failed with exit code 5")
+    val reportFile = File(tempFolder.root, "lint-report.xml")
+    assertThat(reportFile.exists()).isTrue()
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testRunLint_withExitCode2_throwsException() {
-    val reportFile = File(tempFolder.root, "lint-report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
-
+    setupAndroidProjectWithInvalidId()
+    val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(emptyArray())
     }
@@ -291,14 +166,11 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      ))
+      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
     }
 
-    assertThat(exception.message).contains("Lint analysis failed with exit code")
+    assertThat(exception.message).contains("Lint analysis failed with exit code 3")
+    assertThat(exception.message).contains("Cannot overwrite existing file")
 
     outputDirectory.setWritable(true)
   }
@@ -309,6 +181,7 @@ class AndroidLintRunnerTest {
     val projectPath = File(tempFolder.root, "lint-project-description.xml")
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
+    // Won't happen in actual usage.
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(arrayOf("--help"))
     }
@@ -320,18 +193,58 @@ class AndroidLintRunnerTest {
   fun testRunLint_withExitCode5_throwsException() {
     val reportPath = File(tempFolder.root, "lint-report.xml")
     val projectPath = File(tempFolder.root, "lint-project-description.xml")
-    createBuildVarsFile()
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      ))
+      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
     }
     assertThat(exception.message).contains("Lint analysis failed with exit code 5")
     assertThat(exception.message).contains("Invalid command-line argument")
+  }
+
+  @Test
+  fun testRunLint_multipleIssueTypes_detectsAll() {
+    testBazelWorkspace.initEmptyWorkspace()
+    createProjectStructure()
+    createBasicManifest()
+    createLayoutWithMultipleIssues()
+    createBasicStringResources()
+
+    val lintRunner = createLintRunner()
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportContent = reportFile.readText()
+    assertThat(reportContent).contains("HardcodedText")
+    assertThat(reportContent).contains("RtlHardcoded")
+    assertThat(reportContent).contains("UnusedIds")
+  }
+
+  @Test
+  fun testRunLint_withProjectDescription_withNonExistentFilePath_throwsInternalIssue() {
+    testBazelWorkspace.initEmptyWorkspace()
+    createProjectStructure()
+    createBasicManifest()
+    createBasicStringResources()
+
+    val projectDescriptionFile = createProjectDescriptionFileWithInvalidPath()
+    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val lintRunner = AndroidLintRunner(
+      reportFile = reportFile,
+      projectDescriptionFile = projectDescriptionFile
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    }
+
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED WITH INTERNAL LINT ISSUES$RESET")
+    assertThat(reportFile.exists()).isTrue()
+    val report = reportFile.readText()
+    assertThat(report).contains("LintError")
+    assertThat(report).contains("app/src/main/nonexistent_java does not exist")
+    assertThat(report).contains("line=\"7\"")
   }
 
   @Test
@@ -349,6 +262,89 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testRunLint_missingApplicationIcon_detectsIssue() {
+    setupAndroidProjectWithoutApplicationIcon()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("MissingApplicationIcon")
+  }
+
+  @Test
+  fun testRunLint_unusedResources_detectsIssue() {
+    setupAndroidProjectWithUnusedResources()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("UnusedResources")
+  }
+
+  @Test
+  fun testRunLint_duplicateStrings_detectsIssue() {
+    setupAndroidProjectWithDuplicateStrings()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("DuplicateStrings")
+  }
+
+  @Test
+  fun testRunLint_unusedIds_detectsIssue() {
+    setupAndroidProjectWithUnusedIds()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("UnusedIds")
+  }
+
+  @Test
+  fun testRunLint_rtlHardcoded_detectsIssue() {
+    setupAndroidProjectWithRtlHardcoded()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("RtlHardcoded")
+  }
+
+  @Test
+  fun testRunLint_uselessParent_detectsIssue() {
+    setupAndroidProjectWithUselessParent()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("UselessParent")
+  }
+
+  @Test
+  fun testRunLint_hardcodedText_detectsIssue() {
+    setupAndroidProjectWithHardcodedText()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("HardcodedText")
+  }
+
+  @Test
+  fun testRunLint_invalidId_detectsIssue() {
+    setupAndroidProjectWithInvalidId()
+    val lintRunner = createLintRunner()
+
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    }
+
+    assertThat(exception.message).isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    verifyLintReportContains("InvalidId")
+  }
+
+  @Test
   fun testRunLint_groupBySeverity_reportsIssuesCorrectly() {
     setupAndroidProjectWithHardcodedText()
     val lintRunner = AndroidLintRunner(
@@ -357,16 +353,13 @@ class AndroidLintRunnerTest {
       groupByIssueSeverity = true
     )
 
-    // This will fail due to missing proper setup, but we can verify the grouping flag is used
-    val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      ))
-    }
-
-    assertThat(exception.message).contains("Lint analysis failed")
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    val outputContent = outputStream.toString()
+    assertThat(outputContent).contains("SEVERITY: WARNING")
+    assertThat(outputContent).contains("HardcodedText")
+    assertThat(outputContent).contains("app/src/main/res/layout/activity_main.xml")
+    assertThat(outputContent).contains("Line: 9")
+    assertThat(outputContent).contains("android:text=\"Hardcoded text here\" />")
   }
 
   @Test
@@ -377,21 +370,50 @@ class AndroidLintRunnerTest {
       projectDescriptionFile = createProjectDescriptionFile(),
     )
 
-    // This will fail due to missing proper setup
-    val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(
-        repoRoot = tempFolder.root,
-        jdkHome = jdkHome,
-        javaVersion = JAVA_LANGUAGE_VERSION
-      ))
-    }
-
-    assertThat(exception.message).contains("Lint analysis failed")
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    val outputContent = outputStream.toString()
+    assertThat(outputContent).contains("FILE:")
+    assertThat(outputContent).contains("app/src/main/res/values/strings.xml")
+    assertThat(outputContent).contains("Issue #1: UnusedResources")
+    assertThat(outputContent).contains("Line: 4")
+    assertThat(outputContent).contains(
+      "<string name=\"unused_string\">This string is never used</string>"
+    )
   }
 
-  private fun createBuildVarsFile() {
-    val buildVarsFile = File(tempFolder.root, "build_vars.bzl")
-    buildVarsFile.writeText(BUILD_VARS_CONTENT)
+  @Test
+  fun testPrepareLintArguments_withJdkEnvironmentSetup_createsReleaseFile() {
+    val tempJdkDir = File(tempFolder.root, "temp_jdk")
+    tempJdkDir.mkdirs()
+
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+
+    // Ensure no release file exists initially
+    val releaseFile = File(tempJdkDir, "release")
+    assertThat(releaseFile.exists()).isFalse()
+
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
+
+    // Verify release file was created
+    assertThat(releaseFile.exists()).isTrue()
+    val releaseContent = releaseFile.readText()
+    assertThat(releaseContent).contains("MODULES=")
+  }
+
+  @Test
+  fun testPrepareLintArguments_withInvalidJdkHome_throwsException() {
+    val nonExistentJdk = File(tempFolder.root, "nonexistent_jdk")
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+
+    val exception = assertThrows<IllegalArgumentException> {
+      lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion)
+    }
+
+    assertThat(exception.message).contains("JDK home path does not exist or is not a directory")
   }
 
   private fun createLintRunner(): AndroidLintRunner {
@@ -420,7 +442,6 @@ class AndroidLintRunnerTest {
     createProjectStructure()
     createManifestWithoutIcon()
     createBasicStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithUnusedResources() {
@@ -428,7 +449,6 @@ class AndroidLintRunnerTest {
     createProjectStructure()
     createBasicManifest()
     createUnusedStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithDuplicateStrings() {
@@ -436,7 +456,6 @@ class AndroidLintRunnerTest {
     createProjectStructure()
     createBasicManifest()
     createDuplicateStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithUnusedIds() {
@@ -445,7 +464,6 @@ class AndroidLintRunnerTest {
     createBasicManifest()
     createLayoutWithUnusedIds()
     createBasicStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithRtlHardcoded() {
@@ -454,7 +472,6 @@ class AndroidLintRunnerTest {
     createBasicManifest()
     createLayoutWithRtlHardcoded()
     createBasicStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithUselessParent() {
@@ -463,7 +480,6 @@ class AndroidLintRunnerTest {
     createBasicManifest()
     createLayoutWithUselessParent()
     createBasicStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithHardcodedText() {
@@ -472,7 +488,6 @@ class AndroidLintRunnerTest {
     createBasicManifest()
     createLayoutWithHardcodedText()
     createBasicStringResources()
-    createBuildVarsFile()
   }
 
   private fun setupAndroidProjectWithInvalidId() {
@@ -481,7 +496,6 @@ class AndroidLintRunnerTest {
     createBasicManifest()
     createLayoutWithInvalidId()
     createBasicStringResources()
-    createBuildVarsFile()
   }
 
   private fun createProjectStructure() {
@@ -745,19 +759,13 @@ class AndroidLintRunnerTest {
       <project android="true" incomplete="false" desugar="full" client="cli">
         <root dir="$rootPath"/>
         <sdk dir="$sdkPath"/>
-        <module name="app" library="false" android="true" compile-sdk-version="$COMPILE_SDK_VERSION"
-                javaLanguage="$JAVA_LANGUAGE_VERSION" kotlinLanguage="$KOTLIN_LANGUAGE_VERSION">
+        <module name="app" library="false" android="true" compile-sdk-version="$buildSdkVersion"
+                javaLanguage="$JAVA_VERSION" kotlinLanguage="$KOTLIN_LANGUAGE_VERSION">
           <manifest file="$rootPath/app/src/main/AndroidManifest.xml"/>
           <src dir="$srcPath"/>
           <resource dir="$rootPath/app/src/main/res"/>
         </module>
       </project>
     """.trimIndent()
-  }
-
-  private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {
-    return CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = 5, processTimeoutUnit = TimeUnit.MINUTES
-    )
   }
 }
