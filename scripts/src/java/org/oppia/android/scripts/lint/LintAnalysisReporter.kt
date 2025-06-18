@@ -115,6 +115,7 @@ class LintAnalysisReporter {
     private const val MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
     private const val GROUP_SEPARATOR_LENGTH = 80
     private const val ISSUE_SEPARATOR_LENGTH = 60
+    private const val LINT_ERROR_ID = "LintError"
   }
 
   /**
@@ -126,10 +127,13 @@ class LintAnalysisReporter {
    */
   fun parseLintReport(xmlFilePath: String): List<LintIssue> {
     val xmlFile = File(xmlFilePath).absoluteFile
-    check(xmlFile.exists()) { "Lint report file not found: $xmlFilePath" }
-
-    check(xmlFile.length() <= MAX_FILE_SIZE) {
-      "Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)"
+    when {
+      !xmlFile.exists() ->
+        error("Lint report file not found: $xmlFilePath")
+      xmlFile.extension != "xml" ->
+        error("Invalid file extension: ${xmlFile.extension}. Expected 'xml'.")
+      xmlFile.length() > MAX_FILE_SIZE ->
+        error("Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)")
     }
 
     val fileHash = calculateSha1(xmlFile.absolutePath)
@@ -327,7 +331,7 @@ class LintAnalysisReporter {
   private fun printFinalResult(issues: List<LintIssue>) {
     val criticalIssues = issues.filter { it.severity.isCritical() }
     // TODO(#5734): Replace LintError ID with LintIssueId Enum from the exemption set up.
-    val hasInternalLintIssues = criticalIssues.any { it.id == "LintError" }
+    val hasInternalLintIssues = criticalIssues.any { it.id == LINT_ERROR_ID }
 
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
     when {
