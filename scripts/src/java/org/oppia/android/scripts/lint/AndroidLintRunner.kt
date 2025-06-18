@@ -138,9 +138,10 @@ class AndroidLintAnalyzer(
         ?.groupValues?.get(1)
         ?: error("Could not extract Java version from: $javaRuntime")
     }
-
+    /** Retrieves the JDK home directory. */
     fun getJdkHome(): File = jdkHome
 
+    /** Retrieves the Java version. */
     fun getVersion(): String = version
   }
 }

@@ -6,16 +6,32 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipFile
 
-/** Enum representing module names in the project. */
+/**
+ * Enum representing module names in the project.
+ *
+ * @property moduleName The name of the module as a string.
+ */
 private enum class ModuleName(val moduleName: String) {
+  /** Represents the application module. */
   APP("app"),
+
+  /** Represents the domain module. */
   DOMAIN("domain"),
+
+  /** Represents the testing module. */
   TESTING("testing"),
+
+  /** Represents the utility module. */
   UTILITY("utility"),
+
+  /** Represents the data module. */
   DATA("data");
 
   companion object {
+    /** The application module instance. */
     val APPLICATION_MODULE = APP
+
+    /** list of library modules in the project. */
     val LIBRARY_MODULES = listOf(DOMAIN, TESTING, UTILITY, DATA)
   }
 }
@@ -159,9 +175,11 @@ class LintProjectDescription(
   ) {
     private val moduleName = module.moduleName
 
+    /** Collects the source files for the module. */
     fun collectSourceFiles(): List<String> =
       collectFilesFromDirectory(File(repoRoot, "$moduleName/src/main/java"))
 
+    /** Collects the test files for the module. */
     fun collectTestFiles(): List<String> = buildList {
       addAll(collectFilesFromDirectory(File(repoRoot, "$moduleName/src/test/java")))
 
@@ -170,6 +188,7 @@ class LintProjectDescription(
       }
     }
 
+    /** Collects the resource directories for the module. */
     fun collectResourceDirectories(): List<String> = buildList {
       if (module in MODULES_WITH_MAIN_RES) {
         addDirectoryIfExists(File(repoRoot, "$moduleName/src/main/res"))
@@ -205,10 +224,8 @@ class LintProjectDescription(
   ) {
     private val dependencyCache = mutableMapOf<String, List<String>>()
 
+    /** Resolves the AAR files for the given module. */
     fun resolveAarFiles(module: ModuleName): List<AarFileInfo> {
-      if (module == ModuleName.DATA) {
-        return emptyList()
-      }
 
       val allDependencies = getDependenciesWithCache(module.moduleName)
       val aarFiles = allDependencies.asSequence()
@@ -227,10 +244,8 @@ class LintProjectDescription(
         .toList()
     }
 
+    /** Resolves the JAR files for the given module. */
     fun resolveJarFiles(module: ModuleName): List<String> {
-      if (module == ModuleName.DATA) {
-        return emptyList()
-      }
 
       val allDependencies = getDependenciesWithCache(module.moduleName)
       return allDependencies.asSequence()
@@ -241,6 +256,7 @@ class LintProjectDescription(
         .toList()
     }
 
+    /** Extracts lint check JAR files from the given list of AAR files. */
     fun extractLintCheckJars(aarFiles: List<AarFileInfo>): List<String> =
       aarFiles.asSequence()
         .mapNotNull { aarInfo ->
@@ -275,7 +291,7 @@ class LintProjectDescription(
   /** Object for resolving Bazel paths to actual file system locations. */
   private object PathResolver {
     private val pathCache = mutableMapOf<String, String?>()
-
+    /** Resolves a Bazel path to an absolute file system path. */
     fun resolveBazelPath(path: String, repoRoot: File, bazelClient: BazelClient): String? =
       pathCache.getOrPut(path) {
         val resolvedPath = when {
@@ -303,7 +319,7 @@ class LintProjectDescription(
 
   private object AarExtractor {
     private val extractionCache = mutableMapOf<String, String>()
-
+    /** Extracts the contents of an AAR file to a specified directory. */
     fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String =
       extractionCache.getOrPut(aarFilePath) {
         performAarExtraction(aarFilePath, moduleAarsDirectory)
