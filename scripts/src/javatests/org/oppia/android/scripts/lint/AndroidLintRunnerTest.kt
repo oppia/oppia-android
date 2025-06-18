@@ -60,7 +60,7 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "Repository root path argument is required"
+      "<path_to_repository_root argument> is required: \$(pwd)"
     )
   }
 
@@ -146,7 +146,7 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception.message).contains(
-      "Lint analysis failed with exit code 2: Invalid usage of Lint command"
+      "Lint analysis failed with exit code 2: Invalid usage of Lint command."
     )
   }
 
@@ -186,7 +186,7 @@ class AndroidLintRunnerTest {
       lintRunner.runLint(arrayOf("--help"))
     }
     assertThat(exception.message).contains("Lint analysis failed with exit code 4")
-    assertThat(exception.message).contains("Help command invoked")
+    assertThat(exception.message).contains("Help command invoked.")
   }
 
   @Test

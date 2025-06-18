@@ -30,7 +30,7 @@ import com.android.tools.lint.Main as LintCli
  */
 fun main(vararg args: String) {
   require(args.isNotEmpty()) {
-    "Repository root path argument is required. Usage: \$(pwd)"
+    "<path_to_repository_root argument> is required: \$(pwd)"
   }
 
   val repoRoot = File(args[0])
