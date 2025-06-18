@@ -7,12 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +38,7 @@ import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagTestActi
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.recyclerview.RecyclerViewMatcher
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -401,6 +406,34 @@ class FeatureFlagFragmentTest {
     }
   }
 
+  @Test
+  fun testFeatureFlagFragment_overrideFeatureFlag_configChange_changePersists() {
+    launch(FeatureFlagTestActivity::class.java).use {
+      scrollToPosition(position = 0)
+
+      val initialValue = getFeatureFlagAtPosition(position = 0).currentValue
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flag_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedValue = !initialValue
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flag_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).check(matches(if (expectedValue) isChecked() else not(isChecked())))
+    }
+  }
+
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.feature_flag_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(position)
@@ -412,24 +445,24 @@ class FeatureFlagFragmentTest {
     stringToMatch: String
   ) {
     onView(
-      RecyclerViewMatcher.atPositionOnView(
+      atPositionOnView(
         recyclerViewId = R.id.feature_flag_recycler_view,
         position = itemPosition,
         targetViewId = R.id.feature_flag_label_text_view
       )
-    ).check(ViewAssertions.matches(ViewMatchers.withText(stringToMatch)))
+    ).check(matches(withText(stringToMatch)))
   }
   private fun verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
     itemPosition: Int,
     stringToMatch: String
   ) {
     onView(
-      RecyclerViewMatcher.atPositionOnView(
+      atPositionOnView(
         recyclerViewId = R.id.feature_flag_recycler_view,
         position = itemPosition,
         targetViewId = R.id.sync_status_value_text_view
       )
-    ).check(ViewAssertions.matches(ViewMatchers.withText(stringToMatch)))
+    ).check(matches(withText(stringToMatch)))
   }
 
   private fun getSyncStatusText(syncStatus: SyncStatus): String {

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagFragmentBinding
@@ -25,10 +26,14 @@ class FeatureFlagFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
 
+  /** List of feature flag switch states to be used in the fragment. */
+  var featureFlagStates: ArrayList<Boolean> = arrayListOf()
+
   /** Called when [FeatureFlagFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
-    container: ViewGroup?
+    container: ViewGroup?,
+    featureFlagStates: ArrayList<Boolean>
   ): View? {
     binding = FeatureFlagFragmentBinding.inflate(
       inflater,
@@ -37,6 +42,10 @@ class FeatureFlagFragmentPresenter @Inject constructor(
     )
     binding.featureFlagToolbar.setNavigationOnClickListener {
       onBackNavigation()
+    }
+
+    if (featureFlagStates.isNotEmpty()) {
+      this.featureFlagStates = featureFlagStates
     }
 
     binding.apply {
@@ -62,6 +71,7 @@ class FeatureFlagFragmentPresenter @Inject constructor(
       )
       .build()
   }
+
   private fun onBackNavigation() {
     (activity as FeatureFlagActivity).finish()
   }
@@ -71,7 +81,15 @@ class FeatureFlagFragmentPresenter @Inject constructor(
     model: FeatureFlagItemViewModel
   ) {
     binding.viewModel = model
-    binding.isEnabled = model.currentValue
+    val index = featureFlagViewModel.featureFlagList.value?.indexOf(model)!!
+    if (featureFlagStates.size != featureFlagViewModel.featureFlagList.value?.size)
+      featureFlagStates.add(model.currentValue)
+
+    binding.isEnabled = featureFlagStates[index]
+
+    binding.featureFlagSwitch.setOnCheckedChangeListener { _, isChecked ->
+      featureFlagStates[index] = isChecked
+    }
     binding.syncStatusValueTextView.setBackgroundResource(
       featureFlagViewModel.getSyncStatusBackground(model.syncStatus)
     )
