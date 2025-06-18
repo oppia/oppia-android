@@ -25,3 +25,14 @@ kt_jvm_test(
         "//third_party:com_google_truth_truth",
     ],
 )
+
+kt_jvm_test(
+    name = "LintProjectDescriptionTest",
+    srcs = ["LintProjectDescriptionTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_project_description_lib",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)

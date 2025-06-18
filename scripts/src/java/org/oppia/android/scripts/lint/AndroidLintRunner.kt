@@ -70,10 +70,10 @@ fun main(vararg args: String) {
 /**
  * Manages the Android Lint analysis process.
  *
- * @param repoRoot The root directory of the repository
- * @param workingDirectory The temporary working directory for lint analysis
- * @param bazelClient The Bazel client for executing Bazel commands
- * @param groupByIssueSeverity Whether to group issues by severity in the output
+ * @param repoRoot the root directory of the repository
+ * @param workingDirectory the temporary working directory for lint analysis
+ * @param bazelClient the Bazel client for executing Bazel commands
+ * @param groupByIssueSeverity whether to group issues by severity in the output
  */
 class AndroidLintAnalyzer(
   private val repoRoot: File,
@@ -148,9 +148,9 @@ class AndroidLintAnalyzer(
 /**
  * Runs the Android Lint tool and reports issues.
  *
- * @param reportFile The XML file where lint results will be written
- * @param projectDescriptionFile The XML file containing project configuration
- * @param groupByIssueSeverity Whether to group issues by severity in the output
+ * @param reportFile the XML file where lint results will be written
+ * @param projectDescriptionFile the XML file containing project configuration
+ * @param groupByIssueSeverity whether to group issues by severity in the output
  */
 class AndroidLintRunner(
   private val reportFile: File,
@@ -180,7 +180,7 @@ class AndroidLintRunner(
   /**
    * Invokes the Lint CLI to perform analysis and prints the results.
    *
-   * @param cliArgs The command-line arguments to pass to the Lint CLI
+   * @param cliArgs the command-line arguments to pass to the Lint CLI
    */
   fun runLint(cliArgs: Array<String>) {
     val exitCode = LintCli().run(cliArgs)
@@ -200,9 +200,9 @@ class AndroidLintRunner(
   /**
    * Prepares the command-line arguments for the Lint tool.
    *
-   * @param jdkHome The JDK home directory
-   * @param javaVersion The Java version to use for analysis
-   * @return Array of command-line arguments for the Lint CLI
+   * @param jdkHome the JDK home directory
+   * @param javaVersion the Java version to use for analysis
+   * @return array of command-line arguments for the Lint CLI
    */
   fun prepareLintArguments(
     jdkHome: File,
