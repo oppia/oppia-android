@@ -25,6 +25,7 @@ private data class ModuleConfig(
   val name: String,
   val isAndroid: Boolean,
   val isLibrary: Boolean,
+  val isTest: Boolean,
   val srcFiles: List<String>,
   val testFiles: List<String>,
   val resourceDirs: List<String>,
@@ -135,6 +136,7 @@ class LintProjectDescription(
       name = module.moduleName,
       isAndroid = true,
       isLibrary = isLibrary,
+      isTest = module==ModuleName.TESTING,
       srcFiles = sourceCollector.collectSourceFiles(),
       testFiles = sourceCollector.collectTestFiles(),
       resourceDirs = sourceCollector.collectResourceDirectories(),
@@ -390,6 +392,7 @@ class LintProjectDescription(
     appendLine("""    name="${config.name}"""")
     appendLine("""    android="${config.isAndroid}"""")
     appendLine("""    library="${config.isLibrary}"""")
+    appendLine("""    test="${config.isTest}"""")
 
     config.lintModelDir?.let { modelDir ->
       appendLine("""    model="${modelDir.absolutePath}"""")
