@@ -41,6 +41,7 @@ enum class LintSeverity(val displayName: String) {
   companion object {
     /**
      * Converts a string severity to enum, case-insensitive.
+     *
      * @param severityString the string representation of severity
      * @return the corresponding LintSeverity enum
      * @throws IllegalArgumentException if severity is unknown
@@ -110,6 +111,7 @@ private data class CacheEntry(
 
 /** Reporter class for analyzing XML lint reports and extracting issues. */
 class LintAnalysisReporter {
+
   companion object {
     private val cache = mutableMapOf<String, CacheEntry>()
     private const val MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
@@ -130,6 +132,7 @@ class LintAnalysisReporter {
 
     check(xmlFile.length() <= MAX_FILE_SIZE) {
       "Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)"
+
     }
 
     val fileHash = calculateSha1(xmlFile.absolutePath)

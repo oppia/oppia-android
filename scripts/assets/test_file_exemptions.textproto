@@ -3747,11 +3747,39 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterAlphaModule.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagBindingModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagIdKey.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlags.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagsMapBindingModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterBindingModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterConfigRetriever.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterConfigRetrieverProdImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterController.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerProdImpl.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
@@ -3759,11 +3787,19 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterProcessState.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterSingletonImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterSingletonModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4140,10 +4176,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/mockito/MockitoKotlinHelper.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterConstants.kt"
   test_file_not_required: true
 }
 test_file_exemption {
