@@ -42,5 +42,5 @@ kt_jvm_library(
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
         "//third_party:com_android_tools_lint_lint",
-    ]
+    ],
 )
