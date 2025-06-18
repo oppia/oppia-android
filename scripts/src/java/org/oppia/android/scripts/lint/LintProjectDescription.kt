@@ -71,9 +71,11 @@ class LintProjectDescription(
       ModuleName.DATA to listOf(ModuleName.UTILITY)
     )
 
+    private val INVALID_DIRECTORY_CHARS = Regex("[^a-zA-Z0-9._-]")
+
     /** Creates a safe directory name by replacing invalid characters. */
     private fun createSafeDirectoryName(name: String): String =
-      name.replace(Regex("[^a-zA-Z0-9._-]"), "_")
+      name.replace(INVALID_DIRECTORY_CHARS, "_")
 
     /**
      * Ensures a directory exists, creating it if necessary.
@@ -178,24 +180,21 @@ class LintProjectDescription(
     }
 
     private fun collectFilesFromDirectory(directory: File): List<String> {
-      if (!directory.exists() || !directory.isDirectory) {
-        throw IllegalStateException("Directory does not exist: ${directory.absolutePath}")
+      require(directory.exists() && directory.isDirectory) {
+        "Directory does not exist: ${directory.absolutePath}"
       }
 
-      return directory.walkTopDown()
+      return directory.walkTopDown().asSequence()
         .filter { it.isFile && it.extension in SOURCE_EXTENSIONS }
         .map { it.absolutePath }
         .toList()
     }
 
     private fun MutableList<String>.addDirectoryIfExists(directory: File) {
-      if (directory.exists() && directory.isDirectory) {
-        add(directory.absolutePath)
-      } else {
-        throw IllegalStateException(
-          "Required resource directory does not exist: ${directory.absolutePath}"
-        )
+      require(directory.exists() && directory.isDirectory) {
+        "Required resource directory does not exist: ${directory.absolutePath}"
       }
+      add(directory.absolutePath)
     }
   }
 
@@ -204,13 +203,17 @@ class LintProjectDescription(
     private val bazelClient: BazelClient,
     private val extractedAarsDirectory: File
   ) {
+    private val dependencyCache = mutableMapOf<String, List<String>>()
+
     fun resolveAarFiles(module: ModuleName): List<AarFileInfo> {
       if (module == ModuleName.DATA) {
         return emptyList()
       }
 
-      val allDependencies = bazelClient.retrieveTargetModuleDependencies(module.moduleName)
-      val aarFiles = allDependencies.filter { it.endsWith(".${SdkConstants.EXT_AAR}") }
+      val allDependencies = getDependenciesWithCache(module.moduleName)
+      val aarFiles = allDependencies.asSequence()
+        .filter { it.endsWith(".${SdkConstants.EXT_AAR}") }
+        .toList()
 
       if (aarFiles.isEmpty()) {
         return emptyList()
@@ -218,9 +221,10 @@ class LintProjectDescription(
 
       val moduleAarsDirectory =
         ensureDirectoryExists(File(extractedAarsDirectory, module.moduleName))
-      return aarFiles.mapNotNull { aarFile ->
-        processAarFile(aarFile, moduleAarsDirectory)
-      }
+
+      return aarFiles.asSequence()
+        .mapNotNull { aarFile -> processAarFile(aarFile, moduleAarsDirectory) }
+        .toList()
     }
 
     fun resolveJarFiles(module: ModuleName): List<String> {
@@ -228,25 +232,34 @@ class LintProjectDescription(
         return emptyList()
       }
 
-      val allDependencies = bazelClient.retrieveTargetModuleDependencies(module.moduleName)
-      return allDependencies
+      val allDependencies = getDependenciesWithCache(module.moduleName)
+      return allDependencies.asSequence()
         .filter { it.endsWith(".${SdkConstants.EXT_JAR}") }
         .mapNotNull { jarFile ->
           PathResolver.resolveBazelPath(jarFile, repoRoot, bazelClient)
         }
+        .toList()
     }
 
     fun extractLintCheckJars(aarFiles: List<AarFileInfo>): List<String> =
-      aarFiles.mapNotNull { aarInfo ->
-        val lintJar = File(aarInfo.extractedPath, "lint.jar")
-        if (lintJar.exists()) lintJar.absolutePath else null
+      aarFiles.asSequence()
+        .mapNotNull { aarInfo ->
+          val lintJar = File(aarInfo.extractedPath, "lint.jar")
+          if (lintJar.exists()) lintJar.absolutePath else null
+        }
+        .toList()
+
+    private fun getDependenciesWithCache(moduleName: String): List<String> =
+      dependencyCache.getOrPut(moduleName) {
+        bazelClient.retrieveTargetModuleDependencies(moduleName)
       }
 
     private fun processAarFile(aarFile: String, moduleAarsDirectory: File): AarFileInfo? {
       val resolvedAarPath = PathResolver.resolveBazelPath(aarFile, repoRoot, bazelClient)
         ?: return null
 
-      require(File(resolvedAarPath).exists()) {
+      val aarFileObj = File(resolvedAarPath)
+      require(aarFileObj.exists()) {
         "AAR file does not exist: $resolvedAarPath"
       }
 
@@ -261,21 +274,23 @@ class LintProjectDescription(
 
   /** Object for resolving Bazel paths to actual file system locations. */
   private object PathResolver {
+    private val pathCache = mutableMapOf<String, String?>()
 
-    fun resolveBazelPath(path: String, repoRoot: File, bazelClient: BazelClient): String? {
-      val resolvedPath = when {
-        File(path).isAbsolute -> path
-        path.startsWith("external/") -> resolveExternalPath(path, bazelClient)
-        else -> File(repoRoot, path).absolutePath
-      }
+    fun resolveBazelPath(path: String, repoRoot: File, bazelClient: BazelClient): String? =
+      pathCache.getOrPut(path) {
+        val resolvedPath = when {
+          File(path).isAbsolute -> path
+          path.startsWith("external/") -> resolveExternalPath(path, bazelClient)
+          else -> File(repoRoot, path).absolutePath
+        }
 
-      return if (File(resolvedPath).exists()) {
-        resolvedPath
-      } else {
-        println("Path can not be resolved: $path")
-        null
+        if (File(resolvedPath).exists()) {
+          resolvedPath
+        } else {
+          println("Path can not be resolved: $path")
+          null
+        }
       }
-    }
 
     private fun resolveExternalPath(path: String, bazelClient: BazelClient): String {
       val bazelInfo = bazelClient.retrieveBazelInfo()
@@ -287,11 +302,17 @@ class LintProjectDescription(
   }
 
   private object AarExtractor {
+    private val extractionCache = mutableMapOf<String, String>()
 
-    fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String {
+    fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String =
+      extractionCache.getOrPut(aarFilePath) {
+        performAarExtraction(aarFilePath, moduleAarsDirectory)
+      }
+
+    private fun performAarExtraction(aarFilePath: String, moduleAarsDirectory: File): String {
       val aarFile = File(aarFilePath)
-      if (!aarFile.exists()) {
-        throw IllegalStateException("AAR file does not exist: $aarFilePath")
+      require(aarFile.exists()) {
+        "AAR file does not exist: $aarFilePath"
       }
 
       val safeName = createSafeDirectoryName(aarFile.nameWithoutExtension)
@@ -308,10 +329,7 @@ class LintProjectDescription(
         if (extractedCount > 0) {
           extractedDir.absolutePath
         } else {
-
-          if (extractedDir.exists()) {
-            extractedDir.deleteRecursively()
-          }
+          extractedDir.deleteRecursively()
           throw IllegalStateException("No files were extracted from AAR: $aarFilePath")
         }
       } catch (e: Exception) {
@@ -360,13 +378,10 @@ class LintProjectDescription(
 
   private fun findManifestFile(module: ModuleName): String {
     val manifestPath = File(repoRoot, "${module.moduleName}/src/main/AndroidManifest.xml")
-    return if (manifestPath.exists()) {
-      manifestPath.absolutePath
-    } else {
-      throw IllegalStateException(
-        "Manifest file not found for module: ${module.moduleName} at ${manifestPath.absolutePath}"
-      )
+    require(manifestPath.exists()) {
+      "Manifest file not found for module: ${module.moduleName} at ${manifestPath.absolutePath}"
     }
+    return manifestPath.absolutePath
   }
 
   private fun generateProjectXmlContent(
@@ -402,11 +417,11 @@ class LintProjectDescription(
 
     appendLine("""    <manifest file="${config.manifestFile}"/>""")
 
-    config.srcFiles.forEach { srcFile ->
+    config.srcFiles.asSequence().forEach { srcFile ->
       appendLine("""    <src file="$srcFile"/>""")
     }
 
-    config.testFiles.forEach { testFile ->
+    config.testFiles.asSequence().forEach { testFile ->
       appendLine("""    <src file="$testFile" test="true"/>""")
     }
 
@@ -418,17 +433,17 @@ class LintProjectDescription(
       appendLine("""    <dep module="$dependency"/>""")
     }
 
-    config.aarFiles.forEach { aarInfo ->
+    config.aarFiles.asSequence().forEach { aarInfo ->
       appendLine(
         """    <aar file="${aarInfo.originalPath}" extracted="${aarInfo.extractedPath}"/>"""
       )
     }
 
-    config.jarFiles.forEach { jarFile ->
+    config.jarFiles.asSequence().forEach { jarFile ->
       appendLine("""    <classpath jar="$jarFile"/>""")
     }
 
-    config.lintCheckJars.forEach { lintCheckJar ->
+    config.lintCheckJars.asSequence().forEach { lintCheckJar ->
       appendLine("""    <lint-checks jar="$lintCheckJar"/>""")
     }
 
