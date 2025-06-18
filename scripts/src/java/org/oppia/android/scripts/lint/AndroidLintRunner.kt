@@ -2,78 +2,154 @@ package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
 import org.oppia.android.scripts.common.BazelClient
-import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
+import java.lang.Module
+import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import com.android.tools.lint.Main as LintCli
 
 /**
- * The main entrypoint to analyse the codebase for Android Lint issues.
+ * The main entrypoint to analyze the codebase for Android Lint issues.
  *
  * Usage:
- *   bazel run //scripts:android_lint_check -- <path_to_repository_root> [--group_by_severity]
+ *   bazel run //scripts:android_lint_check -- <path_to_repository_root> [--group_by_severity] [--processTimeout=<minutes>]
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
- * - group_by_severity: Optional flag to group issues by severity
- * - processTimeout: The amount of time that should be waited before considering a process as 'hung',
- *    in minutes.
+ * - --group_by_severity: Optional flag to group issues by severity
+ * - --processTimeout=<minutes>: Process timeout in minutes
  *
  * Examples:
- *    bazel run //scripts:android_lint_check -- $(pwd)
- *    bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
- *    bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=10
+ *   bazel run //scripts:android_lint_check -- $(pwd)
+ *   bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
+ *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=15
  */
 fun main(vararg args: String) {
   require(args.isNotEmpty()) {
-    "<path_to_repository_root argument> is required: \$(pwd)"
+    "Repository root path argument is required. Usage: \$(pwd)"
   }
 
   val repoRoot = File(args[0])
-  require(repoRoot.exists()) { "Repository root path does not exist: ${args[0]}" }
+  require(repoRoot.exists()) {
+    "Repository root path does not exist: ${args[0]}"
+  }
 
   val groupByIssueSeverity = args.contains("--group_by_severity")
+  val processTimeout = args.find { it.startsWith("--processTimeout=") }
+    ?.substringAfter("=")
+    ?.toLongOrNull() ?: 10L
+
   val temporaryDir = Files.createTempDirectory("").parent.toFile()
-  val parentDestDir = File(temporaryDir, "lint_analysis").apply { mkdirs() }
-  println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
+  val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
 
-  val reportFile = File(parentDestDir, "lint-report.xml")
+  println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
+
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val processTimeout: Long = args.find { it.startsWith("--processTimeout=") }
-      ?.substringAfter("=")
-      ?.toLongOrNull() ?: 10
-    val commandExecutor: CommandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher, processTimeout = processTimeout, processTimeoutUnit = TimeUnit.MINUTES
-    )
-    val bazelClient by lazy { BazelClient(repoRoot, commandExecutor) }
-    val lintProjectDescription = LintProjectDescription(
-      repoRoot = repoRoot,
-      workingDirectory = parentDestDir,
-      bazelClient = bazelClient,
+    val commandExecutor = CommandExecutorImpl(
+      scriptBgDispatcher,
+      processTimeout = processTimeout,
+      processTimeoutUnit = TimeUnit.MINUTES
     )
 
+    val bazelClient = BazelClient(repoRoot, commandExecutor)
+    val lintAnalyzer = AndroidLintAnalyzer(
+      repoRoot = repoRoot,
+      workingDirectory = workingDirectory,
+      bazelClient = bazelClient,
+      groupByIssueSeverity = groupByIssueSeverity
+    )
+
+    lintAnalyzer.runAnalysis()
+  }
+}
+
+/**
+ * Manages the Android Lint analysis process.
+ *
+ * @param repoRoot The root directory of the repository
+ * @param workingDirectory The temporary working directory for lint analysis
+ * @param bazelClient The Bazel client for executing Bazel commands
+ * @param groupByIssueSeverity Whether to group issues by severity in the output
+ */
+class AndroidLintAnalyzer(
+  private val repoRoot: File,
+  private val workingDirectory: File,
+  private val bazelClient: BazelClient,
+  private val groupByIssueSeverity: Boolean = false
+) {
+  companion object {
+    private const val LINT_REPORT_FILE = "lint-report.xml"
+    private const val JAVA_HOME_KEY = "java-home"
+    private const val JAVA_RUNTIME_KEY = "java-runtime"
+  }
+
+  private val reportFile = File(workingDirectory, LINT_REPORT_FILE)
+
+  /** Runs the complete lint analysis process. */
+  fun runAnalysis() {
+    val projectDescriptionFile = generateProjectDescription()
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
-      projectDescriptionFile = lintProjectDescription.generateProjectDescriptionXml(),
-      groupByIssueSeverity = groupByIssueSeverity,
+      projectDescriptionFile = projectDescriptionFile,
+      groupByIssueSeverity = groupByIssueSeverity
     )
-    val jdkHome = File(
-      bazelClient.retrieveBazelInfo()["java-home"]
-        ?: error("java-home not found in bazel info output")
-    )
+
+    val bazelInfo = bazelClient.retrieveBazelInfo()
+    val javaConfig = JavaConfiguration(bazelInfo)
     val cliArgs = lintRunner.prepareLintArguments(
       repoRoot = repoRoot,
-      jdkHome = jdkHome
+      jdkHome = javaConfig.getJdkHome(),
+      javaVersion = javaConfig.getVersion()
     )
 
     lintRunner.runLint(cliArgs)
   }
+
+  /** Generates the project description XML file. */
+  private fun generateProjectDescription(): File {
+    val lintProjectDescription = LintProjectDescription(
+      repoRoot = repoRoot,
+      workingDirectory = workingDirectory,
+      bazelClient = bazelClient
+    )
+    return lintProjectDescription.generateProjectDescriptionXml()
+  }
+
+  /** Java configuration class. */
+  private class JavaConfiguration(bazelInfo: Map<String, String>) {
+    private val jdkHome: File
+    private val version: String
+
+    init {
+      jdkHome = File(
+        bazelInfo[JAVA_HOME_KEY] ?: error("$JAVA_HOME_KEY not found in bazel info output")
+      )
+
+      val javaRuntime = bazelInfo[JAVA_RUNTIME_KEY]
+        ?: error("$JAVA_RUNTIME_KEY not found in bazel info output")
+
+      val versionRegex = Regex("""build (\d+\.\d+\.\d+)""")
+      version = versionRegex.find(javaRuntime)
+        ?.groupValues?.get(1)
+        ?: error("Could not extract Java version from: $javaRuntime")
+    }
+
+    fun getJdkHome(): File = jdkHome
+
+    fun getVersion(): String = version
+  }
 }
 
-/** Runs the Android Lint tool and reports issues. */
+/**
+ * Runs the Android Lint tool and reports issues.
+ *
+ * @param reportFile The XML file where lint results will be written
+ * @param projectDescriptionFile The XML file containing project configuration
+ * @param groupByIssueSeverity Whether to group issues by severity in the output
+ */
 class AndroidLintRunner(
   private val reportFile: File,
   private val projectDescriptionFile: File,
@@ -82,45 +158,61 @@ class AndroidLintRunner(
   companion object {
     private const val LINT_CLIENT_ID = "cli"
     private const val KOTLIN_LANGUAGE_VERSION = "1.6"
-    private const val JAVA_VERSION = "11"
     private const val BUILD_VARS_FILE = "build_vars.bzl"
+    private const val JDK_RELEASE_FILE = "release"
+    private const val BUILD_SDK_VERSION_KEY = "BUILD_SDK_VERSION"
+
+    private const val SUCCESS = 0
+    private const val ISSUES_FOUND = 1
+    private const val INVALID_USAGE = 2
+    private const val CANNOT_OVERWRITE = 3
+    private const val HELP_INVOKED = 4
+    private const val INVALID_ARGUMENT = 5
+
+    private val ERROR_CODE_MESSAGES = mapOf(
+      INVALID_USAGE to "Invalid usage of Lint command",
+      CANNOT_OVERWRITE to "Cannot overwrite existing file",
+      HELP_INVOKED to "Help command invoked",
+      INVALID_ARGUMENT to "Invalid command-line argument"
+    )
   }
+
   /**
    * Invokes the Lint CLI to perform analysis and prints the results.
    *
-   * @param cliArgs arguments to pass to the Lint CLI
+   * @param cliArgs The command-line arguments to pass to the Lint CLI
    */
   fun runLint(cliArgs: Array<String>) {
-
     val exitCode = LintCli().run(cliArgs)
-    check(exitCode == 0 || exitCode == 1) {
-      val reason = when (exitCode) {
-        2 -> "Invalid usage of Lint command."
-        3 -> "Cannot overwrite existing file."
-        4 -> "Help command invoked."
-        5 -> "Invalid command-line argument."
-        else -> "Unknown failure or internal error."
-      }
-      "Lint analysis failed with exit code $exitCode: $reason"
+
+    // Allow exit code 1 since it indicates issues with
+    // severity Error which is being handled by LintAnalysisReporter.
+    if (exitCode != SUCCESS && exitCode != ISSUES_FOUND) {
+      val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
+      error("Lint analysis failed with exit code $exitCode: $reason")
     }
+
     val reporter = LintAnalysisReporter()
     val issues = reporter.parseLintReport(reportFile.absolutePath)
-    reporter.printLintReport(
-      issues,
-      groupByIssueSeverity,
-    )
+    reporter.printLintReport(issues, groupByIssueSeverity)
   }
 
   /**
    * Prepares the command-line arguments for the Lint tool.
    *
-   * @return array of arguments to be passed to Lint
+   * @param repoRoot The root directory of the repository
+   * @param jdkHome The JDK home directory
+   * @param javaVersion The Java version to use for analysis
+   * @return Array of command-line arguments for the Lint CLI
    */
   fun prepareLintArguments(
     repoRoot: File,
-    jdkHome: File
+    jdkHome: File,
+    javaVersion: String
   ): Array<String> {
     val buildVarsFile = File(repoRoot, BUILD_VARS_FILE)
+    prepareJdkEnvironment(jdkHome)
+
     return arrayOf(
       "-Wall",
       "--quiet",
@@ -133,29 +225,70 @@ class AndroidLintRunner(
       "--sdk-home", getAndroidSdkPath(),
       "--compile-sdk-version", getBuildSdkVersion(buildVarsFile),
       "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
-      "--java-language-level", JAVA_VERSION,
+      "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
-      "--xml", reportFile.absolutePath,
-      "--html", "/home/manas-yu/lint-report.html",
+      "--xml", reportFile.absolutePath
     )
   }
 
+  /**
+   * Prepares JDK environment for lint by creating a release file if needed.
+   * Lint uses $JAVA_HOME/release, so we manually populate it if missing.
+   */
+  private fun prepareJdkEnvironment(jdkHome: File) {
+    require(jdkHome.exists() && jdkHome.isDirectory) {
+      "JDK home path does not exist or is not a directory: ${jdkHome.absolutePath}"
+    }
+
+    val releaseFile = File(jdkHome, JDK_RELEASE_FILE)
+    if (!releaseFile.exists()) {
+      try {
+        val modulesString = generateModulesString()
+        releaseFile.writeText(modulesString)
+      } catch (e: Exception) {
+        throw IllegalStateException(
+          "Failed to prepare JDK release file: ${releaseFile.path}", e
+        )
+      }
+    }
+  }
+
+  /** Generates the MODULES string for the JDK release file. */
+  private fun generateModulesString(): String {
+    return try {
+      ModuleLayer.boot()
+        .modules()
+        .joinToString(
+          separator = " ",
+          prefix = "MODULES=\"",
+          postfix = "\"",
+          transform = Module::getName
+        )
+    } catch (e: Exception) {
+      throw IllegalStateException("Failed to generate modules string from boot layer")
+    }
+  }
+
+  /** Retrieves the build SDK version from the build variables file. */
   private fun getBuildSdkVersion(buildVarsFile: File): String {
-    require(buildVarsFile.exists()) { "File not found: ${buildVarsFile.absolutePath}" }
+    require(buildVarsFile.exists()) {
+      "Build variables file not found: ${buildVarsFile.absolutePath}"
+    }
 
     val compileSdkLine = buildVarsFile.readLines()
       .map { it.trim() }
-      .firstOrNull { it.startsWith("BUILD_SDK_VERSION") }
-      ?: error("BUILD_SDK_VERSION not found in file: ${buildVarsFile.absolutePath}")
+      .firstOrNull { it.startsWith(BUILD_SDK_VERSION_KEY) }
+      ?: error("$BUILD_SDK_VERSION_KEY not found in file: ${buildVarsFile.absolutePath}")
 
     val value = compileSdkLine.substringAfter("=").trim().removeSurrounding("\"")
     require(value.isNotEmpty()) {
-      "BUILD_SDK_VERSION value is empty in file: ${buildVarsFile.absolutePath}"
+      "$BUILD_SDK_VERSION_KEY value is empty in file: ${buildVarsFile.absolutePath}"
     }
 
     return value
   }
 
+  /** Retrieves the Android SDK path from environment variables. */
   private fun getAndroidSdkPath(): String {
     return System.getenv(SdkConstants.ANDROID_HOME_ENV)
       ?: throw IllegalStateException(

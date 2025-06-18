@@ -58,14 +58,14 @@ class LintProjectDescription(
 
   companion object {
     private const val LINT_PROJECT_DESCRIPTION_FILE_NAME = "lint-project-description.xml"
-    private const val LINT_CACHE_DIRECTORY_FILE_NAME = "lint-cache-directory"
+    private const val LINT_CACHE_DIRECTORY_NAME = "lint-cache-directory"
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
 
-    private val SUPPORTED_SOURCE_EXTENSIONS = setOf("kt", "java")
+    private val SOURCE_EXTENSIONS = setOf("kt", "java")
     private val MODULES_WITH_MAIN_RES = setOf(ModuleName.APP, ModuleName.UTILITY)
     private val MODULES_WITH_TEST_RES = setOf(ModuleName.UTILITY)
     private val MODULE_DEPENDENCIES = mapOf(
-      ModuleName.APP to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
+      ModuleName.APP to ModuleName.LIBRARY_MODULES,
       ModuleName.TESTING to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
       ModuleName.DOMAIN to listOf(ModuleName.UTILITY),
       ModuleName.DATA to listOf(ModuleName.UTILITY)
@@ -99,7 +99,7 @@ class LintProjectDescription(
     val projectDescriptionFile =
       File(workingDirectory, LINT_PROJECT_DESCRIPTION_FILE_NAME)
     val cacheDirectory =
-      ensureDirectoryExists(File(workingDirectory, LINT_CACHE_DIRECTORY_FILE_NAME))
+      ensureDirectoryExists(File(workingDirectory, LINT_CACHE_DIRECTORY_NAME))
     val extractedAarsDirectory =
       ensureDirectoryExists(File(workingDirectory, EXTRACTED_AARS_DIRECTORY_NAME))
 
@@ -136,7 +136,7 @@ class LintProjectDescription(
       name = module.moduleName,
       isAndroid = true,
       isLibrary = isLibrary,
-      isTest = module==ModuleName.TESTING,
+      isTest = module == ModuleName.TESTING,
       srcFiles = sourceCollector.collectSourceFiles(),
       testFiles = sourceCollector.collectTestFiles(),
       resourceDirs = sourceCollector.collectResourceDirectories(),
@@ -179,11 +179,11 @@ class LintProjectDescription(
 
     private fun collectFilesFromDirectory(directory: File): List<String> {
       if (!directory.exists() || !directory.isDirectory) {
-        return emptyList()
+        throw IllegalStateException("Directory does not exist: ${directory.absolutePath}")
       }
 
       return directory.walkTopDown()
-        .filter { it.isFile && it.extension in SUPPORTED_SOURCE_EXTENSIONS }
+        .filter { it.isFile && it.extension in SOURCE_EXTENSIONS }
         .map { it.absolutePath }
         .toList()
     }
