@@ -25,6 +25,8 @@ class FeatureFlagFragmentPresenter @Inject constructor(
   private lateinit var binding: FeatureFlagFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
+
+  /** List of feature flag switch states to be used in the fragment. */
   var featureFlagStates: ArrayList<Boolean> = arrayListOf()
 
   /** Called when [FeatureFlagFragment] is created. Handles UI for the fragment. */

@@ -18,9 +18,11 @@ class FeatureFlagFragment : InjectableFragment() {
   lateinit var featureFlagFragmentPresenter: FeatureFlagFragmentPresenter
 
   companion object {
+    /** State key for [FeatureFlagFragment]. */
+    const val FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
+
     /** Returns a new instance of [FeatureFlagFragment]. */
     fun newInstance(): FeatureFlagFragment = FeatureFlagFragment()
-    const val FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
   }
 
   override fun onAttach(context: Context) {
