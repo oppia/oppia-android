@@ -3,16 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="org.oppia.android.app.devoptions.platformparameters.PlatformParameterItemViewModel" />
+
         <variable
             name="isEnabled"
             type="Boolean" />
+
         <variable
             name="inputValue"
             type="String" />
+
         <variable
             name="isInputVisible"
             type="Boolean" />
@@ -21,34 +26,35 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:background="@color/component_color_shared_screen_tertiary_background_color"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/platform_parameter_app_bar_layout">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/platform_parameter_constraint_layout"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
+            android:background="@color/component_color_shared_item_background_solid_color"
+            android:minHeight="64dp"
             android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="@color/component_color_shared_item_background_solid_color">
+            android:paddingEnd="16dp">
 
             <TextView
                 android:id="@+id/platform_parameter_label_text_view"
                 style="@style/Subtitle1ViewStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="70dp"
                 android:text="@{viewModel.platformParameterName}"
-                android:textStyle="bold"
-                android:layout_marginEnd="64dp"
                 android:textColor="@color/component_color_shared_primary_dark_text_color"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/platform_parameter_switch"
@@ -56,10 +62,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="4dp"
+                android:checked="@{isEnabled}"
                 android:focusable="false"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:checked="@{isEnabled}"
                 android:theme="@style/OppiaSwitchCompatTheme"
                 android:visibility="@{isInputVisible ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -69,27 +75,39 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/platform_parameter_input_layout"
                 style="@style/TextInputLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
+                android:layout_height="50dp"
+                android:layout_marginVertical="5dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="4dp"
-                android:gravity="center"
-                android:layout_marginVertical="15dp"
+                android:padding="@dimen/space_0dp"
+                android:textAlignment="center"
                 android:visibility="@{isInputVisible ? View.VISIBLE : View.GONE}"
+                app:errorEnabled="true"
+                app:errorIconDrawable="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" >
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconTint="@color/component_color_shared_primary_dark_text_color">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/platform_parameter_input_edit_text"
                     style="@style/TextInputEditText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="36"
-                    android:singleLine="true"
-                    android:text="@{inputValue}" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_margin="@dimen/space_0dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="5"
+                    android:minHeight="56dp"
+                    android:text="@{inputValue}"
+                    android:textAlignment="center"
+                    android:textColor="@color/component_color_shared_primary_dark_text_color"
+                    android:textColorHint="#A0A0A0"
+                    android:textSize="16sp" />
 
+            </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -100,7 +118,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sync_status_constraint_layout"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
@@ -144,7 +163,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/reset_server_defaults_constraint_layout"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
             android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}">
 
             <TextView
@@ -166,9 +186,9 @@
                 style="@style/StateButtonActive"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
+                android:layout_marginVertical="15dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginVertical="15dp"
                 android:text="@string/feature_flag_reset_button_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -176,12 +196,12 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/component_color_shared_divider_color" />
+                android:background="@color/component_color_shared_divider_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
