@@ -599,6 +599,60 @@ class BazelClientTest {
     assertThat(exception).hasMessageThat().contains("no such package")
   }
 
+  @Test
+  fun testRetrieveBazelInfo_emptyFolder_fails() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+
+    val exception = assertThrows<IllegalStateException>() {
+      bazelClient.retrieveBazelInfo()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+  }
+
+  @Test
+  fun testRetrieveBazelInfo_validWorkspace_returnsWorkspaceInfo() {
+    val bazelClient = BazelClient(tempFolder.root, commandExecutor)
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val bazelInfo = bazelClient.retrieveBazelInfo()
+
+    assertThat(bazelInfo).containsKey("workspace")
+    assertThat(bazelInfo).containsKey("execution_root")
+    assertThat(bazelInfo).containsKey("output_base")
+    assertThat(bazelInfo).containsKey("output_path")
+
+    assertThat(bazelInfo["workspace"]).isEqualTo(tempFolder.root.absolutePath)
+  }
+
+  @Test
+  fun testRetrieveBazelInfo_withMockExecutor_returnsCorrectInfo() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+      .thenReturn(
+        CommandResult(
+          exitCode = 0,
+          output = listOf(
+            "workspace: /tmp/test_workspace",
+            "execution_root: /tmp/test_workspace/bazel-out",
+            "output_base: /tmp/test_workspace/bazel-TestWorkspace",
+            "output_path: /tmp/test_workspace/bazel-out"
+          ),
+          errorOutput = listOf(),
+          command = listOf()
+        )
+      )
+
+    val bazelInfo = bazelClient.retrieveBazelInfo()
+
+    assertThat(bazelInfo).containsExactly(
+      "workspace", "/tmp/test_workspace",
+      "execution_root", "/tmp/test_workspace/bazel-out",
+      "output_base", "/tmp/test_workspace/bazel-TestWorkspace",
+      "output_path", "/tmp/test_workspace/bazel-out"
+    )
+  }
+
   private fun fakeCommandExecutorWithResult(singleLine: String) {
     // Fake a Bazel command's results to return jumbled results. This has been observed to happen
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in
