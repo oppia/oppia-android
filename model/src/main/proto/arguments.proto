@@ -7,6 +7,7 @@ import "exploration_checkpoint.proto";
 import "languages.proto";
 import "profile.proto";
 import "translation.proto";
+import "platform_parameter.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -957,4 +958,8 @@ message StatePlayerRecyclerViewAssemblerState {
 message FeatureFlagFragmentArgument {
   // List of current feature flag states.
   repeated bool feature_flag_states = 1;
+}
+
+message PlatformParameterFragmentArgument {
+  repeated PlatformParameterValue platform_parameter_states = 1;
 }
