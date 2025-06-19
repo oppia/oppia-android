@@ -38,29 +38,33 @@ class PlatformParameterViewModel @Inject constructor(
     val dataProvider = platformParameterDebugController.loadEphemeralPlatformParameters()
     dataProvider.toLiveData().observeForever { result ->
       when (result) {
-        is AsyncResult.Success -> _platformParameterList.value = processPlatformParameterList(result.value)
+        is AsyncResult.Success ->
+          _platformParameterList.value =
+            processPlatformParameterList(result.value)
         else -> _platformParameterList.value = listOf()
       }
     }
   }
 
-  private fun processPlatformParameterList(ephemeralPlatformParameters: List<EphemeralPlatformParameter>):
+  private fun processPlatformParameterList(
+    ephemeralPlatformParameters: List<EphemeralPlatformParameter>
+  ):
     List<PlatformParameterItemViewModel> {
 
-    return ephemeralPlatformParameters.map { ephemeralPlatformParameter ->
-      val platformParameterName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
-      val syncStatusText = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
-      val isResetAvailable = canReset(ephemeralPlatformParameter)
+      return ephemeralPlatformParameters.map { ephemeralPlatformParameter ->
+        val platformParameterName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
+        val syncStatusText = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
+        val isResetAvailable = canReset(ephemeralPlatformParameter)
 
-      PlatformParameterItemViewModel(
-        platformParameterName = platformParameterName,
-        syncStatus = syncStatusText,
-        isResetAvailable = isResetAvailable,
-        currentValue = ephemeralPlatformParameter.currentValue,
-        syncStatusBackground = getSyncStatusBackground(syncStatusText)
-      )
+        PlatformParameterItemViewModel(
+          platformParameterName = platformParameterName,
+          syncStatus = syncStatusText,
+          isResetAvailable = isResetAvailable,
+          currentValue = ephemeralPlatformParameter.currentValue,
+          syncStatusBackground = getSyncStatusBackground(syncStatusText)
+        )
+      }
     }
-  }
 
   fun getPlatformParameterDisplayName(id: PlatformParameterId): String {
     return when (id) {
@@ -100,7 +104,7 @@ class PlatformParameterViewModel @Inject constructor(
   /**
    * Returns the background drawable resource ID corresponding to the provided sync status string.
    *
-   * @param syncStatus the string representation of the sync status for which to retrieve the background.
+   * @param syncStatus the string representation of the sync status.
    * @return the drawable resource ID to use as the background for this sync status.
    */
   fun getSyncStatusBackground(syncStatus: String): Int {

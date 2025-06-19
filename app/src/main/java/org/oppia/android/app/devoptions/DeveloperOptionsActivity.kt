@@ -11,6 +11,7 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParameterActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
