@@ -171,10 +171,10 @@ class AndroidLintRunner(
     private const val INVALID_ARGUMENT = 5
 
     private val ERROR_CODE_MESSAGES = mapOf(
-      INVALID_USAGE to "Invalid usage of Lint command",
-      CANNOT_OVERWRITE to "Cannot overwrite existing file",
-      HELP_INVOKED to "Help command invoked",
-      INVALID_ARGUMENT to "Invalid command-line argument"
+      INVALID_USAGE to "Invalid usage of Lint command.",
+      CANNOT_OVERWRITE to "Cannot overwrite existing file.",
+      HELP_INVOKED to "Help command invoked.",
+      INVALID_ARGUMENT to "Invalid command-line argument."
     )
   }
 

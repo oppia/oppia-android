@@ -653,6 +653,238 @@ class BazelClientTest {
     )
   }
 
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithDependencies_returnsDependencyFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val libA = testBazelWorkspace.createLibrary("LibA")
+    val libB = testBazelWorkspace.createLibrary("LibB", dependencies = listOf(libA.first))
+    val libBFile = testBazelWorkspace.retrieveLibraryFile("LibB")
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies(libB.first)
+    println("dependencies:$dependencies")
+    assertThat(dependencies).contains(libBFile.absolutePath)
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithTransitiveDependencies_returnsAllFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val libA = testBazelWorkspace.createLibrary("LibA")
+    val libB = testBazelWorkspace.createLibrary(
+      "LibB",
+      dependencies = listOf(libA.first)
+    )
+    val libC = testBazelWorkspace.createLibrary(
+      "LibC",
+      dependencies = listOf(libB.first)
+    )
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies(libC.first)
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibB_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibC_lib.jar",
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithoutDependencies_returnsOwnFiles() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val libA = testBazelWorkspace.createLibrary("LibA")
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies(libA.first)
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "LibA.kt"
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forNonExistentTarget_throwsException() {
+    testBazelWorkspace.initEmptyWorkspace()
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+
+    val exception = assertThrows<IllegalStateException> {
+      bazelClient.retrieveTargetModuleDependencies("//:nonexistent_target")
+    }
+
+    assertThat(exception).hasMessageThat().contains("Expected non-zero exit code")
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetWithMixedDependencies_returnsAllFileTypes() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("junit:junit:4.12", "androidx.annotation:annotation:1.1.0")
+    )
+
+    val libA = testBazelWorkspace.createLibrary("LibA")
+
+    // Create a JVM library with mixed dependencies
+    testBazelWorkspace.rootBuildFile.appendText(
+      """
+    load("@rules_jvm_external//:defs.bzl", "artifact")
+    
+    kt_jvm_library(
+        name = "mixed_deps_lib",
+        srcs = ["MixedDepsLib.kt"],
+        deps = [
+            "${libA.first}",
+            artifact("junit:junit:4.12"),
+            artifact("androidx.annotation:annotation:1.1.0"),
+        ],
+        visibility = ["//visibility:public"],
+    )
+      """.trimIndent() + "\n"
+    )
+
+    val sourceFile = tempFolder.newFile("MixedDepsLib.kt")
+    sourceFile.writeText("class MixedDepsLib")
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:mixed_deps_lib")
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "LibA.kt",
+      "MixedDepsLib.kt",
+    )
+    assertThat(dependencies.any { it.contains("junit-4.12.jar") }).isTrue()
+    assertThat(dependencies.any { it.contains("annotation-1.1.0.jar") }).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forComplexTargetHierarchy_returnsAllTransitiveDeps() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(
+      listOf("com.google.guava:guava:30.1-jre")
+    )
+
+    // Create a dependency chain: LibD -> LibC -> LibB -> LibA + Maven dep
+    val libA = testBazelWorkspace.createLibrary("LibA")
+    val libB = testBazelWorkspace.createLibrary(
+      "LibB",
+      dependencies = listOf(libA.first)
+    )
+    val libC = testBazelWorkspace.createLibrary(
+      "LibC", dependencies = listOf(libB.first)
+    )
+
+    // LibD depends on LibC and a Maven dependency
+    testBazelWorkspace.rootBuildFile.appendText(
+      """
+      load("@rules_jvm_external//:defs.bzl", "artifact")
+      
+      kt_jvm_library(
+          name = "LibD_lib",
+          srcs = ["LibD.kt"],
+          deps = [
+              "${libC.first}",
+              artifact("com.google.guava:guava:30.1-jre"),
+          ],
+      )
+      """.trimIndent() + "\n"
+    )
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:LibD_lib")
+
+    assertThat(dependencies).containsAtLeast(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibB_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibC_lib.jar",
+      "bazel-out/k8-fastbuild/bin/LibD_lib.jar",
+      "LibA.kt",
+      "LibB.kt",
+      "LibC.kt",
+      "LibD.kt"
+    )
+    // Should also contain Guava dependency
+    assertThat(dependencies.any { it.contains("guava") }).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_forTargetInSubpackage_returnsCorrectPaths() {
+    testBazelWorkspace.initEmptyWorkspace()
+
+    val libA = testBazelWorkspace.createLibrary("LibA")
+
+    tempFolder.newFolder("subpackage")
+    val subpackageBuildFile = tempFolder.newFile("subpackage/BUILD.bazel")
+
+    subpackageBuildFile.writeText(
+      """
+      load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+      
+      kt_jvm_library(
+          name = "sub_lib",
+          srcs = ["SubLib.kt"],
+          deps = ["${libA.first}"],
+          visibility = ["//visibility:public"],
+      )
+      """.trimIndent()
+    )
+
+    val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//subpackage:sub_lib")
+
+    assertThat(dependencies).containsAtLeast(
+      "subpackage/SubLib.kt",
+      "LibA.kt",
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+      "bazel-out/k8-fastbuild/bin/subpackage/sub_lib.jar"
+    )
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_withMockExecutor_parsesSingleLineCorrectly() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+    val mockDependencies = listOf(
+      "bazel-out/k8-fastbuild/bin/LibA.jar",
+      "bazel-out/k8-fastbuild/bin/LibB.jar",
+      "LibA.kt",
+      "LibB.kt",
+      "external/maven/androidx_appcompat_appcompat-1.4.0.aar"
+    )
+
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+      .thenReturn(
+        CommandResult(
+          exitCode = 0,
+          output = mockDependencies,
+          errorOutput = listOf(),
+          command = listOf()
+        )
+      )
+
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:test_target")
+
+    assertThat(dependencies).containsExactlyElementsIn(mockDependencies)
+  }
+
+  @Test
+  fun testRetrieveTargetModuleDependencies_withEmptyResult_returnsEmptyList() {
+    val bazelClient = BazelClient(tempFolder.root, mockCommandExecutor)
+
+    `when`(mockCommandExecutor.executeCommand(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull()))
+      .thenReturn(
+        CommandResult(
+          exitCode = 0,
+          output = listOf(),
+          errorOutput = listOf(),
+          command = listOf()
+        )
+      )
+
+    val dependencies = bazelClient.retrieveTargetModuleDependencies("//:empty_target")
+
+    assertThat(dependencies).isEmpty()
+  }
+
   private fun fakeCommandExecutorWithResult(singleLine: String) {
     // Fake a Bazel command's results to return jumbled results. This has been observed to happen
     // sometimes in CI, but doesn't have a known cause. The utility is meant to de-jumble these in

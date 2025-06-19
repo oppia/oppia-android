@@ -340,7 +340,10 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
    * @return a pair where the first value is the library's target name and the second value is an
    *     iterable of files that were changed as part of generating this library
    */
-  fun createLibrary(dependencyName: String): Pair<String, Iterable<File>> {
+  fun createLibrary(
+    dependencyName: String,
+    dependencies: List<String> = emptyList()
+  ): Pair<String, Iterable<File>> {
     initEmptyWorkspace() // Ensure the workspace is at least initialized.
 
     val libTargetName = "${dependencyName}_lib"
@@ -355,6 +358,8 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
       kt_jvm_library(
           name = "$libTargetName",
           srcs = ["${depFile.name}"],
+          deps = [${dependencies.joinToString(",") { "\"$it\"" }}],
+          visibility = ["//visibility:public"]
       )
       """.trimIndent() + "\n"
     )
