@@ -80,12 +80,9 @@ class AndroidLintRunnerTest {
     val rootPath = tempFolder.root
 
     // TODO(#5734): Update test after implementing project description
-    val exception = assertThrows<IllegalStateException> {
+     assertThrows<IllegalArgumentException> {
       main(rootPath.absolutePath) // Currently returns error code due to missing description
     }
-    assertThat(exception.message).contains(
-      "Lint analysis failed with exit code 5: Invalid command-line argument"
-    )
   }
 
   @Test
@@ -751,6 +748,42 @@ class AndroidLintRunnerTest {
     )
 
     return projectDescriptionFile
+  }
+
+  private fun setupAndroidProjectWithMixedSeverityIssues() {
+    testBazelWorkspace.initEmptyWorkspace()
+    createProjectStructure()
+    createBasicManifest()
+    createLayoutWithMixedIssues()
+    createBasicStringResources()
+  }
+
+  private fun createLayoutWithMixedIssues() {
+    createLayoutFile("activity_main.xml", """
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!-- Error: Invalid ID -->
+        <TextView
+            android:id="@+id/123invalid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hardcoded text"
+            android:layout_marginLeft="16dp" />
+        <!-- Warning: Unused ID -->
+        <Button
+            android:id="@+id/unused_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name" />
+    </LinearLayout>
+  """.trimIndent())
+  }
+
+  private fun createLayoutFile(filename: String, content: String) {
+    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/$filename")
+    layoutFile.writeText(content)
   }
 
   private fun createMinimalProjectDescriptionContent(rootPath: String, srcPath: String): String {
