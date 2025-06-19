@@ -26,7 +26,7 @@ class LintProjectDescriptionTest {
   private lateinit var bazelClient: BazelClient
   private lateinit var lintProjectDescription: LintProjectDescription
   private lateinit var workingDirectory: File
-  private lateinit var validProjectDescription:File
+  private lateinit var validProjectDescription: File
 
   @Before
   fun setUp() {
@@ -40,7 +40,7 @@ class LintProjectDescriptionTest {
     )
 
     setupProjectStructure()
-    validProjectDescription= lintProjectDescription.generateProjectDescriptionXml()
+    validProjectDescription = lintProjectDescription.generateProjectDescriptionXml()
   }
 
   @After
@@ -429,7 +429,7 @@ class LintProjectDescriptionTest {
     
     kt_jvm_library(
         name = "${moduleName}_lib",
-        srcs = glob(["src/main/java/**/*.kt"]),${depsSection}
+        srcs = glob(["src/main/java/**/*.kt"]),$depsSection
         visibility = ["//visibility:public"],
     )
     
@@ -450,7 +450,7 @@ class LintProjectDescriptionTest {
         cmd = "echo 'mock jar content' > $@",
         visibility = ["//visibility:public"],
     )
-    """.trimIndent()
+      """.trimIndent()
     )
   }
 
@@ -492,13 +492,15 @@ class LintProjectDescriptionTest {
     try {
       block()
       throw AssertionError(
-        "Expected ${T::class.simpleName} to be thrown")
+        "Expected ${T::class.simpleName} to be thrown"
+      )
     } catch (e: Throwable) {
       if (e is T) {
         return e
       } else {
         throw AssertionError(
-          "Expected ${T::class.simpleName} but got ${e::class.simpleName}: ${e.message}")
+          "Expected ${T::class.simpleName} but got ${e::class.simpleName}: ${e.message}"
+        )
       }
     }
   }

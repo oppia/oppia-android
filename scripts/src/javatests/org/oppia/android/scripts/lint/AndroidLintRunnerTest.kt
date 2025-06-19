@@ -80,7 +80,7 @@ class AndroidLintRunnerTest {
     val rootPath = tempFolder.root
 
     // TODO(#5734): Update test after implementing project description
-     assertThrows<IllegalArgumentException> {
+    assertThrows<IllegalArgumentException> {
       main(rootPath.absolutePath) // Currently returns error code due to missing description
     }
   }
@@ -759,7 +759,9 @@ class AndroidLintRunnerTest {
   }
 
   private fun createLayoutWithMixedIssues() {
-    createLayoutFile("activity_main.xml", """
+    createLayoutFile(
+      "activity_main.xml",
+      """
     <?xml version="1.0" encoding="utf-8"?>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -778,7 +780,8 @@ class AndroidLintRunnerTest {
             android:layout_height="wrap_content"
             android:text="@string/app_name" />
     </LinearLayout>
-  """.trimIndent())
+      """.trimIndent()
+    )
   }
 
   private fun createLayoutFile(filename: String, content: String) {
