@@ -164,7 +164,7 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
   fun retrieveTargetModuleDependencies(bazelTarget: String): List<String> {
     return executeBazelCommand(
       "cquery",
-      "deps(//$bazelTarget:*)",
+      "deps($bazelTarget)",
       "--output=files"
     )
   }

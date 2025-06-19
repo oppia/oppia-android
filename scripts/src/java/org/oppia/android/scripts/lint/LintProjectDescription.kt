@@ -267,7 +267,7 @@ class LintProjectDescription(
 
     private fun getDependenciesWithCache(moduleName: String): List<String> =
       dependencyCache.getOrPut(moduleName) {
-        bazelClient.retrieveTargetModuleDependencies(moduleName)
+        bazelClient.retrieveTargetModuleDependencies("//$moduleName:*")
       }
 
     private fun processAarFile(aarFile: String, moduleAarsDirectory: File): AarFileInfo? {
