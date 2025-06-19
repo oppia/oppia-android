@@ -658,12 +658,13 @@ class BazelClientTest {
     testBazelWorkspace.initEmptyWorkspace()
     val libA = testBazelWorkspace.createLibrary("LibA")
     val libB = testBazelWorkspace.createLibrary("LibB", dependencies = listOf(libA.first))
-    val libBFile = testBazelWorkspace.retrieveLibraryFile("LibB")
 
     val bazelClient = BazelClient(tempFolder.root, longCommandExecutor)
     val dependencies = bazelClient.retrieveTargetModuleDependencies(libB.first)
-    println("dependencies:$dependencies")
-    assertThat(dependencies).contains(libBFile.absolutePath)
+
+    assertThat(dependencies).contains(
+      "bazel-out/k8-fastbuild/bin/LibA_lib.jar",
+    )
   }
 
   @Test
