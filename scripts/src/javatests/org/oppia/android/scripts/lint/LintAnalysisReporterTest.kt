@@ -572,6 +572,330 @@ class LintAnalysisReporterTest {
     assertThat(exception).hasMessageThat().contains("Unknown severity level: InvalidSeverity")
   }
 
+  @Test
+  fun testPrintLintReport_groupBySeverity_printsCorrectFormat() {
+    val issues = listOf(warningIssue, informationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${YELLOW}Information: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
+
+    assertThat(output).contains("=".repeat(60))
+    assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (1 issues)$RESET")
+    assertThat(output).contains("${BOLD}$YELLOW SEVERITY: INFORMATION (1 issues)$RESET")
+
+    assertThat(output).contains("$BOLD Issue ID: UsesMinSdkAttributes$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+    assertThat(output).contains("  File: src/main/AndroidManifest.xml")
+    assertThat(output).contains("  Line: 5")
+
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_groupByFile_printsCorrectFormat() {
+    val issues = listOf(warningIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
+
+    assertThat(output).contains("=".repeat(80))
+    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)$RESET")
+
+    assertThat(output).contains("$BOLD Issue #1: UsesMinSdkAttributes$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_withCriticalIssues_failsLintCheck() {
+    val issues = listOf(errorIssue)
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${RED}Error: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_onlyWarnings_passesLintCheck() {
+    val issues = listOf(warningIssue, informationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${YELLOW}Information: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
+
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(output).doesNotContain("FAILED")
+  }
+
+  @Test
+  fun testPrintLintReport_multipleLocationsIssue_groupBySeverity_printsAllLocations() {
+    val issues = listOf(multiLocationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("  Locations:")
+    assertThat(output).contains("    1. File: app/src/main/res/values-night/color_palette.xml")
+    assertThat(output).contains("       Line: 159")
+
+    assertThat(output).contains("    2. File: app/src/main/res/values/color_palette.xml")
+    assertThat(output).contains("       Line: 164")
+    assertThat(output).contains("$BOLD Issue ID: UnusedResources$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_multipleLocationsIssue_groupByFile_printsAllFiles() {
+    val issues = listOf(multiLocationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    assertThat(output)
+      .contains("${BOLD}FILE: app/src/main/res/values/color_palette.xml (1 issues)$RESET")
+    assertThat(output)
+      .contains("${BOLD}FILE: app/src/main/res/values-night/color_palette.xml (1 issues)$RESET")
+
+    assertThat(output).contains("$BOLD Issue #1: UnusedResources$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_issueWithErrorLines_groupBySeverity_printsErrorLines() {
+    val issues = listOf(errorIssue)
+
+    assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("  Error Line: ${errorIssue.errorLine1}")
+    assertThat(output).contains("              ${errorIssue.errorLine2}")
+
+    assertThat(output).contains("  Category: ${errorIssue.category}")
+    assertThat(output).contains("  Priority: ${errorIssue.priority}")
+    assertThat(output).contains("  Summary: ${errorIssue.summary}")
+    assertThat(output).contains("  Message: ${errorIssue.message}")
+    assertThat(output).contains("  Explanation: ${errorIssue.explanation}")
+  }
+
+  @Test
+  fun testPrintLintReport_issueWithErrorLines_groupByFile_printsErrorLines() {
+    val issues = listOf(errorIssue)
+
+    assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("  Error Line: ${errorIssue.errorLine1}")
+    assertThat(output).contains("              ${errorIssue.errorLine2}")
+
+    assertThat(output).contains("  Category: ${errorIssue.category}")
+    assertThat(output).contains("  Priority: ${errorIssue.priority}")
+    assertThat(output).contains("  Summary: ${errorIssue.summary}")
+    assertThat(output).contains("  Message: ${errorIssue.message}")
+    assertThat(output).contains("  Explanation: ${errorIssue.explanation}")
+  }
+
+  @Test
+  fun testPrintLintReport_issueWithoutErrorLines_groupBySeverity_skipsErrorLines() {
+    val issues = listOf(informationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    assertThat(output).doesNotContain("Error Line:")
+
+    assertThat(output).contains("$BOLD Issue ID: IidCompatibilityCheckFailure$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Information$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_issueWithoutErrorLines_groupByFile_skipsErrorLines() {
+    val issues = listOf(informationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    assertThat(output).doesNotContain("Error Line:")
+
+    assertThat(output).contains("$BOLD Issue #1: IidCompatibilityCheckFailure$RESET")
+    assertThat(output).contains("${YELLOW}Severity: Information$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_emptyIssuesList_groupBySeverity_printsZeroSummary() {
+    val issues = emptyList<LintIssue>()
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${BOLD}Total Issues: 0$RESET")
+
+    assertThat(output).doesNotContain("Error:")
+    assertThat(output).doesNotContain("Warning:")
+    assertThat(output).doesNotContain("Information:")
+
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_emptyIssuesList_groupByFile_printsZeroSummary() {
+    val issues = emptyList<LintIssue>()
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${BOLD}Total Issues: 0$RESET")
+
+    assertThat(output).doesNotContain("Error:")
+    assertThat(output).doesNotContain("Warning:")
+    assertThat(output).doesNotContain("Information:")
+
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_severityOrdering_printsInCorrectOrder() {
+    val fatalIssue = errorIssue.copy(
+      id = "FatalIssue",
+      severity = LintSeverity.FATAL
+    )
+    val issues = listOf(informationIssue, warningIssue, errorIssue, fatalIssue)
+
+    assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
+    val output = outputStream.toString()
+
+    val fatalPos = output.indexOf("SEVERITY: FATAL")
+    val errorPos = output.indexOf("SEVERITY: ERROR")
+    val warningPos = output.indexOf("SEVERITY: WARNING")
+    val infoPos = output.indexOf("SEVERITY: INFORMATION")
+
+    assertThat(fatalPos).isLessThan(errorPos)
+    assertThat(errorPos).isLessThan(warningPos)
+    assertThat(warningPos).isLessThan(infoPos)
+
+    assertThat(output).contains("${BOLD}$RED SEVERITY: FATAL")
+  }
+
+  @Test
+  fun testPrintLintReport_fileGroupingSorting_sortsFilesByName() {
+    val issue1 = warningIssue.copy(
+      locations = listOf(LintLocation("z_file.xml", "10"))
+    )
+    val issue2 = warningIssue.copy(
+      id = "AnotherWarning",
+      locations = listOf(LintLocation("a_file.kt", "20"))
+    )
+    val issues = listOf(issue1, issue2)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    val aFilePos = output.indexOf("FILE: a_file.kt")
+    val zFilePos = output.indexOf("FILE: z_file.xml")
+
+    assertThat(aFilePos).isLessThan(zFilePos)
+  }
+
+  @Test
+  fun testPrintLintReport_multipleIssuesInSameFile_sortsCorrectly() {
+    val issue1 = warningIssue.copy(
+      id = "Warning50",
+      locations = listOf(LintLocation("same_file.kt", "50"))
+    )
+    val issue2 = warningIssue.copy(
+      id = "Warning10",
+      locations = listOf(LintLocation("same_file.kt", "10"))
+    )
+    val issues = listOf(issue1, issue2)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    val line10Pos = output.indexOf("Line: 10")
+    val line50Pos = output.indexOf("Line: 50")
+
+    assertThat(line10Pos).isLessThan(line50Pos)
+  }
+
+  @Test
+  fun testPrintLintReport_severityGrouping_printsAllIssuesSeparately() {
+    val issue1 = warningIssue.copy(
+      id = "SameIssueId",
+      message = "First issue message",
+      locations = listOf(LintLocation("test_file.kt", "10"))
+    )
+    val issue2 = warningIssue.copy(
+      id = "SameIssueId",
+      message = "Second issue message",
+      locations = listOf(LintLocation("test_file.kt", "10"))
+    )
+    val issue3 = warningIssue.copy(
+      id = "SameIssueId",
+      message = "Third issue message",
+      locations = listOf(LintLocation("another_file.kt", "5"))
+    )
+    val issues = listOf(issue1, issue2, issue3)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
+    assertThat(issueIdCount).isEqualTo(3)
+
+    assertThat(output).contains("First issue message")
+    assertThat(output).contains("Second issue message")
+    assertThat(output).contains("Third issue message")
+
+    val anotherFilePos = output.indexOf("File: another_file.kt")
+    val testFilePos = output.indexOf("File: test_file.kt")
+    assertThat(anotherFilePos).isLessThan(testFilePos)
+  }
+
+  @Test
+  fun testPrintLintReport_singleLocationIssue_groupBySeverity_printsFileAndLine() {
+    val issues = listOf(warningIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("  File: src/main/AndroidManifest.xml")
+    assertThat(output).contains("  Line: 5")
+    assertThat(output).doesNotContain("Locations:")
+  }
+
+  @Test
+  fun testPrintLintReport_singleLocationIssue_groupByFile_printsLine() {
+    val issues = listOf(warningIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("  Line: 5")
+    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)$RESET")
+  }
+
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
     val xmlFile = tempFolder.newFile(fileName)
     xmlFile.writeText(content)
