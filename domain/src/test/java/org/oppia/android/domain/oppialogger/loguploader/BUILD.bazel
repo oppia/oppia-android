@@ -21,6 +21,7 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader:worker_module",
         "//domain/src/main/java/org/oppia/android/domain/testing/oppialogger/loguploader:fake_log_uploader",
         "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
         "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
         "//testing/src/main/java/org/oppia/android/testing/time:test_module",

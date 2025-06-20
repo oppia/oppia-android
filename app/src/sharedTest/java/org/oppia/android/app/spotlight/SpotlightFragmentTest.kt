@@ -136,6 +136,7 @@ class SpotlightFragmentTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     Intents.release()
     testCoroutineDispatchers.unregisterIdlingResource()
   }

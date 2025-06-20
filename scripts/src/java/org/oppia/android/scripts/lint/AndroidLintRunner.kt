@@ -83,6 +83,7 @@ class AndroidLintRunner(
     }
     val reporter = LintAnalysisReporter()
     val issues = reporter.parseLintReport(reportFile.absolutePath)
+
     reporter.printLintReport(
       issues,
       groupByIssueSeverity,
