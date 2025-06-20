@@ -132,7 +132,6 @@ class LintAnalysisReporter {
 
     check(xmlFile.length() <= MAX_FILE_SIZE) {
       "Lint report file too large: ${xmlFile.length()} bytes (max: $MAX_FILE_SIZE)"
-
     }
 
     val fileHash = calculateSha1(xmlFile.absolutePath)
