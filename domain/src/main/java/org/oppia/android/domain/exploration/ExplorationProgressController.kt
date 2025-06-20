@@ -121,7 +121,7 @@ class ExplorationProgressController @Inject constructor(
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
-  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>,
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
