@@ -117,10 +117,9 @@ class AndroidLintRunnerTest {
   fun testJavaConfiguration_withValidBazelInfo_extractsJdkHomeAndVersion() {
     val bazelInfo = mapOf(
       "java-home" to "/usr/lib/jvm/java-11-openjdk",
-      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu120.04)"
+      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.6+10-LTS) by Azul Systems, Inc."
     )
 
-    // Using reflection to test the private JavaConfiguration class
     val javaConfigClass = Class.forName(
       "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
     )
@@ -137,7 +136,7 @@ class AndroidLintRunnerTest {
     val version = getVersionMethod.invoke(javaConfig) as String
 
     assertThat(jdkHome.absolutePath).isEqualTo("/usr/lib/jvm/java-11-openjdk")
-    assertThat(version).isEqualTo("11.0.16")
+    assertThat(version).isEqualTo("11.0.6")
   }
 
   @Test
