@@ -208,10 +208,15 @@ class AndroidLintRunnerTest {
     createBasicStringResources()
 
     val lintRunner = createLintRunner()
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    val exception = assertThrows<IllegalStateException> {
+      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    }
 
     val reportFile = File(tempFolder.root, "lint-report.xml")
     val reportContent = reportFile.readText()
+
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    assertThat(reportContent).contains("InvalidId")
     assertThat(reportContent).contains("HardcodedText")
     assertThat(reportContent).contains("RtlHardcoded")
     assertThat(reportContent).contains("UnusedIds")
@@ -598,7 +603,7 @@ class AndroidLintRunnerTest {
           android:orientation="vertical">
           <!-- Hardcoded text -->
           <TextView
-              android:id="@+id/unused_text_view"
+              android:id="@+i/unused_text_view"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="16dp"
@@ -748,45 +753,6 @@ class AndroidLintRunnerTest {
     )
 
     return projectDescriptionFile
-  }
-
-  private fun setupAndroidProjectWithMixedSeverityIssues() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
-    createBasicManifest()
-    createLayoutWithMixedIssues()
-    createBasicStringResources()
-  }
-
-  private fun createLayoutWithMixedIssues() {
-    createLayoutFile(
-      "activity_main.xml",
-      """
-    <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!-- Error: Invalid ID -->
-        <TextView
-            android:id="@+id/123invalid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hardcoded text"
-            android:layout_marginLeft="16dp" />
-        <!-- Warning: Unused ID -->
-        <Button
-            android:id="@+id/unused_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name" />
-    </LinearLayout>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutFile(filename: String, content: String) {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/$filename")
-    layoutFile.writeText(content)
   }
 
   private fun createMinimalProjectDescriptionContent(rootPath: String, srcPath: String): String {

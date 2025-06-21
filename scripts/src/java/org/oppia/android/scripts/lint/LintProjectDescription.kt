@@ -76,10 +76,9 @@ class LintProjectDescription(
     private const val LINT_PROJECT_DESCRIPTION_FILE_NAME = "lint-project-description.xml"
     private const val LINT_CACHE_DIRECTORY_NAME = "lint-cache-directory"
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
+    private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
 
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
-    private val MODULES_WITH_MAIN_RES = setOf(ModuleName.APP, ModuleName.UTILITY)
-    private val MODULES_WITH_TEST_RES = setOf(ModuleName.UTILITY)
     private val MODULE_DEPENDENCIES = mapOf(
       ModuleName.APP to ModuleName.LIBRARY_MODULES,
       ModuleName.TESTING to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
@@ -149,14 +148,15 @@ class LintProjectDescription(
   ): ModuleConfig {
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val dependencyResolver = DependencyResolver(bazelClient, extractedAarsDirectory)
-
+    val sourceFiles = sourceCollector.collectSourceFiles()
+    val testFiles = sourceFiles.filter { it.endsWith("Test.kt") }
     return ModuleConfig(
       name = module.moduleName,
       isAndroid = true,
       isLibrary = isLibrary,
       isTest = module == ModuleName.TESTING,
-      srcFiles = sourceCollector.collectSourceFiles(),
-      testFiles = sourceCollector.collectTestFiles(),
+      srcFiles = sourceFiles,
+      testFiles = testFiles,
       resourceDirs = sourceCollector.collectResourceDirectories(),
       manifestFile = findManifestFile(module),
       dependencies = MODULE_DEPENDENCIES[module]?.map { it.moduleName }.orEmpty(),
@@ -171,49 +171,34 @@ class LintProjectDescription(
   /** Helper class for collecting source files and resources for a module. */
   private inner class SourceFileCollector(
     private val repoRoot: File,
-    private val module: ModuleName
+    module: ModuleName
   ) {
     private val moduleName = module.moduleName
+    private val sourceDir = "$moduleName/${SdkConstants.FD_SOURCES}"
 
     /** Collects the source files for the module. */
     fun collectSourceFiles(): List<String> =
-      collectFilesFromDirectory(File(repoRoot, "$moduleName/src/main/java"))
-
-    /** Collects the test files for the module. */
-    fun collectTestFiles(): List<String> = buildList {
-      addAll(collectFilesFromDirectory(File(repoRoot, "$moduleName/src/test/java")))
-
-      if (module == ModuleName.APP) {
-        addAll(collectFilesFromDirectory(File(repoRoot, "$moduleName/src/sharedTest/java")))
-      }
-    }
+      collectFilesFromDirectory(File(repoRoot, sourceDir))
 
     /** Collects the resource directories for the module. */
     fun collectResourceDirectories(): List<String> = buildList {
-      if (module in MODULES_WITH_MAIN_RES) {
-        addDirectoryIfExists(File(repoRoot, "$moduleName/src/main/res"))
-      }
-      if (module in MODULES_WITH_TEST_RES) {
-        addDirectoryIfExists(File(repoRoot, "$moduleName/src/test/res"))
+      val srcDir = File(repoRoot, sourceDir)
+      if (srcDir.exists()) {
+        srcDir.walkTopDown()
+          .filter { it.isDirectory && it.name == SdkConstants.FD_RES }
+          .forEach { add(it.path) }
       }
     }
 
     private fun collectFilesFromDirectory(directory: File): List<String> {
-      require(directory.exists() && directory.isDirectory) {
-        "Directory does not exist: ${directory.absolutePath}"
+      if (!directory.exists() || !directory.isDirectory) {
+        return emptyList()
       }
 
       return directory.walkTopDown().asSequence()
         .filter { it.isFile && it.extension in SOURCE_EXTENSIONS }
         .map { it.absolutePath }
         .toList()
-    }
-
-    private fun MutableList<String>.addDirectoryIfExists(directory: File) {
-      require(directory.exists() && directory.isDirectory) {
-        "Required resource directory does not exist: ${directory.absolutePath}"
-      }
-      add(directory.absolutePath)
     }
   }
 
@@ -310,7 +295,7 @@ class LintProjectDescription(
 
     private fun resolveExternalPath(path: String, bazelClient: BazelClient): String {
       val bazelInfo = bazelClient.retrieveBazelInfo()
-      val outputBase = bazelInfo["output_base"]
+      val outputBase = bazelInfo[BAZEL_OUTPUT_BASE_KEY]
         ?: throw IllegalStateException("Could not retrieve Bazel output_base for path: $path")
 
       return File(outputBase, path).absolutePath
