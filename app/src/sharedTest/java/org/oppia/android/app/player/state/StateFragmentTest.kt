@@ -5394,6 +5394,7 @@ class StateFragmentTest {
         assertThat(receivedStoryId).isEqualTo(TEST_STORY_ID_0)
         assertThat(reveivedExplorationId).isEqualTo(FRACTIONS_EXPLORATION_ID_1)
       }
+    }
   }
 
   private fun playThroughRatioExplorationState1() {
