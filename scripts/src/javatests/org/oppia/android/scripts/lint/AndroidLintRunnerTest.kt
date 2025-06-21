@@ -86,14 +86,14 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testPrepareLintArguments_includesRequiredFlags() {
+  fun testPrepareLintArguments_ensuresAllRequiredArgumentsArePresent() {
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion)
 
-    assertThat(result).asList().containsAtLeast(
+    val expectedArguments = listOf(
       "-Wall",
       "--quiet",
       "--fullpath",
@@ -109,6 +109,130 @@ class AndroidLintRunnerTest {
       "--project", projectFile.absolutePath,
       "--xml", reportFile.absolutePath
     )
+
+    assertThat(result.toList()).containsExactlyElementsIn(expectedArguments)
+  }
+
+  @Test
+  fun testJavaConfiguration_withValidBazelInfo_extractsJdkHomeAndVersion() {
+    val bazelInfo = mapOf(
+      "java-home" to "/usr/lib/jvm/java-11-openjdk",
+      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post-Ubuntu-0ubuntu120.04)"
+    )
+
+    // Using reflection to test the private JavaConfiguration class
+    val javaConfigClass = Class.forName(
+      "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
+    )
+    val constructor = javaConfigClass.getDeclaredConstructor(Map::class.java)
+    constructor.isAccessible = true
+    val javaConfig = constructor.newInstance(bazelInfo)
+
+    val getJdkHomeMethod = javaConfigClass.getDeclaredMethod("getJdkHome")
+    getJdkHomeMethod.isAccessible = true
+    val jdkHome = getJdkHomeMethod.invoke(javaConfig) as File
+
+    val getVersionMethod = javaConfigClass.getDeclaredMethod("getVersion")
+    getVersionMethod.isAccessible = true
+    val version = getVersionMethod.invoke(javaConfig) as String
+
+    assertThat(jdkHome.absolutePath).isEqualTo("/usr/lib/jvm/java-11-openjdk")
+    assertThat(version).isEqualTo("11.0.16")
+  }
+
+  @Test
+  fun testJavaConfiguration_withMissingJavaRuntime_throwsException() {
+    val bazelInfo = mapOf(
+      "java-home" to "/usr/lib/jvm/java-11-openjdk"
+    )
+
+    val javaConfigClass = Class.forName(
+      "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
+    )
+    val constructor = javaConfigClass.getDeclaredConstructor(Map::class.java)
+    constructor.isAccessible = true
+
+    val exception = assertThrows<Exception> {
+      constructor.newInstance(bazelInfo)
+    }
+
+    val cause = exception.cause
+    assertThat(cause).isInstanceOf(IllegalStateException::class.java)
+    assertThat(cause?.message).contains("java-runtime not found in bazel info output")
+  }
+
+  @Test
+  fun testJavaConfiguration_withInvalidVersionFormat_throwsException() {
+    val bazelInfo = mapOf(
+      "java-home" to "/usr/lib/jvm/java-11-openjdk",
+      "java-runtime" to "Invalid runtime format without version"
+    )
+
+    val javaConfigClass = Class.forName(
+      "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
+    )
+    val constructor = javaConfigClass.getDeclaredConstructor(Map::class.java)
+    constructor.isAccessible = true
+
+    val exception = assertThrows<Exception> {
+      constructor.newInstance(bazelInfo)
+    }
+
+    val cause = exception.cause
+    assertThat(cause).isInstanceOf(IllegalStateException::class.java)
+    assertThat(cause?.message).contains("Could not extract Java version from")
+  }
+
+  @Test
+  fun testPrepareLintArguments_withCustomBuildSdkVersion_includesCorrectVersion() {
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val customBuildSdk = "34"
+
+    val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, customBuildSdk)
+
+    assertThat(result).asList().contains("--compile-sdk-version")
+    val sdkVersionIndex = result.indexOf("--compile-sdk-version")
+    assertThat(result[sdkVersionIndex + 1]).isEqualTo(customBuildSdk)
+  }
+
+  @Test
+  fun testPrepareLintArguments_withExistingReleaseFile_doesNotOverwrite() {
+    val tempJdkDir = File(tempFolder.root, "temp_jdk_with_release")
+    tempJdkDir.mkdirs()
+
+    val releaseFile = File(tempJdkDir, "release")
+    val originalContent = "ORIGINAL_CONTENT=test"
+    releaseFile.writeText(originalContent)
+
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
+
+    assertThat(releaseFile.readText()).isEqualTo(originalContent)
+  }
+
+  @Test
+  fun testPrepareLintArguments_generatesValidModulesString() {
+    val tempJdkDir = File(tempFolder.root, "temp_jdk_modules")
+    tempJdkDir.mkdirs()
+
+    val reportFile = File(tempFolder.root, "report.xml")
+    val projectFile = File(tempFolder.root, "project.xml")
+    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
+
+    val releaseFile = File(tempJdkDir, "release")
+    assertThat(releaseFile.exists()).isTrue()
+
+    val releaseContent = releaseFile.readText()
+    assertThat(releaseContent).startsWith("MODULES=\"")
+    assertThat(releaseContent).endsWith("\"")
+    assertThat(releaseContent).contains("java.base") // Common module that should be present
   }
 
   @Test
