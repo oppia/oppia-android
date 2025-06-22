@@ -17,7 +17,7 @@ class FeatureFlagsActivityPresenter @Inject constructor(
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     activity.setContentView(R.layout.feature_flags_activity)
 
-    if (getFeatureFlagFragment() == null) {
+    if (getFeatureFlagsFragment() == null) {
       val featureFlagsFragment = FeatureFlagsFragment.newInstance()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.feature_flags_container,
@@ -26,7 +26,7 @@ class FeatureFlagsActivityPresenter @Inject constructor(
     }
   }
 
-  private fun getFeatureFlagFragment(): FeatureFlagsFragment? {
+  private fun getFeatureFlagsFragment(): FeatureFlagsFragment? {
     return activity.supportFragmentManager
       .findFragmentById(R.id.feature_flags_container) as? FeatureFlagsFragment
   }

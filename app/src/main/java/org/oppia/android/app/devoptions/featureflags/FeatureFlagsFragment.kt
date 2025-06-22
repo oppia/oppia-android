@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.FeatureFlagFragmentArgument
+import org.oppia.android.app.model.FeatureFlagsFragmentArgument
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -19,7 +19,7 @@ class FeatureFlagsFragment : InjectableFragment() {
 
   companion object {
     /** State key for [FeatureFlagsFragment]. */
-    const val FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
+    const val FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
 
     /** Returns a new instance of [FeatureFlagsFragment]. */
     fun newInstance(): FeatureFlagsFragment = FeatureFlagsFragment()
@@ -35,13 +35,13 @@ class FeatureFlagsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    var featureFlagStates = ArrayList<Boolean>()
+    var featureFlagStates: Map<String, Boolean> = emptyMap()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
-        FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY,
-        FeatureFlagFragmentArgument.getDefaultInstance()
+        FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY,
+        FeatureFlagsFragmentArgument.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList?.let { ArrayList(it) } ?: ArrayList()
+      featureFlagStates = args?.featureFlagStatesMap ?: emptyMap()
     }
 
     return featureFlagsFragmentPresenter.handleCreateView(inflater, container, featureFlagStates)
@@ -49,12 +49,16 @@ class FeatureFlagsFragment : InjectableFragment() {
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val featureFlagStates = featureFlagsFragmentPresenter.featureFlagStates
-    outState.putProto(
-      FEATURE_FLAG_FRAGMENT_ARGUMENT_STATE_KEY,
-      FeatureFlagFragmentArgument.newBuilder().apply {
-        addAllFeatureFlagStates(featureFlagStates)
-      }.build()
-    )
+
+    val featureFlagStates: Map<String, Boolean> =
+      featureFlagsFragmentPresenter.featureFlagStates
+
+    val proto = FeatureFlagsFragmentArgument.newBuilder()
+      .putAllFeatureFlagStates(
+        featureFlagStates.mapKeys { it.key }
+      )
+      .build()
+
+    outState.putProto(FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY, proto)
   }
 }

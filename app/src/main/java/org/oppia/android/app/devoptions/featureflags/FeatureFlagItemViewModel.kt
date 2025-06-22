@@ -2,13 +2,13 @@ package org.oppia.android.app.devoptions.featureflags
 
 import androidx.annotation.ColorInt
 import androidx.databinding.ObservableField
-import org.oppia.android.app.viewmodel.ObservableViewModel
-import javax.inject.Inject
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
+import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
+import javax.inject.Inject
 
 /** [ViewModel] for displaying a feature flag for the recycler view in [FeatureFlagsFragment]. */
 class FeatureFlagItemViewModel @Inject constructor(
@@ -20,11 +20,18 @@ class FeatureFlagItemViewModel @Inject constructor(
 
 ) : ObservableViewModel() {
 
-  val isEnabled: ObservableField<Boolean> = ObservableField(currentValue)
-  val featureFlagDisplayName : ObservableField<String> =
+  val isChecked: ObservableField<Boolean> = ObservableField(currentValue)
+  val featureFlagDisplayName: ObservableField<String> =
     ObservableField(getFeatureFlagDisplayName(featureFlagId))
-  val syncStatusDisplayText : ObservableField<String> =
+  val syncStatusDisplayText: ObservableField<String> =
     ObservableField(getSyncStatusText())
+
+  var onToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
+
+  fun onUserToggle() {
+    isChecked.set(!isChecked.get()!!)
+    onToggleCallback?.invoke(featureFlagId, isChecked.get()!!)
+  }
 
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor().toInt()
@@ -36,9 +43,10 @@ class FeatureFlagItemViewModel @Inject constructor(
         FeatureFlagId.UNRECOGNIZED,
         FeatureFlagId.FEATURE_FLAG_ID_UNSPECIFIED -> "Unknown Feature"
 
-        else -> id.name.toMachineLowerCase()
-          .split("_")
-          .joinToString(" ") { it.capitalizeForMachines() }
+        else ->
+          id.name.toMachineLowerCase()
+            .split("_")
+            .joinToString(" ") { it.capitalizeForMachines() }
       }
     }
   }
