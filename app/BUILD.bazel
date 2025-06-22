@@ -537,7 +537,6 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/audio:audio_player_controller",
         "//domain/src/main/java/org/oppia/android/domain/clipboard:clipboard_controller",
         "//domain/src/main/java/org/oppia/android/domain/onboarding:state_controller",
-        "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_module",
         "//domain/src/main/java/org/oppia/android/domain/profile:profile_management_controller",
         "//model/src/main/proto:arguments_java_proto_lite",
         "//third_party:androidx_core_core",
