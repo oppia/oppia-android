@@ -170,21 +170,20 @@ class LintProjectDescription(
 
   /** Helper class for collecting source files and resources for a module. */
   private inner class SourceFileCollector(
-    private val repoRoot: File,
+    repoRoot: File,
     module: ModuleName
   ) {
     private val moduleName = module.moduleName
-    private val sourceDir = "$moduleName/${SdkConstants.FD_SOURCES}"
+    private val sourceDir = File(repoRoot, "$moduleName/${SdkConstants.FD_SOURCES}")
 
     /** Collects the source files for the module. */
     fun collectSourceFiles(): List<String> =
-      collectFilesFromDirectory(File(repoRoot, sourceDir))
+      collectFilesFromDirectory(sourceDir)
 
     /** Collects the resource directories for the module. */
     fun collectResourceDirectories(): List<String> = buildList {
-      val srcDir = File(repoRoot, sourceDir)
-      if (srcDir.exists()) {
-        srcDir.walkTopDown()
+      if (sourceDir.exists()) {
+        sourceDir.walkTopDown()
           .filter { it.isDirectory && it.name == SdkConstants.FD_RES }
           .forEach { add(it.path) }
       }
@@ -296,7 +295,9 @@ class LintProjectDescription(
     private fun resolveExternalPath(path: String, bazelClient: BazelClient): String {
       val bazelInfo = bazelClient.retrieveBazelInfo()
       val outputBase = bazelInfo[BAZEL_OUTPUT_BASE_KEY]
-        ?: throw IllegalStateException("Could not retrieve Bazel output_base for path: $path")
+        ?: throw IllegalStateException(
+          "Could not retrieve Bazel $BAZEL_OUTPUT_BASE_KEY for path: $path"
+        )
 
       return File(outputBase, path).absolutePath
     }

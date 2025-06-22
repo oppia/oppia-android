@@ -186,7 +186,7 @@ class AndroidLintRunner(
   fun runLint(cliArgs: Array<String>) {
     val exitCode = LintCli().run(cliArgs)
 
-    // Allow exit code 1 since it indicates issues with
+    // Allow exit code ISSUES_FOUND since it indicates issues with
     // severity Error which is being handled by LintAnalysisReporter.
     if (exitCode != SUCCESS && exitCode != ISSUES_FOUND) {
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
