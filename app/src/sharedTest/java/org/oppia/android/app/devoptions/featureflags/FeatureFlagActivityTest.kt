@@ -92,7 +92,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FeatureFlagActivity]. */
+/** Tests for [FeatureFlagsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
@@ -122,20 +122,20 @@ class FeatureFlagActivityTest {
 
   @Test
   fun testFeatureFlagActivity_hasCorrectActivityLabel() {
-    launch<FeatureFlagActivity>(createFeatureFlagActivityIntent()).use { scenario ->
+    launch<FeatureFlagsActivity>(createFeatureFlagActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
         val title = activity.title
 
         // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
         // correct string when it's read out.
-        assertThat(title).isEqualTo(context.getString(R.string.feature_flag_activity_title))
+        assertThat(title).isEqualTo(context.getString(R.string.feature_flags_activity_title))
       }
     }
   }
 
   @Test
   fun testFeatureFlagActivity_FeatureFlagFragmentIsDisplayed() {
-    launch(FeatureFlagActivity::class.java).use {
+    launch(FeatureFlagsActivity::class.java).use {
       onView(withId(R.id.feature_flag_fragment_container)).check(
         matches(ViewMatchers.isDisplayed())
       )
@@ -144,7 +144,7 @@ class FeatureFlagActivityTest {
 
   @Test
   fun testFeatureFlagActivity_configChange_FeatureFlagFragmentIsDisplayed() {
-    launch(FeatureFlagActivity::class.java).use {
+    launch(FeatureFlagsActivity::class.java).use {
       onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
       onView(withId(R.id.feature_flag_fragment_container)).check(
         matches(ViewMatchers.isDisplayed())
@@ -157,7 +157,7 @@ class FeatureFlagActivityTest {
   }
 
   private fun createFeatureFlagActivityIntent(): Intent =
-    FeatureFlagActivity.createFeatureFlagActivityIntent(context)
+    FeatureFlagsActivity.createFeatureFlagActivityIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton

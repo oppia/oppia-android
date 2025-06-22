@@ -54,7 +54,6 @@ class DeveloperOptionsViewModel @Inject constructor(
         routeToForceNetworkTypeListener,
         showAllHintsAndSolutionController,
         routeToFeatureFlagsListener
-
       ),
       DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
     )

@@ -31,10 +31,8 @@
   <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
-  <string name="feature_flag_activity_title" translatable="false">Feature Flag</string>
+  <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
   <string name="feature_flag_sync_status" translatable="false">Sync Status</string>
-  <string name="feature_flag_reset_message" translatable="false">Reset to Server / Defaults</string>
-  <string name="feature_flag_reset_button_text" translatable="false">Reset</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>

@@ -3,20 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="viewModel"
-            type="org.oppia.android.app.devoptions.featureflags.FeatureFlagViewModel" />
+            type="org.oppia.android.app.devoptions.featureflags.FeatureFlagsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/feature_flag_fragment_container"
+        android:id="@+id/feature_flags_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/component_color_shared_screen_primary_background_color">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/feature_flag_app_bar_layout"
+            android:id="@+id/feature_flags_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -25,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/feature_flag_toolbar"
+                android:id="@+id/feature_flags_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/component_color_shared_activity_toolbar_color"
@@ -37,16 +36,17 @@
                 app:title="@string/developer_options_feature_flags"
                 app:titleTextAppearance="@style/ToolbarTextAppearance" />
         </com.google.android.material.appbar.AppBarLayout>
+
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/feature_flag_app_bar_layout">
+            app:layout_constraintTop_toBottomOf="@id/feature_flags_app_bar_layout">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/feature_flag_recycler_view"
+                android:id="@+id/feature_flags_recycler_view"
                 list="@{viewModel.featureFlagList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
