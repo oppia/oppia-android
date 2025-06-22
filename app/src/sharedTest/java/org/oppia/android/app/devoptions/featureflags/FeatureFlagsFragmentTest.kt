@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -147,7 +148,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 1)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 1,
-        stringToMatch = "Extra Topic Tabs UI"
+        stringToMatch = "Extra Topic Tabs Ui"
       )
 
       scrollToPosition(position = 2)
@@ -165,13 +166,13 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 4)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 4,
-        stringToMatch = "Logging Learner Study IDs"
+        stringToMatch = "Logging Learner Study Ids"
       )
 
       scrollToPosition(position = 5)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 5,
-        stringToMatch = "Edit Accounts Options UI"
+        stringToMatch = "Edit Accounts Options Ui"
       )
 
       scrollToPosition(position = 6)
@@ -183,7 +184,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 7)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 7,
-        stringToMatch = "Spotlight UI"
+        stringToMatch = "Spotlight Ui"
       )
 
       scrollToPosition(position = 8)
@@ -195,13 +196,13 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 9)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 9,
-        stringToMatch = "App And OS Deprecation"
+        stringToMatch = "App And Os Deprecation"
       )
 
       scrollToPosition(position = 10)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 10,
-        stringToMatch = "NPS Survey"
+        stringToMatch = "Nps Survey"
       )
 
       scrollToPosition(position = 11)
@@ -238,7 +239,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 1)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 1,
-        stringToMatch = "Extra Topic Tabs UI"
+        stringToMatch = "Extra Topic Tabs Ui"
       )
 
       scrollToPosition(position = 2)
@@ -256,13 +257,13 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 4)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 4,
-        stringToMatch = "Logging Learner Study IDs"
+        stringToMatch = "Logging Learner Study Ids"
       )
 
       scrollToPosition(position = 5)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 5,
-        stringToMatch = "Edit Accounts Options UI"
+        stringToMatch = "Edit Accounts Options Ui"
       )
 
       scrollToPosition(position = 6)
@@ -274,7 +275,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 7)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 7,
-        stringToMatch = "Spotlight UI"
+        stringToMatch = "Spotlight Ui"
       )
 
       scrollToPosition(position = 8)
@@ -286,13 +287,13 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(position = 9)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 9,
-        stringToMatch = "App And OS Deprecation"
+        stringToMatch = "App And Os Deprecation"
       )
 
       scrollToPosition(position = 10)
       verifyTextOnFeatureFlagListItemAtPosition(
         itemPosition = 10,
-        stringToMatch = "NPS Survey"
+        stringToMatch = "Nps Survey"
       )
 
       scrollToPosition(position = 11)
@@ -413,7 +414,7 @@ class FeatureFlagsFragmentTest {
       val initialValue = getFeatureFlagAtPosition(position = 0).currentValue
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.feature_flag_recycler_view,
+          recyclerViewId = R.id.feature_flags_recycler_view,
           position = 0,
           targetViewId = R.id.feature_flag_switch
         )
@@ -425,7 +426,7 @@ class FeatureFlagsFragmentTest {
       val expectedValue = !initialValue
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.feature_flag_recycler_view,
+          recyclerViewId = R.id.feature_flags_recycler_view,
           position = 0,
           targetViewId = R.id.feature_flag_switch
         )
@@ -434,7 +435,7 @@ class FeatureFlagsFragmentTest {
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.feature_flag_recycler_view)).perform(
+    onView(withId(R.id.feature_flags_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(position)
     )
   }
@@ -445,7 +446,7 @@ class FeatureFlagsFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.feature_flag_recycler_view,
+        recyclerViewId = R.id.feature_flags_recycler_view,
         position = itemPosition,
         targetViewId = R.id.feature_flag_label_text_view
       )
@@ -457,7 +458,7 @@ class FeatureFlagsFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.feature_flag_recycler_view,
+        recyclerViewId = R.id.feature_flags_recycler_view,
         position = itemPosition,
         targetViewId = R.id.sync_status_value_text_view
       )
