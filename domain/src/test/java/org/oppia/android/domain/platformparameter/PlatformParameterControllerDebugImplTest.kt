@@ -215,6 +215,7 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   fun testLoadEphemeralFeatureFlags_withRemoteFlagAndNoLocalOverride_returnsRemoteValue() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent)
       testComponent.getTestCoroutineDispatchers().runCurrent()
