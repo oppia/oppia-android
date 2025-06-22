@@ -33,6 +33,9 @@
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
   <string name="feature_flag_sync_status" translatable="false">Sync Status</string>
+  <string name="feature_flag_default_sync_status" translatable="false">Default</string>
+  <string name="feature_flag_server_sync_status" translatable="false">Server</string>
+  <string name="feature_flag_unknown_sync_status" translatable="false">Unknown</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>

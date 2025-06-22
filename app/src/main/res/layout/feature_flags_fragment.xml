@@ -47,13 +47,13 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/feature_flags_recycler_view"
-                list="@{viewModel.featureFlagList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:paddingBottom="40dp"
                 android:scrollbars="none"
+                list="@{viewModel.featureFlagList}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
