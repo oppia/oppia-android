@@ -17,11 +17,6 @@ import javax.inject.Singleton
 )
 interface PlatformParameterModule {
   @Binds
-  fun providePlatformParameterDebugController(
-    impl: PlatformParameterControllerDebugImpl
-  ): PlatformParameterDebugController
-
-  @Binds
   fun bindPlatformParameterController(
     impl: PlatformParameterControllerProdImpl
   ): PlatformParameterController
