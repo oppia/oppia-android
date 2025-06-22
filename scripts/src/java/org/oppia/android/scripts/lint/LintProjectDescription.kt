@@ -6,7 +6,6 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
-import kotlin.system.measureTimeMillis
 
 /**
  * Enum representing module names in the project.
@@ -358,7 +357,7 @@ private class DependencyResolver(
       val extractedPath = aarExtractor.extractAar(resolvedAarPath, moduleAarsDirectory)
       AarFileInfo(resolvedAarPath, extractedPath)
     } catch (e: ZipException) {
-      throw IOException("Invalid AAR file format: $aarFile", e)
+      throw ZipException("Invalid AAR file format: $aarFile")
     } catch (e: IOException) {
       throw IOException("Failed to extract AAR file: $aarFile", e)
     } catch (e: Exception) {

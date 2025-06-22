@@ -408,20 +408,17 @@ class TestBazelWorkspace(private val temporaryRootFolder: TemporaryFolder) {
         """
         load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-        # Add rules_kotlin FIRST with explicit toolchain registration
         http_archive(
             name = "io_bazel_rules_kotlin",
             sha256 = "fd92a98bd8a8f0e1cdcb490b93f5acef1f1727ed992571232d33de42395ca9b3",
             urls = ["https://github.com/bazelbuild/rules_kotlin/releases/download/v1.7.1/rules_kotlin_release.tgz"],
         )
   
-        # Set up Kotlin BEFORE other dependencies
         load("@io_bazel_rules_kotlin//kotlin:repositories.bzl", "kotlin_repositories")
         kotlin_repositories()
         load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_register_toolchains")
         kt_register_toolchains()
   
-        # Now set up rules_jvm_external
         RULES_JVM_EXTERNAL_TAG = "4.0"
         RULES_JVM_EXTERNAL_SHA = "31701ad93dbfe544d597dbe62c9a1fdd76d81d8a9150c2bf1ecf928ecdf97169"
 
