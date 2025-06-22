@@ -8,7 +8,8 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -28,7 +29,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.model.ScreenName.FEATURE_FLAGS_ACTIVITY
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -96,18 +97,12 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = FeatureFlagActivityTest.TestApplication::class,
+  application = FeatureFlagsActivityTest.TestApplication::class,
 )
-class FeatureFlagActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
+class FeatureFlagsActivityTest {
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -115,14 +110,14 @@ class FeatureFlagActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
-    val screenName = createFeatureFlagActivityIntent().extractCurrentAppScreenName()
+    val screenName = createFeatureFlagsActivityIntent().extractCurrentAppScreenName()
 
-    assertThat(screenName).isEqualTo(ScreenName.FEATURE_FLAG_ACTIVITY)
+    assertThat(screenName).isEqualTo(FEATURE_FLAGS_ACTIVITY)
   }
 
   @Test
-  fun testFeatureFlagActivity_hasCorrectActivityLabel() {
-    launch<FeatureFlagsActivity>(createFeatureFlagActivityIntent()).use { scenario ->
+  fun testFeatureFlagsActivity_hasCorrectActivityLabel() {
+    launch<FeatureFlagsActivity>(createFeatureFlagsActivityIntent()).use { scenario ->
       scenario.onActivity { activity ->
         val title = activity.title
 
@@ -134,20 +129,20 @@ class FeatureFlagActivityTest {
   }
 
   @Test
-  fun testFeatureFlagActivity_FeatureFlagFragmentIsDisplayed() {
+  fun testFeatureFlagsActivity_featureFlagFragmentIsDisplayed() {
     launch(FeatureFlagsActivity::class.java).use {
-      onView(withId(R.id.feature_flag_fragment_container)).check(
-        matches(ViewMatchers.isDisplayed())
+      onView(withId(R.id.feature_flags_fragment_container)).check(
+        matches(isDisplayed())
       )
     }
   }
 
   @Test
-  fun testFeatureFlagActivity_configChange_FeatureFlagFragmentIsDisplayed() {
+  fun testFeatureFlagsActivity_configChange_featureFlagFragmentIsDisplayed() {
     launch(FeatureFlagsActivity::class.java).use {
-      onView(ViewMatchers.isRoot()).perform(OrientationChangeAction.orientationLandscape())
-      onView(withId(R.id.feature_flag_fragment_container)).check(
-        matches(ViewMatchers.isDisplayed())
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.feature_flags_fragment_container)).check(
+        matches(isDisplayed())
       )
     }
   }
@@ -156,8 +151,8 @@ class FeatureFlagActivityTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun createFeatureFlagActivityIntent(): Intent =
-    FeatureFlagsActivity.createFeatureFlagActivityIntent(context)
+  private fun createFeatureFlagsActivityIntent(): Intent =
+    FeatureFlagsActivity.createFeatureFlagsActivityIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -224,7 +219,7 @@ class FeatureFlagActivityTest {
       TestPlatformParameterModule::class
     ]
   )
-  /** [ApplicationComponent] for [FeatureFlagActivityTest]. */
+  /** [ApplicationComponent] for [FeatureFlagsActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
@@ -233,23 +228,23 @@ class FeatureFlagActivityTest {
     }
 
     /**
-     * Injects [TestApplicationComponent] to [FeatureFlagActivityTest] providing the required
+     * Injects [TestApplicationComponent] to [FeatureFlagsActivityTest] providing the required
      * dagger modules.
      */
-    fun inject(FeatureFlagActivityTest: FeatureFlagActivityTest)
+    fun inject(featureFlagsActivityTest: FeatureFlagsActivityTest)
   }
 
-  /** [Application] class for [FeatureFlagActivityTest]. */
+  /** [Application] class for [FeatureFlagsActivityTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFeatureFlagActivityTest_TestApplicationComponent.builder()
+      DaggerFeatureFlagsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
     /** Called when setting up [TestApplication]. */
-    fun inject(FeatureFlagActivityTest: FeatureFlagActivityTest) {
-      component.inject(FeatureFlagActivityTest)
+    fun inject(featureFlagsActivityTest: FeatureFlagsActivityTest) {
+      component.inject(featureFlagsActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

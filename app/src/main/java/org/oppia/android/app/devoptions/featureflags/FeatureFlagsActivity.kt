@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ScreenName.FEATURE_FLAG_ACTIVITY
+import org.oppia.android.app.model.ScreenName.FEATURE_FLAGS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -28,9 +28,9 @@ class FeatureFlagsActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns [Intent] for [FeatureFlagsActivity]. */
-    fun createFeatureFlagActivityIntent(context: Context): Intent {
+    fun createFeatureFlagsActivityIntent(context: Context): Intent {
       return Intent(context, FeatureFlagsActivity::class.java).apply {
-        decorateWithScreenName(FEATURE_FLAG_ACTIVITY)
+        decorateWithScreenName(FEATURE_FLAGS_ACTIVITY)
       }
     }
   }

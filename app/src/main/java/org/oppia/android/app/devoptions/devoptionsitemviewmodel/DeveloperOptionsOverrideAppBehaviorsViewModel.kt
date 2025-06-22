@@ -31,7 +31,7 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
     forceNetworkTypeListener.routeToForceNetworkType()
   }
 
-  /** Routes the user to [FeatureFlagActivity] for viewing and modifying feature flags. */
+  /** Routes the user to [FeatureFlagsActivity] for viewing and modifying feature flags. */
   fun onFeatureFlagsClicked() {
     featureFlagsListener.routeToFeatureFlags()
   }
