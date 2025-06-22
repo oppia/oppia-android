@@ -172,7 +172,7 @@ enum ScreenName {
   INTRO_ACTIVITY = 53;
 
   // Screen name value for feature flag screen.
-  FEATURE_FLAG_ACTIVITY = 54;
+  FEATURE_FLAGS_ACTIVITY = 54;
 }
 
 // Defines the current visible UI screen of the application.

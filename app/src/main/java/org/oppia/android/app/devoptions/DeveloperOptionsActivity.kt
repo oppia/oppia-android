@@ -81,7 +81,7 @@ class DeveloperOptionsActivity :
 
   override fun routeToFeatureFlags() {
     startActivity(
-      FeatureFlagsActivity.createFeatureFlagActivityIntent(this)
+      FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
     )
   }
 

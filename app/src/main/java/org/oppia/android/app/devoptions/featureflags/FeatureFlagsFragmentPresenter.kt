@@ -26,14 +26,14 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
 
   /** List of feature flag switch states to be used in the fragment. */
-  var featureFlagStates: ArrayList<Boolean> = arrayListOf()
+  var featureFlagStates: MutableMap<String, Boolean> = mutableMapOf()
 
   /** Called when [FeatureFlagsFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    featureFlagStates: ArrayList<Boolean>
-  ): View? {
+    featureFlagStates: Map<String, Boolean>
+  ): View {
     binding = FeatureFlagsFragmentBinding.inflate(
       inflater,
       container,
@@ -44,9 +44,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     }
 
     if (featureFlagStates.isNotEmpty()) {
-      this.featureFlagStates = featureFlagStates
+      this.featureFlagStates = featureFlagStates.toMutableMap()
     }
-
     binding.apply {
       this.lifecycleOwner = fragment
       this.viewModel = featureFlagsViewModel
@@ -80,14 +79,11 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     model: FeatureFlagItemViewModel
   ) {
     binding.viewModel = model
-//    val index = featureFlagsViewModel.featureFlagList.value?.indexOf(model)!!
-//    if (featureFlagStates.size != featureFlagsViewModel.featureFlagList.value?.size)
-//      featureFlagStates.add(model.currentValue)
-//
-//    binding.isEnabled = featureFlagStates[index]
-//
-//    binding.featureFlagSwitch.setOnCheckedChangeListener { _, isChecked ->
-//      featureFlagStates[index] = isChecked
-//    }
+    if (featureFlagStates.containsKey(model.featureFlagId.name)) {
+      model.isChecked.set(featureFlagStates[model.featureFlagId.name])
     }
+    model.onToggleCallback = { id, value ->
+      featureFlagStates[id.name] = value
+    }
+  }
 }

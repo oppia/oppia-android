@@ -15,17 +15,17 @@ class FeatureFlagTestActivity : InjectableAutoLocalizedAppCompatActivity() {
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.feature_flags_activity)
-    if (getFeatureFlagFragment() == null) {
-      val FeatureFlagsFragment = FeatureFlagsFragment.newInstance()
+    if (getFeatureFlagsFragment() == null) {
+      val featureFlagsFragment = FeatureFlagsFragment.newInstance()
       supportFragmentManager.beginTransaction().add(
         R.id.feature_flags_container,
-        FeatureFlagsFragment
+        featureFlagsFragment
       ).commitNow()
     }
   }
 
-  private fun getFeatureFlagFragment(): FeatureFlagsFragment? {
+  private fun getFeatureFlagsFragment(): FeatureFlagsFragment? {
     return supportFragmentManager
-      .findFragmentById(R.id.feature_flags_container) as FeatureFlagsFragment?
+      .findFragmentById(R.id.feature_flags_container) as? FeatureFlagsFragment
   }
 }

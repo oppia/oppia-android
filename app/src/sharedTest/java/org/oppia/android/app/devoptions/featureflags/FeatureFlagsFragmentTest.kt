@@ -106,9 +106,9 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = FeatureFlagFragmentTest.TestApplication::class
+  application = FeatureFlagsFragmentTest.TestApplication::class
 )
-class FeatureFlagFragmentTest {
+class FeatureFlagsFragmentTest {
   @get:Rule
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
@@ -134,7 +134,7 @@ class FeatureFlagFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_allFeatureFlagsAreCorrectlyDisplayed() {
+  fun testFeatureFlagsFragment_allFeatureFlagsAreCorrectlyDisplayed() {
     launch(FeatureFlagTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -225,7 +225,7 @@ class FeatureFlagFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_configChange_allFeatureFlagsAreCorrectlyDisplayed() {
+  fun testFeatureFlagsFragment_configChange_allFeatureFlagsAreCorrectlyDisplayed() {
     launch(FeatureFlagTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
@@ -315,7 +315,7 @@ class FeatureFlagFragmentTest {
     }
   }
   @Test
-  fun testFeatureFlagFragment_syncStatusIsCorrectlyDisplayed() {
+  fun testFeatureFlagsFragment_syncStatusIsCorrectlyDisplayed() {
     launch(FeatureFlagTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -406,7 +406,7 @@ class FeatureFlagFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_overrideFeatureFlag_configChange_changePersists() {
+  fun testFeatureFlagsFragment_overrideFeatureFlag_configChange_changePersists() {
     launch(FeatureFlagTestActivity::class.java).use {
       scrollToPosition(position = 0)
 
@@ -552,7 +552,7 @@ class FeatureFlagFragmentTest {
       TestPlatformParameterModule::class
     ]
   )
-  /** [ApplicationComponent] for [FeatureFlagFragmentTest]. */
+  /** [ApplicationComponent] for [FeatureFlagsFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
@@ -561,22 +561,22 @@ class FeatureFlagFragmentTest {
     }
 
     /**
-     * Injects [TestApplicationComponent] to [FeatureFlagFragmentTest] providing the required
+     * Injects [TestApplicationComponent] to [FeatureFlagsFragmentTest] providing the required
      * dagger modules.
      */
-    fun inject(featureFlagFragmentTest: FeatureFlagFragmentTest)
+    fun inject(featureFlagFragmentTest: FeatureFlagsFragmentTest)
   }
 
-  /** [Application] class for [FeatureFlagFragmentTest]. */
+  /** [Application] class for [FeatureFlagsFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFeatureFlagFragmentTest_TestApplicationComponent.builder()
+      DaggerFeatureFlagsFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
     /** Called when setting up [TestApplication]. */
-    fun inject(featureFlagFragmentTest: FeatureFlagFragmentTest) {
+    fun inject(featureFlagFragmentTest: FeatureFlagsFragmentTest) {
       component.inject(featureFlagFragmentTest)
     }
 
