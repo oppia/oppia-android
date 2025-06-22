@@ -305,8 +305,8 @@
       android:label="@string/force_network_type_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-        android:name=".app.devoptions.featureflags.FeatureFlagActivity"
-        android:label="@string/feature_flag_activity_title"
+        android:name=".app.devoptions.featureflags.FeatureFlagsActivity"
+        android:label="@string/feature_flags_activity_title"
         android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
         android:name=".app.devoptions.featureflags.testing.FeatureFlagTestActivity"
