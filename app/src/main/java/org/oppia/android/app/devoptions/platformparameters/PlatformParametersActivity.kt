@@ -12,9 +12,9 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity for platform parameter dashboard of the app. */
-class PlatformParameterActivity : InjectableAutoLocalizedAppCompatActivity() {
+class PlatformParametersActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
-  lateinit var PlatformParameterActivityPresenter: PlatformParameterActivityPresenter
+  lateinit var PlatformParametersActivityPresenter: PlatformParametersActivityPresenter
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
@@ -22,14 +22,14 @@ class PlatformParameterActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    PlatformParameterActivityPresenter.handleOnCreate()
-    title = resourceHandler.getStringInLocale(R.string.feature_flag_activity_title)
+    PlatformParametersActivityPresenter.handleOnCreate()
+    title = resourceHandler.getStringInLocale(R.string.feature_flags_activity_title)
   }
 
   companion object {
-    /** Returns [Intent] for [PlatformParameterActivity]. */
-    fun createPlatformParameterActivityIntent(context: Context): Intent {
-      return Intent(context, PlatformParameterActivity::class.java).apply {
+    /** Returns [Intent] for [PlatformParametersActivity]. */
+    fun createPlatformParametersActivityIntent(context: Context): Intent {
+      return Intent(context, PlatformParametersActivity::class.java).apply {
         decorateWithScreenName(PLATFORM_PARAMETER_ACTIVITY)
       }
     }

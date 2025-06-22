@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.android.app.databinding.databinding.PlatformParameterFragmentBinding
+import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PlatformParameterValue
@@ -16,28 +16,28 @@ import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextCha
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
-/** The presenter for [PlatformParameterFragment]. */
+/** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
-class PlatformParameterFragmentPresenter @Inject constructor(
+class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val platformParameterViewModel: PlatformParameterViewModel,
+  private val platformParametersViewModel: PlatformParametersViewModel,
   private val oppiaLogger: OppiaLogger,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
-  private lateinit var binding: PlatformParameterFragmentBinding
+  private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
   var platformParameterStates: ArrayList<PlatformParameterValue> = arrayListOf()
 
-  /** Called when [PlatformParameterFragment] is created. Handles UI for the fragment. */
+  /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: ArrayList<PlatformParameterValue>
   ): View? {
-    binding = PlatformParameterFragmentBinding.inflate(
+    binding = PlatformParametersFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
@@ -48,7 +48,7 @@ class PlatformParameterFragmentPresenter @Inject constructor(
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates
     }
-    oppiaLogger.d("PlatformParameterFragment", platformParameterStates.toString())
+    oppiaLogger.d("PlatformParametersFragment", platformParameterStates.toString())
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
     binding.platformParameterRecyclerView.apply {
@@ -57,14 +57,14 @@ class PlatformParameterFragmentPresenter @Inject constructor(
     }
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = platformParameterViewModel
+      this.viewModel = platformParametersViewModel
     }
 
     return binding.root
   }
 
   private fun onBackNavigation() {
-    (activity as PlatformParameterActivity).finish()
+    (activity as PlatformParametersActivity).finish()
   }
   private fun createRecyclerViewAdapter(): BindableAdapter<PlatformParameterItemViewModel> {
     return singleTypeBuilderFactory.create<PlatformParameterItemViewModel>()
@@ -79,14 +79,14 @@ class PlatformParameterFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
-    val index = platformParameterViewModel.platformParameterList.value?.indexOf(model)!!
-    val totalSize = platformParameterViewModel.platformParameterList.value?.size
+    val index = platformParametersViewModel.platformParameterList.value?.indexOf(model)!!
+    val totalSize = platformParametersViewModel.platformParameterList.value?.size
 
     if (platformParameterStates.size != totalSize)
       platformParameterStates.add(model.currentValue)
 
     oppiaLogger.d(
-      "PlatformParameterFragment",
+      "PlatformParametersFragment",
       "Index is: $index, " +
         "Total Size is: $totalSize, Current Value is: ${platformParameterStates[index].integer}" +
         "${platformParameterStates[index].string} ${platformParameterStates[index].boolean}"
@@ -119,7 +119,7 @@ class PlatformParameterFragmentPresenter @Inject constructor(
       binding.inputValue = platformParameterStates[index].string
     }
     binding.syncStatusValueTextView.setBackgroundResource(
-      platformParameterViewModel.getSyncStatusBackground(model.syncStatus)
+      platformParametersViewModel.getSyncStatusBackground(model.syncStatus)
     )
   }
 }

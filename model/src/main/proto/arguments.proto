@@ -960,6 +960,6 @@ message FeatureFlagsFragmentArgument {
   map<string, bool> feature_flag_states = 1;
 }
 
-message PlatformParameterFragmentArgument {
+message PlatformParametersFragmentArgument {
   repeated PlatformParameterValue platform_parameter_states = 1;
 }

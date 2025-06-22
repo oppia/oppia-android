@@ -7,23 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.PlatformParameterFragmentArgument
+import org.oppia.android.app.model.PlatformParametersFragmentArgument
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify feature flags of the app. */
-class PlatformParameterFragment : InjectableFragment() {
+class PlatformParametersFragment : InjectableFragment() {
   @Inject
-  lateinit var PlatformParameterFragmentPresenter: PlatformParameterFragmentPresenter
+  lateinit var PlatformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
   companion object {
-    /** Returns a new instance of [PlatformParameterFragment]. */
-    fun newInstance(): PlatformParameterFragment = PlatformParameterFragment()
+    /** Returns a new instance of [PlatformParametersFragment]. */
+    fun newInstance(): PlatformParametersFragment = PlatformParametersFragment()
 
     const val PLATFORM_PARAMETER_FRAGMENT_ARGUMENT_STATE_KEY =
-      "PlatformParameterFragmentArgument.state"
+      "PlatformParametersFragmentArgument.state"
   }
 
   override fun onAttach(context: Context) {
@@ -41,22 +41,22 @@ class PlatformParameterFragment : InjectableFragment() {
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETER_FRAGMENT_ARGUMENT_STATE_KEY,
-        PlatformParameterFragmentArgument.getDefaultInstance()
+        PlatformParametersFragmentArgument.getDefaultInstance()
       )
       platformParameterStates =
         args?.platformParameterStatesList?.let { ArrayList(it) } ?: ArrayList()
     }
 
-    return PlatformParameterFragmentPresenter
+    return PlatformParametersFragmentPresenter
       .handleCreateView(inflater, container, platformParameterStates)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val platformParameterStates = PlatformParameterFragmentPresenter.platformParameterStates
+    val platformParameterStates = PlatformParametersFragmentPresenter.platformParameterStates
     outState.putProto(
       PLATFORM_PARAMETER_FRAGMENT_ARGUMENT_STATE_KEY,
-      PlatformParameterFragmentArgument.newBuilder().apply {
+      PlatformParametersFragmentArgument.newBuilder().apply {
         addAllPlatformParameterStates(platformParameterStates)
       }.build()
     )

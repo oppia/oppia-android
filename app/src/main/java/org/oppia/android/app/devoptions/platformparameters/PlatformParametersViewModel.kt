@@ -14,18 +14,18 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /**
- * [ViewModel] for [PlatformParameterFragment]. It populates the recycler view with a list of
+ * [ViewModel] for [PlatformParametersFragment]. It populates the recycler view with a list of
  * [PlatformParameterItemViewModel] which in turn display the available feature flags.
  */
 @FragmentScope
-class PlatformParameterViewModel @Inject constructor(
+class PlatformParametersViewModel @Inject constructor(
   private val platformParameterDebugController: PlatformParameterDebugController,
 ) : ObservableViewModel() {
 
   private val _platformParameterList = MutableLiveData<List<PlatformParameterItemViewModel>>()
 
   /**
-   * List of [PlatformParameterItemViewModel] used to populate recycler view of [PlatformParameterFragment]
+   * List of [PlatformParameterItemViewModel] used to populate recycler view of [PlatformParametersFragment]
    * to display the available feature flags.
    */
   val platformParameterList: LiveData<List<PlatformParameterItemViewModel>> = _platformParameterList
