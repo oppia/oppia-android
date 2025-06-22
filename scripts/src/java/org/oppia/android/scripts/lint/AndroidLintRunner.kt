@@ -12,6 +12,9 @@ import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import com.android.tools.lint.Main as LintCli
 
+/** The default timeout duration for executing external processes. */
+private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
+
 /**
  * The main entrypoint to analyze the codebase for Android Lint issues.
  *
@@ -41,7 +44,7 @@ fun main(vararg args: String) {
   val groupByIssueSeverity = args.contains("--group_by_severity")
   val processTimeout = args.find { it.startsWith("--processTimeout=") }
     ?.substringAfter("=")
-    ?.toLongOrNull() ?: 10L
+    ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
 
   val temporaryDir = Files.createTempDirectory("").parent.toFile()
   val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
