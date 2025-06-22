@@ -6,6 +6,7 @@ import java.io.File
 import java.io.IOException
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
+import kotlin.system.measureTimeMillis
 
 /**
  * Enum representing module names in the project.
@@ -227,7 +228,11 @@ private class ModuleConfigurationBuilder(
   ): ModuleConfig {
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
-      .partition { it.endsWith("Test.kt") }
+      .partition { path ->
+        path.endsWith("Test.kt") ||
+          path.contains("/test/") ||
+          path.contains("/sharedTest/")
+      }
 
     return ModuleConfig(
       name = module.moduleName,
