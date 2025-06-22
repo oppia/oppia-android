@@ -12,6 +12,7 @@ import org.oppia.android.domain.platformparameter.PlatformParameterDebugControll
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.util.locale.OppiaLocale
 
 /**
@@ -21,7 +22,8 @@ import org.oppia.android.util.locale.OppiaLocale
 @FragmentScope
 class FeatureFlagsViewModel @Inject constructor(
   private val platformParameterDebugController: PlatformParameterDebugController,
-  private val machineLocale: OppiaLocale.MachineLocale
+  private val machineLocale: OppiaLocale.MachineLocale,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private val _featureFlagList = MutableLiveData<List<FeatureFlagItemViewModel>>()
@@ -49,54 +51,15 @@ class FeatureFlagsViewModel @Inject constructor(
   private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
     List<FeatureFlagItemViewModel> {
 
-      return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
-        val featureFlagName = getFeatureFlagDisplayName(ephemeralFeatureFlag.id)
-        val syncStatusText = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
+    return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
 
-        FeatureFlagItemViewModel(
-          featureFlagName = featureFlagName,
-          syncStatus = syncStatusText,
-          currentValue = ephemeralFeatureFlag.currentValue,
-          syncStatusBackground = getSyncStatusBackground(syncStatusText)
-        )
-      }
-    }
-
-  private fun getFeatureFlagDisplayName(
-    id: FeatureFlagId
-  ): String {
-    return machineLocale.run {
-      when (id) {
-        FeatureFlagId.UNRECOGNIZED,
-        FeatureFlagId.FEATURE_FLAG_ID_UNSPECIFIED -> "Unknown Feature"
-        else -> id.name.toMachineLowerCase()
-          .split("_")
-          .joinToString(" ") { it.capitalizeForMachines() }
-      }
-    }
-  }
-
-  private fun getSyncStatusText(syncStatus: SyncStatus): String {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> "Unknown"
-      SyncStatus.NOT_SYNCED_FROM_SERVER -> "Default"
-      SyncStatus.SYNCED_FROM_SERVER -> "Server"
-      else -> "Unknown"
-    }
-  }
-
-  /**
-   * Returns the background drawable resource ID corresponding to the provided sync status string.
-   *
-   * @param syncStatus the string representation of the sync status for which to retrieve the background.
-   * @return the drawable resource ID to use as the background for this sync status.
-   */
-  fun getSyncStatusBackground(syncStatus: String): Int {
-    return when (syncStatus) {
-      "Server" -> R.drawable.rounded_rec_large_border_radius_green
-      "Overriden" -> R.drawable.rounded_rect_large_border_radius_yellow
-      "Default" -> R.drawable.rounded_rect_large_border_radius
-      else -> R.drawable.rounded_rec_large_border_radius_green
+      FeatureFlagItemViewModel(
+        featureFlagId = ephemeralFeatureFlag.id,
+        currentValue = ephemeralFeatureFlag.currentValue,
+        syncStatus = ephemeralFeatureFlag.syncStatus,
+        machineLocale = machineLocale,
+        resourceHandler = resourceHandler
+      )
     }
   }
 }

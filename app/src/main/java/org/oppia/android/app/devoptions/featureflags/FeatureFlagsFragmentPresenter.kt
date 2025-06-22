@@ -80,17 +80,14 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     model: FeatureFlagItemViewModel
   ) {
     binding.viewModel = model
-    val index = featureFlagsViewModel.featureFlagList.value?.indexOf(model)!!
-    if (featureFlagStates.size != featureFlagsViewModel.featureFlagList.value?.size)
-      featureFlagStates.add(model.currentValue)
-
-    binding.isEnabled = featureFlagStates[index]
-
-    binding.featureFlagSwitch.setOnCheckedChangeListener { _, isChecked ->
-      featureFlagStates[index] = isChecked
+//    val index = featureFlagsViewModel.featureFlagList.value?.indexOf(model)!!
+//    if (featureFlagStates.size != featureFlagsViewModel.featureFlagList.value?.size)
+//      featureFlagStates.add(model.currentValue)
+//
+//    binding.isEnabled = featureFlagStates[index]
+//
+//    binding.featureFlagSwitch.setOnCheckedChangeListener { _, isChecked ->
+//      featureFlagStates[index] = isChecked
+//    }
     }
-    binding.syncStatusValueTextView.setBackgroundResource(
-      featureFlagsViewModel.getSyncStatusBackground(model.syncStatus)
-    )
-  }
 }

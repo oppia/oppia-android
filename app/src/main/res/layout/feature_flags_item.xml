@@ -7,9 +7,6 @@
         <variable
             name="viewModel"
             type="org.oppia.android.app.devoptions.featureflags.FeatureFlagItemViewModel" />
-        <variable
-            name="isEnabled"
-            type="Boolean" />
     </data>
 
     <LinearLayout
@@ -31,7 +28,7 @@
                 style="@style/Subtitle1ViewStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.featureFlagName}"
+                android:text="@{viewModel.featureFlagDisplayName}"
                 android:textStyle="bold"
                 android:textColor="@color/component_color_shared_primary_dark_text_color"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -48,7 +45,7 @@
                 android:focusable="false"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
-                android:checked="@{isEnabled}"
+                android:checked="@{viewModel.isEnabled}"
                 android:theme="@style/OppiaSwitchCompatTheme"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -92,12 +89,14 @@
                 android:paddingTop="6dp"
                 android:paddingEnd="20dp"
                 android:paddingBottom="6dp"
-                android:text="@{viewModel.syncStatus}"
+                android:text="@{viewModel.syncStatusDisplayText}"
                 android:textColor="@color/component_color_shared_secondary_4_text_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
