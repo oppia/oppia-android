@@ -5467,7 +5467,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongRatioAnswer_retainStateOnConfigurationChange() { //subha
+  fun testFlashback_onSubmitWrongRatioAnswer_retainStateOnConfigurationChange() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
