@@ -5,29 +5,29 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
-/** The presenter for [PlatformParameterActivity]. */
+/** The presenter for [PlatformParametersActivity]. */
 @ActivityScope
-class PlatformParameterActivityPresenter @Inject constructor(
+class PlatformParametersActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
 
-  /** Called when [PlatformParameterActivity] is created. Handles UI for the activity. */
+  /** Called when [PlatformParametersActivity] is created. Handles UI for the activity. */
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     activity.setContentView(R.layout.feature_flag_activity)
 
-    if (getPlatformParameterFragment() == null) {
-      val PlatformParameterFragment = PlatformParameterFragment.newInstance()
+    if (getPlatformParametersFragment() == null) {
+      val PlatformParametersFragment = PlatformParametersFragment.newInstance()
       activity.supportFragmentManager.beginTransaction().add(
         R.id.feature_flag_container,
-        PlatformParameterFragment
+        PlatformParametersFragment
       ).commitNow()
     }
   }
 
-  private fun getPlatformParameterFragment(): PlatformParameterFragment? {
+  private fun getPlatformParametersFragment(): PlatformParametersFragment? {
     return activity.supportFragmentManager
-      .findFragmentById(R.id.feature_flag_container) as PlatformParameterFragment?
+      .findFragmentById(R.id.feature_flag_container) as PlatformParametersFragment?
   }
 }

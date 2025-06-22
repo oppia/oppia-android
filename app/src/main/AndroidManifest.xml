@@ -312,8 +312,8 @@
         android:name=".app.devoptions.featureflags.testing.FeatureFlagsTestActivity"
         android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
-        android:name=".app.devoptions.platformparameters.PlatformParameterActivity"
-        android:label="@string/platform_parameter_activity_title"
+        android:name=".app.devoptions.platformparameters.PlatformParametersActivity"
+        android:label="@string/platform_parameters_activity_title"
         android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
         android:name=".app.devoptions.platformparameters.testing.PlatformParameterTestActivity"
