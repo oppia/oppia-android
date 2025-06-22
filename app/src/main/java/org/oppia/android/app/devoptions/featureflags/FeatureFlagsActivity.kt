@@ -12,9 +12,9 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity for feature flag dashboard of the app. */
-class FeatureFlagActivity : InjectableAutoLocalizedAppCompatActivity() {
+class FeatureFlagsActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
-  lateinit var featureFlagActivityPresenter: FeatureFlagActivityPresenter
+  lateinit var featureFlagsActivityPresenter: FeatureFlagsActivityPresenter
 
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
@@ -22,14 +22,14 @@ class FeatureFlagActivity : InjectableAutoLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    featureFlagActivityPresenter.handleOnCreate()
-    title = resourceHandler.getStringInLocale(R.string.feature_flag_activity_title)
+    featureFlagsActivityPresenter.handleOnCreate()
+    title = resourceHandler.getStringInLocale(R.string.feature_flags_activity_title)
   }
 
   companion object {
-    /** Returns [Intent] for [FeatureFlagActivity]. */
+    /** Returns [Intent] for [FeatureFlagsActivity]. */
     fun createFeatureFlagActivityIntent(context: Context): Intent {
-      return Intent(context, FeatureFlagActivity::class.java).apply {
+      return Intent(context, FeatureFlagsActivity::class.java).apply {
         decorateWithScreenName(FEATURE_FLAG_ACTIVITY)
       }
     }

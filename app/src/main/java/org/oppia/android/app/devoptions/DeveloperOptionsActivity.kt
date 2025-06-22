@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -79,6 +79,12 @@ class DeveloperOptionsActivity :
     startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
   }
 
+  override fun routeToFeatureFlags() {
+    startActivity(
+      FeatureFlagsActivity.createFeatureFlagActivityIntent(this)
+    )
+  }
+
   override fun routeToMathExpressionParserTest() {
     startActivity(MathExpressionParserActivity.createIntent(this))
   }
@@ -97,11 +103,5 @@ class DeveloperOptionsActivity :
 
   override fun forceCrash() {
     developerOptionsActivityPresenter.forceCrash()
-  }
-
-  override fun routeToFeatureFlags() {
-    startActivity(
-      FeatureFlagActivity.createFeatureFlagActivityIntent(this)
-    )
   }
 }
