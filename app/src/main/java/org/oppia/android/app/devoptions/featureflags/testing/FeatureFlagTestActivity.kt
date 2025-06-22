@@ -3,10 +3,10 @@ package org.oppia.android.app.devoptions.featureflags.testing
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagFragment
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.ui.R
 
-/** Activity for testing [FeatureFlagFragment]. */
+/** Activity for testing [FeatureFlagsFragment]. */
 class FeatureFlagTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,18 +14,18 @@ class FeatureFlagTestActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    setContentView(R.layout.feature_flag_activity)
+    setContentView(R.layout.feature_flags_activity)
     if (getFeatureFlagFragment() == null) {
-      val FeatureFlagFragment = FeatureFlagFragment.newInstance()
+      val FeatureFlagsFragment = FeatureFlagsFragment.newInstance()
       supportFragmentManager.beginTransaction().add(
-        R.id.feature_flag_container,
-        FeatureFlagFragment
+        R.id.feature_flags_container,
+        FeatureFlagsFragment
       ).commitNow()
     }
   }
 
-  private fun getFeatureFlagFragment(): FeatureFlagFragment? {
+  private fun getFeatureFlagFragment(): FeatureFlagsFragment? {
     return supportFragmentManager
-      .findFragmentById(R.id.feature_flag_container) as FeatureFlagFragment?
+      .findFragmentById(R.id.feature_flags_container) as FeatureFlagsFragment?
   }
 }
