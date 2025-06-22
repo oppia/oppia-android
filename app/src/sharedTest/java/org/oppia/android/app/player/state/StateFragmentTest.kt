@@ -5399,21 +5399,33 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_flashbackButtonIsVisible() {
-    setUpTestWithFlashbackFeatureOn()
-    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+  fun testStateFragment_inputRatio_wrongAnswerSubmitted_continueButtonIsVisible() {
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
-      playThroughToMultipleChoiceStateWithFlashbackDest()
+      navigateToPrototypeRatioInputState()
 
-      // Select an incorrect answer in a multiple-choice interaction and submit.
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.selection_interaction_recyclerview,
-          position = 1,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
-      ).perform(click())
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Continue button is displayed for redirection.
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_flashbackButtonIsVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
       clickSubmitAnswerButton()
 
       // Verify submit button is visible.
@@ -5430,21 +5442,15 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFragment_flashbackFeatureOff_onSubmitWrongMultipleChoiceAnswer_flashbackButtonIsNotVisible() { // ktlint-disable max-line-length
+  fun testFragment_flashbackFeatureOff_onSubmitWrongRatioAnswer_flashbackButtonIsNotVisible() {
     setUpTestWithFlashbackFeatureOff()
-    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
-      playThroughToMultipleChoiceStateWithFlashbackDest()
+      navigateToPrototypeRatioInputState()
 
-      // Select an incorrect answer in a multiple-choice interaction and submit.
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.selection_interaction_recyclerview,
-          position = 1,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
-      ).perform(click())
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
       clickSubmitAnswerButton()
 
       // Verify continue button is visible.
@@ -5461,21 +5467,15 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_retainStateOnConfigurationChange() {
+  fun testFlashback_onSubmitWrongRatioAnswer_retainStateOnConfigurationChange() { //subha
     setUpTestWithFlashbackFeatureOn()
-    launchForExploration(RATIOS_EXPLORATION_ID_0, shouldSavePartialProgress = false).use {
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
 
-      playThroughToMultipleChoiceStateWithFlashbackDest()
+      navigateToPrototypeRatioInputState()
 
-      // Select an incorrect answer in a multiple-choice interaction and submit.
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.selection_interaction_recyclerview,
-          position = 1,
-          targetViewId = R.id.multiple_choice_content_text_view
-        )
-      ).perform(click())
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
       clickSubmitAnswerButton()
 
       rotateToLandscape()
@@ -5493,22 +5493,13 @@ class StateFragmentTest {
     }
   }
 
-  private fun playThroughToMultipleChoiceStateWithFlashbackDest() {
-    playThroughRatioExplorationState1()
-    playThroughRatioExplorationState2()
-    playThroughRatioExplorationState3()
-    playThroughRatioExplorationState4()
-    playThroughRatioExplorationState5()
-    playThroughRatioExplorationState6()
-    playThroughRatioExplorationState7()
-    playThroughRatioExplorationState8()
-    playThroughRatioExplorationState9()
-    playThroughRatioExplorationState10()
-    playThroughRatioExplorationState11()
-    playThroughRatioExplorationState12()
-    playThroughRatioExplorationState13()
-    playThroughRatioExplorationState14()
-    playThroughRatioExplorationState15()
+  private fun navigateToPrototypeRatioInputState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
   }
 
   private fun playThroughRatioExplorationState1() {

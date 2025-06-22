@@ -77,7 +77,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.FRACTIONS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
-import org.oppia.android.domain.topic.RATIOS_EXPLORATION_ID_0
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_13
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_2
 import org.oppia.android.domain.topic.TEST_EXPLORATION_ID_4
@@ -3293,22 +3292,25 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_returnsFlashbackAttributes() {
+  fun testFlashback_onSubmitWrongRatioInputAnswer_returnsFlashbackAttributes() {
     startPlayingNewExploration(
-      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    playThroughToMultipleChoiceStateWithFlashbackDest()
+    navigateToPrototypeRatioInputState()
+
+    val ratioExpression = RatioExpression.newBuilder().apply {
+      addAllRatioComponent(listOf(4, 7))
+    }.build()
 
     // Submit a wrong answer.
-    val result = explorationProgressController.submitAnswer(createMultipleChoiceAnswer(1))
+    val result = explorationProgressController.submitAnswer(createRatioInputAnswer(ratioExpression))
     // Verify that the answer submission was successful.
     val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
 
-    val expectedFeedback = "<p>No, that represents a ratio of orange puree to milk that is 3:1." +
-      " You want a ratio of 3:2.</p>\n\n<p>It looks like you might need a quick refresher on" +
-      " what a ratio is. Let's go back a few steps and learn from Uncle Berry again!</p>"
+    val expectedFeedback = "<p>This doesn't seem right. Let's go back and look at the previous" +
+      " question and answer to understand better.</p>"
 
     assertThat(answerOutcome.labelledAsCorrectAnswer).isEqualTo(false)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
@@ -3316,16 +3318,20 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_returnsPendingState() {
+  fun testFlashback_onSubmitWrongRatioInputAnswer_returnsPendingState() {
     startPlayingNewExploration(
-      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    playThroughToMultipleChoiceStateWithFlashbackDest()
+    navigateToPrototypeRatioInputState()
 
     // Submit a wrong answer.
-    val ephemeralState = submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
 
     // Verify that the current state updates. It should stay pending, and the wrong answer should be
     // appended.
@@ -3334,16 +3340,20 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_onSubmitWrongMultipleChoiceAnswer_verifyFlashbackStateNameIsAdded() {
+  fun testFlashback_onSubmitWrongRatioInputAnswer_verifyFlashbackStateNameIsAdded() {
     startPlayingNewExploration(
-      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    playThroughToMultipleChoiceStateWithFlashbackDest()
+    navigateToPrototypeRatioInputState()
 
     // Submit a wrong answer.
-    val ephemeralState = submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
     // Access the first answer and response in the list.
     val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
 
@@ -3351,141 +3361,50 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
-      .isEqualTo("Ratio shows relative relationship 2")
+      .isEqualTo("Fractions")
   }
 
   @Test
-  fun testController_enterTwoWrongAnswers_destinationStatePreviouslyVisited_noHintIsVisible() {
+  fun testFlashback_submitWrongRatioInputAnswer_resumeExploration_verifyCorrectPendingState() {
     startPlayingNewExploration(
-      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
 
     waitForGetCurrentStateSuccessfulLoad()
-    playThroughToMultipleChoiceStateWithFlashbackDest()
-
-    // Submit 2 wrong answers.
-    submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
-    val ephemeralState = submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
-
-    // Verify that the helpIndex.IndexTypeCase is equal to INDEX_TYPE_NOT_SET because no hint
-    // is visible yet.
-    assertThat(ephemeralState.pendingState.helpIndex.indexTypeCase)
-      .isEqualTo(HelpIndex.IndexTypeCase.INDEXTYPE_NOT_SET)
-  }
-
-  @Test
-  fun testFlashback_submitWrongMultipleChoiceAnswer_resumeExploration_verifyCorrectPendingState() {
-    startPlayingNewExploration(
-      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0
-    )
-
-    waitForGetCurrentStateSuccessfulLoad()
-    playThroughToMultipleChoiceStateWithFlashbackDest()
+    navigateToPrototypeRatioInputState()
 
     // Submit a wrong answer.
-    submitAnswer(createMultipleChoiceAnswer(choiceIndex = 1))
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
     endExploration()
 
-    val checkpoint = retrieveExplorationCheckpoint(RATIOS_EXPLORATION_ID_0)
+    val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
     resumeExploration(
-      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, RATIOS_EXPLORATION_ID_0, checkpoint
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint
     )
     val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
     // Access the first answer and response in the list.
     val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
 
     assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(ephemeralState.state.name).isEqualTo("Practice 6")
+    assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
     // Verify that there is exactly one wrong answer.
     assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
-      .isEqualTo("Ratio shows relative relationship 2")
+      .isEqualTo("Fractions")
   }
 
-  private fun playThroughToMultipleChoiceStateWithFlashbackDest() {
-    playThroughRatioExplorationState1()
-    playThroughRatioExplorationState2()
-    playThroughRatioExplorationState3()
-    playThroughRatioExplorationState4()
-    playThroughRatioExplorationState5()
-    playThroughRatioExplorationState6()
-    playThroughRatioExplorationState7()
-    playThroughRatioExplorationState8()
-    playThroughRatioExplorationState9()
-    playThroughRatioExplorationState10()
-    playThroughRatioExplorationState11()
-    playThroughRatioExplorationState12()
-    playThroughRatioExplorationState13()
-    playThroughRatioExplorationState14()
-    playThroughRatioExplorationState15()
-  }
-
-  private fun playThroughRatioExplorationState1(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState2(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState3(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState4(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState5(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState6(): EphemeralState {
-    submitTextInputAnswer("2 to 5")
-    return moveToNextState()
-  }
-
-  private fun playThroughRatioExplorationState7(): EphemeralState {
-    submitTextInputAnswer("3 to 1")
-    return moveToNextState()
-  }
-  private fun playThroughRatioExplorationState8(): EphemeralState {
-    submitTextInputAnswer("2:3")
-    return moveToNextState()
-  }
-
-  private fun playThroughRatioExplorationState9(): EphemeralState {
-    submitTextInputAnswer("5:2")
-    return moveToNextState()
-  }
-
-  private fun playThroughRatioExplorationState10(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState11(): EphemeralState {
-    submitMultipleChoiceAnswer(2)
-    return moveToNextState()
-  }
-
-  private fun playThroughRatioExplorationState12(): EphemeralState {
-    return submitContinueButtonAnswerAndContinue()
-  }
-
-  private fun playThroughRatioExplorationState13(): EphemeralState {
-    submitTextInputAnswer("1:4")
-    return moveToNextState()
-  }
-
-  private fun playThroughRatioExplorationState14(): EphemeralState {
-    submitTextInputAnswer("1:4")
-    return moveToNextState()
-  }
-
-  private fun playThroughRatioExplorationState15(): EphemeralState {
-    submitTextInputAnswer("2:1")
-    return moveToNextState()
+  private fun navigateToPrototypeRatioInputState() {
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    playThroughPrototypeState6AndMoveToNextState()
   }
 
   private fun getAggregateTopicTime(): Long {
