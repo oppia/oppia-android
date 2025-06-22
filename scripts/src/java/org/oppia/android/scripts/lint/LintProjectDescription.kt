@@ -226,15 +226,15 @@ private class ModuleConfigurationBuilder(
     isLibrary: Boolean
   ): ModuleConfig {
     val sourceCollector = SourceFileCollector(repoRoot, module)
-    val sourceFiles = sourceCollector.collectSourceFiles()
-    val testFiles = sourceFiles.filter { it.endsWith("Test.kt") }
+    val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
+      .partition { it.endsWith("Test.kt") }
 
     return ModuleConfig(
       name = module.moduleName,
       isAndroid = true,
       isLibrary = isLibrary,
       isTest = module == ModuleName.TESTING,
-      srcFiles = sourceFiles,
+      srcFiles = srcFiles,
       testFiles = testFiles,
       resourceDirs = sourceCollector.collectResourceDirectories(),
       manifestFile = findManifestFile(module),
