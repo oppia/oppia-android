@@ -34,7 +34,7 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains(
-      "Expected: bazel run //scripts:android_lint_check -- <path_to_repository_root>"
+      "<path_to_repository_root argument> is required: \$(pwd)"
     )
   }
 
@@ -63,18 +63,11 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testPrepareLintArguments_includesRequiredFlags() {
-    val lintRunner = AndroidLintRunner()
     val reportPath = "/path/to/report.xml"
     val projectPath = "/path/to/project.xml"
+    val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
-    val method = AndroidLintRunner::class.java.getDeclaredMethod(
-      "prepareLintArguments",
-      String::class.java,
-      String::class.java
-    )
-    method.isAccessible = true
-
-    val result = method.invoke(lintRunner, reportPath, projectPath) as Array<*>
+    val result = lintRunner.prepareLintArguments()
 
     assertThat(result).asList().containsAtLeast(
       "-Wall",
