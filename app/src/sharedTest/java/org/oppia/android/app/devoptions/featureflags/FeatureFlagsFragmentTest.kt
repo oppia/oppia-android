@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -16,6 +17,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.Component
+import dagger.Module
+import dagger.Provides
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -70,7 +73,7 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
+import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -99,6 +102,7 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import testing.src.main.java.org.oppia.android.testing.platformparameter.FakePlatformParameterDebugController
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -119,7 +123,7 @@ class FeatureFlagsFragmentTest {
   lateinit var context: Context
 
   @Inject
-  lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+  lateinit var platformParameterDebugController: PlatformParameterDebugController
 
   @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
@@ -314,6 +318,7 @@ class FeatureFlagsFragmentTest {
       )
     }
   }
+
   @Test
   fun testFeatureFlagsFragment_syncStatusIsCorrectlyDisplayed() {
     launch(FeatureFlagsTestActivity::class.java).use {
@@ -451,6 +456,7 @@ class FeatureFlagsFragmentTest {
       )
     ).check(matches(withText(stringToMatch)))
   }
+
   private fun verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
     itemPosition: Int,
     stringToMatch: String
@@ -472,6 +478,7 @@ class FeatureFlagsFragmentTest {
       else -> "Unknown"
     }
   }
+
   @After
   fun tearDown() {
     testCoroutineDispatchers.unregisterIdlingResource()
@@ -482,8 +489,18 @@ class FeatureFlagsFragmentTest {
   }
 
   private fun getFeatureFlagAtPosition(position: Int): EphemeralFeatureFlag {
-    val provider = platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    val provider = platformParameterDebugController.loadEphemeralFeatureFlags()
     return monitorFactory.waitForNextSuccessfulResult(provider)[position]
+  }
+
+  @Module
+  class TestModule {
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterDebugController(
+      impl: FakePlatformParameterDebugController
+    ): PlatformParameterDebugController = impl
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -549,7 +566,7 @@ class FeatureFlagsFragmentTest {
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
       WorkManagerConfigurationModule::class,
-      TestPlatformParameterModule::class
+      TestModule::class
     ]
   )
   /** [ApplicationComponent] for [FeatureFlagsFragmentTest]. */
