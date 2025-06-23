@@ -954,12 +954,12 @@ message StatePlayerRecyclerViewAssemblerState {
   bool has_previous_responses_expanded = 1;
 }
 
-// Arguments that are saved on configuration changes in FeatureFlagsFragment.
-message FeatureFlagsFragmentArgument {
-  // Map of current feature flag states.
-  map<string, bool> feature_flag_states = 1;
+// Arguments that are saved on configuration changes in FeatureFlagFragment.
+message FeatureFlagFragmentArgument {
+  // List of current feature flag states.
+  repeated bool feature_flag_states = 1;
 }
 
-message PlatformParametersFragmentArgument {
+message PlatformParameterFragmentArgument {
   repeated PlatformParameterValue platform_parameter_states = 1;
 }

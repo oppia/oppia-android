@@ -32,7 +32,8 @@ class DeveloperOptionsActivity :
   RouteToViewEventLogsListener,
   RouteToForceNetworkTypeListener,
   RouteToMathExpressionParserTestListener,
-  RouteToFeatureFlagsListener {
+  RouteToFeatureFlagsListener,
+  RouteToPlatformParametersListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -103,6 +104,12 @@ class DeveloperOptionsActivity :
   override fun routeToFeatureFlags() {
     startActivity(
       FeatureFlagActivity.createFeatureFlagActivityIntent(this)
+    )
+  }
+
+  override fun routeToPlatformParameters() {
+    startActivity(
+      PlatformParameterActivity.createPlatformParameterActivityIntent(this)
     )
   }
 }

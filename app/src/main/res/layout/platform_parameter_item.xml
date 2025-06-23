@@ -27,7 +27,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/component_color_shared_screen_tertiary_background_color"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/platform_parameter_app_bar_layout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/platform_parameter_constraint_layout"
@@ -155,6 +159,50 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/component_color_shared_divider_color" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/reset_server_defaults_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="64dp"
+            android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:id="@+id/reset_server_defaults_text_view"
+                style="@style/Subtitle1ViewStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/feature_flag_reset_message"
+                android:textColor="@color/component_color_shared_primary_dark_text_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/reset_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/reset_button"
+                style="@style/StateButtonActive"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginVertical="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/feature_flag_reset_button_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/reset_server_defaults_text_view"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/component_color_shared_divider_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
 </layout>

@@ -3,10 +3,10 @@ package org.oppia.android.app.devoptions.platformparameters.testing
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
+import org.oppia.android.app.devoptions.platformparameters.PlatformParameterFragment
 import org.oppia.android.app.ui.R
 
-/** Activity for testing [PlatformParametersFragment]. */
+/** Activity for testing [PlatformParameterFragment]. */
 class PlatformParameterTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,17 +15,17 @@ class PlatformParameterTestActivity : InjectableAutoLocalizedAppCompatActivity()
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.platform_parameter_activity)
-    if (getPlatformParametersFragment() == null) {
-      val PlatformParametersFragment = PlatformParametersFragment.newInstance()
+    if (getPlatformParameterFragment() == null) {
+      val PlatformParameterFragment = PlatformParameterFragment.newInstance()
       supportFragmentManager.beginTransaction().add(
         R.id.platform_parameter_container,
-        PlatformParametersFragment
+        PlatformParameterFragment
       ).commitNow()
     }
   }
 
-  private fun getPlatformParametersFragment(): PlatformParametersFragment? {
+  private fun getPlatformParameterFragment(): PlatformParameterFragment? {
     return supportFragmentManager
-      .findFragmentById(R.id.platform_parameter_container) as PlatformParametersFragment?
+      .findFragmentById(R.id.platform_parameter_container) as PlatformParameterFragment?
   }
 }
