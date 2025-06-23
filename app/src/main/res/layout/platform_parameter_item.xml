@@ -10,17 +10,6 @@
             name="viewModel"
             type="org.oppia.android.app.devoptions.platformparameters.PlatformParameterItemViewModel" />
 
-        <variable
-            name="isEnabled"
-            type="Boolean" />
-
-        <variable
-            name="inputValue"
-            type="String" />
-
-        <variable
-            name="isInputVisible"
-            type="Boolean" />
     </data>
 
     <LinearLayout
@@ -44,7 +33,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="70dp"
-                android:text="@{viewModel.platformParameterName}"
+                android:text="@{viewModel.platformParameterDisplayText}"
                 android:textColor="@color/component_color_shared_primary_dark_text_color"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -58,12 +47,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="4dp"
-                android:checked="@{isEnabled}"
+                android:checked="@{viewModel.isChecked}"
                 android:focusable="false"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
                 android:theme="@style/OppiaSwitchCompatTheme"
-                android:visibility="@{isInputVisible ? View.GONE : View.VISIBLE}"
+                android:visibility="@{viewModel.isInputVisible ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -72,14 +61,12 @@
                 android:id="@+id/platform_parameter_input_layout"
                 style="@style/TextInputLayout"
                 android:layout_width="70dp"
-                android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
-                android:layout_height="50dp"
+                android:layout_height="55dp"
                 android:layout_marginVertical="5dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="4dp"
-                android:padding="@dimen/space_0dp"
                 android:textAlignment="center"
-                android:visibility="@{isInputVisible ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.isInputVisible ? View.VISIBLE : View.GONE}"
                 app:errorEnabled="true"
                 app:errorIconDrawable="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -94,22 +81,16 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/space_0dp"
                     android:gravity="center"
-                    android:inputType="number"
                     android:maxLength="5"
+                    android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
                     android:minHeight="56dp"
-                    android:text="@{inputValue}"
+                    android:text="@{viewModel.inputValue}"
                     android:textAlignment="center"
                     android:textColor="@color/component_color_shared_primary_dark_text_color"
-                    android:textColorHint="#A0A0A0"
-                    android:textSize="16sp" />
+                    android:textSize="14sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/component_color_shared_divider_color" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sync_status_constraint_layout"
@@ -142,8 +123,9 @@
                 android:paddingTop="6dp"
                 android:paddingEnd="20dp"
                 android:paddingBottom="6dp"
-                android:text="@{viewModel.syncStatus}"
+                android:text="@{viewModel.syncStatusDisplayText}"
                 android:textColor="@color/component_color_shared_secondary_4_text_color"
+                app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sync_status_text_view"

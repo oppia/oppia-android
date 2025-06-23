@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.PlatformParametersFragmentArgument
 import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.PlatformParametersFragmentArgument
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.model.PlatformParameterDefinition
 
 /** Fragment to provide functionality to view and modify feature flags of the app. */
 class PlatformParametersFragment : InjectableFragment() {
@@ -37,7 +38,7 @@ class PlatformParametersFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View? {
 
-    var platformParameterStates = ArrayList<PlatformParameterValue>()
+    var platformParameterStates : MutableList<PlatformParameterDefinition> = mutableListOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETER_FRAGMENT_ARGUMENT_STATE_KEY,

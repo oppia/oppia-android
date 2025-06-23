@@ -15,19 +15,19 @@ class PlatformParametersActivityPresenter @Inject constructor(
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    activity.setContentView(R.layout.feature_flag_activity)
+    activity.setContentView(R.layout.feature_flags_activity)
 
     if (getPlatformParametersFragment() == null) {
-      val PlatformParametersFragment = PlatformParametersFragment.newInstance()
+      val platformParametersFragment = PlatformParametersFragment.newInstance()
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.feature_flag_container,
-        PlatformParametersFragment
+        R.id.feature_flags_container,
+        platformParametersFragment
       ).commitNow()
     }
   }
 
   private fun getPlatformParametersFragment(): PlatformParametersFragment? {
     return activity.supportFragmentManager
-      .findFragmentById(R.id.feature_flag_container) as PlatformParametersFragment?
+      .findFragmentById(R.id.feature_flags_container) as? PlatformParametersFragment
   }
 }
