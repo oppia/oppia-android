@@ -25,3 +25,18 @@ kt_android_library(
         "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
+
+kt_android_library(
+    name = "fake_debug_controller",
+    testonly = True,
+    srcs = [
+        "FakePlatformParameterDebugController.kt",
+    ],
+    visibility = [
+        "//:oppia_testing_visibility",
+    ],
+    deps = [
+        "//:dagger",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:debug_module",
+    ],
+)
