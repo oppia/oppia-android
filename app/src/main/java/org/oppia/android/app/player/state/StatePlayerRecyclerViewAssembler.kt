@@ -34,6 +34,7 @@ import org.oppia.android.app.databinding.databinding.PreviousButtonItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.android.app.databinding.databinding.RatioInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ReplayButtonItemBinding
+import org.oppia.android.app.databinding.databinding.ReturnToQuestionButtonItemBinding
 import org.oppia.android.app.databinding.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.android.app.databinding.databinding.SelectionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.SubmitButtonItemBinding
@@ -73,6 +74,7 @@ import org.oppia.android.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReplayButtonViewModel
+import org.oppia.android.app.player.state.itemviewmodel.ReturnToQuestionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
@@ -282,24 +284,72 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
-      // Ensure any lingering hints are properly cleared.
-      if (playerFeatureSet.hintsAndSolutionsSupport) {
-        (fragment as ShowHintAvailabilityListener).onHintAvailable(
-          HelpIndex.getDefaultInstance(),
-          isCurrentStatePendingState = false
+
+      if(ephemeralState.flashbackState) { //subha 1.5
+        //feedback->  need help? no problem
+        //content -> it is shown outside of this block. (DONE)
+        //solution ('Solution' + explanation text) (if solution exist)
+        //submitted answer (if answer present)
+        //Return to Question button
+
+        //feedback
+        addFlashbackFeedbackItem(
+          conversationPendingItemList,
+          gcsEntityId,
+          ephemeralState.writtenTranslationContext
+        )
+
+        //content
+        addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
+
+        //solution
+        // we should create playerFeatureSet support
+//        addFlashbackSolutionItem(
+//          conversationPendingItemList,
+//          gcsEntityId,
+//          ephemeralState.state.interaction,
+//          ephemeralState.writtenTranslationContext
+//        )
+
+        // in completed state, last answerAndResponse will be always user submitted correct answer.
+        // we should create playerFeatureSet support
+        addFlashbackSubmittedAnswerItem(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          ephemeralState.completedState.answerList,
+          gcsEntityId
+        )
+
+        // return to question button
+        // introduce fun addReturnToQuestionButton
+        // we should create playerFeatureSet support
+        if (playerFeatureSet.flashbackNavigationSupport) {
+          addReturnToQuestionButton(
+            conversationPendingItemList,
+            extraInteractionPendingItemList
+          )
+        }
+
+      } else {
+        // Ensure any lingering hints are properly cleared.
+        if (playerFeatureSet.hintsAndSolutionsSupport) {
+          (fragment as ShowHintAvailabilityListener).onHintAvailable(
+            HelpIndex.getDefaultInstance(),
+            isCurrentStatePendingState = false
+          )
+        }
+
+        // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
+        // so that the UI always has the correct answer indication, even after configuration changes.
+        addPreviousAnswers(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          ephemeralState.completedState.answerList,
+          isLastAnswerCorrect = true,
+          gcsEntityId,
+          ephemeralState.writtenTranslationContext
         )
       }
-
-      // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
-      // so that the UI always has the correct answer indication, even after configuration changes.
-      addPreviousAnswers(
-        conversationPendingItemList,
-        extraInteractionPendingItemList,
-        ephemeralState.completedState.answerList,
-        isLastAnswerCorrect = true,
-        gcsEntityId,
-        ephemeralState.writtenTranslationContext
-      )
     }
 
     val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
@@ -336,17 +386,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
       maybeShowCelebrationForEndOfSession()
     }
 
-    maybeAddNavigationButtons(
-      conversationPendingItemList,
-      extraInteractionPendingItemList,
-      hasPreviousState,
-      canContinueToNextState,
-      hasGeneralContinueButton,
-      isTerminalState,
-      shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
-      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
-      flashbackStateName
-    )
+    if (!ephemeralState.flashbackState) {
+      maybeAddNavigationButtons(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        hasPreviousState,
+        canContinueToNextState,
+        hasGeneralContinueButton,
+        isTerminalState,
+        shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
+        continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
+        flashbackStateName
+      )
+    }
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
@@ -847,6 +899,63 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
   }
 
+  //subha 1.5
+  private fun addReturnToQuestionButton(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+
+    targetList += ReturnToQuestionViewModel(
+      hasConversationView,
+      isSplitView.get()!!
+    )
+  }
+
+  //subha 1.5
+  private fun addFlashbackFeedbackItem(
+    pendingItemList: MutableList<StateItemViewModel>,
+    gcsEntityId: String,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
+    if (playerFeatureSet.feedbackSupport) {
+      val flashbackFeedbackHtml = SubtitledHtml.newBuilder()
+        .setHtml("Need Help? No Problem.")
+        .build()
+
+      createFeedbackItem(flashbackFeedbackHtml, gcsEntityId, writtenTranslationContext)?.let(
+        pendingItemList::add
+      )
+    }
+  }
+
+  //subha 1.5
+  private fun addFlashbackSubmittedAnswerItem(
+    pendingItemList: MutableList<StateItemViewModel>,
+    rightPendingItemList: MutableList<StateItemViewModel>,
+    answersAndResponses: List<AnswerAndResponse>,
+    gcsEntityId: String,
+  ) {
+    answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      if (playerFeatureSet.pastAnswerSupport) {
+        if (isSplitView.get()!!) {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isAnswerCorrect = true
+          )?.let(rightPendingItemList::add)
+        } else {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isAnswerCorrect = true
+          )?.let(pendingItemList::add)
+        }
+      }
+    }
+  }
+
   private fun createBannerConfetti(confettiView: KonfettiView, config: ConfettiConfig) {
     val width = confettiView.width.toFloat()
     val height = confettiView.height.toFloat()
@@ -1218,6 +1327,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = FlashbackButtonItemBinding::inflate,
         setViewModel = FlashbackButtonItemBinding::setButtonViewModel,
         transformViewModel = { it as FlashbackButtonViewModel }
+      )
+        .registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON,
+        inflateDataBinding = ReturnToQuestionButtonItemBinding::inflate,
+        setViewModel = ReturnToQuestionButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as ReturnToQuestionViewModel }
       )
       featureSets += PlayerFeatureSet(flashbackNavigationSupport = true)
       return this

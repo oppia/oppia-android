@@ -724,7 +724,7 @@ class ExplorationProgressController @Inject constructor(
 
             // Checks whether the learner submitted a wrong answer, the expected destination name
             // was previously visited and the destination state has a solution.
-            if (enableFlashbackSupport.value && hasSolution &&
+            if (!enableFlashbackSupport.value && hasSolution && //subha
               !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
               !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
             ) {

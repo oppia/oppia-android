@@ -58,6 +58,7 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -204,6 +205,16 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  //subha 1.5
+  private fun showOrHideFlashbackToolbar(ephemeralState: EphemeralState) {
+    if (ephemeralState.flashbackState) {
+      (activity as FlashbackToolbarListener).showFlashbackToolbar()
+    } else {
+      (activity as FlashbackToolbarListener).hideFlashbackToolbar()
+
+    }
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
     val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
@@ -340,6 +351,7 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
+    showOrHideFlashbackToolbar(ephemeralState)
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,

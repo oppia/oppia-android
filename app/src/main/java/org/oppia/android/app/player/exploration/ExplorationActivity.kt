@@ -28,6 +28,7 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -47,7 +48,9 @@ class ExplorationActivity :
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
   BottomSheetOptionsMenuItemClickListener,
-  RequestVoiceOverIconSpotlightListener {
+  RequestVoiceOverIconSpotlightListener,
+  FlashbackToolbarListener
+{
 
   @Inject
   lateinit var explorationActivityPresenter: ExplorationActivityPresenter
@@ -210,5 +213,14 @@ class ExplorationActivity :
 
   override fun viewSolution() {
     explorationActivityPresenter.viewSolution()
+  }
+
+  //subha 1.5
+  override fun hideFlashbackToolbar() {
+    explorationActivityPresenter.hideFlashbackToolbar()
+  }
+
+  override fun showFlashbackToolbar() {
+    explorationActivityPresenter.showFlashbackToolbar()
   }
 }

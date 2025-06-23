@@ -13,4 +13,8 @@ class ExplorationViewModel @Inject constructor() : ObservableViewModel() {
 
   /** Used to change the audio button enabled status. */
   val isAudioStreamingOn = ObservableField(false)
+
+  //subha 1.5
+  /** Used to control visibility of flashback toolbar. */
+  val showFlashbackToolbar = ObservableField(false)
 }
