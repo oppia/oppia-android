@@ -5,13 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
-import org.oppia.android.app.devoptions.platformparameters.PlatformParameterActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
@@ -103,13 +103,13 @@ class DeveloperOptionsActivity :
 
   override fun routeToFeatureFlags() {
     startActivity(
-      FeatureFlagActivity.createFeatureFlagActivityIntent(this)
+      FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
     )
   }
 
   override fun routeToPlatformParameters() {
     startActivity(
-      PlatformParameterActivity.createPlatformParameterActivityIntent(this)
+      PlatformParametersActivity.createPlatformParametersActivityIntent(this)
     )
   }
 }

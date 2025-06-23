@@ -9,8 +9,8 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDe
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.completedstorylist.CompletedStoryListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsActivity
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagActivity
-import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagTestActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
+import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagsTestActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
@@ -20,8 +20,8 @@ import org.oppia.android.app.devoptions.markstoriescompleted.testing.MarkStories
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.testing.MarkTopicsCompletedTestActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
-import org.oppia.android.app.devoptions.platformparameters.PlatformParameterActivity
-import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParameterTestActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
+import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParametersTestActivity
 import org.oppia.android.app.devoptions.testing.DeveloperOptionsTestActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.devoptions.vieweventlogs.testing.ViewEventLogsTestActivity
@@ -148,10 +148,10 @@ interface ActivityComponentImpl :
   fun inject(explorationTestActivity: ExplorationTestActivity)
   fun inject(faqListActivity: FAQListActivity)
   fun inject(faqSingleActivity: FAQSingleActivity)
-  fun inject(featureFlagActivity: FeatureFlagActivity)
-  fun inject(featureFlagTestActivity: FeatureFlagTestActivity)
-  fun inject(platformParameterActivity: PlatformParameterActivity)
-  fun inject(platformParameterTestActivity: PlatformParameterTestActivity)
+  fun inject(featureFlagsActivity: FeatureFlagsActivity)
+  fun inject(featureFlagsTestActivity: FeatureFlagsTestActivity)
+  fun inject(platformParametersActivity: PlatformParametersActivity)
+  fun inject(platformParametersTestActivity: PlatformParametersTestActivity)
   fun inject(forceNetworkTypeActivity: ForceNetworkTypeActivity)
   fun inject(forceNetworkTypeTestActivity: ForceNetworkTypeTestActivity)
   fun inject(fractionInputInteractionViewTestActivity: FractionInputInteractionViewTestActivity)
