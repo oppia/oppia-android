@@ -43,6 +43,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
 
 /** Tests for [PlatformParameterControllerDebugImpl]. */
 
@@ -63,6 +64,10 @@ class PlatformParameterControllerDebugImplTest {
   @Inject lateinit var platformParameterProcessState: PlatformParameterProcessState
   @Inject lateinit var cacheStoreFactory: PersistentCacheStore.Factory
 
+  @After
+  fun resetPlatformParameters() {
+    TestPlatformParameterModule.reset()
+  }
   @Test
   fun testLoadEphemeralPlatformParameters_returnsAllDefinedParameters() {
     setUpTestApplicationComponent()
