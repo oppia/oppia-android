@@ -3399,7 +3399,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_submitWrongRatioAnswer_onContinueFlashbackConfirmationDialog_returnsEphemeralStateWithFlashbackStateTrue() {
+  fun testFlashback_submitWrongRatioAnswer_onContinueFlashbackConfirmationDialog_returnsEphemeralStateWithFlashbackStateTrue() { // ktlint-disable max-line-length
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
