@@ -39,9 +39,11 @@ class FlashbackConfirmationDialogFragmentPresenter @Inject constructor(
       explorationProgressController.moveToFlashback(stateName)
       dialog.dismiss()
     }
+
     binding.notNowButton.setOnClickListener {
       dialog.dismiss()
     }
+
     return dialog
   }
 }

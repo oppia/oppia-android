@@ -334,6 +334,4 @@
   <color name="component_color_classroom_topic_list_background_color">@color/color_palette_classroom_topic_list_background_color</color>
   <color name="component_color_classroom_promoted_list_classroom_label_color">@color/color_palette_classroom_promoted_list_classroom_label_color</color>
   <color name="component_color_classroom_promoted_list_card_background_color">@color/color_palette_classroom_promoted_list_card_background_color</color>
-  <!-- Flashback Dialog Fragment -->
-  <color name="component_color_cancel_flashback_confirmation_button_text_color">@color/color_palette_flashback_not_now_button_text_color</color>
 </resources>

@@ -887,8 +887,8 @@
   <!-- FlashbackConfirmationDialogFragment -->
   <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_margin_start">20dp</dimen>
   <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_margin_end">20dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_start">22dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_end">22dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_start">24dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_end">24dp</dimen>
   <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_top">16dp</dimen>
   <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_bottom">16dp</dimen>
 
