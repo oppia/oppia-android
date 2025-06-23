@@ -703,6 +703,7 @@
   <string name="arabic_language_display_name_content_description">Arabic</string>
 
   <!--  FlashbackConfirmationDialogFragment -->
+  <string name="flashback_confirmation_dialog_continue_button_text">Continue</string>
   <string name="flashback_confirmation_dialog_not_now_text">Not now</string>
   <string name="flashback_confirmation_dialog_title_text">Need help? No problem.</string>
   <string name="flashback_confirmation_dialog_message_text">Review the previous question\'s solution</string>

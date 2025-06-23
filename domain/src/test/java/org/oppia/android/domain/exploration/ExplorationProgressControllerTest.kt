@@ -3399,7 +3399,7 @@ class ExplorationProgressControllerTest {
   }
 
   @Test
-  fun testFlashback_submitWrongRatioAnswer_onContinueFlashbackConfirmationDialog_returnsEphemeralStateWithFlashbackStateTrue() { // ktlint-disable max-line-length
+  fun testFlashback_submitWrongAnswer_moveToFlashbackState_returnsEphemeralStateWithFlashbackStateTrue() { // ktlint-disable max-line-length
     startPlayingNewExploration(
       TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
     )
@@ -3418,7 +3418,7 @@ class ExplorationProgressControllerTest {
 
     // Trigger flashback dialog and click Continue button.
     val expectedEphemeralState =
-      clickContinueOnFlashbackConfirmationDialog(answerAndResponse.stateNameToRevisit)
+      moveToFlashbackState(answerAndResponse.stateNameToRevisit)
 
     // Verify returned EphemeralState is a completed state.
     assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
@@ -3435,7 +3435,7 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState6AndMoveToNextState()
   }
 
-  private fun clickContinueOnFlashbackConfirmationDialog(stateName: String): EphemeralState {
+  private fun moveToFlashbackState(stateName: String): EphemeralState {
     monitorFactory.waitForNextSuccessfulResult(
       explorationProgressController.moveToFlashback(stateName)
     )
