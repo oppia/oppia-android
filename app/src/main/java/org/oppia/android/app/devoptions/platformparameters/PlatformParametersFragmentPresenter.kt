@@ -42,7 +42,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.platformParameterToolbar.setNavigationOnClickListener {
+    binding.platformParametersToolbar.setNavigationOnClickListener {
       onBackNavigation()
     }
     if (platformParameterStates.isNotEmpty()) {
@@ -51,7 +51,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     oppiaLogger.d("PlatformParametersFragment", platformParameterStates.toString())
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
-    binding.platformParameterRecyclerView.apply {
+    binding.platformParametersRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = bindingAdapter
     }
@@ -79,47 +79,47 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
-    val index = platformParametersViewModel.platformParameterList.value?.indexOf(model)!!
-    val totalSize = platformParametersViewModel.platformParameterList.value?.size
-
-    if (platformParameterStates.size != totalSize)
-      platformParameterStates.add(model.currentValue)
-
-    oppiaLogger.d(
-      "PlatformParametersFragment",
-      "Index is: $index, " +
-        "Total Size is: $totalSize, Current Value is: ${platformParameterStates[index].integer}" +
-        "${platformParameterStates[index].string} ${platformParameterStates[index].boolean}"
-    )
-    if (model.currentValue.hasBoolean()) {
-
-      binding.isEnabled = platformParameterStates[index].boolean
-      binding.platformParameterSwitch.setOnCheckedChangeListener { _, isChecked ->
-        platformParameterStates[index] = PlatformParameterValue.newBuilder()
-          .setBoolean(isChecked)
-          .build()
-      }
-      binding.isInputVisible = false
-    } else if (model.currentValue.hasInteger()) {
-      binding.inputValue = platformParameterStates[index].integer.toString()
-      binding.isInputVisible = true
-      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
-
-      binding.platformParameterInputEditText.onTextChanged { inputValue ->
-        if (!inputValue.isNullOrEmpty()) {
-          platformParameterStates[index] = PlatformParameterValue.newBuilder()
-            .setInteger(inputValue.toInt())
-            .build()
-        } else {
-          binding.platformParameterInputLayout.error = "Invalid Input"
-        }
-      }
-    } else {
-      binding.isInputVisible = true
-      binding.inputValue = platformParameterStates[index].string
-    }
-    binding.syncStatusValueTextView.setBackgroundResource(
-      platformParametersViewModel.getSyncStatusBackground(model.syncStatus)
-    )
+//    val index = platformParametersViewModel.platformParameterList.value?.indexOf(model)!!
+//    val totalSize = platformParametersViewModel.platformParameterList.value?.size
+//
+//    if (platformParameterStates.size != totalSize)
+//      platformParameterStates.add(model.currentValue)
+//
+//    oppiaLogger.d(
+//      "PlatformParametersFragment",
+//      "Index is: $index, " +
+//        "Total Size is: $totalSize, Current Value is: ${platformParameterStates[index].integer}" +
+//        "${platformParameterStates[index].string} ${platformParameterStates[index].boolean}"
+//    )
+//    if (model.currentValue.hasBoolean()) {
+//
+//      binding.isEnabled = platformParameterStates[index].boolean
+//      binding.platformParameterSwitch.setOnCheckedChangeListener { _, isChecked ->
+//        platformParameterStates[index] = PlatformParameterValue.newBuilder()
+//          .setBoolean(isChecked)
+//          .build()
+//      }
+//      binding.isInputVisible = false
+//    } else if (model.currentValue.hasInteger()) {
+//      binding.inputValue = platformParameterStates[index].integer.toString()
+//      binding.isInputVisible = true
+//      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
+//
+//      binding.platformParameterInputEditText.onTextChanged { inputValue ->
+//        if (!inputValue.isNullOrEmpty()) {
+//          platformParameterStates[index] = PlatformParameterValue.newBuilder()
+//            .setInteger(inputValue.toInt())
+//            .build()
+//        } else {
+//          binding.platformParameterInputLayout.error = "Invalid Input"
+//        }
+//      }
+//    } else {
+//      binding.isInputVisible = true
+//      binding.inputValue = platformParameterStates[index].string
+//    }
+//    binding.syncStatusValueTextView.setBackgroundResource(
+//      platformParametersViewModel.getSyncStatusBackground(model.syncStatus)
+//    )
   }
 }

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
-import org.oppia.android.app.model.ScreenName.PLATFORM_PARAMETER_ACTIVITY
+import org.oppia.android.app.model.ScreenName.PLATFORM_PARAMETERS_ACTIVITY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
@@ -23,14 +23,14 @@ class PlatformParametersActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     PlatformParametersActivityPresenter.handleOnCreate()
-    title = resourceHandler.getStringInLocale(R.string.feature_flags_activity_title)
+    title = resourceHandler.getStringInLocale(R.string.platform_parameters_activity_title)
   }
 
   companion object {
     /** Returns [Intent] for [PlatformParametersActivity]. */
     fun createPlatformParametersActivityIntent(context: Context): Intent {
       return Intent(context, PlatformParametersActivity::class.java).apply {
-        decorateWithScreenName(PLATFORM_PARAMETER_ACTIVITY)
+        decorateWithScreenName(PLATFORM_PARAMETERS_ACTIVITY)
       }
     }
   }
