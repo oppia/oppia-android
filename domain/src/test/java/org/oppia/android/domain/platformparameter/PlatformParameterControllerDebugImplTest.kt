@@ -15,6 +15,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId
@@ -43,7 +44,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
 
 /** Tests for [PlatformParameterControllerDebugImpl]. */
 
@@ -68,6 +68,7 @@ class PlatformParameterControllerDebugImplTest {
   fun resetPlatformParameters() {
     TestPlatformParameterModule.reset()
   }
+
   @Test
   fun testLoadEphemeralPlatformParameters_returnsAllDefinedParameters() {
     setUpTestApplicationComponent()
@@ -328,6 +329,16 @@ class PlatformParameterControllerDebugImplTest {
     assertThat(featureFlagValueFromProcessState).isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
   }
 
+  @Test
+  fun testDownloadRemoteParameters_returnsAsyncResultSuccess() {
+    setUpTestApplicationComponent()
+
+    val downloadProvider = platformParameterControllerDebugImpl.downloadRemoteParameters()
+    val downloadMonitor = monitorFactory.createMonitor(downloadProvider)
+    val downloadResult = downloadMonitor.waitForNextResult()
+    assertThat(downloadResult).isInstanceOf(AsyncResult.Success::class.java)
+  }
+
   // Adds test remote feature flag to DB for MULTIPLE_CLASSROOMS.
   private fun addTestRemoteFeatureFlagToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(
@@ -480,6 +491,7 @@ class PlatformParameterControllerDebugImplTest {
 
     fun getCacheStoreFactory(): PersistentCacheStore.Factory
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
+
     @BackgroundDispatcher
     fun getBackgroundDispatcher(): CoroutineDispatcher
     fun inject(platformParameterControllerTest: PlatformParameterControllerDebugImplTest)

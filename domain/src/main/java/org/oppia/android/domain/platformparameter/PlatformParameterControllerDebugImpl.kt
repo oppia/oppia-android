@@ -37,7 +37,11 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
-    return platformParameterControllerProdImpl.downloadRemoteParameters()
+    return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
+      // TODO(#5835): Finish implementing forcing remote parameter downloads.
+
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+    }
   }
 
   override fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
@@ -152,6 +156,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private companion object {
     private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
       "load_ephemeral_platform_parameters"
+    private const val DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID = "download_remote_parameters"
     private const val LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID = "load_ephemeral_feature_flags"
     private const val GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID =
       "get_parameter_initialization_status"
