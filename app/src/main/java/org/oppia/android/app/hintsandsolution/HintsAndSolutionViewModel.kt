@@ -31,7 +31,8 @@ class HintsAndSolutionViewModel private constructor(
   private val translationController: TranslationController,
   private val solutionViewModelFactory: SolutionViewModel.Factory,
   private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
-  private val consoleLogger: ConsoleLogger
+  private val consoleLogger: ConsoleLogger,
+  private val explorationId: String
 ) : ObservableViewModel() {
   private val hintList by lazy { helpIndex.dropLastUnavailable(state.interaction.hintList) }
   private val solution by lazy {
@@ -89,8 +90,8 @@ class HintsAndSolutionViewModel private constructor(
     )
   }
 
-  private fun createSolutionViewModel(solution: Solution): SolutionViewModel {
-    return solutionViewModelFactory.create(
+  private fun createSolutionViewModel(solution: Solution): HintsDialogSolutionViewModel {
+    val coreViewModel = solutionViewModelFactory.create(
       solutionSummary = translationController.extractString(
         solution.explanation,
         writtenTranslationContext
@@ -99,8 +100,11 @@ class HintsAndSolutionViewModel private constructor(
       isSolutionExclusive = solution.answerIsExclusive,
       correctAnswer = solution.correctAnswer,
       interaction = state.interaction,
-      writtenTranslationContext = writtenTranslationContext
+      writtenTranslationContext = writtenTranslationContext,
+      explorationId = explorationId,
+      isFlashback = false
     )
+    return solutionViewModelFactory.createHintsDialogSolutionViewModel(coreViewModel)
   }
 
   /** Application-injectable factory for creating [HintsAndSolutionViewModel]s (see [create]). */
@@ -119,7 +123,8 @@ class HintsAndSolutionViewModel private constructor(
     fun create(
       state: State,
       helpIndex: HelpIndex,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      explorationId: String
     ): HintsAndSolutionViewModel {
       return HintsAndSolutionViewModel(
         state,
@@ -129,7 +134,8 @@ class HintsAndSolutionViewModel private constructor(
         translationController,
         solutionViewModelFactory,
         conceptCardTagHandlerFactory,
-        consoleLogger
+        consoleLogger,
+        explorationId
       )
     }
   }

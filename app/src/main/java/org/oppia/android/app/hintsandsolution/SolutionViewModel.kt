@@ -57,8 +57,10 @@ class SolutionViewModel private constructor(
   private val interaction: Interaction,
   private val writtenTranslationContext: WrittenTranslationContext,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
-  private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
-) : HintsAndSolutionItemViewModel() {
+  private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+  val explorationId: String,
+  val isFlashback: Boolean
+) {
   /**
    * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
    * of the original summary.
@@ -249,7 +251,9 @@ class SolutionViewModel private constructor(
       isSolutionRevealed: ObservableBoolean,
       isSolutionExclusive: Boolean,
       interaction: Interaction,
-      writtenTranslationContext: WrittenTranslationContext
+      writtenTranslationContext: WrittenTranslationContext,
+      explorationId: String,
+      isFlashback: Boolean
     ): SolutionViewModel {
       return SolutionViewModel(
         solutionSummary,
@@ -259,8 +263,18 @@ class SolutionViewModel private constructor(
         interaction,
         writtenTranslationContext,
         appLanguageResourceHandler,
-        mathExpressionAccessibilityUtil
+        mathExpressionAccessibilityUtil,
+        explorationId,
+        isFlashback
       )
+    }
+
+    fun createHintsDialogSolutionViewModel(core: SolutionViewModel): HintsDialogSolutionViewModel {
+      return HintsDialogSolutionViewModel(core)
+    }
+
+    fun createStateSolutionViewModel(core: SolutionViewModel): StateSolutionViewModel {
+      return StateSolutionViewModel(core)
     }
   }
 }
