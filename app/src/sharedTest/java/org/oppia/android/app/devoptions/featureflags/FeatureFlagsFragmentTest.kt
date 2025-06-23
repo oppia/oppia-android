@@ -9,7 +9,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -34,7 +33,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagTestActivity
+import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagsTestActivity
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -136,7 +135,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_allFeatureFlagsAreCorrectlyDisplayed() {
-    launch(FeatureFlagTestActivity::class.java).use {
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 0)
@@ -227,7 +226,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_configChange_allFeatureFlagsAreCorrectlyDisplayed() {
-    launch(FeatureFlagTestActivity::class.java).use {
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
       scrollToPosition(position = 0)
@@ -317,7 +316,7 @@ class FeatureFlagsFragmentTest {
   }
   @Test
   fun testFeatureFlagsFragment_syncStatusIsCorrectlyDisplayed() {
-    launch(FeatureFlagTestActivity::class.java).use {
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 0)
@@ -408,7 +407,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_overrideFeatureFlag_configChange_changePersists() {
-    launch(FeatureFlagTestActivity::class.java).use {
+    launch(FeatureFlagsTestActivity::class.java).use {
       scrollToPosition(position = 0)
 
       val initialValue = getFeatureFlagAtPosition(position = 0).currentValue
