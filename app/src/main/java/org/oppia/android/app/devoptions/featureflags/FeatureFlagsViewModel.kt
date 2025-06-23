@@ -29,6 +29,10 @@ class FeatureFlagsViewModel @Inject constructor(
       ::processEphemeralFlagResult
     )
   }
+
+  /** LiveData that contains a list of [FeatureFlagItemViewModel] which is used to populate the
+   * recycler view in [FeatureFlagsFragment].
+   */
   val featureFlagList: LiveData<List<FeatureFlagItemViewModel>> by lazy {
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }

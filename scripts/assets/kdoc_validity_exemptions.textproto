@@ -10,6 +10,7 @@ exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/Develope
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsModule.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsStarter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsItemViewModel.kt"
+exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagItemViewModel.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedActivityPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedFragmentPresenter.kt"
 exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt"
