@@ -7,7 +7,7 @@ import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.ui.R
 
 /** Activity for testing [FeatureFlagsFragment]. */
-class FeatureFlagTestActivity : InjectableAutoLocalizedAppCompatActivity() {
+class FeatureFlagsTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
