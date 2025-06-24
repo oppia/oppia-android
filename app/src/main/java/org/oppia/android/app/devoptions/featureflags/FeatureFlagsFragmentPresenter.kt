@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject
 
@@ -26,13 +28,13 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
 
   /** List of feature flag switch states to be used in the fragment. */
-  var featureFlagStates: MutableMap<String, Boolean> = mutableMapOf()
+  var featureFlagStates: MutableList<OverriddenFeatureFlag> = mutableListOf()
 
   /** Called when [FeatureFlagsFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    featureFlagStates: Map<String, Boolean>
+    featureFlagStates: List<OverriddenFeatureFlag>
   ): View {
     binding = FeatureFlagsFragmentBinding.inflate(
       inflater,
@@ -44,7 +46,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     }
 
     if (featureFlagStates.isNotEmpty()) {
-      this.featureFlagStates = featureFlagStates.toMutableMap()
+      this.featureFlagStates = featureFlagStates.toMutableList()
     }
     binding.apply {
       this.lifecycleOwner = fragment
@@ -79,11 +81,25 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     model: FeatureFlagItemViewModel
   ) {
     binding.viewModel = model
-    if (featureFlagStates.containsKey(model.featureFlagId.name)) {
-      model.isChecked.set(featureFlagStates[model.featureFlagId.name])
+
+    val currentFlag = featureFlagStates.find { it.id == model.featureFlagId }
+    if (currentFlag != null) {
+      model.isChecked.set(currentFlag.overriddenIsEnabled)
     }
     model.onToggleCallback = { id, value ->
-      featureFlagStates[id.name] = value
+      updateFeatureFlagState(id, value)
+    }
+  }
+  fun updateFeatureFlagState(id: FeatureFlagId, value: Boolean) {
+    val index = featureFlagStates.indexOfFirst { it.id == id }
+    val updatedFlag = OverriddenFeatureFlag.newBuilder()
+      .setId(id)
+      .setOverriddenIsEnabled(value)
+      .build()
+    if (index != -1) {
+      featureFlagStates[index] = updatedFlag
+    } else {
+      featureFlagStates.add(updatedFlag)
     }
   }
 }

@@ -71,8 +71,8 @@ class FeatureFlagItemViewModel @Inject constructor(
   private fun retrieveBackgroundColor(): Long {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF00645C
-      SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFF00645C
-      SyncStatus.SYNCED_FROM_SERVER -> 0xFFBE563C
+      SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
+      SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
       else -> 0xFF00645C
     }
   }

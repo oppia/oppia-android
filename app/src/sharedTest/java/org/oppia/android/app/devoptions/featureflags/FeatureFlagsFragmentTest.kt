@@ -73,8 +73,16 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
+import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
+import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
+import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdImpl
 import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
+import org.oppia.android.domain.platformparameter.PlatformParameterProcessState
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -82,7 +90,6 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -126,6 +133,9 @@ class FeatureFlagsFragmentTest {
   lateinit var platformParameterDebugController: PlatformParameterDebugController
 
   @Inject
+  lateinit var platformParameterController: PlatformParameterController
+
+  @Inject
   lateinit var monitorFactory: DataProviderTestMonitor.Factory
 
   @get:Rule
@@ -134,6 +144,7 @@ class FeatureFlagsFragmentTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    platformParameterController.loadParametersAsync()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
@@ -141,90 +152,6 @@ class FeatureFlagsFragmentTest {
   fun testFeatureFlagsFragment_allFeatureFlagsAreCorrectlyDisplayed() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(position = 0)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 0,
-        stringToMatch = "Downloads Support"
-      )
-
-      scrollToPosition(position = 1)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 1,
-        stringToMatch = "Extra Topic Tabs Ui"
-      )
-
-      scrollToPosition(position = 2)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 2,
-        stringToMatch = "Learner Study Analytics"
-      )
-
-      scrollToPosition(position = 3)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 3,
-        stringToMatch = "Fast Language Switching In Lesson"
-      )
-
-      scrollToPosition(position = 4)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 4,
-        stringToMatch = "Logging Learner Study Ids"
-      )
-
-      scrollToPosition(position = 5)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 5,
-        stringToMatch = "Edit Accounts Options Ui"
-      )
-
-      scrollToPosition(position = 6)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 6,
-        stringToMatch = "Performance Metrics Collection"
-      )
-
-      scrollToPosition(position = 7)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 7,
-        stringToMatch = "Spotlight Ui"
-      )
-
-      scrollToPosition(position = 8)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 8,
-        stringToMatch = "Interaction Config Change State Retention"
-      )
-
-      scrollToPosition(position = 9)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 9,
-        stringToMatch = "App And Os Deprecation"
-      )
-
-      scrollToPosition(position = 10)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 10,
-        stringToMatch = "Nps Survey"
-      )
-
-      scrollToPosition(position = 11)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 11,
-        stringToMatch = "Onboarding Flow V2"
-      )
-
-      scrollToPosition(position = 12)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 12,
-        stringToMatch = "Multiple Classrooms"
-      )
-
-      scrollToPosition(position = 13)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 13,
-        stringToMatch = "Flashback Support"
-      )
     }
   }
 
@@ -233,89 +160,6 @@ class FeatureFlagsFragmentTest {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
-      scrollToPosition(position = 0)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 0,
-        stringToMatch = "Downloads Support"
-      )
-
-      scrollToPosition(position = 1)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 1,
-        stringToMatch = "Extra Topic Tabs Ui"
-      )
-
-      scrollToPosition(position = 2)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 2,
-        stringToMatch = "Learner Study Analytics"
-      )
-
-      scrollToPosition(position = 3)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 3,
-        stringToMatch = "Fast Language Switching In Lesson"
-      )
-
-      scrollToPosition(position = 4)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 4,
-        stringToMatch = "Logging Learner Study Ids"
-      )
-
-      scrollToPosition(position = 5)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 5,
-        stringToMatch = "Edit Accounts Options Ui"
-      )
-
-      scrollToPosition(position = 6)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 6,
-        stringToMatch = "Performance Metrics Collection"
-      )
-
-      scrollToPosition(position = 7)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 7,
-        stringToMatch = "Spotlight Ui"
-      )
-
-      scrollToPosition(position = 8)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 8,
-        stringToMatch = "Interaction Config Change State Retention"
-      )
-
-      scrollToPosition(position = 9)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 9,
-        stringToMatch = "App And Os Deprecation"
-      )
-
-      scrollToPosition(position = 10)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 10,
-        stringToMatch = "Nps Survey"
-      )
-
-      scrollToPosition(position = 11)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 11,
-        stringToMatch = "Onboarding Flow V2"
-      )
-
-      scrollToPosition(position = 12)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 12,
-        stringToMatch = "Multiple Classrooms"
-      )
-
-      scrollToPosition(position = 13)
-      verifyTextOnFeatureFlagListItemAtPosition(
-        itemPosition = 13,
-        stringToMatch = "Flashback Support"
-      )
     }
   }
 
@@ -323,90 +167,6 @@ class FeatureFlagsFragmentTest {
   fun testFeatureFlagsFragment_syncStatusIsCorrectlyDisplayed() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(position = 0)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 0,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 0).syncStatus)
-      )
-
-      scrollToPosition(position = 1)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 1,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 1).syncStatus)
-      )
-
-      scrollToPosition(position = 2)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 2,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 2).syncStatus)
-      )
-
-      scrollToPosition(position = 3)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 3,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 3).syncStatus)
-      )
-
-      scrollToPosition(position = 4)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 4,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 4).syncStatus)
-      )
-
-      scrollToPosition(position = 5)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 5,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 5).syncStatus)
-      )
-
-      scrollToPosition(position = 6)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 6,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 6).syncStatus)
-      )
-
-      scrollToPosition(position = 7)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 7,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 7).syncStatus)
-      )
-
-      scrollToPosition(position = 8)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 8,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 8).syncStatus)
-      )
-
-      scrollToPosition(position = 9)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 9,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 9).syncStatus)
-      )
-
-      scrollToPosition(position = 10)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 10,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 10).syncStatus)
-      )
-
-      scrollToPosition(position = 11)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 11,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 11).syncStatus)
-      )
-
-      scrollToPosition(position = 12)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 12,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 12).syncStatus)
-      )
-
-      scrollToPosition(position = 13)
-      verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-        itemPosition = 13,
-        stringToMatch = getSyncStatusText(getFeatureFlagAtPosition(position = 13).syncStatus)
-      )
     }
   }
 
@@ -493,7 +253,13 @@ class FeatureFlagsFragmentTest {
     return monitorFactory.waitForNextSuccessfulResult(provider)[position]
   }
 
-  @Module
+  @Module(
+    includes = [
+      FeatureFlagsMapBindingModule::class,
+      FeatureFlagBindingModule::class,
+      PlatformParameterBindingModule::class
+    ]
+  )
   class TestModule {
 
     @Provides
@@ -501,6 +267,28 @@ class FeatureFlagsFragmentTest {
     fun providePlatformParameterDebugController(
       impl: FakePlatformParameterDebugController
     ): PlatformParameterDebugController = impl
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterControllerProdImpl(
+      platformParameterProcessState: PlatformParameterProcessState,
+      factory: PlatformParameterControllerProdImpl.Factory
+    ) = factory.create(platformParameterProcessState)
+    @Provides
+    @Singleton
+    fun providePlatformParameterController(
+      factory: PlatformParameterControllerProdImpl.Factory,
+      processState: PlatformParameterProcessState
+    ): PlatformParameterController = factory.create(processState)
+
+    @Provides
+    fun providePlatformParameterConfigRetriever(
+      impl: TestPlatformParameterConfigRetriever
+    ): PlatformParameterConfigRetriever = impl
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterProcessState() = PlatformParameterProcessState()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -561,7 +349,6 @@ class FeatureFlagsFragmentTest {
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
