@@ -78,9 +78,9 @@ class AndroidLintRunnerTest {
   @Test
   fun testMain_validRootPath_generatesReports() {
     val rootPath = tempFolder.root
-
-    // TODO(#5734): Update test after implementing project description
-    assertThrows<IllegalStateException> {
+    
+    // TODO(#5734): Update test once final lint tool configurations are done
+    val exception = assertThrows<IllegalStateException> {
       main(rootPath.absolutePath) // Currently returns error code due to missing description
     }
   }
@@ -235,7 +235,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testRunLint_withExitCode0_handlesErrorsGracefully() {
+  fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupAndroidProjectWithUnusedResources()
     val lintRunner = createLintRunner()
     lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
@@ -245,7 +245,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testRunLint_withExitCode1_handlesGracefully() {
+  fun testRunLint_whenExitCodeIs1_shouldFailScript() {
     setupAndroidProjectWithInvalidId()
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
