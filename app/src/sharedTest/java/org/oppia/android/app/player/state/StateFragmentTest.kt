@@ -5607,7 +5607,7 @@ class StateFragmentTest {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-      moveToFlashbackScreen()
+      moveToFlashbackState()
 
       // Verify feedback is visible.
       val expectedFeedback = "Need help? No problem. Let's review the solution to the previous" +
@@ -5646,7 +5646,7 @@ class StateFragmentTest {
     }
   }
 
-  private fun moveToFlashbackScreen() {
+  private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
     playThroughPrototypeState3()

@@ -2020,7 +2020,7 @@ class ExplorationActivityTest {
 
       moveToFlashbackState()
 
-      // Verify toolbar.
+      // Verify text of toolbar title.
       onView(withId(R.id.flashback_toolbar_title))
         .check(matches(withText("Revisit Previous Question")))
 

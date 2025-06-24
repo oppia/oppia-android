@@ -271,14 +271,14 @@ class SolutionViewModel private constructor(
     }
 
     /**
-     *  Returns a [HintsDialogSolutionViewModel] wrapper around the given core [SolutionViewModel].
+     * Returns a [HintsDialogSolutionViewModel] wrapper around the given core [SolutionViewModel].
      */
     fun createHintsDialogSolutionViewModel(core: SolutionViewModel): HintsDialogSolutionViewModel {
       return HintsDialogSolutionViewModel(core)
     }
 
     /**
-     *  Returns a [StateSolutionViewModel] wrapper around the given core [SolutionViewModel].
+     * Returns a [StateSolutionViewModel] wrapper around the given core [SolutionViewModel].
      */
     fun createStateSolutionViewModel(core: SolutionViewModel): StateSolutionViewModel {
       return StateSolutionViewModel(core)

@@ -39,8 +39,8 @@ class StateFragmentTestActivity :
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
   FlashbackToolbarListener {
-
-  @Inject lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
+  @Inject
+  lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
   private lateinit var profileId: ProfileId
@@ -106,6 +106,7 @@ class StateFragmentTestActivity :
   override fun setAudioBarVisibility(isVisible: Boolean) {}
 
   override fun showFlashbackToolbar() {}
+
   override fun hideFlashbackToolbar() {}
 
   override fun scrollToTop() {
