@@ -734,6 +734,8 @@
   <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_top">12dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_bottom">12dp</dimen>
 
   <!-- AdministratorControls-->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>

@@ -248,7 +248,6 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
-  //subha 1.5
   fun hideFlashbackToolbar() {
     exploreViewModel.showFlashbackToolbar.set(false)
   }

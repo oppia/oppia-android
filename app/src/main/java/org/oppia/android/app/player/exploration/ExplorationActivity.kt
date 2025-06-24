@@ -20,6 +20,7 @@ import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
@@ -28,7 +29,6 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import javax.inject.Inject
-import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 
 const val TAG_HINTS_AND_SOLUTION_DIALOG = "HINTS_AND_SOLUTION_DIALOG"
 
@@ -215,7 +215,6 @@ class ExplorationActivity :
     explorationActivityPresenter.viewSolution()
   }
 
-  //subha 1.5
   override fun hideFlashbackToolbar() {
     explorationActivityPresenter.hideFlashbackToolbar()
   }

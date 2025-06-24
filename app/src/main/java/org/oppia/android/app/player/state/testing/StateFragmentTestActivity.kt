@@ -24,6 +24,7 @@ import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 
 /** Test Activity used for testing StateFragment. */
 class StateFragmentTestActivity :
@@ -36,7 +37,8 @@ class StateFragmentTestActivity :
   RevealHintListener,
   RevealSolutionInterface,
   HintsAndSolutionExplorationManagerListener,
-  ConceptCardListener {
+  ConceptCardListener,
+  FlashbackToolbarListener {
   @Inject
   lateinit var stateFragmentTestActivityPresenter: StateFragmentTestActivityPresenter
   private lateinit var state: State
@@ -102,6 +104,9 @@ class StateFragmentTestActivity :
   override fun showAudioStreamingOff() {}
 
   override fun setAudioBarVisibility(isVisible: Boolean) {}
+
+  override fun showFlashbackToolbar() {}
+  override fun hideFlashbackToolbar() {}
 
   override fun scrollToTop() {
     stateFragmentTestActivityPresenter.scrollToTop()

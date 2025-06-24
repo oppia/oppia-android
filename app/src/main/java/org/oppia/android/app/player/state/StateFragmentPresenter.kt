@@ -37,6 +37,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
@@ -58,7 +59,6 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
-import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 
 const val STATE_FRAGMENT_PROFILE_ID_ARGUMENT_KEY =
   "StateFragmentPresenter.state_fragment_profile_id"
@@ -205,13 +205,11 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  //subha 1.5
   private fun showOrHideFlashbackToolbar(ephemeralState: EphemeralState) {
     if (ephemeralState.flashbackState) {
       (activity as FlashbackToolbarListener).showFlashbackToolbar()
     } else {
       (activity as FlashbackToolbarListener).hideFlashbackToolbar()
-
     }
   }
 
@@ -283,6 +281,7 @@ class StateFragmentPresenter @Inject constructor(
         this::getAudioUiManager
       )
       .addConceptCardSupport()
+      .addFlashbackSolutionSupport()
       .build()
   }
 

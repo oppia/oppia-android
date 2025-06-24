@@ -37,11 +37,13 @@ import org.oppia.android.app.databinding.databinding.ReplayButtonItemBinding
 import org.oppia.android.app.databinding.databinding.ReturnToQuestionButtonItemBinding
 import org.oppia.android.app.databinding.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.android.app.databinding.databinding.SelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.SolutionSummaryBinding
 import org.oppia.android.app.databinding.databinding.SubmitButtonItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.TextInputInteractionItemBinding
+import org.oppia.android.app.hintsandsolution.SolutionViewModel
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
@@ -79,6 +81,7 @@ import org.oppia.android.app.player.state.itemviewmodel.ReturnToTopicButtonViewM
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
+import org.oppia.android.app.player.state.itemviewmodel.StateSolutionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
@@ -167,7 +170,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private var userAnswerState: UserAnswerState,
   private val consoleLogger: ConsoleLogger,
   private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
-) : HtmlParser.CustomOppiaTagActionListener {
+  private val solutionViewModelFactory: SolutionViewModel.Factory
+  ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
    * intentionally not retained upon configuration changes since the user can just re-expand the
@@ -242,7 +246,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     previousAnswerViewModels.clear()
     val conversationPendingItemList = mutableListOf<StateItemViewModel>()
     val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
-    if (playerFeatureSet.contentSupport) {
+    if (playerFeatureSet.contentSupport && !ephemeralState.flashbackState) {
       addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
@@ -284,61 +288,42 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
     } else if (ephemeralState.stateTypeCase == StateTypeCase.COMPLETED_STATE) {
+      // Ensure any lingering hints are properly cleared.
+      if (playerFeatureSet.hintsAndSolutionsSupport) {
+        (fragment as ShowHintAvailabilityListener).onHintAvailable(
+          HelpIndex.getDefaultInstance(),
+          isCurrentStatePendingState = false
+        )
+      }
 
-      if(ephemeralState.flashbackState) { //subha 1.5
-        //feedback->  need help? no problem
-        //content -> it is shown outside of this block. (DONE)
-        //solution ('Solution' + explanation text) (if solution exist)
-        //submitted answer (if answer present)
-        //Return to Question button
-
-        //feedback
+      if (ephemeralState.flashbackState) {
         addFlashbackFeedbackItem(
           conversationPendingItemList,
           gcsEntityId,
           ephemeralState.writtenTranslationContext
         )
-
-        //content
         addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
-
-        //solution
-        // we should create playerFeatureSet support
-//        addFlashbackSolutionItem(
-//          conversationPendingItemList,
-//          gcsEntityId,
-//          ephemeralState.state.interaction,
-//          ephemeralState.writtenTranslationContext
-//        )
-
-        // in completed state, last answerAndResponse will be always user submitted correct answer.
-        // we should create playerFeatureSet support
+        if (playerFeatureSet.flashbackSolutionSummarySupport) {
+          addFlashbackSolutionItem(
+            conversationPendingItemList,
+            gcsEntityId,
+            ephemeralState.state.interaction,
+            ephemeralState.writtenTranslationContext
+          )
+        }
         addFlashbackSubmittedAnswerItem(
           conversationPendingItemList,
           extraInteractionPendingItemList,
           ephemeralState.completedState.answerList,
           gcsEntityId
         )
-
-        // return to question button
-        // introduce fun addReturnToQuestionButton
-        // we should create playerFeatureSet support
         if (playerFeatureSet.flashbackNavigationSupport) {
           addReturnToQuestionButton(
             conversationPendingItemList,
             extraInteractionPendingItemList
           )
         }
-
       } else {
-        // Ensure any lingering hints are properly cleared.
-        if (playerFeatureSet.hintsAndSolutionsSupport) {
-          (fragment as ShowHintAvailabilityListener).onHintAvailable(
-            HelpIndex.getDefaultInstance(),
-            isCurrentStatePendingState = false
-          )
-        }
-
         // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
         // so that the UI always has the correct answer indication, even after configuration changes.
         addPreviousAnswers(
@@ -899,7 +884,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
   }
 
-  //subha 1.5
   private fun addReturnToQuestionButton(
     conversationPendingItemList: MutableList<StateItemViewModel>,
     extraInteractionPendingItemList: MutableList<StateItemViewModel>
@@ -913,7 +897,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
     )
   }
 
-  //subha 1.5
   private fun addFlashbackFeedbackItem(
     pendingItemList: MutableList<StateItemViewModel>,
     gcsEntityId: String,
@@ -921,7 +904,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     if (playerFeatureSet.feedbackSupport) {
       val flashbackFeedbackHtml = SubtitledHtml.newBuilder()
-        .setHtml("Need Help? No Problem.")
+        .setHtml("Need help? No problem. Let's review the solution to the previous question.")
         .build()
 
       createFeedbackItem(flashbackFeedbackHtml, gcsEntityId, writtenTranslationContext)?.let(
@@ -930,7 +913,33 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
   }
 
-  //subha 1.5
+  private fun addFlashbackSolutionItem(
+    pendingItemList: MutableList<StateItemViewModel>,
+    gcsEntityId: String,
+    interaction: Interaction,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
+    interaction.solution
+      .takeIf { it.hasExplanation() && it.hasCorrectAnswer() }
+      ?.let { solution ->
+
+        val coreViewModel = solutionViewModelFactory.create(
+          solutionSummary = translationController.extractString(
+            solution.explanation,
+            writtenTranslationContext
+          ),
+          isSolutionRevealed = ObservableBoolean(true),
+          isSolutionExclusive = solution.answerIsExclusive,
+          correctAnswer = solution.correctAnswer,
+          interaction = interaction,
+          writtenTranslationContext = writtenTranslationContext,
+          explorationId = gcsEntityId,
+          isFlashback = true
+        )
+        pendingItemList += solutionViewModelFactory.createStateSolutionViewModel(coreViewModel)
+      }
+  }
+
   private fun addFlashbackSubmittedAnswerItem(
     pendingItemList: MutableList<StateItemViewModel>,
     rightPendingItemList: MutableList<StateItemViewModel>,
@@ -1093,6 +1102,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val userAnswerState: UserAnswerState,
     private val consoleLogger: ConsoleLogger,
     private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+    private val solutionViewModelFactory: SolutionViewModel.Factory
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1336,6 +1346,54 @@ class StatePlayerRecyclerViewAssembler private constructor(
       )
       featureSets += PlayerFeatureSet(flashbackNavigationSupport = true)
       return this
+    }
+
+    fun addFlashbackSolutionSupport(): Builder {
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.STATE_SOLUTION,
+        inflateDataBinding = SolutionSummaryBinding::inflate,
+        setViewModel = this::bindSolutionViewModel,
+        transformViewModel = { it as StateSolutionViewModel }
+      )
+      featureSets += PlayerFeatureSet(flashbackSolutionSummarySupport = true)
+      return this
+    }
+
+    private fun bindSolutionViewModel(
+      binding: SolutionSummaryBinding,
+      solutionViewModel: StateSolutionViewModel
+    ) {
+      val coreViewModel = solutionViewModel.coreViewModel
+      binding.viewModel = coreViewModel
+
+      binding.solutionCorrectAnswer.text =
+        htmlParserFactory.create(
+          resourceBucketName,
+          entityType,
+          coreViewModel.explorationId,
+          imageCenterAlign = true,
+          displayLocale = resourceHandler.getDisplayLocale()
+        ).parseOppiaHtml(
+          coreViewModel.correctAnswerHtml,
+          binding.solutionCorrectAnswer
+        )
+
+      binding.solutionSummary.text =
+        htmlParserFactory.create(
+          resourceBucketName,
+          entityType,
+          coreViewModel.explorationId,
+          customOppiaTagActionListener = customTagListener,
+          imageCenterAlign = true,
+          displayLocale = resourceHandler.getDisplayLocale()
+        ).parseOppiaHtml(
+          coreViewModel.solutionSummary,
+          binding.solutionSummary,
+          supportsLinks = true,
+          supportsConceptCards = true
+        )
+
+      binding.isListExpanded = true
     }
 
     private fun createListAnswerAdapter(
@@ -1599,7 +1657,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         translationController,
         userAnswerState,
         consoleLogger,
-        conceptCardTagHandlerFactory
+        conceptCardTagHandlerFactory,
+        solutionViewModelFactory
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1622,7 +1681,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
       private val consoleLogger: ConsoleLogger,
       private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
-    ) {
+      private val solutionViewModelFactory: SolutionViewModel.Factory,
+      ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].
@@ -1649,7 +1709,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           singleAdapterFactory,
           userAnswerState,
           consoleLogger,
-          conceptCardTagHandlerFactory
+          conceptCardTagHandlerFactory,
+          solutionViewModelFactory
         )
       }
     }
@@ -1671,7 +1732,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
     val conceptCardSupport: Boolean = false,
-    val flashbackNavigationSupport: Boolean = false
+    val flashbackNavigationSupport: Boolean = false,
+    val flashbackSolutionSummarySupport: Boolean = false
   ) {
     /**
      * Returns a union of this feature set with other one. Loosely based on
@@ -1695,7 +1757,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
         conceptCardSupport = conceptCardSupport || other.conceptCardSupport,
-        flashbackNavigationSupport = flashbackNavigationSupport || other.flashbackNavigationSupport
+        flashbackNavigationSupport = flashbackNavigationSupport || other.flashbackNavigationSupport,
+        flashbackSolutionSummarySupport = flashbackSolutionSummarySupport ||
+          other.flashbackSolutionSummarySupport
       )
     }
   }
