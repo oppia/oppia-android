@@ -171,7 +171,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private val consoleLogger: ConsoleLogger,
   private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
   private val solutionViewModelFactory: SolutionViewModel.Factory
-  ) : HtmlParser.CustomOppiaTagActionListener {
+) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
    * intentionally not retained upon configuration changes since the user can just re-expand the
@@ -1337,8 +1337,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         inflateDataBinding = FlashbackButtonItemBinding::inflate,
         setViewModel = FlashbackButtonItemBinding::setButtonViewModel,
         transformViewModel = { it as FlashbackButtonViewModel }
-      )
-        .registerViewDataBinder(
+      ).registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON,
         inflateDataBinding = ReturnToQuestionButtonItemBinding::inflate,
         setViewModel = ReturnToQuestionButtonItemBinding::setButtonViewModel,
@@ -1681,8 +1680,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
       private val consoleLogger: ConsoleLogger,
       private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
-      private val solutionViewModelFactory: SolutionViewModel.Factory,
-      ) {
+      private val solutionViewModelFactory: SolutionViewModel.Factory
+    ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
        * assets, and the current logged in [ProfileId].

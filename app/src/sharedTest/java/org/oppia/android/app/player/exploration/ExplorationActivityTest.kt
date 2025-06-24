@@ -2020,15 +2020,15 @@ class ExplorationActivityTest {
 
       moveToFlashbackState()
 
-      // Verify toolbar
+      // Verify toolbar.
       onView(withId(R.id.flashback_toolbar_title))
         .check(matches(withText("Revisit Previous Question")))
 
-      // Check toolbar color after flashback
+      // Verify toolbar color.
       onView(withId(R.id.exploration_toolbar)).check { view, _ ->
         val toolbar = view as Toolbar
         val actualColor = (toolbar.background as ColorDrawable).color
-        val expectedColor = context.getColor(R.color.color_def_oppia_brown_dark) // Replace with actual color
+        val expectedColor = context.getColor(R.color.color_def_oppia_brown_dark)
         assertThat(expectedColor).isEqualTo(actualColor)
       }
     }

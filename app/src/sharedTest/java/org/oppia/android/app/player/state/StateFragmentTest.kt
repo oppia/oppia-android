@@ -5610,12 +5610,11 @@ class StateFragmentTest {
       moveToFlashbackScreen()
 
       // Verify feedback is visible.
+      val expectedFeedback = "Need help? No problem. Let's review the solution to the previous" +
+        " question."
       scrollToViewType(FEEDBACK)
-      onView(withId(R.id.feedback_text_view)).check(
-        matches(withText(
-          containsString(
-          "Need help? No problem. Let's review the solution to the previous question."
-          ))))
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString(expectedFeedback))))
 
       // Verify content is visible.
       scrollToViewType(CONTENT)
