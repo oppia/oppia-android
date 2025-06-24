@@ -78,9 +78,9 @@ class AndroidLintRunnerTest {
   @Test
   fun testMain_validRootPath_generatesReports() {
     val rootPath = tempFolder.root
-    
+
     // TODO(#5734): Update test once final lint tool configurations are done
-    val exception = assertThrows<IllegalStateException> {
+    assertThrows<IllegalStateException> {
       main(rootPath.absolutePath) // Currently returns error code due to missing description
     }
   }

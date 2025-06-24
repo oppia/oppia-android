@@ -4,6 +4,8 @@ import com.android.SdkConstants
 import org.oppia.android.scripts.common.BazelClient
 import java.io.File
 import java.io.IOException
+import java.time.Instant
+import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
@@ -60,6 +62,205 @@ private data class AarFileInfo(
   val extractedPath: String
 )
 
+/** Cached entry with TTL support. */
+private data class CachedEntry<T>(
+  val value: T,
+  val timestamp: Instant,
+  val sizeBytes: Long = 0L
+) {
+  fun isExpired(ttlSeconds: Long): Boolean =
+    Instant.now().epochSecond - timestamp.epochSecond > ttlSeconds
+}
+
+/** Cache manager with TTL and memory-based cleanup. */
+private class CacheManager {
+  companion object {
+
+    const val DEPENDENCIES_TTL = 300L // 5 minutes
+    const val PATH_RESOLUTION_TTL = 600L // 10 minutes
+    const val AAR_EXTRACTION_TTL = 1800L // 30 minutes
+
+    private const val MAX_CACHE_SIZE_BYTES = 100 * 1024 * 1024L // 100MB
+    private const val CLEANUP_THRESHOLD = 0.8 // Cleanup when 80% full
+  }
+
+  private val dependencyCache = ConcurrentHashMap<String, CachedEntry<List<String>>>()
+  private val pathCache = ConcurrentHashMap<String, CachedEntry<String?>>()
+  private val aarExtractionCache = ConcurrentHashMap<String, CachedEntry<String>>()
+
+  private var totalCacheSize = 0L
+
+  /** Gets dependencies with TTL caching. */
+  fun getDependencies(key: String, provider: () -> List<String>): List<String> {
+    cleanupExpiredEntries()
+    checkMemoryLimitAndCleanup()
+
+    val cached = dependencyCache[key]
+    if (cached != null && !cached.isExpired(DEPENDENCIES_TTL)) {
+      return cached.value
+    }
+
+    val value = provider()
+    val sizeBytes = estimateListSize(value)
+    dependencyCache[key] = CachedEntry(value, Instant.now(), sizeBytes)
+    updateCacheSize(sizeBytes)
+
+    return value
+  }
+
+  /** Gets path resolution with TTL caching. */
+  fun getPathResolution(key: String, provider: () -> String?): String? {
+    cleanupExpiredEntries()
+    checkMemoryLimitAndCleanup()
+
+    val cached = pathCache[key]
+    if (cached != null && !cached.isExpired(PATH_RESOLUTION_TTL)) {
+      return cached.value
+    }
+
+    val value = provider()
+    val sizeBytes = estimateStringSize(value)
+    pathCache[key] = CachedEntry(value, Instant.now(), sizeBytes)
+    updateCacheSize(sizeBytes)
+
+    return value
+  }
+
+  /** Gets AAR extraction with TTL caching. */
+  fun getAarExtraction(key: String, provider: () -> String): String {
+    cleanupExpiredEntries()
+    checkMemoryLimitAndCleanup()
+
+    val cached = aarExtractionCache[key]
+    if (cached != null && !cached.isExpired(AAR_EXTRACTION_TTL)) {
+      return cached.value
+    }
+
+    val value = provider()
+    val sizeBytes = estimateStringSize(value)
+    aarExtractionCache[key] = CachedEntry(value, Instant.now(), sizeBytes)
+    updateCacheSize(sizeBytes)
+
+    return value
+  }
+
+  /** Cleans up expired entries from all caches. */
+  private fun cleanupExpiredEntries() {
+
+    // Cleanup dependencies
+    val expiredDeps = dependencyCache.filterValues {
+      it.isExpired(DEPENDENCIES_TTL)
+    }.keys
+    expiredDeps.forEach { key ->
+      dependencyCache.remove(key)?.let { entry ->
+        totalCacheSize -= entry.sizeBytes
+      }
+    }
+
+    // Cleanup path resolutions
+    val expiredPaths = pathCache.filterValues {
+      it.isExpired(PATH_RESOLUTION_TTL)
+    }.keys
+    expiredPaths.forEach { key ->
+      pathCache.remove(key)?.let { entry ->
+        totalCacheSize -= entry.sizeBytes
+      }
+    }
+
+    // Cleanup AAR extractions
+    val expiredAars = aarExtractionCache.filterValues {
+      it.isExpired(AAR_EXTRACTION_TTL)
+    }.keys
+    expiredAars.forEach { key ->
+      aarExtractionCache.remove(key)?.let { entry ->
+        totalCacheSize -= entry.sizeBytes
+      }
+    }
+  }
+
+  /** Performs aggressive cleanup when memory limit is reached. */
+  private fun checkMemoryLimitAndCleanup() {
+    if (totalCacheSize > MAX_CACHE_SIZE_BYTES * CLEANUP_THRESHOLD) {
+      performAggressiveCleanup()
+    }
+  }
+
+  /** Aggressively removes oldest entries to free up memory. */
+  private fun performAggressiveCleanup() {
+    val targetSize = MAX_CACHE_SIZE_BYTES / 2 // Clean to 50% capacity
+
+    // Collect all entries with their timestamps
+    val allEntries = mutableListOf<Pair<String, CachedEntry<*>>>()
+
+    dependencyCache.forEach { (key, entry) ->
+      allEntries.add("dep:$key" to entry)
+    }
+    pathCache.forEach { (key, entry) ->
+      allEntries.add("path:$key" to entry)
+    }
+    aarExtractionCache.forEach { (key, entry) ->
+      allEntries.add("aar:$key" to entry)
+    }
+
+    // Sort by timestamp (oldest first)
+    allEntries.sortBy { it.second.timestamp }
+
+    // Remove oldest entries until we're under target size
+    var currentSize = totalCacheSize
+    for ((key, entry) in allEntries) {
+      if (currentSize <= targetSize) break
+
+      when {
+        key.startsWith("dep:") -> {
+          val realKey = key.substring(4)
+          dependencyCache.remove(realKey)
+        }
+        key.startsWith("path:") -> {
+          val realKey = key.substring(5)
+          pathCache.remove(realKey)
+        }
+        key.startsWith("aar:") -> {
+          val realKey = key.substring(4)
+          aarExtractionCache.remove(realKey)
+        }
+      }
+
+      currentSize -= entry.sizeBytes
+    }
+
+    totalCacheSize = currentSize
+  }
+
+  /** Updates the total cache size. */
+  private fun updateCacheSize(additionalSize: Long) {
+    totalCacheSize += additionalSize
+  }
+
+  /** Estimates the memory size of a string list. */
+  private fun estimateListSize(list: List<String>): Long {
+    return list.sumOf { it.length * 2L } + (list.size * 8L)
+  }
+
+  /** Estimates the memory size of a string. */
+  private fun estimateStringSize(str: String?): Long {
+    return (str?.length?.times(2L) ?: 0L) + 8L
+  }
+}
+
+/** logger for error messages. */
+private class Logger(workingDirectory: File) {
+  private val logFile = File(workingDirectory, "error-logs")
+
+  /** Logs messages with timestamp.*/
+  fun logError(message: String) {
+    try {
+      logFile.appendText("[${Instant.now()}] $message\n")
+    } catch (e: Exception) {
+      System.err.println("Failed to write to log: ${e.message}")
+    }
+  }
+}
+
 /**
  * Generates lint project description XML files for Android projects.
  *
@@ -91,6 +292,9 @@ class LintProjectDescription(
     }
   }
 
+  private val cacheManager = CacheManager()
+  private val logger = Logger(workingDirectory)
+
   /**
    * Generates the lint project description XML file.
    *
@@ -104,8 +308,11 @@ class LintProjectDescription(
     val extractedAarsDirectory =
       ensureDirectoryExists(File(workingDirectory, EXTRACTED_AARS_DIRECTORY_NAME))
 
-    val moduleConfigBuilder =
-      ModuleConfigurationBuilder(repoRoot, bazelClient, extractedAarsDirectory)
+    val moduleConfigBuilder = ModuleConfigurationBuilder(
+      repoRoot, bazelClient, extractedAarsDirectory,
+      cacheManager,
+      logger
+    )
     val moduleConfigs = moduleConfigBuilder.buildAllModuleConfigurations()
     val xmlContent = generateProjectXmlContent(cacheDirectory, moduleConfigs)
 
@@ -196,10 +403,14 @@ class LintProjectDescription(
 private class ModuleConfigurationBuilder(
   private val repoRoot: File,
   bazelClient: BazelClient,
-  extractedAarsDirectory: File
+  extractedAarsDirectory: File,
+  cacheManager: CacheManager,
+  logger: Logger
 ) {
 
   companion object {
+    // These dependencies are referenced from Gradle build files
+    // replicating the module-module dependencies
     private val MODULE_DEPENDENCIES = mapOf(
       ModuleName.APP to ModuleName.LIBRARY_MODULES,
       ModuleName.TESTING to listOf(ModuleName.UTILITY, ModuleName.DOMAIN),
@@ -209,7 +420,11 @@ private class ModuleConfigurationBuilder(
     private val ANDROID_MANIFEST_PATH = "src/main/${SdkConstants.FN_ANDROID_MANIFEST_XML}"
   }
 
-  private val dependencyResolver = DependencyResolver(bazelClient, repoRoot, extractedAarsDirectory)
+  private val dependencyResolver = DependencyResolver(
+    bazelClient, repoRoot, extractedAarsDirectory,
+    cacheManager,
+    logger
+  )
 
   /** Builds configurations for all modules in the project. */
   fun buildAllModuleConfigurations(): List<ModuleConfig> = buildList {
@@ -300,11 +515,12 @@ private class SourceFileCollector(
 private class DependencyResolver(
   private val bazelClient: BazelClient,
   repoRoot: File,
-  private val extractedAarsDirectory: File
+  private val extractedAarsDirectory: File,
+  private val cacheManager: CacheManager,
+  logger: Logger
 ) {
-  private val dependencyCache = mutableMapOf<String, List<String>>()
-  private val pathResolver = PathResolver(repoRoot, bazelClient)
-  private val aarExtractor = AarExtractor()
+  private val pathResolver = PathResolver(repoRoot, bazelClient, cacheManager, logger)
+  private val aarExtractor = AarExtractor(cacheManager)
 
   /** Resolves the AAR files for the given module. */
   fun resolveAarFiles(module: ModuleName): List<AarFileInfo> {
@@ -340,7 +556,7 @@ private class DependencyResolver(
     }
 
   private fun getDependenciesWithCache(moduleName: String): List<String> =
-    dependencyCache.getOrPut(moduleName) {
+    cacheManager.getDependencies(moduleName) {
       bazelClient.retrieveTargetModuleDependencies("//$moduleName:*")
     }
 
@@ -376,17 +592,17 @@ private class DependencyResolver(
 /** Object for resolving Bazel paths to actual file system locations. */
 private class PathResolver(
   private val repoRoot: File,
-  private val bazelClient: BazelClient
+  private val bazelClient: BazelClient,
+  private val cacheManager: CacheManager,
+  private val logger: Logger
 ) {
   companion object {
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
   }
 
-  private val pathCache = mutableMapOf<String, String?>()
-
   /** Resolves a Bazel path to an absolute file system path. */
   fun resolveBazelPath(path: String): String? =
-    pathCache.getOrPut(path) {
+    cacheManager.getPathResolution(path) {
       val resolvedPath = when {
         File(path).isAbsolute -> path
         path.startsWith("external/") -> resolveExternalPath(path)
@@ -396,7 +612,8 @@ private class PathResolver(
       if (File(resolvedPath).exists()) {
         resolvedPath
       } else {
-        println("Path cannot be resolved: $path")
+        val errorMessage = "Path cannot be resolved: $path -> $resolvedPath"
+        logger.logError(errorMessage)
         null
       }
     }
@@ -412,10 +629,8 @@ private class PathResolver(
   }
 }
 
-/**
- * Handles extraction of AAR files.
- */
-private class AarExtractor {
+/** Handles extraction of AAR files. */
+private class AarExtractor(private val cacheManager: CacheManager) {
   companion object {
     private val INVALID_DIRECTORY_CHARS = Regex("[^a-zA-Z0-9._-]")
 
@@ -424,11 +639,9 @@ private class AarExtractor {
       name.replace(INVALID_DIRECTORY_CHARS, "_")
   }
 
-  private val extractionCache = mutableMapOf<String, String>()
-
   /** Extracts the contents of an AAR file to a specified directory. */
   fun extractAar(aarFilePath: String, moduleAarsDirectory: File): String =
-    extractionCache.getOrPut(aarFilePath) {
+    cacheManager.getAarExtraction(aarFilePath) {
       performAarExtraction(aarFilePath, moduleAarsDirectory)
     }
 
