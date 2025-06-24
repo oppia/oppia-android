@@ -1347,6 +1347,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /** Adds support for displaying state solution to the learner. */
     fun addFlashbackSolutionSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
         viewType = StateItemViewModel.ViewType.STATE_SOLUTION,
