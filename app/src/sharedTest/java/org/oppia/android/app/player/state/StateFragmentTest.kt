@@ -5397,6 +5397,28 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_inputRatio_wrongAnswerSubmitted_continueButtonIsVisible() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+      playThroughPrototypeState5()
+      playThroughPrototypeState6()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Continue button is displayed for redirection.
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
   private fun playThroughRatioExplorationState1() {
     clickContinueInteractionButton()
   }

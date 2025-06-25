@@ -46,6 +46,8 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.util.UUID
@@ -118,7 +120,8 @@ class ExplorationProgressController @Inject constructor(
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>
+  private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
+  @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
 ) {
   // TODO(#3467): Update the mechanism to save checkpoints to eliminate the race condition that may
   //  arise if the function finishExplorationAsync acquires lock before the invokeOnCompletion
@@ -698,15 +701,30 @@ class ExplorationProgressController @Inject constructor(
         val ephemeralState = computeBaseCurrentEphemeralState()
         when {
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
-            endState()
-            val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-            explorationProgress.stateDeck.pushState(
-              newState,
-              prohibitSameStateName = true,
-              timestamp = startSessionTimeMs + continueButtonAnimationDelay,
-              isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
-            )
-            hintHandler.finishState(newState)
+            val wasVisitedBefore = explorationProgress.stateDeck
+              .wasStatePreviouslyVisited(answerOutcome.stateName)
+
+            val hasSolution = explorationProgress.stateGraph.getState(answerOutcome.stateName)
+              .interaction.solution?.let { it.hasExplanation() && it.hasCorrectAnswer() } == true
+
+            // Checks whether the learner submitted a wrong answer, the expected destination name
+            // was previously visited and the destination state has a solution.
+            if (enableFlashbackSupport.value && hasSolution &&
+              !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
+              !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
+            ) {
+              explorationProgress.stateDeck.addFlashbackState(answerOutcome.stateName)
+            } else {
+              endState()
+              val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
+              explorationProgress.stateDeck.pushState(
+                newState,
+                prohibitSameStateName = true,
+                timestamp = startSessionTimeMs + continueButtonAnimationDelay,
+                isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
+              )
+              hintHandler.finishState(newState)
+            }
           }
           ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
             // Schedule, or show immediately, a new hint or solution based on the current
