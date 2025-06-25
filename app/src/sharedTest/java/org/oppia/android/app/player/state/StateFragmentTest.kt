@@ -5647,7 +5647,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_retainStateOnConfigurationChange() {
+  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_retainStateOnConfigurationChange() { // ktlint-disable max-line-length
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()

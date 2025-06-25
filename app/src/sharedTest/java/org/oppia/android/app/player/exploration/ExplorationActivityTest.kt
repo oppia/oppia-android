@@ -2046,7 +2046,6 @@ class ExplorationActivityTest {
       shouldSavePartialProgress = false
     ) {
       moveToFlashbackState()
-      
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
