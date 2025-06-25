@@ -40,7 +40,7 @@ private enum class ModuleName(val moduleName: String) {
 }
 
 /** Represents module configuration for lint project description. */
-private data class ModuleConfig(
+data class ModuleConfig(
   val name: String,
   val isAndroid: Boolean,
   val isLibrary: Boolean,
@@ -57,7 +57,7 @@ private data class ModuleConfig(
 )
 
 /** Information about an AAR file and its extraction location. */
-private data class AarFileInfo(
+data class AarFileInfo(
   val originalPath: String,
   val extractedPath: String
 )
@@ -417,7 +417,7 @@ private class ModuleConfigurationBuilder(
       ModuleName.DOMAIN to listOf(ModuleName.UTILITY),
       ModuleName.DATA to listOf(ModuleName.UTILITY)
     )
-    private val ANDROID_MANIFEST_PATH = "src/main/${SdkConstants.FN_ANDROID_MANIFEST_XML}"
+    private const val ANDROID_MANIFEST_PATH = "src/main/${SdkConstants.FN_ANDROID_MANIFEST_XML}"
   }
 
   private val dependencyResolver = DependencyResolver(
