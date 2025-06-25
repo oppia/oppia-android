@@ -31,6 +31,7 @@ kt_jvm_test(
     srcs = ["LintProjectDescriptionTest.kt"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//scripts/src/java/org/oppia/android/scripts/lint:lint_project_description_lib",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",

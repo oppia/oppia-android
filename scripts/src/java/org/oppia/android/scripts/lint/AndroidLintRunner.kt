@@ -11,6 +11,7 @@ import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import com.android.tools.lint.Main as LintCli
+import org.oppia.android.scripts.common.CommandExecutor
 
 /** The default timeout duration for executing external processes. */
 private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
@@ -58,11 +59,10 @@ fun main(vararg args: String) {
       processTimeoutUnit = TimeUnit.MINUTES
     )
 
-    val bazelClient = BazelClient(repoRoot, commandExecutor)
     val lintAnalyzer = AndroidLintAnalyzer(
       repoRoot = repoRoot,
       workingDirectory = workingDirectory,
-      bazelClient = bazelClient,
+      commandExecutor = commandExecutor,
       groupByIssueSeverity = groupByIssueSeverity
     )
 
@@ -75,15 +75,16 @@ fun main(vararg args: String) {
  *
  * @param repoRoot the root directory of the repository
  * @param workingDirectory the temporary working directory for lint analysis
- * @param bazelClient the Bazel client for executing Bazel commands
+ * @param commandExecutor executes the specified command in the specified working directory
  * @param groupByIssueSeverity whether to group issues by severity in the output
  */
 class AndroidLintAnalyzer(
   private val repoRoot: File,
   private val workingDirectory: File,
-  private val bazelClient: BazelClient,
+  private val commandExecutor: CommandExecutor,
   private val groupByIssueSeverity: Boolean = false
 ) {
+  private val bazelClient=BazelClient(repoRoot,commandExecutor)
   companion object {
     private const val LINT_REPORT_FILE = "lint-report.xml"
     private const val JAVA_HOME_KEY = "java-home"
@@ -118,7 +119,7 @@ class AndroidLintAnalyzer(
     val lintProjectDescription = LintProjectDescription(
       repoRoot = repoRoot,
       workingDirectory = workingDirectory,
-      bazelClient = bazelClient
+      commandExecutor = commandExecutor
     )
     return lintProjectDescription.generateProjectDescriptionXml()
   }

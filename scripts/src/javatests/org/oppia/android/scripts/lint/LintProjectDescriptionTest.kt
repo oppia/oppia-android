@@ -13,9 +13,13 @@ import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.xml.sax.SAXException
 import java.io.File
+import java.io.FileOutputStream
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import javax.xml.parsers.DocumentBuilderFactory
+import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 
 /** Comprehensive tests for [LintProjectDescription]. */
 @Suppress("FunctionName")
@@ -24,10 +28,12 @@ class LintProjectDescriptionTest {
 
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
+  private val fakeCommandExecutor by lazy { FakeCommandExecutor() }
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var bazelClient: BazelClient
   private lateinit var lintProjectDescription: LintProjectDescription
+  private lateinit var lintProjectDescriptionWithFakeExecutor: LintProjectDescription
   private lateinit var workingDirectory: File
 
   @Before
@@ -38,7 +44,12 @@ class LintProjectDescriptionTest {
     lintProjectDescription = LintProjectDescription(
       repoRoot = tempFolder.root,
       workingDirectory = workingDirectory,
-      bazelClient = bazelClient
+      commandExecutor = longCommandExecutor
+    )
+    lintProjectDescriptionWithFakeExecutor = LintProjectDescription(
+      repoRoot = tempFolder.root,
+      workingDirectory = workingDirectory,
+      commandExecutor = fakeCommandExecutor
     )
 
     setupProjectStructure()
@@ -234,6 +245,13 @@ class LintProjectDescriptionTest {
     assertThat(xmlContent).apply {
       startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
       contains("<project>")
+      contains("<module")
+      contains("<src file=")
+      contains("<resource dir=")
+      contains("<classpath jar=")
+      contains("<dep module=")
+      contains("<manifest file=")
+      contains("</module>")
       endsWith("</project>\n")
     }
   }
@@ -334,7 +352,7 @@ class LintProjectDescriptionTest {
     val newLintProjectDescription = LintProjectDescription(
       repoRoot = tempFolder.root,
       workingDirectory = newWorkingDir,
-      bazelClient = bazelClient
+      commandExecutor = longCommandExecutor
     )
 
     val result = newLintProjectDescription.generateProjectDescriptionXml()
@@ -373,6 +391,82 @@ class LintProjectDescriptionTest {
       assertThat(File(path).isDirectory).isTrue()
       assertThat(path).contains("res")
     }
+  }
+
+  @Test
+  fun testGenerateProjectDescriptionXml_withAarDependencies() {
+    // Create a fake AAR file
+    val aarFile = createTestAarFile("test-library", "1.0.0")
+
+    setupFakeCommandExecutorForAarDependencies(aarFile.absolutePath)
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    assertThat(xmlContent).contains("<aar file=")
+    assertThat(xmlContent).contains("extracted=")
+
+    // Verify the AAR was extracted
+    val extractedAarsDir = File(workingDirectory, "extracted-aars")
+    assertThat(extractedAarsDir.exists()).isTrue()
+  }
+
+  private fun setupFakeCommandExecutorForAarDependencies(aarPath: String) {
+    fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
+      when {
+        args.contains("cquery") && args.contains("deps(//app:*)") -> {
+          outputStream.println(aarPath)
+          0
+        }
+        args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
+          // Return empty for other modules
+          0
+        }
+        args.contains("info") -> {
+          outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          0
+        }
+        else -> 0
+      }
+    }
+  }
+
+  private fun createTestAarFile(libraryName: String, version: String): File {
+    val aarFile = tempFolder.newFile("$libraryName-$version.aar")
+
+    ZipOutputStream(FileOutputStream(aarFile)).use { zipOut ->
+      // Add AndroidManifest.xml
+      val manifestEntry = ZipEntry("AndroidManifest.xml")
+      zipOut.putNextEntry(manifestEntry)
+      zipOut.write(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <manifest package="com.example.$libraryName" />
+        """.trimIndent().toByteArray()
+      )
+      zipOut.closeEntry()
+
+      // Add classes.jar
+      val classesEntry = ZipEntry("classes.jar")
+      zipOut.putNextEntry(classesEntry)
+      zipOut.write(ByteArray(10))
+      zipOut.closeEntry()
+
+      // Add resources
+      val resEntry = ZipEntry("res/values/strings.xml")
+      zipOut.putNextEntry(resEntry)
+      zipOut.write(
+        """
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources>
+            <string name="library_name">$libraryName</string>
+        </resources>
+        """.trimIndent().toByteArray()
+      )
+      zipOut.closeEntry()
+    }
+
+    return aarFile
   }
 
   private fun initializeCommandExecutorWithLongProcessWaitTime(): CommandExecutorImpl {

@@ -8,6 +8,7 @@ import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
+import org.oppia.android.scripts.common.CommandExecutor
 
 /**
  * Enum representing module names in the project.
@@ -267,14 +268,15 @@ private class Logger(workingDirectory: File) {
  *
  * @param repoRoot The root directory of the repository
  * @param workingDirectory The working directory where files will be generated
- * @param bazelClient The Bazel client for dependency resolution
+ * @param commandExecutor executes the specified command in the specified working directory
  */
 class LintProjectDescription(
   private val repoRoot: File,
   private val workingDirectory: File,
-  private val bazelClient: BazelClient
+  commandExecutor: CommandExecutor
 ) {
 
+  private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
     private const val LINT_PROJECT_DESCRIPTION_FILE_NAME = "lint-project-description.xml"
     private const val LINT_CACHE_DIRECTORY_NAME = "lint-cache-directory"
