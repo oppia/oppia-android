@@ -68,6 +68,7 @@ private data class CachedEntry<T>(
   val timestamp: Instant,
   val sizeBytes: Long = 0L
 ) {
+  /** Checks if the cache entry is expired. */
   fun isExpired(ttlSeconds: Long): Boolean =
     Instant.now().epochSecond - timestamp.epochSecond > ttlSeconds
 }
@@ -76,9 +77,9 @@ private data class CachedEntry<T>(
 private class CacheManager {
   companion object {
 
-    const val DEPENDENCIES_TTL = 300L // 5 minutes
-    const val PATH_RESOLUTION_TTL = 600L // 10 minutes
-    const val AAR_EXTRACTION_TTL = 1800L // 30 minutes
+    private const val DEPENDENCIES_TTL = 300L // 5 minutes
+    private const val PATH_RESOLUTION_TTL = 600L // 10 minutes
+    private const val AAR_EXTRACTION_TTL = 1800L // 30 minutes
 
     private const val MAX_CACHE_SIZE_BYTES = 100 * 1024 * 1024L // 100MB
     private const val CLEANUP_THRESHOLD = 0.8 // Cleanup when 80% full
@@ -251,7 +252,7 @@ private class CacheManager {
 private class Logger(workingDirectory: File) {
   private val logFile = File(workingDirectory, "error-logs")
 
-  /** Logs messages with timestamp.*/
+  /** Logs messages with timestamp. */
   fun logError(message: String) {
     try {
       logFile.appendText("[${Instant.now()}] $message\n")
