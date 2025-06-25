@@ -12,7 +12,8 @@ import javax.inject.Singleton
     FeatureFlagBindingModule::class,
     PlatformParameterBindingModule::class,
     PlatformParameterDebugModule.PlatformParameterProcessStateModule::class,
-    PlatformParameterDebugModule.PlatformParameterControllerProdImplModule::class
+    PlatformParameterDebugModule.PlatformParameterControllerProdImplModule::class,
+    PlatformParameterDebugModule.PlatformParameterControllerDebugImplModule::class
   ]
 )
 interface PlatformParameterDebugModule {
@@ -20,11 +21,6 @@ interface PlatformParameterDebugModule {
   fun bindPlatformParameterController(
     impl: PlatformParameterControllerDebugImpl
   ): PlatformParameterController
-
-  @Binds
-  fun bindPlatformParameterDebugController(
-    impl: PlatformParameterControllerDebugImpl
-  ): PlatformParameterDebugController
 
   @Binds
   fun bindPlatformParameterConfigRetriever(
@@ -57,5 +53,23 @@ interface PlatformParameterDebugModule {
       platformParameterProcessState: PlatformParameterProcessState,
       factory: PlatformParameterControllerProdImpl.Factory
     ) = factory.create(platformParameterProcessState)
+  }
+
+  // TODO(#5835): Remove this and make PlatformParameterControllerDebugImpl injectable once the hack
+  //  for initializing platform parameters in tests is no longer needed.
+  /**
+   * Dagger module for providing the application-wide instance of
+   * [PlatformParameterControllerDebugImpl].
+   */
+  @Module
+  class PlatformParameterControllerDebugImplModule {
+    @Provides
+    @Singleton
+    fun providePlatformParameterControllerDebugImpl(
+      platformParameterProcessState: PlatformParameterProcessState,
+      factory: PlatformParameterControllerDebugImpl.Factory
+    ): PlatformParameterControllerDebugImpl {
+      return factory.create(platformParameterProcessState)
+    }
   }
 }

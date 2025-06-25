@@ -19,13 +19,13 @@ import javax.inject.Inject
  * Debug implementation for the controller to manage and synchronize platform parameters and
  * feature flags.
  */
-class PlatformParameterControllerDebugImpl @Inject constructor(
+class PlatformParameterControllerDebugImpl(
   private val platformParameterControllerProdImpl: PlatformParameterControllerProdImpl,
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
   private val processState: PlatformParameterProcessState,
-  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
-) : PlatformParameterController, PlatformParameterDebugController {
+  private val backgroundCoroutineDispatcher: CoroutineDispatcher
+) : PlatformParameterController {
 
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
@@ -33,7 +33,11 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   override fun loadParametersAsync() = initializationDeferred
 
   override fun getParameterInitializationStatus(): DataProvider<Boolean> {
-    return platformParameterControllerProdImpl.getParameterInitializationStatus()
+    return dataProviders.run {
+      parametersAreLoadedFlow.convertToAutomaticDataProvider(
+        GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID
+      )
+    }
   }
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
@@ -44,7 +48,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  override fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
+  /** Returns a merged list of platform parameters by resolving values. */
+  fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
     return dataProviders.createInMemoryDataProviderAsync(
       LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID
     ) {
@@ -70,7 +75,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  override fun loadEphemeralFeatureFlags(): DataProvider<List<EphemeralFeatureFlag>> {
+  /** Returns a merged list of feature flags by resolving values. */
+  fun loadEphemeralFeatureFlags(): DataProvider<List<EphemeralFeatureFlag>> {
     return dataProviders.createInMemoryDataProviderAsync(LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID) {
       val defaultFlags = platformParameterControllerProdImpl.loadSupportedFeatureFlags()
       val remoteFlags = platformParameterControllerProdImpl.loadRemoteFeatureFlags()
@@ -150,6 +156,28 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.
+    }
+  }
+
+  /** An application-scoped factory for building new [PlatformParameterControllerDebugImpl]s. */
+  // TODO(#5835): Remove this factory once the hack for initializing parameters in tests is gone.
+  class Factory @Inject constructor(
+    private val platformParameterControllerProdImpl: PlatformParameterControllerProdImpl,
+    private val dataProviders: DataProviders,
+    private val oppiaLogger: OppiaLogger,
+    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
+  ) {
+    /**
+     * Returns a new [PlatformParameterControllerDebugImpl] for the specified [processState].
+     *
+     * This method should only ever be called once since there should only ever be one instance of
+     * [PlatformParameterController] for the lifetime of an Oppia Android application process.
+     */
+    fun create(processState: PlatformParameterProcessState): PlatformParameterControllerDebugImpl {
+      return PlatformParameterControllerDebugImpl(
+        platformParameterControllerProdImpl, dataProviders, oppiaLogger, processState,
+        backgroundCoroutineDispatcher
+      )
     }
   }
 
