@@ -9,6 +9,7 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
+import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import org.xml.sax.SAXException
@@ -19,7 +20,6 @@ import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.xml.parsers.DocumentBuilderFactory
-import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 
 /** Comprehensive tests for [LintProjectDescription]. */
 @Suppress("FunctionName")

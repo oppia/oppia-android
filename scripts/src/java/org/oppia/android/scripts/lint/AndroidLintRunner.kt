@@ -3,6 +3,7 @@ package org.oppia.android.scripts.lint
 import com.android.SdkConstants
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
+import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import java.io.File
@@ -11,7 +12,6 @@ import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import com.android.tools.lint.Main as LintCli
-import org.oppia.android.scripts.common.CommandExecutor
 
 /** The default timeout duration for executing external processes. */
 private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
@@ -84,7 +84,7 @@ class AndroidLintAnalyzer(
   private val commandExecutor: CommandExecutor,
   private val groupByIssueSeverity: Boolean = false
 ) {
-  private val bazelClient=BazelClient(repoRoot,commandExecutor)
+  private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
     private const val LINT_REPORT_FILE = "lint-report.xml"
     private const val JAVA_HOME_KEY = "java-home"

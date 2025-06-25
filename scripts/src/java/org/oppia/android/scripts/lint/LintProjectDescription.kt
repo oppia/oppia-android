@@ -2,13 +2,13 @@ package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
 import org.oppia.android.scripts.common.BazelClient
+import org.oppia.android.scripts.common.CommandExecutor
 import java.io.File
 import java.io.IOException
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
-import org.oppia.android.scripts.common.CommandExecutor
 
 /**
  * Enum representing module names in the project.
