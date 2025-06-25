@@ -5646,6 +5646,52 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_retainStateOnConfigurationChange() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      rotateToLandscape()
+
+      // Verify feedback is visible.
+      val expectedFeedback = "Need help? No problem. Let's review the solution to the previous" +
+        " question."
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString(expectedFeedback))))
+
+      // Verify content is visible.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.content_text_view))
+        .check(matches(withText(containsString("What fraction represents half of something?"))))
+
+      // Verify solution is visible.
+      scrollToViewType(STATE_SOLUTION)
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText("The only solution is: 1/2")))
+
+      val expectedSolutionSummary = "Half of something has one part in the numerator for" +
+        " every two parts in the denominator."
+      onView(withId(R.id.solution_summary))
+        .check(matches(withText(containsString(expectedSolutionSummary))))
+
+      onView(withId(R.id.solution_summary))
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
+      // Verify Return to question button is visible.
+      scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+      onView(withId(R.id.return_to_question_button)).check(
+        matches(withText(R.string.state_return_to_question_button))
+      )
+    }
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()

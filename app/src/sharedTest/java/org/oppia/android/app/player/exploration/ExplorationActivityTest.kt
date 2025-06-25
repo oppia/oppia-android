@@ -2035,6 +2035,36 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
+  @Test
+  fun testFlashbackState_configurationChange_flashbackToolbarTitle_isDisplayedSuccessfully() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      moveToFlashbackState()
+      
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify text of toolbar title.
+      onView(withId(R.id.flashback_toolbar_title))
+        .check(matches(withText("Revisit Previous Question")))
+
+      // Verify toolbar color.
+      onView(withId(R.id.exploration_toolbar)).check { view, _ ->
+        val toolbar = view as Toolbar
+        val actualColor = (toolbar.background as ColorDrawable).color
+        val expectedColor = context.getColor(R.color.color_def_oppia_brown_dark)
+        assertThat(expectedColor).isEqualTo(actualColor)
+      }
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
