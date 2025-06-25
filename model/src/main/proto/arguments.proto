@@ -957,7 +957,7 @@ message StatePlayerRecyclerViewAssemblerState {
 // Arguments that are saved on configuration changes in FeatureFlagsFragment.
 message FeatureFlagsFragmentArgument {
   // Map of current feature flag states.
-  map<string, bool> feature_flag_states = 1;
+ repeated OverriddenFeatureFlag feature_flag_states = 1;
 }
 message PlatformParametersFragmentArgument {
   repeated PlatformParameterDefinition platform_parameter_states = 1;

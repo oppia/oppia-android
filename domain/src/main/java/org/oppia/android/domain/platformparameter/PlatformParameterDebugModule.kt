@@ -11,11 +11,11 @@ import javax.inject.Singleton
     FeatureFlagsMapBindingModule::class,
     FeatureFlagBindingModule::class,
     PlatformParameterBindingModule::class,
-    PlatformParameterControllerDebugModule.PlatformParameterProcessStateModule::class,
-    PlatformParameterControllerDebugModule.PlatformParameterControllerProdImplModule::class
+    PlatformParameterDebugModule.PlatformParameterProcessStateModule::class,
+    PlatformParameterDebugModule.PlatformParameterControllerProdImplModule::class
   ]
 )
-interface PlatformParameterControllerDebugModule {
+interface PlatformParameterDebugModule {
   @Binds
   fun bindPlatformParameterController(
     impl: PlatformParameterControllerDebugImpl

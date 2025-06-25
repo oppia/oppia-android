@@ -12,6 +12,16 @@ kt_jvm_library(
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_reporter_lib",
         "//third_party:com_android_tools_lint_lint",
     ],
+)
+
+kt_jvm_library(
+    name = "lint_reporter_lib",
+    testonly = True,
+    srcs = [
+        "LintAnalysisReporter.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
 )

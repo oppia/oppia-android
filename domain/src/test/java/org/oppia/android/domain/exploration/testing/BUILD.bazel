@@ -15,7 +15,6 @@ oppia_android_test(
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:fake_exploration_retriever",
         "//domain/src/main/java/org/oppia/android/domain/exploration/testing:test_module",
         "//domain/src/main/java/org/oppia/android/domain/oppialogger/analytics:prod_module",
-        "//domain/src/main/java/org/oppia/android/domain/platformparameter:prod_module",
         "//testing",
         "//testing/src/main/java/org/oppia/android/testing/platformparameter:test_module",
         "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
