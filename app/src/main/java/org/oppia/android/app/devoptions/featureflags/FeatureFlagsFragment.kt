@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.FeatureFlagsFragmentArgument
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.util.extensions.getProto
@@ -36,14 +37,14 @@ class FeatureFlagsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    var featureFlagStates: MutableList<OverriddenFeatureFlag> = mutableListOf()
+    var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY,
         FeatureFlagsFragmentArgument.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList?.toMutableList()
-        ?: mutableListOf()
+      featureFlagStates = args?.featureFlagStatesList?.associate { it.id to it.overriddenIsEnabled }
+        ?.toMutableMap() ?: mutableMapOf()
     }
 
     return featureFlagsFragmentPresenter.handleCreateView(inflater, container, featureFlagStates)
@@ -54,6 +55,12 @@ class FeatureFlagsFragment : InjectableFragment() {
 
     val featureFlagStates =
       featureFlagsFragmentPresenter.featureFlagStates
+        .map {
+          OverriddenFeatureFlag.newBuilder()
+            .setId(it.key)
+            .setOverriddenIsEnabled(it.value)
+            .build()
+        }
 
     val proto = FeatureFlagsFragmentArgument.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
