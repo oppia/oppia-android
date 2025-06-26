@@ -36,6 +36,14 @@ import javax.inject.Singleton
 )
 class TestPlatformParameterModule {
   private val processState by lazy { PlatformParameterProcessState() }
+
+  @Provides
+  @Singleton
+  fun providePlatformParameterControllerProdImpl(
+    platformParameterProcessState: PlatformParameterProcessState,
+    factory: PlatformParameterControllerProdImpl.Factory
+  ) = factory.create(platformParameterProcessState)
+
   @Provides
   @Singleton
   fun providePlatformParameterController(
