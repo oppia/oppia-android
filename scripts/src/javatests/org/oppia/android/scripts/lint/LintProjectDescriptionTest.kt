@@ -174,7 +174,9 @@ class LintProjectDescriptionTest {
   ) {
     val buildFile = tempFolder.newFile("$moduleName/BUILD.bazel")
     val depsSection = createDependenciesSection(dependencies)
-
+    val sources = "src/main/java/"
+    val testSources = "src/test/java/"
+    val extension = "/*.kt"
     buildFile.writeText(
       """
       load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library", "kt_jvm_test")
@@ -182,13 +184,13 @@ class LintProjectDescriptionTest {
       
       kt_jvm_library(
           name = "${moduleName}_lib",
-          srcs = glob(["src/main/java/**/*.kt"]),$depsSection
+          srcs = glob(["$sources**$extension"]),$depsSection
           visibility = ["//visibility:public"],
       )
       
       kt_jvm_test(
           name = "${moduleName}_test",
-          srcs = glob(["src/test/java/**/*.kt"]),
+          srcs = glob(["$testSources**$extension"]),
           deps = [
               ":${moduleName}_lib",
               artifact("junit:junit"),
