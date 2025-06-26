@@ -248,6 +248,7 @@ class StateFragmentPresenter @Inject constructor(
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
+      .addRedirectionSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,

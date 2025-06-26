@@ -89,6 +89,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
@@ -5399,15 +5400,11 @@ class StateFragmentTest {
 
   @Test
   fun testStateFragment_inputRatio_wrongAnswerSubmitted_continueButtonIsVisible() {
-    setUpTestWithLanguageSwitchingFeatureOff()
+    setUpTestWithFlashbackFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
-      playThroughPrototypeState1()
-      playThroughPrototypeState2()
-      playThroughPrototypeState3()
-      playThroughPrototypeState4()
-      playThroughPrototypeState5()
-      playThroughPrototypeState6()
+
+      navigateToPrototypeRatioInputState()
 
       // Submit wrong answer.
       typeRatioExpression("4:7")
@@ -5417,6 +5414,92 @@ class StateFragmentTest {
       scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
       onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
     }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_flashbackButtonIsVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_flashbackFeatureOff_onSubmitWrongRatioAnswer_flashbackButtonIsNotVisible() {
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify continue button is visible.
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
+
+      // Verify submit button is not visible.
+      onView(withId(R.id.submit_answer_button)).check(doesNotExist())
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_retainStateOnConfigurationChange() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  private fun navigateToPrototypeRatioInputState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
   }
 
   private fun playThroughRatioExplorationState1() {
@@ -6055,6 +6138,16 @@ class StateFragmentTest {
 
   private fun setUpTestWithSurveyFeatureOff() {
     TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOn() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOff() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     setUpTest()
   }
 
