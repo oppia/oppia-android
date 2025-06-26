@@ -1,5 +1,6 @@
 package org.oppia.android.app.devoptions.platformparameters
 
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
-import org.oppia.android.app.model.PlatformParameterDefinition
 
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
@@ -28,13 +30,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
-  var platformParameterStates: MutableList<PlatformParameterDefinition> = mutableListOf()
+  var platformParameterStates:
+    MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    platformParameterStates: MutableList<PlatformParameterDefinition>
+    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>
   ): View? {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -45,9 +48,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       onBackNavigation()
     }
     if (platformParameterStates.isNotEmpty()) {
-      this.platformParameterStates = platformParameterStates
+      this.platformParameterStates = platformParameterStates.toMutableMap()
     }
-    oppiaLogger.d("PlatformParametersFragment", platformParameterStates.toString())
+    oppiaLogger.d("PlatformParametersFragment", "States are: $platformParameterStates")
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
     binding.platformParametersRecyclerView.apply {
@@ -78,51 +81,60 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
-    if()
+    // binding.platformParameterInputLayout.error ="Invalid Input"
+    if (model.currentValue.hasBoolean()) {
 
-
-
-//    val index = platformParametersViewModel.platformParameterList.value?.indexOf(model)!!
-//    val totalSize = platformParametersViewModel.platformParameterList.value?.size
-//
-//    if (platformParameterStates.size != totalSize)
-//      platformParameterStates.add(model.currentValue)
-//
-//    oppiaLogger.d(
-//      "PlatformParametersFragment",
-//      "Index is: $index, " +
-//        "Total Size is: $totalSize, Current Value is: ${platformParameterStates[index].integer}" +
-//        "${platformParameterStates[index].string} ${platformParameterStates[index].boolean}"
-//    )
-//    if (model.currentValue.hasBoolean()) {
-//
-//      binding.isEnabled = platformParameterStates[index].boolean
-//      binding.platformParameterSwitch.setOnCheckedChangeListener { _, isChecked ->
-//        platformParameterStates[index] = PlatformParameterValue.newBuilder()
-//          .setBoolean(isChecked)
-//          .build()
-//      }
-//      binding.isInputVisible = false
-//    } else if (model.currentValue.hasInteger()) {
-//      binding.inputValue = platformParameterStates[index].integer.toString()
-//      binding.isInputVisible = true
-//      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
-//
-//      binding.platformParameterInputEditText.onTextChanged { inputValue ->
-//        if (!inputValue.isNullOrEmpty()) {
-//          platformParameterStates[index] = PlatformParameterValue.newBuilder()
-//            .setInteger(inputValue.toInt())
-//            .build()
-//        } else {
-//          binding.platformParameterInputLayout.error = "Invalid Input"
-//        }
-//      }
-//    } else {
-//      binding.isInputVisible = true
-//      binding.inputValue = platformParameterStates[index].string
-//    }
-//    binding.syncStatusValueTextView.setBackgroundResource(
-//      platformParametersViewModel.getSyncStatusBackground(model.syncStatus)
-//    )
+      if (platformParameterStates.containsKey(model.platformParameterId)) {
+        model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
+      }
+      model.onToggleCallback = { id, value ->
+        platformParameterStates[id] = PlatformParameterValue.newBuilder()
+          .setBoolean(value)
+          .build()
+      }
+    } else if (model.currentValue.hasInteger()) {
+      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
+      if (platformParameterStates.containsKey(model.platformParameterId)) {
+        if (platformParameterStates[model.platformParameterId]?.integer == -1) {
+          binding.platformParameterInputLayout.error = "Invalid Input"
+          model.inputValue.set("")
+        } else {
+          binding.platformParameterInputLayout.error = null
+          model.inputValue
+            .set(platformParameterStates[model.platformParameterId]?.integer.toString())
+        }
+      }
+      binding.platformParameterInputEditText.onTextChanged { value ->
+        if (value.isNullOrEmpty() || value.toIntOrNull() == null) {
+          binding.platformParameterInputLayout.error = "Invalid Input"
+          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
+            .setInteger(-1)
+            .build()
+        } else {
+          binding.platformParameterInputLayout.error = null
+          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
+            .setInteger(value.toIntOrNull() ?: 0)
+            .build()
+        }
+      }
+    } else {
+      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_TEXT
+      if (platformParameterStates.containsKey(model.platformParameterId)) {
+        model.inputValue.set(platformParameterStates[model.platformParameterId]?.string)
+      }
+      binding.platformParameterInputEditText.onTextChanged { value ->
+        if (value.isNullOrEmpty()) {
+          binding.platformParameterInputLayout.error = "Invalid Input"
+          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
+            .setString("")
+            .build()
+        } else {
+          binding.platformParameterInputLayout.error = null
+          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
+            .setString(value)
+            .build()
+        }
+      }
+    }
   }
 }

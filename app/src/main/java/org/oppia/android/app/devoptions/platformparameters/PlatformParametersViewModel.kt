@@ -6,7 +6,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 @FragmentScope
 class PlatformParametersViewModel @Inject constructor(
-  private val platformParameterDebugController: PlatformParameterDebugController,
+  private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
@@ -36,7 +36,7 @@ class PlatformParametersViewModel @Inject constructor(
   }
 
   private fun loadPlatformParameters() {
-    val dataProvider = platformParameterDebugController.loadEphemeralPlatformParameters()
+    val dataProvider = platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
     dataProvider.toLiveData().observeForever { result ->
       when (result) {
         is AsyncResult.Success ->
