@@ -29,6 +29,8 @@ class LintProjectDescriptionTest {
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private val longCommandExecutor by lazy { initializeCommandExecutorWithLongProcessWaitTime() }
   private val fakeCommandExecutor by lazy { FakeCommandExecutor() }
+  private lateinit var lintModelCreator: LintModelCreator
+  private lateinit var modelDirectory: File
 
   private lateinit var testBazelWorkspace: TestBazelWorkspace
   private lateinit var bazelClient: BazelClient
@@ -50,6 +52,11 @@ class LintProjectDescriptionTest {
       repoRoot = tempFolder.root,
       workingDirectory = workingDirectory,
       commandExecutor = fakeCommandExecutor
+    )
+    modelDirectory = tempFolder.newFolder("model-directory")
+    lintModelCreator = LintModelCreator(
+      modelDir = modelDirectory,
+      repoRoot = tempFolder.root
     )
 
     setupProjectStructure()
@@ -411,6 +418,279 @@ class LintProjectDescriptionTest {
     // Verify the AAR was extracted
     val extractedAarsDir = File(workingDirectory, "extracted-aars")
     assertThat(extractedAarsDir.exists()).isTrue()
+  }
+
+  @Test
+  fun testLintModelCreator_generateModelFiles_createsRequiredDirectories() {
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    val result = lintModelCreator.generateModelFiles(moduleConfig)
+
+    assertThat(result.exists()).isTrue()
+    assertThat(result.isDirectory).isTrue()
+    assertThat(File(result, "build").exists()).isTrue()
+    assertThat(File(result, "build/classes").exists()).isTrue()
+  }
+
+  @Test
+  fun testLintModelCreator_generateModelFiles_createsModuleXml() {
+    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val moduleXmlFile = File(modelDirectory, "module.xml")
+    assertThat(moduleXmlFile.exists()).isTrue()
+
+    val content = moduleXmlFile.readText()
+    assertThat(content).contains("<lint-module")
+    assertThat(content).contains("name=\"utility\"")
+    assertThat(content).contains("type=\"LIBRARY\"")
+    assertThat(content).contains("maven=\"__non_maven__\"")
+    assertThat(content).contains("neverShrinking=\"true\"")
+    assertThat(content).contains("<variant name=\"main\"/>")
+  }
+
+  @Test
+  fun testLintModelCreator_generateModelFiles_createsVariantXml() {
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    assertThat(variantXmlFile.exists()).isTrue()
+
+    val content = variantXmlFile.readText()
+    assertThat(content).contains("<variant")
+    assertThat(content).contains("name=\"main\"")
+    assertThat(content).contains("minSdkVersion=\"21\"")
+    assertThat(content).contains("targetSdkVersion=\"34\"")
+    assertThat(content).contains("debuggable=\"true\"")
+    assertThat(content).contains("package=\"org.oppia.android.app\"")
+    assertThat(content).contains("<buildFeatures")
+    assertThat(content).contains("coreLibraryDesugaring=\"true\"")
+    assertThat(content).contains("viewBinding=\"true\"")
+  }
+
+  @Test
+  fun testLintModelCreator_generateModelFiles_createsArtifactLibrariesXml() {
+    val moduleConfig = createTestModuleConfig("data", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val librariesXmlFile = File(modelDirectory, "main-mainArtifact-libraries.xml")
+    assertThat(librariesXmlFile.exists()).isTrue()
+
+    val content = librariesXmlFile.readText()
+    assertThat(content).contains("<libraries>")
+    assertThat(content).contains("</libraries>")
+  }
+
+  @Test
+  fun testLintModelCreator_generateModelFiles_createsDependenciesXml() {
+    val moduleConfig = createTestModuleConfig("testing", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val dependenciesXmlFile = File(modelDirectory, "main-mainArtifact-dependencies.xml")
+    assertThat(dependenciesXmlFile.exists()).isTrue()
+
+    val content = dependenciesXmlFile.readText()
+    assertThat(content).contains("<dependencies>")
+    assertThat(content).contains("</dependencies>")
+  }
+
+  @Test
+  fun testLintModelCreator_appModule_hasCorrectType() {
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val moduleXmlFile = File(modelDirectory, "module.xml")
+    val content = moduleXmlFile.readText()
+    assertThat(content).contains("type=\"APP\"")
+  }
+
+  @Test
+  fun testLintModelCreator_libraryModule_hasCorrectType() {
+    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val moduleXmlFile = File(modelDirectory, "module.xml")
+    val content = moduleXmlFile.readText()
+    assertThat(content).contains("type=\"LIBRARY\"")
+  }
+
+  @Test
+  fun testLintModelCreator_extractsPackageFromManifest() {
+    val moduleConfig = createTestModuleConfig("domain", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    assertThat(content).contains("package=\"org.oppia.android.domain\"")
+  }
+
+  @Test
+  fun testLintModelCreator_includesManifestFile() {
+    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    val expectedManifestPath = File(tempFolder.root,
+      "utility/src/main/AndroidManifest.xml").absolutePath
+    assertThat(content).contains("manifest=\"$expectedManifestPath\"")
+  }
+
+  @Test
+  fun testLintModelCreator_includesJavaDirectories() {
+    val moduleConfig = createTestModuleConfig("data", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    val expectedJavaPath = File(tempFolder.root, "data/src/main/java").absolutePath
+    assertThat(content).contains("javaDirectories=\"$expectedJavaPath\"")
+  }
+
+  @Test
+  fun testLintModelCreator_includesResourceDirectories() {
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    val expectedResPath = File(tempFolder.root, "app/src/main/res").absolutePath
+    assertThat(content).contains("resDirectories=\"$expectedResPath\"")
+  }
+
+  @Test
+  fun testLintModelCreator_includesTestSourceProviders() {
+    val moduleConfig = createTestModuleConfig("testing", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    assertThat(content).contains("<testSourceProviders>")
+    assertThat(content).contains("</testSourceProviders>")
+  }
+
+  @Test
+  fun testLintModelCreator_handlesProguardFiles() {
+    // Create proguard directory and files for app module
+    val proguardDir = tempFolder.newFolder("config", "proguard")
+    val proguardFile = File(proguardDir, "app-rules.pro")
+    proguardFile.writeText("# Proguard rules")
+
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    assertThat(content).contains("proguardFiles=")
+    assertThat(content).contains("app-rules.pro")
+  }
+
+  @Test
+  fun testLintModelCreator_generatesWellFormedXml() {
+    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val xmlFiles = listOf("module.xml", "main.xml",
+      "main-mainArtifact-libraries.xml", "main-mainArtifact-dependencies.xml")
+
+    xmlFiles.forEach { fileName ->
+      val xmlFile = File(modelDirectory, fileName)
+      assertThat(xmlFile.exists()).isTrue()
+
+      val parser = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+      val parsingException = try {
+        parser.parse(xmlFile.inputStream())
+        null
+      } catch (e: SAXException) {
+        e
+      }
+
+      assertThat(parsingException).isNull()
+    }
+  }
+
+  @Test
+  fun testLintModelCreator_buildsAbsolutePaths() {
+    val moduleConfig = createTestModuleConfig("domain", isLibrary = true)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+
+    val manifestPattern = Regex("""manifest="([^"]+)"""")
+    val javaPattern = Regex("""javaDirectories="([^"]+)"""")
+    val resPattern = Regex("""resDirectories="([^"]+)"""")
+
+    manifestPattern.find(content)?.let { match ->
+      val manifestPath = match.groupValues[1]
+      assertThat(File(manifestPath).isAbsolute).isTrue()
+      assertThat(File(manifestPath).exists()).isTrue()
+    }
+
+    javaPattern.find(content)?.let { match ->
+      val javaPath = match.groupValues[1]
+      assertThat(File(javaPath).isAbsolute).isTrue()
+      assertThat(File(javaPath).exists()).isTrue()
+    }
+
+    resPattern.find(content)?.let { match ->
+      val resPath = match.groupValues[1]
+      assertThat(File(resPath).isAbsolute).isTrue()
+      assertThat(File(resPath).exists()).isTrue()
+    }
+  }
+
+  @Test
+  fun testLintModelCreator_handlesAssetsDirectory() {
+    val assetsDir = tempFolder.newFolder("app", "src", "main", "assets")
+    val assetFile = File(assetsDir, "test-asset.txt")
+    assetFile.writeText("test content")
+
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val content = variantXmlFile.readText()
+    assertThat(content).contains("assetsDirectories=")
+    assertThat(content).contains(assetsDir.absolutePath)
+  }
+
+  private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
+    val manifestPath = "${tempFolder.root}/$moduleName/src/main/AndroidManifest.xml"
+    val resourceDirs = listOf("${tempFolder.root}/$moduleName/src/main/res")
+    val srcFiles = listOf("${tempFolder.root}/$moduleName/src/main/java/${moduleName.capitalize()}Class.kt")
+    val testFiles = listOf("${tempFolder.root}/$moduleName/src/test/java/${moduleName.capitalize()}ClassTest.kt")
+
+    return ModuleConfig(
+      name = moduleName,
+      isLibrary = isLibrary,
+      isAndroid = true,
+      isTest = false,
+      manifestFile = manifestPath,
+      resourceDirs = resourceDirs,
+      dependencies = emptyList(),
+      srcFiles = srcFiles,
+      testFiles = testFiles,
+      jarFiles = emptyList(),
+      aarFiles = emptyList(),
+      lintCheckJars = emptyList()
+    )
   }
 
   private fun setupFakeCommandExecutorForAarDependencies(aarPath: String) {
