@@ -115,6 +115,7 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -893,7 +894,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     targetList += ReturnToQuestionViewModel(
       hasConversationView,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      fragment as ReturnToQuestionButtonListener,
     )
   }
 

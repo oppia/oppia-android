@@ -226,6 +226,10 @@ class StateFragmentPresenter @Inject constructor(
     dialogFragment.showNow(fragment.childFragmentManager, TAG_FLASHBACK_CONFIRMATION_DIALOG)
   }
 
+  fun onReturnToQuestionButtonClicked() {
+    explorationProgressController.moveBackToLatest()
+  }
+
   fun onResponsesHeaderClicked() {
     recyclerViewAssembler.togglePreviousAnswers(stateViewModel.itemList)
     recyclerViewAssembler.adapter.notifyDataSetChanged()

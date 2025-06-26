@@ -87,4 +87,9 @@ class ExplorationFragment : InjectableFragment() {
   fun getExplorationCheckpointState() = explorationFragmentPresenter.getExplorationCheckpointState()
 
   fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
+
+  //subha
+  fun onFlashbackToolbarBackPressed() {
+    explorationFragmentPresenter.onFlashbackToolbarBackPressed()
+  }
 }

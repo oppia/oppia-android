@@ -26,6 +26,7 @@ import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListene
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
@@ -40,7 +41,8 @@ class StateFragment :
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
   ShowHintAvailabilityListener,
-  FlashbackButtonListener {
+  FlashbackButtonListener,
+  ReturnToQuestionButtonListener {
   companion object {
 
     /** Arguments key for StateFragment. */
@@ -134,6 +136,10 @@ class StateFragment :
 
   override fun onFlashbackButtonClicked(stateName: String) {
     stateFragmentPresenter.onFlashbackButtonClicked(stateName)
+  }
+
+  override fun onReturnToQuestionButtonClicked() {
+    stateFragmentPresenter.onReturnToQuestionButtonClicked()
   }
 
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()

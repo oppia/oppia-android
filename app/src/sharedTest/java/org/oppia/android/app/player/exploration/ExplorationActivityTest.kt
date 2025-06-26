@@ -2064,6 +2064,125 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
+  @Test
+  fun testFlashbackState_onClickCloseIconOnFlashbackState_flashbackToolbarIsNotVisible() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      moveToFlashbackState()
+
+      // Click close icon on flashback toolbar.
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify flashback toolbar title is not displayed.
+      onView(withId(R.id.flashback_toolbar_title)).check(matches(not(isDisplayed())))
+
+      // Verify toolbar color.
+      onView(withId(R.id.exploration_toolbar)).check { view, _ ->
+        val toolbar = view as Toolbar
+        val actualColor = (toolbar.background as ColorDrawable).color
+        val expectedColor = context.getColor(R.color.color_def_oppia_green)
+        assertThat(expectedColor).isEqualTo(actualColor)
+      }
+
+      // Verify text of toolbar title.
+      onView(withId(R.id.exploration_toolbar_title))
+        .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  fun testFlashbackState_backPressedOnFlashbackState_flashbackToolbarIsNotVisible() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      moveToFlashbackState()
+      pressBack()
+
+      // Verify flashback toolbar title is not displayed.
+      onView(withId(R.id.flashback_toolbar_title)).check(matches(not(isDisplayed())))
+
+      // Verify toolbar color.
+      onView(withId(R.id.exploration_toolbar)).check { view, _ ->
+        val toolbar = view as Toolbar
+        val actualColor = (toolbar.background as ColorDrawable).color
+        val expectedColor = context.getColor(R.color.color_def_oppia_green)
+        assertThat(expectedColor).isEqualTo(actualColor)
+      }
+
+      // Verify text of toolbar title.
+      onView(withId(R.id.exploration_toolbar_title))
+        .check(matches(withText("Prototype Exploration")))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  fun testFlashbackState_onClickCloseIconOnFlashbackState_moveToLatestPendingState() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      moveToFlashbackState()
+
+      // Click close icon on flashback toolbar.
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify navigation to latest pending state.
+      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
+        " The ratio of the two numbers is:"
+      verifyContentContains(expectedText)
+
+      // Verify submit button is visible.
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
+
+      // Verify flashback button is visible.
+      onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  fun testFlashbackState_backPressedOnFlashbackState_moveToLatestPendingState() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      moveToFlashbackState()
+      pressBack()
+
+      // Verify navigation to latest pending state.
+      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
+        " The ratio of the two numbers is:"
+      verifyContentContains(expectedText)
+
+      // Verify submit button is visible.
+      onView(withId(R.id.submit_answer_button)).check(matches(isDisplayed()))
+
+      // Verify flashback button is visible.
+      onView(withId(R.id.flashback_button)).check(matches(isDisplayed()))
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()

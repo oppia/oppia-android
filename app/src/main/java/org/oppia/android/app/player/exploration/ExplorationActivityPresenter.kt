@@ -329,7 +329,11 @@ class ExplorationActivityPresenter @Inject constructor(
    * [ProgressDatabaseFullDialogFragment] depending upon the state of the saved checkpoint for the
    * current exploration.
    */
-  fun backButtonPressed() {
+  fun backButtonPressed() {//subha 1.6
+    if (exploreViewModel.showFlashbackToolbar.get() == true) {
+      getExplorationFragment()?.onFlashbackToolbarBackPressed()
+      return
+    }
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
