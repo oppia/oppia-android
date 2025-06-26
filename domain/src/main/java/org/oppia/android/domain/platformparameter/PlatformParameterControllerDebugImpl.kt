@@ -19,12 +19,12 @@ import javax.inject.Inject
  * Debug implementation for the controller to manage and synchronize platform parameters and
  * feature flags.
  */
-class PlatformParameterControllerDebugImpl(
+class PlatformParameterControllerDebugImpl @Inject constructor(
   private val platformParameterControllerProdImpl: PlatformParameterControllerProdImpl,
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
   private val processState: PlatformParameterProcessState,
-  private val backgroundCoroutineDispatcher: CoroutineDispatcher
+  @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : PlatformParameterController {
 
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
@@ -156,28 +156,6 @@ class PlatformParameterControllerDebugImpl(
 
       // Erase the data provider's value so that callers cannot inadvertently depend on the actual
       // list of parameters available.
-    }
-  }
-
-  /** An application-scoped factory for building new [PlatformParameterControllerDebugImpl]s. */
-  // TODO(#5835): Remove this factory once the hack for initializing parameters in tests is gone.
-  class Factory @Inject constructor(
-    private val platformParameterControllerProdImpl: PlatformParameterControllerProdImpl,
-    private val dataProviders: DataProviders,
-    private val oppiaLogger: OppiaLogger,
-    @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
-  ) {
-    /**
-     * Returns a new [PlatformParameterControllerDebugImpl] for the specified [processState].
-     *
-     * This method should only ever be called once since there should only ever be one instance of
-     * [PlatformParameterController] for the lifetime of an Oppia Android application process.
-     */
-    fun create(processState: PlatformParameterProcessState): PlatformParameterControllerDebugImpl {
-      return PlatformParameterControllerDebugImpl(
-        platformParameterControllerProdImpl, dataProviders, oppiaLogger, processState,
-        backgroundCoroutineDispatcher
-      )
     }
   }
 
