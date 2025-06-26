@@ -476,6 +476,7 @@ private class ModuleConfigurationBuilder(
     )
   }
 
+  /** Builds the model directory for each module configuration. */
   fun buildModelDirectory(moduleConfigs: List<ModuleConfig>): List<ModuleConfig> {
     return moduleConfigs.map { moduleConfig ->
       val modelDirectory = File(modelsDirectory, moduleConfig.name)
