@@ -1,6 +1,9 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
+import com.android.tools.lint.model.LintModelModuleType.APP
+import com.android.tools.lint.model.LintModelModuleType.LIBRARY
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import java.io.File
@@ -12,10 +15,6 @@ import java.util.zip.ZipException
 import java.util.zip.ZipFile
 import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
-import com.android.tools.lint.model.LintModelMavenName
-import com.android.tools.lint.model.LintModelModuleType.APP
-import com.android.tools.lint.model.LintModelModuleType.LIBRARY
-import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 
 /**
  * Enum representing module names in the project.
@@ -811,7 +810,8 @@ class LintModelCreator(
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = AndroidBuildSdkProperties().buildToolsVersion
 
-    val content = """
+    val content =
+      """
       <lint-module
           dir="$relativeProjectPath"
           name="${moduleConfig.name}"
@@ -824,7 +824,7 @@ class LintModelCreator(
           <lintOptions />
           <variant name="main"/>
       </lint-module>
-    """.trimIndent()
+      """.trimIndent()
 
     moduleFile.writeText(content)
   }
@@ -837,9 +837,11 @@ class LintModelCreator(
     val packageName = extractPackageFromManifest(moduleConfig.manifestFile)
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
     val proguardAttribute = createProguardAttribute(moduleConfig.name)
-    val classOutputPath = buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
+    val classOutputPath =
+      buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
 
-    val content = """
+    val content =
+      """
       <variant
           name="main"
           minSdkVersion="$MIN_SDK_VERSION"
@@ -862,7 +864,7 @@ class LintModelCreator(
               applicationId="$packageName">
           </mainArtifact>
       </variant>
-    """.trimIndent()
+      """.trimIndent()
 
     variantFile.writeText(content)
   }

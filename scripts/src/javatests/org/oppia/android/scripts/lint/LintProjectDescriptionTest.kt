@@ -540,8 +540,10 @@ class LintProjectDescriptionTest {
 
     val variantXmlFile = File(modelDirectory, "main.xml")
     val content = variantXmlFile.readText()
-    val expectedManifestPath = File(tempFolder.root,
-      "utility/src/main/AndroidManifest.xml").absolutePath
+    val expectedManifestPath = File(
+      tempFolder.root,
+      "utility/src/main/AndroidManifest.xml"
+    ).absolutePath
     assertThat(content).contains("manifest=\"$expectedManifestPath\"")
   }
 
@@ -604,8 +606,10 @@ class LintProjectDescriptionTest {
 
     lintModelCreator.generateModelFiles(moduleConfig)
 
-    val xmlFiles = listOf("module.xml", "main.xml",
-      "main-mainArtifact-libraries.xml", "main-mainArtifact-dependencies.xml")
+    val xmlFiles = listOf(
+      "module.xml", "main.xml",
+      "main-mainArtifact-libraries.xml", "main-mainArtifact-dependencies.xml"
+    )
 
     xmlFiles.forEach { fileName ->
       val xmlFile = File(modelDirectory, fileName)
@@ -674,8 +678,10 @@ class LintProjectDescriptionTest {
   private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
     val manifestPath = "${tempFolder.root}/$moduleName/src/main/AndroidManifest.xml"
     val resourceDirs = listOf("${tempFolder.root}/$moduleName/src/main/res")
-    val srcFiles = listOf("${tempFolder.root}/$moduleName/src/main/java/${moduleName.capitalize()}Class.kt")
-    val testFiles = listOf("${tempFolder.root}/$moduleName/src/test/java/${moduleName.capitalize()}ClassTest.kt")
+    val srcFiles =
+      listOf("${tempFolder.root}/$moduleName/src/main/java/${moduleName.capitalize()}Class.kt")
+    val testFiles =
+      listOf("${tempFolder.root}/$moduleName/src/test/java/${moduleName.capitalize()}ClassTest.kt")
 
     return ModuleConfig(
       name = moduleName,
