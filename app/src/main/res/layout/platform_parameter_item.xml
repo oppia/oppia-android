@@ -51,6 +51,7 @@
                 android:focusable="false"
                 android:minWidth="48dp"
                 android:minHeight="48dp"
+                android:onClick="@{() -> viewModel.onUserToggle()}"
                 android:theme="@style/OppiaSwitchCompatTheme"
                 android:visibility="@{viewModel.isInputVisible ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -60,8 +61,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/platform_parameter_input_layout"
                 style="@style/TextInputLayout"
-                android:layout_width="70dp"
-                android:layout_height="55dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:layout_marginVertical="5dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="4dp"
@@ -71,14 +73,13 @@
                 app:errorIconDrawable="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:startIconTint="@color/component_color_shared_primary_dark_text_color">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/platform_parameter_input_edit_text"
                     style="@style/TextInputEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
                     android:layout_margin="@dimen/space_0dp"
                     android:gravity="center"
                     android:maxLength="5"

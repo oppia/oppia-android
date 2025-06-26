@@ -38,8 +38,11 @@
   <string name="feature_flag_server_sync_status" translatable="false">Server</string>
   <string name="feature_flag_unknown_sync_status" translatable="false">Unknown</string>
   <string name="platform_parameters_activity_title" translatable="false">Platform Parmeters</string>
-  <string name="feature_flag_reset_message" translatable="false">Reset to Server / Defaults</string>
-  <string name="feature_flag_reset_button_text" translatable="false">Reset</string>
+  <string name="platform_parameter_sync_status" translatable="false">Sync Status</string>
+  <string name="platform_parameter_default_sync_status" translatable="false">Default</string>
+  <string name="platform_parameter_server_sync_status" translatable="false">Server</string>
+  <string name="platform_parameter_unknown_sync_status" translatable="false">Unknown</string>
+  <string name="platform_parameter_invalid_input_error_msg" translatable="false">Invalid Input</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>

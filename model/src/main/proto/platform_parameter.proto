@@ -287,3 +287,15 @@ message OverriddenFeatureFlag {
   // Whether the override enables or disables the feature.
   bool overridden_is_enabled = 2;
 }
+
+// Corresponds to a developer override of a platform parameter.
+message OverriddenPlatformParameter {
+  //  The unique ID of the overridden platform parameter which corresponds to a
+  //  PlatformParameterDefintion
+  PlatformParameterId id = 1;
+
+  // Indicates whether the overridden platform parameter is empty (i.e. not set).
+  bool is_empty = 2;
+  // The overridden value of the platform parameter.
+  PlatformParameterValue overridden_value = 3;
+}

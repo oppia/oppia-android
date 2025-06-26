@@ -960,5 +960,5 @@ message FeatureFlagsFragmentArgument {
  repeated OverriddenFeatureFlag feature_flag_states = 1;
 }
 message PlatformParametersFragmentArgument {
-  repeated PlatformParameterDefinition platform_parameter_states = 1;
+  repeated OverriddenPlatformParameter platform_parameter_states = 1;
 }
