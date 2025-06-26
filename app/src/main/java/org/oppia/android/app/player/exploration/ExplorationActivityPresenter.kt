@@ -329,7 +329,7 @@ class ExplorationActivityPresenter @Inject constructor(
    * [ProgressDatabaseFullDialogFragment] depending upon the state of the saved checkpoint for the
    * current exploration.
    */
-  fun backButtonPressed() {//subha 1.6
+  fun backButtonPressed() {
     if (exploreViewModel.showFlashbackToolbar.get() == true) {
       getExplorationFragment()?.onFlashbackToolbarBackPressed()
       return

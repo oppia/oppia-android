@@ -186,7 +186,6 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
 
-  //subha
   fun onFlashbackToolbarBackPressed() {
     getStateFragment()?.onReturnToQuestionButtonClicked()
   }

@@ -88,7 +88,6 @@ class ExplorationFragment : InjectableFragment() {
 
   fun dismissConceptCard() = explorationFragmentPresenter.dismissConceptCard()
 
-  //subha
   fun onFlashbackToolbarBackPressed() {
     explorationFragmentPresenter.onFlashbackToolbarBackPressed()
   }

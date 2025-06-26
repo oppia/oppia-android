@@ -3426,6 +3426,84 @@ class ExplorationProgressControllerTest {
     assertThat(expectedEphemeralState.flashbackState).isEqualTo(true)
   }
 
+  @Test
+  fun testFlashback_clickReturnToQuestionButton_returnsEphemeralStateWithFlashbackStateFalse() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    val expectedEphemeralState = moveBackToLatest()
+
+    // Verify returned EphemeralState is a pending state.
+    assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // Verify flashback state is false in the returned EphemeralState.
+    assertThat(expectedEphemeralState.flashbackState).isEqualTo(false)
+  }
+
+  @Test
+  fun testFlashback_clickReturnToQuestionButton_returnsLatestPendingState() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    val expectedEphemeralState = moveBackToLatest()
+
+    // Verify returned EphemeralState has correct pending state.
+    assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(expectedEphemeralState.state.name).isEqualTo("RatioInput")
+
+    // Verify that there is exactly one wrong answer.
+    assertThat(expectedEphemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+  }
+
+  @Test
+  fun testFlashback_submitWrongAnswer_moveToFlashbackState_resumeExploration_returnsLatestPendingState() { // ktlint-disable max-line-length
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+    endExploration()
+
+    val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint
+    )
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // Verify returned ephemeral state has latest pending state.
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
+  }
+
+  private fun navigateToFlashbackState() {
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Trigger flashback dialog and click Continue button.
+    moveToFlashbackState(answerAndResponse.stateNameToRevisit)
+  }
+
   private fun navigateToPrototypeRatioInputState() {
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -3438,6 +3516,13 @@ class ExplorationProgressControllerTest {
   private fun moveToFlashbackState(stateName: String): EphemeralState {
     monitorFactory.waitForNextSuccessfulResult(
       explorationProgressController.moveToFlashback(stateName)
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
+  }
+
+  private fun moveBackToLatest(): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.moveBackToLatest()
     )
     return waitForGetCurrentStateSuccessfulLoad()
   }

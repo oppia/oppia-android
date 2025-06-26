@@ -2128,7 +2128,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-  fun testFlashbackState_onClickCloseIconOnFlashbackState_moveToLatestPendingState() {
+  fun testFlashbackState_onClickCloseIconOnFlashbackState_verifyNavigationToLatestPendingState() {
     markAllSpotlightsSeen()
     runWithLaunchedActivityAndStartedExploration(
       TEST_CLASSROOM_ID_0,
@@ -2157,7 +2157,7 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
-  fun testFlashbackState_backPressedOnFlashbackState_moveToLatestPendingState() {
+  fun testFlashbackState_backPressedOnFlashbackState_verifyNavigationToLatestPendingState() {
     markAllSpotlightsSeen()
     runWithLaunchedActivityAndStartedExploration(
       TEST_CLASSROOM_ID_0,

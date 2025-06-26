@@ -904,9 +904,6 @@ class ExplorationProgressController @Inject constructor(
   private suspend fun ControllerState.moveBackToLatestImpl(
     moveBackToLatestStateResultFlow: MutableStateFlow<AsyncResult<Any?>>
   ) {
-    //subha
-    // update AnswerAndResponse to show “See example” in Previous answer and Response section.
-    // Resets getCurrentState()   done
     tryOperation(moveBackToLatestStateResultFlow) {
       check(explorationProgress.playStage != NOT_PLAYING) {
         "Cannot navigate to a next state if an exploration is not being played."
@@ -927,7 +924,6 @@ class ExplorationProgressController @Inject constructor(
       }
     }
   }
-
 
   private suspend fun ControllerState.logViewedHintImpl(
     sessionId: String,
