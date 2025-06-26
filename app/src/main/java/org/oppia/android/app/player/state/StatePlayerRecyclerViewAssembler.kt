@@ -91,6 +91,7 @@ import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReplayButtonListener
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
@@ -115,7 +116,6 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 

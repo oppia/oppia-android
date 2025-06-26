@@ -20,13 +20,13 @@ import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
-import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 
 /** Fragment that represents the current state of an exploration. */
 class StateFragment :
