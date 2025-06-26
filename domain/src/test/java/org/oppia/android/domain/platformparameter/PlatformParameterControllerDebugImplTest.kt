@@ -464,13 +464,6 @@ class PlatformParameterControllerDebugImplTest {
       platformParameterProcessState: PlatformParameterProcessState,
       factory: PlatformParameterControllerProdImpl.Factory
     ) = factory.create(platformParameterProcessState)
-
-    @Provides
-    @Singleton
-    fun providePlatformParameterControllerDebugImpl(
-      platformParameterProcessState: PlatformParameterProcessState,
-      factory: PlatformParameterControllerDebugImpl.Factory
-    ) = factory.create(platformParameterProcessState)
   }
 
   // TODO(#89): Move this to a common test application component.
