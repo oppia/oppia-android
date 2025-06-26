@@ -22,7 +22,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriev
 import org.oppia.android.domain.platformparameter.PlatformParameterController
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdImpl
-import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
 import org.oppia.android.domain.platformparameter.PlatformParameterProcessState
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -39,10 +38,11 @@ import javax.inject.Singleton
 class TestPlatformParameterModule {
   private val processState by lazy { PlatformParameterProcessState() }
   @Provides
-  fun providePlatformParameterDebugController(
-    impl: PlatformParameterControllerDebugImpl
-  ): PlatformParameterDebugController = impl
-
+  @Singleton
+  fun providePlatformParameterControllerDebugImpl(
+    platformParameterProcessState: PlatformParameterProcessState,
+    factory: PlatformParameterControllerDebugImpl.Factory
+  ) = factory.create(platformParameterProcessState)
   @Provides
   @Singleton
   fun providePlatformParameterControllerProdImpl(
