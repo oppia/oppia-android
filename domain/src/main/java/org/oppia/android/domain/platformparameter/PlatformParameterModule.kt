@@ -23,7 +23,6 @@ interface PlatformParameterModule {
   ): PlatformParameterController
 
   @Binds
-  @Singleton
   fun bindPlatformParameterConfigRetriever(
     impl: PlatformParameterConfigRetrieverProdImpl
   ): PlatformParameterConfigRetriever
