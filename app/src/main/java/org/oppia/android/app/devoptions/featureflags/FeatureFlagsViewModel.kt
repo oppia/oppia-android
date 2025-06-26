@@ -6,7 +6,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
-import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
@@ -18,7 +18,7 @@ import javax.inject.Inject
  */
 @FragmentScope
 class FeatureFlagsViewModel @Inject constructor(
-  private val platformParameterDebugController: PlatformParameterDebugController,
+  private val platformParameterDebugController: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {

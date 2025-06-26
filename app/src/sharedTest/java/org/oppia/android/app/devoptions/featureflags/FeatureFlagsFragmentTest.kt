@@ -10,15 +10,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import dagger.Module
-import dagger.Provides
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -38,13 +36,14 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagsTestActivity
 import org.oppia.android.app.model.EphemeralFeatureFlag
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -73,16 +72,8 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
-import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
-import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
-import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriever
-import org.oppia.android.domain.platformparameter.PlatformParameterController
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdImpl
-import org.oppia.android.domain.platformparameter.PlatformParameterDebugController
-import org.oppia.android.domain.platformparameter.PlatformParameterProcessState
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
-import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
@@ -90,6 +81,7 @@ import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -109,7 +101,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import testing.src.main.java.org.oppia.android.testing.platformparameter.FakePlatformParameterDebugController
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -117,126 +108,212 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = FeatureFlagsFragmentTest.TestApplication::class
+  application = FeatureFlagsFragmentTest.TestApplication::class,
+  qualifiers = "port-xxhdpi"
 )
 class FeatureFlagsFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
 
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var platformParameterDebugController: PlatformParameterDebugController
-
-  @Inject
-  lateinit var platformParameterController: PlatformParameterController
-
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    platformParameterController.loadParametersAsync()
     testCoroutineDispatchers.registerIdlingResource()
   }
 
   @Test
-  fun testFeatureFlagsFragment_allFeatureFlagsAreCorrectlyDisplayed() {
+  fun testFeatureFlagsFragment_recyclerView_hasCorrectItemCount() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+
+      val expectedCount = getEphemeralFeatureFlags().size
+
+      onView(withId(R.id.feature_flags_recycler_view)).check { view, _ ->
+        val recyclerView = view as RecyclerView
+        assertThat(recyclerView.adapter?.itemCount).isEqualTo(expectedCount)
+        // Note to developers: if you add/remove a feature flag, please update the expected count.
+        assertThat(recyclerView.adapter?.itemCount).isEqualTo(14)
+      }
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_configChange_allFeatureFlagsAreCorrectlyDisplayed() {
+  fun testFeatureFlagsFragment_recyclerViewItems_hasCorrectDetails() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
+      getEphemeralFeatureFlags().forEachIndexed { index, ephemeralFeatureFlag ->
+        scrollToPosition(index)
+        verifyFeatureFlagDisplayName(
+          index,
+          getFeatureFlagDisplayName(ephemeralFeatureFlag.id)
+        )
+        verifyFeatureFlagSyncStatus(
+          index,
+          getSyncStatusText(ephemeralFeatureFlag.syncStatus)
+        )
+        verifyFeatureFlagSwitchState(
+          index,
+          ephemeralFeatureFlag.currentValue
+        )
+      }
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_syncStatusIsCorrectlyDisplayed() {
+  fun testFeatureFlagFragment_downloadSupportFlag_hasCorrectDetails() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
+
+      scrollToPosition(0)
+      verifyFeatureFlagDisplayName(
+        0,
+        getFeatureFlagDisplayName(downloadSupportFlag.id)
+      )
+      verifyFeatureFlagSyncStatus(
+        0,
+        getSyncStatusText(downloadSupportFlag.syncStatus)
+      )
+      verifyFeatureFlagSwitchState(
+        0,
+        downloadSupportFlag.currentValue
+      )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_overrideFeatureFlag_configChange_changePersists() {
+  fun testFeatureFlagFragment_downloadSupportFlag_switchToggled_updatesValue() {
     launch(FeatureFlagsTestActivity::class.java).use {
-      scrollToPosition(position = 0)
+      testCoroutineDispatchers.runCurrent()
+      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
 
-      val initialValue = getFeatureFlagAtPosition(position = 0).currentValue
+      scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
+          R.id.feature_flags_recycler_view,
+          0,
+          R.id.feature_flag_switch
         )
       ).perform(click())
 
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-
-      val expectedValue = !initialValue
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
-        )
-      ).check(matches(if (expectedValue) isChecked() else not(isChecked())))
+      verifyFeatureFlagSwitchState(
+        0,
+        !downloadSupportFlag.currentValue
+      )
     }
   }
 
+  @Test
+  fun testFeatureFlagFragment_toggleDownloadSupportFlag_configChanges_valuePersists() {
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          R.id.feature_flags_recycler_view,
+          0,
+          R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      verifyFeatureFlagSwitchState(
+        0,
+        !downloadSupportFlag.currentValue
+      )
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyFeatureFlagSwitchState(
+        0,
+        !downloadSupportFlag.currentValue
+      )
+    }
+  }
+
+  private fun verifyFeatureFlagDisplayName(
+    position: Int,
+    expectedDisplayName: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.feature_flags_recycler_view,
+        position,
+        R.id.feature_flag_label_text_view
+      )
+    ).check(
+      matches(
+        withText(expectedDisplayName)
+      )
+    )
+  }
+
+  private fun verifyFeatureFlagSyncStatus(
+    position: Int,
+    expectedSyncStatus: String
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.feature_flags_recycler_view,
+        position,
+        R.id.sync_status_value_text_view
+      )
+    ).check(
+      matches(
+        withText(expectedSyncStatus)
+      )
+    )
+  }
+  private fun verifyFeatureFlagSwitchState(
+    position: Int,
+    expectedState: Boolean
+  ) {
+    onView(
+      atPositionOnView(
+        R.id.feature_flags_recycler_view,
+        position,
+        R.id.feature_flag_switch
+      )
+    ).check(matches(if (expectedState) isChecked() else not(isChecked())))
+  }
+  private fun getSyncStatusText(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.SYNC_STATUS_UNSPECIFIED ->
+        context.getString(R.string.feature_flag_unknown_sync_status)
+
+      SyncStatus.NOT_SYNCED_FROM_SERVER ->
+        context.getString(R.string.feature_flag_default_sync_status)
+
+      SyncStatus.SYNCED_FROM_SERVER ->
+        context.getString(R.string.feature_flag_server_sync_status)
+
+      else ->
+        context.getString(R.string.feature_flag_unknown_sync_status)
+    }
+  }
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.feature_flags_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(position)
     )
   }
-
-  private fun verifyTextOnFeatureFlagListItemAtPosition(
-    itemPosition: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.feature_flags_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.feature_flag_label_text_view
-      )
-    ).check(matches(withText(stringToMatch)))
+  private fun getEphemeralFeatureFlags(): List<EphemeralFeatureFlag> {
+    val provider = platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    return monitorFactory.waitForNextSuccessfulResult(provider)
   }
 
-  private fun verifyTextOnFeatureFlagSyncStatusLabelAtPosition(
-    itemPosition: Int,
-    stringToMatch: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.feature_flags_recycler_view,
-        position = itemPosition,
-        targetViewId = R.id.sync_status_value_text_view
-      )
-    ).check(matches(withText(stringToMatch)))
-  }
-
-  private fun getSyncStatusText(syncStatus: SyncStatus): String {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> "Unknown"
-      SyncStatus.NOT_SYNCED_FROM_SERVER -> "Default"
-      SyncStatus.SYNCED_FROM_SERVER -> "Server"
-      else -> "Unknown"
-    }
+  private fun getFeatureFlagDisplayName(
+    id: FeatureFlagId
+  ): String {
+    return id.name
+      .lowercase()
+      .split('_')
+      .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
   }
 
   @After
@@ -246,49 +323,6 @@ class FeatureFlagsFragmentTest {
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-  }
-
-  private fun getFeatureFlagAtPosition(position: Int): EphemeralFeatureFlag {
-    val provider = platformParameterDebugController.loadEphemeralFeatureFlags()
-    return monitorFactory.waitForNextSuccessfulResult(provider)[position]
-  }
-
-  @Module(
-    includes = [
-      FeatureFlagsMapBindingModule::class,
-      FeatureFlagBindingModule::class,
-      PlatformParameterBindingModule::class
-    ]
-  )
-  class TestModule {
-
-    @Provides
-    @Singleton
-    fun providePlatformParameterDebugController(
-      impl: FakePlatformParameterDebugController
-    ): PlatformParameterDebugController = impl
-
-    @Provides
-    @Singleton
-    fun providePlatformParameterControllerProdImpl(
-      platformParameterProcessState: PlatformParameterProcessState,
-      factory: PlatformParameterControllerProdImpl.Factory
-    ) = factory.create(platformParameterProcessState)
-    @Provides
-    @Singleton
-    fun providePlatformParameterController(
-      factory: PlatformParameterControllerProdImpl.Factory,
-      processState: PlatformParameterProcessState
-    ): PlatformParameterController = factory.create(processState)
-
-    @Provides
-    fun providePlatformParameterConfigRetriever(
-      impl: TestPlatformParameterConfigRetriever
-    ): PlatformParameterConfigRetriever = impl
-
-    @Provides
-    @Singleton
-    fun providePlatformParameterProcessState() = PlatformParameterProcessState()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -349,11 +383,11 @@ class FeatureFlagsFragmentTest {
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
-      WorkManagerConfigurationModule::class,
-      TestModule::class
+      WorkManagerConfigurationModule::class
     ]
   )
   /** [ApplicationComponent] for [FeatureFlagsFragmentTest]. */
@@ -368,7 +402,7 @@ class FeatureFlagsFragmentTest {
      * Injects [TestApplicationComponent] to [FeatureFlagsFragmentTest] providing the required
      * dagger modules.
      */
-    fun inject(featureFlagFragmentTest: FeatureFlagsFragmentTest)
+    fun inject(featureFlagsFragmentTest: FeatureFlagsFragmentTest)
   }
 
   /** [Application] class for [FeatureFlagsFragmentTest]. */
@@ -380,8 +414,8 @@ class FeatureFlagsFragmentTest {
     }
 
     /** Called when setting up [TestApplication]. */
-    fun inject(featureFlagFragmentTest: FeatureFlagsFragmentTest) {
-      component.inject(featureFlagFragmentTest)
+    fun inject(featureFlagsFragmentTest: FeatureFlagsFragmentTest) {
+      component.inject(featureFlagsFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

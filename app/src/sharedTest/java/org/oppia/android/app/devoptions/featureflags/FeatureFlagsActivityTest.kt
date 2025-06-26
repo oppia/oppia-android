@@ -130,7 +130,7 @@ class FeatureFlagsActivityTest {
 
   @Test
   fun testFeatureFlagsActivity_featureFlagFragmentIsDisplayed() {
-    launch(FeatureFlagsActivity::class.java).use {
+    launch<FeatureFlagsActivity>(createFeatureFlagsActivityIntent()).use {
       onView(withId(R.id.feature_flags_fragment_container)).check(
         matches(isDisplayed())
       )
@@ -139,7 +139,7 @@ class FeatureFlagsActivityTest {
 
   @Test
   fun testFeatureFlagsActivity_configChange_featureFlagFragmentIsDisplayed() {
-    launch(FeatureFlagsActivity::class.java).use {
+    launch<FeatureFlagsActivity>(createFeatureFlagsActivityIntent()).use {
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
       onView(withId(R.id.feature_flags_fragment_container)).check(
         matches(isDisplayed())
