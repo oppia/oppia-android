@@ -55,11 +55,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/component_color_shared_divider_color" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sync_status_constraint_layout"
             android:layout_width="match_parent"
