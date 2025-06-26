@@ -27,6 +27,7 @@ class PlatformParametersFragment : InjectableFragment() {
     /** Returns a new instance of [PlatformParametersFragment]. */
     fun newInstance(): PlatformParametersFragment = PlatformParametersFragment()
 
+    /** State key for [PlatformParametersFragment]. */
     const val PLATFORM_PARAMETER_FRAGMENT_ARGUMENT_STATE_KEY =
       "PlatformParametersFragmentArgument.state"
   }

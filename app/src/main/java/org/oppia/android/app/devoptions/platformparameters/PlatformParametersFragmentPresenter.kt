@@ -30,6 +30,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
+
+  /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
 
