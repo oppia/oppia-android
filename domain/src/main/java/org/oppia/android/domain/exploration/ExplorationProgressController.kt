@@ -80,7 +80,7 @@ private const val UPDATE_WRITTEN_TRANSLATION_CONTENT_PROVIDER_ID =
 private const val MOVE_TO_FLASHBACK_STATE_RESULT_PROVIDER_ID =
   "ExplorationProgressController.move_to_flashback_state_result"
 private const val MOVE_BACK_TO_LATEST_STATE_RESULT_PROVIDER_ID =
-  "ExplorationProgressController.move_back_to_latest__state_result"
+  "ExplorationProgressController.move_back_to_latest_state_result"
 
 /**
  * A default session ID to be used before a session has been initialized.
