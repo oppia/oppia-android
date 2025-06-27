@@ -819,7 +819,7 @@ class LintModelCreator(
           type="${moduleType.name}"
           maven="__non_maven__"
           buildFolder="${buildDir.toFile().absolutePath}"
-          javaSourceLevel="1.8"
+          javaSourceLevel="11"
           compileTarget="$buildToolsVersion"
           neverShrinking="true">
           <lintOptions />
