@@ -451,6 +451,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToPlatformParametersListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/devoptionsitemviewmodel/DeveloperOptionsItemViewModel.kt"
   test_file_not_required: true
 }
