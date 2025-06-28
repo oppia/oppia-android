@@ -90,6 +90,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
@@ -99,7 +100,6 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
