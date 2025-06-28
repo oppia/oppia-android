@@ -13,8 +13,8 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
-import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.view.models.R
 import javax.inject.Inject
 
 /** The presenter for [PlatformParametersFragment]. */
@@ -23,13 +23,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val platformParametersViewModel: PlatformParametersViewModel,
-  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
   private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
+  private val invalidInputErrorText =
+    resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
 
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
@@ -52,7 +54,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
-    oppiaLogger.d("PlatformParametersFragment", "States are: $platformParameterStates")
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
     binding.platformParametersRecyclerView.apply {
@@ -70,6 +71,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private fun onBackNavigation() {
     (activity as PlatformParametersActivity).finish()
   }
+
   private fun createRecyclerViewAdapter(): BindableAdapter<PlatformParameterItemViewModel> {
     return singleTypeBuilderFactory.create<PlatformParameterItemViewModel>()
       .registerViewDataBinderWithSameModelType(
@@ -78,12 +80,12 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       )
       .build()
   }
+
   private fun bindPlatformParameterItem(
     binding: PlatformParameterItemBinding,
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
-    // binding.platformParameterInputLayout.error ="Invalid Input"
     if (model.currentValue.hasBoolean()) {
 
       if (platformParameterStates.containsKey(model.platformParameterId)) {
@@ -98,7 +100,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
       if (platformParameterStates.containsKey(model.platformParameterId)) {
         if (platformParameterStates[model.platformParameterId]?.integer == -1) {
-          binding.platformParameterInputLayout.error = "Invalid Input"
+          binding.platformParameterInputLayout.error = invalidInputErrorText
           model.inputValue.set("")
         } else {
           binding.platformParameterInputLayout.error = null
@@ -106,17 +108,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             .set(platformParameterStates[model.platformParameterId]?.integer.toString())
         }
       }
-      binding.platformParameterInputEditText.onTextChanged { value ->
-        if (value.isNullOrEmpty() || value.toIntOrNull() == null) {
-          binding.platformParameterInputLayout.error = "Invalid Input"
-          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
-            .setInteger(-1)
-            .build()
+      model.onTextChangedCallback = { id, text ->
+        val parsed = text.toIntOrNull()
+        if (parsed == null) {
+          binding.platformParameterInputLayout.error = invalidInputErrorText
+          platformParameterStates[id] =
+            PlatformParameterValue.newBuilder().setInteger(-1).build()
         } else {
           binding.platformParameterInputLayout.error = null
-          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
-            .setInteger(value.toIntOrNull() ?: 0)
-            .build()
+          platformParameterStates[id] =
+            PlatformParameterValue.newBuilder().setInteger(parsed).build()
         }
       }
     } else {
@@ -124,16 +125,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       if (platformParameterStates.containsKey(model.platformParameterId)) {
         model.inputValue.set(platformParameterStates[model.platformParameterId]?.string)
       }
-      binding.platformParameterInputEditText.onTextChanged { value ->
-        if (value.isNullOrEmpty()) {
-          binding.platformParameterInputLayout.error = "Invalid Input"
-          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
+      model.onTextChangedCallback = { id, text ->
+        if (text.isNullOrEmpty()) {
+          binding.platformParameterInputLayout.error = invalidInputErrorText
+          platformParameterStates[id] = PlatformParameterValue.newBuilder()
             .setString("")
             .build()
         } else {
           binding.platformParameterInputLayout.error = null
-          platformParameterStates[model.platformParameterId] = PlatformParameterValue.newBuilder()
-            .setString(value)
+          platformParameterStates[id] = PlatformParameterValue.newBuilder()
+            .setString(text)
             .build()
         }
       }

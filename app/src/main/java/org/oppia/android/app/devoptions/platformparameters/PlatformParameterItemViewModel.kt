@@ -28,6 +28,11 @@ class PlatformParameterItemViewModel(
     else ""
   )
   var onToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
+  var onTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
+
+  fun onTextChanged(text: String) {
+    onTextChangedCallback?.invoke(platformParameterId, text)
+  }
 
   fun onUserToggle() {
     isChecked.set(!isChecked.get()!!)
