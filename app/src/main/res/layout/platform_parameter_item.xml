@@ -96,6 +96,8 @@
 
                 <TextView
                     android:id="@+id/platform_parameter_input_error_text_view"
+                    style="@style/TextViewStart"
+                    android:fontFamily="sans-serif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/platform_parameter_invalid_input_error_msg"
