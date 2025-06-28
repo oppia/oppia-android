@@ -448,6 +448,16 @@ class AndroidLintRunnerTest {
   }
 
   @Test
+  fun testRunLint_uselessLeaf_detectsIssue() {
+    setupAndroidProjectWithUselessLeaf()
+    val lintRunner = createLintRunner()
+
+    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+
+    verifyLintReportContains("UselessLeaf")
+  }
+
+  @Test
   fun testRunLint_hardcodedText_detectsIssue() {
     setupAndroidProjectWithHardcodedText()
     val lintRunner = createLintRunner()
@@ -605,6 +615,14 @@ class AndroidLintRunnerTest {
     createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithUselessParent()
+    createBasicStringResources()
+  }
+
+  private fun setupAndroidProjectWithUselessLeaf() {
+    testBazelWorkspace.initEmptyWorkspace()
+    createMinimalProjectStructure()
+    createBasicManifest()
+    createLayoutWithUselessLeaf()
     createBasicStringResources()
   }
 
@@ -809,6 +827,102 @@ class AndroidLintRunnerTest {
                   android:text="@string/app_name" />
           </LinearLayout>
       </LinearLayout>
+      """.trimIndent()
+    )
+  }
+
+  private fun createLayoutWithUselessLeaf() {
+    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
+    layoutFile.writeText(
+      """
+                <merge xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <!-- Neither parent nor child define background: delete is okay -->
+
+                    <FrameLayout
+                        android:id="@+id/LinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Both define background: cannot be deleted -->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Only child defines background: delete is okay -->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Only parent defines background: delete is okay -->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Leaf cannot be deleted because it has a background -->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg" >
+                    </FrameLayout>
+
+                    <!-- Useless leaf -->
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </FrameLayout>
+                </merge>
       """.trimIndent()
     )
   }
