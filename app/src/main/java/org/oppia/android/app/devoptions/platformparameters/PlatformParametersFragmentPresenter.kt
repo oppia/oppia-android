@@ -101,6 +101,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       if (platformParameterStates.containsKey(model.platformParameterId)) {
         if (platformParameterStates[model.platformParameterId]?.integer == -1) {
           binding.platformParameterInputLayout.error = invalidInputErrorText
+          model.errorEnabled.set(true)
           model.inputValue.set("")
         } else {
           binding.platformParameterInputLayout.error = null
@@ -112,10 +113,12 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         val parsed = text.toIntOrNull()
         if (parsed == null) {
           binding.platformParameterInputLayout.error = invalidInputErrorText
+          model.errorEnabled.set(true)
           platformParameterStates[id] =
             PlatformParameterValue.newBuilder().setInteger(-1).build()
         } else {
           binding.platformParameterInputLayout.error = null
+          model.errorEnabled.set(false)
           platformParameterStates[id] =
             PlatformParameterValue.newBuilder().setInteger(parsed).build()
         }
@@ -128,11 +131,13 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       model.onTextChangedCallback = { id, text ->
         if (text.isNullOrEmpty()) {
           binding.platformParameterInputLayout.error = invalidInputErrorText
+          model.errorEnabled.set(true)
           platformParameterStates[id] = PlatformParameterValue.newBuilder()
             .setString("")
             .build()
         } else {
           binding.platformParameterInputLayout.error = null
+          model.errorEnabled.set(false)
           platformParameterStates[id] = PlatformParameterValue.newBuilder()
             .setString(text)
             .build()
