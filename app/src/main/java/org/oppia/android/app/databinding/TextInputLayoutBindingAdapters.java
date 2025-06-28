@@ -3,11 +3,14 @@ package org.oppia.android.app.databinding;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.BindingAdapter;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import org.oppia.android.app.model.OppiaLanguage;
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider;
@@ -33,6 +36,30 @@ public final class TextInputLayoutBindingAdapters {
       Boolean filter) {
     textView.setText(getAppLanguageResourceHandler(textView)
         .computeLocalizedDisplayName(selectedItem), filter);
+  }
+
+  /** Binding adapter for observing the text of a [TextInputEditText]. */
+  @BindingAdapter("onTextChanged")
+  public static void setOnTextChanged(
+      @NonNull TextInputEditText editText,
+      final OnTextChangedListener listener
+  ) {
+    editText.addTextChangedListener(new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            listener.onTextChanged(s != null ? s.toString() : "");
+        }
+    });
+  }
+
+  public interface OnTextChangedListener {
+    void onTextChanged(String text);
   }
 
   private static AppLanguageResourceHandler getAppLanguageResourceHandler(View view) {

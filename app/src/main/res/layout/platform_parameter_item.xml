@@ -86,6 +86,7 @@
                     android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
                     android:minHeight="56dp"
                     android:text="@{viewModel.inputValue}"
+                    app:onTextChanged="@{text -> viewModel.onTextChanged(text)}"
                     android:textAlignment="center"
                     android:textColor="@color/component_color_shared_primary_dark_text_color"
                     android:textSize="14sp" />
