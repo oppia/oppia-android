@@ -99,7 +99,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
-import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.STATE_SOLUTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.TEXT_INPUT_INTERACTION
@@ -5610,11 +5610,17 @@ class StateFragmentTest {
       moveToFlashbackState()
 
       // Verify feedback is visible.
-      val expectedFeedback = "Need help? No problem. Let's review the solution to the previous" +
-        " question."
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view))
-        .check(matches(withText(containsString(expectedFeedback))))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
 
       // Verify content is visible.
       scrollToViewType(CONTENT)
@@ -5622,7 +5628,7 @@ class StateFragmentTest {
         .check(matches(withText(containsString("What fraction represents half of something?"))))
 
       // Verify solution is visible.
-      scrollToViewType(STATE_SOLUTION)
+      scrollToViewType(FLASHBACK_SOLUTION)
       onView(withId(R.id.solution_correct_answer))
         .check(matches(withText("The only solution is: 1/2")))
 
@@ -5656,11 +5662,17 @@ class StateFragmentTest {
       rotateToLandscape()
 
       // Verify feedback is visible.
-      val expectedFeedback = "Need help? No problem. Let's review the solution to the previous" +
-        " question."
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view))
-        .check(matches(withText(containsString(expectedFeedback))))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
 
       // Verify content is visible.
       scrollToViewType(CONTENT)
@@ -5668,7 +5680,7 @@ class StateFragmentTest {
         .check(matches(withText(containsString("What fraction represents half of something?"))))
 
       // Verify solution is visible.
-      scrollToViewType(STATE_SOLUTION)
+      scrollToViewType(FLASHBACK_SOLUTION)
       onView(withId(R.id.solution_correct_answer))
         .check(matches(withText("The only solution is: 1/2")))
 

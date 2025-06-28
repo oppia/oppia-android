@@ -904,7 +904,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   ) {
     if (playerFeatureSet.feedbackSupport) {
       val flashbackFeedbackHtml = SubtitledHtml.newBuilder()
-        .setHtml("Need help? No problem. Let's review the solution to the previous question.")
+        .setHtml(resourceHandler.getStringInLocale(R.string.flashback_state_feedback_text))
         .build()
 
       createFeedbackItem(flashbackFeedbackHtml, gcsEntityId, writtenTranslationContext)?.let(
@@ -1350,7 +1350,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     /** Adds support for displaying state solution to the learner. */
     fun addFlashbackSolutionSupport(): Builder {
       adapterBuilder.registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.STATE_SOLUTION,
+        viewType = StateItemViewModel.ViewType.FLASHBACK_SOLUTION,
         inflateDataBinding = SolutionSummaryBinding::inflate,
         setViewModel = this::bindSolutionViewModel,
         transformViewModel = { it as StateSolutionViewModel }

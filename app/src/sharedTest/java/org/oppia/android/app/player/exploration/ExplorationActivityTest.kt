@@ -2022,7 +2022,7 @@ class ExplorationActivityTest {
 
       // Verify text of toolbar title.
       onView(withId(R.id.flashback_toolbar_title))
-        .check(matches(withText("Revisit Previous Question")))
+        .check(matches(withText(R.string.flashback_toolbar_title_text)))
 
       // Verify toolbar color.
       onView(withId(R.id.exploration_toolbar)).check { view, _ ->
@@ -2051,7 +2051,7 @@ class ExplorationActivityTest {
 
       // Verify text of toolbar title.
       onView(withId(R.id.flashback_toolbar_title))
-        .check(matches(withText("Revisit Previous Question")))
+        .check(matches(withText(R.string.flashback_toolbar_title_text)))
 
       // Verify toolbar color.
       onView(withId(R.id.exploration_toolbar)).check { view, _ ->
