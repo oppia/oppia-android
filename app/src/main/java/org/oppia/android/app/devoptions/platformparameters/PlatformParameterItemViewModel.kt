@@ -27,6 +27,7 @@ class PlatformParameterItemViewModel(
     else if (currentValue.hasInteger()) currentValue.integer.toString()
     else ""
   )
+  val errorEnabled = ObservableField(false)
   var onToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
   var onTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
 
