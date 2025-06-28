@@ -46,6 +46,7 @@ data class ModuleConfig(
   val dependencies: List<String>,
   val aarFiles: List<AarFileInfo>,
   val jarFiles: List<String>,
+  val annotationZips: List<String>,
   val lintCheckJars: List<String>,
   val lintModelDir: File? = null
 )

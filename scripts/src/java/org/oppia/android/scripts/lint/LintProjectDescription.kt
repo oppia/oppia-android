@@ -318,6 +318,10 @@ class LintProjectDescription(
       appendLine("""    <lint-checks jar="$lintCheckJar"/>""")
     }
 
+    config.annotationZips.forEach { annotationZip ->
+      appendLine("""    <annotations file="$annotationZip"/>""")
+    }
+
     appendLine("  </module>")
   }
 
@@ -399,6 +403,9 @@ private class ModuleConfigurationBuilder(
       aarFiles = dependencyResolver.resolveAarFiles(module),
       jarFiles = dependencyResolver.resolveJarFiles(module),
       lintCheckJars = dependencyResolver.extractLintCheckJars(
+        dependencyResolver.resolveAarFiles(module)
+      ),
+      annotationZips = dependencyResolver.extractAnnotationZips(
         dependencyResolver.resolveAarFiles(module)
       ),
     )
@@ -509,6 +516,13 @@ private class DependencyResolver(
     aarFiles.mapNotNull { aarInfo ->
       val lintJar = File(aarInfo.extractedPath, "lint.jar")
       if (lintJar.exists()) lintJar.absolutePath else null
+    }
+
+  /** Extracts annotation zip files from the given list of AAR files. */
+  fun extractAnnotationZips(aarFiles: List<AarFileInfo>): List<String> =
+    aarFiles.mapNotNull { aarInfo ->
+      val annotationZip = File(aarInfo.extractedPath, "annotations.zip")
+      if (annotationZip.exists()) annotationZip.absolutePath else null
     }
 
   private fun getDependenciesWithCache(moduleName: String): List<String> =

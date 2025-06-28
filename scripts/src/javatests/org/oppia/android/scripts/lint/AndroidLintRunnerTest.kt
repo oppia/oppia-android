@@ -7,11 +7,15 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileOutputStream
 import java.io.PrintStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 /** Tests for [AndroidLintRunner]. */
 // Function name: test names are conventionally named with underscores.
@@ -26,11 +30,14 @@ class AndroidLintRunnerTest {
   private lateinit var sdkPath: String
   private lateinit var jdkHome: File
   private lateinit var buildSdkVersion: String
+  private val fakeCommandExecutor by lazy { FakeCommandExecutor() }
+  private lateinit var androidLintAnalyzerWithFakeExecutor: AndroidLintAnalyzer
+  private lateinit var workingDirectory: File
 
   companion object {
     private const val MIN_SDK_VERSION = "21"
     private const val KOTLIN_LANGUAGE_VERSION = "1.6"
-    private const val JAVA_VERSION = "11"
+    private const val JAVA_VERSION = "11.0.6"
   }
 
   @Before
@@ -46,6 +53,12 @@ class AndroidLintRunnerTest {
     System.setOut(PrintStream(outputStream))
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion.toString()
+    workingDirectory = File(tempFolder.root, "lint_analysis").apply { mkdirs() }
+    androidLintAnalyzerWithFakeExecutor = AndroidLintAnalyzer(
+      commandExecutor = fakeCommandExecutor,
+      workingDirectory = workingDirectory,
+      repoRoot = tempFolder.root,
+    )
   }
 
   @After
@@ -76,19 +89,76 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testMain_validRootPath_generatesReports() {
-    val rootPath = tempFolder.root
+  fun testAndroidLintAnalyzer_validRootPath_generatesReports() {
+    setupProjectStructure()
+    val aarFile = createTestAarFile("test-aar", "1.0.0")
+    val jarFile = createTestJarFile("test-jar", "1.0.0")
 
-    // TODO(#5734): Update test once final lint tool configurations are done
-    assertThrows<IllegalStateException> {
-      main(rootPath.absolutePath) // Currently returns error code due to missing description
+    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    val report = File(workingDirectory, "lint-report.xml")
+    assertThat(report.exists()).isTrue()
+
+    val projectDescription = File(workingDirectory, "lint-project-description.xml")
+    assertThat(projectDescription.exists()).isTrue()
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_validRootPath_generatesFilesInWorkingDirectory() {
+    setupProjectStructure()
+    val aarFile = createTestAarFile("test-aar", "1.0.0")
+    val jarFile = createTestJarFile("test-jar", "1.0.0")
+
+    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    val report = File(workingDirectory, "lint-report.xml")
+    assertThat(report.exists()).isTrue()
+
+    val projectDescription = File(workingDirectory, "lint-project-description.xml")
+    assertThat(projectDescription.exists()).isTrue()
+    val extractedAars = File(workingDirectory, "extracted-aars")
+    val extractedAarFile = File("$extractedAars/app", "test-aar-1.0.0")
+    assertThat(extractedAarFile.exists()).isTrue()
+    val lintCacheDirectory = File(workingDirectory, "lint-cache-directory")
+    assertThat(lintCacheDirectory.exists()).isTrue()
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_validRootPath_generatesModelDirectory() {
+    setupProjectStructure()
+    val aarFile = createTestAarFile("test-aar", "1.0.0")
+    val jarFile = createTestJarFile("test-jar", "1.0.0")
+
+    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    val modelDirectory = File(workingDirectory, "models-directory/app")
+    assertThat(modelDirectory.exists()).isTrue()
+
+    val expectedFiles = listOf(
+      File(modelDirectory, "main.xml"),
+      File(modelDirectory, "module.xml"),
+      File(modelDirectory, "main-mainArtifact-dependencies.xml"),
+      File(modelDirectory, "main-mainArtifact-libraries.xml")
+    )
+
+    expectedFiles.forEach { file ->
+      assertThat(file.exists()).isTrue()
     }
   }
 
   @Test
   fun testPrepareLintArguments_ensuresAllRequiredArgumentsArePresent() {
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
+    val reportFile = File(workingDirectory, "report.xml")
+    val projectFile = File(workingDirectory, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion)
@@ -115,8 +185,8 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testPrepareLintArguments_withCustomBuildSdkVersion_includesCorrectVersion() {
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
+    val reportFile = File(workingDirectory, "report.xml")
+    val projectFile = File(workingDirectory, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
     val customBuildSdk = "34"
 
@@ -203,7 +273,7 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testRunLint_withExitCode3_throwsExceptionForFileOverwrite() {
-    val outputDirectory = File(tempFolder.root, "reports")
+    val outputDirectory = File(workingDirectory, "reports")
     outputDirectory.mkdirs()
 
     val reportPath = File(outputDirectory, "lint-report.xml")
@@ -228,8 +298,8 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testRunLint_withExitCode4_throwsException() {
-    val reportPath = File(tempFolder.root, "lint-report.xml")
-    val projectPath = File(tempFolder.root, "lint-project-description.xml")
+    val reportPath = File(workingDirectory, "lint-report.xml")
+    val projectPath = File(workingDirectory, "lint-project-description.xml")
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     // Won't happen in actual usage.
@@ -242,8 +312,8 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testRunLint_withExitCode5_throwsException() {
-    val reportPath = File(tempFolder.root, "lint-report.xml")
-    val projectPath = File(tempFolder.root, "lint-project-description.xml")
+    val reportPath = File(workingDirectory, "lint-report.xml")
+    val projectPath = File(workingDirectory, "lint-project-description.xml")
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
@@ -256,7 +326,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testRunLint_multipleIssueTypes_detectsAll() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithMultipleIssues()
     createBasicStringResources()
@@ -266,7 +336,7 @@ class AndroidLintRunnerTest {
       lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
     }
 
-    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportFile = File(workingDirectory, "lint-report.xml")
     val reportContent = reportFile.readText()
 
     assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
@@ -279,12 +349,12 @@ class AndroidLintRunnerTest {
   @Test
   fun testRunLint_withProjectDescription_withNonExistentFilePath_throwsInternalIssue() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createBasicStringResources()
 
     val projectDescriptionFile = createProjectDescriptionFileWithInvalidPath()
-    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportFile = File(workingDirectory, "lint-report.xml")
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile
@@ -305,8 +375,8 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testRunLint_withInvalidFlag_throwsException() {
-    val reportFile = File(tempFolder.root, "report.xml")
-    val projectFile = File(tempFolder.root, "project.xml")
+    val reportFile = File(workingDirectory, "report.xml")
+    val projectFile = File(workingDirectory, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     val exception = assertThrows<IllegalStateException> {
@@ -473,7 +543,7 @@ class AndroidLintRunnerTest {
   }
 
   private fun createLintRunner(): AndroidLintRunner {
-    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportFile = File(workingDirectory, "lint-report.xml")
     val projectDescriptionFile = createProjectDescriptionFile()
 
     return AndroidLintRunner(
@@ -483,7 +553,7 @@ class AndroidLintRunnerTest {
   }
 
   private fun verifyLintReportContains(issueType: String) {
-    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportFile = File(workingDirectory, "lint-report.xml")
     assertThat(reportFile.exists()).isTrue()
 
     val reportContent = reportFile.readText()
@@ -495,28 +565,28 @@ class AndroidLintRunnerTest {
 
   private fun setupAndroidProjectWithoutApplicationIcon() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createManifestWithoutIcon()
     createBasicStringResources()
   }
 
   private fun setupAndroidProjectWithUnusedResources() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createUnusedStringResources()
   }
 
   private fun setupAndroidProjectWithDuplicateStrings() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createDuplicateStringResources()
   }
 
   private fun setupAndroidProjectWithUnusedIds() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithUnusedIds()
     createBasicStringResources()
@@ -524,7 +594,7 @@ class AndroidLintRunnerTest {
 
   private fun setupAndroidProjectWithRtlHardcoded() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithRtlHardcoded()
     createBasicStringResources()
@@ -532,7 +602,7 @@ class AndroidLintRunnerTest {
 
   private fun setupAndroidProjectWithUselessParent() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithUselessParent()
     createBasicStringResources()
@@ -540,7 +610,7 @@ class AndroidLintRunnerTest {
 
   private fun setupAndroidProjectWithHardcodedText() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithHardcodedText()
     createBasicStringResources()
@@ -548,13 +618,13 @@ class AndroidLintRunnerTest {
 
   private fun setupAndroidProjectWithInvalidId() {
     testBazelWorkspace.initEmptyWorkspace()
-    createProjectStructure()
+    createMinimalProjectStructure()
     createBasicManifest()
     createLayoutWithInvalidId()
     createBasicStringResources()
   }
 
-  private fun createProjectStructure() {
+  private fun createMinimalProjectStructure() {
     val directories = listOf(
       "app/src/main/java/org/oppia/android/app/activity",
       "app/src/main/res/values",
@@ -823,5 +893,199 @@ class AndroidLintRunnerTest {
         </module>
       </project>
     """.trimIndent()
+  }
+
+  private fun setupProjectStructure() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(listOf("junit:junit:4.12"))
+
+    createModule("app")
+    createModule("utility")
+    createModule("domain")
+    createModule("testing")
+    createModule("data")
+  }
+
+  private fun createModule(
+    moduleName: String,
+  ) {
+    createModuleDirectories(moduleName)
+    createModuleFiles(moduleName)
+  }
+
+  private fun createModuleDirectories(moduleName: String) {
+    val directories = listOf(
+      moduleName,
+      "$moduleName/src",
+      "$moduleName/src/main",
+      "$moduleName/src/main/java",
+      "$moduleName/src/main/res",
+      "$moduleName/src/main/res/values",
+      "$moduleName/src/test",
+      "$moduleName/src/test/java"
+    )
+
+    directories.forEach { dir ->
+      tempFolder.newFolder(*dir.split("/").toTypedArray())
+    }
+  }
+
+  private fun createModuleFiles(moduleName: String) {
+    createManifestFile(moduleName)
+    createTestManifestFile(moduleName)
+    createSourceFile(moduleName)
+    createTestFile(moduleName)
+    createResourceFile(moduleName)
+  }
+
+  private fun createManifestFile(moduleName: String) {
+    val manifest = tempFolder.newFile("$moduleName/src/main/AndroidManifest.xml")
+    manifest.writeText(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="org.oppia.android.$moduleName" />
+      """.trimIndent()
+    )
+  }
+
+  private fun createTestManifestFile(moduleName: String) {
+    val manifest = tempFolder.newFile("$moduleName/src/test/AndroidManifest.xml")
+    manifest.writeText(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="org.oppia.android.$moduleName" />
+      """.trimIndent()
+    )
+  }
+
+  private fun createSourceFile(moduleName: String) {
+    val className = moduleName.replaceFirstChar { it.uppercase() }
+    val sourceDir = tempFolder.newFolder(
+      moduleName, "src", "main", "java", "org", "oppia", "android", moduleName
+    )
+    val sourceFile = File(sourceDir, "${className}Class.kt")
+    sourceFile.writeText(
+      """
+    package org.oppia.android.$moduleName
+    
+    class ${className}Class {
+        fun doSomething(): String = "Hello from $moduleName"
+    }
+      """.trimIndent()
+    )
+  }
+
+  private fun createTestFile(moduleName: String) {
+    val className = moduleName.replaceFirstChar { it.uppercase() }
+    val testDir = tempFolder.newFolder(
+      moduleName, "src", "test", "java", "org", "oppia", "android", moduleName
+    )
+    val testFile = File(testDir, "${className}ClassTest.kt")
+    testFile.writeText(
+      """
+    package org.oppia.android.$moduleName
+    
+    import org.junit.Test
+    import org.junit.Assert.assertEquals
+    
+    class ${className}ClassTest {
+        @Test
+        fun testDoSomething() {
+            val instance = ${className}Class()
+            assertEquals("Hello from $moduleName", instance.doSomething())
+        }
+    }
+      """.trimIndent()
+    )
+  }
+
+  private fun createResourceFile(moduleName: String) {
+    val resourceFile = tempFolder.newFile("$moduleName/src/main/res/values/strings.xml")
+    resourceFile.writeText(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <resources>
+          <string name="${moduleName}_name">$moduleName Module</string>
+      </resources>
+      """.trimIndent()
+    )
+  }
+
+  private fun setupFakeCommandExecutor(aarPath: String, jarPath: String) {
+    fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
+      when {
+        args.contains("cquery") && args.contains("deps(//app:*)") -> {
+          outputStream.println(aarPath)
+          outputStream.println(jarPath)
+          0
+        }
+        args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
+          // Return empty for other modules
+          0
+        }
+        args.contains("info") -> {
+          outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          outputStream.println("java-home: $jdkHome")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build $JAVA_VERSION)")
+          0
+        }
+        else -> 0
+      }
+    }
+  }
+
+  private fun createTestAarFile(libraryName: String, version: String): File {
+    val aarFile = tempFolder.newFile("$libraryName-$version.aar")
+
+    ZipOutputStream(FileOutputStream(aarFile)).use { zipOut ->
+      // Add AndroidManifest.xml
+      zipOut.putNextEntry(ZipEntry("AndroidManifest.xml"))
+      zipOut.write(
+        """
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="com.example.$libraryName" />
+        """.trimIndent().toByteArray()
+      )
+      zipOut.closeEntry()
+
+      // Create a valid empty JAR file in memory
+      val byteStream = ByteArrayOutputStream()
+      ZipOutputStream(byteStream).use {
+        // optionally you can add a dummy .class here too
+        it.putNextEntry(ZipEntry("META-INF/MANIFEST.MF"))
+        it.write("Manifest-Version: 1.0\n".toByteArray())
+        it.closeEntry()
+      }
+      zipOut.putNextEntry(ZipEntry("classes.jar"))
+      zipOut.write(byteStream.toByteArray())
+      zipOut.closeEntry()
+
+      // Add resources
+      zipOut.putNextEntry(ZipEntry("res/values/strings.xml"))
+      zipOut.write(
+        """
+      <?xml version="1.0" encoding="utf-8"?>
+      <resources>
+          <string name="library_name">$libraryName</string>
+      </resources>
+        """.trimIndent().toByteArray()
+      )
+      zipOut.closeEntry()
+    }
+
+    return aarFile
+  }
+
+  private fun createTestJarFile(libraryName: String, version: String): File {
+    val jarFile = tempFolder.newFile("$libraryName-$version.jar")
+
+    ZipOutputStream(FileOutputStream(jarFile)).use { zipOut ->
+      val classEntry = ZipEntry("com/example/$libraryName/Class.class")
+      zipOut.putNextEntry(classEntry)
+      zipOut.write(ByteArray(10))
+      zipOut.closeEntry()
+    }
+
+    return jarFile
   }
 }
