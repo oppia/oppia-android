@@ -97,7 +97,8 @@ class LintCommonTest {
       aarFiles = listOf(aarFileInfo),
       jarFiles = listOf("test.jar"),
       lintCheckJars = listOf("lint-check.jar"),
-      lintModelDir = workingDirectory
+      lintModelDir = workingDirectory,
+      annotationZips = emptyList()
     )
 
     assertThat(moduleConfig.name).isEqualTo("test-module")
@@ -129,7 +130,8 @@ class LintCommonTest {
       dependencies = emptyList(),
       aarFiles = emptyList(),
       jarFiles = emptyList(),
-      lintCheckJars = emptyList()
+      lintCheckJars = emptyList(),
+      annotationZips = emptyList(),
     )
 
     assertThat(moduleConfig.lintModelDir).isNull()
@@ -295,7 +297,8 @@ class LintCommonTest {
       testFiles = testFiles,
       jarFiles = emptyList(),
       aarFiles = emptyList(),
-      lintCheckJars = emptyList()
+      lintCheckJars = emptyList(),
+      annotationZips = emptyList(),
     )
   }
 
