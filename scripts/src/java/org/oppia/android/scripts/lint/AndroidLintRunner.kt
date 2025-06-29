@@ -87,8 +87,6 @@ class AndroidLintAnalyzer(
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
     private const val LINT_REPORT_FILE = "lint-report.xml"
-    private const val JAVA_HOME_KEY = "java-home"
-    private const val JAVA_RUNTIME_KEY = "java-runtime"
   }
 
   private val reportFile = File(workingDirectory, LINT_REPORT_FILE)
@@ -122,31 +120,6 @@ class AndroidLintAnalyzer(
       commandExecutor = commandExecutor
     )
     return lintProjectDescription.generateProjectDescriptionXml()
-  }
-
-  /** Java configuration class. */
-  private class JavaConfiguration(bazelInfo: Map<String, String>) {
-    private val jdkHome: File
-    private val version: String
-
-    init {
-      jdkHome = File(
-        bazelInfo[JAVA_HOME_KEY] ?: error("$JAVA_HOME_KEY not found in bazel info output")
-      )
-
-      val javaRuntime = bazelInfo[JAVA_RUNTIME_KEY]
-        ?: error("$JAVA_RUNTIME_KEY not found in bazel info output")
-
-      val versionRegex = Regex("""build (\d+\.\d+\.\d+)""")
-      version = versionRegex.find(javaRuntime)
-        ?.groupValues?.get(1)
-        ?: error("Could not extract Java version from: $javaRuntime")
-    }
-    /** Retrieves the JDK home directory. */
-    fun getJdkHome(): File = jdkHome
-
-    /** Retrieves the Java version. */
-    fun getVersion(): String = version
   }
 }
 

@@ -1,73 +1,14 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
-import com.android.tools.lint.model.LintModelModuleType.APP
-import com.android.tools.lint.model.LintModelModuleType.LIBRARY
-import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import java.io.File
 import java.io.IOException
-import java.nio.file.Path
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
-import kotlin.io.path.absolute
-import kotlin.io.path.createDirectories
-
-/**
- * Enum representing module names in the project.
- *
- * @property moduleName The name of the module as a string.
- */
-enum class ModuleName(val moduleName: String) {
-  /** Represents the application module. */
-  APP("app"),
-
-  /** Represents the domain module. */
-  DOMAIN("domain"),
-
-  /** Represents the testing module. */
-  TESTING("testing"),
-
-  /** Represents the utility module. */
-  UTILITY("utility"),
-
-  /** Represents the data module. */
-  DATA("data");
-
-  companion object {
-    /** The application module instance. */
-    val APPLICATION_MODULE = APP
-
-    /** list of library modules in the project. */
-    val LIBRARY_MODULES = listOf(DOMAIN, TESTING, UTILITY, DATA)
-  }
-}
-
-/** Represents module configuration for lint project description. */
-data class ModuleConfig(
-  val name: String,
-  val isAndroid: Boolean,
-  val isLibrary: Boolean,
-  val isTest: Boolean,
-  val srcFiles: List<String>,
-  val testFiles: List<String>,
-  val resourceDirs: List<String>,
-  val manifestFile: String,
-  val dependencies: List<String>,
-  val aarFiles: List<AarFileInfo>,
-  val jarFiles: List<String>,
-  val lintCheckJars: List<String>,
-  val lintModelDir: File? = null
-)
-
-/** Information about an AAR file and its extraction location. */
-data class AarFileInfo(
-  val originalPath: String,
-  val extractedPath: String
-)
 
 /** Cached entry with TTL support. */
 private data class CachedEntry<T>(
@@ -255,20 +196,6 @@ private class CacheManager {
   }
 }
 
-/** logger for error messages. */
-private class Logger(workingDirectory: File) {
-  private val logFile = File(workingDirectory, "error-logs")
-
-  /** Logs messages with timestamp. */
-  fun logError(message: String) {
-    try {
-      logFile.appendText("[${Instant.now()}] $message\n")
-    } catch (e: Exception) {
-      System.err.println("Failed to write to log: ${e.message}")
-    }
-  }
-}
-
 /**
  * Generates lint project description XML files for Android projects.
  *
@@ -279,7 +206,7 @@ private class Logger(workingDirectory: File) {
 class LintProjectDescription(
   private val repoRoot: File,
   private val workingDirectory: File,
-  commandExecutor: CommandExecutor
+  commandExecutor: CommandExecutor,
 ) {
 
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
@@ -303,7 +230,7 @@ class LintProjectDescription(
   }
 
   private val cacheManager = CacheManager()
-  private val logger = Logger(workingDirectory)
+  private val logger = LintLogger(workingDirectory)
 
   /**
    * Generates the lint project description XML file.
@@ -415,7 +342,7 @@ private class ModuleConfigurationBuilder(
   extractedAarsDirectory: File,
   private val modelsDirectory: File,
   cacheManager: CacheManager,
-  logger: Logger,
+  logger: LintLogger,
 ) {
 
   companion object {
@@ -545,7 +472,7 @@ private class DependencyResolver(
   repoRoot: File,
   private val extractedAarsDirectory: File,
   private val cacheManager: CacheManager,
-  logger: Logger
+  logger: LintLogger
 ) {
   private val pathResolver = PathResolver(repoRoot, bazelClient, cacheManager, logger)
   private val aarExtractor = AarExtractor(cacheManager)
@@ -622,7 +549,7 @@ private class PathResolver(
   private val repoRoot: File,
   private val bazelClient: BazelClient,
   private val cacheManager: CacheManager,
-  private val logger: Logger
+  private val logger: LintLogger
 ) {
   companion object {
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
@@ -744,233 +671,5 @@ private class AarExtractor(private val cacheManager: CacheManager) {
       throw IllegalStateException("Failed to create directory: ${directory.absolutePath}")
     }
     return directory
-  }
-}
-
-/**
- * Creates lint model files for Android modules to enable lint checking.
- *
- * @param modelDir Directory where the generated lint model files will be stored
- * @param repoRoot Root directory of the repository containing the Android modules
- */
-class LintModelCreator(
-  private val modelDir: File,
-  private val repoRoot: File
-) {
-  companion object {
-    private const val MODULE_XML_FILE = "module.xml"
-    private const val VARIANT_XML_FILE = "main.xml"
-    private const val ARTIFACT_LIBRARIES_XML_FILE = "main-mainArtifact-libraries.xml"
-    private const val DEPENDENCIES_XML_FILE = "main-mainArtifact-dependencies.xml"
-
-    private const val BUILD_DIR_NAME = "build"
-    private const val CLASSES_DIR_NAME = "classes"
-
-    private const val PACKAGE_PREFIX = "org.oppia.android"
-    private const val MIN_SDK_VERSION = "21"
-    private const val TARGET_SDK_VERSION = "34"
-    private const val PROGUARD_CONFIG_PATH = "config/proguard"
-  }
-
-  /**
-   * Generates all required lint model files for the specified module configuration.
-   *
-   * @param moduleConfig Configuration object containing module-specific settings
-   * @return The directory containing the generated model files
-   */
-  fun generateModelFiles(moduleConfig: ModuleConfig): File {
-    val modelPath = modelDir.toPath().createDirectories()
-    val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
-    val relativeProjectPath = modelPath.absolute().relativize(repoRoot.toPath().absolute())
-
-    generateModuleXml(
-      modelPath.resolve(MODULE_XML_FILE).toFile(),
-      moduleConfig,
-      relativeProjectPath,
-      buildDir
-    )
-
-    generateVariantXml(
-      modelDir.resolve(VARIANT_XML_FILE),
-      moduleConfig,
-      buildDir
-    )
-
-    generateArtifactLibrariesXml(modelDir.resolve(ARTIFACT_LIBRARIES_XML_FILE))
-    generateDependenciesXml(modelDir.resolve(DEPENDENCIES_XML_FILE))
-
-    return modelDir
-  }
-
-  private fun generateModuleXml(
-    moduleFile: File,
-    moduleConfig: ModuleConfig,
-    relativeProjectPath: Path,
-    buildDir: Path
-  ) {
-    val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
-    val buildToolsVersion = AndroidBuildSdkProperties().buildToolsVersion
-
-    val content =
-      """
-      <lint-module
-          dir="$relativeProjectPath"
-          name="${moduleConfig.name}"
-          type="${moduleType.name}"
-          maven="__non_maven__"
-          buildFolder="${buildDir.toFile().absolutePath}"
-          javaSourceLevel="11"
-          compileTarget="$buildToolsVersion"
-          neverShrinking="true">
-          <lintOptions />
-          <variant name="main"/>
-      </lint-module>
-      """.trimIndent()
-
-    moduleFile.writeText(content)
-  }
-
-  private fun generateVariantXml(
-    variantFile: File,
-    moduleConfig: ModuleConfig,
-    buildDir: Path
-  ) {
-    val packageName = extractPackageFromManifest(moduleConfig.manifestFile)
-      ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
-    val proguardAttribute = createProguardAttribute(moduleConfig.name)
-    val classOutputPath =
-      buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
-
-    val content =
-      """
-      <variant
-          name="main"
-          minSdkVersion="$MIN_SDK_VERSION"
-          targetSdkVersion="$TARGET_SDK_VERSION"
-          debuggable="true"
-          useSupportLibraryVectorDrawables="true"
-          package="$packageName"
-          $proguardAttribute>
-          <buildFeatures
-              coreLibraryDesugaring="true" 
-              viewBinding="true" />
-          <sourceProviders>
-              ${generateMainSourceProvider(moduleConfig)}
-          </sourceProviders>
-          <testSourceProviders>
-              ${generateTestSourceProvider(moduleConfig)}
-          </testSourceProviders>
-          <mainArtifact
-              classOutputs="$classOutputPath"
-              applicationId="$packageName">
-          </mainArtifact>
-      </variant>
-      """.trimIndent()
-
-    variantFile.writeText(content)
-  }
-
-  private fun generateMainSourceProvider(moduleConfig: ModuleConfig): String {
-    val attributes = buildList {
-      add("""manifest="${File(moduleConfig.manifestFile).absolutePath}"""")
-
-      val javaDir = File(repoRoot, "${moduleConfig.name}/src/main/java").absolutePath
-      add("""javaDirectories="$javaDir"""")
-
-      val mainResDirs = moduleConfig.resourceDirs
-        .map { File(it).absolutePath }
-        .filter { it.contains("/src/main/") }
-      if (mainResDirs.isNotEmpty()) {
-        add("""resDirectories="${mainResDirs.joinToString(",")}"""")
-      }
-
-      val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
-      if (assetsDir.exists()) {
-        add("""assetsDirectories="${assetsDir.absolutePath}"""")
-      }
-    }
-
-    return createSourceProviderXml(attributes)
-  }
-
-  private fun generateTestSourceProvider(moduleConfig: ModuleConfig): String {
-    val attributes = buildList {
-      val testManifest = File(repoRoot, "${moduleConfig.name}/src/test/AndroidManifest.xml")
-      if (testManifest.exists()) {
-        add("""manifest="${testManifest.absolutePath}"""")
-      }
-
-      val testJavaDirs = listOf(
-        File(repoRoot, "${moduleConfig.name}/src/test/java").absolutePath,
-        File(repoRoot, "${moduleConfig.name}/src/sharedTest/java").absolutePath
-      ).filter { File(it).exists() }
-
-      if (testJavaDirs.isNotEmpty()) {
-        add("""javaDirectories="${testJavaDirs.joinToString(",")}"""")
-      }
-
-      val testResDirs = moduleConfig.resourceDirs
-        .map { File(it).absolutePath }
-        .filter { it.contains("/src/test/") }
-      if (testResDirs.isNotEmpty()) {
-        add("""resDirectories="${testResDirs.joinToString(",")}"""")
-      }
-
-      val testAssetsDir = File(repoRoot, "${moduleConfig.name}/src/test/assets")
-      if (testAssetsDir.exists()) {
-        add("""assetsDirectories="${testAssetsDir.absolutePath}"""")
-      }
-    }
-
-    return if (attributes.isEmpty()) {
-      "<sourceProvider />"
-    } else {
-      createSourceProviderXml(attributes)
-    }
-  }
-
-  private fun createSourceProviderXml(attributes: List<String>): String {
-    val attributesString = attributes.joinToString("\n              ")
-    return """
-      <sourceProvider
-              $attributesString
-          />
-    """.trimIndent()
-  }
-
-  private fun createProguardAttribute(moduleName: String): String {
-    if (moduleName != ModuleName.APP.moduleName) return ""
-
-    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
-    val proguardFiles = proguardDir
-      .takeIf { it.isDirectory }
-      ?.listFiles { file -> file.name.endsWith(".pro") }
-      ?.map { it.absolutePath }
-      ?: emptyList()
-
-    return if (proguardFiles.isNotEmpty()) {
-      """proguardFiles="${proguardFiles.joinToString(",")}" """
-    } else {
-      ""
-    }.trimEnd()
-  }
-
-  private fun generateArtifactLibrariesXml(librariesFile: File) {
-    librariesFile.writeText("<libraries>\n</libraries>")
-  }
-
-  private fun generateDependenciesXml(dependenciesFile: File) {
-    dependenciesFile.writeText("<dependencies>\n</dependencies>")
-  }
-
-  private fun extractPackageFromManifest(manifestPath: String): String? {
-    return try {
-      val manifestFile = File(manifestPath)
-      val content = manifestFile.readText()
-      val packageRegex = Regex("""package\s*=\s*["']([^"']+)["']""")
-      packageRegex.find(content)?.groupValues?.get(1)
-    } catch (e: Exception) {
-      null
-    }
   }
 }

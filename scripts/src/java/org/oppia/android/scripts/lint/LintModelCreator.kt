@@ -1,0 +1,237 @@
+package org.oppia.android.scripts.lint
+
+import com.android.tools.lint.model.LintModelModuleType.APP
+import com.android.tools.lint.model.LintModelModuleType.LIBRARY
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.absolute
+import kotlin.io.path.createDirectories
+
+/**
+ * Creates lint model files for Android modules to enable lint checking.
+ *
+ * @param modelDir Directory where the generated lint model files will be stored
+ * @param repoRoot Root directory of the repository containing the Android modules
+ */
+class LintModelCreator(
+  private val modelDir: File,
+  private val repoRoot: File
+) {
+  companion object {
+    private const val MODULE_XML_FILE = "module.xml"
+    private const val VARIANT_XML_FILE = "main.xml"
+    private const val ARTIFACT_LIBRARIES_XML_FILE = "main-mainArtifact-libraries.xml"
+    private const val DEPENDENCIES_XML_FILE = "main-mainArtifact-dependencies.xml"
+
+    private const val BUILD_DIR_NAME = "build"
+    private const val CLASSES_DIR_NAME = "classes"
+
+    private const val PACKAGE_PREFIX = "org.oppia.android"
+    private const val MIN_SDK_VERSION = "21"
+    private const val TARGET_SDK_VERSION = "34"
+    private const val PROGUARD_CONFIG_PATH = "config/proguard"
+  }
+
+  /**
+   * Generates all required lint model files for the specified module configuration.
+   *
+   * @param moduleConfig Configuration object containing module-specific settings
+   * @return The directory containing the generated model files
+   */
+  fun generateModelFiles(moduleConfig: ModuleConfig): File {
+    val modelPath = modelDir.toPath().createDirectories()
+    val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
+    val relativeProjectPath = modelPath.absolute().relativize(repoRoot.toPath().absolute())
+
+    generateModuleXml(
+      modelPath.resolve(MODULE_XML_FILE).toFile(),
+      moduleConfig,
+      relativeProjectPath,
+      buildDir
+    )
+
+    generateVariantXml(
+      modelDir.resolve(VARIANT_XML_FILE),
+      moduleConfig,
+      buildDir
+    )
+
+    generateArtifactLibrariesXml(modelDir.resolve(ARTIFACT_LIBRARIES_XML_FILE))
+    generateDependenciesXml(modelDir.resolve(DEPENDENCIES_XML_FILE))
+
+    return modelDir
+  }
+
+  private fun generateModuleXml(
+    moduleFile: File,
+    moduleConfig: ModuleConfig,
+    relativeProjectPath: Path,
+    buildDir: Path
+  ) {
+    val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
+    val buildToolsVersion = AndroidBuildSdkProperties().buildToolsVersion
+
+    val content =
+      """
+      <lint-module
+          dir="$relativeProjectPath"
+          name="${moduleConfig.name}"
+          type="${moduleType.name}"
+          maven="__non_maven__"
+          buildFolder="${buildDir.toFile().absolutePath}"
+          javaSourceLevel="11"
+          compileTarget="$buildToolsVersion"
+          neverShrinking="true">
+          <lintOptions />
+          <variant name="main"/>
+      </lint-module>
+      """.trimIndent()
+
+    moduleFile.writeText(content)
+  }
+
+  private fun generateVariantXml(
+    variantFile: File,
+    moduleConfig: ModuleConfig,
+    buildDir: Path
+  ) {
+    val packageName = extractPackageFromManifest(moduleConfig.manifestFile)
+      ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
+    val proguardAttribute = createProguardAttribute(moduleConfig.name)
+    val classOutputPath =
+      buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
+
+    val content =
+      """
+      <variant
+          name="main"
+          minSdkVersion="$MIN_SDK_VERSION"
+          targetSdkVersion="$TARGET_SDK_VERSION"
+          debuggable="true"
+          useSupportLibraryVectorDrawables="true"
+          package="$packageName"
+          $proguardAttribute>
+          <buildFeatures
+              coreLibraryDesugaring="true" 
+              viewBinding="true" />
+          <sourceProviders>
+              ${generateMainSourceProvider(moduleConfig)}
+          </sourceProviders>
+          <testSourceProviders>
+              ${generateTestSourceProvider(moduleConfig)}
+          </testSourceProviders>
+          <mainArtifact
+              classOutputs="$classOutputPath"
+              applicationId="$packageName">
+          </mainArtifact>
+      </variant>
+      """.trimIndent()
+
+    variantFile.writeText(content)
+  }
+
+  private fun generateMainSourceProvider(moduleConfig: ModuleConfig): String {
+    val attributes = buildList {
+      add("""manifest="${File(moduleConfig.manifestFile).absolutePath}"""")
+
+      val javaDir = File(repoRoot, "${moduleConfig.name}/src/main/java").absolutePath
+      add("""javaDirectories="$javaDir"""")
+
+      val mainResDirs = moduleConfig.resourceDirs
+        .map { File(it).absolutePath }
+        .filter { it.contains("/src/main/") }
+      if (mainResDirs.isNotEmpty()) {
+        add("""resDirectories="${mainResDirs.joinToString(",")}"""")
+      }
+
+      val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
+      if (assetsDir.exists()) {
+        add("""assetsDirectories="${assetsDir.absolutePath}"""")
+      }
+    }
+
+    return createSourceProviderXml(attributes)
+  }
+
+  private fun generateTestSourceProvider(moduleConfig: ModuleConfig): String {
+    val attributes = buildList {
+      val testManifest = File(repoRoot, "${moduleConfig.name}/src/test/AndroidManifest.xml")
+      if (testManifest.exists()) {
+        add("""manifest="${testManifest.absolutePath}"""")
+      }
+
+      val testJavaDirs = listOf(
+        File(repoRoot, "${moduleConfig.name}/src/test/java").absolutePath,
+        File(repoRoot, "${moduleConfig.name}/src/sharedTest/java").absolutePath
+      ).filter { File(it).exists() }
+
+      if (testJavaDirs.isNotEmpty()) {
+        add("""javaDirectories="${testJavaDirs.joinToString(",")}"""")
+      }
+
+      val testResDirs = moduleConfig.resourceDirs
+        .map { File(it).absolutePath }
+        .filter { it.contains("/src/test/") }
+      if (testResDirs.isNotEmpty()) {
+        add("""resDirectories="${testResDirs.joinToString(",")}"""")
+      }
+
+      val testAssetsDir = File(repoRoot, "${moduleConfig.name}/src/test/assets")
+      if (testAssetsDir.exists()) {
+        add("""assetsDirectories="${testAssetsDir.absolutePath}"""")
+      }
+    }
+
+    return if (attributes.isEmpty()) {
+      "<sourceProvider />"
+    } else {
+      createSourceProviderXml(attributes)
+    }
+  }
+
+  private fun createSourceProviderXml(attributes: List<String>): String {
+    val attributesString = attributes.joinToString("\n              ")
+    return """
+      <sourceProvider
+              $attributesString
+          />
+    """.trimIndent()
+  }
+
+  private fun createProguardAttribute(moduleName: String): String {
+    if (moduleName != ModuleName.APP.moduleName) return ""
+
+    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
+    val proguardFiles = proguardDir
+      .takeIf { it.isDirectory }
+      ?.listFiles { file -> file.name.endsWith(".pro") }
+      ?.map { it.absolutePath }
+      ?: emptyList()
+
+    return if (proguardFiles.isNotEmpty()) {
+      """proguardFiles="${proguardFiles.joinToString(",")}" """
+    } else {
+      ""
+    }.trimEnd()
+  }
+
+  private fun generateArtifactLibrariesXml(librariesFile: File) {
+    librariesFile.writeText("<libraries>\n</libraries>")
+  }
+
+  private fun generateDependenciesXml(dependenciesFile: File) {
+    dependenciesFile.writeText("<dependencies>\n</dependencies>")
+  }
+
+  private fun extractPackageFromManifest(manifestPath: String): String? {
+    return try {
+      val manifestFile = File(manifestPath)
+      val content = manifestFile.readText()
+      val packageRegex = Regex("""package\s*=\s*["']([^"']+)["']""")
+      packageRegex.find(content)?.groupValues?.get(1)
+    } catch (e: Exception) {
+      null
+    }
+  }
+}

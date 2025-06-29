@@ -38,3 +38,15 @@ kt_jvm_test(
         "//third_party:com_google_truth_truth",
     ],
 )
+
+kt_jvm_test(
+    name = "LintModelCreatorTest",
+    srcs = ["LintModelCreatorTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common:bazel_client",
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_model_creator_lib",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
