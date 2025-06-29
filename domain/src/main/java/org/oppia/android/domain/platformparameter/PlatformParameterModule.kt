@@ -17,13 +17,11 @@ import javax.inject.Singleton
 )
 interface PlatformParameterModule {
   @Binds
-  @Singleton
   fun bindPlatformParameterController(
     impl: PlatformParameterControllerProdImpl
   ): PlatformParameterController
 
   @Binds
-  @Singleton
   fun bindPlatformParameterConfigRetriever(
     impl: PlatformParameterConfigRetrieverProdImpl
   ): PlatformParameterConfigRetriever
