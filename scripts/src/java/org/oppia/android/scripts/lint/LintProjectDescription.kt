@@ -366,10 +366,10 @@ private class ModuleConfigurationBuilder(
 
   /** Builds configurations for all modules in the project. */
   fun buildAllModuleConfigurations(): List<ModuleConfig> = buildList {
-    add(buildModuleConfiguration(ModuleName.APPLICATION_MODULE, isLibrary = false, bazelInfo))
+    add(buildModuleConfiguration(ModuleName.APPLICATION_MODULE, isLibrary = false))
 
     ModuleName.LIBRARY_MODULES.forEach { module ->
-      add(buildModuleConfiguration(module, isLibrary = true, bazelInfo))
+      add(buildModuleConfiguration(module, isLibrary = true))
     }
   }
 
@@ -377,7 +377,6 @@ private class ModuleConfigurationBuilder(
   private fun buildModuleConfiguration(
     module: ModuleName,
     isLibrary: Boolean,
-    bazelInfo: Map<String, String>
   ): ModuleConfig {
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()

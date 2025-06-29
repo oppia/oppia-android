@@ -9,10 +9,16 @@ import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
 
 /**
- * Creates lint model files for Android modules to enable lint checking.
+ * This class generates the XML configuration files that Android Lint requires
+ * to analyze Bazel-based Android projects. The generated files include:
+ * - module.xml: Module configuration and metadata
+ * - main.xml: Variant configuration with source providers
+ * - dependencies.xml: Module dependencies (stub file)
+ * - libraries.xml: External libraries (stub file)
  *
  * @param modelDir Directory where the generated lint model files will be stored
  * @param repoRoot Root directory of the repository containing the Android modules
+ * @param bazelInfo Map containing Bazel workspace related information
  */
 class LintModelCreator(
   private val modelDir: File,
@@ -20,20 +26,26 @@ class LintModelCreator(
   private val bazelInfo: Map<String, String>
 ) {
   companion object {
+    // File names for the generated lint model files
     private const val MODULE_XML_FILE = "module.xml"
     private const val VARIANT_XML_FILE = "main.xml"
     private const val ARTIFACT_LIBRARIES_XML_FILE = "main-mainArtifact-libraries.xml"
     private const val DEPENDENCIES_XML_FILE = "main-mainArtifact-dependencies.xml"
 
+    // Directory names for the generated model files
     private const val BUILD_DIR_NAME = "build"
     private const val CLASSES_DIR_NAME = "classes"
 
+    // Build configurations for Android module configuration
     private const val PACKAGE_PREFIX = "org.oppia.android"
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "34"
+
+    // Path constants
     private const val PROGUARD_CONFIG_PATH = "config/proguard"
   }
-
+  private val logger = LintLogger(workingDirectory = modelDir)
+  private val sdkProperties = AndroidBuildSdkProperties()
   /**
    * Generates all required lint model files for the specified module configuration.
    *
@@ -71,7 +83,7 @@ class LintModelCreator(
     buildDir: Path
   ) {
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
-    val buildToolsVersion = AndroidBuildSdkProperties().buildToolsVersion
+    val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
     val content =
       """
@@ -226,13 +238,28 @@ class LintModelCreator(
   }
 
   private fun extractPackageFromManifest(manifestPath: String): String? {
+    val manifestFile = File(manifestPath)
+
+    if (!manifestFile.exists()) {
+      logger.logError("Manifest file not found at path: $manifestPath")
+      return null
+    }
+
+    val packageRegex = Regex("""package\s*=\s*["']([^"']+)["']""")
+
     return try {
-      val manifestFile = File(manifestPath)
-      val content = manifestFile.readText()
-      val packageRegex = Regex("""package\s*=\s*["']([^"']+)["']""")
-      packageRegex.find(content)?.groupValues?.get(1)
+      manifestFile.useLines { lines ->
+        for (line in lines) {
+          val match = packageRegex.find(line)
+          if (match != null) return match.groupValues[1]
+        }
+      }
+      logger.logError("Package attribute not found in manifest: $manifestPath")
+      null
     } catch (e: Exception) {
+      logger.logError("Error reading manifest: ${e.message}")
       null
     }
   }
+
 }
