@@ -70,6 +70,7 @@ class LintModelCreator(
       buildDir
     )
 
+    // Generate stub files since dependencies and libraries are already passed in project XML
     generateArtifactLibrariesXml(modelDir.resolve(ARTIFACT_LIBRARIES_XML_FILE))
     generateDependenciesXml(modelDir.resolve(DEPENDENCIES_XML_FILE))
 
@@ -261,5 +262,4 @@ class LintModelCreator(
       null
     }
   }
-
 }
