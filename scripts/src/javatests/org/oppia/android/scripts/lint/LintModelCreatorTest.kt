@@ -1,14 +1,12 @@
 package org.oppia.android.scripts.lint
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
-import org.xml.sax.SAXException
 import java.io.File
 import java.util.Locale
-import javax.xml.parsers.DocumentBuilderFactory
 
 /** Comprehensive tests for [LintModelCreator]. */
 @Suppress("FunctionName")
@@ -22,7 +20,11 @@ class LintModelCreatorTest {
     modelDirectory = tempFolder.newFolder("model-directory")
     lintModelCreator = LintModelCreator(
       modelDir = modelDirectory,
-      repoRoot = tempFolder.root
+      repoRoot = tempFolder.root,
+      bazelInfo = mapOf(
+        "java-home" to "/usr/lib/jvm/java-11",
+        "java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post)"
+      )
     )
   }
   @Test
@@ -31,10 +33,10 @@ class LintModelCreatorTest {
 
     val result = lintModelCreator.generateModelFiles(moduleConfig)
 
-    Truth.assertThat(result.exists()).isTrue()
-    Truth.assertThat(result.isDirectory).isTrue()
-    Truth.assertThat(File(result, "build").exists()).isTrue()
-    Truth.assertThat(File(result, "build/classes").exists()).isTrue()
+    assertThat(result.exists()).isTrue()
+    assertThat(result.isDirectory).isTrue()
+    assertThat(File(result, "build").exists()).isTrue()
+    assertThat(File(result, "build/classes").exists()).isTrue()
   }
 
   @Test
@@ -44,15 +46,16 @@ class LintModelCreatorTest {
     lintModelCreator.generateModelFiles(moduleConfig)
 
     val moduleXmlFile = File(modelDirectory, "module.xml")
-    Truth.assertThat(moduleXmlFile.exists()).isTrue()
+    assertThat(moduleXmlFile.exists()).isTrue()
 
     val content = moduleXmlFile.readText()
-    Truth.assertThat(content).contains("<lint-module")
-    Truth.assertThat(content).contains("name=\"utility\"")
-    Truth.assertThat(content).contains("type=\"LIBRARY\"")
-    Truth.assertThat(content).contains("maven=\"__non_maven__\"")
-    Truth.assertThat(content).contains("neverShrinking=\"true\"")
-    Truth.assertThat(content).contains("<variant name=\"main\"/>")
+    assertThat(content).contains("<lint-module")
+    assertThat(content).contains("name=\"utility\"")
+    assertThat(content).contains("type=\"LIBRARY\"")
+    assertThat(content).contains("maven=\"__non_maven__\"")
+    assertThat(content).contains("javaSourceLevel=\"11.0.16\"")
+    assertThat(content).contains("neverShrinking=\"true\"")
+    assertThat(content).contains("<variant name=\"main\"/>")
   }
 
   @Test
@@ -62,18 +65,18 @@ class LintModelCreatorTest {
     lintModelCreator.generateModelFiles(moduleConfig)
 
     val variantXmlFile = File(modelDirectory, "main.xml")
-    Truth.assertThat(variantXmlFile.exists()).isTrue()
+    assertThat(variantXmlFile.exists()).isTrue()
 
     val content = variantXmlFile.readText()
-    Truth.assertThat(content).contains("<variant")
-    Truth.assertThat(content).contains("name=\"main\"")
-    Truth.assertThat(content).contains("minSdkVersion=\"21\"")
-    Truth.assertThat(content).contains("targetSdkVersion=\"34\"")
-    Truth.assertThat(content).contains("debuggable=\"true\"")
-    Truth.assertThat(content).contains("package=\"org.oppia.android.app\"")
-    Truth.assertThat(content).contains("<buildFeatures")
-    Truth.assertThat(content).contains("coreLibraryDesugaring=\"true\"")
-    Truth.assertThat(content).contains("viewBinding=\"true\"")
+    assertThat(content).contains("<variant")
+    assertThat(content).contains("name=\"main\"")
+    assertThat(content).contains("minSdkVersion=\"21\"")
+    assertThat(content).contains("targetSdkVersion=\"34\"")
+    assertThat(content).contains("debuggable=\"true\"")
+    assertThat(content).contains("package=\"org.oppia.android.app\"")
+    assertThat(content).contains("<buildFeatures")
+    assertThat(content).contains("coreLibraryDesugaring=\"true\"")
+    assertThat(content).contains("viewBinding=\"true\"")
   }
 
   @Test
@@ -83,11 +86,11 @@ class LintModelCreatorTest {
     lintModelCreator.generateModelFiles(moduleConfig)
 
     val librariesXmlFile = File(modelDirectory, "main-mainArtifact-libraries.xml")
-    Truth.assertThat(librariesXmlFile.exists()).isTrue()
+    assertThat(librariesXmlFile.exists()).isTrue()
 
     val content = librariesXmlFile.readText()
-    Truth.assertThat(content).contains("<libraries>")
-    Truth.assertThat(content).contains("</libraries>")
+    assertThat(content).contains("<libraries>")
+    assertThat(content).contains("</libraries>")
   }
 
   @Test
@@ -97,14 +100,12 @@ class LintModelCreatorTest {
     lintModelCreator.generateModelFiles(moduleConfig)
 
     val dependenciesXmlFile = File(modelDirectory, "main-mainArtifact-dependencies.xml")
-    Truth.assertThat(dependenciesXmlFile.exists()).isTrue()
+    assertThat(dependenciesXmlFile.exists()).isTrue()
 
     val content = dependenciesXmlFile.readText()
-    Truth.assertThat(content).contains("<dependencies>")
-    Truth.assertThat(content).contains("</dependencies>")
+    assertThat(content).contains("<dependencies>")
+    assertThat(content).contains("</dependencies>")
   }
-
-
 
   private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
     val manifestPath = "${tempFolder.root}/$moduleName/src/main/AndroidManifest.xml"

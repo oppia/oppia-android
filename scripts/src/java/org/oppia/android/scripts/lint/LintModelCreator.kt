@@ -16,7 +16,8 @@ import kotlin.io.path.createDirectories
  */
 class LintModelCreator(
   private val modelDir: File,
-  private val repoRoot: File
+  private val repoRoot: File,
+  private val bazelInfo: Map<String, String>
 ) {
   companion object {
     private const val MODULE_XML_FILE = "module.xml"
@@ -71,7 +72,7 @@ class LintModelCreator(
   ) {
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = AndroidBuildSdkProperties().buildToolsVersion
-
+    val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
     val content =
       """
       <lint-module
@@ -80,7 +81,7 @@ class LintModelCreator(
           type="${moduleType.name}"
           maven="__non_maven__"
           buildFolder="${buildDir.toFile().absolutePath}"
-          javaSourceLevel="11"
+          javaSourceLevel="$javaSourceLevel"
           compileTarget="$buildToolsVersion"
           neverShrinking="true">
           <lintOptions />

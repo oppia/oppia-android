@@ -362,20 +362,22 @@ private class ModuleConfigurationBuilder(
     cacheManager,
     logger
   )
+  private val bazelInfo = bazelClient.retrieveBazelInfo()
 
   /** Builds configurations for all modules in the project. */
   fun buildAllModuleConfigurations(): List<ModuleConfig> = buildList {
-    add(buildModuleConfiguration(ModuleName.APPLICATION_MODULE, isLibrary = false))
+    add(buildModuleConfiguration(ModuleName.APPLICATION_MODULE, isLibrary = false, bazelInfo))
 
     ModuleName.LIBRARY_MODULES.forEach { module ->
-      add(buildModuleConfiguration(module, isLibrary = true))
+      add(buildModuleConfiguration(module, isLibrary = true, bazelInfo))
     }
   }
 
   /** Builds configuration for a single module. */
   private fun buildModuleConfiguration(
     module: ModuleName,
-    isLibrary: Boolean
+    isLibrary: Boolean,
+    bazelInfo: Map<String, String>
   ): ModuleConfig {
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
@@ -414,7 +416,7 @@ private class ModuleConfigurationBuilder(
         )
       }
 
-      val modelCreator = LintModelCreator(modelDirectory, repoRoot)
+      val modelCreator = LintModelCreator(modelDirectory, repoRoot, bazelInfo)
       val generatedModelDir = modelCreator.generateModelFiles(moduleConfig)
 
       moduleConfig.copy(lintModelDir = generatedModelDir)

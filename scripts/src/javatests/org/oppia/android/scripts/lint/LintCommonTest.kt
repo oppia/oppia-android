@@ -5,9 +5,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.testing.assertThrows
 import java.io.File
 import java.util.Locale
-import org.oppia.android.testing.assertThrows
 
 /** Comprehensive tests for lint common classes and data models. */
 @Suppress("FunctionName")
