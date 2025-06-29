@@ -62,6 +62,9 @@ class FeatureFlagItemViewModel @Inject constructor(
       SyncStatus.SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.feature_flag_server_sync_status)
 
+      SyncStatus.LOCAL_OVERRIDE ->
+        resourceHandler.getStringInLocale(R.string.feature_flag_overridden_sync_status)
+
       else ->
         resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
     }
@@ -73,6 +76,7 @@ class FeatureFlagItemViewModel @Inject constructor(
       SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF00645C
       SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
       SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
+      SyncStatus.LOCAL_OVERRIDE -> 0xFFEFCF24
       else -> 0xFF00645C
     }
   }

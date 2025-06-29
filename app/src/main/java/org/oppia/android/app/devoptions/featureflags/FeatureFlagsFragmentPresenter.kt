@@ -3,6 +3,7 @@ package org.oppia.android.app.devoptions.featureflags
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +11,9 @@ import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
 /** The presenter for [FeatureFlagsFragment]. */
@@ -19,6 +22,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val featureFlagsViewModel: FeatureFlagsViewModel,
+  private val oppiaLogger: OppiaLogger,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
@@ -43,7 +47,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.featureFlagsToolbar.setNavigationOnClickListener {
       onBackNavigation()
     }
-
+    handleBackPress()
     if (featureFlagStates.isNotEmpty()) {
       this.featureFlagStates = featureFlagStates.toMutableMap()
     }
@@ -72,6 +76,13 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
+    val overriddenFeatureFlags = featureFlagStates.map { (id, value) ->
+      OverriddenFeatureFlag.newBuilder()
+        .setId(id)
+        .setOverriddenIsEnabled(value)
+        .build()
+    }
+    featureFlagsViewModel.overrideFeatureFlags(overriddenFeatureFlags)
     (activity as FeatureFlagsActivity).finish()
   }
 
@@ -87,5 +98,19 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     model.onToggleCallback = { id, value ->
       featureFlagStates[id] = value
     }
+  }
+
+  private fun handleBackPress() {
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          onBackNavigation()
+          // The dispatcher can hold a reference to the host
+          // so we need to null it out to prevent memory leaks.
+          this.remove()
+        }
+      }
+    )
   }
 }
