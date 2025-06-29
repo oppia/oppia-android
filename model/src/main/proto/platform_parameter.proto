@@ -298,8 +298,6 @@ message OverriddenPlatformParameter {
   //  PlatformParameterDefintion
   PlatformParameterId id = 1;
 
-  // Indicates whether the overridden platform parameter is empty (i.e. not set).
-  bool is_empty = 2;
   // The overridden value of the platform parameter.
   PlatformParameterValue overridden_value = 3;
 }
