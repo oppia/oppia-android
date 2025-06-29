@@ -113,12 +113,14 @@ class LintModelCreatorTest {
 
     val manifestFile = File(moduleConfig.manifestFile)
     manifestFile.parentFile?.mkdirs()
-    manifestFile.writeText("""
+    manifestFile.writeText(
+      """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="org.oppia.android.app">
     </manifest>
-  """.trimIndent())
+      """.trimIndent()
+    )
 
     moduleConfig.srcFiles.forEach { srcFile ->
       val file = File(srcFile)
@@ -156,12 +158,14 @@ class LintModelCreatorTest {
 
     val manifestFile = File(moduleConfig.manifestFile)
     manifestFile.parentFile?.mkdirs()
-    manifestFile.writeText("""
+    manifestFile.writeText(
+      """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="org.oppia.android.utility">
     </manifest>
-  """.trimIndent())
+      """.trimIndent()
+    )
 
     moduleConfig.srcFiles.forEach { srcFile ->
       val file = File(srcFile)
@@ -176,13 +180,15 @@ class LintModelCreatorTest {
     val initialModuleXmlTimestamp = moduleXmlFile.lastModified()
     val initialCacheContent = cacheFile.readText()
 
-    manifestFile.writeText("""
+    manifestFile.writeText(
+      """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="org.oppia.android.utility.modified">
         <uses-permission android:name="android.permission.INTERNET" />
     </manifest>
-  """.trimIndent())
+      """.trimIndent()
+    )
 
     lintModelCreator.generateModelFiles(moduleConfig)
 
