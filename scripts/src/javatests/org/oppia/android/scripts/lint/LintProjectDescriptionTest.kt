@@ -426,6 +426,8 @@ class LintProjectDescriptionTest {
         }
         args.contains("info") -> {
           outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          outputStream.println("java-home: /usr/lib/jvm/java-11")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
           0
         }
         else -> 0
