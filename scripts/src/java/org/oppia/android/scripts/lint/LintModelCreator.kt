@@ -241,20 +241,21 @@ class LintModelCreator(
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
+
     val content =
       """
-      <lint-module
-          dir="$relativeProjectPath"
-          name="${moduleConfig.name}"
-          type="${moduleType.name}"
-          maven="__non_maven__"
-          buildFolder="${buildDir.toFile().absolutePath}"
-          javaSourceLevel="$javaSourceLevel"
-          compileTarget="$buildToolsVersion"
-          neverShrinking="true">
-          <lintOptions />
-          <variant name="main"/>
-      </lint-module>
+        <lint-module
+            dir="${escapeXmlAttribute(relativeProjectPath.toString())}"
+            name="${escapeXmlAttribute(moduleConfig.name)}"
+            type="${moduleType.name}"
+            maven="__non_maven__"
+            buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
+            javaSourceLevel="$javaSourceLevel"
+            compileTarget="$buildToolsVersion"
+            neverShrinking="true">
+            <lintOptions />
+            <variant name="main"/>
+        </lint-module>
       """.trimIndent()
 
     moduleFile.writeText(content)
@@ -265,36 +266,39 @@ class LintModelCreator(
     moduleConfig: ModuleConfig,
     buildDir: Path
   ) {
-    val packageName = extractPackageFromManifest(moduleConfig.manifestFile)
+    val rawPackageName = extractPackageFromManifest(moduleConfig.manifestFile)
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
+
+    val packageName = escapeXmlAttribute(rawPackageName)
     val proguardAttribute = createProguardAttribute(moduleConfig.name)
-    val classOutputPath =
+    val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
+    )
 
     val content =
       """
-      <variant
-          name="main"
-          minSdkVersion="$MIN_SDK_VERSION"
-          targetSdkVersion="$TARGET_SDK_VERSION"
-          debuggable="true"
-          useSupportLibraryVectorDrawables="true"
-          package="$packageName"
-          $proguardAttribute>
-          <buildFeatures
-              coreLibraryDesugaring="true" 
-              viewBinding="true" />
-          <sourceProviders>
-              ${generateMainSourceProvider(moduleConfig)}
-          </sourceProviders>
-          <testSourceProviders>
-              ${generateTestSourceProvider(moduleConfig)}
-          </testSourceProviders>
-          <mainArtifact
-              classOutputs="$classOutputPath"
-              applicationId="$packageName">
-          </mainArtifact>
-      </variant>
+        <variant
+            name="main"
+            minSdkVersion="$MIN_SDK_VERSION"
+            targetSdkVersion="$TARGET_SDK_VERSION"
+            debuggable="true"
+            useSupportLibraryVectorDrawables="true"
+            package="$packageName"
+            $proguardAttribute>
+            <buildFeatures
+                coreLibraryDesugaring="true" 
+                viewBinding="true" />
+            <sourceProviders>
+                ${generateMainSourceProvider(moduleConfig)}
+            </sourceProviders>
+            <testSourceProviders>
+                ${generateTestSourceProvider(moduleConfig)}
+            </testSourceProviders>
+            <mainArtifact
+                classOutputs="$classOutputPath"
+                applicationId="$packageName">
+            </mainArtifact>
+        </variant>
       """.trimIndent()
 
     variantFile.writeText(content)
@@ -302,13 +306,18 @@ class LintModelCreator(
 
   private fun generateMainSourceProvider(moduleConfig: ModuleConfig): String {
     val attributes = buildList {
-      add("""manifest="${File(moduleConfig.manifestFile).absolutePath}"""")
+      add("""manifest="${escapeXmlAttribute(File(moduleConfig.manifestFile).absolutePath)}"""")
 
-      val javaDir = File(repoRoot, "${moduleConfig.name}/src/main/java").absolutePath
+      val javaDir = escapeXmlAttribute(
+        File(
+          repoRoot,
+          "${moduleConfig.name}/src/main/java"
+        ).absolutePath
+      )
       add("""javaDirectories="$javaDir"""")
 
       val mainResDirs = moduleConfig.resourceDirs
-        .map { File(it).absolutePath }
+        .map { escapeXmlAttribute(File(it).absolutePath) }
         .filter { it.contains("/src/main/") }
       if (mainResDirs.isNotEmpty()) {
         add("""resDirectories="${mainResDirs.joinToString(",")}"""")
@@ -316,7 +325,7 @@ class LintModelCreator(
 
       val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
       if (assetsDir.exists()) {
-        add("""assetsDirectories="${assetsDir.absolutePath}"""")
+        add("""assetsDirectories="${escapeXmlAttribute(assetsDir.absolutePath)}"""")
       }
     }
 
@@ -416,5 +425,16 @@ class LintModelCreator(
       logger.logError("Error reading manifest: ${e.message}")
       null
     }
+  }
+
+  /**
+   * Escapes special XML characters in attribute values to prevent XML injection
+   * and ensure well-formed XML output.
+   */
+  private fun escapeXmlAttribute(value: String): String {
+    return value.replace("&", "&amp;")
+      .replace("<", "&lt;")
+      .replace("\"", "&quot;")
+      .replace("'", "&apos;")
   }
 }
