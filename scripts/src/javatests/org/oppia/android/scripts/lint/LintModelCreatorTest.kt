@@ -107,6 +107,103 @@ class LintModelCreatorTest {
     assertThat(content).contains("</dependencies>")
   }
 
+  @Test
+  fun testLintModelCreator_generateModelFiles_usesCacheWhenInputsUnchanged() {
+    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+
+    val manifestFile = File(moduleConfig.manifestFile)
+    manifestFile.parentFile?.mkdirs()
+    manifestFile.writeText("""
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="org.oppia.android.app">
+    </manifest>
+  """.trimIndent())
+
+    moduleConfig.srcFiles.forEach { srcFile ->
+      val file = File(srcFile)
+      file.parentFile?.mkdirs()
+      file.writeText("class AppClass")
+    }
+
+    val firstResult = lintModelCreator.generateModelFiles(moduleConfig)
+
+    val moduleXmlFile = File(modelDirectory, "module.xml")
+    val variantXmlFile = File(modelDirectory, "main.xml")
+    val cacheFile = File(modelDirectory, ".lint-model-cache")
+
+    val firstModuleXmlTimestamp = moduleXmlFile.lastModified()
+    val firstVariantXmlTimestamp = variantXmlFile.lastModified()
+
+    val secondResult = lintModelCreator.generateModelFiles(moduleConfig)
+
+    // Files should not be regenerated (same timestamps)
+    assertThat(secondResult).isEqualTo(firstResult)
+    assertThat(moduleXmlFile.lastModified()).isEqualTo(firstModuleXmlTimestamp)
+    assertThat(variantXmlFile.lastModified()).isEqualTo(firstVariantXmlTimestamp)
+
+    assertThat(cacheFile.exists()).isTrue()
+    val cacheContent = cacheFile.readText().trim().split("\n")
+    assertThat(cacheContent).hasSize(2)
+    assertThat(cacheContent[0]).hasLength(64)
+
+    assertThat(cacheContent[1].toLong()).isGreaterThan(0)
+  }
+
+  @Test
+  fun testLintModelCreator_generateModelFiles_regeneratesWhenInputsChange() {
+    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+
+    val manifestFile = File(moduleConfig.manifestFile)
+    manifestFile.parentFile?.mkdirs()
+    manifestFile.writeText("""
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="org.oppia.android.utility">
+    </manifest>
+  """.trimIndent())
+
+    moduleConfig.srcFiles.forEach { srcFile ->
+      val file = File(srcFile)
+      file.parentFile?.mkdirs()
+      file.writeText("class UtilityClass")
+    }
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    val moduleXmlFile = File(modelDirectory, "module.xml")
+    val cacheFile = File(modelDirectory, ".lint-model-cache")
+    val initialModuleXmlTimestamp = moduleXmlFile.lastModified()
+    val initialCacheContent = cacheFile.readText()
+
+    manifestFile.writeText("""
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="org.oppia.android.utility.modified">
+        <uses-permission android:name="android.permission.INTERNET" />
+    </manifest>
+  """.trimIndent())
+
+    lintModelCreator.generateModelFiles(moduleConfig)
+
+    // Files should be regenerated
+    assertThat(moduleXmlFile.lastModified()).isGreaterThan(initialModuleXmlTimestamp)
+
+    // Cache should be updated with new hash
+    val newCacheContent = cacheFile.readText()
+    assertThat(newCacheContent).isNotEqualTo(initialCacheContent)
+
+    // Verify the hash changed
+    val initialHash = initialCacheContent.trim().split("\n")[0]
+    val newHash = newCacheContent.trim().split("\n")[0]
+    assertThat(newHash).isNotEqualTo(initialHash)
+    assertThat(newHash).hasLength(64)
+
+    val moduleXmlContent = moduleXmlFile.readText()
+    assertThat(moduleXmlContent).contains("name=\"utility\"")
+    assertThat(moduleXmlContent).contains("type=\"LIBRARY\"")
+  }
+
   private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
     val manifestPath = "${tempFolder.root}/$moduleName/src/main/AndroidManifest.xml"
     val resourceDirs = listOf("${tempFolder.root}/$moduleName/src/main/res")
