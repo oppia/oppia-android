@@ -9,7 +9,7 @@ import org.oppia.android.testing.assertThrows
 import java.io.File
 import java.util.Locale
 
-/** Comprehensive tests for lint common classes and data models. */
+/** Tests for [LintCommonTest]. */
 @Suppress("FunctionName")
 class LintCommonTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()

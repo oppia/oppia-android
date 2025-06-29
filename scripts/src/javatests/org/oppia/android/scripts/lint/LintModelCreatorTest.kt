@@ -8,7 +8,7 @@ import org.junit.rules.TemporaryFolder
 import java.io.File
 import java.util.Locale
 
-/** Comprehensive tests for [LintModelCreator]. */
+/** Tests for [LintModelCreator]. */
 @Suppress("FunctionName")
 class LintModelCreatorTest {
   @field:[Rule JvmField] val tempFolder = TemporaryFolder()
