@@ -341,7 +341,6 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
   fun testGetParameterInitializationStatus_withoutLoadingParameters_returnsFalse() {
     setUpTestApplicationComponent()
     val initStatusProvider = platformParameterControllerDebugImpl.getParameterInitializationStatus()
@@ -524,7 +523,6 @@ class PlatformParameterControllerDebugImplTest {
 
     fun getCacheStoreFactory(): PersistentCacheStore.Factory
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
-
     @BackgroundDispatcher
     fun getBackgroundDispatcher(): CoroutineDispatcher
     fun inject(platformParameterControllerTest: PlatformParameterControllerDebugImplTest)
