@@ -230,7 +230,10 @@ class LintModelCreatorTest {
       testFiles = testFiles,
       jarFiles = emptyList(),
       aarFiles = emptyList(),
-      lintCheckJars = emptyList()
+      lintCheckJars = emptyList(),
+      proGuardFiles = emptyList(),
+      annotationZips = emptyList(),
+      partialResultsDir = File(tempFolder.root, "partial-results"),
     )
   }
 

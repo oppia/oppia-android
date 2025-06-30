@@ -97,8 +97,10 @@ class LintCommonTest {
       aarFiles = listOf(aarFileInfo),
       jarFiles = listOf("test.jar"),
       lintCheckJars = listOf("lint-check.jar"),
-      lintModelDir = workingDirectory,
-      annotationZips = emptyList()
+      lintModelDir = File(workingDirectory, "model-dir"),
+      annotationZips = listOf("annotation.zip"),
+      proGuardFiles = listOf("proguard-rules.pro"),
+      partialResultsDir = File(workingDirectory, "partial-results")
     )
 
     assertThat(moduleConfig.name).isEqualTo("test-module")
@@ -113,7 +115,11 @@ class LintCommonTest {
     assertThat(moduleConfig.aarFiles).containsExactly(aarFileInfo)
     assertThat(moduleConfig.jarFiles).containsExactly("test.jar")
     assertThat(moduleConfig.lintCheckJars).containsExactly("lint-check.jar")
-    assertThat(moduleConfig.lintModelDir).isEqualTo(workingDirectory)
+    assertThat(moduleConfig.lintModelDir).isEqualTo(File(workingDirectory, "model-dir"))
+    assertThat(moduleConfig.annotationZips).containsExactly("annotation.zip")
+    assertThat(moduleConfig.partialResultsDir)
+      .isEqualTo(File(workingDirectory, "partial-results"))
+    assertThat(moduleConfig.proGuardFiles).containsExactly("proguard-rules.pro")
   }
 
   @Test
@@ -132,6 +138,8 @@ class LintCommonTest {
       jarFiles = emptyList(),
       lintCheckJars = emptyList(),
       annotationZips = emptyList(),
+      partialResultsDir = File(workingDirectory, "partial-results"),
+      proGuardFiles = emptyList(),
     )
 
     assertThat(moduleConfig.lintModelDir).isNull()
@@ -299,6 +307,8 @@ class LintCommonTest {
       aarFiles = emptyList(),
       lintCheckJars = emptyList(),
       annotationZips = emptyList(),
+      partialResultsDir = File(workingDirectory, "partial-results"),
+      proGuardFiles = emptyList()
     )
   }
 

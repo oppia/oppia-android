@@ -48,7 +48,9 @@ data class ModuleConfig(
   val jarFiles: List<String>,
   val annotationZips: List<String>,
   val lintCheckJars: List<String>,
-  val lintModelDir: File? = null
+  val lintModelDir: File? = null,
+  val partialResultsDir: File,
+  val proGuardFiles: List<String>
 )
 
 /** Information about an AAR file and its extraction location. */

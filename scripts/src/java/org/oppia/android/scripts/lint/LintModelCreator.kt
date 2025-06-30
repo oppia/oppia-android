@@ -43,8 +43,6 @@ class LintModelCreator(
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "34"
 
-    private const val PROGUARD_CONFIG_PATH = "config/proguard"
-
     private const val MODEL_CACHE_TTL_HOURS = 24L
   }
 
@@ -252,6 +250,7 @@ class LintModelCreator(
             buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
+            partialResultsDir="${escapeXmlAttribute(moduleConfig.partialResultsDir.absolutePath)}"
             neverShrinking="true">
             <lintOptions />
             <variant name="main"/>
@@ -270,7 +269,7 @@ class LintModelCreator(
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
 
     val packageName = escapeXmlAttribute(rawPackageName)
-    val proguardAttribute = createProguardAttribute(moduleConfig.name)
+    val proguardAttribute = createProguardAttribute(moduleConfig.proGuardFiles)
     val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
     )
@@ -320,7 +319,7 @@ class LintModelCreator(
         .map { escapeXmlAttribute(File(it).absolutePath) }
         .filter { it.contains("/src/main/") }
       if (mainResDirs.isNotEmpty()) {
-        add("""resDirectories="${mainResDirs.joinToString(",")}"""")
+        add("""resDirectories="${mainResDirs.joinToString(":")}"""")
       }
 
       val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
@@ -345,14 +344,14 @@ class LintModelCreator(
       ).filter { File(it).exists() }
 
       if (testJavaDirs.isNotEmpty()) {
-        add("""javaDirectories="${testJavaDirs.joinToString(",")}"""")
+        add("""javaDirectories="${testJavaDirs.joinToString(":")}"""")
       }
 
       val testResDirs = moduleConfig.resourceDirs
         .map { File(it).absolutePath }
         .filter { it.contains("/src/test/") }
       if (testResDirs.isNotEmpty()) {
-        add("""resDirectories="${testResDirs.joinToString(",")}"""")
+        add("""resDirectories="${testResDirs.joinToString(":")}"""")
       }
 
       val testAssetsDir = File(repoRoot, "${moduleConfig.name}/src/test/assets")
@@ -377,21 +376,8 @@ class LintModelCreator(
     """.trimIndent()
   }
 
-  private fun createProguardAttribute(moduleName: String): String {
-    if (moduleName != ModuleName.APP.moduleName) return ""
-
-    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
-    val proguardFiles = proguardDir
-      .takeIf { it.isDirectory }
-      ?.listFiles { file -> file.name.endsWith(".pro") }
-      ?.map { it.absolutePath }
-      ?: emptyList()
-
-    return if (proguardFiles.isNotEmpty()) {
-      """proguardFiles="${proguardFiles.joinToString(",")}" """
-    } else {
-      ""
-    }.trimEnd()
+  private fun createProguardAttribute(proGuardFiles: List<String>): String {
+    return """proguardFiles="${proGuardFiles.joinToString(":")}" """
   }
 
   private fun generateArtifactLibrariesXml(librariesFile: File) {

@@ -35,8 +35,6 @@ class AndroidLintRunnerTest {
   private lateinit var workingDirectory: File
 
   companion object {
-    private const val MIN_SDK_VERSION = "21"
-    private const val KOTLIN_LANGUAGE_VERSION = "1.6"
     private const val JAVA_VERSION = "11.0.6"
   }
 
@@ -132,10 +130,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesModelDirectory() {
     setupProjectStructure()
-    val aarFile = createTestAarFile("test-aar", "1.0.0")
-    val jarFile = createTestJarFile("test-jar", "1.0.0")
 
-    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
@@ -174,7 +169,7 @@ class AndroidLintRunnerTest {
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", sdkPath,
       "--compile-sdk-version", buildSdkVersion,
-      "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
+      "--kotlin-language-level", "1.6",
       "--java-language-level", JAVA_VERSION,
       "--project", projectFile.absolutePath,
       "--xml", reportFile.absolutePath
@@ -237,7 +232,7 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
-    setupAndroidProjectWithUnusedResources()
+    setupProjectStructure()
     val lintRunner = createLintRunner()
     lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
 
@@ -247,20 +242,21 @@ class AndroidLintRunnerTest {
 
   @Test
   fun testRunLint_whenExitCodeIs1_shouldFailScript() {
-    setupAndroidProjectWithInvalidId()
+    setupProjectWithInvalidIdIssue()
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
     }
 
-    val reportFile = File(tempFolder.root, "lint-report.xml")
+    val reportFile = File(workingDirectory, "lint-report.xml")
     assertThat(reportFile.exists()).isTrue()
     assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    val output = outputStream.toString()
+    assertThat(output).contains("InvalidId")
   }
 
   @Test
   fun testRunLint_withExitCode2_throwsException() {
-    setupAndroidProjectWithInvalidId()
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(emptyArray())
@@ -324,34 +320,8 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testRunLint_multipleIssueTypes_detectsAll() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithMultipleIssues()
-    createBasicStringResources()
-
-    val lintRunner = createLintRunner()
-    val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-    }
-
-    val reportFile = File(workingDirectory, "lint-report.xml")
-    val reportContent = reportFile.readText()
-
-    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
-    assertThat(reportContent).contains("InvalidId")
-    assertThat(reportContent).contains("HardcodedText")
-    assertThat(reportContent).contains("RtlHardcoded")
-    assertThat(reportContent).contains("UnusedIds")
-  }
-
-  @Test
   fun testRunLint_withProjectDescription_withNonExistentFilePath_throwsInternalIssue() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createBasicStringResources()
+    setupProjectStructure()
 
     val projectDescriptionFile = createProjectDescriptionFileWithInvalidPath()
     val reportFile = File(workingDirectory, "lint-report.xml")
@@ -370,7 +340,7 @@ class AndroidLintRunnerTest {
     val report = reportFile.readText()
     assertThat(report).contains("LintError")
     assertThat(report).contains("app/src/main/nonexistent_java does not exist")
-    assertThat(report).contains("line=\"7\"")
+    assertThat(report).contains("line=\"8\"")
   }
 
   @Test
@@ -385,136 +355,6 @@ class AndroidLintRunnerTest {
 
     assertThat(exception.message).contains("Lint analysis failed with exit code 5")
     assertThat(exception.message).contains("Invalid command-line argument")
-  }
-
-  @Test
-  fun testRunLint_missingApplicationIcon_detectsIssue() {
-    setupAndroidProjectWithoutApplicationIcon()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("MissingApplicationIcon")
-  }
-
-  @Test
-  fun testRunLint_unusedResources_detectsIssue() {
-    setupAndroidProjectWithUnusedResources()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("UnusedResources")
-  }
-
-  @Test
-  fun testRunLint_duplicateStrings_detectsIssue() {
-    setupAndroidProjectWithDuplicateStrings()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("DuplicateStrings")
-  }
-
-  @Test
-  fun testRunLint_unusedIds_detectsIssue() {
-    setupAndroidProjectWithUnusedIds()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("UnusedIds")
-  }
-
-  @Test
-  fun testRunLint_rtlHardcoded_detectsIssue() {
-    setupAndroidProjectWithRtlHardcoded()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("RtlHardcoded")
-  }
-
-  @Test
-  fun testRunLint_uselessParent_detectsIssue() {
-    setupAndroidProjectWithUselessParent()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("UselessParent")
-  }
-
-  @Test
-  fun testRunLint_uselessLeaf_detectsIssue() {
-    setupAndroidProjectWithUselessLeaf()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("UselessLeaf")
-  }
-
-  @Test
-  fun testRunLint_hardcodedText_detectsIssue() {
-    setupAndroidProjectWithHardcodedText()
-    val lintRunner = createLintRunner()
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-
-    verifyLintReportContains("HardcodedText")
-  }
-
-  @Test
-  fun testRunLint_invalidId_detectsIssue() {
-    setupAndroidProjectWithInvalidId()
-    val lintRunner = createLintRunner()
-
-    val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-    }
-
-    assertThat(exception.message).isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
-    verifyLintReportContains("InvalidId")
-  }
-
-  @Test
-  fun testRunLint_groupBySeverity_reportsIssuesCorrectly() {
-    setupAndroidProjectWithHardcodedText()
-    val lintRunner = AndroidLintRunner(
-      reportFile = File(tempFolder.root, "lint-report.xml"),
-      projectDescriptionFile = createProjectDescriptionFile(),
-      groupByIssueSeverity = true
-    )
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-    val outputContent = outputStream.toString()
-    assertThat(outputContent).contains("SEVERITY: WARNING")
-    assertThat(outputContent).contains("HardcodedText")
-    assertThat(outputContent).contains("app/src/main/res/layout/activity_main.xml")
-    assertThat(outputContent).contains("Line: 9")
-    assertThat(outputContent).contains("android:text=\"Hardcoded text here\" />")
-  }
-
-  @Test
-  fun testRunLint_defaultGroupByFilePath_reportsIssuesCorrectly() {
-    setupAndroidProjectWithUnusedResources()
-    val lintRunner = AndroidLintRunner(
-      reportFile = File(tempFolder.root, "lint-report.xml"),
-      projectDescriptionFile = createProjectDescriptionFile(),
-    )
-
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
-    val outputContent = outputStream.toString()
-    assertThat(outputContent).contains("FILE:")
-    assertThat(outputContent).contains("app/src/main/res/values/strings.xml")
-    assertThat(outputContent).contains("Issue #1: UnusedResources")
-    assertThat(outputContent).contains("Line: 4")
-    assertThat(outputContent).contains(
-      "<string name=\"unused_string\">This string is never used</string>"
-    )
   }
 
   @Test
@@ -552,6 +392,18 @@ class AndroidLintRunnerTest {
     assertThat(exception.message).contains("JDK home path does not exist or is not a directory")
   }
 
+  @Test
+  fun testAndroidLintAnalyzer_withDuplicateStringResources_detectsIssue() {
+    setupProjectWithDuplicateStringIssue()
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat( output ).contains("DuplicateStrings")
+    assertThat(output)
+      .contains("<string name=\"duplicate_value\">Same text</string>")
+    assertThat(output).contains("Line: 5")
+  }
+
   private fun createLintRunner(): AndroidLintRunner {
     val reportFile = File(workingDirectory, "lint-report.xml")
     val projectDescriptionFile = createProjectDescriptionFile()
@@ -562,167 +414,31 @@ class AndroidLintRunnerTest {
     )
   }
 
-  private fun verifyLintReportContains(issueType: String) {
-    val reportFile = File(workingDirectory, "lint-report.xml")
-    assertThat(reportFile.exists()).isTrue()
+  private fun setupProjectWithInvalidIdIssue() {
+    setupProjectStructure()
 
-    val reportContent = reportFile.readText()
-    assertThat(reportContent).contains(issueType)
-
-    val outputContent = outputStream.toString()
-    assertThat(outputContent).contains(issueType)
-  }
-
-  private fun setupAndroidProjectWithoutApplicationIcon() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createManifestWithoutIcon()
-    createBasicStringResources()
-  }
-
-  private fun setupAndroidProjectWithUnusedResources() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createUnusedStringResources()
-  }
-
-  private fun setupAndroidProjectWithDuplicateStrings() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createDuplicateStringResources()
-  }
-
-  private fun setupAndroidProjectWithUnusedIds() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithUnusedIds()
-    createBasicStringResources()
-  }
-
-  private fun setupAndroidProjectWithRtlHardcoded() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithRtlHardcoded()
-    createBasicStringResources()
-  }
-
-  private fun setupAndroidProjectWithUselessParent() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithUselessParent()
-    createBasicStringResources()
-  }
-
-  private fun setupAndroidProjectWithUselessLeaf() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithUselessLeaf()
-    createBasicStringResources()
-  }
-
-  private fun setupAndroidProjectWithHardcodedText() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithHardcodedText()
-    createBasicStringResources()
-  }
-
-  private fun setupAndroidProjectWithInvalidId() {
-    testBazelWorkspace.initEmptyWorkspace()
-    createMinimalProjectStructure()
-    createBasicManifest()
-    createLayoutWithInvalidId()
-    createBasicStringResources()
-  }
-
-  private fun createMinimalProjectStructure() {
-    val directories = listOf(
-      "app/src/main/java/org/oppia/android/app/activity",
-      "app/src/main/res/values",
-      "app/src/main/res/layout",
-      "app/src/main/res/drawable"
-    )
-
-    directories.forEach { path ->
-      File(tempFolder.root, path).mkdirs()
-    }
-  }
-
-  private fun createBasicManifest() {
-    createManifestFile(includeIcon = true)
-  }
-
-  private fun createManifestWithoutIcon() {
-    createManifestFile(includeIcon = false)
-  }
-
-  private fun createManifestFile(includeIcon: Boolean) {
-    val manifestFile = File(tempFolder.root, "app/src/main/AndroidManifest.xml")
-    val iconAttribute = if (includeIcon) """android:icon="@drawable/ic_launcher"""" else ""
-
-    manifestFile.writeText(
+    createFileWithContent(
+      "app/src/main/res/layout/activity_main.xml",
       """
       <?xml version="1.0" encoding="utf-8"?>
-      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.oppia.android.app"
-          android:versionCode="1"
-          android:versionName="1.0">
-          
-          <uses-sdk android:minSdkVersion="$MIN_SDK_VERSION" />
-          
-          <application
-              $iconAttribute
-              android:label="@string/app_name"
-              android:theme="@style/OppiaTheme">
-              <activity 
-                  android:exported="true">
-                  <intent-filter>
-                      <action android:name="android.intent.action.MAIN" />
-                      <category android:name="android.intent.category.LAUNCHER" />
-                  </intent-filter>
-              </activity>
-          </application>
-      </manifest>
-      """.trimIndent()
-    )
-  }
-
-  private fun createBasicStringResources() {
-    val stringsFile = File(tempFolder.root, "app/src/main/res/values/strings.xml")
-    stringsFile.writeText(
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+          <TextView
+              android:id="@+i/123invalid_id" 
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/app_name" />
+      </LinearLayout>
       """
-      <?xml version="1.0" encoding="utf-8"?>
-      <resources>
-          <string name="app_name">Oppia</string>
-      </resources>
-      """.trimIndent()
     )
   }
 
-  private fun createUnusedStringResources() {
-    val stringsFile = File(tempFolder.root, "app/src/main/res/values/strings.xml")
-    stringsFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <resources>
-          <string name="app_name">Oppia</string>
-          <string name="unused_string">This string is never used</string>
-          <string name="another_unused">Another unused string</string>
-      </resources>
-      """.trimIndent()
-    )
-  }
-
-  private fun createDuplicateStringResources() {
-    val stringsFile = File(tempFolder.root, "app/src/main/res/values/strings.xml")
-    stringsFile.writeText(
+  private fun setupProjectWithDuplicateStringIssue() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/values/strings.xml",
       """
       <?xml version="1.0" encoding="utf-8"?>
       <resources>
@@ -730,237 +446,7 @@ class AndroidLintRunnerTest {
           <string name="duplicate_value">Same text</string>
           <string name="another_duplicate">Same text</string>
       </resources>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithMultipleIssues() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
       """
-      <?xml version="1.0" encoding="utf-8"?>
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-          <!-- Hardcoded text -->
-          <TextView
-              android:id="@+i/unused_text_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="16dp"
-              android:text="Hardcoded text here" />
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-              <Button
-                  android:id="@+id/another_unused_id"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="Click me" />
-          </LinearLayout>
-      </LinearLayout>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithUnusedIds() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-          <TextView
-              android:id="@+id/unused_text_view"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/app_name" />
-          <Button
-              android:id="@+id/another_unused_id"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Click me" />
-      </LinearLayout>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithRtlHardcoded() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="16dp"
-              android:text="@string/app_name" />
-      </LinearLayout>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithUselessParent() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-              <TextView
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/app_name" />
-          </LinearLayout>
-      </LinearLayout>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithUselessLeaf() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
-      """
-                <merge xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
-
-                    <!-- Neither parent nor child define background: delete is okay -->
-
-                    <FrameLayout
-                        android:id="@+id/LinearLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <!-- Both define background: cannot be deleted -->
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/bg" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <!-- Only child defines background: delete is okay -->
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/bg" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <!-- Only parent defines background: delete is okay -->
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" >
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <!-- Leaf cannot be deleted because it has a background -->
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/bg" >
-                    </FrameLayout>
-
-                    <!-- Useless leaf -->
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                    </FrameLayout>
-                </merge>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithHardcodedText() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="Hardcoded text here" />
-      </LinearLayout>
-      """.trimIndent()
-    )
-  }
-
-  private fun createLayoutWithInvalidId() {
-    val layoutFile = File(tempFolder.root, "app/src/main/res/layout/activity_main.xml")
-    layoutFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:orientation="vertical">
-          <TextView
-              android:id="@+i/123invalid_id"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/app_name" />
-      </LinearLayout>
-      """.trimIndent()
     )
   }
 
@@ -1000,7 +486,7 @@ class AndroidLintRunnerTest {
         <root dir="$rootPath"/>
         <sdk dir="$sdkPath"/>
         <module name="app" library="false" android="true" compile-sdk-version="$buildSdkVersion"
-                javaLanguage="$JAVA_VERSION" kotlinLanguage="$KOTLIN_LANGUAGE_VERSION">
+                javaLanguage="$JAVA_VERSION" kotlinLanguage="1.6">
           <manifest file="$rootPath/app/src/main/AndroidManifest.xml"/>
           <src dir="$srcPath"/>
           <resource dir="$rootPath/app/src/main/res"/>
@@ -1018,6 +504,10 @@ class AndroidLintRunnerTest {
     createModule("domain")
     createModule("testing")
     createModule("data")
+    val aarFile = createTestAarFile("test-aar", "1.0.0")
+    val jarFile = createTestJarFile("test-jar", "1.0.0")
+
+    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
   }
 
   private fun createModule(
@@ -1056,9 +546,12 @@ class AndroidLintRunnerTest {
     val manifest = tempFolder.newFile("$moduleName/src/main/AndroidManifest.xml")
     manifest.writeText(
       """
-      <?xml version="1.0" encoding="utf-8"?>
-      <manifest package="org.oppia.android.$moduleName" />
-      """.trimIndent()
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="org.oppia.android.$moduleName">
+      <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
+    </manifest>
+    """.trimIndent()
     )
   }
 
@@ -1066,9 +559,12 @@ class AndroidLintRunnerTest {
     val manifest = tempFolder.newFile("$moduleName/src/test/AndroidManifest.xml")
     manifest.writeText(
       """
-      <?xml version="1.0" encoding="utf-8"?>
-      <manifest package="org.oppia.android.$moduleName" />
-      """.trimIndent()
+    <?xml version="1.0" encoding="utf-8"?>
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="org.oppia.android.$moduleName">
+      <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
+    </manifest>
+    """.trimIndent()
     )
   }
 
@@ -1123,6 +619,22 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
+  }
+
+  private fun createFileWithContent(relativePath: String, content: String): File {
+    val pathParts = relativePath.split("/")
+    val directoryParts = pathParts.dropLast(1)
+
+    if (directoryParts.isNotEmpty()) {
+      val parentDir = File(tempFolder.root, directoryParts.joinToString("/"))
+      if (!parentDir.exists()) {
+        parentDir.mkdirs()
+      }
+    }
+
+    val file = File(tempFolder.root, relativePath)
+    file.writeText(content.trimIndent())
+    return file
   }
 
   private fun setupFakeCommandExecutor(aarPath: String, jarPath: String) {

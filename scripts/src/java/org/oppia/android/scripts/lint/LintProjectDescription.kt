@@ -215,6 +215,7 @@ class LintProjectDescription(
     private const val LINT_CACHE_DIRECTORY_NAME = "lint-cache-directory"
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
     private const val LINT_MODELS_DIRECTORY = "models-directory"
+    private const val PARTIAL_RESULTS_DIRECTORY = "partial-results-directory"
 
     /**
      * Ensures a directory exists, creating it if necessary.
@@ -245,10 +246,13 @@ class LintProjectDescription(
     val extractedAarsDirectory =
       ensureDirectoryExists(File(workingDirectory, EXTRACTED_AARS_DIRECTORY_NAME))
     val modelsDirectory = ensureDirectoryExists(File(workingDirectory, LINT_MODELS_DIRECTORY))
+    val partialResultsDirectory = ensureDirectoryExists(
+      File(workingDirectory, PARTIAL_RESULTS_DIRECTORY)
+    )
 
     val moduleConfigBuilder = ModuleConfigurationBuilder(
       repoRoot, bazelClient, extractedAarsDirectory,
-      modelsDirectory,
+      modelsDirectory, partialResultsDirectory,
       cacheManager,
       logger
     )
@@ -284,6 +288,7 @@ class LintProjectDescription(
     appendLine("""    library="${config.isLibrary}"""")
     appendLine("""    test="${config.isTest}"""")
     appendLine("""    model="${config.lintModelDir?.absolutePath}"""")
+    appendLine("""    partial-results="${config.partialResultsDir.absolutePath}"""")
     appendLine("""    desugar="full">""")
 
     appendLine("""    <manifest file="${config.manifestFile}"/>""")
@@ -308,6 +313,10 @@ class LintProjectDescription(
       appendLine(
         """    <aar file="${aarInfo.originalPath}" extracted="${aarInfo.extractedPath}"/>"""
       )
+    }
+
+    config.proGuardFiles.forEach { proGuardFile ->
+      appendLine("""    <proguard file="$proGuardFile"/>""")
     }
 
     config.jarFiles.forEach { jarFile ->
@@ -345,6 +354,7 @@ private class ModuleConfigurationBuilder(
   bazelClient: BazelClient,
   extractedAarsDirectory: File,
   private val modelsDirectory: File,
+  private val partialResultsDirectory: File,
   cacheManager: CacheManager,
   logger: LintLogger,
 ) {
@@ -389,6 +399,13 @@ private class ModuleConfigurationBuilder(
           path.contains("/test/") ||
           path.contains("/sharedTest/")
       }
+    val partialResultDir = File(
+      partialResultsDirectory, "${module.moduleName}-partial-results"
+    ).apply {
+      if (!exists() && !mkdirs()) {
+        throw IllegalStateException("Failed to create partial results directory: $absolutePath")
+      }
+    }
 
     return ModuleConfig(
       name = module.moduleName,
@@ -405,9 +422,11 @@ private class ModuleConfigurationBuilder(
       lintCheckJars = dependencyResolver.extractLintCheckJars(
         dependencyResolver.resolveAarFiles(module)
       ),
+      partialResultsDir = partialResultDir,
       annotationZips = dependencyResolver.extractAnnotationZips(
         dependencyResolver.resolveAarFiles(module)
       ),
+      proGuardFiles = sourceCollector.collectProGuardFiles(module.moduleName)
     )
   }
 
@@ -440,11 +459,12 @@ private class ModuleConfigurationBuilder(
 
 /** Helper class for collecting source files and resources for a module. */
 private class SourceFileCollector(
-  repoRoot: File,
+  private val repoRoot: File,
   module: ModuleName
 ) {
   companion object {
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
+    private const val PROGUARD_CONFIG_PATH = "config/proguard"
   }
 
   private val moduleName = module.moduleName
@@ -460,6 +480,18 @@ private class SourceFileCollector(
         .filter { it.isDirectory && it.name == SdkConstants.FD_RES }
         .forEach { add(it.path) }
     }
+  }
+
+  fun collectProGuardFiles(moduleName: String): List<String> {
+    if (moduleName != ModuleName.APP.moduleName) return emptyList()
+
+    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
+
+    return proguardDir
+      .takeIf { it.isDirectory && it.exists() }
+      ?.listFiles { file -> file.name.endsWith(".pro") }
+      ?.map { it.absolutePath }
+      ?: emptyList()
   }
 
   private fun collectFilesFromDirectory(directory: File): List<String> {
