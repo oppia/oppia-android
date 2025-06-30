@@ -404,13 +404,184 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("Line: 5")
   }
 
-  private fun createLintRunner(): AndroidLintRunner {
-    val reportFile = File(workingDirectory, "lint-report.xml")
-    val projectDescriptionFile = createProjectDescriptionFile()
+  @Test
+  fun testAndroidLintAnalyzer_withUselessParent_detectsIssue() {
+    setupProjectWithUselessParent()
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
-    return AndroidLintRunner(
-      reportFile = reportFile,
-      projectDescriptionFile = projectDescriptionFile
+    val output = outputStream.toString()
+    assertThat(output).contains("UselessParent")
+    assertThat(output)
+      .contains("<RelativeLayout")
+    assertThat(output).contains("Line: 5")
+    assertThat(output)
+      .contains("This `RelativeLayout` layout or its `FrameLayout` parent is unnecessary")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withUselessLeaf_detectsIssue() {
+    setupProjectWithUselessLeaf()
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("UselessParent")
+    assertThat(output)
+      .contains("<FrameLayout")
+    assertThat(output).contains("Line: 5")
+    assertThat(output)
+      .contains("This `FrameLayout` view is unnecessary " +
+        "(no children, no `background`, no `id`, no `style`)")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withRtlHardCoded_detectsIssue() {
+    setupProjectWithRtlHardCoded()
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("RtlHardcoded")
+    assertThat(output)
+      .contains("android:layout_alignParentRight=\"true\" />")
+    assertThat(output).contains("Line: 8")
+    assertThat(output)
+      .contains("Using left/right instead of start/end attributes")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withRtlSymmetry_detectsIssue() {
+    setupProjectWithRtlSymmetry()
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("RtlSymmetry")
+    assertThat(output)
+      .contains("android:paddingRight=\"120dip\"")
+    assertThat(output).contains("Line: 29")
+    assertThat(output)
+      .contains("When you define `paddingRight` " +
+        "you should probably also define `paddingLeft` for right-to-left symmetry")
+  }
+
+  private fun setupProjectWithRtlSymmetry() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/rtl_symmetry.xml",
+      """
+        <?xml version="1.0" encoding="utf-8"?>
+          <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+          
+              <ProgressBar
+                  android:id="@+id/loading_progress"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentLeft="true"
+                  android:layout_alignParentTop="true"
+                  android:layout_marginBottom="60dip"
+                  android:layout_marginLeft="40dip"
+                  android:layout_marginTop="40dip"
+                  android:max="10000" />
+          
+              <TextView
+                  android:id="@+id/text"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentTop="true"
+                  android:layout_alignWithParentIfMissing="true"
+                  android:layout_marginBottom="60dip"
+                  android:layout_marginLeft="40dip"
+                  android:layout_marginTop="40dip"
+                  android:layout_toRightOf="@id/loading_progress"
+                  android:ellipsize="end"
+                  android:maxLines="3"
+                  android:paddingRight="120dip"
+                  android:text="Creating Instant Mix"
+                  android:textAppearance="?android:attr/textAppearanceMedium" />
+          </RelativeLayout>
+
+      """
+    )
+
+    createFileWithContent(
+      "app/src/main/AndroidManifest.xml",
+      """
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+            package="org.oppia.android.app">
+        
+            <application
+                android:supportsRtl="true"
+                android:allowBackup="true"
+                android:label="RTL Test App"
+                android:icon="@mipmap/ic_launcher">
+            </application>
+        
+            <uses-sdk
+                android:minSdkVersion="21"
+                android:targetSdkVersion="34" />
+        </manifest>
+        """
+    )
+  }
+
+  private fun setupProjectWithRtlHardCoded() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/rtl_hardcoded.xml",
+      """
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+        """
+    )
+  }
+
+  private fun setupProjectWithUselessParent() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/useless5.xml",
+      """
+                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="16dp"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp"
+                            android:paddingTop="16dp">
+
+                        <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+                </FrameLayout>
+                """
+    )
+  }
+
+  private fun setupProjectWithUselessLeaf() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/useless_leaf.xml",
+      """
+        <merge xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </merge>
+        """
     )
   }
 
@@ -635,6 +806,17 @@ class AndroidLintRunnerTest {
     val file = File(tempFolder.root, relativePath)
     file.writeText(content.trimIndent())
     return file
+  }
+
+
+  private fun createLintRunner(): AndroidLintRunner {
+    val reportFile = File(workingDirectory, "lint-report.xml")
+    val projectDescriptionFile = createProjectDescriptionFile()
+
+    return AndroidLintRunner(
+      reportFile = reportFile,
+      projectDescriptionFile = projectDescriptionFile
+    )
   }
 
   private fun setupFakeCommandExecutor(aarPath: String, jarPath: String) {

@@ -482,6 +482,7 @@ private class SourceFileCollector(
     }
   }
 
+  /** Collects the proguard files for the module. */
   fun collectProGuardFiles(moduleName: String): List<String> {
     if (moduleName != ModuleName.APP.moduleName) return emptyList()
 
