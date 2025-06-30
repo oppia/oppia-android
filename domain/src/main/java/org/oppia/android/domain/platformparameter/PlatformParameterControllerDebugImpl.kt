@@ -30,6 +30,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
   private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
+
   override fun loadParametersAsync() = initializationDeferred
 
   override fun getParameterInitializationStatus(): DataProvider<Boolean> {
@@ -42,7 +43,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
-      // TODO(#5835): Finish implementing forcing remote parameter downloads.
+      // TODO(#5345): Finish implementing forcing remote parameter downloads.
 
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
@@ -153,9 +154,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
       // Let observers know that parameters have been initialized.
       parametersAreLoadedFlow.value = true
-
-      // Erase the data provider's value so that callers cannot inadvertently depend on the actual
-      // list of parameters available.
     }
   }
 
