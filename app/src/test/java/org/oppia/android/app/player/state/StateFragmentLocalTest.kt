@@ -1638,8 +1638,8 @@ class StateFragmentLocalTest {
   }
 
   @Test
-  fun testStateFragment_stateWithRatioInp_showSolution_notExclusive_solutionHasCorrectAnswerText() {
-    launchForExploration(TEST_EXPLORATION_ID_2).use { scenario ->
+  fun testStateFragment_stateWithRatioInp_wait60seconds_hintIsAvailable() {
+    launchForExploration(TEST_EXPLORATION_ID_2).use {
       startPlayingExploration()
       playThroughTestState1()
       playThroughTestState2()
@@ -1647,12 +1647,10 @@ class StateFragmentLocalTest {
       playThroughTestState4()
       playThroughTestState5()
       playThroughTestState6()
-      produceAndViewFirstHint(hintPosition = 0) { submitWrongAnswerToTestExpState7() }
 
-      produceAndViewSolution(scenario) { submitWrongAnswerToTestExpState7() }
+      testCoroutineDispatchers.advanceTimeBy(TimeUnit.SECONDS.toMillis(60))
 
-      // Verify that the solution answer text is correctly generated.
-      onView(withId(R.id.solution_correct_answer)).check(matches(withText("One solution is: 4:5")))
+      onView(withId(R.id.hint_bulb)).check(matches(isDisplayed()))
     }
   }
 
