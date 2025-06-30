@@ -7,6 +7,7 @@ load("@rules_java//java:defs.bzl", "java_binary")
 load(
     "//scripts:script_assets.bzl",
     "generate_accessibility_label_assets_list_from_text_protos",
+    "generate_android_lint_assets_list_from_text_protos",
     "generate_kdoc_validity_assets_list_from_text_protos",
     "generate_maven_assets_list_from_text_protos",
     "generate_regex_assets_list_from_text_protos",
@@ -320,9 +321,22 @@ kt_jvm_binary(
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:check_textview_styles"],
 )
 
+ANDROID_LINT_EXEMPTION_ASSETS = generate_android_lint_assets_list_from_text_protos(
+    name = "android_lint_exemption_assets",
+    android_lint_exemptions_name = ["android_lint_exemptions"],
+)
+
+kt_jvm_library(
+    name = "android_lint_check_assets",
+    testonly = True,
+    data = ANDROID_LINT_EXEMPTION_ASSETS,
+    visibility = [":oppia_script_test_visibility"],
+)
+
 kt_jvm_binary(
     name = "android_lint_check",
     testonly = True,
+    data = ANDROID_LINT_EXEMPTION_ASSETS,
     main_class = "org.oppia.android.scripts.lint.AndroidLintRunnerKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:android_lint_runner"],
 )

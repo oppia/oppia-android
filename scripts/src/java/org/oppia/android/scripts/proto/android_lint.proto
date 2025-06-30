@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "org.oppia.android.scripts.proto";
+option java_multiple_files = true;
+
+// Container for all Android Lint exemptions.
+message AndroidLintExemptions {
+  // List of exemptions applied per file.
+  repeated AndroidLintExemption android_lint_exemption = 1;
+}
+
+// Represents a single exemption entry for a specific file.
+message AndroidLintExemption {
+  // File path for which exemptions are specified.
+  string exempted_file_path = 1;
+  // List of lint issues to ignore for this path.
+  repeated LintIssueId lint_issue_id = 2;
+}
+
+// Enumerates all known, expected lint issues.
+// Script should fail on unknown issues, prompting updates to this list.
+enum LintIssueId {
+  // Case when no ID is specified.
+  ISSUE_UNSPECIFIED = 0;
+  // Internal Errors in execution of Lint tool
+  LINT_ERROR = 1;
+  // Deprecated layout attributes that are no longer used.
+  OBSOLETE_LAYOUT_PARAM = 2;
+  // Unused resources that can be removed.
+  UNUSED_RESOURCES = 3;
+  // Usage of APIs that are not available in the min SDK version.
+  NEW_API = 4;
+  // Add more issues here as needed.
+}

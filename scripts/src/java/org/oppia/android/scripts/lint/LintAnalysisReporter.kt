@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.lint
 
+import org.oppia.android.scripts.proto.LintIssueId
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
@@ -117,7 +118,12 @@ class LintAnalysisReporter {
     private const val MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
     private const val GROUP_SEPARATOR_LENGTH = 80
     private const val ISSUE_SEPARATOR_LENGTH = 60
-    private const val LINT_ERROR_ID = "LintError"
+
+    // Needs to be updated if new lint issues are added.
+    private val lintIssueIdMap: Map<Int, String> = mapOf(
+      0 to "IssueUnspecified",
+      1 to "LintError",
+    )
   }
 
   /**
@@ -334,8 +340,9 @@ class LintAnalysisReporter {
   private fun printFinalResult(issues: List<LintIssue>) {
     val criticalIssues = issues.filter { it.severity.isCritical() }
 
-    // TODO(#5734): Replace LintError ID with LintIssueId Enum from the exemption set up.
-    val hasInternalLintIssues = criticalIssues.any { it.id == LINT_ERROR_ID }
+    val hasInternalLintIssues = criticalIssues.any {
+      it.id == lintIssueIdMap[LintIssueId.LINT_ERROR.ordinal]
+    }
 
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
     when {
