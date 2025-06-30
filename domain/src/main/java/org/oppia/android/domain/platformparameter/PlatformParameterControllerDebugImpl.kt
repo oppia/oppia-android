@@ -154,9 +154,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
       // Let observers know that parameters have been initialized.
       parametersAreLoadedFlow.value = true
-
-      // Erase the data provider's value so that callers cannot inadvertently depend on the actual
-      // list of parameters available.
     }
   }
 
