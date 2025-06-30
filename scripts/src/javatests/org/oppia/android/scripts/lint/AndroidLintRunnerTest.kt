@@ -556,6 +556,114 @@ class AndroidLintRunnerTest {
       )
   }
 
+  @Test
+  fun testAndroidLintAnalyzer_withNotifyDataSetChanged_detectsIssue() {
+    setupProjectWithNotifyDataSetChanged()
+
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("NotifyDataSetChanged")
+    assertThat(output)
+      .contains("notifyDataSetChanged()")
+    assertThat(output).contains("Line: 13")
+    assertThat(output)
+      .contains(
+        "It will always be more efficient to use more specific change events if you can. " +
+          "Rely on `notifyDataSetChanged` as a last resort."
+      )
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withUseCompoundDrawables_detectsIssue() {
+    setupProjectWithUseCompoundDrawables()
+
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("UseCompoundDrawables")
+    assertThat(output)
+      .contains("<LinearLayout")
+    assertThat(output).contains("Line: 1")
+    assertThat(output)
+      .contains(
+        "Node can be replaced by a `TextView` with compound drawables"
+      )
+  }
+
+  private fun setupProjectWithUseCompoundDrawables() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/compound.xml",
+      """
+                    <LinearLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                    """
+    )
+  }
+
+  private fun setupProjectWithNotifyDataSetChanged() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/java/androidx/recyclerview/widget/RecyclerView.kt",
+      """
+    package androidx.recyclerview.widget
+
+    import android.content.Context
+    import android.util.AttributeSet
+    import android.view.View
+
+    open class RecyclerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+      open class ViewHolder(val itemView: View)
+
+      abstract class Adapter<VH : ViewHolder> {
+        abstract fun onBindViewHolder(holder: VH, position: Int)
+        open fun notifyDataSetChanged() {} 
+      }
+    }
+  """
+    )
+
+    createFileWithContent(
+      "app/src/main/java/org/oppia/android/app/RecyclerViewUsage.kt",
+      """
+    package org.oppia.android.app
+
+    import android.view.View
+    import android.widget.TextView
+    import androidx.recyclerview.widget.RecyclerView
+
+    class RecyclerViewUsage {
+
+      class TestAdapter(private val dataSet: Array<String>) :
+        RecyclerView.Adapter<TestAdapter.TextViewHolder>() {
+
+        init {
+          notifyDataSetChanged() 
+        }
+
+        class TextViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+        override fun onBindViewHolder(holder: TextViewHolder, position: Int) {}
+      }
+    }
+  """
+    )
+  }
+
   private fun setupProjectWithUnusedAttribute() {
     setupProjectStructure()
     createFileWithContent(
