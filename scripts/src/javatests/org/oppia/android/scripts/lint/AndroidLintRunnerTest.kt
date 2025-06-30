@@ -398,7 +398,7 @@ class AndroidLintRunnerTest {
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
-    assertThat( output ).contains("DuplicateStrings")
+    assertThat(output).contains("DuplicateStrings")
     assertThat(output)
       .contains("<string name=\"duplicate_value\">Same text</string>")
     assertThat(output).contains("Line: 5")
@@ -551,7 +551,7 @@ class AndroidLintRunnerTest {
       package="org.oppia.android.$moduleName">
       <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
     </manifest>
-    """.trimIndent()
+      """.trimIndent()
     )
   }
 
@@ -564,7 +564,7 @@ class AndroidLintRunnerTest {
       package="org.oppia.android.$moduleName">
       <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
     </manifest>
-    """.trimIndent()
+      """.trimIndent()
     )
   }
 
