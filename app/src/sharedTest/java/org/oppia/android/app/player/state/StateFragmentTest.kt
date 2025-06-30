@@ -5705,7 +5705,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_clickOnReturnToQuestionButton_returnsToLatestPendingStateAgain() {
+  fun testFlashback_clickOnReturnToQuestionButton_returnsToLatestPendingState() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
