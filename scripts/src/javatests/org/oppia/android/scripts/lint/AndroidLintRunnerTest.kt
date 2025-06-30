@@ -421,8 +421,10 @@ class AndroidLintRunnerTest {
       .contains("<FrameLayout")
     assertThat(output).contains("Line: 5")
     assertThat(output)
-      .contains("This `FrameLayout` view is unnecessary " +
-        "(no children, no `background`, no `id`, no `style`)")
+      .contains(
+        "This `FrameLayout` view is unnecessary " +
+          "(no children, no `background`, no `id`, no `style`)"
+      )
   }
 
   @Test
@@ -442,7 +444,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withRtlSymmetry_detectsIssue() {
     setupProjectWithRtlSymmetry()
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
     assertThat(output).contains("RtlSymmetry")
@@ -450,8 +452,10 @@ class AndroidLintRunnerTest {
       .contains("android:paddingRight=\"120dip\"")
     assertThat(output).contains("Line: 29")
     assertThat(output)
-      .contains("When you define `paddingRight` " +
-        "you should probably also define `paddingLeft` for right-to-left symmetry")
+      .contains(
+        "When you define `paddingRight` " +
+          "you should probably also define `paddingLeft` for right-to-left symmetry"
+      )
   }
 
   private fun setupProjectWithRtlSymmetry() {
@@ -799,7 +803,6 @@ class AndroidLintRunnerTest {
     file.writeText(content.trimIndent())
     return file
   }
-
 
   private fun createLintRunner(): AndroidLintRunner {
     val reportFile = File(workingDirectory, "lint-report.xml")

@@ -505,8 +505,10 @@ private class SourceFileCollector(
     }
 
     return directory.walkTopDown()
-      .filter { it.isFile && it.extension in SOURCE_EXTENSIONS &&
-        it.name != EXCLUDED_SOURCE_FILE }
+      .filter {
+        it.isFile && it.extension in SOURCE_EXTENSIONS &&
+          it.name != EXCLUDED_SOURCE_FILE
+      }
       .map { it.absolutePath }
       .toList()
   }
