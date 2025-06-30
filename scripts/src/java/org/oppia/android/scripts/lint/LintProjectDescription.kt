@@ -395,8 +395,7 @@ private class ModuleConfigurationBuilder(
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
       .partition { path ->
-        path.endsWith("Test.kt") ||
-          path.contains("/test/") ||
+        path.contains("/test/") ||
           path.contains("/sharedTest/")
       }
     val partialResultDir = File(

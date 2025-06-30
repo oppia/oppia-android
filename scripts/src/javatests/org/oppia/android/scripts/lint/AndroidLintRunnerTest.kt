@@ -36,6 +36,9 @@ class AndroidLintRunnerTest {
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
+    private const val MIN_SDK_VERSION = "21"
+    private const val TARGET_SDK_VERSION = "34"
+    private const val KOTLIN_LANGUAGE_LEVEL = "1.6"
   }
 
   @Before
@@ -161,7 +164,7 @@ class AndroidLintRunnerTest {
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", sdkPath,
       "--compile-sdk-version", buildSdkVersion,
-      "--kotlin-language-level", "1.6",
+      "--kotlin-language-level", KOTLIN_LANGUAGE_LEVEL,
       "--java-language-level", JAVA_VERSION,
       "--project", projectFile.absolutePath,
       "--xml", reportFile.absolutePath
@@ -175,7 +178,7 @@ class AndroidLintRunnerTest {
     val reportFile = File(workingDirectory, "report.xml")
     val projectFile = File(workingDirectory, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
-    val customBuildSdk = "34"
+    val customBuildSdk = TARGET_SDK_VERSION
 
     val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, customBuildSdk)
 
@@ -458,6 +461,232 @@ class AndroidLintRunnerTest {
       )
   }
 
+  @Test
+  fun testAndroidLintAnalyzer_withNewApi_detectsIssue() {
+    setupProjectWithNewApi()
+    assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+
+    val output = outputStream.toString()
+    assertThat(output).contains("NewApi")
+    assertThat(output)
+      .contains("val network = cm.activeNetwork // Error: Requires API 23")
+    assertThat(output).contains("Line: 9")
+    assertThat(output)
+      .contains(
+        "Calling new methods on older versions"
+      )
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withInlinedApi_detectsIssue() {
+    setupProjectWithInlinedApi()
+
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("InlinedApi")
+    assertThat(output)
+      .contains("val format: String = MediaFormat.MIMETYPE_AUDIO_AC4")
+    assertThat(output).contains("Line: 14")
+    assertThat(output)
+      .contains(
+        "Field requires API level 29 (current min is 21):" +
+          " `android.media.MediaFormat#MIMETYPE_AUDIO_AC4`"
+      )
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withSyntheticAccessor_detectsIssue() {
+    setupProjectWithSyntheticAccessor()
+
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("SyntheticAccessor")
+    assertThat(output)
+      .contains("hiddenMethod()")
+    assertThat(output)
+      .contains("AccessTest2()")
+    assertThat(output).contains("Line: 9")
+    assertThat(output).contains("Line: 11")
+    assertThat(output)
+      .contains(
+        "Access to `private` method `hiddenMethod` of class " +
+          "`AccessTest2` requires synthetic accessor"
+      )
+    assertThat(output)
+      .contains(
+        "Access to `private` constructor of class `AccessTest2` requires synthetic accessor"
+      )
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withLabelFor_detectsIssue() {
+    setupProjectWithLabelFor()
+
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("LabelFor")
+    assertThat(output)
+      .contains("android:hint=\"\"")
+    assertThat(output).contains("Line: 11")
+    assertThat(output)
+      .contains(
+        "Editable text fields should provide an `android:hint`"
+      )
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withUnusedAttribute_detectsIssue() {
+    setupProjectWithUnusedAttribute()
+
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val output = outputStream.toString()
+    assertThat(output).contains("UnusedAttribute")
+    assertThat(output)
+      .contains("android:theme=\"@android:style/Theme.Holo\" />")
+    assertThat(output).contains("Line: 11")
+    assertThat(output)
+      .contains(
+        "Attribute `android:theme` is only used by `<include>` tags "
+      )
+  }
+
+  private fun setupProjectWithUnusedAttribute() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/linear.xml",
+      """
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/included"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@android:style/Theme.Holo" />
+    </LinearLayout>
+  """
+    )
+  }
+
+  private fun setupProjectWithLabelFor() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/res/layout/labelfororhint_empty_hint.xml",
+      """
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              android:orientation="vertical">
+
+                    <EditText
+                            android:id="@+id/editText1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint=""
+                            android:inputType="textPersonName">
+                        <requestFocus/>
+                    </EditText>
+
+                    <AutoCompleteTextView
+                            android:id="@+id/autoCompleteTextView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint=""
+                            android:text="AutoCompleteTextView"/>
+
+                    <MultiAutoCompleteTextView
+                            android:id="@+id/multiAutoCompleteTextView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint=""
+                            android:text="MultiAutoCompleteTextView"/>
+                </LinearLayout>
+                """
+    )
+  }
+
+  private fun setupProjectWithSyntheticAccessor() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/java/org/oppia/android/app/AccessTest.kt",
+      """
+    package org.oppia.android.app
+
+    class AccessTest2 private constructor() {
+      private val secret = 42
+      private fun hiddenMethod() {}
+
+      inner class Inner {
+        fun trigger() {
+          AccessTest2()       
+          val x = secret       
+          hiddenMethod()       
+        }
+      }
+    }
+  """
+    )
+  }
+
+  private fun setupProjectWithInlinedApi() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/java/org/oppia/android/app/InlinedApiUsage.kt",
+      """
+    package org.oppia.android.app
+
+    import android.media.MediaFormat
+
+    fun encode(format: String) {
+      // Dummy placeholder function
+    }
+
+    fun test() {
+        // This constant will be copied in by value, which means
+        // it will run without crashing on older devices. However,
+        // depending on what we *do* with the value, the code may
+        // not work correctly.
+        val format: String = MediaFormat.MIMETYPE_AUDIO_AC4
+        encode(format) // might crash!
+    }
+  """
+    )
+  }
+
+  private fun setupProjectWithNewApi() {
+    setupProjectStructure()
+    createFileWithContent(
+      "app/src/main/java/org/oppia/android/app/NewApiUsage.kt",
+      """
+    package org.oppia.android.test
+
+    import android.content.Context
+    import android.net.ConnectivityManager
+    import android.os.Build
+
+    fun test(context: Context) {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = cm.activeNetwork // Error: Requires API 23
+        if (Build.VERSION.SDK_INT >= 23) {
+            val network2 = cm.activeNetwork // OK
+        }
+    }
+  """
+    )
+  }
+
   private fun setupProjectWithRtlSymmetry() {
     setupProjectStructure()
     createFileWithContent(
@@ -513,8 +742,8 @@ class AndroidLintRunnerTest {
             </application>
         
             <uses-sdk
-                android:minSdkVersion="21"
-                android:targetSdkVersion="34" />
+                android:minSdkVersion="$MIN_SDK_VERSION"
+                android:targetSdkVersion="$TARGET_SDK_VERSION" />
         </manifest>
         """
     )
@@ -653,7 +882,7 @@ class AndroidLintRunnerTest {
         <root dir="$rootPath"/>
         <sdk dir="$sdkPath"/>
         <module name="app" library="false" android="true" compile-sdk-version="$buildSdkVersion"
-                javaLanguage="$JAVA_VERSION" kotlinLanguage="1.6">
+                javaLanguage="$JAVA_VERSION" kotlinLanguage="$KOTLIN_LANGUAGE_LEVEL">
           <manifest file="$rootPath/app/src/main/AndroidManifest.xml"/>
           <src dir="$srcPath"/>
           <resource dir="$rootPath/app/src/main/res"/>
@@ -716,7 +945,7 @@ class AndroidLintRunnerTest {
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.oppia.android.$moduleName">
-      <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
+      <uses-sdk android:minSdkVersion="$MIN_SDK_VERSION" android:targetSdkVersion="$TARGET_SDK_VERSION" />
     </manifest>
       """.trimIndent()
     )
@@ -729,7 +958,7 @@ class AndroidLintRunnerTest {
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.oppia.android.$moduleName">
-      <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="34" />
+      <uses-sdk android:minSdkVersion="$MIN_SDK_VERSION" android:targetSdkVersion="$TARGET_SDK_VERSION" />
     </manifest>
       """.trimIndent()
     )
