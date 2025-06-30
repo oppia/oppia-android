@@ -89,10 +89,6 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesReports() {
     setupProjectStructure()
-    val aarFile = createTestAarFile("test-aar", "1.0.0")
-    val jarFile = createTestJarFile("test-jar", "1.0.0")
-
-    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
@@ -107,10 +103,6 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_validRootPath_generatesFilesInWorkingDirectory() {
     setupProjectStructure()
-    val aarFile = createTestAarFile("test-aar", "1.0.0")
-    val jarFile = createTestJarFile("test-jar", "1.0.0")
-
-    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
@@ -424,7 +416,7 @@ class AndroidLintRunnerTest {
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
-    assertThat(output).contains("UselessParent")
+    assertThat(output).contains("UselessLeaf")
     assertThat(output)
       .contains("<FrameLayout")
     assertThat(output).contains("Line: 5")

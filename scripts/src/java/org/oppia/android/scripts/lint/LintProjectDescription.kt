@@ -465,6 +465,10 @@ private class SourceFileCollector(
   companion object {
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
     private const val PROGUARD_CONFIG_PATH = "config/proguard"
+
+    // Lint logs that file does not appear to be in the right project location
+    // Bazel-specific file used to run tests
+    private const val EXCLUDED_SOURCE_FILE = "DataBinderMapperImpl.java"
   }
 
   private val moduleName = module.moduleName
@@ -501,7 +505,8 @@ private class SourceFileCollector(
     }
 
     return directory.walkTopDown()
-      .filter { it.isFile && it.extension in SOURCE_EXTENSIONS }
+      .filter { it.isFile && it.extension in SOURCE_EXTENSIONS &&
+        it.name != EXCLUDED_SOURCE_FILE }
       .map { it.absolutePath }
       .toList()
   }
