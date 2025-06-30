@@ -1,104 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <import type="android.view.View" />
-        <variable
-            name="viewModel"
-            type="org.oppia.android.app.devoptions.featureflags.FeatureFlagItemViewModel" />
-    </data>
+  <data>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <import type="android.view.View" />
+
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.featureflags.FeatureFlagItemViewModel" />
+  </data>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/feature_flag_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="64dp"
+      android:background="@color/component_color_shared_item_background_solid_color"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+      <TextView
+        android:id="@+id/feature_flag_label_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/component_color_shared_screen_tertiary_background_color">
+        android:text="@{viewModel.featureFlagDisplayName}"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/feature_flag_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/feature_flag_constraint_layout"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:background="@color/component_color_shared_item_background_solid_color">
+      <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/feature_flag_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="4dp"
+        android:checked="@{viewModel.isChecked}"
+        android:focusable="false"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:onClick="@{() -> viewModel.onUserToggle()}"
+        android:theme="@style/OppiaSwitchCompatTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/feature_flag_label_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/feature_flag_label_text_view"
-                style="@style/Subtitle1ViewStart"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.featureFlagDisplayName}"
-                android:textStyle="bold"
-                android:textColor="@color/component_color_shared_primary_dark_text_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/feature_flag_switch"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/feature_flag_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="4dp"
-                android:focusable="false"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:checked="@{viewModel.isChecked}"
-                android:onClick="@{() -> viewModel.onUserToggle()}"
-                android:theme="@style/OppiaSwitchCompatTheme"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/feature_flag_label_text_view"
-                app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/sync_status_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="64dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+      <TextView
+        android:id="@+id/sync_status_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/feature_flag_sync_status"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sync_status_value_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/sync_status_constraint_layout"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+      <TextView
+        android:id="@+id/sync_status_value_text_view"
+        style="@style/Subtitle2ViewCenterVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="4dp"
+        android:paddingStart="20dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="6dp"
+        android:text="@{viewModel.syncStatusDisplayText}"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
+        app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/sync_status_text_view"
-                style="@style/Subtitle1ViewStart"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/feature_flag_sync_status"
-                android:textColor="@color/component_color_shared_primary_dark_text_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/sync_status_value_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/sync_status_value_text_view"
-                style="@style/Subtitle2ViewCenterVertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="4dp"
-                android:paddingStart="20dp"
-                android:paddingTop="6dp"
-                android:paddingEnd="20dp"
-                android:paddingBottom="6dp"
-                android:text="@{viewModel.syncStatusDisplayText}"
-                android:textColor="@color/component_color_shared_secondary_4_text_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
-                app:layout_constraintTop_toTopOf="parent"
-                app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
-                />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/component_color_shared_divider_color" />
-    </LinearLayout>
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/component_color_shared_divider_color" />
+  </LinearLayout>
 </layout>
