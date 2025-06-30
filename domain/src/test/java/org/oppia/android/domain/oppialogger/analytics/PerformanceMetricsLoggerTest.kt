@@ -39,6 +39,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -333,6 +334,7 @@ class PerformanceMetricsLoggerTest {
   @Singleton
   @Component(
     modules = [
+      AssetModule::class,
       ApplicationLifecycleModule::class,
       FakeOppiaClockModule::class,
       LocaleProdModule::class,

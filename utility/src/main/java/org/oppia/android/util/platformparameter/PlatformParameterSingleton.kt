@@ -2,6 +2,7 @@ package org.oppia.android.util.platformparameter
 
 import org.oppia.android.app.model.PlatformParameter
 
+// TODO(#5835): Remove this singleton, its implementation, and corresponding modules.
 /** Singleton which helps in storing and providing Platform Parameters at runtime. */
 interface PlatformParameterSingleton {
 

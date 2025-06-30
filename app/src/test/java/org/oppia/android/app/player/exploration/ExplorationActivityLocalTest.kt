@@ -141,6 +141,7 @@ class ExplorationActivityLocalTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 

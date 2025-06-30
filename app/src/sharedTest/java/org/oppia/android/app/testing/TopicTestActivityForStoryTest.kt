@@ -128,6 +128,7 @@ class TopicTestActivityForStoryTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
