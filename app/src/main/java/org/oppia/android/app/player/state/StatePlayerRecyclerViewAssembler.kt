@@ -81,6 +81,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
@@ -704,7 +705,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     if (!flashbackStateName.isNullOrBlank() && playerFeatureSet.flashbackNavigationSupport) {
       addFlashbackButton(
         conversationPendingItemList,
-        extraInteractionPendingItemList
+        extraInteractionPendingItemList,
+        flashbackStateName
       )
     }
   }
@@ -831,14 +833,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
   private fun addFlashbackButton(
     conversationPendingItemList: MutableList<StateItemViewModel>,
-    extraInteractionPendingItemList: MutableList<StateItemViewModel>
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    flashbackStateName: String
   ) {
     val targetList =
       if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
 
     targetList += FlashbackButtonViewModel(
       hasConversationView,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      fragment as FlashbackButtonListener,
+      flashbackStateName
     )
   }
 

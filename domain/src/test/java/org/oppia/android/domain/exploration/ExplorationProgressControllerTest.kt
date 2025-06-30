@@ -3398,6 +3398,34 @@ class ExplorationProgressControllerTest {
       .isEqualTo("Fractions")
   }
 
+  @Test
+  fun testFlashback_submitWrongAnswer_moveToFlashbackState_returnsEphemeralStateWithFlashbackStateTrue() { // ktlint-disable max-line-length
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Trigger flashback dialog and click Continue button.
+    val expectedEphemeralState =
+      moveToFlashbackState(answerAndResponse.stateNameToRevisit)
+
+    // Verify returned EphemeralState is a completed state.
+    assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    // Verify flashback state is true in the returned EphemeralState.
+    assertThat(expectedEphemeralState.flashbackState).isEqualTo(true)
+  }
+
   private fun navigateToPrototypeRatioInputState() {
     playThroughPrototypeState1AndMoveToNextState()
     playThroughPrototypeState2AndMoveToNextState()
@@ -3405,6 +3433,13 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState4AndMoveToNextState()
     playThroughPrototypeState5AndMoveToNextState()
     playThroughPrototypeState6AndMoveToNextState()
+  }
+
+  private fun moveToFlashbackState(stateName: String): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.moveToFlashback(stateName)
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
   }
 
   private fun getAggregateTopicTime(): Long {

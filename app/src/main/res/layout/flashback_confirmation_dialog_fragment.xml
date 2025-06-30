@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_margin_start"
+    android:layout_marginEnd="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_margin_end"
+    android:paddingStart="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_start"
+    android:paddingEnd="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_end"
+    android:paddingTop="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_top"
+    android:paddingBottom="@dimen/flashback_confirmation_dialog_fragment_constraint_layout_padding_bottom">
+
+    <TextView
+      android:id="@+id/flashback_confirmation_header_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/FlashbackConfirmationTitleTextStyle"
+      android:text="@string/flashback_confirmation_dialog_title_text"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+      android:id="@+id/confirmation_message_text"
+      style="@style/FlashbackConfirmationMessageStyle"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/flashback_confirmation_dialog_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/flashback_confirmation_header_text"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+      android:id="@+id/not_now_button"
+      style="@style/FlashbackDialogNegativeActionButton"
+      android:layout_width="wrap_content"
+      android:text="@string/flashback_confirmation_dialog_not_now_text"
+      app:layout_constraintTop_toBottomOf="@+id/confirmation_message_text"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/continue_confirmation_button"/>
+
+    <Button
+      android:id="@+id/continue_confirmation_button"
+      style="@style/FlashbackDialogPositiveActionButton"
+      android:layout_width="wrap_content"
+      android:text="@string/flashback_confirmation_dialog_continue_button_text"
+      app:layout_constraintTop_toBottomOf="@+id/confirmation_message_text"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
