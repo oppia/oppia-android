@@ -26,6 +26,7 @@ import org.oppia.android.app.model.RemotePlatformParameter
 import org.oppia.android.app.model.RemotePlatformParameterAndFeatureFlagDatabase
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.persistence.PersistentCacheStore
+import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -306,7 +307,9 @@ class PlatformParameterControllerDebugImplTest {
     }
 
     setUpTestApplicationComponent()
-
+    val loadDeferred = platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
     val platformParameterValueFromProcessState = platformParameterProcessState
       .retrievePlatformParameterIntegerState(
         PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
@@ -325,7 +328,9 @@ class PlatformParameterControllerDebugImplTest {
     }
 
     setUpTestApplicationComponent()
-
+    val loadDeferred = platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
     val featureFlagValueFromProcessState = platformParameterProcessState
       .retrieveFeatureFlagState(FeatureFlagId.MULTIPLE_CLASSROOMS)
 
@@ -335,9 +340,10 @@ class PlatformParameterControllerDebugImplTest {
   @Test
   fun testGetParameterInitializationStatus_initialState_isTrue() {
     setUpTestApplicationComponent()
-    platformParameterControllerDebugImpl.loadParametersAsync()
+    val loadDeferred = platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
     val initStatusProvider = platformParameterControllerDebugImpl.getParameterInitializationStatus()
-
     val isInited = monitorFactory.waitForNextSuccessfulResult(initStatusProvider)
     assertThat(isInited).isTrue()
   }
@@ -345,7 +351,7 @@ class PlatformParameterControllerDebugImplTest {
   @Test
   fun testDownloadRemoteParameters_returnsAsyncResultSuccess() {
     setUpTestApplicationComponent()
-// TODO(#5345): Finish implementing forcing remote parameter downloads test.
+    // TODO(#5345): Finish implementing forcing remote parameter downloads test.
     val downloadProvider = platformParameterControllerDebugImpl.downloadRemoteParameters()
     val downloadMonitor = monitorFactory.createMonitor(downloadProvider)
     val downloadResult = downloadMonitor.waitForNextResult()
@@ -464,6 +470,8 @@ class PlatformParameterControllerDebugImplTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+    private val processState by lazy { PlatformParameterProcessState() }
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -473,9 +481,23 @@ class PlatformParameterControllerDebugImplTest {
     @Provides
     @Singleton
     fun providePlatformParameterControllerProdImpl(
-      platformParameterProcessState: PlatformParameterProcessState,
       factory: PlatformParameterControllerProdImpl.Factory
-    ) = factory.create(platformParameterProcessState)
+    ) = factory.create(processState)
+
+    @Provides
+    @Singleton
+    fun providesPlatformParameterController(
+      impl: PlatformParameterControllerDebugImpl
+    ): PlatformParameterController = impl
+
+    @Provides
+    fun providePlatformParameterConfigRetriever(
+      impl: TestPlatformParameterConfigRetriever
+    ): PlatformParameterConfigRetriever = impl
+
+    @Provides
+    @Singleton
+    fun providePlatformParameterProcessState(): PlatformParameterProcessState = processState
   }
 
   // TODO(#89): Move this to a common test application component.
@@ -489,8 +511,7 @@ class PlatformParameterControllerDebugImplTest {
       RobolectricModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class,
-      TestPlatformParameterModule::class
+      TestModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
