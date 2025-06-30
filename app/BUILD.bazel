@@ -120,6 +120,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/player/state/answerhandling/InteractionAnswerErrorOrAvailabilityCheckReceiver.kt",
     "src/main/java/org/oppia/android/app/player/state/answerhandling/InteractionAnswerHandler.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/ContinueNavigationButtonListener.kt",
+    "src/main/java/org/oppia/android/app/player/state/listener/FlashbackButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/NextNavigationButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/PreviousNavigationButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/PreviousResponsesHeaderClickListener.kt",

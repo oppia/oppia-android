@@ -272,4 +272,13 @@ class StateDeck constructor(
       currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
     }
   }
+
+  /**
+   * Returns the previously visited [EphemeralState] with the given [stateName], or a default
+   * instance if not found.
+   */
+  fun getFlashbackEphemeralState(stateName: String): EphemeralState {
+    return previousStates.find { it.state.name == stateName }
+      ?: EphemeralState.getDefaultInstance()
+  }
 }
