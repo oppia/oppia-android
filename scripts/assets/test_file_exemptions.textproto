@@ -4754,3 +4754,19 @@ test_file_exemption {
   exempted_file_path: "utility/src/test/java/org/oppia/android/util/math/NumericExpressionParserTest.kt",
   is_extra_test_file: true
 }
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/FlashbackButtonViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/flashback/FlashbackConfirmationDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/flashback/FlashbackConfirmationDialogFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/FlashbackButtonListener.kt"
+  test_file_not_required: true
+}

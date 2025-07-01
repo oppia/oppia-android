@@ -24,6 +24,7 @@ import org.oppia.android.app.databinding.databinding.ContinueInteractionItemBind
 import org.oppia.android.app.databinding.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.android.app.databinding.databinding.DragDropInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.FeedbackItemBinding
+import org.oppia.android.app.databinding.databinding.FlashbackButtonItemBinding
 import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
@@ -62,6 +63,7 @@ import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewM
 import org.oppia.android.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
+import org.oppia.android.app.player.state.itemviewmodel.FlashbackButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
@@ -79,6 +81,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
@@ -241,8 +244,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
       addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
+    var flashbackStateName: String? = null
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
+      val latestAnswer = ephemeralState.pendingState.wrongAnswerList.lastOrNull()
+      flashbackStateName = latestAnswer?.stateNameToRevisit
+
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         (fragment as ShowHintAvailabilityListener).onHintAvailable(
           ephemeralState.pendingState.helpIndex,
@@ -337,7 +344,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       hasGeneralContinueButton,
       isTerminalState,
       shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
-      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs
+      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
+      flashbackStateName
     )
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
@@ -645,7 +653,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasGeneralContinueButton: Boolean,
     stateIsTerminal: Boolean,
     shouldAnimateContinueButton: Boolean,
-    continueButtonAnimationTimestampMs: Long
+    continueButtonAnimationTimestampMs: Long,
+    flashbackStateName: String?
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
@@ -692,6 +701,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
       // Otherwise, there's no navigation button that should be shown since the current interaction
       // handles this or navigation in this context is disabled.
+    }
+    if (!flashbackStateName.isNullOrBlank() && playerFeatureSet.flashbackNavigationSupport) {
+      addFlashbackButton(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        flashbackStateName
+      )
     }
   }
 
@@ -813,6 +829,22 @@ class StatePlayerRecyclerViewAssembler private constructor(
         isSplitView.get()!!
       )
     }
+  }
+
+  private fun addFlashbackButton(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
+    flashbackStateName: String
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+
+    targetList += FlashbackButtonViewModel(
+      hasConversationView,
+      isSplitView.get()!!,
+      fragment as FlashbackButtonListener,
+      flashbackStateName
+    )
   }
 
   private fun createBannerConfetti(confettiView: KonfettiView, config: ConfettiConfig) {
@@ -1179,6 +1211,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
       return this
     }
 
+    /** Adds support for navigating to flashback state. */
+    fun addRedirectionSupport(): Builder {
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.FLASHBACK_BUTTON,
+        inflateDataBinding = FlashbackButtonItemBinding::inflate,
+        setViewModel = FlashbackButtonItemBinding::setButtonViewModel,
+        transformViewModel = { it as FlashbackButtonViewModel }
+      )
+      featureSets += PlayerFeatureSet(flashbackNavigationSupport = true)
+      return this
+    }
+
     private fun createListAnswerAdapter(
       gcsEntityId: String,
       supportsConceptCards: Boolean
@@ -1511,7 +1555,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val showCelebrationAtEndOfSession: Boolean = false,
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
-    val conceptCardSupport: Boolean = false
+    val conceptCardSupport: Boolean = false,
+    val flashbackNavigationSupport: Boolean = false
   ) {
     /**
      * Returns a union of this feature set with other one. Loosely based on
@@ -1534,7 +1579,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           other.showCelebrationAtEndOfSession,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
-        conceptCardSupport = conceptCardSupport || other.conceptCardSupport
+        conceptCardSupport = conceptCardSupport || other.conceptCardSupport,
+        flashbackNavigationSupport = flashbackNavigationSupport || other.flashbackNavigationSupport
       )
     }
   }

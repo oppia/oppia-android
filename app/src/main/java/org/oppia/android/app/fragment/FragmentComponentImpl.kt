@@ -20,6 +20,7 @@ import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFra
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.flashback.FlashbackConfirmationDialogFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
@@ -208,4 +209,5 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
   fun inject(createProfileFragment: CreateProfileFragment)
   fun inject(introFragment: IntroFragment)
+  fun inject(flashbackConfirmationDialogFragment: FlashbackConfirmationDialogFragment)
 }

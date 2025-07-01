@@ -954,11 +954,19 @@ message StatePlayerRecyclerViewAssemblerState {
   bool has_previous_responses_expanded = 1;
 }
 
+
 // Arguments that are saved on configuration changes in FeatureFlagsFragment.
 message FeatureFlagsFragmentArgument {
   // Map of current feature flag states.
  repeated OverriddenFeatureFlag feature_flag_states = 1;
 }
+
 message PlatformParametersFragmentArgument {
   repeated OverriddenPlatformParameter platform_parameter_states = 1;
+}
+
+// Arguments required when creating an FlashbackConfirmationDialogFragment.
+message FlashbackConfirmationDialogFragmentArguments {
+  // The name of the state that will be shown as a flashback.
+  string state_name = 1;
 }
