@@ -32,23 +32,17 @@ fun ForgotAdminPinDialog(
       dismissOnClickOutside = false,
       dismissOnBackPress = false
     ),
-    onDismissRequest = {
-      onDismissRequest()
-    },
+    onDismissRequest = { onDismissRequest() },
     dismissButton = {
       TextButton(
-        onClick = {
-          onDismissRequest()
-        }
+        onClick = { onDismissRequest() }
       ) {
         Text(stringResource(R.string.profile_login_forgot_pin_dialog_cancel_button))
       }
     },
     confirmButton = {
       TextButton(
-        onClick = {
-          onConfirmation()
-        }
+        onClick = { onConfirmation() }
       ) {
         Text(stringResource(R.string.profile_login_forgot_pin_dialog_reset_button, appName))
       }

@@ -958,6 +958,12 @@ message StatePlayerRecyclerViewAssemblerState {
   bool has_previous_responses_expanded = 1;
 }
 
+// Arguments required when creating an FlashbackConfirmationDialogFragment.
+message FlashbackConfirmationDialogFragmentArguments {
+  // The name of the state that will be shown as a flashback.
+  string state_name = 1;
+}
+
 // Params required when creating a new AdminIntroActivity.
 message AdminIntroActivityParams {
   // The ProfileType of the new profile as implied by the user's selection.

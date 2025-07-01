@@ -138,13 +138,10 @@ class ProfileLoginFragmentTest {
   @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
-  private lateinit var appName: String
 
   @Before
   fun setUp() {
     Intents.init()
-    setUpTestApplicationComponent()
-    appName = context.getString(R.string.app_name)
   }
 
   @After
@@ -155,6 +152,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_onLaunch_allTextViewsHaveCorrectContent() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -172,6 +170,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_onConfigChange_profileNameIsRetained() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     onView(isRoot()).perform(orientationLandscape())
@@ -184,6 +183,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_onLaunch_adminProfile_fivePinInputBoxesAreDisplayed() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -202,6 +202,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_onLaunch_learnerProfile_threePinInputBoxesAreDisplayed() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -220,6 +221,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_onLaunch_errorMessageDoesNotShow() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -231,6 +233,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdmin_enterTwoDigits_doesNotTriggerLogin() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -258,7 +261,9 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdmin_enterThreeDigits_triggersLoginAndOpensHomeScreen() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -275,7 +280,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdmin_classroomsEnabled_enterCorrectThreeDigits_opensClassroomsScreen() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -292,6 +297,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdmin_enterWrongThreeDigits_showsErrorMessage() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -308,6 +314,7 @@ class ProfileLoginFragmentTest {
   }
 
   fun testFragment_adminProfile_enterFourDigits_doesNotTriggerLogin() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -345,7 +352,9 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminProfile_enterCorrectFiveDigits_triggersLoginAndOpensHomeScreen() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -362,7 +371,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminProfile_classroomsEnabled_enterFiveDigits_opensClassroomScreen() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -379,6 +388,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminProfile_enterWrongFiveDigits_showsErrorMessage() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -396,6 +406,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminUser_clickForgotPin_opensAdminForgotPinDialogFlow() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -412,7 +423,10 @@ class ProfileLoginFragmentTest {
 
     composeRule
       .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_message, appName)
+        context.getString(
+          R.string.profile_login_forgot_pin_dialog_message,
+          context.getString(R.string.app_name)
+        )
       )
       .assertIsDisplayed()
 
@@ -424,13 +438,17 @@ class ProfileLoginFragmentTest {
 
     composeRule
       .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_reset_button, appName)
+        context.getString(
+          R.string.profile_login_forgot_pin_dialog_reset_button,
+          context.getString(R.string.app_name)
+        )
       )
       .assertIsDisplayed()
   }
 
   @Test
   fun testFragment_adminUser_openForgotPin_clickCancel_dismissesTheDialog() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -453,6 +471,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminUser_openForgotPin_clickResetData_opensAdminResetPinDialogFlow() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -461,7 +480,10 @@ class ProfileLoginFragmentTest {
 
     composeRule
       .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_reset_button, appName)
+        context.getString(
+          R.string.profile_login_forgot_pin_dialog_reset_button,
+          context.getString(R.string.app_name)
+        )
       )
       .assertIsDisplayed()
       .performClick()
@@ -471,12 +493,20 @@ class ProfileLoginFragmentTest {
       .assertIsDisplayed()
 
     composeRule
-      .onNodeWithText(context.getString(R.string.admin_confirm_app_wipe_title, appName))
+      .onNodeWithText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_title,
+          context.getString(R.string.app_name)
+        )
+      )
       .assertIsDisplayed()
 
     composeRule
       .onNodeWithText(
-        context.getString(R.string.admin_confirm_app_wipe_message, appName)
+        context.getString(
+          R.string.admin_confirm_app_wipe_message,
+          context.getString(R.string.app_name)
+        )
       )
       .assertIsDisplayed()
 
@@ -495,6 +525,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminUser_declineDataReset_dismissesTheDialog() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -507,7 +538,10 @@ class ProfileLoginFragmentTest {
 
     composeRule
       .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_reset_button, appName)
+        context.getString(
+          R.string.profile_login_forgot_pin_dialog_reset_button,
+          context.getString(R.string.app_name)
+        )
       )
       .performClick()
 
@@ -527,6 +561,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_adminUser_confirmDataReset_closesTheApp() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -539,7 +574,10 @@ class ProfileLoginFragmentTest {
 
     composeRule
       .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_reset_button, appName)
+        context.getString(
+          R.string.profile_login_forgot_pin_dialog_reset_button,
+          context.getString(R.string.app_name)
+        )
       )
       .performClick()
 
@@ -560,6 +598,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdminUser_clickForgotPin_opensNonAdminForgotPinDialogFlow() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -575,6 +614,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdminUser_forgotPinDialog_clickCancel_dismissesTheDialog() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -594,6 +634,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdminUser_enterWrongAdminPin_showsWrongAdminPinError() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
     scenario = launch(ProfileLoginActivity::class.java)
     testCoroutineDispatchers.runCurrent()
@@ -618,6 +659,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdminUser_enterCorrectAdminPin_opensPinResetDialog() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
     val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
@@ -645,6 +687,7 @@ class ProfileLoginFragmentTest {
 
   @Test
   fun testFragment_nonAdminUser_enterAndSubmitNewPin_opensSuccessDialog() {
+    setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.initializeProfiles()
     val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
     scenario = launch(
@@ -681,8 +724,13 @@ class ProfileLoginFragmentTest {
       .check(matches(isDisplayed()))
   }
 
-  private fun setUpTestApplicationComponent() {
+  private fun setUpTestApplicationComponentWithFeatureFlags() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+  }
+
+  private fun setUpTestApplicationComponentWithoutFeatureFlags() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 

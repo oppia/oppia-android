@@ -86,8 +86,8 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.explorationId = explorationId
 
     // Check if hints are available for this state.
-    hintsViewModel =
-      hintsAndSolutionViewModelFactory.create(state, helpIndex, writtenTranslationContext)
+    hintsViewModel = hintsAndSolutionViewModelFactory
+      .create(state, helpIndex, writtenTranslationContext, explorationId)
 
     val binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -123,7 +123,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     return multiTypeBuilderFactory.create<HintsAndSolutionItemViewModel, ViewType> { viewModel ->
       when (viewModel) {
         is HintViewModel -> ViewType.VIEW_TYPE_HINT_ITEM
-        is SolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
+        is HintsDialogSolutionViewModel -> ViewType.VIEW_TYPE_SOLUTION_ITEM
         is ReturnToLessonViewModel -> ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM
         else -> throw IllegalArgumentException("Encountered unexpected view model: $viewModel")
       }
@@ -136,7 +136,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
       viewType = ViewType.VIEW_TYPE_SOLUTION_ITEM,
       inflateDataBinding = SolutionSummaryBinding::inflate,
       setViewModel = this::bindSolutionViewModel,
-      transformViewModel = { it as SolutionViewModel }
+      transformViewModel = { it as HintsDialogSolutionViewModel }
     ).registerViewDataBinder(
       viewType = ViewType.VIEW_TYPE_RETURN_TO_LESSON_ITEM,
       inflateDataBinding = ReturnToLessonButtonItemBinding::inflate,
@@ -218,9 +218,10 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
 
   private fun bindSolutionViewModel(
     binding: SolutionSummaryBinding,
-    solutionViewModel: SolutionViewModel
+    solutionViewModel: HintsDialogSolutionViewModel
   ) {
-    binding.viewModel = solutionViewModel
+    val coreViewModel = solutionViewModel.coreViewModel
+    binding.viewModel = coreViewModel
 
     val position: Int = hintsViewModel.itemList.indexOf(solutionViewModel)
     binding.isListExpanded = expandedItemIndexes.contains(position)
@@ -228,7 +229,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     solutionIndex?.let { solutionIndex ->
       isSolutionRevealed?.let { isSolutionRevealed ->
         if (solutionIndex == position && isSolutionRevealed) {
-          solutionViewModel.isSolutionRevealed.set(true)
+          coreViewModel.isSolutionRevealed.set(true)
         }
       }
     }
@@ -241,7 +242,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         imageCenterAlign = true,
         displayLocale = resourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
-        solutionViewModel.correctAnswerHtml,
+        coreViewModel.correctAnswerHtml,
         binding.solutionCorrectAnswer
       )
     binding.solutionSummary.text =
@@ -253,7 +254,7 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         imageCenterAlign = true,
         displayLocale = resourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
-        solutionViewModel.solutionSummary,
+        coreViewModel.solutionSummary,
         binding.solutionSummary,
         supportsLinks = true,
         supportsConceptCards = true
@@ -264,14 +265,14 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     }
 
     binding.expandableSolutionHeader.setOnClickListener {
-      if (solutionViewModel.isSolutionRevealed.get()) {
+      if (coreViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
         if (position in expandedItemIndexes)
         (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
       }
     }
     binding.expandSolutionListIcon.setOnClickListener {
-      if (solutionViewModel.isSolutionRevealed.get()) {
+      if (coreViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
         if (position in expandedItemIndexes)
         (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()

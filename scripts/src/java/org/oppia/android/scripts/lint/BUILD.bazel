@@ -1,0 +1,31 @@
+"""
+Libraries corresponding to developer script that help with Android Lint analysis.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+
+kt_jvm_library(
+    name = "android_lint_runner",
+    testonly = True,
+    srcs = [
+        "AndroidLintRunner.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    # Export guava-jre to resolve version conflicts in the dependency chain.
+    # This ensures downstream targets use the JRE version instead of Android version
+    exports = ["//third_party:com_google_guava_guava_jre"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_reporter_lib",
+        "//third_party:com_android_tools_lint_lint",
+        "//third_party:com_google_guava_guava_jre",
+    ],
+)
+
+kt_jvm_library(
+    name = "lint_reporter_lib",
+    testonly = True,
+    srcs = [
+        "LintAnalysisReporter.kt",
+    ],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+)

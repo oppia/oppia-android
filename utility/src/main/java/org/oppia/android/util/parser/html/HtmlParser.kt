@@ -179,7 +179,7 @@ class HtmlParser private constructor(
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
     val trimmedText = spannable.toString()
     val trimStart = if (trimmedText.startsWith("\n")) 1 else 0
-    val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 1 else 0
+    val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 2 else 0
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 

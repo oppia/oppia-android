@@ -319,3 +319,19 @@ kt_jvm_binary(
     main_class = "org.oppia.android.scripts.xml.TextViewStyleCheckKt",
     runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/xml:check_textview_styles"],
 )
+
+kt_jvm_binary(
+    name = "android_lint_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.lint.AndroidLintRunnerKt",
+    runtime_deps = ["//scripts/src/java/org/oppia/android/scripts/lint:android_lint_runner"],
+)
+
+kt_jvm_binary(
+    name = "android_lint_reporter",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.coverage.lint.LintAnalysisReporterKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/coverage/lint:lint_reporter_lib",
+    ],
+)

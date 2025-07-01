@@ -1,0 +1,27 @@
+"""
+Tests corresponding to libraries that help with Android Lint analysis.
+"""
+
+load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")
+
+kt_jvm_test(
+    name = "AndroidLintRunnerTest",
+    srcs = ["AndroidLintRunnerTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:android_lint_runner",
+        "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
+        "//testing:assertion_helpers",
+        "//third_party:com_android_tools_lint_lint-tests",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "LintAnalysisReporterTest",
+    srcs = ["LintAnalysisReporterTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_reporter_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)

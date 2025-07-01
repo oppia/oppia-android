@@ -28,12 +28,12 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.PerformanceMetricsLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.testing.FakePerformanceMetricsEventLogger
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClock
@@ -575,14 +575,14 @@ class PerformanceMetricsControllerTest {
       LoggingIdentifierModule::class,
       MetricLogSchedulerModule::class,
       NetworkConnectionUtilDebugModule::class,
-      PlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
       TestLogStorageModule::class,
-      TestModule::class
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {
