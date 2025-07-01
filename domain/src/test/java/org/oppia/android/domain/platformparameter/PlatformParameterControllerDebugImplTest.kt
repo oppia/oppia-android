@@ -379,7 +379,6 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
-
   // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
   private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(

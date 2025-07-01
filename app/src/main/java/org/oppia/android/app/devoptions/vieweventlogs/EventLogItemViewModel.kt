@@ -16,6 +16,7 @@ class EventLogItemViewModel(
   /** The background color for the priority chip. */
   @ColorInt
   val priorityBackgroundColor = 0xFFBE563C.toInt()
+
   /** Returns the event log timestamp in a human readable format. */
   fun processDateAndTime(): String = resourceHandler.computeDateTimeString(eventLog.timestamp)
 
