@@ -177,7 +177,7 @@ def generate_android_lint_assets_list_from_text_protos(
     return generate_proto_binary_assets(
         name = name,
         names = android_lint_exemptions_name,
-        proto_dep_name = "script_exemptions",
+        proto_dep_name = "android_lint_checks",
         proto_type_name = "AndroidLintExemptions",
         name_prefix = "android_lint_exemptions",
         asset_dir = "assets",
