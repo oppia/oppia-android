@@ -97,6 +97,7 @@ class AndroidLintAnalyzer(
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile,
+      repoRoot = repoRoot,
       groupByIssueSeverity = groupByIssueSeverity
     )
 
@@ -133,6 +134,7 @@ class AndroidLintAnalyzer(
 class AndroidLintRunner(
   private val reportFile: File,
   private val projectDescriptionFile: File,
+  private val repoRoot: File,
   private val groupByIssueSeverity: Boolean = false
 ) {
   companion object {
@@ -169,11 +171,7 @@ class AndroidLintRunner(
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
-
-    val reporter = LintAnalysisReporter()
-    val issues = reporter.parseLintReport(reportFile.absolutePath)
-
-    reporter.printLintReport(issues, groupByIssueSeverity)
+    reportLintIssues()
   }
 
   /**
@@ -206,6 +204,29 @@ class AndroidLintRunner(
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath
     )
+  }
+
+  private fun reportLintIssues() {
+    val reporter = LintAnalysisReporter()
+    val allIssues = reporter.parseLintReport(reportFile.absolutePath)
+
+    val exemptions = reporter.loadExemptionsProto()
+
+    val filteredIssues = reporter.filterExemptedIssues(
+      issues = allIssues,
+      exemptions = exemptions.androidLintExemptionList,
+      repoRoot = repoRoot
+    )
+
+    val redundantExemptions = reporter.findRedundantExemptions(
+      issues = allIssues,
+      exemptions = exemptions.androidLintExemptionList,
+      repoRoot = repoRoot
+    )
+
+    reporter.logRedundantExemptions(redundantExemptions)
+
+    reporter.printLintReport(filteredIssues, groupByIssueSeverity)
   }
 
   /**

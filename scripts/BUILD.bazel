@@ -326,13 +326,6 @@ ANDROID_LINT_EXEMPTION_ASSETS = generate_android_lint_assets_list_from_text_prot
     android_lint_exemptions_name = ["android_lint_exemptions"],
 )
 
-kt_jvm_library(
-    name = "android_lint_check_assets",
-    testonly = True,
-    data = ANDROID_LINT_EXEMPTION_ASSETS,
-    visibility = [":oppia_script_test_visibility"],
-)
-
 kt_jvm_binary(
     name = "android_lint_check",
     testonly = True,

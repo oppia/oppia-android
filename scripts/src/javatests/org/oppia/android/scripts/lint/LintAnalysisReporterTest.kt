@@ -22,6 +22,7 @@ class LintAnalysisReporterTest {
   private lateinit var lintAnalysisReporter: LintAnalysisReporter
   private val originalOut = System.out
   private val outputStream = ByteArrayOutputStream()
+  private val pathToProtoBinary = "scripts/assets/android_lint_exemptions.pb"
 
   companion object {
     private const val XML_HEADER =

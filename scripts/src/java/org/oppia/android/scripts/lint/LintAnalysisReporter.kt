@@ -1,10 +1,13 @@
 package org.oppia.android.scripts.lint
 
+import org.oppia.android.scripts.proto.AndroidLintExemption
+import org.oppia.android.scripts.proto.AndroidLintExemptions
 import org.oppia.android.scripts.proto.LintIssueId
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
 import java.io.File
+import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.MessageDigest
@@ -120,10 +123,18 @@ class LintAnalysisReporter {
     private const val ISSUE_SEPARATOR_LENGTH = 60
 
     // Needs to be updated if new lint issues are added.
-    private val lintIssueIdMap: Map<Int, String> = mapOf(
-      0 to "IssueUnspecified",
-      1 to "LintError",
+    private val issueIdMapping: Map<String, LintIssueId> = mapOf(
+      "IssueUnspecified" to LintIssueId.ISSUE_UNSPECIFIED,
+      "LintError" to LintIssueId.LINT_ERROR,
+      "ObsoleteLayoutParam" to LintIssueId.OBSOLETE_LAYOUT_PARAM,
+      "UnusedResources" to LintIssueId.UNUSED_RESOURCES,
+      "NewApi" to LintIssueId.NEW_API
     )
+    private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associate {
+      it.value to it.key
+    }
+
+    private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
   }
 
   /**
@@ -181,7 +192,115 @@ class LintAnalysisReporter {
   }
 
   /**
+   * Filters out exempted lint issues from the provided list.
+   *
+   * @param issues List of all lint issues
+   * @param exemptions List of exemptions to apply
+   * @param repoRoot Root directory of the repository for relative path calculation
+   * @return List of issues after filtering out exemptions
+   */
+  fun filterExemptedIssues(
+    issues: List<LintIssue>,
+    exemptions: List<AndroidLintExemption>,
+    repoRoot: File
+  ): List<LintIssue> {
+    val exemptionMap = buildExemptionMap(exemptions)
+
+    return issues.filter { issue ->
+      !isIssueExempted(issue, exemptionMap, repoRoot)
+    }
+  }
+
+  private fun buildExemptionMap(
+    exemptions: List<AndroidLintExemption>
+  ): Map<String, Set<LintIssueId>> {
+    return exemptions.groupBy { it.exemptedFilePath }
+      .mapValues { (_, exemptionsForFile) ->
+        exemptionsForFile.flatMap { it.lintIssueIdList }.toSet()
+      }
+  }
+
+  /**
+   * Checks if a lint issue is exempted based on the exemption map.
+   *
+   * @param issue The lint issue to check
+   * @param exemptionMap Map of file paths to exempted issue IDs
+   * @param repoRoot Root directory of the repository
+   * @return true if the issue is exempted, false otherwise
+   */
+  private fun isIssueExempted(
+    issue: LintIssue,
+    exemptionMap: Map<String, Set<LintIssueId>>,
+    repoRoot: File
+  ): Boolean {
+    val issueIdEnum = getLintIssueIdFromString(issue.id)
+
+    return issue.locations.any { location ->
+      val relativePath = File(location.file).toRelativeString(repoRoot)
+      val exemptedIssues = exemptionMap[relativePath]
+      exemptedIssues?.contains(issueIdEnum) == true
+    }
+  }
+
+  /**
+   * Maps lint issue ID string to LintIssueId enum.
+   *
+   * @param issueId The string ID of the lint issue
+   * @return The corresponding LintIssueId enum
+   * @throws IllegalArgumentException if the issue ID is not found in the enum mapping
+   */
+  private fun getLintIssueIdFromString(issueId: String): LintIssueId {
+    return issueIdMapping[issueId]
+      ?: throw IllegalArgumentException(
+        "Unknown lint issue ID '$issueId' found during analysis. " +
+          "Please add this issue ID to the LintIssueId enum in the proto definition " +
+          "and update the issueIdMapping in LintAnalysisReporter."
+      )
+  }
+
+  /**
+   * Finds redundant exemptions that don't correspond to any actual issues.
+   *
+   * @param issues List of all lint issues
+   * @param exemptions List of exemptions
+   * @param repoRoot Root directory of the repository
+   * @return Map of file paths to list of redundant issue IDs for that file
+   */
+  fun findRedundantExemptions(
+    issues: List<LintIssue>,
+    exemptions: List<AndroidLintExemption>,
+    repoRoot: File
+  ): Map<String, List<String>> {
+    val actualIssuesMap = mutableMapOf<String, MutableSet<LintIssueId>>()
+
+    issues.forEach { issue ->
+      val issueIdEnum = getLintIssueIdFromString(issue.id)
+      issue.locations.forEach { location ->
+        val relativePath = File(location.file).toRelativeString(repoRoot)
+        actualIssuesMap.getOrPut(relativePath) { mutableSetOf() }.add(issueIdEnum)
+      }
+    }
+
+    val redundantMap = mutableMapOf<String, MutableList<String>>()
+
+    exemptions.forEach { exemption ->
+      val filePath = exemption.exemptedFilePath
+      val actualIssuesForFile = actualIssuesMap[filePath] ?: emptySet()
+
+      exemption.lintIssueIdList.forEach { exemptedIssueId ->
+        if (!actualIssuesForFile.contains(exemptedIssueId)) {
+          val issueIdString = issueIdToString[exemptedIssueId] ?: "Unknown"
+          redundantMap.getOrPut(filePath) { mutableListOf() }.add(issueIdString)
+        }
+      }
+    }
+
+    return redundantMap.mapValues { (_, issueIds) -> issueIds.sorted() }
+  }
+
+  /**
    * Prints the lint issues based on the specified grouping strategy.
+   *
    * @param issues List of LintIssue objects to print
    * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
    */
@@ -196,6 +315,51 @@ class LintAnalysisReporter {
     }
 
     printFinalResult(issues)
+  }
+
+  /**
+   * Loads the Android Lint exemptions from a proto binary file.
+   *
+   * @param pathToProtoBinary Path to the exemptions proto binary file
+   * @return AndroidLintExemptions proto object
+   */
+  fun loadExemptionsProto(
+    pathToProtoBinary: String = EXEMPTIONS_FILE_PATH
+  ): AndroidLintExemptions {
+    val protoBinaryFile = File(pathToProtoBinary)
+    val builder = AndroidLintExemptions.getDefaultInstance().newBuilderForType()
+
+    @Suppress("UNCHECKED_CAST")
+    val protoObj: AndroidLintExemptions =
+      FileInputStream(protoBinaryFile).use {
+        builder.mergeFrom(it)
+      }.build() as AndroidLintExemptions
+    return protoObj
+  }
+
+  /**
+   * Logs redundant exemptions grouped by file paths.
+   *
+   * @param redundantExemptions Map of file paths to redundant issue IDs
+   * @param exemptionFilePath Path to the exemption file
+   */
+  fun logRedundantExemptions(
+    redundantExemptions: Map<String, List<String>>,
+    exemptionFilePath: String = EXEMPTIONS_FILE_PATH
+  ) {
+    if (redundantExemptions.isNotEmpty()) {
+      println("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
+      println("Please remove them from $exemptionFilePath")
+      println()
+
+      redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
+        println("${BOLD}File: $filePath$RESET")
+        issueIds.forEach { issueId ->
+          println("  - $issueId")
+        }
+        println()
+      }
+    }
   }
 
   /** Prints a summary of issues grouped by severity. */
@@ -341,7 +505,7 @@ class LintAnalysisReporter {
     val criticalIssues = issues.filter { it.severity.isCritical() }
 
     val hasInternalLintIssues = criticalIssues.any {
-      it.id == lintIssueIdMap[LintIssueId.LINT_ERROR.ordinal]
+      it.id == issueIdToString[LintIssueId.LINT_ERROR]
     }
 
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
