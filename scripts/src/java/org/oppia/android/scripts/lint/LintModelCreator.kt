@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.lint
 
+import com.android.tools.lint.model.LintModelMavenName
 import com.android.tools.lint.model.LintModelModuleType.APP
 import com.android.tools.lint.model.LintModelModuleType.LIBRARY
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
@@ -45,7 +46,7 @@ class LintModelCreator(
 
     private const val MODEL_CACHE_TTL_HOURS = 24L
 
-    private const val FILE_SEPARATOR=","
+    private const val FILE_SEPARATOR = ","
   }
 
   private val logger = LintLogger(workingDirectory = modelDir)
@@ -248,7 +249,6 @@ class LintModelCreator(
             dir="${escapeXmlAttribute(modulePath.toString())}"
             name="${escapeXmlAttribute(moduleConfig.name)}"
             type="${moduleType.name}"
-            maven="__non_maven__"
             buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
