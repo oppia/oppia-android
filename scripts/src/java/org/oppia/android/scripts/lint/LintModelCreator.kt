@@ -44,6 +44,8 @@ class LintModelCreator(
     private const val TARGET_SDK_VERSION = "34"
 
     private const val MODEL_CACHE_TTL_HOURS = 24L
+
+    private const val FILE_SEPARATOR=","
   }
 
   private val logger = LintLogger(workingDirectory = modelDir)
@@ -64,12 +66,12 @@ class LintModelCreator(
     }
     val modelPath = modelDir.toPath().createDirectories()
     val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
-    val relativeProjectPath = modelPath.absolute().relativize(repoRoot.toPath().absolute())
+    val modulePath = File(repoRoot, moduleConfig.name).toPath().absolute()
 
     generateModuleXml(
       modelPath.resolve(MODULE_XML_FILE).toFile(),
       moduleConfig,
-      relativeProjectPath,
+      modulePath,
       buildDir
     )
 
@@ -233,7 +235,7 @@ class LintModelCreator(
   private fun generateModuleXml(
     moduleFile: File,
     moduleConfig: ModuleConfig,
-    relativeProjectPath: Path,
+    modulePath: Path,
     buildDir: Path
   ) {
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
@@ -243,7 +245,7 @@ class LintModelCreator(
     val content =
       """
         <lint-module
-            dir="${escapeXmlAttribute(relativeProjectPath.toString())}"
+            dir="${escapeXmlAttribute(modulePath.toString())}"
             name="${escapeXmlAttribute(moduleConfig.name)}"
             type="${moduleType.name}"
             maven="__non_maven__"
@@ -286,7 +288,8 @@ class LintModelCreator(
             $proguardAttribute>
             <buildFeatures
                 coreLibraryDesugaring="true" 
-                viewBinding="true" />
+                viewBinding="true"
+                namespacing="REQUIRED" />
             <sourceProviders>
                 ${generateMainSourceProvider(moduleConfig)}
             </sourceProviders>
@@ -319,7 +322,7 @@ class LintModelCreator(
         .map { escapeXmlAttribute(File(it).absolutePath) }
         .filter { it.contains("/src/main/") }
       if (mainResDirs.isNotEmpty()) {
-        add("""resDirectories="${mainResDirs.joinToString(":")}"""")
+        add("""resDirectories="${mainResDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
       val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
@@ -344,14 +347,14 @@ class LintModelCreator(
       ).filter { File(it).exists() }
 
       if (testJavaDirs.isNotEmpty()) {
-        add("""javaDirectories="${testJavaDirs.joinToString(":")}"""")
+        add("""javaDirectories="${testJavaDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
       val testResDirs = moduleConfig.resourceDirs
         .map { File(it).absolutePath }
         .filter { it.contains("/src/test/") }
       if (testResDirs.isNotEmpty()) {
-        add("""resDirectories="${testResDirs.joinToString(":")}"""")
+        add("""resDirectories="${testResDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
       val testAssetsDir = File(repoRoot, "${moduleConfig.name}/src/test/assets")
@@ -377,7 +380,7 @@ class LintModelCreator(
   }
 
   private fun createProguardAttribute(proGuardFiles: List<String>): String {
-    return """proguardFiles="${proGuardFiles.joinToString(":")}" """
+    return """proguardFiles="${proGuardFiles.joinToString(FILE_SEPARATOR)}" """
   }
 
   private fun generateArtifactLibrariesXml(librariesFile: File) {
