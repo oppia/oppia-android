@@ -297,6 +297,7 @@
   <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_white</color>
   <!-- FLASHBACK -->
   <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
+  <color name="color_palette_flashback_toolbar_color">@color/color_def_oppia_brown_dark</color>
   <!-- PROFILE LOGIN -->
   <color name="color_palette_profile_login_background_color">@color/color_def_light_jade</color>
   <color name="color_palette_profile_login_primary_text_color">@color/color_def_accessible_grey</color>
