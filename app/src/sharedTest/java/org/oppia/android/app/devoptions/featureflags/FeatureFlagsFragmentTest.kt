@@ -124,17 +124,17 @@ import javax.inject.Singleton
 )
 class FeatureFlagsFragmentTest {
 
-  private companion object {
-    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
-    private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
-  }
-
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var context: Context
+
+  private companion object {
+    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
+  }
 
   @Test
   fun testFeatureFlagsFragment_verifyRecyclerView_hasCorrectItemCount() {
@@ -321,6 +321,7 @@ class FeatureFlagsFragmentTest {
       verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
     }
   }
+
   private fun verifyFeatureFlagDisplayName(
     position: Int,
     expectedDisplayName: String
@@ -408,7 +409,7 @@ class FeatureFlagsFragmentTest {
       .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
   }
 
-  // Populates the remote DB with test feature flags for DOWNLOADS_SUPPORT.
+  // Populates the remote DB with test feature flag for DOWNLOADS_SUPPORT.
   private fun addTestRemoteFeatureFlagToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(
       DATABASE_NAME,
