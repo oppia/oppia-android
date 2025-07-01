@@ -34,14 +34,10 @@ fun ConfirmDataResetDialog(
       dismissOnClickOutside = false,
       dismissOnBackPress = false
     ),
-    onDismissRequest = {
-      onDismissRequest()
-    },
+    onDismissRequest = { onDismissRequest() },
     dismissButton = {
       TextButton(
-        onClick = {
-          onDismissRequest()
-        }
+        onClick = { onDismissRequest() }
       ) {
         Text(stringResource(R.string.admin_confirm_app_wipe_negative_button_text))
       }
