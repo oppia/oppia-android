@@ -245,7 +245,7 @@ class SplashActivityPresenter @Inject constructor(
       processStartupMode()
     }
 
-  private fun subscribeToOnboardingFlow() {
+   fun subscribeToOnboardingFlow() {
     val liveData = computeInitStateDataProvider().toLiveData()
     liveData.observe(
       activity,
