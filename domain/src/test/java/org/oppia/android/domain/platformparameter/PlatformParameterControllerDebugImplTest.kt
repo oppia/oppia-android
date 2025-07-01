@@ -347,6 +347,7 @@ class PlatformParameterControllerDebugImplTest {
     val isInitialised = monitorFactory.waitForNextSuccessfulResult(initStatusProvider)
     assertThat(isInitialised).isFalse()
   }
+
   @Test
   fun testDownloadRemoteParameters_returnsAsyncResultSuccess() {
     setUpTestApplicationComponent()
@@ -357,7 +358,7 @@ class PlatformParameterControllerDebugImplTest {
     assertThat(downloadResult).isInstanceOf(AsyncResult.Success::class.java)
   }
 
-  // Populates the remote DB with test feature flags for MULTIPLE_CLASSROOM.
+  // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOM.
   private fun addTestRemoteFeatureFlagToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(
       DATABASE_NAME,
@@ -379,7 +380,7 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
-  // Populates the remote DB with test platform parameters for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
+  // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
   private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(
       DATABASE_NAME,
@@ -469,7 +470,6 @@ class PlatformParameterControllerDebugImplTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    private val processState by lazy { PlatformParameterProcessState() }
 
     @Provides
     @Singleton
@@ -480,7 +480,8 @@ class PlatformParameterControllerDebugImplTest {
     @Provides
     @Singleton
     fun providePlatformParameterControllerProdImpl(
-      factory: PlatformParameterControllerProdImpl.Factory
+      factory: PlatformParameterControllerProdImpl.Factory,
+      processState: PlatformParameterProcessState
     ) = factory.create(processState)
 
     @Provides
@@ -496,7 +497,8 @@ class PlatformParameterControllerDebugImplTest {
 
     @Provides
     @Singleton
-    fun providePlatformParameterProcessState(): PlatformParameterProcessState = processState
+    fun providePlatformParameterProcessState(): PlatformParameterProcessState =
+      PlatformParameterProcessState()
   }
 
   // TODO(#89): Move this to a common test application component.
