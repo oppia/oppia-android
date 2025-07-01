@@ -246,7 +246,7 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
 
       scrollToPosition(0)
       onView(
@@ -259,7 +259,7 @@ class FeatureFlagsFragmentTest {
 
       verifyFeatureFlagSwitchState(
         0,
-        !downloadSupportFlag.currentValue
+        !downloadsSupportFlag.currentValue
       )
     }
   }
@@ -269,7 +269,7 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
 
       scrollToPosition(0)
       onView(
@@ -282,14 +282,14 @@ class FeatureFlagsFragmentTest {
 
       verifyFeatureFlagSwitchState(
         0,
-        !downloadSupportFlag.currentValue
+        !downloadsSupportFlag.currentValue
       )
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
       verifyFeatureFlagSwitchState(
         0,
-        !downloadSupportFlag.currentValue
+        !downloadsSupportFlag.currentValue
       )
     }
   }
@@ -303,7 +303,7 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
 
       scrollToPosition(0)
       verifyFeatureFlagSyncStatus(
@@ -312,11 +312,11 @@ class FeatureFlagsFragmentTest {
       )
       verifyFeatureFlagSwitchState(
         0,
-        downloadSupportFlag.currentValue
+        downloadsSupportFlag.currentValue
       )
       verifyFeatureFlagSwitchState(
         0,
-        downloadSupportFlag.currentValue
+        downloadsSupportFlag.currentValue
       )
       verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
     }
