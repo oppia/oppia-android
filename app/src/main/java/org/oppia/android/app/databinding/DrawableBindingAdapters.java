@@ -39,7 +39,7 @@ public final class DrawableBindingAdapters {
 
   /** Used to set a large rounded-rect background drawable with a data-bound color. */
   @BindingAdapter("largeRoundedRectDrawableWithColor")
-  public static void setLargerBorderRadiusBackgroundDrawable(
+  public static void setLargeBorderRadiusBackgroundDrawable(
           @NonNull View view,
           @ColorInt int colorRgb
   ) {
