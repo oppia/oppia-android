@@ -189,7 +189,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectDetails() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectDetails() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -213,7 +213,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_verifyDownloadsSupportFlag_whenSwitchToggled_updatesValue() {
+  fun testFeatureFlagsFragment_verifyDownloadsSupportFlag_whenSwitchToggled_updatesValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -236,7 +236,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_toggleDownloadsSupportFlag_configChanges_valuePersists() {
+  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChanges_valuePersists() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -266,7 +266,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_addRemoteFeatureFlagValue_downloadsSupportHasServerSyncStatus() {
+  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasServerSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent)
       testComponent.getTestCoroutineDispatchers().runCurrent()

@@ -109,7 +109,7 @@ class FeatureFlagsActivityTest {
   }
 
   @Test
-  fun testActivity_createIntent_verifyScreenNameInIntent() {
+  fun testFeatureFlagsActivity_createIntent_verifyScreenNameInIntent() {
     val screenName = createFeatureFlagsActivityIntent().extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(FEATURE_FLAGS_ACTIVITY)
