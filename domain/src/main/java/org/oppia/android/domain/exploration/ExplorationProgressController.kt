@@ -881,6 +881,7 @@ class ExplorationProgressController @Inject constructor(
       check(explorationProgress.playStage != SUBMITTING_ANSWER) {
         "Cannot navigate to a previous state if an answer submission is pending."
       }
+      hintHandler.navigateToPreviousState()
       recomputeCurrentFlashbackStateAndNotifySync(stateName)
     }
   }
