@@ -15,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matchers.not
 import org.junit.After
@@ -39,6 +38,7 @@ import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.recyclerview.RecyclerViewMatcher
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -126,24 +126,29 @@ class FeatureFlagsFragmentTest {
     testCoroutineDispatchers.registerIdlingResource()
   }
 
+  @After
+  fun tearDown() {
+    testCoroutineDispatchers.unregisterIdlingResource()
+  }
+
   @Test
-  fun testFeatureFlagsFragment_recyclerView_hasCorrectItemCount() {
+  fun testFeatureFlagsFragment_verifyRecyclerView_hasCorrectItemCount() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       val expectedCount = getEphemeralFeatureFlags().size
 
-      onView(withId(R.id.feature_flags_recycler_view)).check { view, _ ->
-        val recyclerView = view as RecyclerView
-        assertThat(recyclerView.adapter?.itemCount).isEqualTo(expectedCount)
-        // Note to developers: if you add/remove a feature flag, please update the expected count.
-        assertThat(recyclerView.adapter?.itemCount).isEqualTo(14)
-      }
+      onView(withId(R.id.feature_flags_recycler_view))
+        .check(RecyclerViewMatcher.hasItemCount(count = expectedCount))
+
+      // Note to developers: if you add/remove a feature flag, please update the expected count.
+      onView(withId(R.id.feature_flags_recycler_view))
+        .check(RecyclerViewMatcher.hasItemCount(count = 14))
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_recyclerViewItems_hasCorrectDetails() {
+  fun testFeatureFlagsFragment_verifyRecyclerViewItems_hasCorrectDetails() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       getEphemeralFeatureFlags().forEachIndexed { index, ephemeralFeatureFlag ->
@@ -165,7 +170,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_downloadSupportFlag_hasCorrectDetails() {
+  fun testFeatureFlagFragment_verifyDownloadsSupportFlag_hasCorrectDetails() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val downloadSupportFlag = getEphemeralFeatureFlags()[0]
@@ -187,7 +192,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_downloadSupportFlag_switchToggled_updatesValue() {
+  fun testFeatureFlagFragment_verifyDownloadsSupportFlag_whenSwitchToggled_updatesValue() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val downloadSupportFlag = getEphemeralFeatureFlags()[0]
@@ -195,9 +200,9 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          R.id.feature_flags_recycler_view,
-          0,
-          R.id.feature_flag_switch
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
         )
       ).perform(click())
 
@@ -209,7 +214,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_toggleDownloadSupportFlag_configChanges_valuePersists() {
+  fun testFeatureFlagFragment_toggleDownloadsSupportFlag_configChanges_valuePersists() {
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val downloadSupportFlag = getEphemeralFeatureFlags()[0]
@@ -217,9 +222,9 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          R.id.feature_flags_recycler_view,
-          0,
-          R.id.feature_flag_switch
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
         )
       ).perform(click())
 
@@ -243,15 +248,11 @@ class FeatureFlagsFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.feature_flags_recycler_view,
-        position,
-        R.id.feature_flag_label_text_view
+        recyclerViewId = R.id.feature_flags_recycler_view,
+        position = position,
+        targetViewId = R.id.feature_flag_label_text_view
       )
-    ).check(
-      matches(
-        withText(expectedDisplayName)
-      )
-    )
+    ).check(matches(withText(expectedDisplayName)))
   }
 
   private fun verifyFeatureFlagSyncStatus(
@@ -260,65 +261,55 @@ class FeatureFlagsFragmentTest {
   ) {
     onView(
       atPositionOnView(
-        R.id.feature_flags_recycler_view,
-        position,
-        R.id.sync_status_value_text_view
+        recyclerViewId = R.id.feature_flags_recycler_view,
+        position = position,
+        targetViewId = R.id.sync_status_value_text_view
       )
-    ).check(
-      matches(
-        withText(expectedSyncStatus)
-      )
-    )
+    ).check(matches(withText(expectedSyncStatus)))
   }
+
   private fun verifyFeatureFlagSwitchState(
     position: Int,
     expectedState: Boolean
   ) {
     onView(
       atPositionOnView(
-        R.id.feature_flags_recycler_view,
-        position,
-        R.id.feature_flag_switch
+        recyclerViewId = R.id.feature_flags_recycler_view,
+        position = position,
+        targetViewId = R.id.feature_flag_switch
       )
     ).check(matches(if (expectedState) isChecked() else not(isChecked())))
   }
+
   private fun getSyncStatusText(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
         context.getString(R.string.feature_flag_unknown_sync_status)
-
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
         context.getString(R.string.feature_flag_default_sync_status)
-
       SyncStatus.SYNCED_FROM_SERVER ->
         context.getString(R.string.feature_flag_server_sync_status)
-
       else ->
         context.getString(R.string.feature_flag_unknown_sync_status)
     }
   }
+
   private fun scrollToPosition(position: Int) {
     onView(withId(R.id.feature_flags_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(position)
     )
   }
+
   private fun getEphemeralFeatureFlags(): List<EphemeralFeatureFlag> {
     val provider = platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
     return monitorFactory.waitForNextSuccessfulResult(provider)
   }
 
-  private fun getFeatureFlagDisplayName(
-    id: FeatureFlagId
-  ): String {
+  private fun getFeatureFlagDisplayName(id: FeatureFlagId): String {
     return id.name
       .lowercase()
       .split('_')
       .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
-  }
-
-  @After
-  fun tearDown() {
-    testCoroutineDispatchers.unregisterIdlingResource()
   }
 
   private fun setUpTestApplicationComponent() {

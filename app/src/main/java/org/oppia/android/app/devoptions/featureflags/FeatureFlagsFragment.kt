@@ -21,7 +21,7 @@ class FeatureFlagsFragment : InjectableFragment() {
 
   companion object {
     /** State key for [FeatureFlagsFragment]. */
-    const val FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
+    const val FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagsFragmentArgument.state"
 
     /** Returns a new instance of [FeatureFlagsFragment]. */
     fun newInstance(): FeatureFlagsFragment = FeatureFlagsFragment()
@@ -36,14 +36,15 @@ class FeatureFlagsFragment : InjectableFragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY,
         FeatureFlagsFragmentArgument.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList?.associate { it.id to it.overriddenIsEnabled }
+      featureFlagStates = args?.featureFlagStatesList
+        ?.associate { it.id to it.overriddenIsEnabled }
         ?.toMutableMap() ?: mutableMapOf()
     }
 
@@ -54,13 +55,12 @@ class FeatureFlagsFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsFragmentPresenter.featureFlagStates
-        .map {
-          OverriddenFeatureFlag.newBuilder()
-            .setId(it.key)
-            .setOverriddenIsEnabled(it.value)
-            .build()
-        }
+      featureFlagsFragmentPresenter.featureFlagStates.map {
+        OverriddenFeatureFlag.newBuilder()
+          .setId(it.key)
+          .setOverriddenIsEnabled(it.value)
+          .build()
+      }
 
     val proto = FeatureFlagsFragmentArgument.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
