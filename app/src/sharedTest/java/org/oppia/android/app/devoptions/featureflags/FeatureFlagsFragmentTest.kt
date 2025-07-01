@@ -203,6 +203,20 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
+  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectValue() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        0,
+        downloadsSupportFlag.currentValue
+      )
+    }
+  }
+
+  @Test
   fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectSyncStatus() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
