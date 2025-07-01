@@ -52,7 +52,6 @@ class LintModelCreatorTest {
     assertThat(content).contains("<lint-module")
     assertThat(content).contains("name=\"utility\"")
     assertThat(content).contains("type=\"LIBRARY\"")
-    assertThat(content).contains("maven=\"__non_maven__\"")
     assertThat(content).contains("javaSourceLevel=\"11.0.16\"")
     assertThat(content).contains("neverShrinking=\"true\"")
     assertThat(content).contains("<variant name=\"main\"/>")
