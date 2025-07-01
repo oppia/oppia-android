@@ -13,12 +13,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.text.util.LinkifyCompat
 import androidx.core.view.ViewCompat
+import javax.inject.Inject
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.image.UrlImageParser
 import org.oppia.android.util.platformparameter.CacheLatexRendering
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import javax.inject.Inject
 
 /** Html Parser to parse custom Oppia tags with Android-compatible versions. */
 class HtmlParser private constructor(
@@ -179,7 +179,7 @@ class HtmlParser private constructor(
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
     val trimmedText = spannable.toString()
     val trimStart = if (trimmedText.startsWith("\n")) 1 else 0
-    val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 1 else 0
+    val trimEnd = if (trimmedText.length > 1 && trimmedText.endsWith("\n")) 2 else 0
     return spannable.delete(0, trimStart).delete(spannable.length - trimEnd, spannable.length)
   }
 
