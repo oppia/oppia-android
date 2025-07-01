@@ -47,7 +47,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [PlatformParameterControllerDebugImpl]. */
-
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterControllerDebugImplTest.TestApplication::class)
