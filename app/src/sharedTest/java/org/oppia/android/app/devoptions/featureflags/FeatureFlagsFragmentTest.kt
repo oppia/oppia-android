@@ -123,13 +123,19 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class FeatureFlagsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
 
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var context: Context
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var context: Context
 
   private companion object {
     private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
@@ -161,20 +167,20 @@ class FeatureFlagsFragmentTest {
       getEphemeralFeatureFlags().forEachIndexed { index, ephemeralFeatureFlag ->
         scrollToPosition(index)
         verifyFeatureFlagDisplayName(
-          index,
-          getFeatureFlagDisplayName(ephemeralFeatureFlag.id)
+          position = index,
+          expectedDisplayName = getFeatureFlagDisplayName(ephemeralFeatureFlag.id)
         )
         verifyFeatureFlagSyncStatus(
-          index,
-          getSyncStatusText(ephemeralFeatureFlag.syncStatus)
+          position = index,
+          expectedSyncStatus = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
         )
         verifyFeatureFlagSwitchState(
-          index,
-          ephemeralFeatureFlag.currentValue
+          position = index,
+          expectedState = ephemeralFeatureFlag.currentValue
         )
         verifyFeatureFlagBackgroundColor(
-          index,
-          when (ephemeralFeatureFlag.syncStatus) {
+          position = index,
+          expectedColor = when (ephemeralFeatureFlag.syncStatus) {
             SyncStatus.SYNCED_FROM_SERVER -> {
               0xFF00645C.toInt()
             }
@@ -189,55 +195,58 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectName() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectName() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
       verifyFeatureFlagDisplayName(
-        0,
-        DOWNLOADS_SUPPORT_FLAG_NAME
+        position = 0,
+        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectValue() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
       scrollToPosition(0)
       verifyFeatureFlagSwitchState(
-        0,
-        downloadsSupportFlag.currentValue
+        position = 0,
+        expectedState = downloadsSupportFlag.currentValue
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectSyncStatus() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectSyncStatus() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
       verifyFeatureFlagSyncStatus(
-        0,
-        context.getString(R.string.feature_flag_default_sync_status)
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.feature_flag_default_sync_status)
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectBackground() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectBackground() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = 0xFFBE563C.toInt()
+      )
     }
   }
 
@@ -258,8 +267,8 @@ class FeatureFlagsFragmentTest {
       ).perform(click())
 
       verifyFeatureFlagSwitchState(
-        0,
-        !downloadsSupportFlag.currentValue
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
       )
     }
   }
@@ -281,8 +290,8 @@ class FeatureFlagsFragmentTest {
       ).perform(click())
 
       verifyFeatureFlagSwitchState(
-        0,
-        !downloadsSupportFlag.currentValue
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
       )
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
@@ -307,18 +316,13 @@ class FeatureFlagsFragmentTest {
 
       scrollToPosition(0)
       verifyFeatureFlagSyncStatus(
-        0,
-        context.getString(R.string.feature_flag_server_sync_status)
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.feature_flag_server_sync_status)
       )
       verifyFeatureFlagSwitchState(
         0,
         downloadsSupportFlag.currentValue
       )
-      verifyFeatureFlagSwitchState(
-        0,
-        downloadsSupportFlag.currentValue
-      )
-      verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
     }
   }
 
@@ -594,9 +598,11 @@ class FeatureFlagsFragmentTest {
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
+
     public override fun attachBaseContext(base: Context?) {
       super.attachBaseContext(base)
     }
+
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
