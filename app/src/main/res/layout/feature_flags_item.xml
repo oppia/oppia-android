@@ -48,7 +48,7 @@
         android:focusable="false"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:onClick="@{() -> viewModel.onUserToggle()}"
+        android:onClick="@{() -> viewModel.onToggleFeatureFlagSwitch()}"
         android:theme="@style/OppiaSwitchCompatTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

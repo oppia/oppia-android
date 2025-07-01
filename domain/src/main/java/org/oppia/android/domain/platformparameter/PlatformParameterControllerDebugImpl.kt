@@ -44,12 +44,17 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   override fun downloadRemoteParameters(): DataProvider<Unit> {
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
       // TODO(#5345): Finish implementing forcing remote parameter downloads.
-
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
-  /** Returns a merged list of platform parameters by resolving values. */
+  /**
+   * Returns a [DataProvider] that loads the current values of all supported
+   * platform parameters as a list of [EphemeralPlatformParameter].
+   *
+   * For each parameter, uses a remote override if available; otherwise falls
+   * back to its default value, with the appropriate [SyncStatus].
+   */
   fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
     return dataProviders.createInMemoryDataProviderAsync(
       LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID
@@ -76,7 +81,13 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  /** Returns a merged list of feature flags by resolving values. */
+  /**
+   * Returns a [DataProvider] that loads the current values of all supported
+   * feature flags as a list of [EphemeralFeatureFlag].
+   *
+   * For each flag, uses a remote override if available; otherwise falls
+   * back to its default value, with the appropriate [SyncStatus].
+   */
   fun loadEphemeralFeatureFlags(): DataProvider<List<EphemeralFeatureFlag>> {
     return dataProviders.createInMemoryDataProviderAsync(LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID) {
       val defaultFlags = platformParameterControllerProdImpl.loadSupportedFeatureFlags()

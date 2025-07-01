@@ -84,7 +84,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     if (featureFlagStates.containsKey(model.featureFlagId)) {
       model.isChecked.set(featureFlagStates[model.featureFlagId])
     }
-    model.onToggleCallback = { id, value ->
+    model.onFeatureFlagToggleCallback = { id, value ->
       featureFlagStates[id] = value
     }
   }
