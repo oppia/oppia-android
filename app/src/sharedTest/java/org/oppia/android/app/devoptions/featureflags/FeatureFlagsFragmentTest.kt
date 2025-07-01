@@ -2,6 +2,7 @@ package org.oppia.android.app.devoptions.featureflags
 
 import android.app.Application
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -15,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -170,12 +172,24 @@ class FeatureFlagsFragmentTest {
           index,
           ephemeralFeatureFlag.currentValue
         )
+        verifyFeatureFlagBackgroundColor(
+          index,
+          when (ephemeralFeatureFlag.syncStatus) {
+            SyncStatus.SYNCED_FROM_SERVER -> {
+              0xFF00645C.toInt()
+            }
+            SyncStatus.NOT_SYNCED_FROM_SERVER -> {
+              0xFFBE563C.toInt()
+            }
+            else -> 0xFF00645C.toInt()
+          }
+        )
       }
     }
   }
 
   @Test
-  fun testFeatureFlagFragment_verifyDownloadsSupportFlag_hasCorrectDetails() {
+  fun testFeatureFlagFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectDetails() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -194,6 +208,7 @@ class FeatureFlagsFragmentTest {
         0,
         downloadSupportFlag.currentValue
       )
+      verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
     }
   }
 
@@ -251,7 +266,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagFragment_addRemoteFeatureFlagValue_hasServerSyncStatus() {
+  fun testFeatureFlagFragment_addRemoteFeatureFlagValue_downloadsSupportHasServerSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -270,6 +285,11 @@ class FeatureFlagsFragmentTest {
         0,
         downloadSupportFlag.currentValue
       )
+      verifyFeatureFlagSwitchState(
+        0,
+        downloadSupportFlag.currentValue
+      )
+      verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
     }
   }
   private fun verifyFeatureFlagDisplayName(
@@ -296,6 +316,23 @@ class FeatureFlagsFragmentTest {
         targetViewId = R.id.sync_status_value_text_view
       )
     ).check(matches(withText(expectedSyncStatus)))
+  }
+
+  private fun verifyFeatureFlagBackgroundColor(
+    position: Int,
+    expectedColor: Int
+  ) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.feature_flags_recycler_view,
+        position = position,
+        targetViewId = R.id.sync_status_value_text_view
+      )
+    ).check { view, _ ->
+      val background = view.background
+      val color = (background as GradientDrawable).color?.defaultColor
+      assertThat(color).isEqualTo(expectedColor)
+    }
   }
 
   private fun verifyFeatureFlagSwitchState(
