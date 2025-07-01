@@ -149,7 +149,7 @@ class AndroidLintRunnerTest {
   fun testPrepareLintArguments_ensuresAllRequiredArgumentsArePresent() {
     val reportFile = File(workingDirectory, "report.xml")
     val projectFile = File(workingDirectory, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
 
     val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion)
 
@@ -177,7 +177,7 @@ class AndroidLintRunnerTest {
   fun testPrepareLintArguments_withCustomBuildSdkVersion_includesCorrectVersion() {
     val reportFile = File(workingDirectory, "report.xml")
     val projectFile = File(workingDirectory, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
     val customBuildSdk = TARGET_SDK_VERSION
 
     val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, customBuildSdk)
@@ -198,7 +198,7 @@ class AndroidLintRunnerTest {
 
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
 
     lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
 
@@ -212,7 +212,7 @@ class AndroidLintRunnerTest {
 
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
 
     lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
 
@@ -275,7 +275,7 @@ class AndroidLintRunnerTest {
     assertThat(disabledWrite).isTrue()
 
     val projectPath = createProjectDescriptionFile()
-    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+    val lintRunner = AndroidLintRunner(reportPath, projectPath, tempFolder.root)
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
@@ -291,7 +291,7 @@ class AndroidLintRunnerTest {
   fun testRunLint_withExitCode4_throwsException() {
     val reportPath = File(workingDirectory, "lint-report.xml")
     val projectPath = File(workingDirectory, "lint-project-description.xml")
-    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+    val lintRunner = AndroidLintRunner(reportPath, projectPath, tempFolder.root)
 
     // Won't happen in actual usage.
     val exception = assertThrows<IllegalStateException> {
@@ -305,7 +305,7 @@ class AndroidLintRunnerTest {
   fun testRunLint_withExitCode5_throwsException() {
     val reportPath = File(workingDirectory, "lint-report.xml")
     val projectPath = File(workingDirectory, "lint-project-description.xml")
-    val lintRunner = AndroidLintRunner(reportPath, projectPath)
+    val lintRunner = AndroidLintRunner(reportPath, projectPath, tempFolder.root)
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
@@ -322,7 +322,8 @@ class AndroidLintRunnerTest {
     val reportFile = File(workingDirectory, "lint-report.xml")
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
-      projectDescriptionFile = projectDescriptionFile
+      projectDescriptionFile = projectDescriptionFile,
+      repoRoot = tempFolder.root
     )
 
     val exception = assertThrows<IllegalStateException> {
@@ -342,7 +343,7 @@ class AndroidLintRunnerTest {
   fun testRunLint_withInvalidFlag_throwsException() {
     val reportFile = File(workingDirectory, "report.xml")
     val projectFile = File(workingDirectory, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(arrayOf("--InvalidFlag"))
@@ -359,7 +360,7 @@ class AndroidLintRunnerTest {
 
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
 
     // Ensure no release file exists initially
     val releaseFile = File(tempJdkDir, "release")
@@ -378,7 +379,7 @@ class AndroidLintRunnerTest {
     val nonExistentJdk = File(tempFolder.root, "nonexistent_jdk")
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
-    val lintRunner = AndroidLintRunner(reportFile, projectFile)
+    val lintRunner = AndroidLintRunner(reportFile, projectFile, tempFolder.root)
 
     val exception = assertThrows<IllegalArgumentException> {
       lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion)
@@ -1147,7 +1148,8 @@ class AndroidLintRunnerTest {
 
     return AndroidLintRunner(
       reportFile = reportFile,
-      projectDescriptionFile = projectDescriptionFile
+      projectDescriptionFile = projectDescriptionFile,
+      repoRoot = tempFolder.root
     )
   }
 

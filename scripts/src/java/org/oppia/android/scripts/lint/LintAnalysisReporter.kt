@@ -124,11 +124,49 @@ class LintAnalysisReporter {
 
     // Needs to be updated if new lint issues are added.
     private val issueIdMapping: Map<String, LintIssueId> = mapOf(
-      "IssueUnspecified" to LintIssueId.ISSUE_UNSPECIFIED,
-      "LintError" to LintIssueId.LINT_ERROR,
-      "ObsoleteLayoutParam" to LintIssueId.OBSOLETE_LAYOUT_PARAM,
+      "AppBundleLocaleChanges" to LintIssueId.APP_BUNDLE_LOCALE_CHANGES,
+      "Autofill" to LintIssueId.AUTOFILL,
+      "BackButton" to LintIssueId.BACK_BUTTON,
+      "CustomSplashScreen" to LintIssueId.CUSTOM_SPLASH_SCREEN,
+      "DuplicateStrings" to LintIssueId.DUPLICATE_STRINGS,
+      "GradleOverrides" to LintIssueId.GRADLE_OVERRIDES,
+      "ImpliedQuantity" to LintIssueId.IMPLIED_QUANTITY,
+      "InconsistentLayout" to LintIssueId.INCONSISTENT_LAYOUT,
+      "KeyboardInaccessibleWidget" to LintIssueId.KEYBOARD_INACCESSIBLE_WIDGET,
+      "LabelFor" to LintIssueId.LABEL_FOR,
+      "LockedOrientationActivity" to LintIssueId.LOCKED_ORIENTATION_ACTIVITY,
+      "MergeRootFrame" to LintIssueId.MERGE_ROOT_FRAME,
+      "MissingDefaultResource" to LintIssueId.MISSING_DEFAULT_RESOURCE,
+      "MissingTranslation" to LintIssueId.MISSING_TRANSLATION,
+      "MissingVersion" to LintIssueId.MISSING_VERSION,
+      "NewApi" to LintIssueId.NEW_API,
+      "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
+      "ObsoleteSdkInt" to LintIssueId.OBSOLETE_SDK_INT,
+      "Overdraw" to LintIssueId.OVERDRAW,
+      "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
+      "Registered" to LintIssueId.REGISTERED,
+      "RtlSymmetry" to LintIssueId.RTL_SYMMETRY,
+      "SelectableText" to LintIssueId.SELECTABLE_TEXT,
+      "StringFormatCount" to LintIssueId.STRING_FORMAT_COUNT,
+      "SupportAnnotationUsage" to LintIssueId.SUPPORT_ANNOTATION_USAGE,
+      "SuspiciousIndentation" to LintIssueId.SUSPICIOUS_INDENTATION,
+      "SwitchIntDef" to LintIssueId.SWITCH_INT_DEF,
+      "SyntheticAccessor" to LintIssueId.SYNTHETIC_ACCESSOR,
+      "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
+      "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
+      "Typos" to LintIssueId.TYPOS,
+      "UnknownIdInLayout" to LintIssueId.UNKNOWN_ID_IN_LAYOUT,
+      "UnknownNullness" to LintIssueId.UNKNOWN_NULLNESS,
+      "UnusedAttribute" to LintIssueId.UNUSED_ATTRIBUTE,
+      "UnusedIds" to LintIssueId.UNUSED_IDS,
       "UnusedResources" to LintIssueId.UNUSED_RESOURCES,
-      "NewApi" to LintIssueId.NEW_API
+      "UseAppTint" to LintIssueId.USE_APP_TINT,
+      "UseCompoundDrawables" to LintIssueId.USE_COMPOUND_DRAWABLES,
+      "UseRequireInsteadOfGet" to LintIssueId.USE_REQUIRE_INSTEAD_OF_GET,
+      "UselessLeaf" to LintIssueId.USELESS_LEAF,
+      "UselessParent" to LintIssueId.USELESS_PARENT,
+      "VectorPath" to LintIssueId.VECTOR_PATH,
+      "VectorRaster" to LintIssueId.VECTOR_RASTER
     )
     private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associate {
       it.value to it.key
@@ -214,6 +252,13 @@ class LintAnalysisReporter {
   private fun buildExemptionMap(
     exemptions: List<AndroidLintExemption>
   ): Map<String, Set<LintIssueId>> {
+    val invalidExemption = exemptions.firstOrNull {
+      LintIssueId.ISSUE_UNSPECIFIED in it.lintIssueIdList
+    }
+    require(invalidExemption == null) {
+      "Exemption for file '${invalidExemption!!.exemptedFilePath}' contains invalid IssueId."
+    }
+
     return exemptions.groupBy { it.exemptedFilePath }
       .mapValues { (_, exemptionsForFile) ->
         exemptionsForFile.flatMap { it.lintIssueIdList }.toSet()
