@@ -123,9 +123,9 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class FeatureFlagsFragmentTest {
-
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
+
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
