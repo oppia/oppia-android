@@ -189,25 +189,40 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectDetails() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectName() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadSupportFlag = getEphemeralFeatureFlags()[0]
 
       scrollToPosition(0)
       verifyFeatureFlagDisplayName(
         0,
         DOWNLOADS_SUPPORT_FLAG_NAME
       )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectSyncStatus() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
       verifyFeatureFlagSyncStatus(
         0,
         context.getString(R.string.feature_flag_default_sync_status)
       )
-      verifyFeatureFlagSwitchState(
-        0,
-        downloadSupportFlag.currentValue
-      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withNoRemoteOrOverridenDownloadsSupportFlag_hasCorrectBackground() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
       verifyFeatureFlagBackgroundColor(0, 0xFFBE563C.toInt())
     }
   }

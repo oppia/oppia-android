@@ -18,14 +18,14 @@ import javax.inject.Inject
  */
 @FragmentScope
 class FeatureFlagsViewModel @Inject constructor(
-  private val platformParameterDebugControllerDebugImpl: PlatformParameterControllerDebugImpl,
+  private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private val ephemeralFlagsLiveData: LiveData<List<EphemeralFeatureFlag>> by lazy {
     Transformations.map(
-      platformParameterDebugControllerDebugImpl.loadEphemeralFeatureFlags().toLiveData(),
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags().toLiveData(),
       ::processEphemeralFlagResult
     )
   }

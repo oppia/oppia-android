@@ -40,8 +40,8 @@ public final class DrawableBindingAdapters {
   /** Used to set a large rounded-rect background drawable with a data-bound color. */
   @BindingAdapter("largeRoundedRectDrawableWithColor")
   public static void setLargeBorderRadiusBackgroundDrawable(
-          @NonNull View view,
-          @ColorInt int colorRgb
+      @NonNull View view,
+      @ColorInt int colorRgb
   ) {
     view.setBackgroundResource(R.drawable.rounded_rect_large_border_radius);
     // The input color needs to have alpha channel prepended to it.

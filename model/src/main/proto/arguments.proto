@@ -954,10 +954,9 @@ message StatePlayerRecyclerViewAssemblerState {
   bool has_previous_responses_expanded = 1;
 }
 
-
 // Arguments that are saved on configuration changes in FeatureFlagsFragment.
 message FeatureFlagsFragmentArguments {
-  // Map of current feature flag states.
+  // List of locally overridden feature flag states.
   repeated OverriddenFeatureFlag feature_flag_states = 1;
 }
 
