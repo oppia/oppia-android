@@ -11,9 +11,13 @@ kt_jvm_library(
         "AndroidLintRunner.kt",
     ],
     visibility = ["//scripts:oppia_script_binary_visibility"],
+    # Export guava-jre to resolve version conflicts in the dependency chain.
+    # This ensures downstream targets use the JRE version instead of Android version
+    exports = ["//third_party:com_google_guava_guava_jre"],
     deps = [
         "//scripts/src/java/org/oppia/android/scripts/lint:lint_reporter_lib",
         "//third_party:com_android_tools_lint_lint",
+        "//third_party:com_google_guava_guava_jre",
     ],
 )
 
