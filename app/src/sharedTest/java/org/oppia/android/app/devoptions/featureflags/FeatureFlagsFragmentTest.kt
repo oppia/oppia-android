@@ -274,7 +274,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChanges_valuePersists() {
+  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChanges_persistsValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -322,6 +322,58 @@ class FeatureFlagsFragmentTest {
       verifyFeatureFlagSwitchState(
         0,
         downloadsSupportFlag.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectBackground() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = 0xFF00645C.toInt()
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = downloadsSupportFlag.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectName() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyFeatureFlagDisplayName(
+        position = 0,
+        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
       )
     }
   }
