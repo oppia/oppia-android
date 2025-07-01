@@ -2,12 +2,14 @@ package org.oppia.android.app.player.exploration
 
 import android.app.Application
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.text.Spannable
 import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -79,6 +81,13 @@ import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMIT_ANSWER_BUTTON
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -207,6 +216,7 @@ class ExplorationActivityTest {
   @Before
   fun setUp() {
     Intents.init()
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     TestPlatformParameterModule.forceEnableSpotlightUi(true)
     setUpTestApplicationComponent()
     testCoroutineDispatchers.registerIdlingResource()
@@ -1995,6 +2005,162 @@ class ExplorationActivityTest {
     explorationDataController.stopPlayingExploration(isCompletion = false)
   }
 
+  @Test
+  fun testExploration_onFlashbackState_flashbackToolbarTitle_isDisplayedSuccessfully() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      onView(withId(R.id.exploration_toolbar_title))
+        .check(matches(withText("Prototype Exploration")))
+
+      moveToFlashbackState()
+
+      // Verify text of toolbar title.
+      onView(withId(R.id.flashback_toolbar_title))
+        .check(matches(withText(R.string.flashback_toolbar_title_text)))
+
+      // Verify toolbar color.
+      onView(withId(R.id.exploration_toolbar)).check { view, _ ->
+        val toolbar = view as Toolbar
+        val actualColor = (toolbar.background as ColorDrawable).color
+        val expectedColor = context.getColor(R.color.color_def_oppia_brown_dark)
+        assertThat(expectedColor).isEqualTo(actualColor)
+      }
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  @Test
+  fun testFlashbackState_configurationChange_flashbackToolbarTitle_isDisplayedSuccessfully() {
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndStartedExploration(
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2,
+      shouldSavePartialProgress = false
+    ) {
+      moveToFlashbackState()
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify text of toolbar title.
+      onView(withId(R.id.flashback_toolbar_title))
+        .check(matches(withText(R.string.flashback_toolbar_title_text)))
+
+      // Verify toolbar color.
+      onView(withId(R.id.exploration_toolbar)).check { view, _ ->
+        val toolbar = view as Toolbar
+        val actualColor = (toolbar.background as ColorDrawable).color
+        val expectedColor = context.getColor(R.color.color_def_oppia_brown_dark)
+        assertThat(expectedColor).isEqualTo(actualColor)
+      }
+    }
+    explorationDataController.stopPlayingExploration(isCompletion = false)
+  }
+
+  private fun moveToFlashbackState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+
+    // Submit wrong answer.
+    typeRatioExpression("4:8")
+    clickSubmitAnswerButton()
+
+    // Click on flashback button.
+    clickFlashbackButton()
+
+    // Click continue button on flashback confirmation dialog.
+    onView(withId(R.id.continue_confirmation_button))
+      .inRoot(isDialog())
+      .check(matches(withText("Continue")))
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun playThroughPrototypeState1() {
+    // First state: Continue interaction.
+    clickContinueButton()
+  }
+
+  private fun playThroughPrototypeState2() {
+    // Second state: Fraction input. Correct answer: 1/2.
+    submitFractionAnswer("1/2")
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughPrototypeState3() {
+    // Third state: Multiple choice. Correct answer: Eagle.
+    selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughPrototypeState4() {
+    // Fourth state: Item selection (radio buttons). Correct answer: Green.
+    selectMultipleChoiceOption(optionPosition = 0, expectedOptionText = "Green")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughPrototypeState5() {
+    // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+    selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+    selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+    selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun playThroughPrototypeState6() {
+    // Sixth state: Numeric input. Correct answer: 121.
+    typeNumericInput("121")
+    clickSubmitAnswerButton()
+    clickContinueNavigationButton()
+  }
+
+  private fun typeNumericInput(text: String) {
+    scrollToViewType(NUMERIC_INPUT_INTERACTION)
+    typeTextIntoInteraction(text, interactionViewId = R.id.numeric_input_interaction_view)
+  }
+
+  private fun typeTextIntoInteraction(text: String, interactionViewId: Int) {
+    onView(withId(interactionViewId)).perform(
+      editTextInputAction.appendText(text),
+      closeSoftKeyboard()
+    )
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun selectItemSelectionCheckbox(optionPosition: Int, expectedOptionText: String) {
+    clickSelection(
+      optionPosition,
+      targetClickViewId = R.id.item_selection_checkbox,
+      expectedText = expectedOptionText,
+      targetTextViewId = R.id.item_selection_contents_text_view
+    )
+  }
+
+  private fun typeRatioExpression(text: String) {
+    scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+    typeTextIntoInteraction(text, interactionViewId = R.id.ratio_input_interaction_view)
+  }
+
+  private fun clickFlashbackButton() {
+    scrollToViewType(FLASHBACK_BUTTON)
+    onView(withId(R.id.flashback_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
@@ -2190,7 +2356,7 @@ class ExplorationActivityTest {
   }
 
   private fun submitFractionAnswer(answerText: String) {
-    scrollToViewType(StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION)
+    scrollToViewType(FRACTION_INPUT_INTERACTION)
     onView(withId(R.id.fraction_input_interaction_view)).perform(
       editTextInputAction.appendText(answerText)
     )

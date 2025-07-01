@@ -37,6 +37,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
@@ -204,6 +205,14 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun showOrHideFlashbackToolbar(ephemeralState: EphemeralState) {
+    if (ephemeralState.flashbackState) {
+      (activity as FlashbackToolbarListener).showFlashbackToolbar()
+    } else {
+      (activity as FlashbackToolbarListener).hideFlashbackToolbar()
+    }
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
     val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
@@ -272,6 +281,7 @@ class StateFragmentPresenter @Inject constructor(
         this::getAudioUiManager
       )
       .addConceptCardSupport()
+      .addFlashbackSolutionSupport()
       .build()
   }
 
@@ -340,6 +350,7 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
+    showOrHideFlashbackToolbar(ephemeralState)
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,

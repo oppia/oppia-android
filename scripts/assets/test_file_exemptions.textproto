@@ -4698,3 +4698,19 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/FlashbackButtonListener.kt"
   test_file_not_required: true
 }
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ReturnToQuestionViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/FlashbackToolbarListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/StateSolutionViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsDialogSolutionViewModel.kt"
+  test_file_not_required: true
+}
