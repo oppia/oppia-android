@@ -5,9 +5,9 @@ package model;
 import "exploration.proto";
 import "exploration_checkpoint.proto";
 import "languages.proto";
+import "platform_parameter.proto";
 import "profile.proto";
 import "translation.proto";
-import "platform_parameter.proto";
 
 option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
@@ -956,9 +956,9 @@ message StatePlayerRecyclerViewAssemblerState {
 
 
 // Arguments that are saved on configuration changes in FeatureFlagsFragment.
-message FeatureFlagsFragmentArgument {
+message FeatureFlagsFragmentArguments {
   // Map of current feature flag states.
- repeated OverriddenFeatureFlag feature_flag_states = 1;
+  repeated OverriddenFeatureFlag feature_flag_states = 1;
 }
 
 // Arguments required when creating an FlashbackConfirmationDialogFragment.
