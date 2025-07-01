@@ -27,6 +27,8 @@ interface PlatformParameterDebugModule {
     impl: PlatformParameterConfigRetrieverProdImpl
   ): PlatformParameterConfigRetriever
 
+  // TODO(#5835): Remove this and make PlatformParameterProcessState injectable once the hack for
+  //  initializing platform parameters in tests is no longer needed.
   /**
    * Dagger module for providing the application-wide instance of [PlatformParameterProcessState].
    */
