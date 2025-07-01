@@ -895,7 +895,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     targetList += ReturnToQuestionViewModel(
       hasConversationView,
       isSplitView.get()!!,
-      fragment as ReturnToQuestionButtonListener,
+      fragment as ReturnToQuestionButtonListener
     )
   }
 
