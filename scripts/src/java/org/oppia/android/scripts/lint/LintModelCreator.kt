@@ -1,6 +1,5 @@
 package org.oppia.android.scripts.lint
 
-import com.android.tools.lint.model.LintModelMavenName
 import com.android.tools.lint.model.LintModelModuleType.APP
 import com.android.tools.lint.model.LintModelModuleType.LIBRARY
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
