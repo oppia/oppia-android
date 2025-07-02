@@ -7,18 +7,18 @@ import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFra
 import org.oppia.android.app.ui.R
 
 /** Activity for testing [PlatformParametersFragment]. */
-class PlatformParameterTestActivity : InjectableAutoLocalizedAppCompatActivity() {
+class PlatformParametersTestActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    setContentView(R.layout.platform_parameter_activity)
+    setContentView(R.layout.platform_parameters_activity)
     if (getPlatformParametersFragment() == null) {
       val PlatformParametersFragment = PlatformParametersFragment.newInstance()
       supportFragmentManager.beginTransaction().add(
-        R.id.platform_parameter_container,
+        R.id.platform_parameters_container,
         PlatformParametersFragment
       ).commitNow()
     }
@@ -26,6 +26,6 @@ class PlatformParameterTestActivity : InjectableAutoLocalizedAppCompatActivity()
 
   private fun getPlatformParametersFragment(): PlatformParametersFragment? {
     return supportFragmentManager
-      .findFragmentById(R.id.platform_parameter_container) as PlatformParametersFragment?
+      .findFragmentById(R.id.platform_parameters_container) as PlatformParametersFragment?
   }
 }
