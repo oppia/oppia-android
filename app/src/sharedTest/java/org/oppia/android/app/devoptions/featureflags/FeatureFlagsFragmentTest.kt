@@ -297,8 +297,8 @@ class FeatureFlagsFragmentTest {
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
       verifyFeatureFlagSwitchState(
-        0,
-        !downloadsSupportFlag.currentValue
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
       )
     }
   }
