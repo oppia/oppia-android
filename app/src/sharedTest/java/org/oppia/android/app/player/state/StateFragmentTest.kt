@@ -5585,7 +5585,7 @@ class StateFragmentTest {
         " The ratio of the two numbers is:"
       verifyContentContains(expectedText)
 
-      // Verify ration expression input interaction is being displayed.
+      // Verify ratio expression input interaction is being displayed.
       scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
       onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
 
@@ -5700,6 +5700,46 @@ class StateFragmentTest {
       scrollToViewType(RETURN_TO_QUESTION_BUTTON)
       onView(withId(R.id.return_to_question_button)).check(
         matches(withText(R.string.state_return_to_question_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_clickOnReturnToQuestionButton_returnsToLatestPendingState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Verify learner returns to the latest pending state.
+      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
+        " The ratio of the two numbers is:"
+      verifyContentContains(expectedText)
+
+      // Verify feedback is visible.
+      val expectedFeedback = "This doesn't seem right. Let's go back and look at the previous" +
+        " question and answer to understand better."
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString(expectedFeedback))))
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
       )
     }
   }
@@ -6222,6 +6262,12 @@ class StateFragmentTest {
   private fun clickFlashbackButton() {
     scrollToViewType(FLASHBACK_BUTTON)
     onView(withId(R.id.flashback_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickReturnToQuestionButton() {
+    scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+    onView(withId(R.id.return_to_question_button)).perform(click())
     testCoroutineDispatchers.runCurrent()
   }
 
