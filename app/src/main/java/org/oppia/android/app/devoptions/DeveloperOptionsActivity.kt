@@ -81,6 +81,18 @@ class DeveloperOptionsActivity :
     startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
   }
 
+  override fun routeToFeatureFlags() {
+    startActivity(
+      FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
+    )
+  }
+
+  override fun routeToPlatformParameters() {
+    startActivity(
+      PlatformParametersActivity.createPlatformParametersActivityIntent(this)
+    )
+  }
+
   override fun routeToMathExpressionParserTest() {
     startActivity(MathExpressionParserActivity.createIntent(this))
   }
@@ -99,17 +111,5 @@ class DeveloperOptionsActivity :
 
   override fun forceCrash() {
     developerOptionsActivityPresenter.forceCrash()
-  }
-
-  override fun routeToFeatureFlags() {
-    startActivity(
-      FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
-    )
-  }
-
-  override fun routeToPlatformParameters() {
-    startActivity(
-      PlatformParametersActivity.createPlatformParametersActivityIntent(this)
-    )
   }
 }

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.app.model.FeatureFlagsFragmentArgument
+import org.oppia.android.app.model.FeatureFlagsFragmentArguments
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -21,7 +21,7 @@ class FeatureFlagsFragment : InjectableFragment() {
 
   companion object {
     /** State key for [FeatureFlagsFragment]. */
-    const val FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagFragmentArgument.state"
+    const val FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagsFragmentArguments.state"
 
     /** Returns a new instance of [FeatureFlagsFragment]. */
     fun newInstance(): FeatureFlagsFragment = FeatureFlagsFragment()
@@ -36,14 +36,15 @@ class FeatureFlagsFragment : InjectableFragment() {
     inflater: LayoutInflater,
     container: ViewGroup?,
     savedInstanceState: Bundle?
-  ): View? {
+  ): View {
     var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY,
-        FeatureFlagsFragmentArgument.getDefaultInstance()
+        FeatureFlagsFragmentArguments.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList?.associate { it.id to it.overriddenIsEnabled }
+      featureFlagStates = args?.featureFlagStatesList
+        ?.associate { it.id to it.overriddenIsEnabled }
         ?.toMutableMap() ?: mutableMapOf()
     }
 
@@ -54,15 +55,14 @@ class FeatureFlagsFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsFragmentPresenter.featureFlagStates
-        .map {
-          OverriddenFeatureFlag.newBuilder()
-            .setId(it.key)
-            .setOverriddenIsEnabled(it.value)
-            .build()
-        }
+      featureFlagsFragmentPresenter.featureFlagStates.map {
+        OverriddenFeatureFlag.newBuilder()
+          .setId(it.key)
+          .setOverriddenIsEnabled(it.value)
+          .build()
+      }
 
-    val proto = FeatureFlagsFragmentArgument.newBuilder()
+    val proto = FeatureFlagsFragmentArguments.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
       .build()
 

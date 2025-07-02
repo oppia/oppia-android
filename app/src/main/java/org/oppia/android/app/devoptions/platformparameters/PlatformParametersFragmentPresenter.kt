@@ -42,7 +42,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>
-  ): View? {
+  ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
       container,
@@ -91,7 +91,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       if (platformParameterStates.containsKey(model.platformParameterId)) {
         model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
       }
-      model.onToggleCallback = { id, value ->
+      model.onFeatureFlagToggleCallback = { id, value ->
         platformParameterStates[id] = PlatformParameterValue.newBuilder()
           .setBoolean(value)
           .build()

@@ -8,16 +8,14 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
-import javax.inject.Inject
 
 /** [ViewModel] for displaying a feature flag for the recycler view in [FeatureFlagsFragment]. */
-class FeatureFlagItemViewModel @Inject constructor(
+class FeatureFlagItemViewModel(
   val featureFlagId: FeatureFlagId,
   val currentValue: Boolean,
   val syncStatus: SyncStatus,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
-
 ) : ObservableViewModel() {
 
   val isChecked: ObservableField<Boolean> = ObservableField(currentValue)
@@ -26,23 +24,22 @@ class FeatureFlagItemViewModel @Inject constructor(
   val syncStatusDisplayText: ObservableField<String> =
     ObservableField(getSyncStatusText())
 
-  var onToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
-
-  fun onUserToggle() {
-    isChecked.set(!isChecked.get()!!)
-    onToggleCallback?.invoke(featureFlagId, isChecked.get()!!)
-  }
+  var onFeatureFlagToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
 
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor().toInt()
-  private fun getFeatureFlagDisplayName(
-    id: FeatureFlagId
-  ): String {
+
+  fun onToggleFeatureFlagSwitch() {
+    val newValue = !(isChecked.get() ?: false)
+    isChecked.set(newValue)
+    onFeatureFlagToggleCallback?.invoke(featureFlagId, newValue)
+  }
+
+  private fun getFeatureFlagDisplayName(id: FeatureFlagId): String {
     return machineLocale.run {
       when (id) {
         FeatureFlagId.UNRECOGNIZED,
         FeatureFlagId.FEATURE_FLAG_ID_UNSPECIFIED -> "Unknown Feature"
-
         else ->
           id.name.toMachineLowerCase()
             .split("_")
@@ -55,16 +52,12 @@ class FeatureFlagItemViewModel @Inject constructor(
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
         resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
-
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.feature_flag_default_sync_status)
-
       SyncStatus.SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.feature_flag_server_sync_status)
-
       SyncStatus.LOCAL_OVERRIDE ->
         resourceHandler.getStringInLocale(R.string.feature_flag_overridden_sync_status)
-
       else ->
         resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
     }
