@@ -221,7 +221,6 @@ class AndroidLintRunner(
   private fun reportLintIssues() {
     val reporter = LintAnalysisReporter()
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
-    val unknown = reporter.getUnknownIssueIds(allIssues)
     val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
