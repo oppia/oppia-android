@@ -257,6 +257,32 @@ class SurveyFragmentTest {
   }
 
   @Test
+  fun testSurveyFragment_withNullArguments_throwsIllegalStateException() {
+    val fragment = SurveyFragment()
+
+    launch<SurveyActivity>(
+      createSurveyActivityIntent()
+    ).use { scenario ->
+      scenario.onActivity { activity ->
+        val exception = try {
+          fragment.onCreateView(
+            activity.layoutInflater,
+            null,
+            null
+          )
+          null
+        } catch (e: IllegalStateException) {
+          e
+        }
+
+        assertThat(exception).isNotNull()
+        assertThat(exception!!.message).contains("Fragment SurveyFragment")
+        assertThat(exception.message).contains("does not have any arguments.")
+      }
+    }
+  }
+
+  @Test
   fun testSurveyFragment_nextButtonClicked_marketFitQuestionIsDisplayedWithCorrectOptions() {
     startSurveySession()
     launch<SurveyActivity>(
