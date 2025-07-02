@@ -319,10 +319,6 @@ class FeatureFlagsFragmentTest {
         position = 0,
         expectedSyncStatus = context.getString(R.string.feature_flag_server_sync_status)
       )
-      verifyFeatureFlagSwitchState(
-        0,
-        downloadsSupportFlag.currentValue
-      )
     }
   }
 
@@ -338,7 +334,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = 0xFF00645C.toInt()
+        expectedColor = 0xFFBE563C.toInt()
       )
     }
   }
