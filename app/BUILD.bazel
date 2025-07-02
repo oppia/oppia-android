@@ -126,6 +126,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/player/state/listener/PreviousNavigationButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/PreviousResponsesHeaderClickListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/ReplayButtonListener.kt",
+    "src/main/java/org/oppia/android/app/player/state/listener/ReturnToQuestionButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/ReturnToTopicNavigationButtonListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/RouteToHintsAndSolutionListener.kt",
     "src/main/java/org/oppia/android/app/player/state/listener/StateKeyboardButtonListener.kt",

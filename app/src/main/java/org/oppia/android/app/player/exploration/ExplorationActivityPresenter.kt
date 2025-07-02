@@ -330,6 +330,10 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
+    if (exploreViewModel.showFlashbackToolbar.get() == true) {
+      getExplorationFragment()?.onFlashbackToolbarBackPressed()
+      return
+    }
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
