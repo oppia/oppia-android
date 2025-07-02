@@ -221,6 +221,10 @@ class AndroidLintRunner(
   private fun reportLintIssues() {
     val reporter = LintAnalysisReporter()
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
+    val unknown = reporter.getUnknownIssueIds(allIssues)
+    unknown.forEach { issue ->
+      println("Unknown issue ID found in lint report: $issue")
+    }
     val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
