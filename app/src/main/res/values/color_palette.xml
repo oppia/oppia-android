@@ -295,4 +295,7 @@
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_white</color>
   <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_1</color>
   <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_white</color>
+  <!-- FLASHBACK -->
+  <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
+  <color name="color_palette_flashback_toolbar_color">@color/color_def_oppia_brown_dark</color>
 </resources>

@@ -28,19 +28,20 @@ class PlatformParameterItemViewModel(
     else ""
   )
   val errorEnabled = ObservableField(false)
-  var onToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
+  var onFeatureFlagToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
   var onTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
+  @ColorInt
+  val backgroundColor: Int = retrieveBackgroundColor().toInt()
 
   fun onTextChanged(text: String) {
     onTextChangedCallback?.invoke(platformParameterId, text)
   }
 
-  fun onUserToggle() {
-    isChecked.set(!isChecked.get()!!)
-    onToggleCallback?.invoke(platformParameterId, isChecked.get()!!)
+  fun onToggleFeatureFlagSwitch() {
+    val newValue = !(isChecked.get() ?: false)
+    isChecked.set(newValue)
+    onFeatureFlagToggleCallback?.invoke(platformParameterId, isChecked.get()!!)
   }
-  @ColorInt
-  val backgroundColor: Int = retrieveBackgroundColor().toInt()
 
   private fun getPlatformParameterDisplayName(): String {
     return machineLocale.run {
@@ -60,13 +61,10 @@ class PlatformParameterItemViewModel(
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
-
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_default_sync_status)
-
       SyncStatus.SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_server_sync_status)
-
       else ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
     }

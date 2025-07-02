@@ -248,6 +248,14 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
+  fun hideFlashbackToolbar() {
+    exploreViewModel.showFlashbackToolbar.set(false)
+  }
+
+  fun showFlashbackToolbar() {
+    exploreViewModel.showFlashbackToolbar.set(true)
+  }
+
   private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_EXPLORATION_MANAGER_FRAGMENT
@@ -322,6 +330,10 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
+    if (exploreViewModel.showFlashbackToolbar.get() == true) {
+      getExplorationFragment()?.onFlashbackToolbarBackPressed()
+      return
+    }
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {

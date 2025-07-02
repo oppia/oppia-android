@@ -24,10 +24,10 @@
       android:id="@+id/solution_summary_container"
       android:layout_width="@dimen/hints_and_solution_summary_card_width"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/hints_and_solution_summary_card_margin_start"
-      android:layout_marginTop="12dp"
-      android:layout_marginEnd="@dimen/hints_and_solution_summary_card_margin_end"
-      android:layout_marginBottom="12dp"
+      app:layoutMarginStart="@{viewModel.isFlashback ? @dimen/flashback_solution_summary_card_margin_start : @dimen/hints_and_solution_summary_card_margin_start}"
+      app:layoutMarginEnd="@{viewModel.isFlashback ? @dimen/flashback_solution_summary_card_margin_end : @dimen/hints_and_solution_summary_card_margin_end}"
+      app:layoutMarginTop="@{viewModel.isFlashback ? @dimen/flashback_solution_summary_card_margin_top : @dimen/hints_and_solution_summary_card_margin_top}"
+      app:layoutMarginBottom="@{viewModel.isFlashback ? @dimen/space_0dp : @dimen/hints_and_solution_summary_card_margin_bottom}"
       android:orientation="vertical"
       app:cardBackgroundColor="@color/component_color_hints_and_solution_summary_card_background_color"
       app:cardCornerRadius="4dp"
@@ -81,7 +81,7 @@
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
             android:textAllCaps="false"
-            android:visibility="@{viewModel.isSolutionRevealed()? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.isSolutionRevealed() || viewModel.isFlashback ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
@@ -102,7 +102,7 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"
-            android:visibility="@{viewModel.isSolutionRevealed()? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.isSolutionRevealed() &amp;&amp; !viewModel.isFlashback ? View.VISIBLE : View.GONE}"
             app:isRotationAnimationClockwise="@{isListExpanded}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,7 +131,7 @@
           android:paddingTop="16dp"
           android:paddingEnd="12dp"
           android:paddingBottom="16dp"
-          android:visibility="@{isListExpanded? View.VISIBLE : View.GONE}">
+          android:visibility="@{isListExpanded || viewModel.isFlashback ? View.VISIBLE : View.GONE}">
 
           <TextView
             android:id="@+id/solution_correct_answer"

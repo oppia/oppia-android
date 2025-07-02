@@ -10,17 +10,16 @@ import javax.inject.Inject
 class PlatformParametersActivityPresenter @Inject constructor(
   private val activity: AppCompatActivity
 ) {
-
   /** Called when [PlatformParametersActivity] is created. Handles UI for the activity. */
   fun handleOnCreate() {
     activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     activity.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-    activity.setContentView(R.layout.feature_flags_activity)
+    activity.setContentView(R.layout.platform_parameters_activity)
 
     if (getPlatformParametersFragment() == null) {
       val platformParametersFragment = PlatformParametersFragment.newInstance()
       activity.supportFragmentManager.beginTransaction().add(
-        R.id.feature_flags_container,
+        R.id.platform_parameters_container,
         platformParametersFragment
       ).commitNow()
     }
@@ -28,6 +27,6 @@ class PlatformParametersActivityPresenter @Inject constructor(
 
   private fun getPlatformParametersFragment(): PlatformParametersFragment? {
     return activity.supportFragmentManager
-      .findFragmentById(R.id.feature_flags_container) as? PlatformParametersFragment
+      .findFragmentById(R.id.platform_parameters_container) as? PlatformParametersFragment
   }
 }

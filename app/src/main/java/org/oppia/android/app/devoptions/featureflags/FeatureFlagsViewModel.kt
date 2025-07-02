@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
-import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
@@ -19,14 +18,14 @@ import javax.inject.Inject
  */
 @FragmentScope
 class FeatureFlagsViewModel @Inject constructor(
-  private val platformParameterDebugImpl: PlatformParameterControllerDebugImpl,
+  private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
   private val ephemeralFlagsLiveData: LiveData<List<EphemeralFeatureFlag>> by lazy {
     Transformations.map(
-      platformParameterDebugImpl.loadEphemeralFeatureFlags().toLiveData(),
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags().toLiveData(),
       ::processEphemeralFlagResult
     )
   }
@@ -50,9 +49,7 @@ class FeatureFlagsViewModel @Inject constructor(
 
   private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
     List<FeatureFlagItemViewModel> {
-
       return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
-
         FeatureFlagItemViewModel(
           featureFlagId = ephemeralFeatureFlag.id,
           currentValue = ephemeralFeatureFlag.currentValue,
@@ -62,19 +59,4 @@ class FeatureFlagsViewModel @Inject constructor(
         )
       }
     }
-
-  /**
-   * Updates the overridden feature flags in the platform parameter debug implementation.
-   *
-   * @param overriddenFeatureFlags the list of overridden feature flags to be updated.
-   */
-  fun overrideFeatureFlags(overriddenFeatureFlags: List<OverriddenFeatureFlag>) {
-    overriddenFeatureFlags.forEach { overriddenFeatureFlag ->
-
-      platformParameterDebugImpl.updateOverriddenFeatureFlag(
-        overriddenFeatureFlag.id,
-        overriddenFeatureFlag.overriddenIsEnabled
-      )
-    }
-  }
 }
