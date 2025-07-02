@@ -175,7 +175,6 @@ class SplashActivityPresenter @Inject constructor(
           deprecationNoticeType = noticeActionResponse.deprecationNoticeType,
           deprecatedVersion = noticeActionResponse.deprecatedVersion
         )
-
         is DeprecationNoticeActionResponse.Update -> handleOnDeprecationNoticeUpdateButtonClicked()
       }
     }
@@ -261,13 +260,11 @@ class SplashActivityPresenter @Inject constructor(
                   processInitState(SplashInitState.computeDefault(localeController))
                 }
               }
-
               is AsyncResult.Failure -> {
                 oppiaLogger.e(
                   "SplashActivity", "Failed to compute initial state", initStateResult.error
                 )
               }
-
               is AsyncResult.Success -> {
                 // It's possible for the observer to still be active & change due to the next activity
                 // causing a notification to be posted. That's always invalid to process here: the
@@ -305,7 +302,6 @@ class SplashActivityPresenter @Inject constructor(
               BuildFlavor.BUILD_FLAVOR_UNSPECIFIED, BuildFlavor.UNRECOGNIZED,
               BuildFlavor.TESTING, BuildFlavor.DEVELOPER, BuildFlavor.GENERAL_AVAILABILITY ->
                 processStartupMode()
-
               BuildFlavor.ALPHA, BuildFlavor.BETA -> {
                 lifecycleSafeTimerFactory.createTimer(timeoutMillis = 2000).observe(activity) {
                   processStartupMode()
@@ -313,10 +309,8 @@ class SplashActivityPresenter @Inject constructor(
               }
             }
           }
-
           BuildFlavorNoticeMode.SHOW_BETA_NOTICE ->
             showDialog(BETA_NOTICE_DIALOG_FRAGMENT_TAG, BetaNoticeDialogFragment::newInstance)
-
           BuildFlavorNoticeMode.SHOW_UPGRADE_TO_GENERAL_AVAILABILITY_NOTICE -> {
             showDialog(
               GA_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
@@ -344,21 +338,18 @@ class SplashActivityPresenter @Inject constructor(
             ForcedAppDeprecationNoticeDialogFragment::newInstance
           )
         }
-
         StartupMode.OPTIONAL_UPDATE_AVAILABLE -> {
           showDialog(
             OPTIONAL_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
             OptionalAppDeprecationNoticeDialogFragment::newInstance
           )
         }
-
         StartupMode.OS_IS_DEPRECATED -> {
           showDialog(
             OS_UPDATE_NOTICE_DIALOG_FRAGMENT_TAG,
             OsDeprecationNoticeDialogFragment::newInstance
           )
         }
-
         StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is
@@ -378,7 +369,6 @@ class SplashActivityPresenter @Inject constructor(
             AutomaticAppDeprecationNoticeDialogFragment::newInstance
           )
         }
-
         StartupMode.USER_NOT_YET_ONBOARDED -> fetchProfile()
         else -> {
           // In all other cases (including errors when the startup state fails to load or is
@@ -408,7 +398,6 @@ class SplashActivityPresenter @Inject constructor(
               "Encountered unexpected non-successful result when fetching onboarding state",
               result.error
             )
-
             is AsyncResult.Pending -> {}
           }
         }
@@ -420,10 +409,8 @@ class SplashActivityPresenter @Inject constructor(
         ProfileOnboardingMode.NEW_INSTALL -> {
           launchOnboardingActivity()
         }
-
         ProfileOnboardingMode.SOLE_LEARNER_PROFILE_ONLY,
         ProfileOnboardingMode.SUPERVISOR_PROFILE_ONLY -> fetchProfile()
-
         else -> {
           activity.startActivity(ProfileChooserActivity.createProfileChooserActivity(activity))
           activity.finish()
@@ -445,11 +432,9 @@ class SplashActivityPresenter @Inject constructor(
                 // updates to the profiles DataProvider.
                 liveData.removeObserver(this)
               }
-
               is AsyncResult.Failure -> oppiaLogger.e(
                 "SplashActivity", "Failed to retrieve the list of profiles", result.error
               )
-
               is AsyncResult.Pending -> {} // no-op
             }
           }
