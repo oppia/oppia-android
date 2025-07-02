@@ -312,7 +312,6 @@ class FeatureFlagsFragmentTest {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
 
       scrollToPosition(0)
       verifyFeatureFlagSyncStatus(
