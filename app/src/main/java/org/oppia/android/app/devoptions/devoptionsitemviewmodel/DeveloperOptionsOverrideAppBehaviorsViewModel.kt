@@ -33,12 +33,12 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
     forceNetworkTypeListener.routeToForceNetworkType()
   }
 
-  /** Routes the user to [FeatureFlagActivity] for viewing and modifying feature flags. */
+  /** Routes the user to [FeatureFlagsActivity] for viewing and modifying feature flags. */
   fun onFeatureFlagsClicked() {
     featureFlagsListener.routeToFeatureFlags()
   }
 
-  /** Routes the user to [PlatformParameterActivity] for viewing and modifying platform parameters. */
+  /** Routes the user to [PlatformParametersActivity] for viewing and modifying platform parameters. */
   fun onPlatformParametersClicked() {
     platformParametersListener.routeToPlatformParameters()
   }

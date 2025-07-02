@@ -15,7 +15,6 @@ import javax.inject.Inject
 class PlatformParametersActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var PlatformParametersActivityPresenter: PlatformParametersActivityPresenter
-
   @Inject
   lateinit var resourceHandler: AppLanguageResourceHandler
 

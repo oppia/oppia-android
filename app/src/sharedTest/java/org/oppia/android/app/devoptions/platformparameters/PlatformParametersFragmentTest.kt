@@ -169,7 +169,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParameterFragment_splashScreenWelcomeMsgParameter_hasCorrectDetails() {
+  fun testPlatformParametersFragment_splashScreenWelcomeMsgParameter_hasCorrectDetails() {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
@@ -192,7 +192,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParameterFragment_splashScreenWelcomeMsgParameter_switchToggled_updatesValue() {
+  fun testPlatformParametersFragment_splashScreenWelcomeMsgParameter_switchToggled_updatesValue() {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
@@ -216,7 +216,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParameterFragment_toggleSplashScreenWelcomeMsg_configChanges_valuePersists() {
+  fun testPlatformParametersFragment_toggleSplashScreenWelcomeMsg_configChanges_valuePersists() {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
@@ -242,7 +242,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParameterFragment_modifyIntegerPlatformParameter_configChange_changesPersist() {
+  fun testPlatformParametersFragment_modifyIntegerPlatformParameter_configChange_changesPersist() {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -273,7 +273,7 @@ class PlatformParametersFragmentTest {
     }
   }
 
-  fun testPlatformParameterFragment_removeTextFromInputBox_showsInvalidInputError() {
+  fun testPlatformParametersFragment_removeTextFromInputBox_showsInvalidInputError() {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 

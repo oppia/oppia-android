@@ -1,162 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
+  <data>
 
-        <import type="android.view.View" />
+    <import type="android.view.View" />
 
-        <variable
-            name="viewModel"
-            type="org.oppia.android.app.devoptions.platformparameters.PlatformParameterItemViewModel" />
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.devoptions.platformparameters.PlatformParameterItemViewModel" />
 
-    </data>
+  </data>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_screen_tertiary_background_color"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/platform_parameter_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/component_color_shared_item_background_solid_color"
+      android:minHeight="64dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
+
+      <TextView
+        android:id="@+id/platform_parameter_label_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/component_color_shared_screen_tertiary_background_color"
-        android:orientation="vertical">
+        android:layout_marginEnd="70dp"
+        android:text="@{viewModel.platformParameterDisplayText}"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/platform_parameter_constraint_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/component_color_shared_item_background_solid_color"
-            android:minHeight="64dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+      <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/platform_parameter_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="4dp"
+        android:checked="@{viewModel.isChecked}"
+        android:focusable="false"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:onClick="@{() -> viewModel.onToggleFeatureFlagSwitch()}"
+        android:theme="@style/OppiaSwitchCompatTheme"
+        android:visibility="@{viewModel.isInputVisible ? View.GONE : View.VISIBLE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/platform_parameter_label_text_view"
-                style="@style/Subtitle1ViewStart"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="70dp"
-                android:text="@{viewModel.platformParameterDisplayText}"
-                android:textColor="@color/component_color_shared_primary_dark_text_color"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="4dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="@{viewModel.isInputVisible ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/platform_parameter_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="4dp"
-                android:checked="@{viewModel.isChecked}"
-                android:focusable="false"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                android:onClick="@{() -> viewModel.onUserToggle()}"
-                android:theme="@style/OppiaSwitchCompatTheme"
-                android:visibility="@{viewModel.isInputVisible ? View.GONE : View.VISIBLE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginEnd="4dp"
-                android:visibility="@{viewModel.isInputVisible ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.textfield.TextInputLayout
+          android:id="@+id/platform_parameter_input_layout"
+          style="@style/TextInputLayout"
+          android:layout_width="wrap_content"
+          android:layout_height="55dp"
+          android:layout_marginTop="10dp"
+          android:gravity="center"
+          android:textAlignment="center"
+          app:errorEnabled="true"
+          app:errorIconDrawable="@null">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/platform_parameter_input_layout"
-                    style="@style/TextInputLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    app:errorEnabled="true"
-                    app:errorIconDrawable="@null">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/platform_parameter_input_edit_text"
-                        style="@style/TextInputEditText"
-                        android:layout_width="70dp"
-                        android:layout_height="48dp"
-                        android:layout_margin="@dimen/space_0dp"
-                        android:gravity="center"
-                        android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
-                        android:text="@{viewModel.inputValue}"
-                        app:onTextChanged="@{text -> viewModel.onTextChanged(text)}"
-                        android:textAlignment="center"
-                        android:textColor="@color/component_color_shared_primary_dark_text_color"
-                        android:textSize="14sp" />
+          <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/platform_parameter_input_edit_text"
+            style="@style/TextInputEditText"
+            android:layout_width="70dp"
+            android:layout_height="48dp"
+            android:layout_margin="@dimen/space_0dp"
+            android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
+            android:gravity="center"
+            android:text="@{viewModel.inputValue}"
+            android:textAlignment="center"
+            android:textColor="@color/component_color_shared_primary_dark_text_color"
+            android:textSize="14sp"
+            app:onTextChanged="@{text -> viewModel.onTextChanged(text)}" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/platform_parameter_input_error_text_view"
-                    style="@style/TextViewStart"
-                    android:fontFamily="sans-serif"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/platform_parameter_invalid_input_error_msg"
-                    android:visibility="@{viewModel.errorEnabled ? View.VISIBLE : View.INVISIBLE}"
-                    android:textColor="@color/component_color_shared_text_input_layout_error_color"
-                    android:textSize="11sp"
-                    />
+        <TextView
+          android:id="@+id/platform_parameter_input_error_text_view"
+          style="@style/TextViewStart"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:fontFamily="sans-serif"
+          android:text="@string/platform_parameter_invalid_input_error_msg"
+          android:textColor="@color/component_color_shared_text_input_layout_error_color"
+          android:textSize="11sp"
+          android:visibility="@{viewModel.errorEnabled ? View.VISIBLE : View.INVISIBLE}" />
 
-            </LinearLayout>
+      </LinearLayout>
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/sync_status_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="64dp"
+      android:paddingStart="16dp"
+      android:paddingEnd="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/sync_status_constraint_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="64dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+      <TextView
+        android:id="@+id/sync_status_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/feature_flag_sync_status"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sync_status_value_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/sync_status_text_view"
-                style="@style/Subtitle1ViewStart"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/feature_flag_sync_status"
-                android:textColor="@color/component_color_shared_primary_dark_text_color"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/sync_status_value_text_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+      <TextView
+        android:id="@+id/sync_status_value_text_view"
+        style="@style/Subtitle2ViewCenterVertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="4dp"
+        android:paddingStart="20dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="6dp"
+        android:text="@{viewModel.syncStatusDisplayText}"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
+        app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/sync_status_value_text_view"
-                style="@style/Subtitle2ViewCenterVertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginEnd="4dp"
-                android:paddingStart="20dp"
-                android:paddingTop="6dp"
-                android:paddingEnd="20dp"
-                android:paddingBottom="6dp"
-                android:text="@{viewModel.syncStatusDisplayText}"
-                android:textColor="@color/component_color_shared_secondary_4_text_color"
-                app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
-                app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@color/component_color_shared_divider_color" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/component_color_shared_divider_color" />
-
-    </LinearLayout>
+  </LinearLayout>
 </layout>
