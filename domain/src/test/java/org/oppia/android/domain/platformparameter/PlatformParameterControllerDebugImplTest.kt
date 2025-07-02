@@ -58,7 +58,7 @@ class PlatformParameterControllerDebugImplTest {
     private const val TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS = 24
     private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
-      "local_override_platform_parameter_and_feature_flag_database"
+      "local_overridden_platform_parameter_and_feature_flag_database"
   }
 
   @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
@@ -278,7 +278,7 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
   }
 
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_hasLocalOverrideStatus() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent)
