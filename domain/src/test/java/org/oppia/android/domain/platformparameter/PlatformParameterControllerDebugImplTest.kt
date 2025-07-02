@@ -240,7 +240,7 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
   }
 
-  fun testLoadEphemeralFeatureFlags_withNoRemoteFlagAndWithLocalOverride_returnsOverriddenValue() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_returnsOverriddenValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent)
@@ -259,7 +259,7 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
   }
 
-  fun testLoadEphemeralFeatureFlags_withNoRemoteFlagAndWithLocalOverride_hasLocalOverrideStatus() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_hasLocalOverrideStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent)
@@ -278,7 +278,7 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
   }
 
-  fun testLoadEphemeralFeatureFlags_withRemoteFlagAndWithLocalOverride_hasLocalOverrideStatus() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_hasLocalOverrideStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent)
@@ -441,7 +441,7 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
-  // Adds test Overridden feature flag to DB for MULTIPLE_CLASSROOMS.
+  // Populates the Local Override DB with test Overridden feature flag for MULTIPLE_CLASSROOMS.
   private fun addTestOverriddenFeatureFlagToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(
       LOCAL_OVERRIDE_DATABASE_NAME,
@@ -460,7 +460,6 @@ class PlatformParameterControllerDebugImplTest {
       component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
     )
   }
-
 
   // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
   private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
@@ -558,7 +557,7 @@ class PlatformParameterControllerDebugImplTest {
     fun provideContext(application: Application): Context {
       return application
     }
-    
+
     @Provides
     @Singleton
     fun providePlatformParameterControllerProdImpl(

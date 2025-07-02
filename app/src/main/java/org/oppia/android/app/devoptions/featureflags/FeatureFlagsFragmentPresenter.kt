@@ -13,7 +13,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.recyclerview.BindableAdapter
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
 /** The presenter for [FeatureFlagsFragment]. */
@@ -22,7 +21,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val featureFlagsViewModel: FeatureFlagsViewModel,
-  private val oppiaLogger: OppiaLogger,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
@@ -96,7 +94,10 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       model.isChecked.set(featureFlagStates[model.featureFlagId])
     }
     model.onFeatureFlagToggleCallback = { id, value ->
-      featureFlagStates[id] = value
+      if (model.currentValue == value)
+        featureFlagStates.remove(id)
+      else
+        featureFlagStates[id] = value
     }
   }
 

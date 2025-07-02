@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
+import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
@@ -59,4 +60,19 @@ class FeatureFlagsViewModel @Inject constructor(
         )
       }
     }
+
+  /**
+   * Updates the overridden feature flags in the platform parameter debug implementation.
+   *
+   * @param overriddenFeatureFlags the list of overridden feature flags to be updated.
+   */
+  fun overrideFeatureFlags(overriddenFeatureFlags: List<OverriddenFeatureFlag>) {
+    overriddenFeatureFlags.forEach { overriddenFeatureFlag ->
+
+      platformParameterControllerDebugImpl.updateOverriddenFeatureFlag(
+        overriddenFeatureFlag.id,
+        overriddenFeatureFlag.overriddenIsEnabled
+      )
+    }
+  }
 }

@@ -92,7 +92,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     return databaseStore.readDataAsync().await().overriddenFeatureFlagList
   }
 
-  /** 
+  /**
    * Returns a [DataProvider] that loads the current values of all supported
    * platform parameters as a list of [EphemeralPlatformParameter].
    *
