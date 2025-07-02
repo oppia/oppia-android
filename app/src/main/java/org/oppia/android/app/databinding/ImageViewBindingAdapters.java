@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -78,6 +79,17 @@ public final class ImageViewBindingAdapters {
             .into(imageView);
       }
     }
+  }
+
+  /**
+   * Applies the specified color tint to the ImageView.
+   *
+   * @param imageView the view to apply the tint on
+   * @param color the resolved color int to apply as tint
+   */
+  @BindingAdapter("tint")
+  public static void setTint(@NonNull ImageView imageView, int color) {
+    imageView.setColorFilter(color, PorterDuff.Mode.SRC_IN);
   }
 
   /**
