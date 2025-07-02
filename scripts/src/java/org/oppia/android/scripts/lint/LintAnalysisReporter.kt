@@ -124,6 +124,7 @@ class LintAnalysisReporter {
 
     // Needs to be updated if new lint issues are added.
     private val issueIdMapping: Map<String, LintIssueId> = mapOf(
+      "LintError" to LintIssueId.LINT_ERROR,
       "AppBundleLocaleChanges" to LintIssueId.APP_BUNDLE_LOCALE_CHANGES,
       "Autofill" to LintIssueId.AUTOFILL,
       "BackButton" to LintIssueId.BACK_BUTTON,
@@ -172,7 +173,8 @@ class LintAnalysisReporter {
       it.value to it.key
     }
 
-    private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
+    private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
+    private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
   }
 
   /**
@@ -281,9 +283,10 @@ class LintAnalysisReporter {
     val issueIdEnum = getLintIssueIdFromString(issue.id)
 
     return issue.locations.any { location ->
-      val relativePath = File(location.file).toRelativeString(repoRoot)
-      val exemptedIssues = exemptionMap[relativePath]
-      exemptedIssues?.contains(issueIdEnum) == true
+      exemptionMap.any { (exemptedRelativePath, exemptedIssues) ->
+        val exemptedAbsolutePath = File(repoRoot, exemptedRelativePath).absolutePath
+        location.file == exemptedAbsolutePath && exemptedIssues.contains(issueIdEnum)
+      }
     }
   }
 
@@ -369,7 +372,7 @@ class LintAnalysisReporter {
    * @return AndroidLintExemptions proto object
    */
   fun loadExemptionsProto(
-    pathToProtoBinary: String = EXEMPTIONS_FILE_PATH
+    pathToProtoBinary: String = PROTO_BINARY_FILE_PATH
   ): AndroidLintExemptions {
     val protoBinaryFile = File(pathToProtoBinary)
     val builder = AndroidLintExemptions.getDefaultInstance().newBuilderForType()
