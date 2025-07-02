@@ -290,12 +290,6 @@ class LintAnalysisReporter {
     }
   }
 
-  fun getUnknownIssueIds(issues: List<LintIssue>): Set<String> {
-    return issues.mapNotNull { issue ->
-      if (!issueIdMapping.containsKey(issue.id)) issue.id else null
-    }.toSet()
-  }
-
   /**
    * Maps lint issue ID string to LintIssueId enum.
    *
