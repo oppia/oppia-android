@@ -64,6 +64,7 @@
       android:paddingStart="16dp"
       android:paddingEnd="16dp">
 
+
       <TextView
         android:id="@+id/sync_status_text_view"
         style="@style/Subtitle1ViewStart"

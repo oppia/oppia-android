@@ -72,13 +72,13 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
-      // TODO(#5835): Finish implementing forcing remote parameter downloads.
-
+      // TODO(#5345): Finish implementing forcing remote parameter downloads.
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
   /**
+
    * Loads the locally overridden platform parameters from the database.
    */
   suspend fun loadLocalOverriddenPlatformParameters(): List<OverriddenPlatformParameter> {
@@ -92,7 +92,13 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     return databaseStore.readDataAsync().await().overriddenFeatureFlagList
   }
 
-  /** Returns a merged list of platform parameters by resolving values. */
+  /** 
+   * Returns a [DataProvider] that loads the current values of all supported
+   * platform parameters as a list of [EphemeralPlatformParameter].
+   *
+   * For each parameter, uses a remote override if available; otherwise falls
+   * back to its default value, with the appropriate [SyncStatus].
+   */
   fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
     return dataProviders.createInMemoryDataProviderAsync(
       LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID
@@ -129,7 +135,13 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  /** Returns a merged list of feature flags by resolving values. */
+  /**
+   * Returns a [DataProvider] that loads the current values of all supported
+   * feature flags as a list of [EphemeralFeatureFlag].
+   *
+   * For each flag, uses a remote override if available; otherwise falls
+   * back to its default value, with the appropriate [SyncStatus].
+   */
   fun loadEphemeralFeatureFlags(): DataProvider<List<EphemeralFeatureFlag>> {
     return dataProviders.createInMemoryDataProviderAsync(
       LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID
@@ -225,9 +237,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
       // Let observers know that parameters have been initialized.
       parametersAreLoadedFlow.value = true
-
-      // Erase the data provider's value so that callers cannot inadvertently depend on the actual
-      // list of parameters available.
     }
   }
 
