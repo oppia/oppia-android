@@ -7,13 +7,13 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.proto.AndroidLintExemption
+import org.oppia.android.scripts.proto.AndroidLintExemptions
 import org.oppia.android.scripts.proto.LintIssueId
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.lang.IllegalArgumentException
-import org.oppia.android.scripts.proto.AndroidLintExemptions
 
 /** Tests for [LintAnalysisReporter]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -919,7 +919,8 @@ class LintAnalysisReporterTest {
       }.build()
     )
 
-    val redundantExemptions = lintAnalysisReporter.findRedundantExemptions(issues, exemptions, repoRoot)
+    val redundantExemptions =
+      lintAnalysisReporter.findRedundantExemptions(issues, exemptions, repoRoot)
 
     assertThat(redundantExemptions).hasSize(3)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
@@ -1025,33 +1026,37 @@ class LintAnalysisReporterTest {
     val outputStream = ByteArrayOutputStream()
     System.setOut(PrintStream(outputStream))
 
-      lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
-      val output = outputStream.toString()
+    lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
+    val output = outputStream.toString()
 
-      assertThat(output).contains("Redundant exemptions")
-      assertThat(output).contains("File: file1.xml")
-      assertThat(output).contains("  - IssueA")
-      assertThat(output).contains("  - IssueB")
-      assertThat(output).contains("File: file2.kt")
-      assertThat(output).contains("  - IssueC")
+    assertThat(output).contains("Redundant exemptions")
+    assertThat(output).contains("File: file1.xml")
+    assertThat(output).contains("  - IssueA")
+    assertThat(output).contains("  - IssueB")
+    assertThat(output).contains("File: file2.kt")
+    assertThat(output).contains("  - IssueC")
   }
 
   @Test
   fun testFilterExemptedIssues_integrationTest_complexScenario() {
     val issue1 = warningIssue.copy(
-      locations = listOf(LintLocation(
-        "${repoRoot}/app/src/main/res/values/colors.xml", "5")
+      locations = listOf(
+        LintLocation(
+          "$repoRoot/app/src/main/res/values/colors.xml", "5"
+        )
       )
     )
     val issue2 = errorIssue.copy(
-      locations = listOf(LintLocation(
-        "${repoRoot}/app/src/main/java/MainActivity.kt", "42")
+      locations = listOf(
+        LintLocation(
+          "$repoRoot/app/src/main/java/MainActivity.kt", "42"
+        )
       )
     )
     val issue3 = multiLocationIssue.copy(
       locations = listOf(
-        LintLocation("${repoRoot}/app/src/main/res/values/strings.xml", "10"),
-        LintLocation("${repoRoot}/app/src/main/res/values-es/strings.xml", "15")
+        LintLocation("$repoRoot/app/src/main/res/values/strings.xml", "10"),
+        LintLocation("$repoRoot/app/src/main/res/values-es/strings.xml", "15")
       )
     )
     val issues = listOf(issue1, issue2, issue3)
