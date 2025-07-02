@@ -51,8 +51,8 @@ class PlatformParametersFragment : InjectableFragment() {
         PlatformParametersFragmentArguments.getDefaultInstance()
       )
       platformParameterStates = args?.platformParameterStatesList
-          ?.associate { it.id to it.overriddenValue }
-          ?.toMutableMap() ?: mutableMapOf()
+        ?.associate { it.id to it.overriddenValue }
+        ?.toMutableMap() ?: mutableMapOf()
     }
 
     return PlatformParametersFragmentPresenter
@@ -62,11 +62,11 @@ class PlatformParametersFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val platformParameterStates = PlatformParametersFragmentPresenter.platformParameterStates.map {
-        OverriddenPlatformParameter.newBuilder()
-          .setId(it.key)
-          .setOverriddenValue(it.value)
-          .build()
-      }
+      OverriddenPlatformParameter.newBuilder()
+        .setId(it.key)
+        .setOverriddenValue(it.value)
+        .build()
+    }
     oppiaLogger.d("PlatformParametersFragment", "States inserted are: $platformParameterStates")
     val proto = PlatformParametersFragmentArguments.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
