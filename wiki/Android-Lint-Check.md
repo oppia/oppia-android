@@ -20,7 +20,7 @@ Android Lint is a static analysis tool provided by Android Studio that scans And
 
 # Understanding Android Lint
 
-Android Lint examines your Android project files and identifies various issues that might affect your app's performance, usability, accessibility, and internationalization. It can detect problems like:
+Android Lint examines your Android project files and identifies various issues that might affect the app's performance, usability, accessibility, and internationalization. It can detect problems like:
 
 - Unused resources
 - Missing translations
@@ -54,17 +54,17 @@ Android Lint would flag this as a **HardcodedText** issue because the text shoul
 - **Ensures Best Practices:**
   It enforces Android development best practices and helps maintain consistent code quality across the project.
 - **Improves App Performance:**
-  By identifying performance issues, unused resources, and inefficient code patterns, Lint helps optimize your app's performance.
+  By identifying performance issues, unused resources, and inefficient code patterns, Lint helps optimize the app's performance.
 - **Enhances Accessibility:**
-  Lint can identify accessibility issues, ensuring your app is usable by people with disabilities.
+  Lint can identify accessibility issues, ensuring the app is usable by people with disabilities.
 - **Maintains Security:**
   It detects potential security vulnerabilities and helps maintain secure coding practices.
 - **Supports Internationalization:**
-  Lint helps ensure your app is properly prepared for localization by identifying hardcoded strings and other internationalization issues.
+  Lint helps ensure the app is properly prepared for localization by identifying hardcoded strings and other internationalization issues.
 
 # How to use the Android Lint tool?
 
-The Oppia Android Lint Analysis Tool can be used through the command line interface to analyze your codebase and generate comprehensive reports.
+The Oppia Android Lint Analysis Script can be used through the command line interface to analyze the codebase and generate comprehensive reports. The reports for the script can also be analyzed through static checks CI workflow.
 
 ## Command Line Interface (CLI)
 
@@ -75,7 +75,7 @@ Note: Follow these [Bazel setup instructions](https://github.com/oppia/oppia-and
 ```sh
 bazel run //scripts:android_lint_check -- <path_to_repository_root> [path_to_proto_binary] [--group_by_severity] [--processTimeout=<minutes>]
 ```
-
+Example: `bazel run //scripts:android_lint_check -- $(pwd)`
 **Arguments:**
 - `<path_to_repository_root>`: The root path of the repository (required)
 - `[path_to_proto_binary]`: Optional relative path to the exemption .pb file (defaults to `scripts/assets/android_lint_exemptions.pb`)
@@ -247,8 +247,8 @@ enum LintIssueId {
 **In LintAnalysisReporter.kt:**
 ```kotlin
 private val issueIdMapping = mapOf(
-        // ... existing mappings ...
-        "NewSecurityCheck" to LintIssueId.NEW_SECURITY_CHECK
+  // ... existing mappings ...
+  "NewSecurityCheck" to LintIssueId.NEW_SECURITY_CHECK
 )
 ```
 
