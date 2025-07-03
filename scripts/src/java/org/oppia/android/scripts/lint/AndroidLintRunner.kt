@@ -110,7 +110,7 @@ class AndroidLintAnalyzer(
       jdkHome = javaConfig.getJdkHome(),
       javaVersion = javaConfig.getVersion(),
       buildSdkVersion = buildSdkVersion.toString(),
-      kotlinCompilerVersion = kotlinVersion
+      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
     )
 
     lintRunner.runLint(cliArgs)
@@ -124,6 +124,15 @@ class AndroidLintAnalyzer(
       commandExecutor = commandExecutor
     )
     return lintProjectDescription.generateProjectDescriptionXml()
+  }
+
+  private fun extractKotlinMajorVersion(version: String): String {
+    val cleanedVersion = version.substringBefore("-")
+    val parts = cleanedVersion.split(".")
+    return listOfNotNull(
+      parts.getOrNull(0),
+      parts.getOrNull(1)
+    ).joinToString(".")
   }
 
   /** Java configuration class. */

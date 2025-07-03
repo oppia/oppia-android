@@ -47,7 +47,7 @@ class AndroidLintRunnerTest {
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     val sdkProperties = AndroidBuildSdkProperties()
     buildSdkVersion = sdkProperties.buildSdkVersion.toString()
-    kotlinVersion = sdkProperties.kotlinCompilerVersion
+    kotlinVersion = sdkProperties.kotlinCompilerVersion.substringBeforeLast('.')
   }
 
   @After
@@ -241,7 +241,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     lintRunner.prepareLintArguments(
-      jdkHome,
+      tempJdkDir,
       JAVA_VERSION,
       buildSdkVersion,
       kotlinVersion
