@@ -10,6 +10,10 @@ import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
+/**
+ * [ViewModel] for displaying a platform parameter in the RecyclerView of
+ * [PlatformParametersFragment].
+ */
 class PlatformParameterItemViewModel(
   val platformParameterId: PlatformParameterId,
   val currentValue: PlatformParameterValue,
@@ -18,25 +22,42 @@ class PlatformParameterItemViewModel(
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
+  /** The observable boolean value of the parameter, used for switch toggles in UI. */
   val isChecked = ObservableField(currentValue.boolean)
+
+  /** Whether the input field should be visible (i.e., if the value is not a boolean). */
   val isInputVisible = ObservableField(!currentValue.hasBoolean())
+
+  /** The display name of the platform parameter. */
   val platformParameterDisplayText = ObservableField(getPlatformParameterDisplayName())
+
+  /** The sync status text for the platform parameter. */
   val syncStatusDisplayText = ObservableField(getSyncStatusText())
+
+  /** The user-editable value of the platform parameter (if it is a string or integer). */
   val inputValue = ObservableField(
     if (currentValue.hasString()) currentValue.string
     else if (currentValue.hasInteger()) currentValue.integer.toString()
     else ""
   )
-  val errorEnabled = ObservableField(false)
+
+  /**
+   * Callback invoked when a boolean-type platform parameter is toggled.
+   * Passes the parameter ID and the new value.
+   */
   var onFeatureFlagToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
+
+  /**
+   * Callback invoked when a string/integer-type parameter's input text is changed.
+   * Passes the parameter ID and the updated string.
+   */
   var onTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
+
+  /** The background color of the item based on its sync status. */
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor().toInt()
 
-  fun onTextChanged(text: String) {
-    onTextChangedCallback?.invoke(platformParameterId, text)
-  }
-
+  /** Called when the boolean toggle switch is clicked by the user. */
   fun onToggleFeatureFlagSwitch() {
     val newValue = !(isChecked.get() ?: false)
     isChecked.set(newValue)
@@ -48,7 +69,6 @@ class PlatformParameterItemViewModel(
       when (platformParameterId) {
         PlatformParameterId.UNRECOGNIZED,
         PlatformParameterId.PLATFORM_PARAMETER_ID_UNSPECIFIED -> "Unknown"
-
         else ->
           platformParameterId.name.toMachineLowerCase()
             .split("_")

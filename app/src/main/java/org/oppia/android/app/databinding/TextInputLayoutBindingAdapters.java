@@ -38,30 +38,6 @@ public final class TextInputLayoutBindingAdapters {
         .computeLocalizedDisplayName(selectedItem), filter);
   }
 
-  /** Binding adapter for observing the text of a [TextInputEditText]. */
-  @BindingAdapter("onTextChanged")
-  public static void setOnTextChanged(
-      @NonNull TextInputEditText editText,
-      final OnTextChangedListener listener
-  ) {
-    editText.addTextChangedListener(new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-        @Override
-        public void afterTextChanged(Editable s) {}
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            listener.onTextChanged(s != null ? s.toString() : "");
-        }
-    });
-  }
-
-  public interface OnTextChangedListener {
-    void onTextChanged(String text);
-  }
-
   private static AppLanguageResourceHandler getAppLanguageResourceHandler(View view) {
     AppLanguageActivityInjectorProvider provider =
         (AppLanguageActivityInjectorProvider) getAttachedActivity(view);

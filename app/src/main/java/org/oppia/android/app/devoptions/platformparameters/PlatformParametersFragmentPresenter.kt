@@ -1,6 +1,8 @@
 package org.oppia.android.app.devoptions.platformparameters
 
+import android.text.Editable
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val platformParametersViewModel: PlatformParametersViewModel,
-  private val resourceHandler: AppLanguageResourceHandler,
+  resourceHandler: AppLanguageResourceHandler,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
 
@@ -86,6 +88,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
+    val editText = binding.platformParameterInputEditText
+    val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
+    previousWatcher?.let { editText.removeTextChangedListener(it) }
+
     if (model.currentValue.hasBoolean()) {
 
       if (platformParameterStates.containsKey(model.platformParameterId)) {
@@ -96,53 +102,72 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           .setBoolean(value)
           .build()
       }
-    } else if (model.currentValue.hasInteger()) {
-      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
-      if (platformParameterStates.containsKey(model.platformParameterId)) {
-        if (platformParameterStates[model.platformParameterId]?.integer == -1) {
-          binding.platformParameterInputLayout.error = invalidInputErrorText
-          model.errorEnabled.set(true)
-          model.inputValue.set("")
-        } else {
-          binding.platformParameterInputLayout.error = null
-          model.inputValue
-            .set(platformParameterStates[model.platformParameterId]?.integer.toString())
-        }
-      }
-      model.onTextChangedCallback = { id, text ->
-        val parsed = text.toIntOrNull()
-        if (parsed == null) {
-          binding.platformParameterInputLayout.error = invalidInputErrorText
-          model.errorEnabled.set(true)
-          platformParameterStates[id] =
-            PlatformParameterValue.newBuilder().setInteger(-1).build()
-        } else {
-          binding.platformParameterInputLayout.error = null
-          model.errorEnabled.set(false)
-          platformParameterStates[id] =
-            PlatformParameterValue.newBuilder().setInteger(parsed).build()
-        }
-      }
     } else {
-      binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_TEXT
-      if (platformParameterStates.containsKey(model.platformParameterId)) {
-        model.inputValue.set(platformParameterStates[model.platformParameterId]?.string)
-      }
-      model.onTextChangedCallback = { id, text ->
-        if (text.isNullOrEmpty()) {
-          binding.platformParameterInputLayout.error = invalidInputErrorText
-          model.errorEnabled.set(true)
-          platformParameterStates[id] = PlatformParameterValue.newBuilder()
-            .setString("")
-            .build()
+
+      if (model.currentValue.hasInteger()) {
+        binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
+
+        if (platformParameterStates.containsKey(model.platformParameterId)) {
+          if (platformParameterStates[model.platformParameterId]?.integer == -1) {
+            binding.platformParameterInputLayout.error = invalidInputErrorText
+            model.inputValue.set("")
+          } else {
+            binding.platformParameterInputLayout.error = null
+            model.inputValue
+              .set(platformParameterStates[model.platformParameterId]?.integer.toString())
+          }
         } else {
+          model.inputValue.set(model.currentValue.integer.toString())
+        }
+        editText.setText(model.inputValue.get() ?: "")
+        if (model.inputValue.get().toString().isNotEmpty()) {
           binding.platformParameterInputLayout.error = null
-          model.errorEnabled.set(false)
-          platformParameterStates[id] = PlatformParameterValue.newBuilder()
-            .setString(text)
-            .build()
+        }
+        model.onTextChangedCallback = { id, text ->
+          val parsed = text.toIntOrNull()
+          if (parsed == null) {
+            binding.platformParameterInputLayout.error = invalidInputErrorText
+            platformParameterStates[id] =
+              PlatformParameterValue.newBuilder().setInteger(-1).build()
+          } else {
+            binding.platformParameterInputLayout.error = null
+            platformParameterStates[id] =
+              PlatformParameterValue.newBuilder().setInteger(parsed).build()
+          }
+        }
+      } else {
+
+        binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_TEXT
+        if (platformParameterStates.containsKey(model.platformParameterId)) {
+          model.inputValue.set(platformParameterStates[model.platformParameterId]?.string)
+        }
+        editText.setText(model.inputValue.get())
+        model.onTextChangedCallback = { id, text ->
+          if (text.isNullOrEmpty()) {
+            binding.platformParameterInputLayout.error = invalidInputErrorText
+            platformParameterStates[id] = PlatformParameterValue.newBuilder()
+              .setString("")
+              .build()
+          } else {
+            binding.platformParameterInputLayout.error = null
+            platformParameterStates[id] = PlatformParameterValue.newBuilder()
+              .setString(text)
+              .build()
+          }
         }
       }
     }
+
+    val newWatcher = object : TextWatcher {
+      override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        model.onTextChangedCallback?.invoke(model.platformParameterId, s.toString())
+      }
+
+      override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+      override fun afterTextChanged(s: Editable?) {}
+    }
+
+    editText.addTextChangedListener(newWatcher)
+    editText.setTag(R.id.platform_parameter_text_watcher, newWatcher)
   }
 }

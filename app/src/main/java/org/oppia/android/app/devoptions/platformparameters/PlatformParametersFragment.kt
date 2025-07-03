@@ -11,7 +11,6 @@ import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.PlatformParametersFragmentArguments
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -20,8 +19,6 @@ import javax.inject.Inject
 class PlatformParametersFragment : InjectableFragment() {
   @Inject
   lateinit var PlatformParametersFragmentPresenter: PlatformParametersFragmentPresenter
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
 
   companion object {
     /** Returns a new instance of [PlatformParametersFragment]. */
@@ -67,7 +64,6 @@ class PlatformParametersFragment : InjectableFragment() {
         .setOverriddenValue(it.value)
         .build()
     }
-    oppiaLogger.d("PlatformParametersFragment", "States inserted are: $platformParameterStates")
     val proto = PlatformParametersFragmentArguments.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
       .build()
