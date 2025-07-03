@@ -284,6 +284,6 @@ message OverriddenFeatureFlag {
   // The unique ID of the overridden feature flag.
   FeatureFlagId id = 1;
 
-  //The local value which s overriden by the developer .
+  // The local value which is set by the developer.
   bool overridden_value = 2;
 }

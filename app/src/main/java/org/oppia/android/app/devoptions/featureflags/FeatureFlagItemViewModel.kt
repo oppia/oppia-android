@@ -17,7 +17,6 @@ class FeatureFlagItemViewModel(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
   /** The current on/off state of the feature flag. Used for UI binding. */
   val isChecked: ObservableField<Boolean> = ObservableField(currentValue)
 
