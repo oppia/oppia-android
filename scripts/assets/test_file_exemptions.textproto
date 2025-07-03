@@ -1899,7 +1899,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ConfirmDataResetDialog.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/DataResetConfirmationDialog.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1907,7 +1907,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ForgotAdminPinDialog.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminPinRecoveryDialog.kt"
   test_file_not_required: true
 }
 test_file_exemption {
