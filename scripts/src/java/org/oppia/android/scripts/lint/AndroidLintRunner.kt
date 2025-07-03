@@ -101,14 +101,16 @@ class AndroidLintAnalyzer(
       projectDescriptionFile = projectDescriptionFile,
       groupByIssueSeverity = groupByIssueSeverity
     )
-
+    val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
     val javaConfig = JavaConfiguration(bazelInfo)
-    val buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion
+    val buildSdkVersion = sdkProperties.buildSdkVersion
+    val kotlinVersion = sdkProperties.kotlinCompilerVersion
     val cliArgs = lintRunner.prepareLintArguments(
       jdkHome = javaConfig.getJdkHome(),
       javaVersion = javaConfig.getVersion(),
-      buildSdkVersion = buildSdkVersion.toString()
+      buildSdkVersion = buildSdkVersion.toString(),
+      kotlinCompilerVersion = kotlinVersion
     )
 
     lintRunner.runLint(cliArgs)
@@ -165,7 +167,6 @@ class AndroidLintRunner(
 ) {
   companion object {
     private const val LINT_CLIENT_ID = "cli"
-    private const val KOTLIN_LANGUAGE_VERSION = "1.6"
     private const val JDK_RELEASE_FILE = "release"
 
     private const val SUCCESS = 0
@@ -217,10 +218,10 @@ class AndroidLintRunner(
   fun prepareLintArguments(
     jdkHome: File,
     javaVersion: String,
-    buildSdkVersion: String
+    buildSdkVersion: String,
+    kotlinCompilerVersion: String
   ): Array<String> {
     prepareJdkEnvironment(jdkHome)
-
     return arrayOf(
       "-Wall",
       "--quiet",
@@ -232,7 +233,7 @@ class AndroidLintRunner(
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", getAndroidSdkPath(),
       "--compile-sdk-version", buildSdkVersion,
-      "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
+      "--kotlin-language-level", kotlinCompilerVersion,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath
