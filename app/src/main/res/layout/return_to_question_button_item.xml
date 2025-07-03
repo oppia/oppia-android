@@ -41,6 +41,7 @@
       style="@style/StateButtonActive"
       android:background="@drawable/state_button_primary_background"
       android:text="@string/state_return_to_question_button"
+      android:onClick="@{(v) -> buttonViewModel.returnToQuestionButtonListener.onReturnToQuestionButtonClicked()}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHeight_min="48dp"
