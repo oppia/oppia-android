@@ -142,6 +142,7 @@ class AndroidLintAnalyzer(
         ?.groupValues?.get(1)
         ?: error("Could not extract Java version from: $javaRuntime")
     }
+
     /** Retrieves the JDK home directory. */
     fun getJdkHome(): File = jdkHome
 
@@ -190,7 +191,7 @@ class AndroidLintRunner(
   fun runLint(cliArgs: Array<String>) {
     val exitCode = LintCli().run(cliArgs)
 
-    // Allow exit code ISSUES_FOUND since it indicates issues with
+    // Allow exit code 1(ISSUES_FOUND) since it indicates issues with
     // severity Error which is being handled by LintAnalysisReporter.
     if (exitCode != SUCCESS && exitCode != ISSUES_FOUND) {
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"

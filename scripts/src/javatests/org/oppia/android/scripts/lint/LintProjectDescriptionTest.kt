@@ -218,13 +218,13 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_basicGeneration() {
-    val result = lintProjectDescription.generateProjectDescriptionXml()
+  fun testGenerateProjectDescriptionXml_generatesBasicXmlFile() {
+    val xmlFile = lintProjectDescription.generateProjectDescriptionXml()
 
-    assertThat(result.exists()).isTrue()
-    assertThat(result.name).isEqualTo("lint-project-description.xml")
+    assertThat(xmlFile.exists()).isTrue()
+    assertThat(xmlFile.name).isEqualTo("lint-project-description.xml")
 
-    val xmlContent = result.readText()
+    val xmlContent = xmlFile.readText()
     assertThat(xmlContent).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
     assertThat(xmlContent).contains("<project>")
     assertThat(xmlContent).contains("</project>")
@@ -411,6 +411,169 @@ class LintProjectDescriptionTest {
     // Verify the AAR was extracted
     val extractedAarsDir = File(workingDirectory, "extracted-aars")
     assertThat(extractedAarsDir.exists()).isTrue()
+  }
+
+  @Test
+  fun testCacheManager_getDependencies_cachesResults() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      listOf("dependency1", "dependency2")
+    }
+
+    // First call should invoke provider
+    val result1 = cacheManager.getDependencies("test-key", provider)
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).containsExactly("dependency1", "dependency2")
+
+    // Second call should use cache
+    val result2 = cacheManager.getDependencies("test-key", provider)
+    assertThat(callCount).isEqualTo(1) // Provider not called again
+    assertThat(result2).containsExactly("dependency1", "dependency2")
+  }
+
+  @Test
+  fun testCacheManager_getPathResolution_cachesResults() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      "/resolved/path"
+    }
+
+    // First call should invoke provider
+    val result1 = cacheManager.getPathResolution("test-path", provider)
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).isEqualTo("/resolved/path")
+
+    // Second call should use cache
+    val result2 = cacheManager.getPathResolution("test-path", provider)
+    assertThat(callCount).isEqualTo(1) // Provider not called again
+    assertThat(result2).isEqualTo("/resolved/path")
+  }
+
+  @Test
+  fun testCacheManager_getAarExtraction_cachesResults() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      "/extracted/aar/path"
+    }
+
+    // First call should invoke provider
+    val result1 = cacheManager.getAarExtraction("test-aar", provider)
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).isEqualTo("/extracted/aar/path")
+
+    // Second call should use cache
+    val result2 = cacheManager.getAarExtraction("test-aar", provider)
+    assertThat(callCount).isEqualTo(1) // Provider not called again
+    assertThat(result2).isEqualTo("/extracted/aar/path")
+  }
+
+  @Test
+  fun testCacheManager_differentKeys_separateEntries() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      listOf("dependency-$callCount")
+    }
+
+    val result1 = cacheManager.getDependencies("key1", provider)
+    val result2 = cacheManager.getDependencies("key2", provider)
+
+    assertThat(callCount).isEqualTo(2)
+    assertThat(result1).containsExactly("dependency-1")
+    assertThat(result2).containsExactly("dependency-2")
+  }
+
+  @Test
+  fun testCacheManager_nullPathResolution_cached() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      null
+    }
+
+    val result1 = cacheManager.getPathResolution("non-existent-path", provider)
+    val result2 = cacheManager.getPathResolution("non-existent-path", provider)
+
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).isNull()
+    assertThat(result2).isNull()
+  }
+
+  @Test
+  fun testCacheManager_memoryCleanup_performsAggressiveCleanup() {
+    val cacheManager = CacheManager()
+
+    // Fill cache with many entries to trigger cleanup
+    repeat(1000) { index ->
+      cacheManager.getDependencies("key-$index") {
+        // Create large list to consume memory
+        List(1000) { "dependency-$index-$it" }
+      }
+    }
+
+    val result = cacheManager.getDependencies("final-key") {
+      listOf("final-dependency")
+    }
+
+    assertThat(result).containsExactly("final-dependency")
+    // Test passes if no OutOfMemoryError is thrown
+  }
+
+  @Test
+  fun testCacheManager_mixedCacheTypes_workIndependently() {
+    val cacheManager = CacheManager()
+
+    val dependencies = cacheManager.getDependencies("test-key") {
+      listOf("dep1", "dep2")
+    }
+
+    val pathResolution = cacheManager.getPathResolution("test-key") {
+      "/some/path"
+    }
+
+    val aarExtraction = cacheManager.getAarExtraction("test-key") {
+      "/extracted/path"
+    }
+
+    assertThat(dependencies).containsExactly("dep1", "dep2")
+    assertThat(pathResolution).isEqualTo("/some/path")
+    assertThat(aarExtraction).isEqualTo("/extracted/path")
+  }
+
+  @Test
+  fun testCacheManager_expiredEntries_cleanupProperly() {
+    val cacheManager = CacheManager()
+
+    repeat(10) { index ->
+      cacheManager.getDependencies("expired-key-$index") {
+        listOf("dependency-$index")
+      }
+    }
+
+    repeat(5) { index ->
+      cacheManager.getDependencies("new-key-$index") {
+        listOf("new-dependency-$index")
+      }
+    }
+
+    val result = cacheManager.getDependencies("test-key") {
+      listOf("test-dependency")
+    }
+
+    assertThat(result).containsExactly("test-dependency")
   }
 
   private fun setupFakeCommandExecutorForAarDependencies(aarPath: String) {

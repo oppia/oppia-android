@@ -75,11 +75,18 @@ private data class CachedEntry<T>(
 }
 
 /** Cache manager with TTL and memory-based cleanup. */
-private class CacheManager {
+class CacheManager {
   companion object {
-
+    // Dependencies need to be fresh enough to catch recent changes
+    // Long enough to avoid excessive Bazel queries during rapid successive lint runs
     private const val DEPENDENCIES_TTL = 300L // 5 minutes
+
+    // Paths are more stable than dependencies
+    // External dependency paths don't change unless the dependency version changes
     private const val PATH_RESOLUTION_TTL = 600L // 10 minutes
+
+    // Once extracted, the contents remain valid until the AAR version changes
+    // AAR files don't change unless dependency versions are updated therefore stable
     private const val AAR_EXTRACTION_TTL = 1800L // 30 minutes
 
     private const val MAX_CACHE_SIZE_BYTES = 100 * 1024 * 1024L // 100MB
