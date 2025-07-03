@@ -18,17 +18,28 @@ class FeatureFlagItemViewModel(
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
 
+  /** The current on/off state of the feature flag. Used for UI binding. */
   val isChecked: ObservableField<Boolean> = ObservableField(currentValue)
+
+  /** The display name of the feature flag. */
   val featureFlagDisplayName: ObservableField<String> =
     ObservableField(getFeatureFlagDisplayName(featureFlagId))
+
+  /** The text representing the sync status of the feature flag. */
   val syncStatusDisplayText: ObservableField<String> =
     ObservableField(getSyncStatusText())
 
+  /**
+   * Callback to be invoked when the feature flag toggle is changed by the user.
+   * Passes the [FeatureFlagId] and the new boolean value.
+   */
   var onFeatureFlagToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
 
+  /** The background color associated with the current sync status of the feature flag. */
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor().toInt()
 
+  /** Called when the feature flag switch is toggled in the UI. */
   fun onToggleFeatureFlagSwitch() {
     val newValue = !(isChecked.get() ?: false)
     isChecked.set(newValue)
