@@ -29,10 +29,15 @@ fun WavyBackgroundView(backgroundColorResId: Int) {
         lineTo(0f, wavesStartY)
 
         var x = 0f
-        val stepX = canvasWidth / 100
+        val numberOfPoints = 500
+        val stepX = canvasWidth / numberOfPoints
+
+        val numberOfWaves = 2f
+        val waveFrequencyFactor = (2f * Math.PI / canvasWidth) * numberOfWaves
+
 
         while (x <= canvasWidth) {
-          val y = wavesStartY - amplitude * sin(x * (2f * Math.PI / canvasWidth)).toFloat()
+          val y = wavesStartY - amplitude * sin(x * (waveFrequencyFactor)).toFloat()
           lineTo(x, y)
           x += stepX
         }
