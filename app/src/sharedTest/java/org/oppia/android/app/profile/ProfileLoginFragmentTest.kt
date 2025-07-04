@@ -126,9 +126,7 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileLoginFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
@@ -413,7 +411,7 @@ class ProfileLoginFragmentTest {
 
     composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_FORGOT_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 
@@ -455,7 +453,7 @@ class ProfileLoginFragmentTest {
 
     composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_FORGOT_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 
@@ -465,12 +463,12 @@ class ProfileLoginFragmentTest {
       )
       .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_FORGOT_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
       .assertDoesNotExist()
   }
 
   @Test
-  fun testFragment_adminUser_openForgotPin_clickResetData_opensAdminResetPinDialogFlow() {
+  fun testFragment_adminUser_forgotPin_clickResetData_opensResetDataDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
     scenario = launch(ProfileLoginActivity::class.java)
@@ -488,7 +486,10 @@ class ProfileLoginFragmentTest {
       .assertIsDisplayed()
       .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_RESET_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+      .assertDoesNotExist()
+
+    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 
@@ -532,7 +533,7 @@ class ProfileLoginFragmentTest {
 
     composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_FORGOT_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 
@@ -545,7 +546,7 @@ class ProfileLoginFragmentTest {
       )
       .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_RESET_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 
@@ -555,7 +556,7 @@ class ProfileLoginFragmentTest {
       )
       .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_RESET_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
       .assertDoesNotExist()
   }
 
@@ -568,7 +569,7 @@ class ProfileLoginFragmentTest {
 
     composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_FORGOT_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 
@@ -581,7 +582,7 @@ class ProfileLoginFragmentTest {
       )
       .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_RESET_PIN_DIALOG_TEST_TAG)
+    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
       .assertExists()
       .assertIsDisplayed()
 

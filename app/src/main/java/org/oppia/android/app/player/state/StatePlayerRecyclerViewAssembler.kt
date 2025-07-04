@@ -91,6 +91,7 @@ import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReplayButtonListener
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
@@ -893,7 +894,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     targetList += ReturnToQuestionViewModel(
       hasConversationView,
-      isSplitView.get()!!
+      isSplitView.get()!!,
+      fragment as ReturnToQuestionButtonListener
     )
   }
 

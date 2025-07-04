@@ -42,7 +42,6 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
 
   /** Handles showing the [ResetPinDialogFragment]. */
   fun handleRouteToResetPinDialog(profileId: ProfileId, profileName: String) {
-
     val adminPinDialog = fragmentManager.findFragmentByTag(TAG_VALIDATE_ADMIN_PIN_DIALOG)
       as DialogFragment
     adminPinDialog.dismiss()

@@ -372,6 +372,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       Profile by adminProfileLiveData.observeAsState(initial = Profile.getDefaultInstance())
     val adminPin = adminProfile.pin
     val openForgotPinDialog = remember { mutableStateOf(false) }
+    val openConfirmationDialog = remember { mutableStateOf(false) }
 
     TextButton(
       modifier = Modifier.testTag(FORGOT_PIN_TEST_TAG),
@@ -389,28 +390,20 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
     if (openForgotPinDialog.value) {
       if (profileType == ProfileType.SUPERVISOR) {
-        ForgotAdminPinDialogFlow(openForgotPinDialog)
+        AdminPinRecoveryDialog(
+          onDismissRequest = { openForgotPinDialog.value = false },
+          onConfirmation = {
+            openForgotPinDialog.value = false
+            openConfirmationDialog.value = true
+          }
+        )
       } else {
         showResetNonAdminPinFlow(adminPin, openForgotPinDialog, profileId, profileName)
       }
     }
-  }
-
-  @Composable
-  private fun ForgotAdminPinDialogFlow(openForgotPinDialog: MutableState<Boolean>) {
-    val openConfirmationDialog = remember { mutableStateOf(false) }
-
-    if (openForgotPinDialog.value) {
-      ForgotAdminPinDialog(
-        onDismissRequest = { openForgotPinDialog.value = false },
-        onConfirmation = {
-          openConfirmationDialog.value = true
-        }
-      )
-    }
 
     if (openConfirmationDialog.value) {
-      ConfirmDataResetDialog(
+      DataResetConfirmationDialog(
         onDismissRequest = { openConfirmationDialog.value = false },
         deleteAppData = { deleteAppData() }
       )
