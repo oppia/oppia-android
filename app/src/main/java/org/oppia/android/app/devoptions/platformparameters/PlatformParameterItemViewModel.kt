@@ -10,6 +10,10 @@ import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.util.locale.OppiaLocale
 
+/**
+ * [ViewModel] for displaying a platform parameter in the RecyclerView of
+ * [PlatformParametersFragment].
+ */
 class PlatformParameterItemViewModel(
   val platformParameterId: PlatformParameterId,
   val currentValue: PlatformParameterValue,
@@ -17,30 +21,54 @@ class PlatformParameterItemViewModel(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
+  /** The observable boolean value of the parameter, used for switch toggles in UI. */
   val isChecked = ObservableField(currentValue.boolean)
-  val isInputVisible = ObservableField(!currentValue.hasBoolean())
-  val platformParameterDisplayText = ObservableField(getPlatformParameterDisplayName())
+
+  /**
+   *  Determines whether to display the parameter as a text input or toggle switch,
+   *  based on the parameter type.
+   */
+  val isTextInputMode = ObservableField(!currentValue.hasBoolean())
+
+  /** The display name of the platform parameter. */
+  val platformParameterName = ObservableField(getPlatformParameterDisplayName())
+
+  /** Error message to be displayed in case of invalid input for a platform parameters. */
+  val errorMessage = ObservableField("")
+
+  /** The display text representing the current sync status of the parameter. */
   val syncStatusDisplayText = ObservableField(getSyncStatusText())
+
+  /** The user-editable value of the platform parameter (if it is a string or integer). */
   val inputValue = ObservableField(
-    if (currentValue.hasString()) currentValue.string
-    else if (currentValue.hasInteger()) currentValue.integer.toString()
-    else ""
+    when {
+      currentValue.hasString() -> currentValue.string
+      currentValue.hasInteger() -> currentValue.integer.toString()
+      else -> ""
+    }
   )
-  val errorEnabled = ObservableField(false)
-  var onFeatureFlagToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
-  var onTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
+
+  /**
+   * Callback invoked when a boolean-type platform parameter is toggled.
+   * Passes the parameter ID and the new boolean value.
+   */
+  var onPlatformParameterToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
+
+  /**
+   * Callback invoked when a string/integer-type platform parameter is edited.
+   * Passes the parameter ID and the updated string value.
+   */
+  var onPlatformParameterTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
+
+  /** The background color of the sync status chip, determined by its sync state. */
   @ColorInt
-  val backgroundColor: Int = retrieveBackgroundColor().toInt()
+  val syncStatusBackgroundColor: Int = retrieveSyncStatusBackgroundColor().toInt()
 
-  fun onTextChanged(text: String) {
-    onTextChangedCallback?.invoke(platformParameterId, text)
-  }
-
+  /** Called when the boolean toggle switch is clicked by the user. */
   fun onToggleFeatureFlagSwitch() {
     val newValue = !(isChecked.get() ?: false)
     isChecked.set(newValue)
-    onFeatureFlagToggleCallback?.invoke(platformParameterId, isChecked.get()!!)
+    onPlatformParameterToggleCallback?.invoke(platformParameterId, newValue)
   }
 
   private fun getPlatformParameterDisplayName(): String {
@@ -48,7 +76,6 @@ class PlatformParameterItemViewModel(
       when (platformParameterId) {
         PlatformParameterId.UNRECOGNIZED,
         PlatformParameterId.PLATFORM_PARAMETER_ID_UNSPECIFIED -> "Unknown"
-
         else ->
           platformParameterId.name.toMachineLowerCase()
             .split("_")
@@ -71,7 +98,7 @@ class PlatformParameterItemViewModel(
   }
 
   @ColorInt
-  private fun retrieveBackgroundColor(): Long {
+  private fun retrieveSyncStatusBackgroundColor(): Long {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF00645C
       SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C

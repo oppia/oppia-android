@@ -288,8 +288,8 @@ message OverriddenFeatureFlag {
   // The unique ID of the overridden feature flag.
   FeatureFlagId id = 1;
 
-  // Whether the override enables or disables the feature.
-  bool overridden_is_enabled = 2;
+  // The local value which is set by the developer.
+  bool overridden_value = 2;
 }
 
 // Corresponds to a developer override of a platform parameter.
@@ -299,7 +299,7 @@ message OverriddenPlatformParameter {
   PlatformParameterId id = 1;
 
   // The overridden value of the platform parameter.
-  PlatformParameterValue overridden_value = 3;
+  PlatformParameterValue overridden_value = 2;
 }
 
 //The database for storing local developer overridden platform parameters and feature flags.

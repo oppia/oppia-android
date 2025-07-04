@@ -22,7 +22,6 @@ class PlatformParametersViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
   private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
     Transformations.map(
       platformParameterControllerDebugImpl.loadEphemeralPlatformParameters().toLiveData(),
@@ -49,17 +48,15 @@ class PlatformParametersViewModel @Inject constructor(
 
   private fun processPlatformParameterList(
     ephemeralPlatformParameters: List<EphemeralPlatformParameter>
-  ):
-    List<PlatformParameterItemViewModel> {
-
-      return ephemeralPlatformParameters.map { ephemeralPlatformParameter ->
-        PlatformParameterItemViewModel(
-          platformParameterId = ephemeralPlatformParameter.id,
-          currentValue = ephemeralPlatformParameter.currentValue,
-          syncStatus = ephemeralPlatformParameter.syncStatus,
-          machineLocale = machineLocale,
-          resourceHandler = resourceHandler
-        )
-      }
+  ): List<PlatformParameterItemViewModel> {
+    return ephemeralPlatformParameters.map { ephemeralPlatformParameter ->
+      PlatformParameterItemViewModel(
+        platformParameterId = ephemeralPlatformParameter.id,
+        currentValue = ephemeralPlatformParameter.currentValue,
+        syncStatus = ephemeralPlatformParameter.syncStatus,
+        machineLocale = machineLocale,
+        resourceHandler = resourceHandler
+      )
     }
+  }
 }

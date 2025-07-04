@@ -23,7 +23,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private val featureFlagsViewModel: FeatureFlagsViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
-
   private lateinit var binding: FeatureFlagsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>

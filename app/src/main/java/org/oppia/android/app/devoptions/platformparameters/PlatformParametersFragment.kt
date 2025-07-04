@@ -11,17 +11,14 @@ import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.PlatformParametersFragmentArguments
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
-/** Fragment to provide functionality to view and modify feature flags of the app. */
+/** Fragment to provide functionality to view and modify platform parameters of the app. */
 class PlatformParametersFragment : InjectableFragment() {
   @Inject
-  lateinit var PlatformParametersFragmentPresenter: PlatformParametersFragmentPresenter
-  @Inject
-  lateinit var oppiaLogger: OppiaLogger
+  lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
   companion object {
     /** Returns a new instance of [PlatformParametersFragment]. */
@@ -55,19 +52,18 @@ class PlatformParametersFragment : InjectableFragment() {
         ?.toMutableMap() ?: mutableMapOf()
     }
 
-    return PlatformParametersFragmentPresenter
+    return platformParametersFragmentPresenter
       .handleCreateView(inflater, container, platformParameterStates)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val platformParameterStates = PlatformParametersFragmentPresenter.platformParameterStates.map {
+    val platformParameterStates = platformParametersFragmentPresenter.platformParameterStates.map {
       OverriddenPlatformParameter.newBuilder()
         .setId(it.key)
         .setOverriddenValue(it.value)
         .build()
     }
-    oppiaLogger.d("PlatformParametersFragment", "States inserted are: $platformParameterStates")
     val proto = PlatformParametersFragmentArguments.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
       .build()

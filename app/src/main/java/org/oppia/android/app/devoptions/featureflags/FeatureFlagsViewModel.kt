@@ -23,7 +23,6 @@ class FeatureFlagsViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
   private val ephemeralFlagsLiveData: LiveData<List<EphemeralFeatureFlag>> by lazy {
     Transformations.map(
       platformParameterControllerDebugImpl.loadEphemeralFeatureFlags().toLiveData(),

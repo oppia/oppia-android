@@ -126,7 +126,6 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class PlatformParametersFragmentTest {
-
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
@@ -143,7 +142,6 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_verifyRecyclerView_hasCorrectItemCount() {
     setUpTestApplicationComponent()
-    setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -151,14 +149,15 @@ class PlatformParametersFragmentTest {
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = expectedCount))
 
-      // Note to developers: if you add/remove a feature flag, please update the expected count.
+      // Note to developers: if you add/remove a platform parameter, please update the
+      // expected count.
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = 11))
     }
   }
 
   @Test
-  fun testPlatformParametersFragment_verifyRecyclerViewItems_hasCorrectDetails() {
+  fun testPlatformParametersFragment_verifyRecyclerViewItems_haveCorrectDetails() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -263,7 +262,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleSplashScreenWelcomeMsg_configChanges_valuePersists() {
+  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChanges_valuePersists() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -290,7 +289,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyIntegerPlatformParameter_configChange_changesPersist() {
+  fun testPlatformParametersFragment_modifyIntegerPlatformParameter_configChange_persistsValue() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -419,6 +418,65 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
+  fun testPlatformParametersFragment_modifyIntegerParameter_scrollAndBack_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(7)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("42"))
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setInteger(42)
+        .build()
+
+      scrollToPosition(1)
+
+      scrollToPosition(7)
+      verifyPlatformParameterState(
+        position = 7,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_toggleBooleanParameter_scrollAndBack_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val originalValue = getEphemeralPlatformParameters()[0].currentValue.boolean
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!originalValue)
+        .build()
+
+      scrollToPosition(8)
+
+      scrollToPosition(0)
+      verifyPlatformParameterState(
+        position = 0,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
   private fun verifyPlatformParameterDisplayName(
     position: Int,
     expectedDisplayName: String
@@ -429,11 +487,7 @@ class PlatformParametersFragmentTest {
         position = position,
         targetViewId = R.id.platform_parameter_label_text_view
       )
-    ).check(
-      matches(
-        withText(expectedDisplayName)
-      )
-    )
+    ).check(matches(withText(expectedDisplayName)))
   }
 
   private fun verifyPlatformParameterBackgroundColor(
@@ -463,41 +517,43 @@ class PlatformParametersFragmentTest {
         position = position,
         targetViewId = R.id.sync_status_value_text_view
       )
-    ).check(
-      matches(
-        withText(expectedSyncStatus)
-      )
-    )
+    ).check(matches(withText(expectedSyncStatus)))
   }
 
   private fun verifyPlatformParameterState(
     position: Int,
     expectedValue: PlatformParameterValue
   ) {
-    if (expectedValue.hasBoolean()) {
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = position,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).check(matches(if (expectedValue.boolean) isChecked() else not(isChecked())))
-    } else if (expectedValue.hasString()) {
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = position,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).check(matches(withText(expectedValue.string)))
-    } else if (expectedValue.hasInteger()) {
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = position,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).check(matches(withText(expectedValue.integer.toString())))
+    when {
+      expectedValue.hasBoolean() -> {
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = position,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).check(matches(if (expectedValue.boolean) isChecked() else not(isChecked())))
+      }
+
+      expectedValue.hasString() -> {
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = position,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).check(matches(withText(expectedValue.string)))
+      }
+
+      expectedValue.hasInteger() -> {
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = position,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).check(matches(withText(expectedValue.integer.toString())))
+      }
     }
   }
 
@@ -505,13 +561,10 @@ class PlatformParametersFragmentTest {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
         context.getString(R.string.platform_parameter_unknown_sync_status)
-
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
         context.getString(R.string.platform_parameter_default_sync_status)
-
       SyncStatus.SYNCED_FROM_SERVER ->
         context.getString(R.string.platform_parameter_server_sync_status)
-
       else ->
         context.getString(R.string.platform_parameter_unknown_sync_status)
     }
@@ -528,9 +581,7 @@ class PlatformParametersFragmentTest {
     return monitorFactory.waitForNextSuccessfulResult(provider)
   }
 
-  private fun getPlatformParameterDisplayName(
-    id: PlatformParameterId
-  ): String {
+  private fun getPlatformParameterDisplayName(id: PlatformParameterId): String {
     return id.name
       .lowercase()
       .split('_')

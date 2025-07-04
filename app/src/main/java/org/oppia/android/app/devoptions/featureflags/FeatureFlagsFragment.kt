@@ -44,7 +44,7 @@ class FeatureFlagsFragment : InjectableFragment() {
         FeatureFlagsFragmentArguments.getDefaultInstance()
       )
       featureFlagStates = args?.featureFlagStatesList
-        ?.associate { it.id to it.overriddenIsEnabled }
+        ?.associate { it.id to it.overriddenValue }
         ?.toMutableMap() ?: mutableMapOf()
     }
 
@@ -58,7 +58,7 @@ class FeatureFlagsFragment : InjectableFragment() {
       featureFlagsFragmentPresenter.featureFlagStates.map {
         OverriddenFeatureFlag.newBuilder()
           .setId(it.key)
-          .setOverriddenIsEnabled(it.value)
+          .setOverriddenValue(it.value)
           .build()
       }
 

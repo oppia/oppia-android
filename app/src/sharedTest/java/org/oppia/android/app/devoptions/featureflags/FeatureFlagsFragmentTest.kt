@@ -130,7 +130,6 @@ class FeatureFlagsFragmentTest {
   val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule
   val oppiaTestRule = OppiaTestRule()
-
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject
@@ -166,7 +165,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_verifyRecyclerViewItems_hasCorrectDetails() {
+  fun testFeatureFlagsFragment_verifyRecyclerViewItems_haveCorrectDetails() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -215,7 +214,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectValue() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverrideValues_downloadsSupportFlagHasCorrectValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -229,7 +228,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectSyncStatus() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverride_downloadsSupportFlagHasCorrectSyncStatus() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -243,7 +242,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectBackground() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverride_downloadsSupportFlagHasCorrectBackground() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -257,7 +256,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_verifyDownloadsSupportFlag_whenSwitchToggled_updatesValue() {
+  fun testFeatureFlagsFragment_whenSwitchToggled_DownloadsSupportFlagupdatesValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -280,7 +279,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChanges_persistsValue() {
+  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChange_persistsValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -303,8 +302,8 @@ class FeatureFlagsFragmentTest {
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
       verifyFeatureFlagSwitchState(
-        0,
-        !downloadsSupportFlag.currentValue
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
       )
     }
   }
