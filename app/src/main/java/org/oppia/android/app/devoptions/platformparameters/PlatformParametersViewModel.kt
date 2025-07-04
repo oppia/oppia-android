@@ -1,5 +1,6 @@
 package org.oppia.android.app.devoptions.platformparameters
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
@@ -48,17 +49,15 @@ class PlatformParametersViewModel @Inject constructor(
 
   private fun processPlatformParameterList(
     ephemeralPlatformParameters: List<EphemeralPlatformParameter>
-  ):
-    List<PlatformParameterItemViewModel> {
-
-      return ephemeralPlatformParameters.map { ephemeralPlatformParameter ->
-        PlatformParameterItemViewModel(
-          platformParameterId = ephemeralPlatformParameter.id,
-          currentValue = ephemeralPlatformParameter.currentValue,
-          syncStatus = ephemeralPlatformParameter.syncStatus,
-          machineLocale = machineLocale,
-          resourceHandler = resourceHandler
-        )
-      }
+  ): List<PlatformParameterItemViewModel> {
+    return ephemeralPlatformParameters.map { ephemeralPlatformParameter ->
+      PlatformParameterItemViewModel(
+        platformParameterId = ephemeralPlatformParameter.id,
+        currentValue = ephemeralPlatformParameter.currentValue,
+        syncStatus = ephemeralPlatformParameter.syncStatus,
+        machineLocale = machineLocale,
+        resourceHandler = resourceHandler
+      )
     }
+  }
 }

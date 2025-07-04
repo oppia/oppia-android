@@ -295,5 +295,5 @@ message OverriddenPlatformParameter {
   PlatformParameterId id = 1;
 
   // The overridden value of the platform parameter.
-  PlatformParameterValue overridden_value = 3;
+  PlatformParameterValue overridden_value = 2;
 }

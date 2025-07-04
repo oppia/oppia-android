@@ -16,16 +16,16 @@ class PlatformParametersTestActivity : InjectableAutoLocalizedAppCompatActivity(
     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
     setContentView(R.layout.platform_parameters_activity)
     if (getPlatformParametersFragment() == null) {
-      val PlatformParametersFragment = PlatformParametersFragment.newInstance()
+      val platformParametersFragment = PlatformParametersFragment.newInstance()
       supportFragmentManager.beginTransaction().add(
         R.id.platform_parameters_container,
-        PlatformParametersFragment
+        platformParametersFragment
       ).commitNow()
     }
   }
 
   private fun getPlatformParametersFragment(): PlatformParametersFragment? {
     return supportFragmentManager
-      .findFragmentById(R.id.platform_parameters_container) as PlatformParametersFragment?
+      .findFragmentById(R.id.platform_parameters_container) as? PlatformParametersFragment
   }
 }

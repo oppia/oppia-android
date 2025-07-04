@@ -887,7 +887,7 @@ class EventBundleCreator @Inject constructor(
       ScreenName.CREATE_PROFILE_ACTIVITY -> "create_profile_activity"
       ScreenName.INTRO_ACTIVITY -> "intro_activity"
       ScreenName.FEATURE_FLAGS_ACTIVITY -> "feature_flags_activity"
-      ScreenName.PLATFORM_PARAMETERS_ACTIVITY -> "platform_parameter_activity"
+      ScreenName.PLATFORM_PARAMETERS_ACTIVITY -> "platform_parameters_activity"
     }
 
     private fun AppLanguageSelection.toAnalyticsText(): String {

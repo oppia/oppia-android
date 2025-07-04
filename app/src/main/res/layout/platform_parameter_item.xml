@@ -32,16 +32,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="@{viewModel.platformParameterDisplayText}"
+        android:text="@{viewModel.platformParameterName}"
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/end_controls_barrier"
+        app:layout_constraintEnd_toStartOf="@id/platform_parameter_input_controls_barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
       <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/end_controls_barrier"
+        android:id="@+id/platform_parameter_input_controls_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="start"
@@ -59,7 +59,7 @@
         android:minHeight="48dp"
         android:onClick="@{() -> viewModel.onToggleFeatureFlagSwitch()}"
         android:theme="@style/OppiaSwitchCompatTheme"
-        android:visibility="@{viewModel.isInputVisible ? View.GONE : View.VISIBLE}"
+        android:visibility="@{viewModel.isTextInputMode ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -73,8 +73,8 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:textAlignment="center"
-        android:visibility="@{viewModel.isInputVisible ? View.VISIBLE : View.GONE}"
-        app:errorEnabled="true"
+        android:visibility="@{viewModel.isTextInputMode ? View.VISIBLE : View.GONE}"
+        app:errorMessage="@{viewModel.errorMessage}"
         app:errorIconDrawable="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,12 +85,10 @@
           style="@style/TextInputEditText"
           android:layout_width="72dp"
           android:layout_height="wrap_content"
-          android:layout_margin="@dimen/space_0dp"
           android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
           android:textAlignment="center"
           android:textColor="@color/component_color_shared_primary_dark_text_color"
           android:textSize="14sp" />
-
       </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -108,7 +106,7 @@
         style="@style/Subtitle1ViewStart"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/feature_flag_sync_status"
+        android:text="@string/platform_parameter_sync_status"
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/sync_status_value_text_view"
@@ -128,18 +126,16 @@
         android:paddingBottom="6dp"
         android:text="@{viewModel.syncStatusDisplayText}"
         android:textColor="@color/component_color_shared_secondary_4_text_color"
-        app:largeRoundedRectDrawableWithColor="@{viewModel.backgroundColor}"
+        app:largeRoundedRectDrawableWithColor="@{viewModel.syncStatusBackgroundColor}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
         app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@color/component_color_shared_divider_color" />
-
   </LinearLayout>
 </layout>

@@ -103,6 +103,7 @@ class PlatformParametersActivityTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var context: Context
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -129,7 +130,7 @@ class PlatformParametersActivityTest {
   }
 
   @Test
-  fun testPlatformParametersActivity_featureFlagFragmentIsDisplayed() {
+  fun testPlatformParametersActivity_platformParametersFragmentIsDisplayed() {
     launch<PlatformParametersActivity>(createPlatformParametersActivityIntent()).use {
       onView(withId(R.id.platform_parameters_fragment_container)).check(
         matches(isDisplayed())
@@ -138,7 +139,7 @@ class PlatformParametersActivityTest {
   }
 
   @Test
-  fun testPlatformParametersActivity_configChange_featureFlagFragmentIsDisplayed() {
+  fun testPlatformParametersActivity_configChange_platformParametersFragmentIsDisplayed() {
     launch<PlatformParametersActivity>(createPlatformParametersActivityIntent()).use {
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
       onView(withId(R.id.platform_parameters_fragment_container)).check(

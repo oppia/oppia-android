@@ -96,7 +96,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       if (platformParameterStates.containsKey(model.platformParameterId)) {
         model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
       }
-      model.onFeatureFlagToggleCallback = { id, value ->
+      model.onPlatformParameterToggleCallback = { id, value ->
         platformParameterStates[id] = PlatformParameterValue.newBuilder()
           .setBoolean(value)
           .build()
@@ -108,7 +108,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
         if (platformParameterStates.containsKey(model.platformParameterId)) {
           if (platformParameterStates[model.platformParameterId]?.integer == -1) {
-            binding.platformParameterInputLayout.error = invalidInputErrorText
+            model.errorMessage.set(invalidInputErrorText)
             model.inputValue.set("")
           } else {
             binding.platformParameterInputLayout.error = null
@@ -120,16 +120,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
         editText.setText(model.inputValue.get() ?: "")
         if (model.inputValue.get().toString().isNotEmpty()) {
-          binding.platformParameterInputLayout.error = null
+          model.errorMessage.set("")
         }
-        model.onTextChangedCallback = { id, text ->
+        model.onPlatformParameterTextChangedCallback = { id, text ->
           val parsed = text.toIntOrNull()
           if (parsed == null) {
-            binding.platformParameterInputLayout.error = invalidInputErrorText
+            model.errorMessage.set(invalidInputErrorText)
             platformParameterStates[id] =
               PlatformParameterValue.newBuilder().setInteger(-1).build()
           } else {
-            binding.platformParameterInputLayout.error = null
+            model.errorMessage.set("")
             platformParameterStates[id] =
               PlatformParameterValue.newBuilder().setInteger(parsed).build()
           }
@@ -141,14 +141,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.inputValue.set(platformParameterStates[model.platformParameterId]?.string)
         }
         editText.setText(model.inputValue.get())
-        model.onTextChangedCallback = { id, text ->
+        model.onPlatformParameterTextChangedCallback = { id, text ->
           if (text.isNullOrEmpty()) {
-            binding.platformParameterInputLayout.error = invalidInputErrorText
+            model.errorMessage.set(invalidInputErrorText)
             platformParameterStates[id] = PlatformParameterValue.newBuilder()
               .setString("")
               .build()
           } else {
-            binding.platformParameterInputLayout.error = null
+            model.errorMessage.set("")
             platformParameterStates[id] = PlatformParameterValue.newBuilder()
               .setString(text)
               .build()
@@ -159,7 +159,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     val newWatcher = object : TextWatcher {
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        model.onTextChangedCallback?.invoke(model.platformParameterId, s.toString())
+        model.onPlatformParameterTextChangedCallback?.invoke(model.platformParameterId, s.toString())
       }
 
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

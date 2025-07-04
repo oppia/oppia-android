@@ -24,43 +24,51 @@ class PlatformParameterItemViewModel(
   /** The observable boolean value of the parameter, used for switch toggles in UI. */
   val isChecked = ObservableField(currentValue.boolean)
 
-  /** Whether the input field should be visible (i.e., if the value is not a boolean). */
-  val isInputVisible = ObservableField(!currentValue.hasBoolean())
+  /**
+   *  Determines whether to display the parameter as a text input or toggle switch,
+   *  based on the parameter type.
+   */
+  val isTextInputMode = ObservableField(!currentValue.hasBoolean())
 
   /** The display name of the platform parameter. */
-  val platformParameterDisplayText = ObservableField(getPlatformParameterDisplayName())
+  val platformParameterName = ObservableField(getPlatformParameterDisplayName())
 
-  /** The sync status text for the platform parameter. */
+  /** Error message to be displayed in case of invalid input for a platform parameters. */
+  val errorMessage = ObservableField("")
+
+  /** The display text representing the current sync status of the parameter. */
   val syncStatusDisplayText = ObservableField(getSyncStatusText())
 
   /** The user-editable value of the platform parameter (if it is a string or integer). */
   val inputValue = ObservableField(
-    if (currentValue.hasString()) currentValue.string
-    else if (currentValue.hasInteger()) currentValue.integer.toString()
-    else ""
+    when {
+      currentValue.hasString() -> currentValue.string
+      currentValue.hasInteger() -> currentValue.integer.toString()
+      else -> ""
+    }
   )
 
   /**
    * Callback invoked when a boolean-type platform parameter is toggled.
-   * Passes the parameter ID and the new value.
+   * Passes the parameter ID and the new boolean value.
    */
-  var onFeatureFlagToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
+  var onPlatformParameterToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
 
   /**
-   * Callback invoked when a string/integer-type parameter's input text is changed.
-   * Passes the parameter ID and the updated string.
+   * Callback invoked when a string/integer-type platform parameter is edited.
+   * Passes the parameter ID and the updated string value.
    */
-  var onTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
+  var onPlatformParameterTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
 
-  /** The background color of the item based on its sync status. */
+  /** The background color of the sync status chip, determined by its sync state. */
   @ColorInt
-  val backgroundColor: Int = retrieveBackgroundColor().toInt()
+  val syncStatusBackgroundColor: Int = retrieveSyncStatusBackgroundColor().toInt()
 
   /** Called when the boolean toggle switch is clicked by the user. */
   fun onToggleFeatureFlagSwitch() {
     val newValue = !(isChecked.get() ?: false)
     isChecked.set(newValue)
-    onFeatureFlagToggleCallback?.invoke(platformParameterId, isChecked.get()!!)
+    onPlatformParameterToggleCallback?.invoke(platformParameterId, newValue)
   }
 
   private fun getPlatformParameterDisplayName(): String {
@@ -90,7 +98,7 @@ class PlatformParameterItemViewModel(
   }
 
   @ColorInt
-  private fun retrieveBackgroundColor(): Long {
+  private fun retrieveSyncStatusBackgroundColor(): Long {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF00645C
       SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
