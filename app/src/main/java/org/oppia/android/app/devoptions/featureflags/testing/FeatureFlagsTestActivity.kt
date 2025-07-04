@@ -8,7 +8,6 @@ import org.oppia.android.app.ui.R
 
 /** Activity for testing [FeatureFlagsFragment]. */
 class FeatureFlagsTestActivity : InjectableAutoLocalizedAppCompatActivity() {
-
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)

@@ -284,8 +284,8 @@ message OverriddenFeatureFlag {
   // The unique ID of the overridden feature flag.
   FeatureFlagId id = 1;
 
-  // Whether the override enables or disables the feature.
-  bool overridden_is_enabled = 2;
+  // The local value which is set by the developer.
+  bool overridden_value = 2;
 }
 
 // Corresponds to a developer override of a platform parameter.
