@@ -166,7 +166,6 @@ class CreateProfileFragmentPresenter @Inject constructor(
       when (result) {
         is AsyncResult.Success -> {
           createProfileViewModel.hasErrorMessage.set(false)
-
           // TODO(#4938): Add navigation to the PIN creation screen for ProfileType.SUPERVISOR
           // once the screen has been created.
           val params = IntroActivityParams.newBuilder()

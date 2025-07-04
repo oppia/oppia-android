@@ -101,13 +101,13 @@ class AdminIntroFragmentPresenter @Inject constructor(
     )
     binding.adminIntroComposeView.setContent {
       MaterialTheme {
-        AdminIntroScreen(profileId, profileType)
+        AdminInformationScreen(profileId, profileType)
       }
     }
   }
 
   @Composable
-  private fun AdminIntroScreen(profileId: ProfileId, profileType: ProfileType) {
+  private fun AdminInformationScreen(profileId: ProfileId, profileType: ProfileType) {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
     val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
     val orientation = LocalConfiguration.current.orientation
@@ -122,7 +122,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
         .fillMaxSize()
         .background(backgroundColor)
     ) {
-      WavyBackground(backgroundColorResId = R.color.component_color_onboarding_shared_white_color)
+      WavyBackgroundView(backgroundColorResId = R.color.component_color_onboarding_shared_white_color)
 
       Box(
         modifier = Modifier
@@ -287,7 +287,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
     }
   }
 
-  // TODO(#4938): Refactor to create profile nickname screen, the next onboarding step.
+  // TODO(#4938): Refactor to: create profile nickname screen, the next onboarding step.
   private fun navigateToProfileChooserActivity(profileId: ProfileId, profileType: ProfileType) {
     val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
     intent.apply {
