@@ -270,6 +270,9 @@ message EphemeralState {
 
   // The timestamp at which continue buttons (both interaction & navigation) should start animating.
   int64 continue_button_animation_timestamp_ms = 11;
+
+  // Indicates whether this state is a flashback state.
+  bool flashback_state = 12;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
