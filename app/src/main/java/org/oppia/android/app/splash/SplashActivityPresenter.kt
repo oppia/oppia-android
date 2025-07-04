@@ -487,6 +487,7 @@ class SplashActivityPresenter @Inject constructor(
       }
 
       activity.startActivity(intent)
+      activity.finish()
     }
 
     private fun resumeSupervisorOnboarding(profileId: ProfileId) {
@@ -500,6 +501,7 @@ class SplashActivityPresenter @Inject constructor(
       }
 
       activity.startActivity(intent)
+      activity.finish()
     }
 
     private fun launchProfileChooserScreen() {
