@@ -196,9 +196,6 @@ class AndroidLintRunner(
   fun prepareLintArguments(
     jdkHome: File,
     javaVersion: String,
-    buildSdkVersion: String
-  ): Array<String> {
-    prepareJdkEnvironment(jdkHome)
     buildSdkVersion: String,
     kotlinCompilerVersion: String
   ): Array<String> {
