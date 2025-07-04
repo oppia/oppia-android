@@ -356,7 +356,7 @@ private class ModuleConfigurationBuilder(
   private val modelsDirectory: File,
   private val partialResultsDirectory: File,
   cacheManager: CacheManager,
-  logger: LintLogger,
+  private val logger: LintLogger,
 ) {
 
   companion object {
@@ -405,7 +405,14 @@ private class ModuleConfigurationBuilder(
         throw IllegalStateException("Failed to create partial results directory: $absolutePath")
       }
     }
-
+    val annotationZips = try {
+      dependencyResolver.extractAnnotationZips(
+        dependencyResolver.resolveAarFiles(module)
+      )
+    } catch (e: Exception) {
+      logger.logError("Failed to extract annotation zips: ${e.message}")
+      emptyList()
+    }
     return ModuleConfig(
       name = module.moduleName,
       isAndroid = true,
@@ -422,9 +429,7 @@ private class ModuleConfigurationBuilder(
         dependencyResolver.resolveAarFiles(module)
       ),
       partialResultsDir = partialResultDir,
-      annotationZips = dependencyResolver.extractAnnotationZips(
-        dependencyResolver.resolveAarFiles(module)
-      ),
+      annotationZips = annotationZips,
       proGuardFiles = sourceCollector.collectProGuardFiles(module.moduleName)
     )
   }
