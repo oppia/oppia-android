@@ -21,7 +21,6 @@ class PlatformParameterItemViewModel(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
   /** The observable boolean value of the parameter, used for switch toggles in UI. */
   val isChecked = ObservableField(currentValue.boolean)
 

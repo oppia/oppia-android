@@ -28,7 +28,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   resourceHandler: AppLanguageResourceHandler,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
-
   private lateinit var binding: PlatformParametersFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>

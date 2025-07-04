@@ -22,7 +22,6 @@ class PlatformParametersViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
   private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
     Transformations.map(
       platformParameterControllerDebugImpl.loadEphemeralPlatformParameters().toLiveData(),
