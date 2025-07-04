@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -90,76 +91,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val editText = binding.platformParameterInputEditText
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
-
     if (model.currentValue.hasBoolean()) {
-      if (platformParameterStates.containsKey(model.platformParameterId)) {
-        model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
-      }
-      model.onPlatformParameterToggleCallback = { id, value ->
-        platformParameterStates[id] = PlatformParameterValue.newBuilder()
-          .setBoolean(value)
-          .build()
-      }
+      handleBooleanParameter(model)
     } else {
-      val paramState = platformParameterStates[model.platformParameterId]
-
-      when {
-        model.currentValue.hasInteger() -> {
-          editText.inputType = InputType.TYPE_CLASS_NUMBER
-          val displayValue = when (val storedValue = paramState?.integer) {
-            -1 -> {
-              model.errorMessage.set(invalidInputErrorText)
-              ""
-            }
-            null -> model.currentValue.integer.toString()
-            else -> storedValue.toString()
-          }
-          model.inputValue.set(displayValue)
-        }
-        model.currentValue.hasString() -> {
-          editText.inputType = InputType.TYPE_CLASS_TEXT
-          if (paramState != null) {
-            model.inputValue.set(paramState.string)
-          }
-        }
-        else -> {
-          editText.inputType = InputType.TYPE_CLASS_TEXT
-        }
-      }
-      editText.setText(model.inputValue.get() ?: "")
-      if (!model.inputValue.get().isNullOrEmpty()) {
-        model.errorMessage.set("")
-      }
-      model.onPlatformParameterTextChangedCallback = { id, text ->
-        when {
-          model.currentValue.hasInteger() -> {
-
-            val parsed = text.toIntOrNull()
-            if (parsed == null || text.isBlank()) {
-              model.errorMessage.set(invalidInputErrorText)
-              platformParameterStates[id] =
-                PlatformParameterValue.newBuilder().setInteger(-1).build()
-            } else {
-              model.errorMessage.set("")
-              platformParameterStates[id] =
-                PlatformParameterValue.newBuilder().setInteger(parsed).build()
-            }
-          }
-          model.currentValue.hasString() -> {
-            if (text.isNullOrEmpty()) {
-              model.errorMessage.set(invalidInputErrorText)
-              platformParameterStates[id] = PlatformParameterValue.newBuilder()
-                .setString("")
-                .build()
-            } else {
-              model.errorMessage.set("")
-              platformParameterStates[id] = PlatformParameterValue.newBuilder()
-                .setString(text)
-                .build()
-            }
-          }
-        }
-      }
+      handleTextInputParameter(model, editText)
     }
 
     val newWatcher = object : TextWatcher {
@@ -175,5 +110,85 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     editText.addTextChangedListener(newWatcher)
     editText.setTag(R.id.platform_parameter_text_watcher, newWatcher)
+  }
+
+  private fun handleTextInputParameter(
+    model: PlatformParameterItemViewModel,
+    editText: TextInputEditText
+  ) {
+    val paramState = platformParameterStates[model.platformParameterId]
+
+    when {
+      model.currentValue.hasInteger() -> {
+        editText.inputType = InputType.TYPE_CLASS_NUMBER
+        val displayValue = when (val storedValue = paramState?.integer) {
+          -1 -> {
+            model.errorMessage.set(invalidInputErrorText)
+            ""
+          }
+
+          null -> model.currentValue.integer.toString()
+          else -> storedValue.toString()
+        }
+        model.inputValue.set(displayValue)
+      }
+
+      model.currentValue.hasString() -> {
+        editText.inputType = InputType.TYPE_CLASS_TEXT
+        if (paramState != null) {
+          model.inputValue.set(paramState.string)
+        }
+      }
+
+      else -> {
+        editText.inputType = InputType.TYPE_CLASS_TEXT
+      }
+    }
+    editText.setText(model.inputValue.get() ?: "")
+    if (!model.inputValue.get().isNullOrEmpty()) {
+      model.errorMessage.set("")
+    }
+    model.onPlatformParameterTextChangedCallback = { id, text ->
+      when {
+        model.currentValue.hasInteger() -> {
+
+          val parsed = text.toIntOrNull()
+          if (parsed == null || text.isBlank()) {
+            model.errorMessage.set(invalidInputErrorText)
+            platformParameterStates[id] =
+              PlatformParameterValue.newBuilder().setInteger(-1).build()
+          } else {
+            model.errorMessage.set("")
+            platformParameterStates[id] =
+              PlatformParameterValue.newBuilder().setInteger(parsed).build()
+          }
+        }
+
+        model.currentValue.hasString() -> {
+          if (text.isNullOrEmpty()) {
+            model.errorMessage.set(invalidInputErrorText)
+            platformParameterStates[id] = PlatformParameterValue.newBuilder()
+              .setString("")
+              .build()
+          } else {
+            model.errorMessage.set("")
+            platformParameterStates[id] = PlatformParameterValue.newBuilder()
+              .setString(text)
+              .build()
+          }
+        }
+      }
+    }
+  }
+
+  private fun handleBooleanParameter(model: PlatformParameterItemViewModel) {
+    if (platformParameterStates.containsKey(model.platformParameterId)) {
+      model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
+    }
+    model.onPlatformParameterToggleCallback = { id, value ->
+      platformParameterStates[id] = PlatformParameterValue.newBuilder()
+        .setBoolean(value)
+        .build()
+    }
   }
 }
