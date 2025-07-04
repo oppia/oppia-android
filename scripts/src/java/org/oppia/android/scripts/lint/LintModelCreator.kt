@@ -242,7 +242,7 @@ class LintModelCreator(
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
-    
+
     val content =
       """
         <lint-module
@@ -381,7 +381,7 @@ class LintModelCreator(
 
   private fun createProguardAttribute(proGuardFiles: List<String>): String {
     val existingFiles = proGuardFiles.filter { File(it).exists() }
-    if( existingFiles.isEmpty() ) return ""
+    if (existingFiles.isEmpty()) return ""
     return """proguardFiles="${existingFiles.joinToString(FILE_SEPARATOR)}" """
   }
 
