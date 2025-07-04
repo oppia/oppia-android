@@ -223,7 +223,6 @@ class LintProjectDescription(
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
     private const val LINT_MODELS_DIRECTORY = "models-directory"
 
-
     /**
      * Ensures a directory exists, creating it if necessary.
      *

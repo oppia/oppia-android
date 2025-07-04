@@ -134,7 +134,6 @@ class AndroidLintRunnerTest {
       kotlinVersion
     )
 
-
     assertThat(result).asList().contains("--compile-sdk-version")
     val sdkVersionIndex = result.indexOf("--compile-sdk-version")
     assertThat(result[sdkVersionIndex + 1]).isEqualTo(customBuildSdk)
