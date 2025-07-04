@@ -242,14 +242,14 @@ class LintModelCreator(
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
-
+    val buildFolder = escapeXmlAttribute(buildDir.createDirectories().toFile().absolutePath)
     val content =
       """
         <lint-module
             dir="${escapeXmlAttribute(modulePath.toString())}"
             name="${escapeXmlAttribute(moduleConfig.name)}"
             type="${moduleType.name}"
-            buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
+            buildFolder="$buildFolder"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
             partialResultsDir="${escapeXmlAttribute(moduleConfig.partialResultsDir.absolutePath)}"

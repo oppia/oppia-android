@@ -83,7 +83,14 @@ class LintCommonTest {
 
   @Test
   fun testModuleConfig_createWithAllParameters_setsAllProperties() {
-    val aarFileInfo = AarFileInfo("original/path", "extracted/path")
+    val proGuardFile = File(workingDirectory, "proguard-rules.pro")
+    proGuardFile.createNewFile()
+    val lintCheckJar = File(workingDirectory, "lint-check.jar")
+    lintCheckJar.createNewFile()
+    val aarFile = File(workingDirectory, "test.aar")
+    aarFile.createNewFile()
+    val aarFileInfoWithExistingFile = AarFileInfo(aarFile.absolutePath, "extracted/path")
+
     val moduleConfig = ModuleConfig(
       name = "test-module",
       isAndroid = true,
@@ -94,12 +101,12 @@ class LintCommonTest {
       resourceDirs = listOf("src/main/res"),
       manifestFile = "src/main/AndroidManifest.xml",
       dependencies = listOf("dependency1", "dependency2"),
-      aarFiles = listOf(aarFileInfo),
+      aarFiles = listOf(aarFileInfoWithExistingFile),
       jarFiles = listOf("test.jar"),
-      lintCheckJars = listOf("lint-check.jar"),
+      lintCheckJars = listOf(lintCheckJar.absolutePath),
       lintModelDir = File(workingDirectory, "model-dir"),
       annotationZips = listOf("annotation.zip"),
-      proGuardFiles = listOf("proguard-rules.pro"),
+      proGuardFiles = listOf(proGuardFile.absolutePath),
       partialResultsDir = File(workingDirectory, "partial-results")
     )
 
@@ -112,14 +119,14 @@ class LintCommonTest {
     assertThat(moduleConfig.resourceDirs).containsExactly("src/main/res")
     assertThat(moduleConfig.manifestFile).isEqualTo("src/main/AndroidManifest.xml")
     assertThat(moduleConfig.dependencies).containsExactly("dependency1", "dependency2")
-    assertThat(moduleConfig.aarFiles).containsExactly(aarFileInfo)
+    assertThat(moduleConfig.aarFiles).containsExactly(aarFileInfoWithExistingFile)
     assertThat(moduleConfig.jarFiles).containsExactly("test.jar")
-    assertThat(moduleConfig.lintCheckJars).containsExactly("lint-check.jar")
+    assertThat(moduleConfig.lintCheckJars).containsExactly(lintCheckJar.absolutePath)
     assertThat(moduleConfig.lintModelDir).isEqualTo(File(workingDirectory, "model-dir"))
     assertThat(moduleConfig.annotationZips).containsExactly("annotation.zip")
     assertThat(moduleConfig.partialResultsDir)
       .isEqualTo(File(workingDirectory, "partial-results"))
-    assertThat(moduleConfig.proGuardFiles).containsExactly("proguard-rules.pro")
+    assertThat(moduleConfig.proGuardFiles).containsExactly(proGuardFile.absolutePath)
   }
 
   @Test
@@ -143,6 +150,133 @@ class LintCommonTest {
     )
 
     assertThat(moduleConfig.lintModelDir).isNull()
+  }
+
+  @Test
+  fun testModuleConfig_createWithBlankName_throwsError() {
+    val exception = assertThrows<IllegalArgumentException> {
+      ModuleConfig(
+        name = "",
+        isAndroid = true,
+        isLibrary = false,
+        isTest = false,
+        srcFiles = emptyList(),
+        testFiles = emptyList(),
+        resourceDirs = emptyList(),
+        manifestFile = "",
+        dependencies = emptyList(),
+        aarFiles = emptyList(),
+        jarFiles = emptyList(),
+        lintCheckJars = emptyList(),
+        annotationZips = emptyList(),
+        partialResultsDir = File(workingDirectory, "partial-results"),
+        proGuardFiles = emptyList()
+      )
+    }
+    assertThat(exception.message).contains("Module name cannot be blank")
+  }
+
+  @Test
+  fun testModuleConfig_createWithNonExistentProGuardFile_throwsError() {
+    val exception = assertThrows<IllegalArgumentException> {
+      ModuleConfig(
+        name = "test-module",
+        isAndroid = true,
+        isLibrary = false,
+        isTest = false,
+        srcFiles = emptyList(),
+        testFiles = emptyList(),
+        resourceDirs = emptyList(),
+        manifestFile = "",
+        dependencies = emptyList(),
+        aarFiles = emptyList(),
+        jarFiles = emptyList(),
+        lintCheckJars = emptyList(),
+        annotationZips = emptyList(),
+        partialResultsDir = File(workingDirectory, "partial-results"),
+        proGuardFiles = listOf("/non/existent/proguard-rules.pro")
+      )
+    }
+    assertThat(exception.message).contains("ProGuard files do not exist")
+    assertThat(exception.message).contains("/non/existent/proguard-rules.pro")
+  }
+
+  @Test
+  fun testModuleConfig_createWithNonExistentAarFile_throwsError() {
+    val nonExistentAarFile = AarFileInfo("/non/existent/test.aar", "extracted/path")
+
+    val exception = assertThrows<IllegalArgumentException> {
+      ModuleConfig(
+        name = "test-module",
+        isAndroid = true,
+        isLibrary = false,
+        isTest = false,
+        srcFiles = emptyList(),
+        testFiles = emptyList(),
+        resourceDirs = emptyList(),
+        manifestFile = "",
+        dependencies = emptyList(),
+        aarFiles = listOf(nonExistentAarFile),
+        jarFiles = emptyList(),
+        lintCheckJars = emptyList(),
+        annotationZips = emptyList(),
+        partialResultsDir = File(workingDirectory, "partial-results"),
+        proGuardFiles = emptyList()
+      )
+    }
+    assertThat(exception.message).contains("AAR files do not exist")
+    assertThat(exception.message).contains("/non/existent/test.aar")
+  }
+
+  @Test
+  fun testModuleConfig_createWithNonExistentLintCheckJar_throwsError() {
+    val exception = assertThrows<IllegalArgumentException> {
+      ModuleConfig(
+        name = "test-module",
+        isAndroid = true,
+        isLibrary = false,
+        isTest = false,
+        srcFiles = emptyList(),
+        testFiles = emptyList(),
+        resourceDirs = emptyList(),
+        manifestFile = "",
+        dependencies = emptyList(),
+        aarFiles = emptyList(),
+        jarFiles = emptyList(),
+        lintCheckJars = listOf("/non/existent/lint-check.jar"),
+        annotationZips = emptyList(),
+        partialResultsDir = File(workingDirectory, "partial-results"),
+        proGuardFiles = emptyList()
+      )
+    }
+    assertThat(exception.message).contains("Lint check JAR files do not exist")
+    assertThat(exception.message).contains("/non/existent/lint-check.jar")
+  }
+
+  @Test
+  fun testModuleConfig_createWithMultipleNonExistentFiles_throwsErrorWithAllFiles() {
+    val nonExistentAarFile = AarFileInfo("/non/existent/test.aar", "extracted/path")
+
+    val exception = assertThrows<IllegalArgumentException> {
+      ModuleConfig(
+        name = "test-module",
+        isAndroid = true,
+        isLibrary = false,
+        isTest = false,
+        srcFiles = emptyList(),
+        testFiles = emptyList(),
+        resourceDirs = emptyList(),
+        manifestFile = "",
+        dependencies = emptyList(),
+        aarFiles = listOf(nonExistentAarFile),
+        jarFiles = emptyList(),
+        lintCheckJars = listOf("/non/existent/lint1.jar", "/non/existent/lint2.jar"),
+        annotationZips = emptyList(),
+        partialResultsDir = File(workingDirectory, "partial-results"),
+        proGuardFiles = listOf("/non/existent/proguard1.pro", "/non/existent/proguard2.pro")
+      )
+    }
+    assertThat(exception.message).contains("ProGuard files do not exist")
   }
 
   @Test

@@ -51,7 +51,35 @@ data class ModuleConfig(
   val lintModelDir: File? = null,
   val partialResultsDir: File,
   val proGuardFiles: List<String>
-)
+) {
+  init {
+    require(name.isNotBlank()) { "Module name cannot be blank" }
+
+    require(partialResultsDir.canWrite() || partialResultsDir.mkdirs()) {
+      "Cannot create or write to partialResultsDir: ${partialResultsDir.absolutePath}"
+    }
+
+    val missingProguardFiles = proGuardFiles.filter { !File(it).exists() }
+    if (missingProguardFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "ProGuard files do not exist: ${missingProguardFiles.joinToString(", ")}"
+      )
+    }
+
+    val missingAarFiles = aarFiles.filter { !File(it.originalPath).exists() }
+    if (missingAarFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "AAR files do not exist: ${missingAarFiles.joinToString(", ") { it.originalPath }}"
+      )
+    }
+
+    val missingLintCheckJars = lintCheckJars.filter { !File(it).exists() }
+    if (missingLintCheckJars.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "Lint check JAR files do not exist: ${missingLintCheckJars.joinToString(", ")}"
+      )
+    }
+}}
 
 /** Information about an AAR file and its extraction location. */
 data class AarFileInfo(
