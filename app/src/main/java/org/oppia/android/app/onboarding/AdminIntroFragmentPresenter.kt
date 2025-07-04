@@ -122,7 +122,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
         .fillMaxSize()
         .background(backgroundColor)
     ) {
-      WavyBackgroundView(backgroundColorResId = R.color.component_color_onboarding_shared_white_color)
+      WavyBackgroundView(
+        backgroundColorResId = R.color.component_color_onboarding_shared_white_color
+      )
 
       Box(
         modifier = Modifier
