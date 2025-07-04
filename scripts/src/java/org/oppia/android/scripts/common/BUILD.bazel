@@ -4,7 +4,7 @@ generic operations.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION")
+load("//:build_vars.bzl", "BUILD_SDK_VERSION", "BUILD_TOOLS_VERSION", "KOTLIN_COMPILER_VERSION")
 
 kt_jvm_library(
     name = "android_build_sdk_properties",
@@ -108,5 +108,6 @@ genrule(
     cmd = """
     echo build_sdk_version={0} > \"$@\"
     echo build_tools_version={1} >> \"$@\"
-    """.format(BUILD_SDK_VERSION, BUILD_TOOLS_VERSION),
+    echo kotlin_compiler_version={2} >> \"$@\"
+    """.format(BUILD_SDK_VERSION, BUILD_TOOLS_VERSION, KOTLIN_COMPILER_VERSION),
 )

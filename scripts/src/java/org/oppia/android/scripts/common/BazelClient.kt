@@ -155,6 +155,37 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     }
   }
 
+  /**
+   * Returns all file dependencies for the specified Bazel target.
+   *
+   * @param bazelTarget the Bazel target to query dependencies for
+   * @return list of file paths that the target depends on
+   */
+  fun retrieveTargetModuleDependencies(bazelTarget: String): List<String> {
+    return executeBazelCommand(
+      "cquery",
+      "deps($bazelTarget)",
+      "--output=files"
+    )
+  }
+
+  /**
+   * Returns Bazel workspace information.
+   *
+   * @return map of Bazel workspace information
+   */
+  fun retrieveBazelInfo(): Map<String, String> {
+    val infoLines = executeBazelCommand("info")
+    return infoLines.mapNotNull { line ->
+      val parts = line.split(": ", limit = 2)
+      if (parts.size == 2) {
+        parts[0] to parts[1]
+      } else {
+        null
+      }
+    }.toMap()
+  }
+
   private fun parseCoverageDataFilePath(
     bazelTestTarget: String,
     coverageCommandOutputLines: List<String>
