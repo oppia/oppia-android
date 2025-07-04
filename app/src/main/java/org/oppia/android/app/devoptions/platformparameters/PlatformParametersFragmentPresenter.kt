@@ -92,7 +92,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     previousWatcher?.let { editText.removeTextChangedListener(it) }
 
     if (model.currentValue.hasBoolean()) {
-
       if (platformParameterStates.containsKey(model.platformParameterId)) {
         model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
       }
@@ -102,56 +101,62 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           .build()
       }
     } else {
+      val paramState = platformParameterStates[model.platformParameterId]
 
-      if (model.currentValue.hasInteger()) {
-        binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_NUMBER
-
-        if (platformParameterStates.containsKey(model.platformParameterId)) {
-          if (platformParameterStates[model.platformParameterId]?.integer == -1) {
-            model.errorMessage.set(invalidInputErrorText)
-            model.inputValue.set("")
-          } else {
-            binding.platformParameterInputLayout.error = null
-            model.inputValue
-              .set(platformParameterStates[model.platformParameterId]?.integer.toString())
+      when {
+        model.currentValue.hasInteger() -> {
+          editText.inputType = InputType.TYPE_CLASS_NUMBER
+          val displayValue = when (val storedValue = paramState?.integer) {
+            -1 -> {
+              model.errorMessage.set(invalidInputErrorText)
+              ""
+            }
+            null -> model.currentValue.integer.toString()
+            else -> storedValue.toString()
           }
-        } else {
-          model.inputValue.set(model.currentValue.integer.toString())
+          model.inputValue.set(displayValue)
         }
-        editText.setText(model.inputValue.get() ?: "")
-        if (model.inputValue.get().toString().isNotEmpty()) {
-          model.errorMessage.set("")
-        }
-        model.onPlatformParameterTextChangedCallback = { id, text ->
-          val parsed = text.toIntOrNull()
-          if (parsed == null) {
-            model.errorMessage.set(invalidInputErrorText)
-            platformParameterStates[id] =
-              PlatformParameterValue.newBuilder().setInteger(-1).build()
-          } else {
-            model.errorMessage.set("")
-            platformParameterStates[id] =
-              PlatformParameterValue.newBuilder().setInteger(parsed).build()
+        model.currentValue.hasString() -> {
+          editText.inputType = InputType.TYPE_CLASS_TEXT
+          if (paramState != null) {
+            model.inputValue.set(paramState.string)
           }
         }
-      } else {
-
-        binding.platformParameterInputEditText.inputType = InputType.TYPE_CLASS_TEXT
-        if (platformParameterStates.containsKey(model.platformParameterId)) {
-          model.inputValue.set(platformParameterStates[model.platformParameterId]?.string)
+        else -> {
+          editText.inputType = InputType.TYPE_CLASS_TEXT
         }
-        editText.setText(model.inputValue.get())
-        model.onPlatformParameterTextChangedCallback = { id, text ->
-          if (text.isNullOrEmpty()) {
-            model.errorMessage.set(invalidInputErrorText)
-            platformParameterStates[id] = PlatformParameterValue.newBuilder()
-              .setString("")
-              .build()
-          } else {
-            model.errorMessage.set("")
-            platformParameterStates[id] = PlatformParameterValue.newBuilder()
-              .setString(text)
-              .build()
+      }
+      editText.setText(model.inputValue.get() ?: "")
+      if (!model.inputValue.get().isNullOrEmpty()) {
+        model.errorMessage.set("")
+      }
+      model.onPlatformParameterTextChangedCallback = { id, text ->
+        when {
+          model.currentValue.hasInteger() -> {
+
+            val parsed = text.toIntOrNull()
+            if (parsed == null || text.isBlank()) {
+              model.errorMessage.set(invalidInputErrorText)
+              platformParameterStates[id] =
+                PlatformParameterValue.newBuilder().setInteger(-1).build()
+            } else {
+              model.errorMessage.set("")
+              platformParameterStates[id] =
+                PlatformParameterValue.newBuilder().setInteger(parsed).build()
+            }
+          }
+          model.currentValue.hasString() -> {
+            if (text.isNullOrEmpty()) {
+              model.errorMessage.set(invalidInputErrorText)
+              platformParameterStates[id] = PlatformParameterValue.newBuilder()
+                .setString("")
+                .build()
+            } else {
+              model.errorMessage.set("")
+              platformParameterStates[id] = PlatformParameterValue.newBuilder()
+                .setString(text)
+                .build()
+            }
           }
         }
       }
@@ -159,7 +164,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     val newWatcher = object : TextWatcher {
       override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        model.onPlatformParameterTextChangedCallback?.invoke(model.platformParameterId, s.toString())
+        model.onPlatformParameterTextChangedCallback?.invoke(
+          model.platformParameterId, s.toString()
+        )
       }
 
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

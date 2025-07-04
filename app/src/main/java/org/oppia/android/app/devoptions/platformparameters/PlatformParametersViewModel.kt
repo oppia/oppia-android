@@ -1,6 +1,5 @@
 package org.oppia.android.app.devoptions.platformparameters
 
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope

@@ -418,6 +418,65 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
+  fun testPlatformParametersFragment_modifyIntegerParameter_scrollAndBack_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(7)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("42"))
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setInteger(42)
+        .build()
+
+      scrollToPosition(1)
+
+      scrollToPosition(7)
+      verifyPlatformParameterState(
+        position = 7,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_toggleBooleanParameter_scrollAndBack_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val originalValue = getEphemeralPlatformParameters()[0].currentValue.boolean
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!originalValue)
+        .build()
+
+      scrollToPosition(8)
+
+      scrollToPosition(0)
+      verifyPlatformParameterState(
+        position = 0,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
   private fun verifyPlatformParameterDisplayName(
     position: Int,
     expectedDisplayName: String
