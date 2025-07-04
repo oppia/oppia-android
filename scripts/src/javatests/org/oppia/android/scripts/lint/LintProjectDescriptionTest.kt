@@ -577,6 +577,102 @@ class LintProjectDescriptionTest {
     assertThat(result).containsExactly("test-dependency")
   }
 
+  @Test
+  fun testBuildAllModuleConfigurations_returnsCorrectNumberOfModules() {
+    setupFakeCommandExecutorForModules()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    val moduleCount = xmlContent.split("<module").size - 1
+    assertThat(moduleCount).isEqualTo(5)
+
+    val expectedModules = listOf("app", "utility", "domain", "testing", "data")
+    expectedModules.forEach { moduleName ->
+      assertThat(xmlContent).contains("name=\"$moduleName\"")
+    }
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_setsCorrectLibraryFlags() {
+    setupFakeCommandExecutorForModules()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    assertThat(xmlContent).contains("name=\"app\"")
+    assertThat(xmlContent).contains("library=\"false\"")
+
+    val libraryTrueCount = xmlContent.split("library=\"true\"").size - 1
+    assertThat(libraryTrueCount).isEqualTo(4) // utility, domain, testing, data
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_includesResourceDirectories() {
+    setupFakeCommandExecutorForModules()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    // Verify resource directories are included
+    val resourceDirCount = xmlContent.split("<resource dir=").size - 1
+    assertThat(resourceDirCount).isAtLeast(5) // At least one per module
+
+    // Verify resource directories contain "res" in path
+    val resourcePattern = Regex("""<resource dir="[^"]*res[^"]*"/>""")
+    val resourceMatches = resourcePattern.findAll(xmlContent).count()
+    assertThat(resourceMatches).isEqualTo(resourceDirCount)
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_includesManifestFiles() {
+    setupFakeCommandExecutorForModules()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    // Verify each module has a manifest file
+    val manifestCount = xmlContent.split("<manifest file=").size - 1
+    assertThat(manifestCount).isEqualTo(5) // One per module
+
+    // Verify manifest files point to AndroidManifest.xml
+    val manifestPattern = Regex("""<manifest file="[^"]*AndroidManifest\.xml"/>""")
+    val manifestMatches = manifestPattern.findAll(xmlContent).count()
+    assertThat(manifestMatches).isEqualTo(5)
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_setsAndroidFlag() {
+    setupFakeCommandExecutorForModules()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    // All modules should have android="true"
+    val androidTrueCount = xmlContent.split("android=\"true\"").size - 1
+    assertThat(androidTrueCount).isEqualTo(5) // All modules are Android modules
+
+    // No modules should have android="false"
+    assertThat(xmlContent).doesNotContain("android=\"false\"")
+  }
+
+  private fun setupFakeCommandExecutorForModules() {
+    fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
+      when {
+        args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
+          0
+        }
+        args.contains("info") -> {
+          outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
+          outputStream.println("java-home: /usr/lib/jvm/java-11")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
+          0
+        }
+        else -> 0
+      }
+    }
+  }
+
   private fun setupFakeCommandExecutorForAarDependencies(aarPath: String) {
     fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
       when {
