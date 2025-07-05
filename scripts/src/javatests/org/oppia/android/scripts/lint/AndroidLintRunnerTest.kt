@@ -33,6 +33,7 @@ class AndroidLintRunnerTest {
   private val fakeCommandExecutor by lazy { FakeCommandExecutor() }
   private lateinit var androidLintAnalyzerWithFakeExecutor: AndroidLintAnalyzer
   private lateinit var workingDirectory: File
+  private lateinit var bazelBinFolder: File
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
@@ -54,7 +55,8 @@ class AndroidLintRunnerTest {
     System.setOut(PrintStream(outputStream))
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion.toString()
-    workingDirectory = File(tempFolder.root, "lint_analysis").apply { mkdirs() }
+    workingDirectory = tempFolder.newFolder("lint_analysis")
+    bazelBinFolder = tempFolder.newFolder("bazel-bin")
     androidLintAnalyzerWithFakeExecutor = AndroidLintAnalyzer(
       commandExecutor = fakeCommandExecutor,
       workingDirectory = workingDirectory,
@@ -116,7 +118,7 @@ class AndroidLintRunnerTest {
     val projectDescription = File(workingDirectory, "lint-project-description.xml")
     assertThat(projectDescription.exists()).isTrue()
     val extractedAars = File(workingDirectory, "extracted-aars")
-    val extractedAarFile = File("$extractedAars/app", "test-aar-1.0.0")
+    val extractedAarFile = File("$extractedAars/app", "test-library-1.0.0")
     assertThat(extractedAarFile.exists()).isTrue()
     val lintCacheDirectory = File(workingDirectory, "lint-cache-directory")
     assertThat(lintCacheDirectory.exists()).isTrue()
@@ -1008,10 +1010,8 @@ class AndroidLintRunnerTest {
     createModule("domain")
     createModule("testing")
     createModule("data")
-    val aarFile = createTestAarFile("test-aar", "1.0.0")
-    val jarFile = createTestJarFile("test-jar", "1.0.0")
 
-    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
+    setupFakeCommandExecutor()
   }
 
   private fun createModule(
@@ -1151,22 +1151,29 @@ class AndroidLintRunnerTest {
     )
   }
 
-  private fun setupFakeCommandExecutor(aarPath: String, jarPath: String) {
+  private fun setupFakeCommandExecutor() {
+    val aarPath = createTestAarFile("test-library", "1.0.0").absolutePath
+    val jarPath = createTestJarFile("test-library", "1.0.0").absolutePath
+
     fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
       when {
         args.contains("cquery") && args.contains("deps(//app:*)") -> {
-          outputStream.println(aarPath)
-          outputStream.println(jarPath)
+          val relativeAarPath = File(aarPath).relativeTo(tempFolder.root).path
+          outputStream.println(relativeAarPath)
+          val relativeJarPath = File(jarPath).relativeTo(tempFolder.root).path
+          outputStream.println(relativeJarPath)
           0
         }
         args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
-          // Return empty for other modules
+          // Return some dependencies for other modules
+          outputStream.println("external/junit/junit-4.12.jar")
+          outputStream.println("external/hamcrest/hamcrest-core-1.3.jar")
           0
         }
         args.contains("info") -> {
           outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
           outputStream.println("java-home: $jdkHome")
-          outputStream.println("java-runtime: OpenJDK Runtime Environment (build $JAVA_VERSION)")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
           0
         }
         else -> 0
@@ -1175,7 +1182,7 @@ class AndroidLintRunnerTest {
   }
 
   private fun createTestAarFile(libraryName: String, version: String): File {
-    val aarFile = tempFolder.newFile("$libraryName-$version.aar")
+    val aarFile = File(bazelBinFolder, "$libraryName-$version.aar")
 
     ZipOutputStream(FileOutputStream(aarFile)).use { zipOut ->
       // Add AndroidManifest.xml
@@ -1217,7 +1224,7 @@ class AndroidLintRunnerTest {
   }
 
   private fun createTestJarFile(libraryName: String, version: String): File {
-    val jarFile = tempFolder.newFile("$libraryName-$version.jar")
+    val jarFile = File(bazelBinFolder, "$libraryName-$version.jar")
 
     ZipOutputStream(FileOutputStream(jarFile)).use { zipOut ->
       val classEntry = ZipEntry("com/example/$libraryName/Class.class")
