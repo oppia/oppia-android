@@ -45,7 +45,6 @@ class LogoutDialogFragment : InjectableDialogFragment() {
           )
         }
         startActivity(intent)
-        startActivity(intent)
       }.create()
   }
 }
