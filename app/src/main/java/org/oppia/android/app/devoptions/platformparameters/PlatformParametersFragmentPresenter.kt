@@ -144,13 +144,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       model.currentValue.hasString() -> {
         editText.inputType = InputType.TYPE_CLASS_TEXT
 
-        if (paramState != null) {
-          model.inputValue.set(paramState.string)
-          model.inputErrorMsg.set("")
-        }
-      }
-      else -> {
-        editText.inputType = InputType.TYPE_CLASS_TEXT
+        model.inputValue.set(paramState?.string ?: model.currentValue.string)
         model.inputValue.set("")
       }
     }
@@ -163,7 +157,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           editText.setTag(R.id.platform_parameter_text_change_flag, false)
           return@onPlatformParameterTextChangedCallback
         }
-        oppiaLogger.d("PlatformParametersFragmentPresenter", "Text changed for $id: $text")
+
         when {
           model.currentValue.hasInteger() -> {
             val parsed = text.toIntOrNull()
