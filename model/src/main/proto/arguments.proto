@@ -952,3 +952,9 @@ message StatePlayerRecyclerViewAssemblerState {
   // Indicates whether the previous responses header is expanded.
   bool has_previous_responses_expanded = 1;
 }
+
+// Arguments required when creating an FlashbackConfirmationDialogFragment.
+message FlashbackConfirmationDialogFragmentArguments {
+  // The name of the state that will be shown as a flashback.
+  string state_name = 1;
+}

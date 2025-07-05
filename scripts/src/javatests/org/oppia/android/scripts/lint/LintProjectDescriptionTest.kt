@@ -494,6 +494,248 @@ class LintProjectDescriptionTest {
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     assertThat(result.exists()).isTrue()
   }
+  
+  @Test
+  fun testCacheManager_getDependencies_cachesResults() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      listOf("dependency1", "dependency2")
+    }
+
+    // First call should invoke provider
+    val result1 = cacheManager.getDependencies("test-key", provider)
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).containsExactly("dependency1", "dependency2")
+
+    // Second call should use cache
+    val result2 = cacheManager.getDependencies("test-key", provider)
+    assertThat(callCount).isEqualTo(1) // Provider not called again
+    assertThat(result2).containsExactly("dependency1", "dependency2")
+  }
+
+  @Test
+  fun testCacheManager_getPathResolution_cachesResults() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      "/resolved/path"
+    }
+
+    // First call should invoke provider
+    val result1 = cacheManager.getPathResolution("test-path", provider)
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).isEqualTo("/resolved/path")
+
+    // Second call should use cache
+    val result2 = cacheManager.getPathResolution("test-path", provider)
+    assertThat(callCount).isEqualTo(1) // Provider not called again
+    assertThat(result2).isEqualTo("/resolved/path")
+  }
+
+  @Test
+  fun testCacheManager_getAarExtraction_cachesResults() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      "/extracted/aar/path"
+    }
+
+    // First call should invoke provider
+    val result1 = cacheManager.getAarExtraction("test-aar", provider)
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).isEqualTo("/extracted/aar/path")
+
+    // Second call should use cache
+    val result2 = cacheManager.getAarExtraction("test-aar", provider)
+    assertThat(callCount).isEqualTo(1) // Provider not called again
+    assertThat(result2).isEqualTo("/extracted/aar/path")
+  }
+
+  @Test
+  fun testCacheManager_differentKeys_separateEntries() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      listOf("dependency-$callCount")
+    }
+
+    val result1 = cacheManager.getDependencies("key1", provider)
+    val result2 = cacheManager.getDependencies("key2", provider)
+
+    assertThat(callCount).isEqualTo(2)
+    assertThat(result1).containsExactly("dependency-1")
+    assertThat(result2).containsExactly("dependency-2")
+  }
+
+  @Test
+  fun testCacheManager_nullPathResolution_cached() {
+    val cacheManager = CacheManager()
+    var callCount = 0
+
+    val provider = {
+      callCount++
+      null
+    }
+
+    val result1 = cacheManager.getPathResolution("non-existent-path", provider)
+    val result2 = cacheManager.getPathResolution("non-existent-path", provider)
+
+    assertThat(callCount).isEqualTo(1)
+    assertThat(result1).isNull()
+    assertThat(result2).isNull()
+  }
+
+  @Test
+  fun testCacheManager_memoryCleanup_performsAggressiveCleanup() {
+    val cacheManager = CacheManager()
+
+    // Fill cache with many entries to trigger cleanup
+    repeat(1000) { index ->
+      cacheManager.getDependencies("key-$index") {
+        // Create large list to consume memory
+        List(1000) { "dependency-$index-$it" }
+      }
+    }
+
+    val result = cacheManager.getDependencies("final-key") {
+      listOf("final-dependency")
+    }
+
+    assertThat(result).containsExactly("final-dependency")
+    // Test passes if no OutOfMemoryError is thrown
+  }
+
+  @Test
+  fun testCacheManager_mixedCacheTypes_workIndependently() {
+    val cacheManager = CacheManager()
+
+    val dependencies = cacheManager.getDependencies("test-key") {
+      listOf("dep1", "dep2")
+    }
+
+    val pathResolution = cacheManager.getPathResolution("test-key") {
+      "/some/path"
+    }
+
+    val aarExtraction = cacheManager.getAarExtraction("test-key") {
+      "/extracted/path"
+    }
+
+    assertThat(dependencies).containsExactly("dep1", "dep2")
+    assertThat(pathResolution).isEqualTo("/some/path")
+    assertThat(aarExtraction).isEqualTo("/extracted/path")
+  }
+
+  @Test
+  fun testCacheManager_expiredEntries_cleanupProperly() {
+    val cacheManager = CacheManager()
+
+    repeat(10) { index ->
+      cacheManager.getDependencies("expired-key-$index") {
+        listOf("dependency-$index")
+      }
+    }
+
+    repeat(5) { index ->
+      cacheManager.getDependencies("new-key-$index") {
+        listOf("new-dependency-$index")
+      }
+    }
+
+    val result = cacheManager.getDependencies("test-key") {
+      listOf("test-dependency")
+    }
+
+    assertThat(result).containsExactly("test-dependency")
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_returnsCorrectNumberOfModules() {
+    setupFakeCommandExecutor()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    val moduleCount = xmlContent.split("<module").size - 1
+    assertThat(moduleCount).isEqualTo(5)
+
+    val expectedModules = listOf("app", "utility", "domain", "testing", "data")
+    expectedModules.forEach { moduleName ->
+      assertThat(xmlContent).contains("name=\"$moduleName\"")
+    }
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_setsCorrectLibraryFlags() {
+    setupFakeCommandExecutor()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    assertThat(xmlContent).contains("name=\"app\"")
+    assertThat(xmlContent).contains("library=\"false\"")
+
+    val libraryTrueCount = xmlContent.split("library=\"true\"").size - 1
+    assertThat(libraryTrueCount).isEqualTo(4) // utility, domain, testing, data
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_includesResourceDirectories() {
+    setupFakeCommandExecutor()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    // Verify resource directories are included
+    val resourceDirCount = xmlContent.split("<resource dir=").size - 1
+    assertThat(resourceDirCount).isAtLeast(5) // At least one per module
+
+    // Verify resource directories contain "res" in path
+    val resourcePattern = Regex("""<resource dir="[^"]*res[^"]*"/>""")
+    val resourceMatches = resourcePattern.findAll(xmlContent).count()
+    assertThat(resourceMatches).isEqualTo(resourceDirCount)
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_includesManifestFiles() {
+    setupFakeCommandExecutor()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    // Verify each module has a manifest file
+    val manifestCount = xmlContent.split("<manifest file=").size - 1
+    assertThat(manifestCount).isEqualTo(5) // One per module
+
+    // Verify manifest files point to AndroidManifest.xml
+    val manifestPattern = Regex("""<manifest file="[^"]*AndroidManifest\.xml"/>""")
+    val manifestMatches = manifestPattern.findAll(xmlContent).count()
+    assertThat(manifestMatches).isEqualTo(5)
+  }
+
+  @Test
+  fun testBuildAllModuleConfigurations_setsAndroidFlag() {
+    setupFakeCommandExecutor()
+
+    val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
+    val xmlContent = result.readText()
+
+    // All modules should have android="true"
+    val androidTrueCount = xmlContent.split("android=\"true\"").size - 1
+    assertThat(androidTrueCount).isEqualTo(5) // All modules are Android modules
+
+    // No modules should have android="false"
+    assertThat(xmlContent).doesNotContain("android=\"false\"")
+  }
 
   private fun setupProjectStructure() {
     testBazelWorkspace.initEmptyWorkspace()

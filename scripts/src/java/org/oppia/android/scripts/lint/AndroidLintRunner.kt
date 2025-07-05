@@ -99,14 +99,16 @@ class AndroidLintAnalyzer(
       projectDescriptionFile = projectDescriptionFile,
       groupByIssueSeverity = groupByIssueSeverity
     )
-
+    val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
     val javaConfig = JavaConfiguration(bazelInfo)
-    val buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion
+    val buildSdkVersion = sdkProperties.buildSdkVersion
+    val kotlinVersion = sdkProperties.kotlinCompilerVersion
     val cliArgs = lintRunner.prepareLintArguments(
       jdkHome = javaConfig.getJdkHome(),
       javaVersion = javaConfig.getVersion(),
-      buildSdkVersion = buildSdkVersion.toString()
+      buildSdkVersion = buildSdkVersion.toString(),
+      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
     )
 
     lintRunner.runLint(cliArgs)
@@ -120,6 +122,15 @@ class AndroidLintAnalyzer(
       commandExecutor = commandExecutor
     )
     return lintProjectDescription.generateProjectDescriptionXml()
+  }
+
+  private fun extractKotlinMajorVersion(version: String): String {
+    val cleanedVersion = version.substringBefore("-")
+    val parts = cleanedVersion.split(".")
+    return listOfNotNull(
+      parts.getOrNull(0),
+      parts.getOrNull(1)
+    ).joinToString(".")
   }
 }
 
@@ -137,7 +148,6 @@ class AndroidLintRunner(
 ) {
   companion object {
     private const val LINT_CLIENT_ID = "cli"
-    private const val KOTLIN_LANGUAGE_VERSION = "1.6"
     private const val JDK_RELEASE_FILE = "release"
 
     private const val SUCCESS = 0
@@ -163,7 +173,7 @@ class AndroidLintRunner(
   fun runLint(cliArgs: Array<String>) {
     val exitCode = LintCli().run(cliArgs)
 
-    // Allow exit code ISSUES_FOUND since it indicates issues with
+    // Allow exit code 1(ISSUES_FOUND) since it indicates issues with
     // severity Error which is being handled by LintAnalysisReporter.
     if (exitCode != SUCCESS && exitCode != ISSUES_FOUND) {
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
@@ -186,10 +196,10 @@ class AndroidLintRunner(
   fun prepareLintArguments(
     jdkHome: File,
     javaVersion: String,
-    buildSdkVersion: String
+    buildSdkVersion: String,
+    kotlinCompilerVersion: String
   ): Array<String> {
     prepareJdkEnvironment(jdkHome)
-
     return arrayOf(
       "-Wall",
       "--quiet",
@@ -201,7 +211,7 @@ class AndroidLintRunner(
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", getAndroidSdkPath(),
       "--compile-sdk-version", buildSdkVersion,
-      "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
+      "--kotlin-language-level", kotlinCompilerVersion,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath

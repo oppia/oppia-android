@@ -28,4 +28,11 @@ class AndroidBuildSdkPropertiesTest {
 
     assertThat(properties.buildToolsVersion).isEqualTo("32.0.0")
   }
+
+  @Test
+  fun testKotlinCompilerVersion_isTheCorrectVersion() {
+    val properties = AndroidBuildSdkProperties()
+
+    assertThat(properties.kotlinCompilerVersion).isEqualTo("1.6.10")
+  }
 }
