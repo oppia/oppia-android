@@ -149,8 +149,8 @@ class LintProjectDescriptionTest {
 
   private fun createSharedTestFile(moduleName: String) {
     val className = moduleName.capitalize()
-    val sharedTestFile
-    = tempFolder.newFile("$moduleName/src/sharedTest/java/${className}SharedTest.kt")
+    val sharedTestFile =
+      tempFolder.newFile("$moduleName/src/sharedTest/java/${className}SharedTest.kt")
     sharedTestFile.writeText(
       """
       package org.oppia.android.$moduleName

@@ -7,7 +7,6 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.File
-import java.util.Locale
 
 /** Tests for [LintCommon]. */
 @Suppress("FunctionName")
@@ -40,8 +39,8 @@ class LintCommonTest {
   @Test
   fun testModuleName_libraryModules_containsExpectedModules() {
     val libraryModules = ModuleName.LIBRARY_MODULES
-    val expectedModules
-    = listOf(ModuleName.DOMAIN, ModuleName.TESTING, ModuleName.UTILITY, ModuleName.DATA)
+    val expectedModules =
+      listOf(ModuleName.DOMAIN, ModuleName.TESTING, ModuleName.UTILITY, ModuleName.DATA)
 
     assertThat(libraryModules).containsExactlyElementsIn(expectedModules)
     assertThat(libraryModules).doesNotContain(ModuleName.APP)
@@ -86,8 +85,8 @@ class LintCommonTest {
 
   @Test
   fun testModuleConfig_nonExistentAarFile_throwsException() {
-    val nonExistentAar
-    = AarFileInfo("/non/existent/test.aar", "extracted/path")
+    val nonExistentAar =
+      AarFileInfo("/non/existent/test.aar", "extracted/path")
 
     val exception = assertThrows<IllegalArgumentException> {
       createMinimalModuleConfig(aarFiles = listOf(nonExistentAar))
@@ -299,7 +298,6 @@ class LintCommonTest {
       proGuardFiles = proGuardFiles
     )
   }
-
 
   private fun createValidModuleConfig(): ModuleConfig {
     val proGuardFile = File(workingDirectory, "proguard-rules.pro").apply { createNewFile() }

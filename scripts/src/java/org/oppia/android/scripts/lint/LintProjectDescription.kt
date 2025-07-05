@@ -567,8 +567,10 @@ private class DependencyResolver(
     aarFiles.mapNotNull { aarInfo ->
       val extractedDir = File(aarInfo.extractedPath)
       if (!extractedDir.exists() || !extractedDir.isDirectory) {
-        throw IllegalArgumentException("AAR extracted path does not exist or " +
-          "is not a directory: ${aarInfo.extractedPath}")
+        throw IllegalArgumentException(
+          "AAR extracted path does not exist or " +
+            "is not a directory: ${aarInfo.extractedPath}"
+        )
       }
 
       val annotationZip = File(extractedDir, "annotations.zip")
