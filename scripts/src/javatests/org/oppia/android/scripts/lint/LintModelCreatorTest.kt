@@ -210,12 +210,33 @@ class LintModelCreatorTest {
   }
 
   private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
-    val manifestPath = "${tempFolder.root}/$moduleName/src/main/AndroidManifest.xml"
-    val resourceDirs = listOf("${tempFolder.root}/$moduleName/src/main/res")
-    val srcFiles =
-      listOf("${tempFolder.root}/$moduleName/src/main/java/${moduleName.capitalize()}Class.kt")
-    val testFiles =
-      listOf("${tempFolder.root}/$moduleName/src/test/java/${moduleName.capitalize()}ClassTest.kt")
+    val basePath = File(tempFolder.root, moduleName)
+
+    val manifestPath = "${basePath}/src/main/AndroidManifest.xml"
+    val resourceDirs = listOf("${basePath}/src/main/res")
+    val srcFilePath = "${basePath}/src/main/java/${moduleName.capitalize()}Class.kt"
+    val testFilePath = "${basePath}/src/test/java/${moduleName.capitalize()}ClassTest.kt"
+
+    // Ensure all directories and files exist
+    File(resourceDirs[0]).mkdirs()
+    File(srcFilePath).apply {
+      parentFile?.mkdirs()
+      writeText("// dummy source file for $moduleName")
+    }
+    File(testFilePath).apply {
+      parentFile?.mkdirs()
+      writeText("// dummy test file for $moduleName")
+    }
+    File(manifestPath).apply {
+      parentFile?.mkdirs()
+      writeText(
+        """
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="org.oppia.android.$moduleName">
+      </manifest>
+    """.trimIndent()
+      )
+    }
 
     return ModuleConfig(
       name = moduleName,
@@ -225,8 +246,8 @@ class LintModelCreatorTest {
       manifestFile = manifestPath,
       resourceDirs = resourceDirs,
       dependencies = emptyList(),
-      srcFiles = srcFiles,
-      testFiles = testFiles,
+      srcFiles = listOf(srcFilePath),
+      testFiles = listOf(testFilePath),
       jarFiles = emptyList(),
       aarFiles = emptyList(),
       lintCheckJars = emptyList(),
