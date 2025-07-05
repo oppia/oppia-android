@@ -60,8 +60,8 @@ class AndroidLintRunnerTest {
     tempFolder.newFolder("scripts", "assets")
     tempFolder.newFile(pathToProtoBinary)
     buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion.toString()
-    reportfile = File(workingDirectory, "lint-report.xml")
     workingDirectory = tempFolder.newFolder("lint_analysis")
+    reportfile = File(workingDirectory, "lint-report.xml")
     bazelBinFolder = tempFolder.newFolder("bazel-bin")
     androidLintAnalyzerWithFakeExecutor = AndroidLintAnalyzer(
       commandExecutor = fakeCommandExecutor,
