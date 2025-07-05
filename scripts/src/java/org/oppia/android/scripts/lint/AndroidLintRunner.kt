@@ -45,8 +45,14 @@ fun main(vararg args: String) {
   require(repoRoot.exists()) {
     "Repository root path does not exist: ${args[0]}"
   }
-  val exemptionProtoPath = if (args.size> 1) {
-    args[1]
+  val exemptionProtoPath = if (args.size > 1) {
+    val providedPath = args[1]
+    if (!providedPath.endsWith(".pb")) {
+      throw IllegalArgumentException(
+        "Invalid exemption file: $providedPath. The file must have a .pb extension."
+      )
+    }
+    providedPath
   } else {
     DEFAULT_PROTO_BINARY_PATH
   }
@@ -221,6 +227,9 @@ class AndroidLintRunner(
   private fun reportLintIssues() {
     val reporter = LintAnalysisReporter()
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
+    require(File(exemptionProtoPath).exists()) {
+      "Exemption file does not exist: $exemptionProtoPath"
+    }
     val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
@@ -232,8 +241,9 @@ class AndroidLintRunner(
       exemptions = exemptions.androidLintExemptionList,
       repoRoot = repoRoot
     )
-
-    reporter.logRedundantExemptions(redundantExemptions)
+    if (redundantExemptions.isNotEmpty()) {
+      reporter.logRedundantExemptions(redundantExemptions)
+    }
     reporter.printLintReport(filteredIssues, groupByIssueSeverity)
   }
 

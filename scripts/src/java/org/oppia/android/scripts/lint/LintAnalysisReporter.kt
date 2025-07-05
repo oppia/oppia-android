@@ -169,9 +169,10 @@ class LintAnalysisReporter {
       "VectorPath" to LintIssueId.VECTOR_PATH,
       "VectorRaster" to LintIssueId.VECTOR_RASTER
     )
-    private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associate {
-      it.value to it.key
-    }
+    private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associateBy(
+      keySelector = { it.value },
+      valueTransform = { it.key }
+    )
 
     private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
     private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
@@ -283,10 +284,9 @@ class LintAnalysisReporter {
     val issueIdEnum = getLintIssueIdFromString(issue.id)
 
     return issue.locations.any { location ->
-      exemptionMap.any { (exemptedRelativePath, exemptedIssues) ->
-        val exemptedAbsolutePath = File(repoRoot, exemptedRelativePath).absolutePath
-        location.file == exemptedAbsolutePath && exemptedIssues.contains(issueIdEnum)
-      }
+      val relativePath = File(location.file).toRelativeString(repoRoot)
+      val exemptedIssues = exemptionMap[relativePath]
+      exemptedIssues?.contains(issueIdEnum) == true
     }
   }
 

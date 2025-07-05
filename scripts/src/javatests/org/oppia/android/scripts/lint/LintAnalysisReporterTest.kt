@@ -1042,21 +1042,25 @@ class LintAnalysisReporterTest {
     val issue1 = warningIssue.copy(
       locations = listOf(
         LintLocation(
-          "$repoRoot/app/src/main/res/values/colors.xml", "5"
+          "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
         )
       )
     )
     val issue2 = errorIssue.copy(
       locations = listOf(
         LintLocation(
-          "$repoRoot/app/src/main/java/MainActivity.kt", "42"
+          "${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42"
         )
       )
     )
     val issue3 = multiLocationIssue.copy(
       locations = listOf(
-        LintLocation("$repoRoot/app/src/main/res/values/strings.xml", "10"),
-        LintLocation("$repoRoot/app/src/main/res/values-es/strings.xml", "15")
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
+        ),
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values-es/strings.xml", "15"
+        )
       )
     )
     val issues = listOf(issue1, issue2, issue3)

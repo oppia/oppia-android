@@ -982,6 +982,7 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/values/strings.xml",
       """
+      <?xml version="1.0" encoding="utf-8"?>
       <resources>
           <string name="hello">Hello</string>
           <string name="goodbye">Goodbye</string>
@@ -992,6 +993,7 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/values-es/strings.xml",
       """
+      <?xml version="1.0" encoding="utf-8"?>
       <resources>
           <string name="goodbye">Adiós</string>
       </resources>
