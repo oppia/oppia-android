@@ -119,9 +119,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.putProto
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import android.os.Bundle
 
 /** Tests for [SurveyFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -576,10 +573,10 @@ class SurveyFragmentTest {
         val receivedInternalProfileId = profileId.internalId
 
         val receivedTopicId = checkNotNull(args.topicId) {
-          "Expected topicId to be included in the SurveyFragmentArguments for SurveyFragment."
+          "Expected topicId to be included in the arguments for SurveyFragment."
         }
         val receivedExplorationId = checkNotNull(args.explorationId) {
-          "Expected explorationId to be included in the SurveyFragmentArguments for SurveyFragment."
+          "Expected explorationId to be included in the arguments for SurveyFragment."
         }
 
         assertThat(receivedInternalProfileId).isEqualTo(0)

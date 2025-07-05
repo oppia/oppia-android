@@ -78,10 +78,10 @@ class SurveyFragment :
     val internalProfileId = profileId.internalId
 
     val topicId = checkNotNull(args.topicId) {
-      "Expected topicId to be included in the SurveyFragmentArguments for SurveyFragment."
+      "Expected topicId to be included in the arguments for SurveyFragment."
     }
     val explorationId = checkNotNull(args.explorationId) {
-      "Expected explorationId to be included in the SurveyFragmentArguments for SurveyFragment."
+      "Expected explorationId to be included in the arguments for SurveyFragment."
     }
 
     return surveyFragmentPresenter.handleCreateView(
