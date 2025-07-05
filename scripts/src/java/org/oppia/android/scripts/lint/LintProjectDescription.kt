@@ -22,11 +22,18 @@ private data class CachedEntry<T>(
 }
 
 /** Cache manager with TTL and memory-based cleanup. */
-private class CacheManager {
+class CacheManager {
   companion object {
-
+    // Dependencies need to be fresh enough to catch recent changes
+    // Long enough to avoid excessive Bazel queries during rapid successive lint runs
     private const val DEPENDENCIES_TTL = 300L // 5 minutes
+
+    // Paths are more stable than dependencies
+    // External dependency paths don't change unless the dependency version changes
     private const val PATH_RESOLUTION_TTL = 600L // 10 minutes
+
+    // Once extracted, the contents remain valid until the AAR version changes
+    // AAR files don't change unless dependency versions are updated therefore stable
     private const val AAR_EXTRACTION_TTL = 1800L // 30 minutes
 
     private const val MAX_CACHE_SIZE_BYTES = 100 * 1024 * 1024L // 100MB
@@ -199,14 +206,14 @@ private class CacheManager {
 /**
  * Generates lint project description XML files for Android projects.
  *
- * @param repoRoot the root directory of the repository
- * @param workingDirectory the working directory where files will be generated
+ * @param repoRoot The root directory of the repository
+ * @param workingDirectory The working directory where files will be generated
  * @param commandExecutor executes the specified command in the specified working directory
  */
 class LintProjectDescription(
   private val repoRoot: File,
   private val workingDirectory: File,
-  commandExecutor: CommandExecutor,
+  commandExecutor: CommandExecutor
 ) {
 
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
@@ -258,6 +265,7 @@ class LintProjectDescription(
     )
     val initialModuleConfigs = moduleConfigBuilder.buildAllModuleConfigurations()
     val moduleConfigs = moduleConfigBuilder.buildModelDirectory(initialModuleConfigs)
+
     val xmlContent = generateProjectXmlContent(cacheDirectory, moduleConfigs)
 
     return writeProjectDescriptionFile(projectDescriptionFile, xmlContent)
@@ -287,8 +295,11 @@ class LintProjectDescription(
     appendLine("""    android="${config.isAndroid}"""")
     appendLine("""    library="${config.isLibrary}"""")
     appendLine("""    test="${config.isTest}"""")
+
     appendLine("""    model="${config.lintModelDir?.absolutePath}"""")
+
     appendLine("""    partial-results="${config.partialResultsDir.absolutePath}"""")
+
     appendLine("""    desugar="full">""")
 
     appendLine("""    <manifest file="${config.manifestFile}"/>""")
@@ -390,7 +401,7 @@ private class ModuleConfigurationBuilder(
   /** Builds configuration for a single module. */
   private fun buildModuleConfiguration(
     module: ModuleName,
-    isLibrary: Boolean,
+    isLibrary: Boolean
   ): ModuleConfig {
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
