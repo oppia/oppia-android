@@ -276,8 +276,10 @@ class SurveyFragmentTest {
         }
 
         assertThat(exception).isNotNull()
-        assertThat(exception!!.message).contains("Fragment SurveyFragment")
-        assertThat(exception.message).contains("does not have any arguments.")
+        assertThat(exception!!.message).contains(
+          "Expected SurveyFragmentArguments to be " +
+            "included in the arguments for SurveyFragment."
+        )
       }
     }
   }

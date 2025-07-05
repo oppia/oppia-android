@@ -64,14 +64,26 @@ class SurveyFragment :
     savedInstanceState: Bundle?
   ): View? {
 
-    val args = requireArguments().getProto(
-      SURVEY_FRAGMENT_ARGUMENTS_KEY,
-      SurveyFragmentArguments.getDefaultInstance()
-    )
+    val args = checkNotNull(
+      arguments?.getProto(
+        SURVEY_FRAGMENT_ARGUMENTS_KEY,
+        SurveyFragmentArguments.getDefaultInstance()
+      )
+    ) {
+      "Expected SurveyFragmentArguments to be included in the arguments for SurveyFragment."
+    }
 
-    val internalProfileId = requireArguments().extractCurrentUserProfileId().internalId
-    val topicId = args.topicId!!
-    val explorationId = args.explorationId!!
+    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+      "Expected profileId to be included in the arguments for SurveyFragment."
+    }
+
+    val internalProfileId = profileId.internalId
+    val topicId = checkNotNull(args.topicId) {
+      "Expected topicId to be included in the SurveyFragmentArguments for SurveyFragment."
+    }
+    val explorationId = checkNotNull(args.explorationId) {
+      "Expected explorationId to be included in the SurveyFragmentArguments for SurveyFragment."
+    }
 
     return surveyFragmentPresenter.handleCreateView(
       inflater,
