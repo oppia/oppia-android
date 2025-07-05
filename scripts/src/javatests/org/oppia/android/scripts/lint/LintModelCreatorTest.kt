@@ -212,10 +212,10 @@ class LintModelCreatorTest {
   private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
     val basePath = File(tempFolder.root, moduleName)
 
-    val manifestPath = "${basePath}/src/main/AndroidManifest.xml"
-    val resourceDirs = listOf("${basePath}/src/main/res")
-    val srcFilePath = "${basePath}/src/main/java/${moduleName.capitalize()}Class.kt"
-    val testFilePath = "${basePath}/src/test/java/${moduleName.capitalize()}ClassTest.kt"
+    val manifestPath = "$basePath/src/main/AndroidManifest.xml"
+    val resourceDirs = listOf("$basePath/src/main/res")
+    val srcFilePath = "$basePath/src/main/java/${moduleName.capitalize()}Class.kt"
+    val testFilePath = "$basePath/src/test/java/${moduleName.capitalize()}ClassTest.kt"
 
     // Ensure all directories and files exist
     File(resourceDirs[0]).mkdirs()
@@ -234,7 +234,7 @@ class LintModelCreatorTest {
       <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.oppia.android.$moduleName">
       </manifest>
-    """.trimIndent()
+        """.trimIndent()
       )
     }
 
