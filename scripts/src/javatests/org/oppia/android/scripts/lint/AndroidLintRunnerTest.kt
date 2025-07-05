@@ -35,7 +35,7 @@ class AndroidLintRunnerTest {
   private lateinit var workingDirectory: File
   private lateinit var bazelBinFolder: File
   private lateinit var projectDescriptionFile: File
-  private lateinit var kotlinVersion : String
+  private lateinit var kotlinVersion: String
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
@@ -198,7 +198,6 @@ class AndroidLintRunnerTest {
       kotlinVersion
     )
 
-
     assertThat(result).asList().contains("--compile-sdk-version")
     val sdkVersionIndex = result.indexOf("--compile-sdk-version")
     assertThat(result[sdkVersionIndex + 1]).isEqualTo(customBuildSdk)
@@ -217,7 +216,7 @@ class AndroidLintRunnerTest {
     val projectFile = File(tempFolder.root, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
     assertThat(releaseFile.readText()).isEqualTo(originalContent)
   }
@@ -231,7 +230,7 @@ class AndroidLintRunnerTest {
     val projectFile = File(tempFolder.root, "project.xml")
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isTrue()
@@ -247,7 +246,7 @@ class AndroidLintRunnerTest {
     setupProjectStructure()
     val lintRunner = createLintRunner()
     lintRunner.runLint(
-      lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+      lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
     )
 
     val output = outputStream.toString()
@@ -260,9 +259,8 @@ class AndroidLintRunnerTest {
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
-
     }
 
     val reportFile = File(workingDirectory, "lint-report.xml")
@@ -301,7 +299,7 @@ class AndroidLintRunnerTest {
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
     }
 
@@ -333,7 +331,7 @@ class AndroidLintRunnerTest {
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
     }
     assertThat(exception.message).contains("Lint analysis failed with exit code 5")
@@ -353,9 +351,8 @@ class AndroidLintRunnerTest {
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
-
     }
 
     assertThat(exception.message)
@@ -394,7 +391,7 @@ class AndroidLintRunnerTest {
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isFalse()
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
     // Verify release file was created
     assertThat(releaseFile.exists()).isTrue()
@@ -410,7 +407,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     val exception = assertThrows<IllegalArgumentException> {
-      lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion,kotlinVersion)
+      lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion, kotlinVersion)
     }
 
     assertThat(exception.message).contains("JDK home path does not exist or is not a directory")

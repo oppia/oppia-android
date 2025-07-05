@@ -494,7 +494,7 @@ class LintProjectDescriptionTest {
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     assertThat(result.exists()).isTrue()
   }
-  
+
   @Test
   fun testCacheManager_getDependencies_cachesResults() {
     val cacheManager = CacheManager()
