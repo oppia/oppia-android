@@ -70,7 +70,7 @@ class FeatureFlagsViewModel @Inject constructor(
 
       platformParameterControllerDebugImpl.updateOverriddenFeatureFlag(
         overriddenFeatureFlag.id,
-        overriddenFeatureFlag.overriddenIsEnabled
+        overriddenFeatureFlag.overriddenValue
       )
     }
   }

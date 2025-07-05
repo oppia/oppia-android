@@ -452,7 +452,7 @@ class PlatformParameterControllerDebugImplTest {
         addOverriddenFeatureFlag(
           OverriddenFeatureFlag.newBuilder()
             .setId(FeatureFlagId.MULTIPLE_CLASSROOMS)
-            .setOverriddenIsEnabled(true)
+            .setOverriddenValue(true)
             .build()
         )
       }.build()

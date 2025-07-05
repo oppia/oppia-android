@@ -157,7 +157,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         val localFlag = localFlagById[flagDefinition.id]
         val remoteFlag = remoteFlagById[flagDefinition.id]
 
-        val currentValue = localFlag?.overriddenIsEnabled
+        val currentValue = localFlag?.overriddenValue
           ?: remoteFlag?.remoteIsEnabled
           ?: flagDefinition.defaultIsEnabled
 
@@ -250,11 +250,11 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     databaseStore.storeDataAsync(updateInMemoryCache = true) {
       val existingFlag = it.overriddenFeatureFlagList.find { flag -> flag.id == id }
       val updatedFlag = if (existingFlag != null) {
-        existingFlag.toBuilder().setOverriddenIsEnabled(isEnabled).build()
+        existingFlag.toBuilder().setOverriddenValue(isEnabled).build()
       } else {
         OverriddenFeatureFlag.newBuilder()
           .setId(id)
-          .setOverriddenIsEnabled(isEnabled)
+          .setOverriddenValue(isEnabled)
           .build()
       }
       it.toBuilder()

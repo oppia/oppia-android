@@ -76,7 +76,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     val overriddenFeatureFlags = featureFlagStates.map { (id, value) ->
       OverriddenFeatureFlag.newBuilder()
         .setId(id)
-        .setOverriddenIsEnabled(value)
+        .setOverriddenValue(value)
         .build()
     }
     featureFlagsViewModel.overrideFeatureFlags(overriddenFeatureFlags)

@@ -397,6 +397,54 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
+  fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasOverriddenStatus() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSyncStatus(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.feature_flag_overridden_sync_status)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_scrollAndBack_valuePersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val originalValue = getEphemeralFeatureFlags()[0].currentValue
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      val expectedState = !originalValue
+
+      scrollToPosition(8)
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = expectedState
+      )
+    }
+  }
+
+  @Test
   fun testFeatureFlagsFragment_addOverriddenFeatureFlag_downloadsSupportHasCorrectBackground() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent)
@@ -568,7 +616,7 @@ class FeatureFlagsFragmentTest {
         addOverriddenFeatureFlag(
           OverriddenFeatureFlag.newBuilder()
             .setId(FeatureFlagId.DOWNLOADS_SUPPORT)
-            .setOverriddenIsEnabled(true)
+            .setOverriddenValue(true)
             .build()
         )
       }.build()
