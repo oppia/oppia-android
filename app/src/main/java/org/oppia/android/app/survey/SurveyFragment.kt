@@ -63,21 +63,20 @@ class SurveyFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
-    val args = checkNotNull(
-      arguments?.getProto(
-        SURVEY_FRAGMENT_ARGUMENTS_KEY,
-        SurveyFragmentArguments.getDefaultInstance()
-      )
-    ) {
-      "Expected SurveyFragmentArguments to be included in the arguments for SurveyFragment."
+    val arguments = checkNotNull(arguments) {
+      "Expected arguments to be passed to StoryFragment."
     }
 
-    val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+    val args = arguments.getProto(
+      SURVEY_FRAGMENT_ARGUMENTS_KEY,
+      SurveyFragmentArguments.getDefaultInstance()
+    )
+
+    val profileId = checkNotNull(arguments.extractCurrentUserProfileId()) {
       "Expected profileId to be included in the arguments for SurveyFragment."
     }
-
     val internalProfileId = profileId.internalId
+
     val topicId = checkNotNull(args.topicId) {
       "Expected topicId to be included in the SurveyFragmentArguments for SurveyFragment."
     }

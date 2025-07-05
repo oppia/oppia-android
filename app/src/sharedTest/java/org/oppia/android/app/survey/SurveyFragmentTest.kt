@@ -119,6 +119,9 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
+import android.os.Bundle
 
 /** Tests for [SurveyFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -277,8 +280,7 @@ class SurveyFragmentTest {
 
         assertThat(exception).isNotNull()
         assertThat(exception!!.message).contains(
-          "Expected SurveyFragmentArguments to be " +
-            "included in the arguments for SurveyFragment."
+          "Expected arguments to be passed to StoryFragment."
         )
       }
     }
@@ -558,14 +560,27 @@ class SurveyFragmentTest {
 
         val surveyFragment = activity.supportFragmentManager
           .findFragmentById(R.id.survey_fragment_placeholder) as SurveyFragment
-        val args = surveyFragment.arguments!!.getProto(
+
+        val arguments = checkNotNull(surveyFragment.arguments) {
+          "Expected arguments to be passed to SurveyFragment."
+        }
+
+        val args = arguments.getProto(
           SurveyFragment.SURVEY_FRAGMENT_ARGUMENTS_KEY,
           SurveyFragmentArguments.getDefaultInstance()
         )
-        val receivedInternalProfileId = surveyFragment.arguments!!
-          .extractCurrentUserProfileId().internalId
-        val receivedTopicId = args.topicId!!
-        val receivedExplorationId = args.explorationId!!
+
+        val profileId = checkNotNull(arguments.extractCurrentUserProfileId()) {
+          "Expected profileId to be included in the arguments for SurveyFragment."
+        }
+        val receivedInternalProfileId = profileId.internalId
+
+        val receivedTopicId = checkNotNull(args.topicId) {
+          "Expected topicId to be included in the SurveyFragmentArguments for SurveyFragment."
+        }
+        val receivedExplorationId = checkNotNull(args.explorationId) {
+          "Expected explorationId to be included in the SurveyFragmentArguments for SurveyFragment."
+        }
 
         assertThat(receivedInternalProfileId).isEqualTo(0)
         assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID_0)
