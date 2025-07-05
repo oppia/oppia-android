@@ -356,7 +356,7 @@ private class ModuleConfigurationBuilder(
   private val modelsDirectory: File,
   private val partialResultsDirectory: File,
   cacheManager: CacheManager,
-  logger: LintLogger,
+  private val logger: LintLogger,
 ) {
 
   companion object {
@@ -405,7 +405,14 @@ private class ModuleConfigurationBuilder(
         throw IllegalStateException("Failed to create partial results directory: $absolutePath")
       }
     }
-
+    val annotationZips = try {
+      dependencyResolver.extractAnnotationZips(
+        dependencyResolver.resolveAarFiles(module)
+      )
+    } catch (e: Exception) {
+      logger.logError("Failed to extract annotation zips: ${e.message}")
+      emptyList()
+    }
     return ModuleConfig(
       name = module.moduleName,
       isAndroid = true,
@@ -422,9 +429,7 @@ private class ModuleConfigurationBuilder(
         dependencyResolver.resolveAarFiles(module)
       ),
       partialResultsDir = partialResultDir,
-      annotationZips = dependencyResolver.extractAnnotationZips(
-        dependencyResolver.resolveAarFiles(module)
-      ),
+      annotationZips = annotationZips,
       proGuardFiles = sourceCollector.collectProGuardFiles(module.moduleName)
     )
   }
@@ -560,7 +565,15 @@ private class DependencyResolver(
   /** Extracts annotation zip files from the given list of AAR files. */
   fun extractAnnotationZips(aarFiles: List<AarFileInfo>): List<String> =
     aarFiles.mapNotNull { aarInfo ->
-      val annotationZip = File(aarInfo.extractedPath, "annotations.zip")
+      val extractedDir = File(aarInfo.extractedPath)
+      if (!extractedDir.exists() || !extractedDir.isDirectory) {
+        throw IllegalArgumentException(
+          "AAR extracted path does not exist or " +
+            "is not a directory: ${aarInfo.extractedPath}"
+        )
+      }
+
+      val annotationZip = File(extractedDir, "annotations.zip")
       if (annotationZip.exists()) annotationZip.absolutePath else null
     }
 

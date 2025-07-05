@@ -43,7 +43,8 @@ class LintModelCreator(
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "34"
 
-    private const val MODEL_CACHE_TTL_HOURS = 24L
+    // Model directories are stable and won't change frequently therefore a longer TTL
+    private const val MODEL_CACHE_TTL_HOURS = 24L // 24 hours
 
     private const val FILE_SEPARATOR = ","
   }
@@ -241,14 +242,14 @@ class LintModelCreator(
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
-
+    val buildFolder = escapeXmlAttribute(buildDir.createDirectories().toFile().absolutePath)
     val content =
       """
         <lint-module
             dir="${escapeXmlAttribute(modulePath.toString())}"
             name="${escapeXmlAttribute(moduleConfig.name)}"
             type="${moduleType.name}"
-            buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
+            buildFolder="$buildFolder"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
             partialResultsDir="${escapeXmlAttribute(moduleConfig.partialResultsDir.absolutePath)}"
@@ -379,7 +380,9 @@ class LintModelCreator(
   }
 
   private fun createProguardAttribute(proGuardFiles: List<String>): String {
-    return """proguardFiles="${proGuardFiles.joinToString(FILE_SEPARATOR)}" """
+    val existingFiles = proGuardFiles.filter { File(it).exists() }
+    if (existingFiles.isEmpty()) return ""
+    return """proguardFiles="${existingFiles.joinToString(FILE_SEPARATOR)}" """
   }
 
   private fun generateArtifactLibrariesXml(librariesFile: File) {
