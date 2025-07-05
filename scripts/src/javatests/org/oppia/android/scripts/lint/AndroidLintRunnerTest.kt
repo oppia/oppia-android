@@ -34,6 +34,7 @@ class AndroidLintRunnerTest {
   private lateinit var androidLintAnalyzerWithFakeExecutor: AndroidLintAnalyzer
   private lateinit var workingDirectory: File
   private lateinit var bazelBinFolder: File
+  private lateinit var projectDescriptionFile : File
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
@@ -62,6 +63,7 @@ class AndroidLintRunnerTest {
       workingDirectory = workingDirectory,
       repoRoot = tempFolder.root,
     )
+    projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
   }
 
   @After
@@ -399,6 +401,9 @@ class AndroidLintRunnerTest {
     assertThat(output)
       .contains("<string name=\"duplicate_value\">Same text</string>")
     assertThat(output).contains("Line: 5")
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -413,6 +418,9 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("Line: 5")
     assertThat(output)
       .contains("This `RelativeLayout` layout or its `FrameLayout` parent is unnecessary")
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -430,6 +438,9 @@ class AndroidLintRunnerTest {
         "This `FrameLayout` view is unnecessary " +
           "(no children, no `background`, no `id`, no `style`)"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -444,6 +455,9 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("Line: 8")
     assertThat(output)
       .contains("Using left/right instead of start/end attributes")
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -461,6 +475,11 @@ class AndroidLintRunnerTest {
         "When you define `paddingRight` " +
           "you should probably also define `paddingLeft` for right-to-left symmetry"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -479,6 +498,11 @@ class AndroidLintRunnerTest {
       .contains(
         "Calling new methods on older versions"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/NewApiUsage.kt")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -497,6 +521,11 @@ class AndroidLintRunnerTest {
         "Field requires API level 29 (current min is 21):" +
           " `android.media.MediaFormat#MIMETYPE_AUDIO_AC4`"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/InlinedApiUsage.kt")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -522,6 +551,9 @@ class AndroidLintRunnerTest {
       .contains(
         "Access to `private` constructor of class `AccessTest2` requires synthetic accessor"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/AccessTest.kt")
   }
 
   @Test
@@ -539,6 +571,9 @@ class AndroidLintRunnerTest {
       .contains(
         "Editable text fields should provide an `android:hint`"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -556,6 +591,11 @@ class AndroidLintRunnerTest {
       .contains(
         "Attribute `android:theme` is only used by `<include>` tags "
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -574,6 +614,11 @@ class AndroidLintRunnerTest {
         "It will always be more efficient to use more specific change events if you can. " +
           "Rely on `notifyDataSetChanged` as a last resort."
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/androidx/recyclerview/widget/RecyclerView.kt")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/RecyclerViewUsage.kt")
   }
 
   @Test
@@ -591,6 +636,9 @@ class AndroidLintRunnerTest {
       .contains(
         "Node can be replaced by a `TextView` with compound drawables"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   private fun setupProjectWithUseCompoundDrawables() {

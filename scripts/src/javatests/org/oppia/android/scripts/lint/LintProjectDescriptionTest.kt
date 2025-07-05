@@ -57,181 +57,6 @@ class LintProjectDescriptionTest {
     scriptBgDispatcher.close()
   }
 
-  private fun setupProjectStructure() {
-    testBazelWorkspace.initEmptyWorkspace()
-    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(listOf("junit:junit:4.12"))
-
-    // Create all required modules
-    createModule("app")
-    createModule("utility")
-    createModule("domain")
-    createModule("testing")
-    createModule("data")
-  }
-
-  private fun createModule(moduleName: String) {
-    createModuleDirectories(moduleName)
-    createModuleFiles(moduleName)
-  }
-
-  private fun createModuleDirectories(moduleName: String) {
-    val directories = listOf(
-      moduleName,
-      "$moduleName/src",
-      "$moduleName/src/main",
-      "$moduleName/src/main/java",
-      "$moduleName/src/main/res",
-      "$moduleName/src/main/res/values",
-      "$moduleName/src/test",
-      "$moduleName/src/test/java",
-      "$moduleName/src/sharedTest",
-      "$moduleName/src/sharedTest/java"
-    )
-
-    directories.forEach { dir ->
-      tempFolder.newFolder(*dir.split("/").toTypedArray())
-    }
-  }
-
-  private fun createModuleFiles(moduleName: String) {
-    createManifestFile(moduleName)
-    createSourceFile(moduleName)
-    createTestFile(moduleName)
-    createSharedTestFile(moduleName)
-    createResourceFile(moduleName)
-    createAdditionalSourceFiles(moduleName)
-  }
-
-  private fun createManifestFile(moduleName: String) {
-    val manifest = tempFolder.newFile("$moduleName/src/main/AndroidManifest.xml")
-    manifest.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <manifest package="org.oppia.android.$moduleName" />
-      """.trimIndent()
-    )
-  }
-
-  private fun createSourceFile(moduleName: String) {
-    val className = moduleName.capitalize()
-    val sourceFile = tempFolder.newFile("$moduleName/src/main/java/${className}Class.kt")
-    sourceFile.writeText(
-      """
-      package org.oppia.android.$moduleName
-      
-      class ${className}Class {
-          fun doSomething(): String = "Hello from $moduleName"
-      }
-      """.trimIndent()
-    )
-  }
-
-  private fun createTestFile(moduleName: String) {
-    val className = moduleName.capitalize()
-    val testFile = tempFolder.newFile("$moduleName/src/test/java/${className}ClassTest.kt")
-    testFile.writeText(
-      """
-      package org.oppia.android.$moduleName
-      
-      import org.junit.Test
-      import org.junit.Assert.assertEquals
-      
-      class ${className}ClassTest {
-          @Test
-          fun testDoSomething() {
-              val instance = ${className}Class()
-              assertEquals("Hello from $moduleName", instance.doSomething())
-          }
-      }
-      """.trimIndent()
-    )
-  }
-
-  private fun createSharedTestFile(moduleName: String) {
-    val className = moduleName.capitalize()
-    val sharedTestFile =
-      tempFolder.newFile("$moduleName/src/sharedTest/java/${className}SharedTest.kt")
-    sharedTestFile.writeText(
-      """
-      package org.oppia.android.$moduleName
-      
-      import org.junit.Test
-      import org.junit.Assert.assertNotNull
-      
-      class ${className}SharedTest {
-          @Test
-          fun testSharedFunctionality() {
-              val instance = ${className}Class()
-              assertNotNull(instance)
-          }
-      }
-      """.trimIndent()
-    )
-  }
-
-  private fun createAdditionalSourceFiles(moduleName: String) {
-    val javaFile = tempFolder
-      .newFile("$moduleName/src/main/java/${moduleName.capitalize()}Helper.java")
-    javaFile.writeText(
-      """
-      package org.oppia.android.$moduleName;
-      
-      public class ${moduleName.capitalize()}Helper {
-          public static String getModuleName() {
-              return "$moduleName";
-          }
-      }
-      """.trimIndent()
-    )
-
-    val utilFile = tempFolder.newFile("$moduleName/src/main/java/${moduleName.capitalize()}Util.kt")
-    utilFile.writeText(
-      """
-      package org.oppia.android.$moduleName
-      
-      object ${moduleName.capitalize()}Util {
-          const val MODULE_NAME = "$moduleName"
-      }
-      """.trimIndent()
-    )
-  }
-
-  private fun createResourceFile(moduleName: String) {
-    val resourceFile = tempFolder.newFile("$moduleName/src/main/res/values/strings.xml")
-    resourceFile.writeText(
-      """
-      <?xml version="1.0" encoding="utf-8"?>
-      <resources>
-          <string name="${moduleName}_name">$moduleName Module</string>
-          <string name="${moduleName}_description">Description for $moduleName</string>
-      </resources>
-      """.trimIndent()
-    )
-  }
-
-  private fun createProguardFiles() {
-    val proguardDir = tempFolder.newFolder("config", "proguard")
-
-    val proguardFile1 = File(proguardDir, "proguard-rules.pro")
-    proguardFile1.writeText(
-      """
-      -keep class org.oppia.android.** { *; }
-      -dontwarn javax.annotation.**
-      """.trimIndent()
-    )
-
-    val proguardFile2 = File(proguardDir, "consumer-rules.pro")
-    proguardFile2.writeText(
-      """
-      -keep class org.oppia.android.app.** { *; }
-      """.trimIndent()
-    )
-  }
-
-  private fun String.capitalize(): String {
-    return replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
-  }
-
   @Test
   fun testGenerateProjectDescriptionXml_basicGeneration() {
     setupFakeCommandExecutor()
@@ -668,6 +493,181 @@ class LintProjectDescriptionTest {
     // Should not throw an exception even with empty modules
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     assertThat(result.exists()).isTrue()
+  }
+
+  private fun setupProjectStructure() {
+    testBazelWorkspace.initEmptyWorkspace()
+    testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(listOf("junit:junit:4.12"))
+
+    // Create all required modules
+    createModule("app")
+    createModule("utility")
+    createModule("domain")
+    createModule("testing")
+    createModule("data")
+  }
+
+  private fun createModule(moduleName: String) {
+    createModuleDirectories(moduleName)
+    createModuleFiles(moduleName)
+  }
+
+  private fun createModuleDirectories(moduleName: String) {
+    val directories = listOf(
+      moduleName,
+      "$moduleName/src",
+      "$moduleName/src/main",
+      "$moduleName/src/main/java",
+      "$moduleName/src/main/res",
+      "$moduleName/src/main/res/values",
+      "$moduleName/src/test",
+      "$moduleName/src/test/java",
+      "$moduleName/src/sharedTest",
+      "$moduleName/src/sharedTest/java"
+    )
+
+    directories.forEach { dir ->
+      tempFolder.newFolder(*dir.split("/").toTypedArray())
+    }
+  }
+
+  private fun createModuleFiles(moduleName: String) {
+    createManifestFile(moduleName)
+    createSourceFile(moduleName)
+    createTestFile(moduleName)
+    createSharedTestFile(moduleName)
+    createResourceFile(moduleName)
+    createAdditionalSourceFiles(moduleName)
+  }
+
+  private fun createManifestFile(moduleName: String) {
+    val manifest = tempFolder.newFile("$moduleName/src/main/AndroidManifest.xml")
+    manifest.writeText(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest package="org.oppia.android.$moduleName" />
+      """.trimIndent()
+    )
+  }
+
+  private fun createSourceFile(moduleName: String) {
+    val className = moduleName.capitalize()
+    val sourceFile = tempFolder.newFile("$moduleName/src/main/java/${className}Class.kt")
+    sourceFile.writeText(
+      """
+      package org.oppia.android.$moduleName
+      
+      class ${className}Class {
+          fun doSomething(): String = "Hello from $moduleName"
+      }
+      """.trimIndent()
+    )
+  }
+
+  private fun createTestFile(moduleName: String) {
+    val className = moduleName.capitalize()
+    val testFile = tempFolder.newFile("$moduleName/src/test/java/${className}ClassTest.kt")
+    testFile.writeText(
+      """
+      package org.oppia.android.$moduleName
+      
+      import org.junit.Test
+      import org.junit.Assert.assertEquals
+      
+      class ${className}ClassTest {
+          @Test
+          fun testDoSomething() {
+              val instance = ${className}Class()
+              assertEquals("Hello from $moduleName", instance.doSomething())
+          }
+      }
+      """.trimIndent()
+    )
+  }
+
+  private fun createSharedTestFile(moduleName: String) {
+    val className = moduleName.capitalize()
+    val sharedTestFile =
+      tempFolder.newFile("$moduleName/src/sharedTest/java/${className}SharedTest.kt")
+    sharedTestFile.writeText(
+      """
+      package org.oppia.android.$moduleName
+      
+      import org.junit.Test
+      import org.junit.Assert.assertNotNull
+      
+      class ${className}SharedTest {
+          @Test
+          fun testSharedFunctionality() {
+              val instance = ${className}Class()
+              assertNotNull(instance)
+          }
+      }
+      """.trimIndent()
+    )
+  }
+
+  private fun createAdditionalSourceFiles(moduleName: String) {
+    val javaFile = tempFolder
+      .newFile("$moduleName/src/main/java/${moduleName.capitalize()}Helper.java")
+    javaFile.writeText(
+      """
+      package org.oppia.android.$moduleName;
+      
+      public class ${moduleName.capitalize()}Helper {
+          public static String getModuleName() {
+              return "$moduleName";
+          }
+      }
+      """.trimIndent()
+    )
+
+    val utilFile = tempFolder.newFile("$moduleName/src/main/java/${moduleName.capitalize()}Util.kt")
+    utilFile.writeText(
+      """
+      package org.oppia.android.$moduleName
+      
+      object ${moduleName.capitalize()}Util {
+          const val MODULE_NAME = "$moduleName"
+      }
+      """.trimIndent()
+    )
+  }
+
+  private fun createResourceFile(moduleName: String) {
+    val resourceFile = tempFolder.newFile("$moduleName/src/main/res/values/strings.xml")
+    resourceFile.writeText(
+      """
+      <?xml version="1.0" encoding="utf-8"?>
+      <resources>
+          <string name="${moduleName}_name">$moduleName Module</string>
+          <string name="${moduleName}_description">Description for $moduleName</string>
+      </resources>
+      """.trimIndent()
+    )
+  }
+
+  private fun createProguardFiles() {
+    val proguardDir = tempFolder.newFolder("config", "proguard")
+
+    val proguardFile1 = File(proguardDir, "proguard-rules.pro")
+    proguardFile1.writeText(
+      """
+      -keep class org.oppia.android.** { *; }
+      -dontwarn javax.annotation.**
+      """.trimIndent()
+    )
+
+    val proguardFile2 = File(proguardDir, "consumer-rules.pro")
+    proguardFile2.writeText(
+      """
+      -keep class org.oppia.android.app.** { *; }
+      """.trimIndent()
+    )
+  }
+
+  private fun String.capitalize(): String {
+    return replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
   }
 
   private fun extractModuleContent(xmlContent: String, moduleName: String): String {
