@@ -34,7 +34,7 @@ class AndroidLintRunnerTest {
   private lateinit var androidLintAnalyzerWithFakeExecutor: AndroidLintAnalyzer
   private lateinit var workingDirectory: File
   private lateinit var bazelBinFolder: File
-  private lateinit var projectDescriptionFile : File
+  private lateinit var projectDescriptionFile: File
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
