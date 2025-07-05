@@ -490,7 +490,9 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withRtlHardCoded_detectsIssue() {
     setupProjectWithRtlHardCoded()
 
-    assertThrows<IllegalArgumentException> { androidLintAnalyzerWithFakeExecutor.runAnalysis() }
+    val exception = assertThrows<IllegalArgumentException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
     val output = reportfile.readText()
     assertThat(output).contains("RtlHardcoded")
     assertThat(output)
@@ -498,47 +500,53 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("line=\"8\"")
     assertThat(output)
       .contains("Using left/right instead of start/end attributes")
+    assertThat(exception.message)
+      .contains("Unknown lint issue ID 'RtlHardcoded' found during analysis.")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withRtlSymmetry_detectsIssue() {
     setupProjectWithRtlSymmetry()
-    assertThrows<IllegalArgumentException> { androidLintAnalyzerWithFakeExecutor.runAnalysis() }
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
-    val output = reportfile.readText()
+    val output = outputStream.toString()
     assertThat(output).contains("RtlSymmetry")
     assertThat(output)
-      .contains("android:paddingRight=&quot;120dip&quot;")
-    assertThat(output).contains("line=\"29\"")
+      .contains("android:paddingEnd=\"120dip\"")
+    assertThat(output).contains("Line: 29")
     assertThat(output)
       .contains(
-        "When you define `paddingRight` " +
-          "you should probably also define `paddingLeft` for right-to-left symmetry"
+        "When you define `paddingEnd` you should probably also define " +
+          "`paddingStart` for right-to-left symmetry"
       )
   }
 
   @Test
   fun testAndroidLintAnalyzer_withNewApi_detectsIssue() {
     setupProjectWithNewApi()
-    assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
 
-    val output = reportfile.readText()
+    val output = outputStream.toString()
     assertThat(output).contains("NewApi")
     assertThat(output)
-      .contains("val network = cm.activeNetwork // Error: Requires API 23")
-    assertThat(output).contains("line=\"9\"")
+      .contains("val network = cm.activeNetwork")
+    assertThat(output)
+      .doesNotContain("val network2 = cm.activeNetwork")
+    assertThat(output).contains("Line: 11")
     assertThat(output)
       .contains(
-        "Calling new methods on older versions"
+        "Call requires API level 23 (current min is 21): " +
+          "`android.net.ConnectivityManager#getActiveNetwork`"
       )
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withInlinedApi_detectsIssue() {
     setupProjectWithInlinedApi()
-    assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalArgumentException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
 
@@ -552,6 +560,8 @@ class AndroidLintRunnerTest {
         "Field requires API level 29 (current min is 21):" +
           " `android.media.MediaFormat#MIMETYPE_AUDIO_AC4`"
       )
+    assertThat(exception.message)
+      .contains("Unknown lint issue ID 'InlinedApi' found during analysis.")
   }
 
   @Test
@@ -634,9 +644,7 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withUseCompoundDrawables_detectsIssue() {
     setupProjectWithUseCompoundDrawables()
 
-    assertThrows<IllegalArgumentException> {
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
-    }
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = reportfile.readText()
     assertThat(output).contains("UseCompoundDrawables")
@@ -654,22 +662,22 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/layout/compound.xml",
       """
-                    <LinearLayout
-                        xmlns:android="http://schemas.android.com/apk/res/android"
+      <LinearLayout
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
 
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:contentDescription="@string/app_name" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-                    """
+      </LinearLayout>
+    """
     )
   }
 
@@ -833,23 +841,26 @@ class AndroidLintRunnerTest {
 
   private fun setupProjectWithNewApi() {
     setupProjectStructure()
+
     createFileWithContent(
       "app/src/main/java/org/oppia/android/app/NewApiUsage.kt",
       """
-    package org.oppia.android.test
+      package org.oppia.android.test
 
-    import android.content.Context
-    import android.net.ConnectivityManager
-    import android.os.Build
-
-    fun test(context: Context) {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = cm.activeNetwork // Error: Requires API 23
-        if (Build.VERSION.SDK_INT >= 23) {
-            val network2 = cm.activeNetwork // OK
-        }
-    }
-  """
+      import android.annotation.SuppressLint
+      import android.content.Context
+      import android.net.ConnectivityManager
+      import android.os.Build
+      
+      @SuppressLint("MissingPermission") 
+      fun test(context: Context) {
+          val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+          val network = cm.activeNetwork 
+          if (Build.VERSION.SDK_INT >= 23) {
+              val network2 = cm.activeNetwork // OK
+          }
+      }
+      """.trimIndent()
     )
   }
 
@@ -858,60 +869,59 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/layout/rtl_symmetry.xml",
       """
-        <?xml version="1.0" encoding="utf-8"?>
-          <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-          
-              <ProgressBar
-                  android:id="@+id/loading_progress"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentLeft="true"
-                  android:layout_alignParentTop="true"
-                  android:layout_marginBottom="60dip"
-                  android:layout_marginLeft="40dip"
-                  android:layout_marginTop="40dip"
-                  android:max="10000" />
-          
-              <TextView
-                  android:id="@+id/text"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentTop="true"
-                  android:layout_alignWithParentIfMissing="true"
-                  android:layout_marginBottom="60dip"
-                  android:layout_marginLeft="40dip"
-                  android:layout_marginTop="40dip"
-                  android:layout_toRightOf="@id/loading_progress"
-                  android:ellipsize="end"
-                  android:maxLines="3"
-                  android:paddingRight="120dip"
-                  android:text="Creating Instant Mix"
-                  android:textAppearance="?android:attr/textAppearanceMedium" />
-          </RelativeLayout>
+      <?xml version="1.0" encoding="utf-8"?>
+      <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
 
-      """
+          <ProgressBar
+              android:id="@+id/loading_progress"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentStart="true"
+              android:layout_alignParentTop="true"
+              android:layout_marginBottom="60dip"
+              android:layout_marginStart="40dip"
+              android:layout_marginTop="40dip"
+              android:max="10000" />
+
+          <TextView
+              android:id="@+id/text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:layout_alignWithParentIfMissing="true"
+              android:layout_marginBottom="60dip"
+              android:layout_marginStart="40dip"
+              android:layout_marginTop="40dip"
+              android:layout_toEndOf="@id/loading_progress"
+              android:ellipsize="end"
+              android:maxLines="3"
+              android:paddingEnd="120dip"
+              android:text="@string/app_name"
+              android:textAppearance="?android:attr/textAppearanceMedium" />
+      </RelativeLayout>
+    """
     )
 
     createFileWithContent(
       "app/src/main/AndroidManifest.xml",
       """
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-            package="org.oppia.android.app">
-        
-            <application
-                android:supportsRtl="true"
-                android:allowBackup="true"
-                android:label="RTL Test App"
-                android:icon="@mipmap/ic_launcher">
-            </application>
-        
-            <uses-sdk
-                android:minSdkVersion="$MIN_SDK_VERSION"
-                android:targetSdkVersion="$TARGET_SDK_VERSION" />
-        </manifest>
-        """
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="org.oppia.android.app">
+
+        <uses-sdk
+            android:minSdkVersion="$MIN_SDK_VERSION"
+            android:targetSdkVersion="$TARGET_SDK_VERSION" />
+
+        <application
+            android:supportsRtl="true"
+            android:allowBackup="true"
+            android:label="RTL Test App"
+            android:icon="@mipmap/ic_launcher">
+        </application>
+    </manifest>
+    """
     )
   }
 
