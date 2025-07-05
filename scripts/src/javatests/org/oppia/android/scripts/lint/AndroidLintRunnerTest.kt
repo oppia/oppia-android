@@ -38,7 +38,6 @@ class AndroidLintRunnerTest {
   private lateinit var bazelBinFolder: File
   private lateinit var projectDescriptionFile: File
 
-
   companion object {
     private const val JAVA_VERSION = "11.0.6"
     private const val MIN_SDK_VERSION = "21"
@@ -517,7 +516,7 @@ class AndroidLintRunnerTest {
 
     assertThat(exception.message)
       .contains("Unknown lint issue ID 'RtlHardcoded' found during analysis.")
-      
+
     val projectDescriptionContent = projectDescriptionFile.readText()
     assertThat(projectDescriptionContent)
       .contains("app/src/main/res")
@@ -571,7 +570,6 @@ class AndroidLintRunnerTest {
       .contains("app/src/main/java/org/oppia/android/app/NewApiUsage.kt")
     assertThat(projectDescriptionContent)
       .contains("app/src/main/AndroidManifest.xml")
-
   }
 
   @Test
