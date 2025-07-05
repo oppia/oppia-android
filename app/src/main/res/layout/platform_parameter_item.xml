@@ -74,7 +74,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:visibility="@{viewModel.isTextInputMode ? View.VISIBLE : View.GONE}"
-        app:errorMessage="@{viewModel.errorMessage}"
+        app:errorMessage="@{viewModel.inputErrorMsg}"
         app:errorIconDrawable="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

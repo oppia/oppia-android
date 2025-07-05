@@ -34,7 +34,7 @@ class PlatformParameterItemViewModel(
   val platformParameterName = ObservableField(getPlatformParameterDisplayName())
 
   /** Error message to be displayed in case of invalid input for a platform parameters. */
-  val errorMessage = ObservableField("")
+  val inputErrorMsg = ObservableField("")
 
   /** The display text representing the current sync status of the parameter. */
   val syncStatusDisplayText = ObservableField(getSyncStatusText())

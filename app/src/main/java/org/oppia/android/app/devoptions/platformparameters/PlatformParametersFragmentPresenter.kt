@@ -18,6 +18,7 @@ import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
 
 /** The presenter for [PlatformParametersFragment]. */
@@ -27,6 +28,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val platformParametersViewModel: PlatformParametersViewModel,
   resourceHandler: AppLanguageResourceHandler,
+  private val oppiaLogger: OppiaLogger,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: PlatformParametersFragmentBinding
@@ -91,6 +93,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val editText = binding.platformParameterInputEditText
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
+
     if (model.currentValue.hasBoolean()) {
       handleBooleanParameter(model)
     } else {
@@ -123,62 +126,69 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         editText.inputType = InputType.TYPE_CLASS_NUMBER
         val displayValue = when (val storedValue = paramState?.integer) {
           -1 -> {
-            model.errorMessage.set(invalidInputErrorText)
+            model.inputErrorMsg.set(invalidInputErrorText)
             ""
           }
-
-          null -> model.currentValue.integer.toString()
-          else -> storedValue.toString()
+          null -> {
+            model.inputErrorMsg.set("")
+            model.currentValue.integer.toString()
+          }
+          else -> {
+            model.inputErrorMsg.set("")
+            storedValue.toString()
+          }
         }
         model.inputValue.set(displayValue)
       }
 
       model.currentValue.hasString() -> {
         editText.inputType = InputType.TYPE_CLASS_TEXT
+
         if (paramState != null) {
           model.inputValue.set(paramState.string)
+          model.inputErrorMsg.set("")
         }
       }
-
       else -> {
         editText.inputType = InputType.TYPE_CLASS_TEXT
+        model.inputValue.set("")
       }
     }
-    editText.setText(model.inputValue.get() ?: "")
-    if (!model.inputValue.get().isNullOrEmpty()) {
-      model.errorMessage.set("")
-    }
-    model.onPlatformParameterTextChangedCallback = { id, text ->
-      when {
-        model.currentValue.hasInteger() -> {
-
-          val parsed = text.toIntOrNull()
-          if (parsed == null || text.isBlank()) {
-            model.errorMessage.set(invalidInputErrorText)
-            platformParameterStates[id] =
-              PlatformParameterValue.newBuilder().setInteger(-1).build()
-          } else {
-            model.errorMessage.set("")
-            platformParameterStates[id] =
-              PlatformParameterValue.newBuilder().setInteger(parsed).build()
-          }
+    editText.setTag(R.id.platform_parameter_text_change_flag, true)
+    model.onPlatformParameterTextChangedCallback =
+      onPlatformParameterTextChangedCallback@{ id, text ->
+        val ignoreInitialBinding =
+          editText.getTag(R.id.platform_parameter_text_change_flag) as? Boolean ?: false
+        if (ignoreInitialBinding) {
+          editText.setTag(R.id.platform_parameter_text_change_flag, false)
+          return@onPlatformParameterTextChangedCallback
         }
-
-        model.currentValue.hasString() -> {
-          if (text.isNullOrEmpty()) {
-            model.errorMessage.set(invalidInputErrorText)
-            platformParameterStates[id] = PlatformParameterValue.newBuilder()
-              .setString("")
-              .build()
-          } else {
-            model.errorMessage.set("")
+        oppiaLogger.d("PlatformParametersFragmentPresenter", "Text changed for $id: $text")
+        when {
+          model.currentValue.hasInteger() -> {
+            val parsed = text.toIntOrNull()
+            if (parsed == null) {
+              model.inputErrorMsg.set(invalidInputErrorText)
+              platformParameterStates[id] =
+                PlatformParameterValue.newBuilder().setInteger(-1).build()
+            } else {
+              model.inputErrorMsg.set("")
+              platformParameterStates[id] =
+                PlatformParameterValue.newBuilder().setInteger(parsed).build()
+            }
+          }
+          model.currentValue.hasString() -> {
+            if (text.isBlank()) {
+              model.inputErrorMsg.set(invalidInputErrorText)
+            } else {
+              model.inputErrorMsg.set("")
+            }
             platformParameterStates[id] = PlatformParameterValue.newBuilder()
               .setString(text)
               .build()
           }
         }
       }
-    }
   }
 
   private fun handleBooleanParameter(model: PlatformParameterItemViewModel) {
