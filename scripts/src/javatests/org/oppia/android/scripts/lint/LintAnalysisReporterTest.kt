@@ -1030,6 +1030,9 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("Redundant exemptions")
+    assertThat(output).contains(
+      "Please remove them from scripts/assets/android_lint_exemptions.textproto"
+    )
     assertThat(output).contains("File: file1.xml")
     assertThat(output).contains("  - IssueA")
     assertThat(output).contains("  - IssueB")
