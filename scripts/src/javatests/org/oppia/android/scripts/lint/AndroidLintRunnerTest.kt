@@ -258,7 +258,6 @@ class AndroidLintRunnerTest {
 
     lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
-
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isTrue()
 
