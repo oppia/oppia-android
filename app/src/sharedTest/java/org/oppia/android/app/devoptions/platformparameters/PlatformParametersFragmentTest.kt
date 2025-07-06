@@ -262,7 +262,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChanges_persistsValue() {
+  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChange_persistsValue() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
