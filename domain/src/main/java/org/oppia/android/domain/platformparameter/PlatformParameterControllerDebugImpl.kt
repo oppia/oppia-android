@@ -75,7 +75,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  /** Loads the locally overridden feature flags from the database.  */
+  /** Loads the locally overridden feature flags from the database. */
   suspend fun loadLocalOverriddenFeatureFlags(): List<OverriddenFeatureFlag> {
     return databaseStore.readDataAsync().await().overriddenFeatureFlagList
   }
@@ -174,10 +174,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           )
           emptyMap()
         }
-
         is AsyncResult.Success ->
           ephemeralPlatformParametersResult.value.associate { it.id to it.currentValue }
-
         is AsyncResult.Pending -> emptyMap()
       }
 
@@ -190,10 +188,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           )
           emptyMap()
         }
-
         is AsyncResult.Success ->
           ephemeralFeatureFlagsResult.value.associate { it.id to it.currentValue }
-
         else -> emptyMap()
       }
 
@@ -206,10 +202,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           )
           emptyMap()
         }
-
         is AsyncResult.Success ->
           ephemeralFeatureFlagsResult.value.associate { it.id to it.syncStatus }
-
         else -> emptyMap()
       }
 
