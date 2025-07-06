@@ -39,7 +39,6 @@ class PlatformParametersFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-
     var platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
     if (savedInstanceState != null) {

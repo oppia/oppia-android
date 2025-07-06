@@ -106,7 +106,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.platformParameterId, s.toString()
         )
       }
-
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
     }
@@ -140,10 +139,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
         model.inputValue.set(displayValue)
       }
-
       model.currentValue.hasString() -> {
         editText.inputType = InputType.TYPE_CLASS_TEXT
-
         model.inputValue.set(paramState?.string ?: model.currentValue.string)
         model.inputErrorMsg.set("")
       }
