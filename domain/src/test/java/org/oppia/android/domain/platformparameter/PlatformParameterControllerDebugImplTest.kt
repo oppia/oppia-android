@@ -55,6 +55,7 @@ import javax.inject.Singleton
 class PlatformParameterControllerDebugImplTest {
   private companion object {
     private const val TEST_REMOTE_MULTIPLE_CLASSROOMS = true
+    private const val TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS = true
     private const val TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS = 24
     private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
@@ -225,7 +226,7 @@ class PlatformParameterControllerDebugImplTest {
   fun testLoadEphemeralFeatureFlags_withRemoteFlagAndNoLocalOverride_returnsRemoteValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -240,10 +241,11 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
   }
 
+  @Test
   fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_returnsOverriddenValue() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -259,10 +261,11 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
   }
 
+  @Test
   fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_hasLocalOverrideStatus() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -279,11 +282,11 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideStatus() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, false)
       testComponent.getTestCoroutineDispatchers().runCurrent()
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -298,11 +301,33 @@ class PlatformParameterControllerDebugImplTest {
     assertThat(ephemeralMultipleClassroomValue?.syncStatus)
       .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
   }
+
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideValue() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent, false)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+
+    val ephemeralFeatureFlagsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    val ephemeralFeatureFlags =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
+    val ephemeralMultipleClassroomValue = ephemeralFeatureFlags
+      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    assertThat(ephemeralMultipleClassroomValue?.currentValue)
+      .isEqualTo(TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS)
+  }
+
   @Test
   fun testLoadEphemeralFeatureFlags_withRemoteFlagAndNoLocalOverride_hasSyncedFromServerStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -378,7 +403,7 @@ class PlatformParameterControllerDebugImplTest {
   fun testLoadParametersAsync_withRemoteFlagAndNoLocalOverride_setsProcessStateToRemoteValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -420,7 +445,10 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOM.
-  private fun addTestRemoteFeatureFlagToDatabase(component: TestApplicationComponent) {
+  private fun addTestRemoteFeatureFlagToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
       REMOTE_DATABASE_NAME,
       RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
@@ -431,7 +459,7 @@ class PlatformParameterControllerDebugImplTest {
         addRemoteFeatureFlag(
           RemoteFeatureFlag.newBuilder().apply {
             id = FeatureFlagId.MULTIPLE_CLASSROOMS
-            remoteIsEnabled = true
+            remoteIsEnabled = value
             syncStatus = SyncStatus.SYNCED_FROM_SERVER
           }.build()
         )
@@ -442,7 +470,10 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   // Populates the Local Override DB with test Overridden feature flag for MULTIPLE_CLASSROOMS.
-  private fun addTestOverriddenFeatureFlagToDatabase(component: TestApplicationComponent) {
+  private fun addTestOverriddenFeatureFlagToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
       LOCAL_OVERRIDE_DATABASE_NAME,
       LocalOverridePlatformParameterDatabase.getDefaultInstance()
@@ -452,7 +483,7 @@ class PlatformParameterControllerDebugImplTest {
         addOverriddenFeatureFlag(
           OverriddenFeatureFlag.newBuilder()
             .setId(FeatureFlagId.MULTIPLE_CLASSROOMS)
-            .setOverriddenValue(true)
+            .setOverriddenValue(value)
             .build()
         )
       }.build()

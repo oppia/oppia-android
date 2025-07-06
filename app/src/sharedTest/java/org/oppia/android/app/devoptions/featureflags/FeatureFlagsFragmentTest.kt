@@ -25,6 +25,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -145,6 +146,11 @@ class FeatureFlagsFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -311,7 +317,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasServerSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -329,7 +335,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectBackground() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -346,7 +352,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectValue() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -364,7 +370,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectName() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -381,7 +387,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addOverriddenFeatureFlag_downloadsSupportHasOverriddenSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -398,9 +404,10 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasOverriddenStatus() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent)
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestRemoteFeatureFlagToDatabase(testComponent, false)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
 
@@ -412,6 +419,49 @@ class FeatureFlagsFragmentTest {
       verifyFeatureFlagSyncStatus(
         position = 0,
         expectedSyncStatus = context.getString(R.string.feature_flag_overridden_sync_status)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasCorrectValue() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent, false)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = true
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasCorrectBackground() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent, false)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = 0xFFBE563C.toInt()
       )
     }
   }
@@ -447,7 +497,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addOverriddenFeatureFlag_downloadsSupportHasCorrectBackground() {
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -464,7 +514,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addOverriddenFeatureFlagValue_downloadsSupportHasCorrectValue() {
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -482,7 +532,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_addOverriddenFeatureFlagValue_downloadsSupportHasCorrectName() {
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent)
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -584,7 +634,10 @@ class FeatureFlagsFragmentTest {
   }
 
   // Populates the remote DB with test feature flag for DOWNLOADS_SUPPORT.
-  private fun addTestRemoteFeatureFlagToDatabase(component: TestApplicationComponent) {
+  private fun addTestRemoteFeatureFlagToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
       REMOTE_DATABASE_NAME,
       RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
@@ -595,7 +648,7 @@ class FeatureFlagsFragmentTest {
         addRemoteFeatureFlag(
           RemoteFeatureFlag.newBuilder().apply {
             id = FeatureFlagId.DOWNLOADS_SUPPORT
-            remoteIsEnabled = true
+            remoteIsEnabled = value
             syncStatus = SyncStatus.SYNCED_FROM_SERVER
           }.build()
         )
@@ -606,7 +659,10 @@ class FeatureFlagsFragmentTest {
   }
 
   // Populates the Local Override DB with test Overridden feature flag for MULTIPLE_CLASSROOMS.
-  private fun addTestOverriddenFeatureFlagToDatabase(component: TestApplicationComponent) {
+  private fun addTestOverriddenFeatureFlagToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
       LOCAL_OVERRIDE_DATABASE_NAME,
       LocalOverridePlatformParameterDatabase.getDefaultInstance()
@@ -616,7 +672,7 @@ class FeatureFlagsFragmentTest {
         addOverriddenFeatureFlag(
           OverriddenFeatureFlag.newBuilder()
             .setId(FeatureFlagId.DOWNLOADS_SUPPORT)
-            .setOverriddenValue(true)
+            .setOverriddenValue(value)
             .build()
         )
       }.build()
