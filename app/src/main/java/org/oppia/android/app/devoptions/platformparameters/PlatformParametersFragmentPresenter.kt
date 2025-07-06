@@ -148,6 +148,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
+
     editText.setTag(R.id.platform_parameter_text_change_flag, true)
 
     model.onPlatformParameterTextChangedCallback =
