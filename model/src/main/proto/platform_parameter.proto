@@ -33,8 +33,248 @@ message PlatformParameter {
   }
 }
 
-// Format of platform parameters stored on disk. It closely resembles the JSON response in cache.
-message RemotePlatformParameterDatabase {
-  // Platform parameters cached from the backend.
-  repeated PlatformParameter platform_parameter = 1;
+// Represents a forever-unique reference to a specific platform parameter.
+enum PlatformParameterId {
+  // Corresponds to a platform parameter whose ID is not known (e.g. invalid or undefined).
+  PLATFORM_PARAMETER_ID_UNSPECIFIED = 0;
+
+  // Corresponds to a test-only splash screen welcome message used when testing platform parameters.
+  SPLASH_SCREEN_WELCOME_MESSAGE = 1;
+
+  // Corresponds to the time, in hours, between attempts to remotely download platform parameters.
+  SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS = 2;
+
+  // Corresponds to whether LaTeX rendering should be cached via Glide.
+  CACHE_LATEX_RENDERING = 3;
+
+  // Corresponds to the interval, in minutes, at which performance metrics should be uploaded.
+  PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES = 4;
+
+  // Corresponds to the period, in minutes, at which 'high frequency' performance metrics should be
+  // collected.
+  PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES = 5;
+
+  // Corresponds to the period, in minutes, at which 'low frequency' performance metrics should be
+  // collected.
+  PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES = 6;
+
+  // Corresponds to the version code below which a user should be prompted with a suggestion to
+  // update their version of the app.
+  OPTIONAL_APP_UPDATE_VERSION_CODE = 7;
+
+  // Corresponds to the version code below which a user should be required to update their version
+  // of the app.
+  FORCED_APP_UPDATE_VERSION_CODE = 8;
+
+  // Corresponds to the minimum Android SDK version supported, enabling a flow for suggesting that
+  // the user upgrade their device to a newer version of Android.
+  LOWEST_SUPPORTED_API_LEVEL = 9;
+
+  // Corresponds to the period, in days, between attempts to request the user to fill out the NPS
+  // survey.
+  NPS_SURVEY_GRACE_PERIOD_IN_DAYS = 10;
+
+  // Corresponds to the time, in minutes, that a user must have accumulated performing learning
+  // activities before they qualify for seeing the NPS survey.
+  NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES = 11;
+}
+
+// Represents a forever-unique reference to a specific feature flag.
+enum FeatureFlagId {
+  // Corresponds to a feature flag whose ID is not known (e.g. invalid or undefined).
+  FEATURE_FLAG_ID_UNSPECIFIED = 0;
+
+  // Previously used for a feature that enabled a UI for changing the user's app language.
+  reserved 1;
+
+  // Corresponds to a feature for enabling logging special usage analytics for learner user studies.
+  LEARNER_STUDY_ANALYTICS = 2;
+
+  // Corresponds to a feature for enabling collection of app performance metrics.
+  PERFORMANCE_METRICS_COLLECTION = 3;
+
+  // Corresponds to a feature that enables the 'edit accounts' section of the administrator controls
+  // screen. See #4006.
+  EDIT_ACCOUNTS_OPTIONS_UI = 4;
+
+  // Corresponds to an app-wide feature for enabling spotlights.
+  SPOTLIGHT_UI = 5;
+
+  // Corresponds to a topic activity feature that enables two extra tabs: info and practice.
+  EXTRA_TOPIC_TABS_UI = 6;
+
+  // Corresponds to a feature enabling the ability to remotely download lessons.
+  DOWNLOADS_SUPPORT = 7;
+
+  // Corresponds to a series of functionality improvements that ensure configuration changes
+  // correctly retain state for interactions so that unsubmitted answers are kept across device
+  // rotations and other configuration changes.
+  INTERACTION_CONFIG_CHANGE_STATE_RETENTION = 8;
+
+  // Previously used for a feature that animated to continue button in a lesson.
+  reserved 9;
+
+  // Corresponds to UIs that show in select scenarios where the app or the user's OS are no longer
+  // supported or recommended for use by the Oppia Android team.
+  APP_AND_OS_DEPRECATION = 10;
+
+  // Corresponds to a user study-specific feature that enables a special button in the lesson player
+  // for quickly switching between different content and app languages mid-lesson.
+  FAST_LANGUAGE_SWITCHING_IN_LESSON = 11;
+
+  // Corresponds to a feature for whether learner study IDs should be included in analytics logs for
+  // the purpose of analyzing logs for study results.
+  LOGGING_LEARNER_STUDY_IDS = 12;
+
+  // Corresponds to a feature enabling an in-app survey for requesting feedback from learners their
+  // overall opinion of the app and their current learning experience (as part of understanding
+  // Oppia Android's product market fit).
+  NPS_SURVEY = 13;
+
+  // Corresponds to a new onboarding flow that completely replaces the first onboarding flow
+  // introduced in the app. The new flow includes earlier language selections, and distinct
+  // onboarding pathways for different types of users (including learners added later on).
+  ONBOARDING_FLOW_V2 = 14;
+
+  // Corresponds to a new version of the home screen that supports multiple classrooms (such as
+  // mathematics and science).
+  MULTIPLE_CLASSROOMS = 15;
+
+  // Corresponds to a feature that enables a UI for quick revision when a learner answers a specific
+  // question incorrectly.
+  FLASHBACK_SUPPORT = 16;
+}
+
+// Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to
+// configure application behavior.
+message PlatformParameterDefinition {
+  // The unique ID of this platform parameter.
+  PlatformParameterId id = 1;
+
+  // The textual name used to identify the parameter in Oppia web. Note that this must be a forever
+  // unique representation among all platform parameters and feature flags. If absent then the
+  // parameter will never be remotely synced.
+  string remote_server_name = 2;
+
+  // The default value of the parameter that should be used if there's no remotely synced version.
+  PlatformParameterValue default_value = 3;
+}
+
+// Corresponds to a remotely synced platform parameter.
+message RemotePlatformParameter {
+  // The unique ID of this platform parameter which corresponds to a PlatformParameterDefinition.
+  PlatformParameterId id = 1;
+
+  // The remotely synced value of this parameter, or absent/default if never yet synced.
+  PlatformParameterValue remote_value = 2;
+
+  // Indicates the sync status of the platform parameter.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to an actual platform parameter value that directly tweaks particular app behavior.
+message PlatformParameterValue {
+  // The specific value type of the parameter.
+  oneof value_type {
+    // The boolean-typed value of the parameter.
+    bool boolean = 1;
+
+    // The integer-typed value of the parameter.
+    int32 integer = 2;
+
+    // The string-typed value of the parameter.
+    string string = 3;
+  }
+}
+
+// Corresponds to a compile-time definition of a feature flag which is a mechanism by which to gate
+// whether a specific feature is enabled.
+message FeatureFlagDefinition {
+  // The unique ID of this feature flag.
+  FeatureFlagId id = 1;
+
+  // The textual name used to identify the flag in Oppia web. Note that this must be a forever
+  // unique representation among all platform parameters and feature flags. If absent then the flag
+  // will never be remotely synced.
+  string remote_server_name = 2;
+
+  // Whether or not the feature is enabled by default if there's no remotely synced record.
+  bool default_is_enabled = 3;
+}
+
+message RemoteFeatureFlag {
+  // The unique ID of this feature flag which corresponds to a FeatureFlagDefinition.
+  FeatureFlagId id = 1;
+
+  // Whether or not the feature flag should be enabled as indicated by the remote server. Note that
+  // this value only has meaning if SyncStatus indicates that there's been at least one successful
+  // remote sync for this feature flag.
+  bool remote_is_enabled = 2;
+
+  // Indicates the sync status of the feature flag.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to the latest sync status for platform parameters and feature flags.
+enum SyncStatus {
+  // Indicates that the sync status isn't yet known.
+  SYNC_STATUS_UNSPECIFIED = 0;
+
+  // Indicates that the parameter/flag isn't yet synced with the remote server.
+  NOT_SYNCED_FROM_SERVER = 1;
+
+  // Indicates the parameter/flag's value has been successfully synced with the remote server.
+  SYNCED_FROM_SERVER = 2;
+}
+
+// Defines the list of supported platform parameters in the app.
+message SupportedPlatformParameters {
+  // The list of platform parameter definitions, one for each supported parameter. If any parameters
+  // are not represented in this list then it's assumed that they are not supported (even if there
+  // are corresponding definitions in Oppia web). Duplicate references to the same
+  // PlatformParameterId will result in a runtime test failure.
+  repeated PlatformParameterDefinition platform_parameter_definition = 1;
+}
+
+// Defines the list of supported feature flags in the app.
+message SupportedFeatureFlags {
+  // The list of feature flag definitions, one for each supported flag. If any flags are not
+  // represented in this list then it's assumed that they are not supported (even if there are
+  // corresponding definitions in Oppia web). Duplicate references to the same FeatureFlagId will
+  // result in a runtime test failure.
+  repeated FeatureFlagDefinition feature_flag_definition = 1;
+}
+
+// The database for storing results from remotely syncing platform parameters and feature flags with
+// the Oppia web server.
+message RemotePlatformParameterAndFeatureFlagDatabase {
+  // The remotely synced platform parameters.
+  repeated RemotePlatformParameter remote_platform_parameter = 1;
+
+  // The remotely synced feature flags.
+  repeated RemoteFeatureFlag remote_feature_flag = 2;
+}
+
+// Corresponds to the current in-app state of the platform parameter.
+message EphemeralPlatformParameter {
+  // The unique ID of this platform parameter which corresponds to a PlatformParameterDefinition.
+  PlatformParameterId id = 1;
+
+  // The current value of this platform parameter, determined from the latest synced or default value.
+  PlatformParameterValue current_value = 2;
+
+  // Indicates the sync status of the platform parameter.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to the current in-app state of the feature flag.
+message EphemeralFeatureFlag {
+  // The unique ID of this feature flag which corresponds to a FeatureFlagDefinition.
+  FeatureFlagId id = 1;
+
+  // Whether or not the feature is currently enabled, based on the latest synced or default value.
+  bool current_value = 2;
+
+  // Indicates the sync status of the feature flag.
+  SyncStatus sync_status = 3;
 }
