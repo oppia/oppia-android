@@ -76,10 +76,10 @@ class FeatureFlagItemViewModel(
   @ColorInt
   private fun retrieveBackgroundColor(): Long {
     return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF00645C
+      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF4F4F4F
       SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
       SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
-      SyncStatus.LOCAL_OVERRIDE -> 0xFFEFCF24
+      SyncStatus.LOCAL_OVERRIDE -> 0xFFC2B71B
       else -> 0xFF00645C
     }
   }

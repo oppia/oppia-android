@@ -13,6 +13,9 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [FeatureFlagsFragment]. */
@@ -21,6 +24,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val featureFlagsViewModel: FeatureFlagsViewModel,
+  private val oppiaLogger: OppiaLogger,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: FeatureFlagsFragmentBinding
@@ -79,8 +83,20 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         .setOverriddenValue(value)
         .build()
     }
-    featureFlagsViewModel.overrideFeatureFlags(overriddenFeatureFlags)
-    (activity as FeatureFlagsActivity).finish()
+    featureFlagsViewModel
+      .overrideFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> (activity as FeatureFlagsActivity).finish()
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "PlatformParametersFragmentPresenter",
+              "Failed to override feature flags: ",
+              it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
+      }
   }
 
   private fun bindFeatureFlagItem(
@@ -93,10 +109,11 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       model.isChecked.set(featureFlagStates[model.featureFlagId])
     }
     model.onFeatureFlagToggleCallback = { id, value ->
-      if (model.currentValue == value)
+      if (model.currentValue == value) {
         featureFlagStates.remove(id)
-      else
+      } else {
         featureFlagStates[id] = value
+      }
     }
   }
 
