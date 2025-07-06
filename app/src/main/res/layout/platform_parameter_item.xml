@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="@{viewModel.platformParameterName}"
+        android:text="@{viewModel.platformParameterDisplayName}"
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

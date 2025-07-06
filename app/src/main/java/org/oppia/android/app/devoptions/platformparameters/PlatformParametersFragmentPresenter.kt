@@ -145,10 +145,11 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         editText.inputType = InputType.TYPE_CLASS_TEXT
 
         model.inputValue.set(paramState?.string ?: model.currentValue.string)
-        model.inputValue.set("")
+        model.inputErrorMsg.set("")
       }
     }
     editText.setTag(R.id.platform_parameter_text_change_flag, true)
+
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
         val ignoreInitialBinding =

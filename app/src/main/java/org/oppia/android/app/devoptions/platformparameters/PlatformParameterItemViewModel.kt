@@ -31,7 +31,7 @@ class PlatformParameterItemViewModel(
   val isTextInputMode = ObservableField(!currentValue.hasBoolean())
 
   /** The display name of the platform parameter. */
-  val platformParameterName = ObservableField(getPlatformParameterDisplayName())
+  val platformParameterDisplayName = ObservableField(retrievePlatformParameterDisplayName())
 
   /** Error message to be displayed in case of invalid input for a platform parameters. */
   val inputErrorMsg = ObservableField("")
@@ -71,7 +71,7 @@ class PlatformParameterItemViewModel(
     onPlatformParameterToggleCallback?.invoke(platformParameterId, newValue)
   }
 
-  private fun getPlatformParameterDisplayName(): String {
+  private fun retrievePlatformParameterDisplayName(): String {
     return machineLocale.run {
       when (platformParameterId) {
         PlatformParameterId.UNRECOGNIZED,
