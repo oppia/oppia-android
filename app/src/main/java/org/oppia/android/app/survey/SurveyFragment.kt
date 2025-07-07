@@ -64,7 +64,7 @@ class SurveyFragment :
     savedInstanceState: Bundle?
   ): View? {
     val arguments = checkNotNull(arguments) {
-      "Expected arguments to be passed to StoryFragment."
+      "Expected arguments to be passed to SurveyFragment."
     }
 
     val args = arguments.getProto(

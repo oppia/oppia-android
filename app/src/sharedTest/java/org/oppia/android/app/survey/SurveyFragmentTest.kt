@@ -277,7 +277,7 @@ class SurveyFragmentTest {
 
         assertThat(exception).isNotNull()
         assertThat(exception!!.message).contains(
-          "Expected arguments to be passed to StoryFragment."
+          "Expected arguments to be passed to SurveyFragment."
         )
       }
     }
