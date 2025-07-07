@@ -33,7 +33,7 @@ class LiTagHandler(
   private val latestPendingList: ListTag<*, *>?
     get() = pendingLists.lastOrNull()
 
-  override fun handleOpeningTag(output: Editable, tag: String, textView: TextView) {
+  override fun handleOpeningTag(output: Editable, tag: String, htmlContentTextView: TextView) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> {
         pendingLists += ListTag.Ul(
@@ -46,7 +46,7 @@ class LiTagHandler(
         pendingLists += ListTag.Ol(
           parentList = latestPendingList,
           parentMark = latestPendingList?.pendingStartMark,
-          textView = textView
+          htmlContentTextView = htmlContentTextView
         )
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.openItem(output)
@@ -256,11 +256,12 @@ class LiTagHandler(
     class Ol(
       parentList: ListTag<*, *>?,
       parentMark: Mark<*>?,
-      val textView: TextView
+      val htmlContentTextView: TextView
     ) : ListTag<Mark.NumberListItem, ListItemLeadingMarginSpan.OlSpan>(
       parentList, parentMark, ::getLast
     ) {
-      override fun createMark(itemNumber: Int) = Mark.NumberListItem(itemNumber, textView)
+      override fun createMark(itemNumber: Int) =
+        Mark.NumberListItem(itemNumber, htmlContentTextView)
     }
   }
 
@@ -296,7 +297,7 @@ class LiTagHandler(
     /** Marks the opening tag location of a list item inside an <ol> element. */
     class NumberListItem(
       val number: Int,
-      val textView: TextView
+      val htmlContentTextView: TextView
     ) : Mark<ListItemLeadingMarginSpan.OlSpan>() {
       override fun equals(other: Any?) = this === other
       override fun hashCode() = System.identityHashCode(this)
@@ -313,7 +314,7 @@ class LiTagHandler(
           numberedItemPrefix = "${displayLocale.toHumanReadableString(number)}.",
           longestNumberedItemPrefix = "${displayLocale.toHumanReadableString(peerItemCount)}.",
           displayLocale,
-          textView
+          htmlContentTextView
         )
       }
     }

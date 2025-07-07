@@ -100,7 +100,7 @@ class CustomHtmlContentHandlerTest {
         html = "",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(),
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -113,7 +113,7 @@ class CustomHtmlContentHandlerTest {
         html = "<strong>Text</strong>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(),
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -126,7 +126,7 @@ class CustomHtmlContentHandlerTest {
       html = "<img src=\"test_source.png\"></img>",
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf(),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     verify(mockImageRetriever)!!.getDrawable(anyString())
@@ -141,7 +141,7 @@ class CustomHtmlContentHandlerTest {
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -157,7 +157,7 @@ class CustomHtmlContentHandlerTest {
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
@@ -177,7 +177,7 @@ class CustomHtmlContentHandlerTest {
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(),
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("content")
@@ -192,7 +192,7 @@ class CustomHtmlContentHandlerTest {
         customTagHandlers = mapOf(
           "custom-tag" to ReplacingTagHandler("custom-attribute")
         ),
-        textView = testView
+        htmlContentTextView = testView
       )
 
     // Verify that handlers which wish to replace text can successfully do so.
@@ -212,7 +212,7 @@ class CustomHtmlContentHandlerTest {
           "outer-tag" to outerFakeTagHandler,
           "inner-tag" to innerFakeTagHandler
         ),
-        textView = testView
+        htmlContentTextView = testView
       )
 
     // Verify that both tag handlers are called (showing support for nesting).
@@ -228,7 +228,7 @@ class CustomHtmlContentHandlerTest {
         html = UL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithListTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -243,7 +243,7 @@ class CustomHtmlContentHandlerTest {
         html = OL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithListTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -325,7 +325,7 @@ class CustomHtmlContentHandlerTest {
         "outer-tag" to outerHandler,
         "inner-tag" to innerHandler
       ),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(contentDescription).isEqualTo("Outer Tag before Inner Tag nested after")
@@ -341,7 +341,7 @@ class CustomHtmlContentHandlerTest {
         "first-tag" to firstHandler,
         "second-tag" to secondHandler
       ),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
@@ -359,7 +359,7 @@ class CustomHtmlContentHandlerTest {
               <p>Third    paragraph</p>
         """.trimIndent(),
       customTagHandlers = mapOf(),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -381,7 +381,7 @@ class CustomHtmlContentHandlerTest {
               <footer>Footer text</footer>
         """.trimIndent(),
       customTagHandlers = mapOf(),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -405,7 +405,7 @@ class CustomHtmlContentHandlerTest {
               <p>Final paragraph</p>
         """.trimIndent(),
       customTagHandlers = mapOf(),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -427,7 +427,7 @@ class CustomHtmlContentHandlerTest {
               <a href="https://another.com">Another Link</a>
         """.trimIndent(),
       customTagHandlers = mapOf(),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -443,7 +443,7 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.getContentDescription(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
@@ -459,7 +459,7 @@ class CustomHtmlContentHandlerTest {
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -475,7 +475,7 @@ class CustomHtmlContentHandlerTest {
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = null,
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(fakeTagHandler.handleTagCalled).isFalse()
@@ -490,7 +490,7 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.getContentDescription(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
-      textView = testView
+      htmlContentTextView = testView
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()

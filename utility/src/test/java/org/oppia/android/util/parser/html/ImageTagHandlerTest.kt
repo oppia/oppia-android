@@ -117,7 +117,7 @@ class ImageTagHandlerTest {
       html = IMAGE_TAG_WITH_CAPTION_MARKUP,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithImageTagSupport,
-      textView = testView
+      htmlContentTextView = testView
     )
 
     val parsedHtmlString = parsedHtml.toString()
@@ -152,7 +152,7 @@ class ImageTagHandlerTest {
         html = "$IMAGE_TAG_WITH_CAPTION_MARKUP and $IMAGE_TAG_WITH_CAPTION_MARKUP",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val parsedHtmlStr = parsedHtml.toString()
@@ -167,7 +167,7 @@ class ImageTagHandlerTest {
         html = "",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -181,7 +181,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -195,7 +195,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_WITHOUT_ALT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     // The image only adds a control character, so there aren't any human-readable characters.
@@ -211,7 +211,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
     // Check whether parsed html has correct alt-with-value text or not.
     assertThat(parsedHtml.toString()).isEqualTo("alt text 1")
@@ -225,7 +225,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_WITH_EMPTY_ALT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     // If the alt text is present but empty, then only the image control character should show.
@@ -241,7 +241,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_WITH_EMPTY_STRING_ALT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     // If the alt text is present but empty, then only the image control character should show.
@@ -257,7 +257,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_WITH_SPACE_ONLY_ALT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     // If the alt text is present but only spaces, then the image control character should show.
@@ -273,7 +273,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_WITHOUT_FILEPATH_MARKUP,
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -287,7 +287,7 @@ class ImageTagHandlerTest {
         html = IMAGE_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
         customTagHandlers = noTagHandlers,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -301,7 +301,7 @@ class ImageTagHandlerTest {
         html = "$IMAGE_TAG_MARKUP_1 and $IMAGE_TAG_MARKUP_2",
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -314,7 +314,7 @@ class ImageTagHandlerTest {
       html = IMAGE_TAG_MARKUP_1,
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithImageTagSupport,
-      textView = testView
+      htmlContentTextView = testView
     )
 
     verify(mockImageRetriever).loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
@@ -328,7 +328,7 @@ class ImageTagHandlerTest {
       html = "$IMAGE_TAG_MARKUP_2 and $IMAGE_TAG_MARKUP_1",
       imageRetriever = mockImageRetriever,
       customTagHandlers = tagHandlersWithImageTagSupport,
-      textView = testView
+      htmlContentTextView = testView
     )
 
     // Verify that both images are loaded in order.
@@ -348,7 +348,7 @@ class ImageTagHandlerTest {
       CustomHtmlContentHandler.getContentDescription(
         html = IMAGE_TAG_MARKUP_1,
         customTagHandlers = tagHandlersWithImageTagSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
     assertThat(contentDescription).isEqualTo("Image illustrating alt text 1")
   }

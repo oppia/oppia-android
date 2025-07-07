@@ -87,7 +87,7 @@ class LiTagHandlerTest {
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_UL_TAG to liTaghandler
         ),
-        testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -112,7 +112,7 @@ class LiTagHandlerTest {
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_OL_TAG to liTaghandler
         ),
-        testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -133,7 +133,7 @@ class LiTagHandlerTest {
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_UL_TAG to liTaghandler
         ),
-        testView
+        htmlContentTextView = testView
       )
 
     val imageSpans = parsedHtml.getSpans(0, parsedHtml.length, ImageSpan::class.java)
@@ -165,7 +165,7 @@ class LiTagHandlerTest {
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_OL_TAG to liTaghandler
         ),
-        testView
+        htmlContentTextView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()

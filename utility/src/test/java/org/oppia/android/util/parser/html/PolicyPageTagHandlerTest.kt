@@ -85,7 +85,7 @@ class PolicyPageTagHandlerTest {
         html = "",
         imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -99,7 +99,7 @@ class PolicyPageTagHandlerTest {
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -113,7 +113,7 @@ class PolicyPageTagHandlerTest {
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -130,7 +130,7 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.getContentDescription(
         html = POLICY_PAGE_LINK_MARKUP_1,
         customTagHandlers = tagHandlersWithPolicyPageSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     assertThat(contentDescription).isEqualTo(
@@ -146,7 +146,7 @@ class PolicyPageTagHandlerTest {
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -164,7 +164,7 @@ class PolicyPageTagHandlerTest {
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
         customTagHandlers = noTagHandlers,
-        textView = testView
+        htmlContentTextView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)

@@ -22,7 +22,7 @@ import org.xml.sax.XMLReader
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
   private val imageRetriever: ImageRetriever?,
-  private val textView: TextView
+  private val htmlContentTextView: TextView
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -126,7 +126,7 @@ class CustomHtmlContentHandler private constructor(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          customTagHandlers.getValue(tag).handleOpeningTag(output, tag, textView)
+          customTagHandlers.getValue(tag).handleOpeningTag(output, tag, htmlContentTextView)
         }
       }
       tag in customTagHandlers -> {
@@ -233,9 +233,12 @@ class CustomHtmlContentHandler private constructor(
      *
      * This function will always be called before [handleClosingTag].
      *
-     * @param output the destination [Editable] to which spans can be added
+     * @param output the destination [Editable] to which spans can be added.
+     * @param tag the name of the tag being processed.
+     * @param htmlContentTextView the [TextView] rendering the HTML and used to access paint and
+     * layout for Ol span measurement.
      */
-    fun handleOpeningTag(output: Editable, tag: String, textView: TextView) {}
+    fun handleOpeningTag(output: Editable, tag: String, htmlContentTextView: TextView) {}
 
     /**
      * Called when the closing of a custom tag is encountered. This does not support processing
@@ -295,12 +298,12 @@ class CustomHtmlContentHandler private constructor(
     fun getContentDescription(
       html: String,
       customTagHandlers: Map<String, CustomTagHandler>,
-      textView: TextView
+      htmlContentTextView: TextView
     ): String {
       val handler = CustomHtmlContentHandler(
         customTagHandlers,
         null,
-        textView
+        htmlContentTextView
       )
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
@@ -323,7 +326,7 @@ class CustomHtmlContentHandler private constructor(
       html: String,
       imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>,
-      textView: TextView
+      htmlContentTextView: TextView
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking. Also, make sure that paragraph tags are always preceded by newlines since that's
@@ -341,7 +344,7 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(customTagHandlers, imageRetriever, textView)
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever, htmlContentTextView)
       ) as Spannable
     }
   }
