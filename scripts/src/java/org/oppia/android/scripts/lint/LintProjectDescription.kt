@@ -10,59 +10,6 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
-/**
- * Enum representing module names in the project.
- *
- * @property moduleName The name of the module as a string.
- */
-private enum class ModuleName(val moduleName: String) {
-  /** Represents the application module. */
-  APP("app"),
-
-  /** Represents the domain module. */
-  DOMAIN("domain"),
-
-  /** Represents the testing module. */
-  TESTING("testing"),
-
-  /** Represents the utility module. */
-  UTILITY("utility"),
-
-  /** Represents the data module. */
-  DATA("data");
-
-  companion object {
-    /** The application module instance. */
-    val APPLICATION_MODULE = APP
-
-    /** list of library modules in the project. */
-    val LIBRARY_MODULES = listOf(DOMAIN, TESTING, UTILITY, DATA)
-  }
-}
-
-/** Represents module configuration for lint project description. */
-data class ModuleConfig(
-  val name: String,
-  val isAndroid: Boolean,
-  val isLibrary: Boolean,
-  val isTest: Boolean,
-  val srcFiles: List<String>,
-  val testFiles: List<String>,
-  val resourceDirs: List<String>,
-  val manifestFile: String,
-  val dependencies: List<String>,
-  val aarFiles: List<AarFileInfo>,
-  val jarFiles: List<String>,
-  val lintCheckJars: List<String>,
-  val lintModelDir: File? = null
-)
-
-/** Information about an AAR file and its extraction location. */
-data class AarFileInfo(
-  val originalPath: String,
-  val extractedPath: String
-)
-
 /** Cached entry with TTL support. */
 private data class CachedEntry<T>(
   val value: T,
@@ -256,20 +203,6 @@ class CacheManager {
   }
 }
 
-/** logger for error messages. */
-private class Logger(workingDirectory: File) {
-  private val logFile = File(workingDirectory, "error-logs")
-
-  /** Logs messages with timestamp. */
-  fun logError(message: String) {
-    try {
-      logFile.appendText("[${Instant.now()}] $message\n")
-    } catch (e: Exception) {
-      System.err.println("Failed to write to log: ${e.message}")
-    }
-  }
-}
-
 /**
  * Generates lint project description XML files for Android projects.
  *
@@ -288,6 +221,7 @@ class LintProjectDescription(
     private const val LINT_PROJECT_DESCRIPTION_FILE_NAME = "lint-project-description.xml"
     private const val LINT_CACHE_DIRECTORY_NAME = "lint-cache-directory"
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
+    private const val LINT_MODELS_DIRECTORY = "models-directory"
 
     /**
      * Ensures a directory exists, creating it if necessary.
@@ -303,7 +237,7 @@ class LintProjectDescription(
   }
 
   private val cacheManager = CacheManager()
-  private val logger = Logger(workingDirectory)
+  private val logger = LintLogger(workingDirectory)
 
   /**
    * Generates the lint project description XML file.
@@ -317,13 +251,17 @@ class LintProjectDescription(
     val cacheDirectory = ensureDirectoryExists(File(workingDirectory, LINT_CACHE_DIRECTORY_NAME))
     val extractedAarsDirectory =
       ensureDirectoryExists(File(workingDirectory, EXTRACTED_AARS_DIRECTORY_NAME))
+    val modelsDirectory = ensureDirectoryExists(File(workingDirectory, LINT_MODELS_DIRECTORY))
 
     val moduleConfigBuilder = ModuleConfigurationBuilder(
       repoRoot, bazelClient, extractedAarsDirectory,
+      modelsDirectory,
       cacheManager,
       logger
     )
-    val moduleConfigs = moduleConfigBuilder.buildAllModuleConfigurations()
+    val initialModuleConfigs = moduleConfigBuilder.buildAllModuleConfigurations()
+    val moduleConfigs = moduleConfigBuilder.buildModelDirectory(initialModuleConfigs)
+
     val xmlContent = generateProjectXmlContent(cacheDirectory, moduleConfigs)
 
     return writeProjectDescriptionFile(projectDescriptionFile, xmlContent)
@@ -354,9 +292,7 @@ class LintProjectDescription(
     appendLine("""    library="${config.isLibrary}"""")
     appendLine("""    test="${config.isTest}"""")
 
-    config.lintModelDir?.let { modelDir ->
-      appendLine("""    model="${modelDir.absolutePath}"""")
-    }
+    appendLine("""    model="${config.lintModelDir?.absolutePath}"""")
 
     appendLine("""    desugar="full">""")
 
@@ -414,8 +350,9 @@ private class ModuleConfigurationBuilder(
   private val repoRoot: File,
   bazelClient: BazelClient,
   extractedAarsDirectory: File,
+  private val modelsDirectory: File,
   cacheManager: CacheManager,
-  logger: Logger
+  logger: LintLogger,
 ) {
 
   companion object {
@@ -435,6 +372,7 @@ private class ModuleConfigurationBuilder(
     cacheManager,
     logger
   )
+  private val bazelInfo = bazelClient.retrieveBazelInfo()
 
   /** Builds configurations for all modules in the project. */
   fun buildAllModuleConfigurations(): List<ModuleConfig> = buildList {
@@ -472,8 +410,26 @@ private class ModuleConfigurationBuilder(
       jarFiles = dependencyResolver.resolveJarFiles(module),
       lintCheckJars = dependencyResolver.extractLintCheckJars(
         dependencyResolver.resolveAarFiles(module)
-      )
+      ),
     )
+  }
+
+  /** Builds the model directory for each module configuration. */
+  fun buildModelDirectory(moduleConfigs: List<ModuleConfig>): List<ModuleConfig> {
+    return moduleConfigs.map { moduleConfig ->
+      val modelDirectory = File(modelsDirectory, moduleConfig.name)
+
+      if (!modelDirectory.exists() && !modelDirectory.mkdirs()) {
+        throw IllegalStateException(
+          "Failed to create model directory: ${modelDirectory.absolutePath}"
+        )
+      }
+
+      val modelCreator = LintModelCreator(modelDirectory, repoRoot, bazelInfo)
+      val generatedModelDir = modelCreator.generateModelFiles(moduleConfig)
+
+      moduleConfig.copy(lintModelDir = generatedModelDir)
+    }
   }
 
   private fun findManifestFile(module: ModuleName): String {
@@ -527,7 +483,7 @@ private class DependencyResolver(
   repoRoot: File,
   private val extractedAarsDirectory: File,
   private val cacheManager: CacheManager,
-  logger: Logger
+  logger: LintLogger
 ) {
   private val pathResolver = PathResolver(repoRoot, bazelClient, cacheManager, logger)
   private val aarExtractor = AarExtractor(cacheManager)
@@ -604,7 +560,7 @@ private class PathResolver(
   private val repoRoot: File,
   private val bazelClient: BazelClient,
   private val cacheManager: CacheManager,
-  private val logger: Logger
+  private val logger: LintLogger
 ) {
   companion object {
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
