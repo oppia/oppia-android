@@ -14,6 +14,7 @@ import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.oppialogger.OppiaLogger
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
@@ -25,6 +26,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val featureFlagsViewModel: FeatureFlagsViewModel,
   private val oppiaLogger: OppiaLogger,
+  private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: FeatureFlagsFragmentBinding
@@ -83,8 +85,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         .setOverriddenValue(value)
         .build()
     }
-    featureFlagsViewModel
-      .overrideFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
+    platformParameterControllerDebugImpl
+      .updateOverriddenFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
         when (it) {
           is AsyncResult.Success -> (activity as FeatureFlagsActivity).finish()
           is AsyncResult.Failure -> {

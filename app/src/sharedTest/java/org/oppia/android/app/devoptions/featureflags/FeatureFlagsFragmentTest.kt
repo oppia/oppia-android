@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -309,7 +310,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsServerSyncStatus() {
+  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -327,7 +328,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsCorrectBackgroundColor() {
+  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -344,7 +345,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsCorrectBooleanValue() {
+  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsRemoteBooleanValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -362,7 +363,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsCorrectDisplayName() {
+  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsRemoteDisplayName() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -379,7 +380,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsOverriddenSyncStatus() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsLocalSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -397,7 +398,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenSyncStatus() {
+  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsLocalSyncStatus() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, false)
@@ -461,7 +462,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_scrollAndBack_valuePersists() {
+  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_scrollAndBack_persistsValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -489,7 +490,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsOverriddenBackgroundColor() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -506,7 +507,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsOverriddenBooleanValue() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBooleanValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -524,7 +525,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsCorrectDisplayName() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -536,6 +537,33 @@ class FeatureFlagsFragmentTest {
       verifyFeatureFlagDisplayName(
         position = 0,
         expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_toggleFlag_navigateBackAndReopen_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedState = !getEphemeralFeatureFlags()[0].currentValue
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = expectedState
       )
     }
   }
@@ -652,7 +680,7 @@ class FeatureFlagsFragmentTest {
     )
   }
 
-  // Populates the Local Override DB with test Overridden feature flag for MULTIPLE_CLASSROOMS.
+  // Populates the local override DB with test feature flag for DOWNLOADS_SUPPORT.
   private fun addTestOverriddenFeatureFlagToDatabase(
     component: TestApplicationComponent,
     value: Boolean

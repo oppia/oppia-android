@@ -4,12 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
-import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
-import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
@@ -60,16 +58,4 @@ class FeatureFlagsViewModel @Inject constructor(
         )
       }
     }
-
-  /**
-   * Updates the overridden feature flags in the platform parameter debug implementation.
-   *
-   * @param overriddenFeatureFlags the list of overridden feature flags to be updated.
-   * @return a [DataProvider] that completes when the update is done.
-   */
-  fun overrideFeatureFlags(
-    overriddenFeatureFlags: List<OverriddenFeatureFlag>
-  ): DataProvider<Any?> {
-    return platformParameterControllerDebugImpl.updateOverriddenFeatureFlags(overriddenFeatureFlags)
-  }
 }

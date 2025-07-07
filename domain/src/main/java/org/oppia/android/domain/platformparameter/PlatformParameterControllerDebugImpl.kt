@@ -98,13 +98,9 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       val ephemeralParameters = defaultParameters.map { paramDefinition ->
         val remoteParam = remoteParamById[paramDefinition.id]
 
-        val currentValue = remoteParam?.remoteValue
-          ?: paramDefinition.defaultValue
-
-        val syncStatus = when {
-          remoteParam != null -> remoteParam.syncStatus
-          else -> SyncStatus.NOT_SYNCED_FROM_SERVER
-        }
+        val currentValue = remoteParam?.remoteValue ?: paramDefinition.defaultValue
+        val syncStatus = remoteParam?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         EphemeralPlatformParameter.newBuilder().apply {
           this.id = paramDefinition.id
@@ -215,14 +211,14 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   /**
-   * Overrides a feature flag locally.
+   * Updates the local override database with the provided list of overridden feature flags.
    *
-   * @param overriddenFlags the list of feature flags to be overridden.
+   * @param overriddenFlags the list of [OverriddenFeatureFlag]s to store as local overrides.
+   * @return a [DataProvider] representing the result of the update operation.
    */
   fun updateOverriddenFeatureFlags(
     overriddenFlags: List<OverriddenFeatureFlag>
   ): DataProvider<Any?> {
-    oppiaLogger.d("yatinmadharchod", overriddenFlags.toString())
     return dataProviders.createInMemoryDataProviderAsync(
       UPDATE_OVERRIDDEN_FEATURE_FLAGS_PROVIDER_ID
     ) {
@@ -233,7 +229,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
             this[override.id] = override
           }
         }
-        oppiaLogger.d("yatinmadharchod", "Final overrides: $finalOverrides")
         oldDatabase.toBuilder()
           .clearOverriddenFeatureFlag()
           .addAllOverriddenFeatureFlag(finalOverrides.values)

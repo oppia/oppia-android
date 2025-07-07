@@ -112,14 +112,12 @@ import org.robolectric.shadows.ShadowToast
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests to verify the working of Platform Parameter Architecture. */
+/** Tests to verify the working of Platform Parameter Architecture for developer build. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = PlatformParameterIntegrationDebugTest.TestApplication::class)
 class PlatformParameterIntegrationDebugTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorkerFactory
@@ -130,21 +128,9 @@ class PlatformParameterIntegrationDebugTest {
     private const val SPLASH_MESSAGE = "Welcome User"
   }
 
-  fun setUp() {
-    setUpTestApplicationComponent()
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
-      .build()
-    platformParameterController.loadParametersAsync()
-    testCoroutineDispatchers.runCurrent()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
-    TestActivity.registerWithPackageManager<SplashTestActivity>(context)
-  }
-
   @Test
-  fun testIntegration_readEmptyDatabase_checkWelcomeMsgIsInvisibleByDefault() {
-    setUp()
+  fun testIntegration_withNoRemoteOrOverrideDbValue_welcomeMessageIsInvisible() {
+    setUpTestEnvironment()
     launch(SplashTestActivity::class.java).use { scenario ->
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
@@ -158,14 +144,12 @@ class PlatformParameterIntegrationDebugTest {
   }
 
   @Test
-  fun testIntegration_readRemoteDatabase_checkWelcomeMsgIsVisible() {
+  fun testIntegration_withRemoteNoLocalOverride_remoteTakesPrecedence_displaysWelcomeMsg() {
     executeInPreviousAppInstance { component ->
       addTestRemotePlatformParameterToDatabase(component)
       component.getTestCoroutineDispatchers().runCurrent()
     }
-    setUp()
-    platformParameterController.loadParametersAsync()
-    testCoroutineDispatchers.runCurrent()
+    setUpTestEnvironment()
     launch(SplashTestActivity::class.java).use { scenario ->
       // Fetch the latest platform parameter from cache store after execution of work request to
       // imitate the loading process at the start of splash test activity.
@@ -176,6 +160,19 @@ class PlatformParameterIntegrationDebugTest {
 
       assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SPLASH_MESSAGE)
     }
+  }
+
+  @Suppress("DeferredResultUnused")
+  fun setUpTestEnvironment() {
+    setUpTestApplicationComponent()
+    val config = Configuration.Builder()
+      .setExecutor(SynchronousExecutor())
+      .setWorkerFactory(platformParameterSyncUpWorkerFactory)
+      .build()
+    platformParameterController.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+    TestActivity.registerWithPackageManager<SplashTestActivity>(context)
   }
 
   // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
