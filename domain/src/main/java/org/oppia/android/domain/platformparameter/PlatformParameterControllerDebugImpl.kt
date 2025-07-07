@@ -143,11 +143,9 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteFlag?.remoteIsEnabled
           ?: flagDefinition.defaultIsEnabled
 
-        val syncStatus = when {
-          localFlag != null -> SyncStatus.LOCAL_OVERRIDE
-          remoteFlag != null -> remoteFlag.syncStatus
-          else -> SyncStatus.NOT_SYNCED_FROM_SERVER
-        }
+        val syncStatus = localFlag?.let { SyncStatus.LOCAL_OVERRIDE }
+          ?: remoteFlag?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         EphemeralFeatureFlag.newBuilder().apply {
           this.id = flagDefinition.id
