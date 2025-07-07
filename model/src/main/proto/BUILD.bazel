@@ -30,6 +30,7 @@ oppia_proto_library(
         ":exploration_checkpoint_proto",
         ":exploration_proto",
         ":languages_proto",
+        ":platform_parameter_proto",
         ":profile_proto",
         ":translation_proto",
     ],

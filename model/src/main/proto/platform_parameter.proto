@@ -278,3 +278,12 @@ message EphemeralFeatureFlag {
   // Indicates the sync status of the feature flag.
   SyncStatus sync_status = 3;
 }
+
+// Corresponds to a developer override of a feature flag.
+message OverriddenFeatureFlag {
+  // The unique ID of the overridden feature flag.
+  FeatureFlagId id = 1;
+
+  // The local value which is set by the developer.
+  bool overridden_value = 2;
+}
