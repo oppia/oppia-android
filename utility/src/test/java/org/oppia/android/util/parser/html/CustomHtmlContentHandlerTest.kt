@@ -78,6 +78,8 @@ class CustomHtmlContentHandlerTest {
   @Mock
   private var mockImageRetriever: FakeImageRetriever? = null
 
+  private lateinit var testView: TextView
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
@@ -88,13 +90,17 @@ class CustomHtmlContentHandlerTest {
       CUSTOM_LIST_UL_TAG to liTaghandler,
       CUSTOM_LIST_LI_TAG to liTaghandler
     )
+    testView = TextView(context)
   }
 
   @Test
   fun testParseHtml_emptyString_returnsEmptyString() {
     val parsedHtml =
       CustomHtmlContentHandler.fromHtml(
-        html = "", imageRetriever = mockImageRetriever, customTagHandlers = mapOf()
+        html = "",
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = mapOf(),
+        textView = testView
       )
 
     assertThat(parsedHtml.length).isEqualTo(0)
@@ -106,7 +112,8 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<strong>Text</strong>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf()
+        customTagHandlers = mapOf(),
+        textView = testView
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("Text")
@@ -118,7 +125,8 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "<img src=\"test_source.png\"></img>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
+      textView = testView
     )
 
     verify(mockImageRetriever)!!.getDrawable(anyString())
@@ -132,7 +140,8 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+        customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+        textView = testView
       )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -147,7 +156,8 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+      textView = testView
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
@@ -166,7 +176,8 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = mapOf()
+        customTagHandlers = mapOf(),
+        textView = testView
       )
 
     assertThat(parsedHtml.toString()).isEqualTo("content")
@@ -180,7 +191,8 @@ class CustomHtmlContentHandlerTest {
         imageRetriever = mockImageRetriever,
         customTagHandlers = mapOf(
           "custom-tag" to ReplacingTagHandler("custom-attribute")
-        )
+        ),
+        textView = testView
       )
 
     // Verify that handlers which wish to replace text can successfully do so.
@@ -199,7 +211,8 @@ class CustomHtmlContentHandlerTest {
         customTagHandlers = mapOf(
           "outer-tag" to outerFakeTagHandler,
           "inner-tag" to innerFakeTagHandler
-        )
+        ),
+        textView = testView
       )
 
     // Verify that both tag handlers are called (showing support for nesting).
@@ -214,7 +227,8 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = UL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithListTagSupport
+        customTagHandlers = tagHandlersWithListTagSupport,
+        textView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -228,7 +242,8 @@ class CustomHtmlContentHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = OL_TAG_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithListTagSupport
+        customTagHandlers = tagHandlersWithListTagSupport,
+        textView = testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -309,7 +324,8 @@ class CustomHtmlContentHandlerTest {
       customTagHandlers = mapOf(
         "outer-tag" to outerHandler,
         "inner-tag" to innerHandler
-      )
+      ),
+      textView = testView
     )
 
     assertThat(contentDescription).isEqualTo("Outer Tag before Inner Tag nested after")
@@ -324,7 +340,8 @@ class CustomHtmlContentHandlerTest {
       customTagHandlers = mapOf(
         "first-tag" to firstHandler,
         "second-tag" to secondHandler
-      )
+      ),
+      textView = testView
     )
 
     assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
@@ -341,7 +358,8 @@ class CustomHtmlContentHandlerTest {
               
               <p>Third    paragraph</p>
         """.trimIndent(),
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
+      textView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -362,7 +380,8 @@ class CustomHtmlContentHandlerTest {
               <aside>Aside content</aside>
               <footer>Footer text</footer>
         """.trimIndent(),
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
+      textView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -385,7 +404,8 @@ class CustomHtmlContentHandlerTest {
               <custom-tag>More custom</custom-tag>
               <p>Final paragraph</p>
         """.trimIndent(),
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
+      textView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -406,7 +426,8 @@ class CustomHtmlContentHandlerTest {
               <p>Visit <a href="https://example.com">Example</a> for more info.</p>
               <a href="https://another.com">Another Link</a>
         """.trimIndent(),
-      customTagHandlers = mapOf()
+      customTagHandlers = mapOf(),
+      textView = testView
     )
 
     assertThat(contentDescription).isEqualTo(
@@ -421,7 +442,8 @@ class CustomHtmlContentHandlerTest {
 
     CustomHtmlContentHandler.getContentDescription(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+      textView = testView
     )
 
     assertThat(fakeTagHandler.handleTagForContentDescriptionCalled).isTrue()
@@ -436,7 +458,8 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+      textView = testView
     )
 
     assertThat(fakeTagHandler.handleTagCalled).isTrue()
@@ -451,7 +474,8 @@ class CustomHtmlContentHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
       imageRetriever = null,
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+      textView = testView
     )
 
     assertThat(fakeTagHandler.handleTagCalled).isFalse()
@@ -465,7 +489,8 @@ class CustomHtmlContentHandlerTest {
 
     CustomHtmlContentHandler.getContentDescription(
       html = "<custom-tag custom-attribute=\"value\">content</custom-tag>",
-      customTagHandlers = mapOf("custom-tag" to fakeTagHandler)
+      customTagHandlers = mapOf("custom-tag" to fakeTagHandler),
+      textView = testView
     )
 
     assertThat(fakeTagHandler.handleOpeningTagCalled).isTrue()
@@ -557,8 +582,7 @@ class CustomHtmlContentHandlerTest {
     override fun handleClosingTag(
       output: Editable,
       indentation: Int,
-      tag: String,
-      textView: TextView?
+      tag: String
     ) {
       handleClosingTagCalled = true
       handleClosingTagCallIndex = methodCallCount++

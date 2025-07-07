@@ -84,7 +84,8 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "",
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        textView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -97,7 +98,8 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        textView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -110,7 +112,8 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        textView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -126,7 +129,8 @@ class PolicyPageTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = POLICY_PAGE_LINK_MARKUP_1,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        textView = testView
       )
 
     assertThat(contentDescription).isEqualTo(
@@ -141,7 +145,8 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = tagHandlersWithPolicyPageSupport
+        customTagHandlers = tagHandlersWithPolicyPageSupport,
+        textView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
@@ -158,7 +163,8 @@ class PolicyPageTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = POLICY_PAGE_LINK_MARKUP_1,
         imageRetriever = null,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
+        textView = testView
       )
 
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)

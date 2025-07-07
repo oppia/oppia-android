@@ -148,7 +148,8 @@ class HtmlParser private constructor(
     }
     htmlContentTextView.contentDescription = CustomHtmlContentHandler.getContentDescription(
       htmlContent,
-      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView)
+      computeCustomTagHandlers(supportsConceptCards, htmlContentTextView),
+      htmlContentTextView
     )
     return ensureNonEmpty(trimSpannable(htmlSpannable as SpannableStringBuilder))
   }

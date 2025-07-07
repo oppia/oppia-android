@@ -5,6 +5,7 @@ import android.content.Context
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
+import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -61,9 +62,12 @@ class LiTagHandlerTest {
   @Mock
   private var mockImageRetriever: FakeImageRetriever? = null
 
+  private lateinit var testView: TextView
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
+    testView = TextView(context)
   }
 
   @Test
@@ -82,7 +86,8 @@ class LiTagHandlerTest {
         customTagHandlers = mapOf(
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_UL_TAG to liTaghandler
-        )
+        ),
+        testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -106,7 +111,8 @@ class LiTagHandlerTest {
         customTagHandlers = mapOf(
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_OL_TAG to liTaghandler
-        )
+        ),
+        testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()
@@ -126,7 +132,8 @@ class LiTagHandlerTest {
         customTagHandlers = mapOf(
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_UL_TAG to liTaghandler
-        )
+        ),
+        testView
       )
 
     val imageSpans = parsedHtml.getSpans(0, parsedHtml.length, ImageSpan::class.java)
@@ -157,7 +164,8 @@ class LiTagHandlerTest {
         customTagHandlers = mapOf(
           CUSTOM_LIST_LI_TAG to liTaghandler,
           CUSTOM_LIST_OL_TAG to liTaghandler
-        )
+        ),
+        testView
       )
 
     assertThat(parsedHtml.toString()).isNotEmpty()

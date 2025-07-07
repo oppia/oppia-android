@@ -22,6 +22,9 @@ import org.oppia.android.util.gcsresource.DefaultResourceBucketName
 import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 
@@ -175,6 +178,18 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         supportsConceptCards = true
       )
 
+    binding.hintsAndSolutionSummary.contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        hintViewModel.hintSummary,
+        customTagHandlers = mapOf(
+          CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+            hintViewModel.conceptCardLinkClickListener,
+            hintViewModel.consoleLogger
+          )
+        ),
+        binding.hintsAndSolutionSummary
+      )
+
     binding.revealHintButton.setOnClickListener {
       hintViewModel.isHintRevealed.set(true)
       expandedHintListIndexListener.onRevealHintClicked(position, isHintRevealed = true)
@@ -258,6 +273,18 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
         binding.solutionSummary,
         supportsLinks = true,
         supportsConceptCards = true
+      )
+
+    binding.solutionSummary.contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        coreViewModel.solutionSummary,
+        customTagHandlers = mapOf(
+          CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+            coreViewModel.conceptCardLinkClickListener,
+            coreViewModel.consoleLogger
+          )
+        ),
+        binding.solutionSummary
       )
 
     binding.showSolutionButton.setOnClickListener {

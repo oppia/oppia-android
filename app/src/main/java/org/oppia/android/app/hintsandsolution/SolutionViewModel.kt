@@ -40,6 +40,8 @@ import org.oppia.android.util.math.toPlainString
 import org.oppia.android.util.math.toRawLatex
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import javax.inject.Inject
+import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 
 /**
  * Represent a solution that the user may reveal.
@@ -60,19 +62,10 @@ class SolutionViewModel private constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
   val explorationId: String,
-  val isFlashback: Boolean
+  val isFlashback: Boolean,
+  val conceptCardLinkClickListener: ConceptCardTagHandler.ConceptCardLinkClickListener,
+  val consoleLogger: ConsoleLogger
 ) {
-  /**
-   * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
-   * of the original summary.
-   */
-  val solutionSummaryContentDescription by lazy {
-    CustomHtmlContentHandler.fromHtml(
-      solutionSummary,
-      imageRetriever = null,
-      customTagHandlers = mapOf()
-    ).toString()
-  }
 
   /** A displayable HTML representation of the correct answer presented by this model's solution. */
   val correctAnswerHtml: String by lazy { computeCorrectAnswerHtml() }
@@ -254,7 +247,9 @@ class SolutionViewModel private constructor(
       interaction: Interaction,
       writtenTranslationContext: WrittenTranslationContext,
       explorationId: String,
-      isFlashback: Boolean
+      isFlashback: Boolean,
+      conceptCardLinkClickListener: ConceptCardTagHandler.ConceptCardLinkClickListener,
+      consoleLogger: ConsoleLogger
     ): SolutionViewModel {
       return SolutionViewModel(
         solutionSummary,
@@ -266,7 +261,9 @@ class SolutionViewModel private constructor(
         appLanguageResourceHandler,
         mathExpressionAccessibilityUtil,
         explorationId,
-        isFlashback
+        isFlashback,
+        conceptCardLinkClickListener,
+        consoleLogger
       )
     }
 

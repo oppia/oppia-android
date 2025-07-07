@@ -33,7 +33,7 @@ class LiTagHandler(
   private val latestPendingList: ListTag<*, *>?
     get() = pendingLists.lastOrNull()
 
-  override fun handleOpeningTag(output: Editable, tag: String) {
+  override fun handleOpeningTag(output: Editable, tag: String, textView: TextView) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> {
         pendingLists += ListTag.Ul(
@@ -44,7 +44,9 @@ class LiTagHandler(
       }
       CUSTOM_LIST_OL_TAG -> {
         pendingLists += ListTag.Ol(
-          parentList = latestPendingList, parentMark = latestPendingList?.pendingStartMark
+          parentList = latestPendingList,
+          parentMark = latestPendingList?.pendingStartMark,
+          textView = textView
         )
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.openItem(output)
@@ -54,8 +56,7 @@ class LiTagHandler(
   override fun handleClosingTag(
     output: Editable,
     indentation: Int,
-    tag: String,
-    textView: TextView?
+    tag: String
   ) {
     when (tag) {
       CUSTOM_LIST_UL_TAG, CUSTOM_LIST_OL_TAG -> {
@@ -63,7 +64,7 @@ class LiTagHandler(
         // tree is needed for analysis).
         val closingList = pendingLists.pop().also { it.recordList() }
         if (pendingLists.isEmpty()) {
-          closingList.finishListTree(output, context, displayLocale, textView)
+          closingList.finishListTree(output, context, displayLocale)
         }
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.closeItem(output)
@@ -207,9 +208,8 @@ class LiTagHandler(
     fun finishListTree(
       text: Editable,
       context: Context,
-      displayLocale: OppiaLocale.DisplayLocale,
-      textView: TextView?
-    ) = finishListRecursively(parentSpan = null, text, context, displayLocale, textView)
+      displayLocale: OppiaLocale.DisplayLocale
+    ) = finishListRecursively(parentSpan = null, text, context, displayLocale)
 
     /**
      * Returns a new mark of type [M] for this tag.
@@ -222,23 +222,22 @@ class LiTagHandler(
       parentSpan: ListItemLeadingMarginSpan?,
       text: Editable,
       context: Context,
-      displayLocale: OppiaLocale.DisplayLocale,
-      textView: TextView?
+      displayLocale: OppiaLocale.DisplayLocale
     ) {
       val childrenToProcess = childrenLists.toMutableMap()
       markRangesToReplace.forEach { (startMark, endMark) ->
         val styledSpan = startMark.toSpan(
-          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size, textView
+          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size//, textView
         )
         text.replaceMarksWithSpan(startMark, endMark, styledSpan)
         childrenToProcess.remove(startMark)?.finishListRecursively(
-          parentSpan = styledSpan, text, context, displayLocale, textView
+          parentSpan = styledSpan, text, context, displayLocale
         )
       }
 
       // Process the remaining children that are not lists themselves.
       childrenToProcess.values.forEach {
-        it.finishListRecursively(parentSpan = null, text, context, displayLocale, textView)
+        it.finishListRecursively(parentSpan = null, text, context, displayLocale)
       }
     }
 
@@ -256,11 +255,12 @@ class LiTagHandler(
     /** [ListTag] for ordered lists. */
     class Ol(
       parentList: ListTag<*, *>?,
-      parentMark: Mark<*>?
+      parentMark: Mark<*>?,
+      val textView: TextView
     ) : ListTag<Mark.NumberListItem, ListItemLeadingMarginSpan.OlSpan>(
       parentList, parentMark, ::getLast
     ) {
-      override fun createMark(itemNumber: Int) = Mark.NumberListItem(itemNumber)
+      override fun createMark(itemNumber: Int) = Mark.NumberListItem(itemNumber, textView)
     }
   }
 
@@ -275,8 +275,7 @@ class LiTagHandler(
       parentSpan: ListItemLeadingMarginSpan?,
       context: Context,
       displayLocale: OppiaLocale.DisplayLocale,
-      peerItemCount: Int,
-      textView: TextView?
+      peerItemCount: Int
     ): S
 
     /** Marks the opening tag location of a list item inside an <ul> element. */
@@ -290,13 +289,15 @@ class LiTagHandler(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int,
-        textView: TextView?
+        peerItemCount: Int
       ) = ListItemLeadingMarginSpan.UlSpan(parentSpan, context, indentationLevel, displayLocale)
     }
 
     /** Marks the opening tag location of a list item inside an <ol> element. */
-    class NumberListItem(val number: Int) : Mark<ListItemLeadingMarginSpan.OlSpan>() {
+    class NumberListItem(
+      val number: Int,
+      val textView: TextView
+    ) : Mark<ListItemLeadingMarginSpan.OlSpan>() {
       override fun equals(other: Any?) = this === other
       override fun hashCode() = System.identityHashCode(this)
 
@@ -304,8 +305,7 @@ class LiTagHandler(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int,
-        textView: TextView?
+        peerItemCount: Int
       ): ListItemLeadingMarginSpan.OlSpan {
         return ListItemLeadingMarginSpan.OlSpan(
           parentSpan,
@@ -327,8 +327,7 @@ class LiTagHandler(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int,
-        textView: TextView?
+        peerItemCount: Int
       ) = error("Ending marks cannot be converted to spans.")
     }
   }

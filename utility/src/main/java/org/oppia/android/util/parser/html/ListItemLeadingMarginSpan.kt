@@ -122,14 +122,14 @@ sealed class ListItemLeadingMarginSpan : LeadingMarginSpan {
     private val numberedItemPrefix: String,
     private val longestNumberedItemPrefix: String,
     private val displayLocale: OppiaLocale.DisplayLocale,
-    private val textView: TextView? = null
+    textView: TextView
   ) : ListItemLeadingMarginSpan() {
     private val resources = context.resources
     private val spacingBeforeText = resources.getDimensionPixelSize(R.dimen.spacing_before_text)
     private val spacingBeforeNumberPrefix =
       resources.getDimensionPixelSize(R.dimen.spacing_before_number_prefix)
 
-    private val paint = textView?.paint
+    private val paint = textView.paint
     private val longestTextWidth = Rect().also {
       paint?.getTextBounds(
         longestNumberedItemPrefix,

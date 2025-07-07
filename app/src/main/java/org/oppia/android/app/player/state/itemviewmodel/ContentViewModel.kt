@@ -15,20 +15,11 @@ class ContentViewModel(
   private val underscoreRegex = Regex("(?<=\\s|[,.;?!])_{3,}(?=\\s|[,.;?!])")
   private val replacementText = "Blank"
 
-  /** Returns content description by extracting text from [htmlContent]. */
-  fun getContentDescription(): String {
-    val contentDescription = CustomHtmlContentHandler.getContentDescription(
-      htmlContent.toString(),
-      customTagHandlers = customTagHandlers
-    )
-    return replaceRegexWithBlank(contentDescription)
-  }
-
   /**
    * Replaces "2+ underscores, with space/punctuation on both sides" in the input text with a
    * replacement string "blank", returning a Spannable.
    * Adjusts offsets to handle text length changes during replacements.
    */
-  private fun replaceRegexWithBlank(inputText: CharSequence): String =
+  fun replaceRegexWithBlank(inputText: CharSequence): String =
     underscoreRegex.replace(inputText, replacementText)
 }

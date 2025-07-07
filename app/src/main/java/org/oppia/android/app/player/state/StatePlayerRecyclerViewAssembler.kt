@@ -116,6 +116,7 @@ import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -936,7 +937,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interaction = interaction,
           writtenTranslationContext = writtenTranslationContext,
           explorationId = gcsEntityId,
-          isFlashback = true
+          isFlashback = true,
+          conceptCardLinkClickListener =
+          conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+          consoleLogger = consoleLogger
         )
         pendingItemList += solutionViewModelFactory.createStateSolutionViewModel(coreViewModel)
       }
@@ -1162,6 +1166,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
               supportsLinks = true,
               supportsConceptCards = contentViewModel.supportsConceptCards
             )
+
+          binding.contentTextView.contentDescription = viewModel.replaceRegexWithBlank(
+            CustomHtmlContentHandler.getContentDescription(
+              viewModel.htmlContent.toString(),
+              customTagHandlers = viewModel.customTagHandlers,
+              binding.contentTextView
+            )
+          )
         }
       )
       featureSets += PlayerFeatureSet(contentSupport = true)
@@ -1393,6 +1405,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
           binding.solutionSummary,
           supportsLinks = true,
           supportsConceptCards = true
+        )
+
+      binding.solutionSummary.contentDescription =
+        CustomHtmlContentHandler.getContentDescription(
+          coreViewModel.solutionSummary,
+          customTagHandlers = mapOf(
+            CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
+              coreViewModel.conceptCardLinkClickListener,
+              coreViewModel.consoleLogger
+            )
+          ),
+          binding.solutionSummary
         )
 
       binding.isListExpanded = true

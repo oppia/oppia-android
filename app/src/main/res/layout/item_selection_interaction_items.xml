@@ -33,6 +33,7 @@
       android:focusable="false"
       android:labelFor="@id/item_selection_contents_text_view"
       android:checked="@{viewModel.answerSelected}" />
+
     <TextView
       android:id="@+id/item_selection_contents_text_view"
       android:layout_width="wrap_content"
@@ -43,7 +44,6 @@
       android:layout_toEndOf="@+id/item_selection_checkbox"
       android:fontFamily="sans-serif"
       android:text="@{htmlContent}"
-      android:contentDescription="@{viewModel.getContentDescription()}"
       android:textColor="@{viewModel.isEnabled ? @color/component_color_shared_item_selection_interaction_enabled_color : @color/component_color_shared_item_selection_interaction_disabled_color}"
       android:textSize="16sp" />
   </RelativeLayout>

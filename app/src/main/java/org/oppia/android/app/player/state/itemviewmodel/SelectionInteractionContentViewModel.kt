@@ -20,18 +20,6 @@ class SelectionInteractionContentViewModel(
 ) : ObservableViewModel() {
   var isAnswerSelected = ObservableBoolean()
 
-  /** Returns content description by extracting text from [htmlContent]. */
-  fun getContentDescription(): String {
-    val contentSubtitledHtml =
-      translationController.extractString(
-        htmlContent, writtenTranslationContext
-      )
-    return CustomHtmlContentHandler.getContentDescription(
-      contentSubtitledHtml,
-      customTagHandlers = customTagHandlers
-    )
-  }
-
   /** Handles item click by updating the selection state based on user interaction. */
   fun handleItemClicked() {
     val isCurrentlySelected = isAnswerSelected.get()

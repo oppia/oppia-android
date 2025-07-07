@@ -22,7 +22,7 @@ import org.xml.sax.XMLReader
 class CustomHtmlContentHandler private constructor(
   private val customTagHandlers: Map<String, CustomTagHandler>,
   private val imageRetriever: ImageRetriever?,
-  private val textView: TextView?
+  private val textView: TextView
 ) : ContentHandler, Html.TagHandler {
   private var originalContentHandler: ContentHandler? = null
   private var currentTrackedTag: TrackedTag? = null
@@ -126,7 +126,7 @@ class CustomHtmlContentHandler private constructor(
           currentTrackedCustomTags += TrackedCustomTag(
             localCurrentTrackedTag.tag, localCurrentTrackedTag.attributes, output.length
           )
-          customTagHandlers.getValue(tag).handleOpeningTag(output, tag)
+          customTagHandlers.getValue(tag).handleOpeningTag(output, tag, textView)
         }
       }
       tag in customTagHandlers -> {
@@ -146,7 +146,7 @@ class CustomHtmlContentHandler private constructor(
             tagContentDescriptions[openTagIndex] = contentDesc
           }
         }
-        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag, textView)
+        customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
         if (imageRetriever == null) {
           customTagHandlers.getValue(tag)
             .handleTagForContentDescription(attributes, openTagIndex, output.length, output)
@@ -235,7 +235,7 @@ class CustomHtmlContentHandler private constructor(
      *
      * @param output the destination [Editable] to which spans can be added
      */
-    fun handleOpeningTag(output: Editable, tag: String) {}
+    fun handleOpeningTag(output: Editable, tag: String, textView: TextView) {}
 
     /**
      * Called when the closing of a custom tag is encountered. This does not support processing
@@ -246,7 +246,7 @@ class CustomHtmlContentHandler private constructor(
      * @param output the destination [Editable] to which spans can be added
      * @param indentation The zero-based indentation level of this item.
      */
-    fun handleClosingTag(output: Editable, indentation: Int, tag: String, textView: TextView?) {}
+    fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
   }
 
   /** Handler Interface for tag handlers that provide content descriptions. */
@@ -294,12 +294,13 @@ class CustomHtmlContentHandler private constructor(
      */
     fun getContentDescription(
       html: String,
-      customTagHandlers: Map<String, CustomTagHandler>
+      customTagHandlers: Map<String, CustomTagHandler>,
+      textView: TextView
     ): String {
       val handler = CustomHtmlContentHandler(
         customTagHandlers,
         null,
-        null
+        textView
       )
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
@@ -322,7 +323,7 @@ class CustomHtmlContentHandler private constructor(
       html: String,
       imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>,
-      textView: TextView? = null
+      textView: TextView//? = null
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking. Also, make sure that paragraph tags are always preceded by newlines since that's
@@ -340,7 +341,7 @@ class CustomHtmlContentHandler private constructor(
         "<init-custom-handler/>$lineAdjustedHtml",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
         imageRetriever,
-        CustomHtmlContentHandler(customTagHandlers, imageRetriever, textView),
+        CustomHtmlContentHandler(customTagHandlers, imageRetriever, textView)
       ) as Spannable
     }
   }

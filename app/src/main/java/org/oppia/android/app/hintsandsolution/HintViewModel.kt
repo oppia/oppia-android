@@ -19,22 +19,6 @@ class HintViewModel(
   val title: String,
   val hintSummary: String,
   val isHintRevealed: ObservableBoolean,
-  private val conceptCardLinkClickListener: ConceptCardTagHandler.ConceptCardLinkClickListener,
-  private val consoleLogger: ConsoleLogger
-) : HintsAndSolutionItemViewModel() {
-  /**
-   * A screenreader-friendly version of [hintSummary] that should be used for readout, in place of
-   * the original summary.
-   */
-  val hintContentDescription: String by lazy {
-    CustomHtmlContentHandler.getContentDescription(
-      hintSummary,
-      customTagHandlers = mapOf(
-        CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
-          conceptCardLinkClickListener,
-          consoleLogger
-        )
-      )
-    )
-  }
-}
+  val conceptCardLinkClickListener: ConceptCardTagHandler.ConceptCardLinkClickListener,
+  val consoleLogger: ConsoleLogger
+) : HintsAndSolutionItemViewModel()

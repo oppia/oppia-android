@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.text.Html
 import android.text.Spannable
 import android.text.style.ImageSpan
+import android.widget.TextView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
@@ -98,6 +99,7 @@ class MathTagHandlerTest {
   private lateinit var noTagHandlers: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithCachedMathSupport: Map<String, CustomTagHandler>
   private lateinit var tagHandlersWithUncachedMathSupport: Map<String, CustomTagHandler>
+  private lateinit var testView: TextView
 
   @Before
   fun setUp() {
@@ -109,6 +111,7 @@ class MathTagHandlerTest {
     tagHandlersWithUncachedMathSupport = mapOf(
       CUSTOM_MATH_TAG to createMathTagHandler(cacheLatexRendering = false)
     )
+    testView = TextView(context)
   }
 
   // TODO(#3085): Introduce test for verifying that the error log scenario is logged correctly.
@@ -118,7 +121,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_WITHOUT_FILENAME_MARKUP,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
     assertThat(imageSpans).hasLength(1)
@@ -143,7 +147,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_WITHOUT_FILENAME_MARKUP,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -190,7 +195,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_WITHOUT_FILENAME_MARKUP,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -218,7 +224,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_WITHOUT_FILENAME_MARKUP,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -242,7 +249,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -255,7 +263,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -268,7 +277,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_RAW_LATEX_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     // There is an image span since the filename is still present.
@@ -282,7 +292,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     // The image only adds a control character, so there aren't any human-readable characters.
@@ -297,7 +308,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -310,7 +322,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     // The image span is a cached bitmap loaded from LaTeX.
@@ -329,7 +342,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_RENDER_TYPE_INLINE_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     // The image span is a cached bitmap loaded from LaTeX.
@@ -348,7 +362,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_RENDER_TYPE_BLOCK_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     // The image span is a cached bitmap loaded from LaTeX.
@@ -367,7 +382,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithUncachedMathSupport
+        customTagHandlers = tagHandlersWithUncachedMathSupport,
+        textView = testView
       )
 
     // The image span is a direct math expression since caching is off.
@@ -382,7 +398,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithUncachedMathSupport
+        customTagHandlers = tagHandlersWithUncachedMathSupport,
+        textView = testView
       )
 
     val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
@@ -396,7 +413,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_WITHOUT_FILENAME_MARKUP,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithUncachedMathSupport
+        customTagHandlers = tagHandlersWithUncachedMathSupport,
+        textView = testView
       )
 
     val equationColor = parsedHtml.getSpansFromWholeString(MathExpressionSpan::class)
@@ -409,7 +427,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = MATH_MARKUP_1,
         imageRetriever = mockImageRetriever,
-        customTagHandlers = noTagHandlers
+        customTagHandlers = noTagHandlers,
+        textView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -422,7 +441,8 @@ class MathTagHandlerTest {
       CustomHtmlContentHandler.fromHtml(
         html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
         imageRetriever = mockImageRetriever,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     val imageSpans = parsedHtml.getSpansFromWholeString(ImageSpan::class)
@@ -434,7 +454,8 @@ class MathTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = MATH_MARKUP_1,
-        customTagHandlers = tagHandlersWithCachedMathSupport
+        customTagHandlers = tagHandlersWithCachedMathSupport,
+        textView = testView
       )
 
     assertThat(contentDescription).isEqualTo(
@@ -448,7 +469,8 @@ class MathTagHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = MATH_MARKUP_1,
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     verify(mockImageRetriever)!!.loadDrawable(capture(stringCaptor), capture(retrieverTypeCaptor))
@@ -461,7 +483,8 @@ class MathTagHandlerTest {
     CustomHtmlContentHandler.fromHtml(
       html = "$MATH_MARKUP_2 and $MATH_MARKUP_1",
       imageRetriever = mockImageRetriever,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     // Verify that both images are loaded in order.
@@ -480,7 +503,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_MARKUP_1,
       imageRetriever = null,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     val parsedHtmlStr = parsedHtml.toString()
@@ -496,7 +520,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
       imageRetriever = null,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     val parsedHtmlStr = parsedHtml.toString()
@@ -508,7 +533,8 @@ class MathTagHandlerTest {
     val parsedHtml = CustomHtmlContentHandler.fromHtml(
       html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
       imageRetriever = null,
-      customTagHandlers = tagHandlersWithCachedMathSupport
+      customTagHandlers = tagHandlersWithCachedMathSupport,
+      textView = testView
     )
 
     val parsedHtmlStr = parsedHtml.toString()

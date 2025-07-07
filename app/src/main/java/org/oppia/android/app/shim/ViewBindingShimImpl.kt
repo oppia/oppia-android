@@ -27,6 +27,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.HtmlParser
 import javax.inject.Inject
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 /**
  * Creates bindings for Views in order to avoid View files directly depending on Binding files.
@@ -114,6 +115,16 @@ class ViewBindingShimImpl @Inject constructor(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
         binding.itemSelectionContentsTextView
       )
+
+    binding.itemSelectionContentsTextView.contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        translationController.extractString(
+          viewModel.htmlContent,
+          writtenTranslationContext
+        ),
+        customTagHandlers = viewModel.customTagHandlers,
+        binding.itemSelectionContentsTextView
+      )
     binding.viewModel = viewModel
   }
 
@@ -146,6 +157,16 @@ class ViewBindingShimImpl @Inject constructor(
         displayLocale = appLanguageResourceHandler.getDisplayLocale()
       ).parseOppiaHtml(
         translationController.extractString(viewModel.htmlContent, writtenTranslationContext),
+        binding.multipleChoiceContentTextView
+      )
+
+    binding.multipleChoiceContentTextView.contentDescription =
+      CustomHtmlContentHandler.getContentDescription(
+        translationController.extractString(
+          viewModel.htmlContent,
+          writtenTranslationContext
+        ),
+        customTagHandlers = viewModel.customTagHandlers,
         binding.multipleChoiceContentTextView
       )
     binding.viewModel = viewModel
