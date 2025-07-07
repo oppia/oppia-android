@@ -165,7 +165,7 @@ def generate_android_lint_assets_list_from_text_protos(
         name,
         android_lint_exemptions_name):
     """
-    Converts a single list of text proto assets to binary.
+    Converts a list of Android Lint exemption text proto assets to binary format.
 
     Args:
         name: str. The name of this generation instance. This will be a prefix for derived targets.

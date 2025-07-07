@@ -155,7 +155,7 @@ def generate_proto_binary_assets(
         proto_dep_bazel_target_prefix,
         proto_package):
     """
-    Converts a list of Android Lint exemption text proto assets to binary format.
+    Converts a list of text proto assets to binary.
 
     Args:
         name: str. The name of this target.
