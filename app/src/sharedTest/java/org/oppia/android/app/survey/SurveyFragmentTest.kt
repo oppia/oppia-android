@@ -90,6 +90,7 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.EventLogSubject
@@ -253,33 +254,6 @@ class SurveyFragmentTest {
       onView(withText(context.getString(R.string.survey_exit_confirmation_text)))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testSurveyFragment_withNullArguments_throwsIllegalStateException() {
-    val fragment = SurveyFragment()
-
-    launch<SurveyActivity>(
-      createSurveyActivityIntent()
-    ).use { scenario ->
-      scenario.onActivity { activity ->
-        val exception = try {
-          fragment.onCreateView(
-            activity.layoutInflater,
-            null,
-            null
-          )
-          null
-        } catch (e: IllegalStateException) {
-          e
-        }
-
-        assertThat(exception).isNotNull()
-        assertThat(exception!!.message).contains(
-          "Expected arguments to be passed to SurveyFragment."
-        )
-      }
     }
   }
 
@@ -558,32 +532,49 @@ class SurveyFragmentTest {
         val surveyFragment = activity.supportFragmentManager
           .findFragmentById(R.id.survey_fragment_placeholder) as SurveyFragment
 
-        val arguments = checkNotNull(surveyFragment.arguments) {
-          "Expected arguments to be passed to SurveyFragment."
-        }
+        assertThat(surveyFragment.arguments).isNotNull()
+        val arguments = surveyFragment.arguments!!
 
         val args = arguments.getProto(
           SurveyFragment.SURVEY_FRAGMENT_ARGUMENTS_KEY,
           SurveyFragmentArguments.getDefaultInstance()
         )
 
-        val profileId = checkNotNull(arguments.extractCurrentUserProfileId()) {
-          "Expected profileId to be included in the arguments for SurveyFragment."
-        }
+        val profileId = arguments.extractCurrentUserProfileId()
+        assertThat(profileId).isNotNull()
         val receivedInternalProfileId = profileId.internalId
 
-        val receivedTopicId = checkNotNull(args.topicId) {
-          "Expected topicId to be included in the arguments for SurveyFragment."
-        }
-        val receivedExplorationId = checkNotNull(args.explorationId) {
-          "Expected explorationId to be included in the arguments for SurveyFragment."
-        }
+        val receivedTopicId = args.topicId
+        val receivedExplorationId = args.explorationId
 
         assertThat(receivedInternalProfileId).isEqualTo(0)
         assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID_0)
         assertThat(receivedExplorationId).isEqualTo(TEST_EXPLORATION_ID_2)
       }
     }
+  }
+
+  @Test
+  fun testSurveyFragment_withNullArguments_throwsIllegalStateException() {
+    val fragment = SurveyFragment()
+
+    val exception = assertThrows<IllegalStateException> {
+      launch<SurveyActivity>(
+        createSurveyActivityIntent()
+      ).use { scenario ->
+        scenario.onActivity { activity ->
+          val fragmentTransaction = activity.supportFragmentManager.beginTransaction()
+          fragmentTransaction.add(R.id.survey_fragment_placeholder, fragment, "test_fragment")
+          fragmentTransaction.commit()
+          activity.supportFragmentManager.executePendingTransactions()
+        }
+      }
+    }
+
+    assertThat(exception).isNotNull()
+    assertThat(exception.message).contains(
+      "Expected arguments to be passed to SurveyFragment."
+    )
   }
 
   private fun selectNpsAnswerAndMoveToNextQuestion(npsScore: Int) {
