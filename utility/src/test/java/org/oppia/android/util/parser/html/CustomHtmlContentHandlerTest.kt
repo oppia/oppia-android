@@ -573,7 +573,8 @@ class CustomHtmlContentHandlerTest {
 
     override fun handleOpeningTag(
       output: Editable,
-      tag: String
+      tag: String,
+      textView: TextView
     ) {
       handleOpeningTagCalled = true
       handleOpeningTagCallIndex = methodCallCount++
