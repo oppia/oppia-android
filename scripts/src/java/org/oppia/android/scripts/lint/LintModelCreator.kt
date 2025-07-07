@@ -47,7 +47,7 @@ class LintModelCreator(
     private const val MODEL_CACHE_TTL_HOURS = 24L // 24 hours
 
     private const val FILE_SEPARATOR = ","
-    
+
     private const val PROGUARD_CONFIG_PATH = "config/proguard"
   }
 
@@ -381,7 +381,6 @@ class LintModelCreator(
           />
     """.trimIndent()
   }
-
 
   private fun createProguardAttribute(moduleName: String): String {
     if (moduleName != ModuleName.APP.moduleName) return ""
