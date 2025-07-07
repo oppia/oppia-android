@@ -481,8 +481,10 @@ private class SourceFileCollector(
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
     private const val PROGUARD_CONFIG_PATH = "config/proguard"
 
-    // Lint logs that file does not appear to be in the right project location
-    // Bazel-specific file used to run tests
+    // This file is Bazel-specific and used solely for running tests.
+    // Lint reports it as being in an incorrect project location as it's not part of the standard source set.
+    // Since the lint tool does not analyze this file, we explicitly exclude it
+    // similar to how Gradle source sets exclude this file.
     private const val EXCLUDED_SOURCE_FILE = "DataBinderMapperImpl.java"
   }
 
