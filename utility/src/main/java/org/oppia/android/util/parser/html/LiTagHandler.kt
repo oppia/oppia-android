@@ -227,7 +227,7 @@ class LiTagHandler(
       val childrenToProcess = childrenLists.toMutableMap()
       markRangesToReplace.forEach { (startMark, endMark) ->
         val styledSpan = startMark.toSpan(
-          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size//, textView
+          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size
         )
         text.replaceMarksWithSpan(startMark, endMark, styledSpan)
         childrenToProcess.remove(startMark)?.finishListRecursively(

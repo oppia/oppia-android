@@ -104,7 +104,7 @@ class HintsAndSolutionViewModel private constructor(
       explorationId = explorationId,
       isFlashback = false,
       conceptCardLinkClickListener =
-      conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+        conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
       consoleLogger = consoleLogger
     )
     return solutionViewModelFactory.createHintsDialogSolutionViewModel(coreViewModel)

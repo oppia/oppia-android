@@ -19,12 +19,12 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.gcsresource.DefaultResourceBucketName
-import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
-import org.oppia.android.util.parser.html.HtmlParser
-import javax.inject.Inject
 import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
 import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
+import org.oppia.android.util.parser.html.ExplorationHtmlParserEntityType
+import org.oppia.android.util.parser.html.HtmlParser
+import javax.inject.Inject
 
 const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 

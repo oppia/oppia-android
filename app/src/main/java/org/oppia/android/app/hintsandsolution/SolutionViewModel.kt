@@ -29,6 +29,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.utility.math.MathExpressionAccessibilityUtil
 import org.oppia.android.app.utility.toAccessibleAnswerString
 import org.oppia.android.app.view.models.R
+import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.math.MathExpressionParser.Companion.ErrorCheckingMode.REQUIRED_ONLY
 import org.oppia.android.util.math.MathExpressionParser.Companion.MathParsingResult
 import org.oppia.android.util.math.MathExpressionParser.Companion.parseAlgebraicEquation
@@ -38,10 +39,8 @@ import org.oppia.android.util.math.isApproximatelyEqualTo
 import org.oppia.android.util.math.toAnswerString
 import org.oppia.android.util.math.toPlainString
 import org.oppia.android.util.math.toRawLatex
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler
-import javax.inject.Inject
-import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.ConceptCardTagHandler
+import javax.inject.Inject
 
 /**
  * Represent a solution that the user may reveal.

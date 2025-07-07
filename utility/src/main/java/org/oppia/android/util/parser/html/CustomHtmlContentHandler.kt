@@ -323,7 +323,7 @@ class CustomHtmlContentHandler private constructor(
       html: String,
       imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>,
-      textView: TextView//? = null
+      textView: TextView
     ): Spannable where T : Html.ImageGetter, T : ImageRetriever {
       // Adjust the HTML to allow the custom content handler to properly initialize custom tag
       // tracking. Also, make sure that paragraph tags are always preceded by newlines since that's

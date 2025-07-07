@@ -2,9 +2,7 @@ package org.oppia.android.app.hintsandsolution
 
 import androidx.databinding.ObservableBoolean
 import org.oppia.android.util.logging.ConsoleLogger
-import org.oppia.android.util.parser.html.CUSTOM_CONCEPT_CARD_TAG
 import org.oppia.android.util.parser.html.ConceptCardTagHandler
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 /**
  * [HintsAndSolutionItemViewModel] that represents a single hint that can be shown to the user.

@@ -110,13 +110,13 @@ import org.oppia.android.util.parser.html.CUSTOM_LIST_OL_TAG
 import org.oppia.android.util.parser.html.CUSTOM_LIST_UL_TAG
 import org.oppia.android.util.parser.html.CUSTOM_MATH_TAG
 import org.oppia.android.util.parser.html.ConceptCardTagHandler
+import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.ImageTagHandler
 import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -939,7 +939,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           explorationId = gcsEntityId,
           isFlashback = true,
           conceptCardLinkClickListener =
-          conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
+            conceptCardTagHandlerFactory.createConceptCardLinkClickListener(),
           consoleLogger = consoleLogger
         )
         pendingItemList += solutionViewModelFactory.createStateSolutionViewModel(coreViewModel)
