@@ -47,6 +47,8 @@ class LintModelCreator(
     private const val MODEL_CACHE_TTL_HOURS = 24L // 24 hours
 
     private const val FILE_SEPARATOR = ","
+    
+    private const val PROGUARD_CONFIG_PATH = "config/proguard"
   }
 
   private val logger = LintLogger(workingDirectory = modelDir)
@@ -67,6 +69,7 @@ class LintModelCreator(
     }
     val modelPath = modelDir.toPath().createDirectories()
     val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
+
     val modulePath = File(repoRoot, moduleConfig.name).toPath().absolute()
 
     generateModuleXml(
@@ -271,7 +274,7 @@ class LintModelCreator(
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
 
     val packageName = escapeXmlAttribute(rawPackageName)
-    val proguardAttribute = createProguardAttribute(moduleConfig.proGuardFiles)
+    val proguardAttribute = createProguardAttribute(moduleConfig.name)
     val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
     )
@@ -379,10 +382,22 @@ class LintModelCreator(
     """.trimIndent()
   }
 
-  private fun createProguardAttribute(proGuardFiles: List<String>): String {
-    val existingFiles = proGuardFiles.filter { File(it).exists() }
-    if (existingFiles.isEmpty()) return ""
-    return """proguardFiles="${existingFiles.joinToString(FILE_SEPARATOR)}" """
+
+  private fun createProguardAttribute(moduleName: String): String {
+    if (moduleName != ModuleName.APP.moduleName) return ""
+
+    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
+    val proguardFiles = proguardDir
+      .takeIf { it.isDirectory }
+      ?.listFiles { file -> file.name.endsWith(".pro") }
+      ?.map { it.absolutePath }
+      ?: emptyList()
+
+    return if (proguardFiles.isNotEmpty()) {
+      """proguardFiles="${proguardFiles.joinToString(",")}" """
+    } else {
+      ""
+    }.trimEnd()
   }
 
   private fun generateArtifactLibrariesXml(librariesFile: File) {

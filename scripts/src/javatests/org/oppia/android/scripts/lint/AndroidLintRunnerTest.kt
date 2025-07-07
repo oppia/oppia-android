@@ -245,6 +245,7 @@ class AndroidLintRunnerTest {
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupProjectStructure()
     val lintRunner = createLintRunner()
+
     lintRunner.runLint(
       lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
     )
@@ -258,6 +259,7 @@ class AndroidLintRunnerTest {
     setupProjectWithInvalidIdIssue()
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
@@ -298,6 +300,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
@@ -330,6 +333,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )

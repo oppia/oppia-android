@@ -103,6 +103,7 @@ data class ModuleConfig(
   }
 }
 
+
 /** Information about an AAR file and its extraction location. */
 data class AarFileInfo(
   val originalPath: String,
