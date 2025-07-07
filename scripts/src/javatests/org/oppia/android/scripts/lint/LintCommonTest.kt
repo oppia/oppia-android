@@ -246,7 +246,6 @@ class LintCommonTest {
   @Test
   fun testJavaConfiguration_missingJavaRuntime_throwsException() {
     val bazelInfo = mapOf("java-home" to "/usr/lib/jvm/java-11")
-
     val exception = assertThrows<IllegalStateException> {
       JavaConfiguration(bazelInfo)
     }
