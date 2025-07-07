@@ -281,6 +281,7 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
   }
 
+  @Test
   fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
@@ -302,6 +303,7 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
   }
 
+  @Test
   fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->

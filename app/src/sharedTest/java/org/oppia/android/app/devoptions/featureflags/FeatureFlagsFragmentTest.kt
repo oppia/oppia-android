@@ -127,18 +127,12 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class FeatureFlagsFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject
-  lateinit var context: Context
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
   @Inject lateinit var oppiaLogger: OppiaLogger
 
   private companion object {
@@ -206,7 +200,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenDownloadsSupportFlag_hasCorrectName() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsCorrectDisplayName() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -220,7 +214,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverrideValues_downloadsSupportFlagHasCorrectValue() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -234,7 +228,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverride_downloadsSupportFlagHasCorrectSyncStatus() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultSyncStatus() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -248,7 +242,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverride_downloadsSupportFlagHasCorrectBackground() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultBackgroundColor() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -262,7 +256,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_whenSwitchToggled_DownloadsSupportFlagupdatesValue() {
+  fun testFeatureFlagsFragment_whenSwitchToggled_DownloadsSupportFlagUpdatesValue() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -315,7 +309,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasServerSyncStatus() {
+  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsServerSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -333,7 +327,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectBackground() {
+  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsCorrectBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -350,7 +344,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectValue() {
+  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsCorrectBooleanValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -368,7 +362,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteFeatureFlagValue_downloadsSupportHasCorrectName() {
+  fun testFeatureFlagsFragment_withRemoteValueOnly_returnsCorrectDisplayName() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -385,7 +379,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addOverriddenFeatureFlag_downloadsSupportHasOverriddenSyncStatus() {
+  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsOverriddenSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -403,7 +397,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasOverriddenStatus() {
+  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenSyncStatus() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, false)
@@ -424,7 +418,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasCorrectValue() {
+  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenBooleanValue() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, false)
@@ -445,7 +439,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addRemoteAndOverriddenFlag_downloadsSupportHasCorrectBackground() {
+  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenBackgroundColor() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, false)
@@ -495,7 +489,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addOverriddenFeatureFlag_downloadsSupportHasCorrectBackground() {
+  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsOverriddenBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -512,7 +506,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addOverriddenFeatureFlagValue_downloadsSupportHasCorrectValue() {
+  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsOverriddenBooleanValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -530,7 +524,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_addOverriddenFeatureFlagValue_downloadsSupportHasCorrectName() {
+  fun testFeatureFlagsFragment_withOverriddenValueOnly_returnsCorrectDisplayName() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
