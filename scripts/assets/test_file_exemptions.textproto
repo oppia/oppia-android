@@ -3133,6 +3133,10 @@ test_file_exemption {
   is_extra_test_file: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/PlatformParameterIntegrationDebugTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/ProfileChooserSpanTest.kt",
   is_extra_test_file: true
 }
