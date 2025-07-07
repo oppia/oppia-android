@@ -38,3 +38,23 @@ kt_jvm_test(
         "//third_party:com_google_truth_truth",
     ],
 )
+
+kt_jvm_test(
+    name = "LintModelCreatorTest",
+    srcs = ["LintModelCreatorTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_model_creator_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)
+
+kt_jvm_test(
+    name = "LintCommonTest",
+    srcs = ["LintCommonTest.kt"],
+    deps = [
+        "//scripts/src/java/org/oppia/android/scripts/lint:lint_common_lib",
+        "//testing:assertion_helpers",
+        "//third_party:com_google_truth_truth",
+    ],
+)

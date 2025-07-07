@@ -121,75 +121,6 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testJavaConfiguration_withValidBazelInfo_extractsJdkHomeAndVersion() {
-    val bazelInfo = mapOf(
-      "java-home" to "/usr/lib/jvm/java-11-openjdk",
-      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.6+10-LTS) by Azul Systems, Inc."
-    )
-
-    val javaConfigClass = Class.forName(
-      "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
-    )
-    val constructor = javaConfigClass.getDeclaredConstructor(Map::class.java)
-    constructor.isAccessible = true
-    val javaConfig = constructor.newInstance(bazelInfo)
-
-    val getJdkHomeMethod = javaConfigClass.getDeclaredMethod("getJdkHome")
-    getJdkHomeMethod.isAccessible = true
-    val jdkHome = getJdkHomeMethod.invoke(javaConfig) as File
-
-    val getVersionMethod = javaConfigClass.getDeclaredMethod("getVersion")
-    getVersionMethod.isAccessible = true
-    val version = getVersionMethod.invoke(javaConfig) as String
-
-    assertThat(jdkHome.absolutePath).isEqualTo("/usr/lib/jvm/java-11-openjdk")
-    assertThat(version).isEqualTo("11.0.6")
-  }
-
-  @Test
-  fun testJavaConfiguration_withMissingJavaRuntime_throwsException() {
-    val bazelInfo = mapOf(
-      "java-home" to "/usr/lib/jvm/java-11-openjdk"
-    )
-
-    val javaConfigClass = Class.forName(
-      "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
-    )
-    val constructor = javaConfigClass.getDeclaredConstructor(Map::class.java)
-    constructor.isAccessible = true
-
-    val exception = assertThrows<Exception> {
-      constructor.newInstance(bazelInfo)
-    }
-
-    val cause = exception.cause
-    assertThat(cause).isInstanceOf(IllegalStateException::class.java)
-    assertThat(cause?.message).contains("java-runtime not found in bazel info output")
-  }
-
-  @Test
-  fun testJavaConfiguration_withInvalidVersionFormat_throwsException() {
-    val bazelInfo = mapOf(
-      "java-home" to "/usr/lib/jvm/java-11-openjdk",
-      "java-runtime" to "Invalid runtime format without version"
-    )
-
-    val javaConfigClass = Class.forName(
-      "org.oppia.android.scripts.lint.AndroidLintAnalyzer\$JavaConfiguration"
-    )
-    val constructor = javaConfigClass.getDeclaredConstructor(Map::class.java)
-    constructor.isAccessible = true
-
-    val exception = assertThrows<Exception> {
-      constructor.newInstance(bazelInfo)
-    }
-
-    val cause = exception.cause
-    assertThat(cause).isInstanceOf(IllegalStateException::class.java)
-    assertThat(cause?.message).contains("Could not extract Java version from")
-  }
-
-  @Test
   fun testPrepareLintArguments_withCustomBuildSdkVersion_includesCorrectVersion() {
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
@@ -260,6 +191,7 @@ class AndroidLintRunnerTest {
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupAndroidProjectWithUnusedResources()
     val lintRunner = createLintRunner()
+
     lintRunner.runLint(
       lintRunner.prepareLintArguments(
         jdkHome,
@@ -278,6 +210,7 @@ class AndroidLintRunnerTest {
     setupAndroidProjectWithInvalidId()
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(
           jdkHome,
@@ -322,6 +255,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(
           jdkHome,
@@ -359,6 +293,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportPath, projectPath)
 
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(
           jdkHome,
@@ -382,6 +317,7 @@ class AndroidLintRunnerTest {
 
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(
           jdkHome,
@@ -575,6 +511,7 @@ class AndroidLintRunnerTest {
     val lintRunner = createLintRunner()
 
     val exception = assertThrows<IllegalStateException> {
+
       lintRunner.runLint(
         lintRunner.prepareLintArguments(
           jdkHome,
@@ -601,6 +538,7 @@ class AndroidLintRunnerTest {
     lintRunner.runLint(
       lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
     )
+
     val outputContent = outputStream.toString()
     assertThat(outputContent).contains("SEVERITY: WARNING")
     assertThat(outputContent).contains("HardcodedText")
@@ -620,6 +558,7 @@ class AndroidLintRunnerTest {
     lintRunner.runLint(
       lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
     )
+
     val outputContent = outputStream.toString()
     assertThat(outputContent).contains("FILE:")
     assertThat(outputContent).contains("app/src/main/res/values/strings.xml")
@@ -659,6 +598,7 @@ class AndroidLintRunnerTest {
     val lintRunner = AndroidLintRunner(reportFile, projectFile)
 
     val exception = assertThrows<IllegalArgumentException> {
+
       lintRunner.prepareLintArguments(
         nonExistentJdk, JAVA_VERSION, buildSdkVersion, kotlinVersion
       )
