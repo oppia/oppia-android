@@ -12,19 +12,21 @@
 
   </data>
 
-  <LinearLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/component_color_shared_screen_tertiary_background_color"
-    android:orientation="vertical">
+    android:background="@color/component_color_shared_screen_tertiary_background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/platform_parameter_constraint_layout"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:background="@color/component_color_shared_item_background_solid_color"
       android:minHeight="64dp"
-      android:paddingStart="16dp">
+      android:paddingStart="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
 
       <TextView
         android:id="@+id/platform_parameter_label_text_view"
@@ -57,7 +59,7 @@
         android:focusable="false"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:onClick="@{() -> viewModel.onToggleFeatureFlagSwitch()}"
+        android:onClick="@{() -> viewModel.onTogglePlatformParameterSwitch()}"
         android:theme="@style/OppiaSwitchCompatTheme"
         android:visibility="@{viewModel.isTextInputMode ? View.GONE : View.VISIBLE}"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -74,8 +76,8 @@
         android:gravity="center"
         android:textAlignment="center"
         android:visibility="@{viewModel.isTextInputMode ? View.VISIBLE : View.GONE}"
-        app:errorMessage="@{viewModel.inputErrorMsg}"
         app:errorIconDrawable="@null"
+        app:errorMessage="@{viewModel.inputErrorMsg}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -85,8 +87,8 @@
           style="@style/TextInputEditText"
           android:layout_width="72dp"
           android:layout_height="wrap_content"
-          android:text="@{viewModel.inputValue}"
           android:backgroundTint="@color/component_color_shared_screen_tertiary_background_color"
+          android:text="@{viewModel.inputValue}"
           android:textAlignment="center"
           android:textColor="@color/component_color_shared_primary_dark_text_color"
           android:textSize="14sp" />
@@ -95,11 +97,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/sync_status_constraint_layout"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:minHeight="64dp"
       android:paddingStart="16dp"
-      android:paddingEnd="16dp">
+      android:paddingEnd="16dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/platform_parameter_constraint_layout">
 
       <TextView
         android:id="@+id/sync_status_text_view"
@@ -134,8 +139,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="1dp"
-      android:background="@color/component_color_shared_divider_color" />
-  </LinearLayout>
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/sync_status_constraint_layout" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -52,28 +52,28 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
+
     binding.platformParametersToolbar.setNavigationOnClickListener {
-      onBackNavigation()
+      (activity as PlatformParametersActivity).finish()
     }
+
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
+
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
     binding.platformParametersRecyclerView.apply {
       layoutManager = linearLayoutManager
       adapter = bindingAdapter
     }
+
     binding.apply {
       this.lifecycleOwner = fragment
       this.viewModel = platformParametersViewModel
     }
 
     return binding.root
-  }
-
-  private fun onBackNavigation() {
-    (activity as PlatformParametersActivity).finish()
   }
 
   private fun createRecyclerViewAdapter(): BindableAdapter<PlatformParameterItemViewModel> {
@@ -188,7 +188,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (platformParameterStates.containsKey(model.platformParameterId)) {
       model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
     }
-    model.onPlatformParameterToggleCallback = { id, value ->
+    model.onPlatformParameterToggledCallback = { id, value ->
       platformParameterStates[id] = PlatformParameterValue.newBuilder()
         .setBoolean(value)
         .build()
