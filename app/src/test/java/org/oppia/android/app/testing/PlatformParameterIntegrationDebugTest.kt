@@ -163,7 +163,7 @@ class PlatformParameterIntegrationDebugTest {
   }
 
   @Suppress("DeferredResultUnused")
-  fun setUpTestEnvironment() {
+  private fun setUpTestEnvironment() {
     setUpTestApplicationComponent()
     val config = Configuration.Builder()
       .setExecutor(SynchronousExecutor())

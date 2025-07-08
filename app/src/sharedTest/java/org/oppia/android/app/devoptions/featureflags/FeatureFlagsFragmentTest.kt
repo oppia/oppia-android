@@ -257,60 +257,8 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_whenSwitchToggled_DownloadsSupportFlagUpdatesValue() {
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
-        )
-      ).perform(click())
-
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = !downloadsSupportFlag.currentValue
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChange_persistsValue() {
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
-        )
-      ).perform(click())
-
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = !downloadsSupportFlag.currentValue
-      )
-
-      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
-
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = !downloadsSupportFlag.currentValue
-      )
-    }
-  }
-
-  @Test
   fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerSyncStatus() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -329,6 +277,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerBackgroundColor() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -346,6 +295,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsRemoteBooleanValue() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -364,6 +314,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsRemoteDisplayName() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -381,6 +332,7 @@ class FeatureFlagsFragmentTest {
 
   @Test
   fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsLocalSyncStatus() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
@@ -393,6 +345,61 @@ class FeatureFlagsFragmentTest {
       verifyFeatureFlagSyncStatus(
         position = 0,
         expectedSyncStatus = context.getString(R.string.feature_flag_overridden_sync_status)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBackgroundColor() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = 0xFFBE563C.toInt()
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBooleanValue() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = downloadsSupportFlag.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyFeatureFlagDisplayName(
+        position = 0,
+        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
       )
     }
   }
@@ -453,10 +460,62 @@ class FeatureFlagsFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-
       verifyFeatureFlagBackgroundColor(
         position = 0,
         expectedColor = 0xFFBE563C.toInt()
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_whenSwitchToggled_DownloadsSupportFlagUpdatesValue() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChange_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
+      )
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !downloadsSupportFlag.currentValue
       )
     }
   }
@@ -490,64 +549,13 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBackgroundColor() {
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyFeatureFlagBackgroundColor(
-        position = 0,
-        expectedColor = 0xFFBE563C.toInt()
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBooleanValue() {
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = downloadsSupportFlag.currentValue
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyFeatureFlagDisplayName(
-        position = 0,
-        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
-      )
-    }
-  }
-
-  @Test
   fun testFeatureFlagsFragment_toggleFlag_navigateBackAndReopen_persistsValue() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsActivity::class.java).use {
+    val expectedState = !getEphemeralFeatureFlags()[0].currentValue
+
+    launch(FeatureFlagsActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      val expectedState = !getEphemeralFeatureFlags()[0].currentValue
       scrollToPosition(0)
       onView(
         atPositionOnView(
@@ -558,6 +566,11 @@ class FeatureFlagsFragmentTest {
       ).perform(click())
 
       pressBack()
+      testCoroutineDispatchers.runCurrent()
+      scenario.close()
+    }
+
+    launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)

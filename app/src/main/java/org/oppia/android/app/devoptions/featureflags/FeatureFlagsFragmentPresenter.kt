@@ -50,7 +50,19 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.featureFlagsToolbar.setNavigationOnClickListener {
       onBackNavigation()
     }
-    handleBackPress()
+
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          onBackNavigation()
+          // The dispatcher can hold a reference to the host
+          // so we need to null it out to prevent memory leaks.
+          this.remove()
+        }
+      }
+    )
+
     if (featureFlagStates.isNotEmpty()) {
       this.featureFlagStates = featureFlagStates.toMutableMap()
     }
@@ -85,6 +97,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         .setOverriddenValue(value)
         .build()
     }
+
     platformParameterControllerDebugImpl
       .updateOverriddenFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
         when (it) {
@@ -120,16 +133,5 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun handleBackPress() {
-    activity.onBackPressedDispatcher.addCallback(
-      fragment,
-      object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          onBackNavigation()
-          // The dispatcher can hold a reference to the host
-          // so we need to null it out to prevent memory leaks.
-          this.remove()
-        }
-      }
-    )
   }
 }
