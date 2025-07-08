@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeActivity
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedActivity
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
@@ -29,7 +30,8 @@ class DeveloperOptionsActivity :
   RouteToMarkTopicsCompletedListener,
   RouteToViewEventLogsListener,
   RouteToForceNetworkTypeListener,
-  RouteToMathExpressionParserTestListener {
+  RouteToMathExpressionParserTestListener,
+  RouteToFeatureFlagsListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -75,6 +77,12 @@ class DeveloperOptionsActivity :
 
   override fun routeToForceNetworkType() {
     startActivity(ForceNetworkTypeActivity.createForceNetworkTypeActivityIntent(this))
+  }
+
+  override fun routeToFeatureFlags() {
+    startActivity(
+      FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
+    )
   }
 
   override fun routeToMathExpressionParserTest() {

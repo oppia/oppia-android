@@ -1,20 +1,19 @@
-package org.oppia.android.app.databinding
+package org.oppia.android.app.devoptions.featureflags
 
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,16 +27,14 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
-import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
-import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
-import org.oppia.android.app.databinding.DrawableBindingAdapters.setLargeBorderRadiusBackgroundDrawable
-import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ScreenName.FEATURE_FLAGS_ACTIVITY
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.testing.DrawableBindingAdaptersTestActivity
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.OrientationChangeAction
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -69,13 +66,12 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestImageLoaderModule
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
@@ -83,121 +79,80 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [DrawableBindingAdapters]. */
+/** Tests for [FeatureFlagsActivity]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = DrawableBindingAdaptersTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
+  application = FeatureFlagsActivityTest.TestApplication::class,
 )
-class DrawableBindingAdaptersTest {
-
+class FeatureFlagsActivityTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var context: Context
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  private var colorRgb: Int = Color.valueOf(-0x10000).toArgb()
-
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    Intents.init()
-  }
-
-  @After
-  fun tearDown() {
-    Intents.release()
   }
 
   @Test
-  fun testSetBackgroundColor_hasCorrectBackgroundColor() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setBackgroundColor(view, /* colorRgb= */ colorRgb)
-        assertThat((view.background as ColorDrawable).color).isEqualTo(colorRgb)
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createFeatureFlagsActivityIntent().extractCurrentAppScreenName()
+
+    assertThat(screenName).isEqualTo(FEATURE_FLAGS_ACTIVITY)
+  }
+
+  @Test
+  fun testFeatureFlagsActivity_hasCorrectActivityLabel() {
+    launch<FeatureFlagsActivity>(createFeatureFlagsActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+
+        // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
+        // correct string when it's read out.
+        assertThat(title).isEqualTo(context.getString(R.string.feature_flags_activity_title))
       }
     }
   }
 
   @Test
-  fun testSetBackgroundDrawable_hasCorrectBackgroundDrawable() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
-      }
+  fun testFeatureFlagsActivity_featureFlagsFragmentIsDisplayed() {
+    launch<FeatureFlagsActivity>(createFeatureFlagsActivityIntent()).use {
+      onView(withId(R.id.feature_flags_fragment_container)).check(
+        matches(isDisplayed())
+      )
     }
   }
 
   @Test
-  fun testSetTopBackgroundDrawable_hasCorrectTopBackgroundDrawable() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setTopBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
-      }
+  fun testFeatureFlagsActivity_configChange_featureFlagsFragmentIsDisplayed() {
+    launch<FeatureFlagsActivity>(createFeatureFlagsActivityIntent()).use {
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      onView(withId(R.id.feature_flags_fragment_container)).check(
+        matches(isDisplayed())
+      )
     }
-  }
-
-  @Test
-  fun testSetLargeBorderRadiusBackgroundDrawable_hasCorrectLargeBorderRadiusBackgroundDrawable() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
-      }
-    }
-  }
-
-  @Test
-  fun testSetLargeBorderRadiusBackgroundDrawable_hasCorrectCornerRadius() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-
-        val background = view.background as GradientDrawable
-        val expectedCornerRadius = 24f * view.resources.displayMetrics.density
-
-        assertThat(background.cornerRadius).isEqualTo(expectedCornerRadius)
-      }
-    }
-  }
-
-  private fun getView(it: DrawableBindingAdaptersTestActivity): View {
-    return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
-  private fun runWithLaunchedActivity(
-    testBlock: ActivityScenario<DrawableBindingAdaptersTestActivity>.() -> Unit
-  ) {
-    val intent = Intent(context, DrawableBindingAdaptersTestActivity::class.java)
-    ActivityScenario.launch<DrawableBindingAdaptersTestActivity>(intent).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.testBlock()
-    }
-  }
+  private fun createFeatureFlagsActivityIntent(): Intent =
+    FeatureFlagsActivity.createFeatureFlagsActivityIntent(context)
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
@@ -224,6 +179,7 @@ class DrawableBindingAdaptersTest {
       FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
+      GlideImageLoaderModule::class,
       HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
@@ -255,33 +211,40 @@ class DrawableBindingAdaptersTest {
       SyncStatusModule::class,
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
-      TestImageLoaderModule::class,
       TestLogReportingModule::class,
-      TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
-      WorkManagerConfigurationModule::class
+      WorkManagerConfigurationModule::class,
+      TestPlatformParameterModule::class
     ]
   )
+  /** [ApplicationComponent] for [FeatureFlagsActivityTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
     }
 
-    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest)
+    /**
+     * Injects [TestApplicationComponent] to [FeatureFlagsActivityTest] providing the required
+     * dagger modules.
+     */
+    fun inject(featureFlagsActivityTest: FeatureFlagsActivityTest)
   }
 
+  /** [Application] class for [FeatureFlagsActivityTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerDrawableBindingAdaptersTest_TestApplicationComponent.builder()
+      DaggerFeatureFlagsActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(drawableBindingAdaptersTest: DrawableBindingAdaptersTest) {
-      component.inject(drawableBindingAdaptersTest)
+    /** Called when setting up [TestApplication]. */
+    fun inject(featureFlagsActivityTest: FeatureFlagsActivityTest) {
+      component.inject(featureFlagsActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
