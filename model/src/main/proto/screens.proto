@@ -171,11 +171,14 @@ enum ScreenName {
   // Screen name value for the scenario when the learner welcome activity is visible to the user.
   INTRO_ACTIVITY = 53;
 
+  // Screen name value for feature flag screen.
+  FEATURE_FLAGS_ACTIVITY = 54;
+
   // Screen name value for the scenario when a user with a PIN wants to log in to their profile.
-  PROFILE_LOGIN_ACTIVITY = 54;
+  PROFILE_LOGIN_ACTIVITY = 55;
 
   // Screen name value for the scenario when a user is viewing the admin onboarding screen.
-  ADMIN_INTRO_ACTIVITY = 55;
+  ADMIN_INTRO_ACTIVITY = 56;
 }
 
 // Defines the current visible UI screen of the application.

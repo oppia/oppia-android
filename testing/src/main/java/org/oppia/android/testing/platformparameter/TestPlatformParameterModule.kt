@@ -39,6 +39,13 @@ class TestPlatformParameterModule {
 
   @Provides
   @Singleton
+  fun providePlatformParameterControllerProdImpl(
+    platformParameterProcessState: PlatformParameterProcessState,
+    factory: PlatformParameterControllerProdImpl.Factory
+  ) = factory.create(platformParameterProcessState)
+
+  @Provides
+  @Singleton
   fun providePlatformParameterController(
     factory: PlatformParameterControllerProdImpl.Factory
   ): PlatformParameterController = factory.create(processState)

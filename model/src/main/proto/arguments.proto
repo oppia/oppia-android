@@ -5,6 +5,7 @@ package model;
 import "exploration.proto";
 import "exploration_checkpoint.proto";
 import "languages.proto";
+import "platform_parameter.proto";
 import "profile.proto";
 import "translation.proto";
 
@@ -956,6 +957,12 @@ message ProfileChooserFragmentArguments {
 message StatePlayerRecyclerViewAssemblerState {
   // Indicates whether the previous responses header is expanded.
   bool has_previous_responses_expanded = 1;
+}
+
+// Arguments that are saved on configuration changes in FeatureFlagsFragment.
+message FeatureFlagsFragmentArguments {
+  // List of locally overridden feature flag states.
+  repeated OverriddenFeatureFlag feature_flag_states = 1;
 }
 
 // Arguments required when creating an FlashbackConfirmationDialogFragment.
