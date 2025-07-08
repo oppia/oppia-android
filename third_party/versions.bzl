@@ -111,6 +111,8 @@ MAVEN_TEST_DEPENDENCY_VERSIONS = {
     "androidx.test:runner": "1.2.0",
     "androidx.work:work-testing": "2.4.0",
     "com.android.tools.apkparser:apkanalyzer": "30.0.4",
+    "com.android.tools.lint:lint": "30.3.1",
+    "com.android.tools.lint:lint-tests": "30.3.1",
     "com.github.bumptech.glide:mocks": "4.11.0",
     "com.google.protobuf:protobuf-java": "3.17.3",
     "com.google.protobuf:protobuf-java-util": "3.17.3",
@@ -177,6 +179,10 @@ HTTP_DEPENDENCY_VERSIONS = {
     "rules_proto": {
         "sha": "e0cab008a9cdc2400a1d6572167bf9c5afc72e19ee2b862d18581051efab42c9",
         "version": "c0b62f2f46c85c16cb3b5e9e921f0d00e3101934",
+    },
+    "zlib": {
+        "sha": "9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23",
+        "version": "1.3.1",
     },
 }
 

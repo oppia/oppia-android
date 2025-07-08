@@ -185,6 +185,7 @@
   <color name="component_color_exploration_activity_content_background_solid_color">@color/color_palette_content_background_solid_color</color>
   <color name="component_color_exploration_activity_divider_color">@color/color_palette_exploration_activity_divider_color</color>
   <color name="component_color_exploration_activity_divider_dotted_color">@color/color_palette_exploration_activity_divider_dotted_color</color>
+  <color name="component_color_exploration_activity_fragment_toolbar_color">@color/color_palette_flashback_toolbar_color</color>
   <!-- Question Player Activity -->
   <color name="component_color_question_player_activity_background_color">@color/color_palette_exploration_background_color</color>
   <color name="component_color_question_player_activity_congratulations_text_background_shadow_05_color">@color/color_palette_question_player_activity_congratulations_text_background_shadow_05_color</color>

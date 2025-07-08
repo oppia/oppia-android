@@ -734,6 +734,8 @@
   <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_top">12dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_bottom">12dp</dimen>
 
   <!-- AdministratorControls-->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
@@ -852,7 +854,8 @@
   <dimen name="onboarding_shared_text_size_large">20sp</dimen>
   <dimen name="onboarding_shared_text_size_xl">32sp</dimen>
 
-  <dimen name="onboarding_admin_intro_card_padding">32dp</dimen>
+  <dimen name="onboarding_admin_intro_horizontal_card_padding">32dp</dimen>
+  <dimen name="onboarding_admin_intro_vertical_card_padding">12dp</dimen>
 
   <!-- Shared Margins -->
   <dimen name="phone_shared_margin_x_small">4dp</dimen>
@@ -885,4 +888,17 @@
   <dimen name="classrooms_card_elevation">4dp</dimen>
   <dimen name="classrooms_card_margin_start">8dp</dimen>
   <dimen name="classrooms_card_margin_end">0dp</dimen>
+
+  <!-- FlashbackConfirmationDialogFragment -->
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_margin_start">20dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_margin_end">20dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_start">24dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_end">24dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_top">16dp</dimen>
+  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_bottom">16dp</dimen>
+
+  <!-- Flashback Solution -->
+  <dimen name="flashback_solution_summary_card_margin_start">24dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">40dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
 </resources>

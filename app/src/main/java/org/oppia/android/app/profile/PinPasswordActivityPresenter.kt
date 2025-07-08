@@ -41,8 +41,8 @@ class PinPasswordActivityPresenter @Inject constructor(
 ) {
   private var internalProfileId = -1
   private var profileId = ProfileId.getDefaultInstance()
-  private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
+  private lateinit var alertDialog: AlertDialog
 
   fun handleOnCreate() {
     val args = activity.intent.getProtoExtra(
@@ -58,6 +58,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity,
       R.layout.pin_password_activity
     )
+
     pinViewModel.setProfileId(internalProfileId)
     binding.apply {
       lifecycleOwner = activity
@@ -137,21 +138,32 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
 
     binding.forgotPin.setOnClickListener {
-      if (pinViewModel.isAdmin.get()!!) {
+      val isAdmin = pinViewModel.isAdmin.get() ?: false
+      if (isAdmin) {
         showAdminForgotPin()
       } else {
         val previousFrag =
           activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
         if (previousFrag != null) {
-          activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
+          activity.supportFragmentManager.beginTransaction()
+            .remove(previousFrag)
+            .commitNow()
         }
-        val dialogFragment = AdminSettingsDialogFragment
-          .newInstance(adminPin!!, profileId, pinViewModel.name.get()!!)
-        dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
+
+        val nameValue = pinViewModel.name.get()
+
+        if (adminPin != null && nameValue != null) {
+          val dialogFragment = AdminSettingsDialogFragment
+            .newInstance(adminPin, profileId, nameValue)
+          dialogFragment.showNow(
+            activity.supportFragmentManager,
+            TAG_ADMIN_SETTINGS_DIALOG
+          )
+        }
       }
     }
 
-    if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
+    if (pinViewModel.showAdminPinForgotPasswordPopUp.get() == true) {
       showAdminForgotPin()
     }
   }

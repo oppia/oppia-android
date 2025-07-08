@@ -22,7 +22,7 @@ class ProfileChooserActivityPresenter @Inject constructor(
   /** Adds [ProfileChooserFragment] to view. */
   fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
     if (enableOnboardingFlowV2.value) {
-      // TODO(#4938): Remove once admin profile onboarding is implemented.
+      // TODO(#4938): Ensure default profile is present when the admin resets the app data.
       profileManagementController.updateNewProfileDetails(
         profileId = profileId,
         profileType = profileType,

@@ -91,7 +91,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -104,6 +103,7 @@ import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.DefineAppLanguageLocaleContext
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.mockito.capture
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -770,6 +770,197 @@ class HtmlParserTest {
   }
 
   @Test
+  fun testContentDescription_withBasicHtml_returnsCorrectDescription() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "This is a <b>bold</b> and <i>italic</i> text.",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString())
+          .isEqualTo("This is a bold and italic text.")
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withLinks_includesHrefInDescription() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "Visit <a href=\"https://www.example.com\">this website</a>" +
+            " for more information.",
+          textView,
+          supportsLinks = true
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "Visit https://www.example.com this website for more information."
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withBulletList_containsListItems() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "<ul><li>First item</li><li>Second item</li><li>Third item</li></ul>",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).contains("First item")
+        assertThat(textView.contentDescription.toString()).contains("Second item")
+        assertThat(textView.contentDescription.toString()).contains("Third item")
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withConceptCard_includesTextValueInDescription() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      customOppiaTagActionListener = mockCustomOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "Visit <oppia-noninteractive-skillreview skill_id-with-value=\"skill_id_1\" " +
+            "text-with-value=\"refresher lesson\">" +
+            "</oppia-noninteractive-skillreview> to learn more.",
+          textView,
+          supportsConceptCards = true
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "Visit refresher lesson to learn more."
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withImage_includesAltText() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "Here is an image: <oppia-noninteractive-image " +
+            "alt-with-value=\"A diagram showing the water cycle\" " +
+            "caption-with-value=\"Figure 1: The Water Cycle\"" +
+            " filepath-with-value=\"water_cycle.png\">" +
+            "</oppia-noninteractive-image>",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString())
+          .contains("A diagram showing the water cycle")
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withMathTag_includesRawLatex() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = false,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "The fraction is <oppia-noninteractive-math render-type=\"inline\"" +
+            " math_content-with-value=\"{" +
+            "&amp;quot;raw_latex&amp;quot;:&amp;quot;\\\\frac{2}{5}&amp;quot;}\">" +
+            "</oppia-noninteractive-math> which equals 0.4",
+          textView
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "The fraction is Math content {\"raw_latex\":\"\\\\frac{2}{5}\"} which equals 0.4"
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testContentDescription_withPolicyTag_includesPolicyDescription() {
+    val htmlParser = htmlParserFactory.create(
+      policyOppiaTagActionListener = mockPolicyOppiaTagActionListener,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      onActivity {
+        val textView: TextView =
+          it.findViewById(R.id.test_html_content_text_view)
+
+        val htmlResult: Spannable = htmlParser.parseOppiaHtml(
+          "By using %s, you agree to our <br> " +
+            "<oppia-noninteractive-policy link=\"tos\">Terms of Service" +
+            "</oppia-noninteractive-policy> and <oppia-noninteractive-policy link=\"privacy\">" +
+            "Privacy Policy</oppia-noninteractive-policy>.",
+          textView,
+          supportsLinks = true,
+          supportsConceptCards = false
+        )
+        textView.text = htmlResult
+
+        assertThat(textView.contentDescription.toString()).isEqualTo(
+          "By using %s, you agree to our " +
+            " Link to Terms of Service and Link to Privacy Policy."
+        )
+      }
+    }
+  }
+
+  @Test
   fun testHtmlContent_withConceptCard_clickSpan_noTagListener_doesNothing() {
     val htmlParser = htmlParserFactory.create(
       resourceBucketName,
@@ -943,33 +1134,65 @@ class HtmlParserTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      TestPlatformParameterModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

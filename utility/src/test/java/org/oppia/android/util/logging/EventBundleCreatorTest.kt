@@ -27,6 +27,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_RE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
@@ -55,6 +56,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_I
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.FeatureFlagListContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.Priority.ESSENTIAL
@@ -66,6 +68,7 @@ import org.oppia.android.app.model.EventLog.SubmitAnswerContext
 import org.oppia.android.app.model.EventLog.SwitchInLessonLanguageEventContext
 import org.oppia.android.app.model.EventLog.TopicContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OppiaMetricLog
 import org.oppia.android.app.model.OppiaMetricLog.LoggableMetric
@@ -83,15 +86,20 @@ import org.oppia.android.app.model.OppiaMetricLog.StorageTier.HIGH_STORAGE
 import org.oppia.android.app.model.OppiaMetricLog.StorageTier.MEDIUM_STORAGE
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
+import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunnerPlatform
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
+import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -167,7 +175,7 @@ class EventBundleCreatorTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -846,6 +854,28 @@ class EventBundleCreatorTest {
     assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
     assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
     assertThat(bundle).string("topic_id").isEqualTo(TEST_TOPIC_ID)
+  }
+
+  @Test
+  fun testFillEventBundle_fillsFeatureFlagsContext() {
+    setUpTestApplicationComponent()
+    val bundle = Bundle()
+
+    val eventLog = createEventLog(context = createFeatureFlagListContext())
+
+    val typeName = eventBundleCreator.fillEventBundle(eventLog, bundle)
+    assertThat(typeName).isEqualTo("feature_flag_list")
+    assertThat(bundle).hasSize(14)
+    assertThat(bundle).longInt("timestamp").isEqualTo(TEST_TIMESTAMP_1)
+    assertThat(bundle).string("priority").isEqualTo("essential")
+    assertThat(bundle).integer("event_type").isEqualTo(FEATURE_FLAG_LIST_CONTEXT.number)
+    assertThat(bundle).integer("android_sdk").isEqualTo(TEST_ANDROID_SDK_VERSION)
+    assertThat(bundle).string("app_version_name").isEqualTo(TEST_APP_VERSION_NAME)
+    assertThat(bundle).integer("app_version_code").isEqualTo(TEST_APP_VERSION_CODE)
+    assertThat(bundle).string("feature_flag_names").isEqualTo("2,3,4,5,6,7,8,10,11,12,13,14,15,0")
+    assertThat(bundle).string("feature_flag_enabled_states")
+      .isEqualTo("0,1,0,1,0,1,0,1,0,1,0,1,0,0")
+    assertThat(bundle).string("feature_flag_sync_statuses").isEqualTo("0,1,2,0,1,2,0,1,2,0,1,2,0,0")
   }
 
   @Test
@@ -2317,6 +2347,10 @@ class EventBundleCreatorTest {
       createSwitchInLessonLanguageEventContext(),
   ) = createEventContext(switchLanguageContext, EventContextBuilder::setSwitchInLessonLanguage)
 
+  private fun createFeatureFlagListContext(
+    featureFlagListContext: FeatureFlagListContext = createFeatureFlagListEventContext()
+  ) = createEventContext(featureFlagListContext, EventContextBuilder::setFeatureFlagListContext)
+
   private fun createInstallationIdForFailedAnalyticsLogContext(
     installationId: String = TEST_INSTALLATION_ID
   ) = createEventContext(installationId, EventContextBuilder::setInstallIdForFailedAnalyticsLog)
@@ -2356,6 +2390,83 @@ class EventBundleCreatorTest {
 
   private fun createTopicContext(topicId: String = TEST_TOPIC_ID) =
     TopicContext.newBuilder().apply { this.topicId = topicId }.build()
+
+  private fun createFeatureFlagListEventContext() = FeatureFlagListContext.newBuilder()
+    .setAppSessionId("test session")
+    .addAllFeatureFlags(
+      listOf(
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.LEARNER_STUDY_ANALYTICS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.PERFORMANCE_METRICS_COLLECTION
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.SPOTLIGHT_UI
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.EXTRA_TOPIC_TABS_UI
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.DOWNLOADS_SUPPORT
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.APP_AND_OS_DEPRECATION
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.NPS_SURVEY
+          this.syncStatus = SyncStatus.NOT_SYNCED_FROM_SERVER
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.ONBOARDING_FLOW_V2
+          this.syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          this.isEnabled = true
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.MULTIPLE_CLASSROOMS
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+        EventLog.FeatureFlagItemContext.newBuilder().apply {
+          this.id = FeatureFlagId.FEATURE_FLAG_ID_UNSPECIFIED
+          this.syncStatus = SyncStatus.SYNC_STATUS_UNSPECIFIED
+          this.isEnabled = false
+        }.build(),
+      )
+    ).build()
 
   private fun createQuestionContext(
     questionId: String = TEST_QUESTION_ID,
@@ -2498,12 +2609,12 @@ class EventBundleCreatorTest {
     ).build()
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = false
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLoggingLearnerStudyIds = true
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
@@ -2529,35 +2640,28 @@ class EventBundleCreatorTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLoggingLearnerStudyIds = LOGGING_LEARNER_STUDY_IDS_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
     }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLoggingLearnerStudyIds
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
-  @Component(modules = [TestModule::class])
+  @Component(
+    modules = [
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

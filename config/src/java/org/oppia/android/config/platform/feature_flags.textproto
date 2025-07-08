@@ -1,0 +1,70 @@
+feature_flag_definition {
+  id: DOWNLOADS_SUPPORT
+  remote_server_name: "android_enable_downloads_support"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: EXTRA_TOPIC_TABS_UI
+  remote_server_name: "android_enable_extra_topic_tabs_ui"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: LEARNER_STUDY_ANALYTICS
+  remote_server_name: "android_enable_learner_study_analytics"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: FAST_LANGUAGE_SWITCHING_IN_LESSON
+  remote_server_name: "android_enable_fast_language_switching_in_lesson"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: LOGGING_LEARNER_STUDY_IDS
+  remote_server_name: "android_enable_logging_learner_study_ids"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: EDIT_ACCOUNTS_OPTIONS_UI
+  remote_server_name: "android_enable_edit_accounts_options_ui"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: PERFORMANCE_METRICS_COLLECTION
+  remote_server_name: "android_enable_performance_metrics_collection"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: SPOTLIGHT_UI
+  remote_server_name: "android_enable_spotlight_ui"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: INTERACTION_CONFIG_CHANGE_STATE_RETENTION
+  remote_server_name: "android_enable_interaction_config_change_state_retention"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: APP_AND_OS_DEPRECATION
+  remote_server_name: "android_enable_app_and_os_deprecation"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: NPS_SURVEY
+  remote_server_name: "android_enable_nps_survey"
+  default_is_enabled: true
+}
+feature_flag_definition {
+  id: ONBOARDING_FLOW_V2
+  remote_server_name: "android_enable_onboarding_flow_v2"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: MULTIPLE_CLASSROOMS
+  remote_server_name: "enable_multiple_classrooms"
+  default_is_enabled: false
+}
+feature_flag_definition {
+  id: FLASHBACK_SUPPORT
+  remote_server_name: "android_enable_flashback_support"
+  default_is_enabled: false
+}

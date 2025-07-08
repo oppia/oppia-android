@@ -70,7 +70,9 @@ class LocaleTestModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleTestModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      LocaleTestModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

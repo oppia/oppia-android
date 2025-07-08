@@ -107,8 +107,12 @@ class FeedbackReportingServiceTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      TestDispatcherModule::class, NetworkConfigTestModule::class, RobolectricModule::class
+      NetworkConfigTestModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -44,6 +44,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.OppiaLanguage.ARABIC
@@ -56,6 +57,8 @@ import org.oppia.android.app.model.OppiaRegion
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
+import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -1046,6 +1049,7 @@ class SplashActivityTest {
       val monitor = monitorFactory.createMonitor(appStartupStateController.getAppStartupState())
       testCoroutineDispatchers.advanceUntilIdle()
       monitor.ensureNextResultIsSuccess()
+      TestPlatformParameterModule.reset()
     }
   }
 
@@ -1151,6 +1155,23 @@ class SplashActivityTest {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
+  @Test
+  fun testSplashActivity_onboardingV2_partiallyOnboardedAdmin_routesToAdminIntroActivity() {
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.addOnlyAdminProfile()
+    val profileId = ProfileId.newBuilder().setInternalId(0).build()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    val params = AdminIntroActivityParams.newBuilder()
+      .setProfileType(ProfileType.SUPERVISOR)
+      .build()
+
+    launchSplashActivityPartially {
+      intended(hasComponent(AdminIntroActivity::class.java.name))
+      intended(hasProtoExtra(ADMIN_INTRO_PARAMS_KEY, params))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, profileId))
+    }
+  }
 
   @Test
   fun testActivity_onboardingV2Enabled_existingMultipleProfiles_routesToProfileChooserActivity() {
@@ -1172,6 +1193,7 @@ class SplashActivityTest {
     runInNewTestApplication {
       appStartupStateController.markOnboardingFlowCompleted()
       testCoroutineDispatchers.advanceUntilIdle()
+      TestPlatformParameterModule.reset()
     }
   }
 
@@ -1197,6 +1219,7 @@ class SplashActivityTest {
   private fun recreateExistingApplication() {
     testCoroutineDispatchers.unregisterIdlingResource()
     ApplicationProvider.getApplicationContext<TestApplication>().recreateDaggerGraph()
+    TestPlatformParameterModule.reset()
     initializeTestApplication()
 
     // Reset any intents previously recorded.
@@ -1229,8 +1252,8 @@ class SplashActivityTest {
   }
 
   private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }
@@ -1317,33 +1340,65 @@ class SplashActivityTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, TestPlatformParameterModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      ExpirationMetaDataRetrieverTestModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, NetworkConfigProdModule::class,
-      ApplicationStartupListenerModule::class, HintsAndSolutionConfigModule::class,
-      LogReportWorkerModule::class, WorkManagerConfigurationModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-      HintsAndSolutionProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

@@ -434,7 +434,6 @@ class MathTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = MATH_MARKUP_1,
-        imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithCachedMathSupport
       )
 
@@ -476,6 +475,52 @@ class MathTagHandlerTest {
       .inOrder()
   }
 
+  @Test
+  fun testHandleTagForContentDescription_withMathMarkup_replacesTagWithContentDescription() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = MATH_MARKUP_1,
+      imageRetriever = null,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).contains("Math content")
+    assertThat(parsedHtmlStr).contains("raw_latex")
+    assertThat(parsedHtmlStr).contains("\\\\frac{2}{5}")
+    assertThat(parsedHtmlStr).contains("svg_filename")
+    assertThat(parsedHtmlStr).contains("math_image1.svg")
+  }
+
+  @Test
+  fun testHandleTagForContentDescription_withMathMarkupMissingContent_replacesWithDescription() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = MATH_WITHOUT_CONTENT_VALUE_MARKUP,
+      imageRetriever = null,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+
+    val parsedHtmlStr = parsedHtml.toString()
+    assertThat(parsedHtmlStr).isEqualTo("Math content")
+  }
+
+  @Test
+  fun testHandleTagForContentDescription_withMultipleMathTags_replacesAllWithDescriptions() {
+    val parsedHtml = CustomHtmlContentHandler.fromHtml(
+      html = "$MATH_MARKUP_1 and $MATH_MARKUP_2",
+      imageRetriever = null,
+      customTagHandlers = tagHandlersWithCachedMathSupport
+    )
+
+    val parsedHtmlStr = parsedHtml.toString()
+
+    assertThat(parsedHtmlStr).contains("Math content")
+    assertThat(parsedHtmlStr).contains("\\\\frac{2}{5}")
+    assertThat(parsedHtmlStr).contains("\\\\frac{3}{8}")
+    assertThat(parsedHtmlStr).contains("math_image1.svg")
+    assertThat(parsedHtmlStr).contains("math_image2.svg")
+    assertThat(parsedHtmlStr).contains(" and ")
+  }
+
   private fun createMathTagHandler(cacheLatexRendering: Boolean): MathTagHandler {
     // Pick an arbitrary line height since rendering doesn't actually happen in tests.
     return MathTagHandler(
@@ -509,8 +554,12 @@ class MathTagHandlerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestDispatcherModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, LoggerModule::class, LocaleProdModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LoggerModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

@@ -20,6 +20,7 @@ import org.oppia.android.app.model.ScreenName.EXPLORATION_ACTIVITY
 import org.oppia.android.app.model.State
 import org.oppia.android.app.model.WrittenTranslationContext
 import org.oppia.android.app.player.audio.AudioButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
@@ -47,10 +48,10 @@ class ExplorationActivity :
   HintsAndSolutionExplorationManagerListener,
   ConceptCardListener,
   BottomSheetOptionsMenuItemClickListener,
-  RequestVoiceOverIconSpotlightListener {
+  RequestVoiceOverIconSpotlightListener,
+  FlashbackToolbarListener {
 
-  @Inject
-  lateinit var explorationActivityPresenter: ExplorationActivityPresenter
+  @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
   private lateinit var writtenTranslationContext: WrittenTranslationContext
 
@@ -210,5 +211,13 @@ class ExplorationActivity :
 
   override fun viewSolution() {
     explorationActivityPresenter.viewSolution()
+  }
+
+  override fun hideFlashbackToolbar() {
+    explorationActivityPresenter.hideFlashbackToolbar()
+  }
+
+  override fun showFlashbackToolbar() {
+    explorationActivityPresenter.showFlashbackToolbar()
   }
 }

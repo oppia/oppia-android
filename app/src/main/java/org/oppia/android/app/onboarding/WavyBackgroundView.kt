@@ -11,7 +11,7 @@ import kotlin.math.sin
 
 /** Adds a bezier curve background to a view. */
 @Composable
-fun WavyBackground(backgroundColorResId: Int) {
+fun WavyBackgroundView(backgroundColorResId: Int) {
   val whiteColor = colorResource(backgroundColorResId)
   Canvas(
     modifier = Modifier.fillMaxSize(),
@@ -22,17 +22,21 @@ fun WavyBackground(backgroundColorResId: Int) {
       val wavyPath = Path().apply {
         moveTo(0f, canvasHeight)
 
-        val amplitude = 40.dp.toPx() // Height of the waves.
+        val amplitude = 50.dp.toPx() // Height of the waves.
 
-        // Waves start at ~55% of the screen height.
-        val wavesStartY = canvasHeight * 0.55f
+        // Waves start at ~50% of the screen height.
+        val wavesStartY = canvasHeight * 0.5f
         lineTo(0f, wavesStartY)
 
         var x = 0f
-        val stepX = canvasWidth / 100
+        val numberOfPoints = 500
+        val stepX = canvasWidth / numberOfPoints
+
+        val numberOfWaves = 2f
+        val waveFrequencyFactor = (2f * Math.PI / canvasWidth) * numberOfWaves
 
         while (x <= canvasWidth) {
-          val y = wavesStartY - amplitude * sin(x * (2f * Math.PI / canvasWidth)).toFloat()
+          val y = wavesStartY - amplitude * sin(x * (waveFrequencyFactor)).toFloat()
           lineTo(x, y)
           x += stepX
         }

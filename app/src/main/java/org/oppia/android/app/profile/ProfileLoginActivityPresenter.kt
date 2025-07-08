@@ -21,6 +21,8 @@ private const val TAG_PROFILE_LOGIN_FRAGMENT = "TAG_PROFILE_LOGIN_FRAGMENT"
 /** The presenter for [ProfileLoginActivity]. */
 @ActivityScope
 class ProfileLoginActivityPresenter @Inject constructor(private val activity: AppCompatActivity) {
+  private val fragmentManager = activity.supportFragmentManager
+
   /** Creates the view for [ProfileLoginActivity]. */
   fun handleOnCreate(profileId: ProfileId) {
     activity.setContentView(R.layout.profile_login_activity)
@@ -30,7 +32,7 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
         arguments = Bundle().also { it.decorateWithUserProfileId(profileId) }
       }
 
-      activity.supportFragmentManager.beginTransaction()
+      fragmentManager.beginTransaction()
         .add(
           R.id.profile_login_fragment_placeholder, profileLoginFragment, TAG_PROFILE_LOGIN_FRAGMENT
         )
@@ -40,29 +42,25 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
 
   /** Handles showing the [ResetPinDialogFragment]. */
   fun handleRouteToResetPinDialog(profileId: ProfileId, profileName: String) {
-    (
-      activity
-        .supportFragmentManager
-        .findFragmentByTag(
-          TAG_VALIDATE_ADMIN_PIN_DIALOG
-        ) as DialogFragment
-      ).dismiss()
-    val dialogFragment = ResetPinDialogFragment.newInstance(
-      profileId.internalId,
-      profileName
-    )
-    dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_RESET_PIN_DIALOG)
+    val adminPinDialog = fragmentManager.findFragmentByTag(TAG_VALIDATE_ADMIN_PIN_DIALOG)
+      as DialogFragment
+    adminPinDialog.dismiss()
+
+    fragmentManager.executePendingTransactions()
+
+    val resetPinDialog = ResetPinDialogFragment.newInstance(profileId.internalId, profileName)
+
+    resetPinDialog.showNow(fragmentManager, TAG_ADMIN_RESET_PIN_DIALOG)
   }
 
   /** Handles showing the reset pin success dialog. */
   fun handleRouteToSuccessDialog() {
-    (
-      activity
-        .supportFragmentManager
-        .findFragmentByTag(
-          TAG_ADMIN_RESET_PIN_DIALOG
-        ) as DialogFragment
-      ).dismiss()
+    val resetPinDialog = fragmentManager.findFragmentByTag(TAG_ADMIN_RESET_PIN_DIALOG)
+      as DialogFragment
+    resetPinDialog.dismiss()
+
+    fragmentManager.executePendingTransactions()
+
     showSuccessDialog()
   }
 
@@ -75,7 +73,7 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
   }
 
   private fun getProfileLoginFragment(): ProfileLoginFragment? {
-    return activity.supportFragmentManager.findFragmentByTag(
+    return fragmentManager.findFragmentByTag(
       TAG_PROFILE_LOGIN_FRAGMENT
     ) as? ProfileLoginFragment
   }

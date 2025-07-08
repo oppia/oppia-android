@@ -31,8 +31,8 @@ class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     adminIntroActivityPresenter.handleOnCreate(profileId, profileType)
   }
 
-  /** Returns a new [Intent] to open an [AdminIntroActivity] with the specified params. */
   companion object {
+    /** Returns a new [Intent] to open an [AdminIntroActivity] with the specified params. */
     fun createAdminIntroActivityIntent(context: Context): Intent {
       return Intent(context, AdminIntroActivity::class.java).apply {
         decorateWithScreenName(ADMIN_INTRO_ACTIVITY)
