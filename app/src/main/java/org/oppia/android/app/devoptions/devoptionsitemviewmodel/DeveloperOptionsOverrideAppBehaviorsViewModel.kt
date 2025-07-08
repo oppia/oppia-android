@@ -37,7 +37,7 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   fun onFeatureFlagsClicked() {
     featureFlagsListener.routeToFeatureFlags()
   }
-
+  
   /** Routes the user to [PlatformParametersActivity] for viewing and modifying platform parameters. */
   fun onPlatformParametersClicked() {
     platformParametersListener.routeToPlatformParameters()

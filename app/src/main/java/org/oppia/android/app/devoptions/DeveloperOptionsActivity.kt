@@ -86,7 +86,7 @@ class DeveloperOptionsActivity :
       FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
     )
   }
-
+  
   override fun routeToPlatformParameters() {
     startActivity(
       PlatformParametersActivity.createPlatformParametersActivityIntent(this)
