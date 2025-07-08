@@ -92,6 +92,10 @@ class CreateProfileFragmentPresenter @Inject constructor(
       )
     }
 
+    binding.onboardingStepsCount?.text = if (profileType == ProfileType.SOLE_LEARNER)
+      appLanguageResourceHandler.getStringInLocale(R.string.onboarding_step_count_three)
+    else appLanguageResourceHandler.getStringInLocale(R.string.onboarding_step_count_four)
+
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
@@ -167,7 +171,6 @@ class CreateProfileFragmentPresenter @Inject constructor(
       when (result) {
         is AsyncResult.Success -> {
           createProfileViewModel.hasErrorMessage.set(false)
-
           val intent = if (profileType == ProfileType.SOLE_LEARNER) {
             val params = IntroActivityParams.newBuilder()
               .setProfileNickname(profileName)

@@ -201,7 +201,7 @@ class AdminIntroFragmentTest {
   }
 
   @Test
-  fun testIntroFragment_continueButtonClicked_launchesProfileChooserActivity() {
+  fun testIntroFragment_continueButtonClicked_launchesCreateProfileActivity() {
     scenario = launch(AdminIntroActivity::class.java)
 
     composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
@@ -210,7 +210,7 @@ class AdminIntroFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-    intended(hasComponent(ProfileChooserActivity::class.java.name))
+    intended(hasComponent(CreateProfileActivity::class.java.name))
   }
 
   @Test

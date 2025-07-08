@@ -31,7 +31,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
@@ -123,6 +122,8 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.hamcrest.CoreMatchers.allOf
+import org.oppia.android.app.profile.PinSetupActivity
 
 /** Tests for [CreateProfileFragment]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -183,7 +184,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_stepCountText_isDisplayed() {
+  fun testFragment_learnerOnboardingFlow_stepCountThreeText_isDisplayed() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.onboarding_steps_count))
         .check(
@@ -200,9 +201,26 @@ class CreateProfileFragmentTest {
         )
     }
   }
+  fun testFragment_supervisorOnboardingFlow_stepCountFourText_isDisplayed() {
+    launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(
+          matches(
+            allOf(
+              isDisplayed(),
+              withText(
+                context.getString(
+                  R.string.onboarding_step_count_four
+                )
+              )
+            )
+          )
+        )
+    }
+  }
 
   @Test
-  fun testFragment_continueButtonClicked_filledNickname_launchesLearnerIntroScreen() {
+  fun testLearnerOnboarding_continueClicked_filledNickname_launchesLearnerIntroScreen() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
@@ -231,7 +249,29 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  @DisableAccessibilityChecks
+  fun testSupervisorOnboarding_continueClicked_filledNickname_launchesPinCreationScreen() {
+    launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(
+        allOf(
+          hasComponent(PinSetupActivity::class.java.name),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
+        )
+      )
+    }
+  }
+
+  @Test
   fun testFragment_continueButtonClicked_filledNickname_doesNotShowErrorText() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
@@ -656,14 +696,14 @@ class CreateProfileFragmentTest {
     return Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent)
   }
 
-  private fun launchNewLearnerProfileActivity():
+  private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
     ActivityScenario<CreateProfileActivity>? {
       val intent = CreateProfileActivity.createProfileActivityIntent(context)
       intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
       intent.putProtoExtra(
         CREATE_PROFILE_PARAMS_KEY,
         CreateProfileActivityParams.newBuilder()
-          .setProfileType(ProfileType.SOLE_LEARNER)
+          .setProfileType(profileType)
           .build()
       )
       val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
