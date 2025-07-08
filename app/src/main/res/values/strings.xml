@@ -732,11 +732,11 @@
 
   <!-- Pin Setup Activity -->
   <string name="pin_setup_activity_title">Create Admin PIN</string>
-  <string name="pin_setup_activity_header">Set up a unique PIN to protect the admin controls.</string>
-  <string name="pin_setup_activity_message">Administrators are able to control content downloads and manage all profiles on this device.</string>
+  <string name="pin_setup_activity_header">Set up a unique PIN to protect the admin controls</string>
+  <string name="pin_setup_activity_message">Administrators are able to control content downloads and manage all profiles on this device</string>
   <string name="pin_setup_activity_enter_pin_label">Enter a 5-Digit PIN</string>
   <string name="pin_setup_activity_confirm_pin_label">Confirm the 5-Digit PIN</string>
-  <string name="pin_setup_activity_blank_error">Type a 5-Digit PIN.</string>
-  <string name="pin_setup_activity_length_error">Your PIN should be 5 digits long.</string>
-  <string name="pin_setup_activity_mismatch_error">Please make sure that both PINs match.</string>
+  <string name="pin_setup_activity_blank_error">Type a 5-Digit PIN</string>
+  <string name="pin_setup_activity_length_error">Your PIN should be 5 digits long</string>
+  <string name="pin_setup_activity_mismatch_error">Please make sure that both PINs match</string>
 </resources>
