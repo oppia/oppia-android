@@ -331,7 +331,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsLocalSyncStatus() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenSyncStatus() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -405,7 +405,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsLocalSyncStatus() {
+  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenSyncStatus() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, false)
