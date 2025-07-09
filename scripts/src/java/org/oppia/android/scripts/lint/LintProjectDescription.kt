@@ -601,13 +601,15 @@ private class DependencyResolver(
 /** Object for resolving Bazel paths to actual file system locations. */
 private class PathResolver(
   private val repoRoot: File,
-  private val bazelClient: BazelClient,
+  bazelClient: BazelClient,
   private val cacheManager: CacheManager,
   private val logger: LintLogger
 ) {
   companion object {
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
+    private const val BAZEL_EXECUTION_ROOT_KEY = "execution_root"
   }
+  private val bazelInfo = bazelClient.retrieveBazelInfo()
 
   /** Resolves a Bazel path to an absolute file system path. */
   fun resolveBazelPath(path: String): String? =
@@ -615,6 +617,7 @@ private class PathResolver(
       val resolvedPath = when {
         File(path).isAbsolute -> path
         path.startsWith("external/") -> resolveExternalPath(path)
+        path.startsWith("bazel-out/") -> resolveBazelOutPath(path)
         else -> File(repoRoot, path).absolutePath
       }
 
@@ -627,8 +630,16 @@ private class PathResolver(
       }
     }
 
+  private fun resolveBazelOutPath(path: String): String {
+    val executionRoot = bazelInfo[BAZEL_EXECUTION_ROOT_KEY]
+      ?: throw IllegalStateException(
+        "Could not retrieve Bazel $BAZEL_EXECUTION_ROOT_KEY for path: $path"
+      )
+
+    return File(executionRoot, path).absolutePath
+  }
+
   private fun resolveExternalPath(path: String): String {
-    val bazelInfo = bazelClient.retrieveBazelInfo()
     val outputBase = bazelInfo[BAZEL_OUTPUT_BASE_KEY]
       ?: throw IllegalStateException(
         "Could not retrieve Bazel $BAZEL_OUTPUT_BASE_KEY for path: $path"
