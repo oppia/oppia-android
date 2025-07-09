@@ -88,6 +88,8 @@ Example: `bazel run //scripts:android_lint_check -- $(pwd)`
 - `[--group_by_severity]`: Optional flag to group issues by severity level
 - `[--processTimeout=<minutes>]`: Optional process timeout in minutes (defaults to 10 minutes)
 
+Example: `bazel run //scripts:android_lint_check -- $(pwd) scripts/assets/android_lint_exemptions.pb --group_by_severity --processTimeout=20`
+
 The script can also be analyzed through the **Static Checks CI workflow** for automated code quality monitoring in continuous integration.
 
 ## Understanding the Lint Report
@@ -309,6 +311,11 @@ private val issueIdMapping = mapOf(
 # Exemption File Management
 
 The Android Lint Analysis Tool includes intelligent exemption file management that helps maintain clean and accurate exemption configurations. During analysis, the script performs validation of the exemption file to ensure it contains only relevant and necessary exemptions.
+
+## When to add an exemption
+New exemptions should be added to the `android_lint_exemptions.textproto` file when:
+- If a particular lint issue in a file is not applicable or relevant to the current codebase
+- A lint issue is a false positive and does not require fixing hence requiring a suppression
 
 ## Redundant Exemption Detection
 
