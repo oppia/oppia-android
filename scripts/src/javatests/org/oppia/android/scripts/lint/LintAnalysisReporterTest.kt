@@ -900,7 +900,7 @@ class LintAnalysisReporterTest {
   }
 
   @Test
-  fun testFindRedundantExemptions_integrationTest_complexScenario() {
+  fun testFindRedundantExemptions_mixedValidAndRedundantExemptions_returnsCorrectRedundancies() {
     val issues = listOf(warningIssue, errorIssue)
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
@@ -1041,7 +1041,7 @@ class LintAnalysisReporterTest {
   }
 
   @Test
-  fun testFilterExemptedIssues_integrationTest_complexScenario() {
+  fun testFilterExemptedIssues_withExemptions_returnsNonExemptedIssues() {
     val issue1 = warningIssue.copy(
       locations = listOf(
         LintLocation(
