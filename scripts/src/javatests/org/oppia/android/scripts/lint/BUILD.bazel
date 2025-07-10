@@ -8,6 +8,7 @@ kt_jvm_test(
     name = "AndroidLintRunnerTest",
     srcs = ["AndroidLintRunnerTest.kt"],
     deps = [
+        "//scripts/src/java/org/oppia/android/scripts/common/testing:fake_command_executor",
         "//scripts/src/java/org/oppia/android/scripts/lint:android_lint_runner",
         "//scripts/src/java/org/oppia/android/scripts/testing:test_bazel_workspace",
         "//testing:assertion_helpers",

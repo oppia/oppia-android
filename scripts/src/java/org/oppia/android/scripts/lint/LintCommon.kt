@@ -46,9 +46,62 @@ data class ModuleConfig(
   val dependencies: List<String>,
   val aarFiles: List<AarFileInfo>,
   val jarFiles: List<String>,
+  val annotationZips: List<String>,
   val lintCheckJars: List<String>,
-  val lintModelDir: File? = null
-)
+  val lintModelDir: File? = null,
+  val partialResultsDir: File,
+  val proGuardFiles: List<String>
+) {
+  init {
+    require(name.isNotBlank()) { "Module name cannot be blank" }
+
+    require(partialResultsDir.canWrite() || partialResultsDir.mkdirs()) {
+      "Cannot create or write to partialResultsDir: ${partialResultsDir.absolutePath}"
+    }
+
+    val missingProguardFiles = proGuardFiles.filterNot { File(it).exists() }
+    if (missingProguardFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "ProGuard files do not exist: ${missingProguardFiles.joinToString(", ")}"
+      )
+    }
+
+    val missingAarFiles = aarFiles.filterNot { File(it.originalPath).exists() }
+    if (missingAarFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "AAR files do not exist: ${missingAarFiles.joinToString(", ") { it.originalPath }}"
+      )
+    }
+
+    val missingResourceDirs = resourceDirs.filterNot { File(it).exists() && File(it).isDirectory }
+    if (missingResourceDirs.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "Missing or invalid resource directories: ${missingResourceDirs.joinToString(", ")}"
+      )
+    }
+
+    val missingSrcFiles = srcFiles.filterNot { File(it).exists() }
+    if (missingSrcFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "Missing source files: ${missingSrcFiles.joinToString(", ")}"
+      )
+    }
+
+    val missingTestFiles = testFiles.filterNot { File(it).exists() }
+    if (missingTestFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "Missing test files: ${missingTestFiles.joinToString(", ")}"
+      )
+    }
+
+    val missingJarFiles = jarFiles.filterNot { File(it).exists() }
+    if (missingJarFiles.isNotEmpty()) {
+      throw IllegalArgumentException(
+        "Missing JAR files: ${missingJarFiles.joinToString(", ")}"
+      )
+    }
+  }
+}
 
 /** Information about an AAR file and its extraction location. */
 data class AarFileInfo(
