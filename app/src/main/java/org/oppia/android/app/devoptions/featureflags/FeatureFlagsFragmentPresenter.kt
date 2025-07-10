@@ -131,7 +131,4 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       }
     }
   }
-
-  private fun handleBackPress() {
-  }
 }
