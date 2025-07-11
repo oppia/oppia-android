@@ -199,7 +199,7 @@ class AndroidLintRunner(
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
-    
+
     reportLintIssues()
   }
 
