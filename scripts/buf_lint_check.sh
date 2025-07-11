@@ -32,6 +32,8 @@ populate_jar_config_file_paths() {
 
   if [ "$1" = "Linux" ]; then
     buf_file_name="buf-Linux-x86_64"
+  elif [ "$1" = "Darwin" ] && [ "$(uname -m)" = "arm64" ]; then
+    buf_file_name="buf-Darwin-arm64"
   else
     buf_file_name="buf-Darwin-x86_64"
   fi
