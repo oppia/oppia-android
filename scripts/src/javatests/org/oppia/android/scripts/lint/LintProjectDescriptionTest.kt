@@ -67,6 +67,7 @@ class LintProjectDescriptionTest {
     assertThat(result.name).isEqualTo("lint-project-description.xml")
 
     val xmlContent = result.readText()
+
     assertThat(xmlContent).contains("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
     assertThat(xmlContent).contains("<project>")
     assertThat(xmlContent).contains("</project>")
