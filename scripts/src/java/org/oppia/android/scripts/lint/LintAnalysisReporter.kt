@@ -143,6 +143,7 @@ class LintAnalysisReporter {
       "NewApi" to LintIssueId.NEW_API,
       "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
       "ObsoleteSdkInt" to LintIssueId.OBSOLETE_SDK_INT,
+      "OldTargetApi" to LintIssueId.OLD_TARGET_API,
       "Overdraw" to LintIssueId.OVERDRAW,
       "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
       "Registered" to LintIssueId.REGISTERED,
