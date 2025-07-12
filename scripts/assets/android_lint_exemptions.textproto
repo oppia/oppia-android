@@ -11,6 +11,10 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/LogoutDialogFragment.kt"
+  lint_issue_id: USE_REQUIRE_INSTEAD_OF_GET
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ControlButtonsViewModel.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
@@ -328,6 +332,10 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyActivity.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyFragment.kt"
+  lint_issue_id: USE_REQUIRE_INSTEAD_OF_GET
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyViewModel.kt"
@@ -1266,6 +1274,7 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_activity.xml"
   lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: USE_APP_TINT
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_app_information_view.xml"
@@ -1290,6 +1299,7 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout-sw600dp/help_activity.xml"
   lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: USE_APP_TINT
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout-sw600dp/option_activity.xml"
@@ -1345,6 +1355,10 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout-w600dp/survey_welcome_dialog_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/add_profile_activity.xml"
+  lint_issue_id: USE_APP_TINT
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/administrator_controls_account_actions_view.xml"
@@ -1499,6 +1513,7 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drag_drop_interaction_items.xml"
   lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USE_APP_TINT
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drag_drop_single_item.xml"
@@ -1511,6 +1526,7 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drawer_fragment.xml"
   lint_issue_id: USELESS_LEAF
+  lint_issue_id: USE_APP_TINT
   lint_issue_id: USE_COMPOUND_DRAWABLES
 }
 android_lint_exemption: {
@@ -2399,6 +2415,14 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagBindingModule.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerDebugImpl.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
