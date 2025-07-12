@@ -1,9 +1,13 @@
 package org.oppia.android.scripts.lint
 
+import org.oppia.android.scripts.proto.AndroidLintExemption
+import org.oppia.android.scripts.proto.AndroidLintExemptions
+import org.oppia.android.scripts.proto.LintIssueId
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.NodeList
 import java.io.File
+import java.io.FileInputStream
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.MessageDigest
@@ -117,7 +121,61 @@ class LintAnalysisReporter {
     private const val MAX_FILE_SIZE = 50 * 1024 * 1024 // 50MB
     private const val GROUP_SEPARATOR_LENGTH = 80
     private const val ISSUE_SEPARATOR_LENGTH = 60
-    private const val LINT_ERROR_ID = "LintError"
+
+    // Needs to be updated if new lint issues are added.
+    private val issueIdMapping: Map<String, LintIssueId> = mapOf(
+      "LintError" to LintIssueId.LINT_ERROR,
+      "AppBundleLocaleChanges" to LintIssueId.APP_BUNDLE_LOCALE_CHANGES,
+      "Autofill" to LintIssueId.AUTOFILL,
+      "BackButton" to LintIssueId.BACK_BUTTON,
+      "CustomSplashScreen" to LintIssueId.CUSTOM_SPLASH_SCREEN,
+      "DuplicateStrings" to LintIssueId.DUPLICATE_STRINGS,
+      "GradleOverrides" to LintIssueId.GRADLE_OVERRIDES,
+      "ImpliedQuantity" to LintIssueId.IMPLIED_QUANTITY,
+      "InconsistentLayout" to LintIssueId.INCONSISTENT_LAYOUT,
+      "KeyboardInaccessibleWidget" to LintIssueId.KEYBOARD_INACCESSIBLE_WIDGET,
+      "LabelFor" to LintIssueId.LABEL_FOR,
+      "LockedOrientationActivity" to LintIssueId.LOCKED_ORIENTATION_ACTIVITY,
+      "MergeRootFrame" to LintIssueId.MERGE_ROOT_FRAME,
+      "MissingDefaultResource" to LintIssueId.MISSING_DEFAULT_RESOURCE,
+      "MissingTranslation" to LintIssueId.MISSING_TRANSLATION,
+      "MissingVersion" to LintIssueId.MISSING_VERSION,
+      "NewApi" to LintIssueId.NEW_API,
+      "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
+      "ObsoleteSdkInt" to LintIssueId.OBSOLETE_SDK_INT,
+      "Overdraw" to LintIssueId.OVERDRAW,
+      "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
+      "Registered" to LintIssueId.REGISTERED,
+      "RtlSymmetry" to LintIssueId.RTL_SYMMETRY,
+      "SelectableText" to LintIssueId.SELECTABLE_TEXT,
+      "StringFormatCount" to LintIssueId.STRING_FORMAT_COUNT,
+      "SupportAnnotationUsage" to LintIssueId.SUPPORT_ANNOTATION_USAGE,
+      "SuspiciousIndentation" to LintIssueId.SUSPICIOUS_INDENTATION,
+      "SwitchIntDef" to LintIssueId.SWITCH_INT_DEF,
+      "SyntheticAccessor" to LintIssueId.SYNTHETIC_ACCESSOR,
+      "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
+      "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
+      "Typos" to LintIssueId.TYPOS,
+      "UnknownIdInLayout" to LintIssueId.UNKNOWN_ID_IN_LAYOUT,
+      "UnknownNullness" to LintIssueId.UNKNOWN_NULLNESS,
+      "UnusedAttribute" to LintIssueId.UNUSED_ATTRIBUTE,
+      "UnusedIds" to LintIssueId.UNUSED_IDS,
+      "UnusedResources" to LintIssueId.UNUSED_RESOURCES,
+      "UseAppTint" to LintIssueId.USE_APP_TINT,
+      "UseCompoundDrawables" to LintIssueId.USE_COMPOUND_DRAWABLES,
+      "UseRequireInsteadOfGet" to LintIssueId.USE_REQUIRE_INSTEAD_OF_GET,
+      "UselessLeaf" to LintIssueId.USELESS_LEAF,
+      "UselessParent" to LintIssueId.USELESS_PARENT,
+      "VectorPath" to LintIssueId.VECTOR_PATH,
+      "VectorRaster" to LintIssueId.VECTOR_RASTER
+    )
+    private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associateBy(
+      keySelector = { it.value },
+      valueTransform = { it.key }
+    )
+
+    private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
+    private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
   }
 
   /**
@@ -175,7 +233,129 @@ class LintAnalysisReporter {
   }
 
   /**
+   * Filters out exempted lint issues from the provided list.
+   *
+   * @param issues List of all lint issues
+   * @param exemptions List of exemptions to apply
+   * @param repoRoot Root directory of the repository for relative path calculation
+   * @return List of issues after filtering out exemptions
+   */
+  fun filterExemptedIssues(
+    issues: List<LintIssue>,
+    exemptions: List<AndroidLintExemption>,
+    repoRoot: File
+  ): List<LintIssue> {
+    val exemptionMap = buildExemptionMap(exemptions)
+
+    return issues.filter { issue ->
+      !isIssueExempted(issue, exemptionMap, repoRoot)
+    }
+  }
+
+  private fun buildExemptionMap(
+    exemptions: List<AndroidLintExemption>
+  ): Map<String, Set<LintIssueId>> {
+    if (exemptions.isEmpty()) {
+      return emptyMap()
+    }
+
+    val invalidExemption = exemptions.firstOrNull {
+      LintIssueId.ISSUE_UNSPECIFIED in it.lintIssueIdList
+    }
+    require(invalidExemption == null) {
+      "Exemption for file '${invalidExemption!!.exemptedFilePath}' contains invalid IssueId."
+    }
+
+    return exemptions
+      .filter { it.exemptedFilePath.isNotBlank() }
+      .groupBy { it.exemptedFilePath }
+      .mapValues { (_, exemptionsForFile) ->
+        exemptionsForFile.flatMap { it.lintIssueIdList }.toSet()
+      }
+  }
+
+  /**
+   * Checks if a lint issue is exempted based on the exemption map.
+   *
+   * @param issue The lint issue to check
+   * @param exemptionMap Map of file paths to exempted issue IDs
+   * @param repoRoot Root directory of the repository
+   * @return true if the issue is exempted, false otherwise
+   */
+  private fun isIssueExempted(
+    issue: LintIssue,
+    exemptionMap: Map<String, Set<LintIssueId>>,
+    repoRoot: File
+  ): Boolean {
+    val issueIdEnum = getLintIssueIdFromString(issue.id)
+
+    return issue.locations.any { location ->
+      val relativePath = File(location.file).toRelativeString(repoRoot)
+      val exemptedIssues = exemptionMap[relativePath]
+      exemptedIssues?.contains(issueIdEnum) == true
+    }
+  }
+
+  /**
+   * Maps lint issue ID string to LintIssueId enum.
+   *
+   * @param issueId The string ID of the lint issue
+   * @return The corresponding LintIssueId enum
+   * @throws IllegalArgumentException if the issue ID is not found in the enum mapping
+   */
+  private fun getLintIssueIdFromString(issueId: String): LintIssueId {
+    return issueIdMapping[issueId]
+      ?: throw IllegalArgumentException(
+        "Unknown lint issue ID '$issueId' found during analysis. " +
+          "Please add this issue ID to the LintIssueId enum in the proto definition " +
+          "and update the issueIdMapping in LintAnalysisReporter. " +
+          "Available issue IDs: ${issueIdMapping.keys.sorted().joinToString(", ")}"
+      )
+  }
+
+  /**
+   * Finds redundant exemptions that don't correspond to any actual issues.
+   *
+   * @param issues List of all lint issues
+   * @param exemptions List of exemptions
+   * @param repoRoot Root directory of the repository
+   * @return Map of file paths to list of redundant issue IDs for that file
+   */
+  fun findRedundantExemptions(
+    issues: List<LintIssue>,
+    exemptions: List<AndroidLintExemption>,
+    repoRoot: File
+  ): Map<String, List<String>> {
+    val actualIssuesMap = mutableMapOf<String, MutableSet<LintIssueId>>()
+
+    issues.forEach { issue ->
+      val issueIdEnum = getLintIssueIdFromString(issue.id)
+      issue.locations.forEach { location ->
+        val relativePath = File(location.file).toRelativeString(repoRoot)
+        actualIssuesMap.getOrPut(relativePath) { mutableSetOf() }.add(issueIdEnum)
+      }
+    }
+
+    val redundantMap = mutableMapOf<String, MutableList<String>>()
+
+    exemptions.forEach { exemption ->
+      val filePath = exemption.exemptedFilePath
+      val actualIssuesForFile = actualIssuesMap[filePath] ?: emptySet()
+
+      exemption.lintIssueIdList.forEach { exemptedIssueId ->
+        if (!actualIssuesForFile.contains(exemptedIssueId)) {
+          val issueIdString = issueIdToString[exemptedIssueId] ?: "Unknown"
+          redundantMap.getOrPut(filePath) { mutableListOf() }.add(issueIdString)
+        }
+      }
+    }
+
+    return redundantMap.mapValues { (_, issueIds) -> issueIds.sorted() }
+  }
+
+  /**
    * Prints the lint issues based on the specified grouping strategy.
+   *
    * @param issues List of LintIssue objects to print
    * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
    */
@@ -190,6 +370,51 @@ class LintAnalysisReporter {
     }
 
     printFinalResult(issues)
+  }
+
+  /**
+   * Loads the Android Lint exemptions from a proto binary file.
+   *
+   * @param pathToProtoBinary Path to the exemptions proto binary file
+   * @return AndroidLintExemptions proto object
+   */
+  fun loadExemptionsProto(
+    pathToProtoBinary: String = PROTO_BINARY_FILE_PATH
+  ): AndroidLintExemptions {
+    val protoBinaryFile = File(pathToProtoBinary)
+
+    return try {
+      FileInputStream(protoBinaryFile).use { inputStream ->
+        AndroidLintExemptions.parseFrom(inputStream)
+      }
+    } catch (e: Exception) {
+      throw IllegalStateException("Failed to parse exemption proto file: $pathToProtoBinary", e)
+    }
+  }
+
+  /**
+   * Logs redundant exemptions grouped by file paths.
+   *
+   * @param redundantExemptions Map of file paths to redundant issue IDs
+   * @param exemptionFilePath Path to the exemption file
+   */
+  fun logRedundantExemptions(
+    redundantExemptions: Map<String, List<String>>,
+    exemptionFilePath: String = EXEMPTIONS_FILE_PATH
+  ) {
+    if (redundantExemptions.isNotEmpty()) {
+      println("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
+      println("Please remove them from $exemptionFilePath")
+      println()
+
+      redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
+        println("${BOLD}File: $filePath$RESET")
+        issueIds.forEach { issueId ->
+          println("  - $issueId")
+        }
+        println()
+      }
+    }
   }
 
   /** Prints a summary of issues grouped by severity. */
@@ -334,8 +559,9 @@ class LintAnalysisReporter {
   private fun printFinalResult(issues: List<LintIssue>) {
     val criticalIssues = issues.filter { it.severity.isCritical() }
 
-    // TODO(#5734): Replace LintError ID with LintIssueId Enum from the exemption set up.
-    val hasInternalLintIssues = criticalIssues.any { it.id == LINT_ERROR_ID }
+    val hasInternalLintIssues = criticalIssues.any {
+      it.id == issueIdToString[LintIssueId.LINT_ERROR]
+    }
 
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
     when {

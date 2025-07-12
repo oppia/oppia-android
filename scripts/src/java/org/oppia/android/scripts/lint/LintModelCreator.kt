@@ -69,7 +69,6 @@ class LintModelCreator(
     }
     val modelPath = modelDir.toPath().createDirectories()
     val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
-
     val modulePath = File(repoRoot, moduleConfig.name).toPath().absolute()
 
     generateModuleXml(
@@ -274,7 +273,9 @@ class LintModelCreator(
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
 
     val packageName = escapeXmlAttribute(rawPackageName)
+
     val proguardAttribute = createProguardAttribute(moduleConfig.name)
+
     val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
     )
