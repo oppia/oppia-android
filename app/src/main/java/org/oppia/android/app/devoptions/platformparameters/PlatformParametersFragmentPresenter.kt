@@ -188,6 +188,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (platformParameterStates.containsKey(model.platformParameterId)) {
       model.isChecked.set(platformParameterStates[model.platformParameterId]?.boolean)
     }
+
     model.onPlatformParameterToggledCallback = { id, value ->
       platformParameterStates[id] = PlatformParameterValue.newBuilder()
         .setBoolean(value)
