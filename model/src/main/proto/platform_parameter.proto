@@ -287,3 +287,13 @@ message OverriddenFeatureFlag {
   // The local value which is set by the developer.
   bool overridden_value = 2;
 }
+
+// Corresponds to a developer override of a platform parameter.
+message OverriddenPlatformParameter {
+  //  The unique ID of the overridden platform parameter which corresponds to a
+  //  PlatformParameterDefintion
+  PlatformParameterId id = 1;
+
+  // The overridden value of the platform parameter.
+  PlatformParameterValue overridden_value = 2;
+}
