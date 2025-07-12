@@ -35,15 +35,7 @@ class LogoutDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
-        val intent = try {
-          ProfileChooserActivity.createProfileChooserActivity(requireActivity())
-        } catch (e: IllegalStateException) {
-          throw IllegalStateException(
-            "LogoutDialogFragment: requireActivity() failed" +
-              " because the fragment was not attached. Cannot start ProfileChooserActivity.",
-            e
-          )
-        }
+        val intent = ProfileChooserActivity.createProfileChooserActivity(requireActivity())
         startActivity(intent)
       }.create()
   }

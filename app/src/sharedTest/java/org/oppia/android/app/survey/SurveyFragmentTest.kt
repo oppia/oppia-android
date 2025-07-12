@@ -565,8 +565,7 @@ class SurveyFragmentTest {
         scenario.onActivity { activity ->
           val fragmentTransaction = activity.supportFragmentManager.beginTransaction()
           fragmentTransaction.add(R.id.survey_fragment_placeholder, fragment, "test_fragment")
-          fragmentTransaction.commit()
-          activity.supportFragmentManager.executePendingTransactions()
+          fragmentTransaction.commitNow()
         }
       }
     }
