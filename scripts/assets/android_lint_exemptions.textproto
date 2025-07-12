@@ -1,21 +1,42 @@
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/profile_selection_fragment.xml"
-  lint_issue_id: INCONSISTENT_LAYOUT
+  exempted_file_path: "app/src/main/AndroidManifest.xml"
+  lint_issue_id: GRADLE_OVERRIDES
+  lint_issue_id: LOCKED_ORIENTATION_ACTIVITY
+  lint_issue_id: MISSING_VERSION
+  lint_issue_id: OLD_TARGET_API
+  lint_issue_id: REDUNDANT_LABEL
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-land/dimens.xml"
-  lint_issue_id: MISSING_DEFAULT_RESOURCE
-  lint_issue_id: UNUSED_RESOURCES
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-sw600dp-land/dimens.xml"
-  lint_issue_id: MISSING_DEFAULT_RESOURCE
-  lint_issue_id: UNUSED_RESOURCES
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/LogoutDialogFragment.kt"
+  lint_issue_id: USE_REQUIRE_INSTEAD_OF_GET
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values/styles.xml"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ControlButtonsViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
   lint_issue_id: NEW_API
-  lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/application/alpha/AlphaOppiaApplication.kt"
@@ -30,28 +51,641 @@ android_lint_exemption: {
   lint_issue_id: REGISTERED
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/SplashTestActivity.kt"
-  lint_issue_id: REGISTERED
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/CircularProgressIndicatorAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/ColorBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/ImageViewBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/ViewBindingAdapters.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeFragmentPresenter.kt"
+  lint_issue_id: NOTIFY_DATA_SET_CHANGED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedFragmentPresenter.kt"
+  lint_issue_id: NOTIFY_DATA_SET_CHANGED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedViewModel.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedFragmentPresenter.kt"
+  lint_issue_id: NOTIFY_DATA_SET_CHANGED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedViewModel.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParameterItemViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionDialogFragmentPresenter.kt"
   lint_issue_id: SUSPICIOUS_INDENTATION
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenterV1.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragment.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageFragment.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationActivityPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
+  lint_issue_id: NOTIFY_DATA_SET_CHANGED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StateViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueInteractionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/TextInputViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminPinViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminSettingsViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserFragmentPresenter.kt"
+  lint_issue_id: SWITCH_INT_DEF
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ResetPinViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressHeaderViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt"
+  lint_issue_id: NOTIFY_DATA_SET_CHANGED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
+  lint_issue_id: CUSTOM_SPLASH_SCREEN
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivityPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/story/StoryFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyFragment.kt"
+  lint_issue_id: USE_REQUIRE_INSTEAD_OF_GET
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/FreeFormItemsViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/MarketFitItemsViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/NpsItemsViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/UserTypeItemsViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestFragmentPresenter.kt"
+  lint_issue_id: SUPPORT_ANNOTATION_USAGE
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/CircularProgressIndicatorAdaptersTestViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/SplashTestActivity.kt"
+  lint_issue_id: REGISTERED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/activity/TestActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/TopicFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/info/TopicInfoViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivity.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt"
+  lint_issue_id: NOTIFY_DATA_SET_CHANGED
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt"
+  lint_issue_id: UNKNOWN_NULLNESS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/color-sw600dp-land/component_color_shared_tab_icon_color_selector.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/color-sw600dp-port/component_color_shared_tab_icon_color_selector.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/color/component_color_shared_shared_interaction_selector.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/color/component_color_shared_survey_option_selector.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/color/component_color_shared_tab_icon_color_selector.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable-ldrtl/bottom_left_rounded_rect_coming_soon_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable-ldrtl/hints_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable-nodpi/review_placeholder.png"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/audio_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/audio_language_availability_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/audio_seekbar_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/bottom_left_rounded_rect_coming_soon_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/bottom_rounded_rect_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/chapter_dark_green_bg_with_bright_green_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/chapter_white_bg_with_bright_green_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/classroom_label_text_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/congratulations_text_background_shadow.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/content_blue_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/create_profile_picture_icon.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/dashed_divider.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/divider.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/divider_dotted.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/drag_drop_white_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/dropdown_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/edit_text_black_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/edit_text_white_background_error_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/edit_text_white_background_with_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/full_oppia_logo.xml"
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/general_item_background_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/general_item_background_border_cyan.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/grey_recycler_view_item_decoration_divider.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/hints_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_add.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_add_profile.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_admin_settings_icon_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_admin_settings_icon_grey_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_back_oppia_dark_blue_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_down_grey_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_drop_up_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_forward_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_forward_oppia_dark_blue_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_right_alt_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_right_grey_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_arrow_up_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_audio_lang_24px.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_available_offline_icon_white_12dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_baseline_check_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_baseline_close_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_baseline_content_copy_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_baseline_help_outline_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_baseline_lock_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_bottomsheet.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_check_primary.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_chevron_left.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_chevron_right.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_close_black_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_dot_yellow_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_edit.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_english.xml"
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_file_download_primary_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_green_check.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_help_grey_icon_24dp.xml"
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_hint_bulb_white_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_info_icon_gray_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_keyboard_arrow_down_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_keyboard_arrow_up_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_landscape_onboarding_0.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_RASTER
   lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_landscape_onboarding_0_tablet.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_RASTER
   lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_landscape_onboarding_1.xml"
@@ -76,20 +710,48 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_landscape_onboarding_3.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_RASTER
+  lint_issue_id: UNUSED_RESOURCES
   lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_landscape_onboarding_3_tablet.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_RASTER
+  lint_issue_id: UNUSED_RESOURCES
   lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_language_icon_black_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_language_icon_grey_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_lessons_icon_24dp.xml"
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_merge_icon_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_outline_edit_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_play_circle_filled_white_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_portrait_onboarding_0.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_RASTER
   lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_portrait_onboarding_1.xml"
@@ -104,232 +766,9 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_portrait_onboarding_3.xml"
   lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_revision_icon_24dp.xml"
-  lint_issue_id: UNUSED_ATTRIBUTE
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_upload_photo.xml"
-  lint_issue_id: UNUSED_ATTRIBUTE
   lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/LogoutDialogFragment.kt"
-  lint_issue_id: USE_REQUIRE_INSTEAD_OF_GET
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyFragment.kt"
-  lint_issue_id: USE_REQUIRE_INSTEAD_OF_GET
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/DisplayLocaleImpl.kt"
-  lint_issue_id: APP_BUNDLE_LOCALE_CHANGES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
-  lint_issue_id: CUSTOM_SPLASH_SCREEN
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/AndroidManifest.xml"
-  lint_issue_id: REDUNDANT_LABEL
-  lint_issue_id: GRADLE_OVERRIDES
-  lint_issue_id: LOCKED_ORIENTATION_ACTIVITY
-  lint_issue_id: MISSING_VERSION
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/solution_summary.xml"
-  lint_issue_id: UNKNOWN_ID_IN_LAYOUT
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_baker.xml"
+  lint_issue_id: VECTOR_PATH
   lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_child_with_book.xml"
-  lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_child_with_cupcakes.xml"
-  lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_duck_and_chicken.xml"
-  lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_person_with_pie_chart.xml"
-  lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/splash_page.xml"
-  lint_issue_id: VECTOR_RASTER
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "data/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserFragmentPresenter.kt"
-  lint_issue_id: SWITCH_INT_DEF
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestFragmentPresenter.kt"
-  lint_issue_id: SUPPORT_ANNOTATION_USAGE
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/add_profile_activity.xml"
-  lint_issue_id: USE_APP_TINT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_activity.xml"
-  lint_issue_id: USE_APP_TINT
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/drag_drop_interaction_items.xml"
-  lint_issue_id: USE_APP_TINT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/drawer_fragment.xml"
-  lint_issue_id: USE_APP_TINT
-  lint_issue_id: USE_COMPOUND_DRAWABLES
-  lint_issue_id: USELESS_LEAF
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp/help_activity.xml"
-  lint_issue_id: USE_APP_TINT
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values/strings.xml"
-  lint_issue_id: MISSING_TRANSLATION
-  lint_issue_id: STRING_FORMAT_COUNT
-  lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: DUPLICATE_STRINGS
-  lint_issue_id: TYPOGRAPHY_QUOTES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-pt-rBR/strings.xml"
-  lint_issue_id: TYPOS
-  lint_issue_id: IMPLIED_QUANTITY
-  lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: DUPLICATE_STRINGS
-  lint_issue_id: TYPOGRAPHY_QUOTES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-sw/strings.xml"
-  lint_issue_id: STRING_FORMAT_COUNT
-  lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: DUPLICATE_STRINGS
-  lint_issue_id: TYPOGRAPHY_QUOTES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-ar/strings.xml"
-  lint_issue_id: STRING_FORMAT_COUNT
-  lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: DUPLICATE_STRINGS
-  lint_issue_id: TYPOGRAPHY_DASHES
-  lint_issue_id: TYPOGRAPHY_QUOTES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/BindableAdapter.kt"
-  lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/forcenetworktype/ForceNetworkTypeFragmentPresenter.kt"
-  lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedFragmentPresenter.kt"
-  lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedFragmentPresenter.kt"
-  lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt"
-  lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
-  lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21"
-  lint_issue_id: OBSOLETE_SDK_INT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/pin_password_activity.xml"
-  lint_issue_id: USE_COMPOUND_DRAWABLES
-  lint_issue_id: USELESS_PARENT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/profile_chooser_fragment.xml"
-  lint_issue_id: USE_COMPOUND_DRAWABLES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_chooser_fragment.xml"
-  lint_issue_id: USE_COMPOUND_DRAWABLES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp/profile_chooser_fragment.xml"
-  lint_issue_id: USE_COMPOUND_DRAWABLES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/full_oppia_logo.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_audio_lang_24px.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_english.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_green_check.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_help_grey_icon_24dp.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_language_icon_black_24dp.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_language_icon_grey_24dp.xml"
-  lint_issue_id: VECTOR_PATH
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_lessons_icon_24dp.xml"
-  lint_issue_id: VECTOR_PATH
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_practice_icon_24dp.xml"
@@ -340,195 +779,97 @@ android_lint_exemption: {
   lint_issue_id: VECTOR_PATH
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/learner_otter.xml"
+  exempted_file_path: "app/src/main/res/drawable/ic_refresh_white_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_revision_icon_24dp.xml"
+  lint_issue_id: UNUSED_ATTRIBUTE
   lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_rounded_arrow_up_right.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_settings_grey_48dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_start_over_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_unlink_icon_24.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_upload_photo.xml"
+  lint_issue_id: UNUSED_ATTRIBUTE
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/learner_otter.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: VECTOR_PATH
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_baker.xml"
+  lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_child_with_book.xml"
+  lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_child_with_cupcakes.xml"
+  lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_child_with_fractions_homework.xml"
   lint_issue_id: VECTOR_PATH
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_duck_and_chicken.xml"
+  lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/lesson_thumbnail_graphic_person_with_pie_chart.xml"
+  lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/nps_survey_button_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/nps_survey_button_inactive_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/onboarding_back_button_white_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/otter.xml"
+  lint_issue_id: UNUSED_RESOURCES
   lint_issue_id: VECTOR_PATH
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/parent_teacher_otter.xml"
+  lint_issue_id: UNUSED_RESOURCES
   lint_issue_id: VECTOR_PATH
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/audio_fragment_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/completed_story_list_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/drag_drop_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/font_scale_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/force_network_type_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/lesson_thumbnail_image_view_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/mark_chapters_completed_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/mark_stories_completed_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/mark_topics_completed_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/math_expression_parser_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/my_downloads_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/ongoing_topic_list_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/policies_fragment_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_chooser_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_list_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/splash_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/story_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/text_input_layout_binding_adapters_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/topic_revision_test_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/view_event_logs_activity.xml"
-  lint_issue_id: MERGE_ROOT_FRAME
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/exploration_test_activity.xml"
-  lint_issue_id: OVERDRAW
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/home_test_activity.xml"
-  lint_issue_id: OVERDRAW
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/bottom_rounded_rect_background.xml"
+  exempted_file_path: "app/src/main/res/drawable/previous_next_state_image_view_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values/color_defs.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values/color_palette.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-night/color_palette.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values/component_colors.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/res/values/dimens.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values/dimens.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-sw600dp-port/dimens.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-xhdpi/dimens.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/dropdown_background.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/edit_text_black_border.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_admin_settings_icon_black_24dp.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_admin_settings_icon_grey_24dp.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_arrow_drop_up_black_24dp.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_available_offline_icon_white_12dp.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_bottomsheet.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_edit.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_file_download_primary_24dp.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/ic_keyboard_arrow_up_black_24dp.xml"
+  exempted_file_path: "app/src/main/res/drawable/primary_rounded_button.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -536,16 +877,72 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_edit_fragment_test_activity.xml"
+  exempted_file_path: "app/src/main/res/drawable/profile_chooser_gradient.xml"
   lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/profile_image_shadow.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/progress_bar.xml"
   lint_issue_id: UNUSED_IDS
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/question_player_progress_bar_background_gradient.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/radio_button_drawable.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/radio_checked.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/radio_unchecked.xml"
+  lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/rectangle_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable-nodpi/review_placeholder.png"
+  exempted_file_path: "app/src/main/res/drawable/reveal_hint_button_blue_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/reveal_solution_brown_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/rounded_button_white_background_color.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/rounded_button_white_outline_color.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/rounded_primary_button_grey_shadow_color.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/rounded_rect_grey_border_gradient_white_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/rounded_rect_grey_border_white_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/rounded_rect_white_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/secondary_button_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -561,23 +958,1365 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/seekbar_thumb.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/splash_page.xml"
+  lint_issue_id: VECTOR_PATH
+  lint_issue_id: VECTOR_RASTER
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/spotlight_done_button_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/spotlight_hint_text_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/state_button_blue_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-pcm-rNG/strings.xml"
+  exempted_file_path: "app/src/main/res/drawable/state_button_orange_background.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: DUPLICATE_STRINGS
-  lint_issue_id: TYPOGRAPHY_QUOTES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/submitted_answer_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/survey_edit_text_background_border.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/survey_nps_radio_button_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/survey_nps_radio_selected_color.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/survey_nps_radio_text_color.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/survey_nps_radio_unselected_color.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/survey_progress_bar.xml"
+  lint_issue_id: UNUSED_IDS
+  lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/survey_rounded_disabled_button_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/test_url_parser_activity.xml"
+  exempted_file_path: "app/src/main/res/drawable/thumbnail_gradient.xml"
   lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/transparent_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/administrator_controls_learner_analytics_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/audio_language_selection_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/create_profile_fragment.xml"
+  lint_issue_id: AUTOFILL
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: RTL_SYMMETRY
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/learner_intro_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/onboarding_app_language_selection_fragment.xml"
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/onboarding_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/onboarding_profile_type_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/onboarding_slide.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/onboarding_slide_final.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_chooser_add_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_chooser_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USE_COMPOUND_DRAWABLES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_chooser_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_edit_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_item.xml"
+  lint_issue_id: KEYBOARD_INACCESSIBLE_WIDGET
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_progress_header.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/profile_selection_fragment.xml"
+  lint_issue_id: INCONSISTENT_LAYOUT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/question_player_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/resume_lesson_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/story_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/survey_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/survey_welcome_dialog_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/topic_info_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/walkthrough_final_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-land/walkthrough_welcome_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/audio_language_selection_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/create_profile_fragment.xml"
+  lint_issue_id: AUTOFILL
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: RTL_SYMMETRY
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/faq_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/faq_single_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/learner_intro_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_app_language_selection_fragment.xml"
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_profile_type_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_slide.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_slide_final.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/profile_chooser_add_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/profile_chooser_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/question_player_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/resume_lesson_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
   lint_issue_id: UNUSED_IDS
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/topic_info_fragment.xml"
+  lint_issue_id: UNUSED_IDS
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/topic_lessons_story_summary.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/audio_language_selection_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/create_profile_fragment.xml"
+  lint_issue_id: AUTOFILL
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: RTL_SYMMETRY
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/learner_intro_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_app_language_selection_fragment.xml"
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_profile_type_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_slide.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_slide_final.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/profile_chooser_add_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/profile_chooser_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/question_player_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/resume_lesson_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/topic_info_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: USE_APP_TINT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_app_information_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_learner_analytics_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/administrator_controls_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/app_language_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/audio_language_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/help_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: USE_APP_TINT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/option_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/option_app_language.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/option_story_text_size.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/options_without_drawer_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/profile_chooser_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USE_COMPOUND_DRAWABLES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/profile_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/profile_progress_header.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/revision_card_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USELESS_PARENT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/story_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/story_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/topic_lessons_title.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-sw600dp/topic_practice_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout-w600dp/survey_welcome_dialog_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/add_profile_activity.xml"
+  lint_issue_id: USE_APP_TINT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_account_actions_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_app_information_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_download_permissions_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_general_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_learner_analytics_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/administrator_controls_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/all_topics.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/app_language_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/app_language_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/app_version_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/audio_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/audio_language_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/audio_language_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/audio_language_selection_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/bottom_left_overlay.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/bottom_right_overlay.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/bottom_sheet_options_menu_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/classroom_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/coming_soon_topic_list.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/coming_soon_topic_view.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/completed_story_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/completed_story_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/concept_card_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/content_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/continue_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/continue_navigation_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/create_profile_fragment.xml"
+  lint_issue_id: AUTOFILL
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: RTL_SYMMETRY
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/developer_options_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/developer_options_modify_lesson_progress_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/developer_options_override_app_behaviors_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/developer_options_test_parsers_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/developer_options_view_logs_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/downloads_tab_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USELESS_LEAF
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/drag_drop_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/drag_drop_interaction_items.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USE_APP_TINT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/drag_drop_single_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/drag_drop_test_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/drawer_fragment.xml"
+  lint_issue_id: USELESS_LEAF
+  lint_issue_id: USE_APP_TINT
+  lint_issue_id: USE_COMPOUND_DRAWABLES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/exploration_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/exploration_test_activity.xml"
+  lint_issue_id: OVERDRAW
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/faq_content.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/faq_item_header.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/faq_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/faq_single_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/feature_flags_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/feature_flags_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/feedback_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/flashback_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/flashback_confirmation_dialog_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/force_network_type_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/force_network_type_network_item_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/fraction_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/help_activity.xml"
+  lint_issue_id: UNUSED_IDS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/help_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/help_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/help_without_drawer_activity.xml"
+  lint_issue_id: UNUSED_IDS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/hint_summary.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/hints_and_solution_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/home_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/home_test_activity.xml"
+  lint_issue_id: OVERDRAW
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/image_region_selection_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/image_region_selection_test_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/item_selection_interaction_items.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/learner_intro_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/lesson_thumbnail_image_view_test_fragment.xml"
+  lint_issue_id: UNUSED_IDS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/lessons_completed_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/lessons_in_progress_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/lessons_locked_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/lessons_not_started_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/license_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/license_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/license_text_viewer_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/license_text_viewer_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_chapters_completed_chapter_summary_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_chapters_completed_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_chapters_completed_story_summary_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_stories_completed_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_stories_completed_story_summary_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_topics_completed_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/mark_topics_completed_topic_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/math_expression_interactions_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/math_expression_parser_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/multiple_choice_interaction_items.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/my_downloads_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/nav_header_navigation_drawer.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/next_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/numeric_input_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/onboarding_app_language_selection_fragment.xml"
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/onboarding_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/onboarding_language_dropdown_item.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/onboarding_profile_type_fragment.xml"
+  lint_issue_id: BACK_BUTTON
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/onboarding_slide.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/onboarding_slide_final.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/ongoing_topic_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/ongoing_topic_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/option_app_language.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/option_audio_language.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/option_story_text_size.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/options_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/pin_password_activity.xml"
+  lint_issue_id: USELESS_PARENT
+  lint_issue_id: USE_COMPOUND_DRAWABLES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/platform_parameter_item.xml"
+  lint_issue_id: RTL_SYMMETRY
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/platform_parameters_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/policies_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/previous_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/previous_responses_header_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_and_device_id_activity.xml"
+  lint_issue_id: UNUSED_IDS
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_and_device_id_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_chooser_add_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_chooser_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USE_COMPOUND_DRAWABLES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_chooser_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_edit_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_edit_fragment_test_activity.xml"
+  lint_issue_id: UNUSED_IDS
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_item.xml"
+  lint_issue_id: KEYBOARD_INACCESSIBLE_WIDGET
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_list_control_buttons.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_list_device_id_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_list_learner_id_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_list_profile_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_list_sync_status_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_progress_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_progress_header.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_progress_recently_played_story_card.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_rename_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_reset_pin_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/profile_selection_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/promoted_story_card.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/promoted_story_list.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/question_player_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/ratio_input_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/reading_text_size_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/recently_played_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/recently_played_story_card.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/replay_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/resume_lesson_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/return_to_lesson_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/return_to_question_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/return_to_topic_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/revision_card_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/revision_card_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/section_title.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/selection_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/solution_summary.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNKNOWN_ID_IN_LAYOUT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/spotlight_fragment_test_activity.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/state_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/story_chapter_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/story_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/story_header_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/submit_button_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/submitted_answer_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/submitted_answer_list_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/submitted_html_answer_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_exit_confirmation_dialog.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_free_form_layout.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_market_fit_question_layout.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_multiple_choice_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_nps_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_nps_score_layout.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_outro_dialog_fragment.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_user_type_question_layout.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/survey_welcome_dialog_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_html_parser_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_list_item_leading_margin_activity.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_text_view_for_int_no_data_binding.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_text_view_for_int_with_data_binding.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_text_view_for_live_data_with_data_binding.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_text_view_for_string_no_data_binding.xml"
+  lint_issue_id: SELECTABLE_TEXT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_text_view_for_string_with_data_binding.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/test_url_parser_activity.xml"
+  lint_issue_id: UNUSED_IDS
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/text_input_interaction_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/text_input_layout_binding_adapters_test_fragment.xml"
+  lint_issue_id: LABEL_FOR
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/text_size_items.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/third_party_dependency_item.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/third_party_dependency_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/top_left_overlay.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/top_right_overlay.xml"
+  lint_issue_id: SELECTABLE_TEXT
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_info_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_lessons_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_lessons_story_summary.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_lessons_title.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_practice_footer_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_practice_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_practice_header_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_practice_subtopic.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_revision_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_revision_summary_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/topic_summary_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/updates_tab_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+  lint_issue_id: USELESS_LEAF
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/view_event_logs_event_log_item_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/view_event_logs_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/walkthrough_final_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/walkthrough_topic_header_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/walkthrough_topic_list_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/walkthrough_topic_summary_view.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/walkthrough_welcome_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/welcome.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-ar/strings.xml"
+  lint_issue_id: DUPLICATE_STRINGS
+  lint_issue_id: STRING_FORMAT_COUNT
+  lint_issue_id: TYPOGRAPHY_DASHES
+  lint_issue_id: TYPOGRAPHY_QUOTES
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-hdpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-land-hdpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-land-ldpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-land-mdpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-land/dimens.xml"
+  lint_issue_id: MISSING_DEFAULT_RESOURCE
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-ldpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-mdpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-night/color_palette.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-pcm-rNG/strings.xml"
+  lint_issue_id: DUPLICATE_STRINGS
+  lint_issue_id: TYPOGRAPHY_QUOTES
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-pt-rBR/strings.xml"
+  lint_issue_id: DUPLICATE_STRINGS
+  lint_issue_id: IMPLIED_QUANTITY
+  lint_issue_id: TYPOGRAPHY_QUOTES
+  lint_issue_id: TYPOS
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-sw/strings.xml"
+  lint_issue_id: DUPLICATE_STRINGS
+  lint_issue_id: STRING_FORMAT_COUNT
+  lint_issue_id: TYPOGRAPHY_QUOTES
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-sw600dp-land/dimens.xml"
+  lint_issue_id: MISSING_DEFAULT_RESOURCE
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-sw600dp-port/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-v21"
+  lint_issue_id: OBSOLETE_SDK_INT
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-v21/styles.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-v21/themes.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-xhdpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values-xxhdpi/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/color_defs.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/color_palette.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/component_colors.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/integers.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/strings.xml"
+  lint_issue_id: DUPLICATE_STRINGS
+  lint_issue_id: MISSING_TRANSLATION
+  lint_issue_id: STRING_FORMAT_COUNT
+  lint_issue_id: TYPOGRAPHY_QUOTES
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/styles.xml"
+  lint_issue_id: NEW_API
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/values/themes.xml"
+  lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values/third_party_dependencies.xml"
@@ -588,7 +2327,25 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivity.kt"
+  exempted_file_path: "data/src/main/AndroidManifest.xml"
+  lint_issue_id: GRADLE_OVERRIDES
+  lint_issue_id: OLD_TARGET_API
+}
+android_lint_exemption: {
+  exempted_file_path: "data/src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/AndroidManifest.xml"
+  lint_issue_id: GRADLE_OVERRIDES
+  lint_issue_id: OLD_TARGET_API
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/audio/AudioPlayerController.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/InteractionObjectTypeExtractorRepository.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -604,163 +2361,6 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/AndroidLocaleFactory.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragment.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageFragment.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/audio/AudioPlayerController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/clipboard/ClipboardController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ControlButtonsViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/CoroutineExecutorService.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/data/DataProviderTestMonitor.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/EventBundleCreator.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationActivityPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/ExpressionToComparableOperationConverter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagBindingModule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseAnalyticsEventLogger.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/GenericViewMatchers.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandlerDebugImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandlerProdImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/HtmlParser.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/InMemoryBlockingCache.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/InteractionObjectTypeExtractorRepository.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLogger.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/LiTagHandler.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/math/MathBitmapModelLoader.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput/MathEquationInputIsEquivalentToRuleClassifierProvider.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
@@ -773,49 +2373,31 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/math/MathExpressionAccessibilityUtil.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classroom/ClassroomController.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/clipboard/ClipboardController.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathExpressionParser.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressController.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/MathTagHandler.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandlerDebugImpl.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandlerProdImpl.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenterV1.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedRobolectricTestRunner.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLogger.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -823,7 +2405,24 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
+  lint_issue_id: NEW_API
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagBindingModule.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerDebugImpl.kt"
+  lint_issue_id: NEW_API
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -835,19 +2434,7 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/math/PolynomialSubject.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -855,73 +2442,45 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivity.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt"
+  lint_issue_id: NEW_API
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicListController.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/translation/TranslationController.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedViewModel.kt"
+  exempted_file_path: "testing/src/main/AndroidManifest.xml"
+  lint_issue_id: GRADLE_OVERRIDES
+  lint_issue_id: OLD_TARGET_API
+}
+android_lint_exemption: {
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/data/DataProviderTestMonitor.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/ScalableVectorGraphic.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/GenericViewMatchers.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivityPresenter.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedRobolectricTestRunner.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/story/StoryFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/SvgPictureDrawable.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/activity/TestActivity.kt"
+  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/CoroutineExecutorService.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -941,35 +2500,56 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
+  exempted_file_path: "utility/src/main/AndroidManifest.xml"
+  lint_issue_id: GRADLE_OVERRIDES
+  lint_issue_id: OLD_TARGET_API
+}
+android_lint_exemption: {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/InMemoryBlockingCache.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/AndroidLocaleFactory.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/DisplayLocaleImpl.kt"
+  lint_issue_id: APP_BUNDLE_LOCALE_CHANGES
+}
+android_lint_exemption: {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
+}
+android_lint_exemption: {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/testing/TestOppiaBidiFormatter.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseAnalyticsEventLogger.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/TextInputViewModel.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/ExpressionToComparableOperationConverter.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathExpressionParser.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/TopicFragmentPresenter.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/HtmlParser.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentPresenter.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/LiTagHandler.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicListController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/translation/TranslationController.kt"
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/MathTagHandler.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -977,459 +2557,14 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/downloads_tab_fragment.xml"
-  lint_issue_id: USELESS_LEAF
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/math/MathBitmapModelLoader.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/updates_tab_fragment.xml"
-  lint_issue_id: USELESS_LEAF
+  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/SvgPictureDrawable.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp/revision_card_fragment.xml"
-  lint_issue_id: USELESS_PARENT
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/help_activity.xml"
-  lint_issue_id: UNUSED_IDS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/help_without_drawer_activity.xml"
-  lint_issue_id: UNUSED_IDS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/lesson_thumbnail_image_view_test_fragment.xml"
-  lint_issue_id: UNUSED_IDS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_and_device_id_activity.xml"
-  lint_issue_id: UNUSED_IDS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/progress_bar.xml"
-  lint_issue_id: UNUSED_IDS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/drawable/survey_progress_bar.xml"
-  lint_issue_id: UNUSED_IDS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/bottom_left_overlay.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/bottom_right_overlay.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/coming_soon_topic_view.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/concept_card_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/exploration_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/faq_single_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/faq_single_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/license_text_viewer_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_language_dropdown_item.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_slide_final.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/onboarding_slide_final.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_slide_final.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_slide_final.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp/option_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp/options_without_drawer_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/policies_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/profile_edit_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_edit_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/resume_lesson_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/resume_lesson_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/resume_lesson_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/resume_lesson_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/revision_card_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/revision_card_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/survey_outro_dialog_fragment.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/test_html_parser_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/test_list_item_leading_margin_activity.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/test_text_view_for_int_no_data_binding.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/test_text_view_for_string_no_data_binding.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/top_left_overlay.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/top_right_overlay.xml"
-  lint_issue_id: SELECTABLE_TEXT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/audio_language_selection_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/audio_language_selection_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/audio_language_selection_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/audio_language_selection_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/create_profile_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: AUTOFILL
-  lint_issue_id: RTL_SYMMETRY
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/create_profile_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: AUTOFILL
-  lint_issue_id: RTL_SYMMETRY
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/create_profile_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: AUTOFILL
-  lint_issue_id: RTL_SYMMETRY
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/create_profile_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-  lint_issue_id: AUTOFILL
-  lint_issue_id: RTL_SYMMETRY
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/learner_intro_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/learner_intro_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/learner_intro_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/learner_intro_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/onboarding_profile_type_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_profile_type_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_profile_type_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_profile_type_fragment.xml"
-  lint_issue_id: BACK_BUTTON
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/profile_item.xml"
-  lint_issue_id: KEYBOARD_INACCESSIBLE_WIDGET
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/profile_item.xml"
-  lint_issue_id: KEYBOARD_INACCESSIBLE_WIDGET
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/onboarding_app_language_selection_fragment.xml"
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_app_language_selection_fragment.xml"
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_app_language_selection_fragment.xml"
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_app_language_selection_fragment.xml"
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/text_input_layout_binding_adapters_test_fragment.xml"
-  lint_issue_id: LABEL_FOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminPinViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminSettingsViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageSelectionViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSummaryViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/CircularProgressIndicatorAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/CircularProgressIndicatorAdaptersTestViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/ColorBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/EditTextBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/FreeFormItemsViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/ImageViewBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/MarketFitItemsViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/drawer/NavigationDrawerHeaderViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/NpsItemsViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboadingSlideViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/ongoingtopiclist/OngoingTopicItemViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/OptionsReadingTextSizeViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/PinPasswordViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profileprogress/ProfileProgressHeaderViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileResetPinViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/recyclerview/RecyclerViewBindingAdapter.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ResetPinViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/resumelesson/ResumeLessonViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/StateAssemblerMarginBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/StateAssemblerPaddingBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StateViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/StorySummaryViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/StorySummaryViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/TextInputLayoutBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/TextViewBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/info/TopicInfoViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revision/revisionitemviewmodel/TopicRevisionItemViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/topiclist/TopicSummaryViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/TopicViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/UserTypeItemsViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/databinding/ViewBindingAdapters.java"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/topiclist/topiclistviewmodel/WalkthroughTopicSummaryViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
+  exempted_file_path: "utility/src/main/res/values/dimens.xml"
+  lint_issue_id: UNUSED_RESOURCES
 }
