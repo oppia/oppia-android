@@ -26,6 +26,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.hamcrest.Matchers.not
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,6 +81,7 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
+import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
@@ -126,22 +128,24 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class FeatureFlagsFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject
-  lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
-  @Inject
-  lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject
-  lateinit var context: Context
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var context: Context
+  @Inject lateinit var oppiaLogger: OppiaLogger
 
   private companion object {
-    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val LOCAL_OVERRIDE_DATABASE_NAME =
+      "local_overridden_platform_parameter_and_feature_flag_database"
     private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -383,7 +387,6 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-
   fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
