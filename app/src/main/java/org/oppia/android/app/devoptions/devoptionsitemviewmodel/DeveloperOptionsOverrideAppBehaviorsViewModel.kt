@@ -4,6 +4,7 @@ import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
 import org.oppia.android.app.devoptions.RouteToFeatureFlagsListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
+import org.oppia.android.app.devoptions.RouteToPlatformParametersListener
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 
 /**
@@ -14,7 +15,8 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
   private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
-  private val featureFlagsListener: RouteToFeatureFlagsListener
+  private val featureFlagsListener: RouteToFeatureFlagsListener,
+  private val platformParametersListener: RouteToPlatformParametersListener
 ) : DeveloperOptionsItemViewModel() {
 
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
@@ -34,6 +36,11 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   /** Routes the user to [FeatureFlagsActivity] for viewing and modifying feature flags. */
   fun onFeatureFlagsClicked() {
     featureFlagsListener.routeToFeatureFlags()
+  }
+
+  /** Routes the user to [PlatformParametersActivity] for viewing and modifying platform parameters. */
+  fun onPlatformParametersClicked() {
+    platformParametersListener.routeToPlatformParameters()
   }
 
   /**

@@ -5,4 +5,6 @@
   <item name="onboarding_dot_1" type="id" />
   <item name="onboarding_dot_2" type="id" />
   <item name="onboarding_dot_3" type="id" />
+  <item name="platform_parameter_text_watcher" type="id" />
+  <item name="platform_parameter_text_change_flag" type="id" />
 </resources>

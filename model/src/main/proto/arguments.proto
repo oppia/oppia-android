@@ -954,10 +954,16 @@ message StatePlayerRecyclerViewAssemblerState {
   bool has_previous_responses_expanded = 1;
 }
 
-// Arguments that are saved on configuration changes in FeatureFlagsFragment.
-message FeatureFlagsFragmentArguments {
+// The bundle of properties that are saved on configuration change in FeatureFlagsFragment.
+message FeatureFlagsFragmentStateBundle {
   // List of locally overridden feature flag states.
   repeated OverriddenFeatureFlag feature_flag_states = 1;
+}
+
+// The bundle of properties that are saved on configuration change in PlatformParametersFragment
+message PlatformParametersFragmentStateBundle {
+  // List of locally overridden platform parameter states.
+  repeated OverriddenPlatformParameter platform_parameter_states = 1;
 }
 
 // Arguments required when creating an FlashbackConfirmationDialogFragment.
