@@ -2423,7 +2423,7 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
-  lint_issue_id: SyntheticAccessor
+  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterBindingModule.kt"
