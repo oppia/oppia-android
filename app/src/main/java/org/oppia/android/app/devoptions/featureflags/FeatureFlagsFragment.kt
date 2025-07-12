@@ -22,7 +22,7 @@ class FeatureFlagsFragment : InjectableFragment() {
   companion object {
     /** State key for [FeatureFlagsFragment]. */
     const val FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY = "FeatureFlagsFragment.state_key"
-    
+
     /** Returns a new instance of [FeatureFlagsFragment]. */
     fun newInstance(): FeatureFlagsFragment = FeatureFlagsFragment()
   }

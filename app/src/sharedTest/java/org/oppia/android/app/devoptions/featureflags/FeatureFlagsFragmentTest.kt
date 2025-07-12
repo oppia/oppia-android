@@ -26,7 +26,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.hamcrest.Matchers.not
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -81,7 +80,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
@@ -691,7 +689,7 @@ class FeatureFlagsFragmentTest {
       component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
     )
   }
-  
+
   // Populates the local override DB with test feature flag for DOWNLOADS_SUPPORT.
   private fun addTestOverriddenFeatureFlagToDatabase(
     component: TestApplicationComponent,
