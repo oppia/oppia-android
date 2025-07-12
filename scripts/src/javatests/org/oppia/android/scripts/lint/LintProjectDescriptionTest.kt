@@ -677,7 +677,6 @@ class LintProjectDescriptionTest {
 
   @Test
   fun testBuildAllModuleConfigurations_setsCorrectLibraryFlags() {
-
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()

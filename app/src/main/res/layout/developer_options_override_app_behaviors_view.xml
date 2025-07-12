@@ -126,30 +126,55 @@
       app:layout_constraintTop_toBottomOf="@id/view_divider2" />
 
     <View
-        android:id="@+id/view_divider3"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/component_color_shared_divider_color"
-        app:layout_constraintBottom_toTopOf="@id/feature_flags_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/force_crash_text_view" />
+      android:id="@+id/view_divider3"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintBottom_toTopOf="@id/feature_flags_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/force_crash_text_view" />
 
     <TextView
-        android:id="@+id/feature_flags_text_view"
-        style="@style/Subtitle1ViewStart"
-        android:onClick="@{(v) -> viewModel.onFeatureFlagsClicked()}"
-        android:layout_width="match_parent"
-        android:paddingStart="16dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="20dp"
-        android:text="@string/developer_options_feature_flags"
-        android:textColor="@color/component_color_shared_primary_dark_text_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_divider3" />
+      android:id="@+id/feature_flags_text_view"
+      style="@style/Subtitle1ViewStart"
+      android:layout_width="match_parent"
+      android:onClick="@{(v) -> viewModel.onFeatureFlagsClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_feature_flags"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      app:layout_constraintBottom_toTopOf="@id/view_divider4"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider3" />
 
+    <View
+      android:id="@+id/view_divider4"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintBottom_toTopOf="@id/platform_parameters_text_view"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/feature_flags_text_view" />
+
+    <TextView
+      android:id="@+id/platform_parameters_text_view"
+      style="@style/Subtitle1ViewStart"
+      android:layout_width="match_parent"
+      android:onClick="@{(v) -> viewModel.onPlatformParametersClicked()}"
+      android:paddingStart="16dp"
+      android:paddingTop="20dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="20dp"
+      android:text="@string/developer_options_platform_parameters"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider4" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

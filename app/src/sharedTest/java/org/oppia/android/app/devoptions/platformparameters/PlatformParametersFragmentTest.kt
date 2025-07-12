@@ -1,4 +1,4 @@
-package org.oppia.android.app.devoptions.featureflags
+package org.oppia.android.app.devoptions.platformparameters
 
 import android.app.Application
 import android.content.Context
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -26,7 +25,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.hamcrest.Matchers.not
-import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,12 +39,11 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.devoptions.featureflags.testing.FeatureFlagsTestActivity
-import org.oppia.android.app.model.EphemeralFeatureFlag
-import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
-import org.oppia.android.app.model.OverriddenFeatureFlag
-import org.oppia.android.app.model.RemoteFeatureFlag
+import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParametersTestActivity
+import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.RemotePlatformParameter
 import org.oppia.android.app.model.RemotePlatformParameterAndFeatureFlagDatabase
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -81,7 +78,6 @@ import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
-import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
@@ -93,6 +89,8 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
+import org.oppia.android.testing.espresso.EditTextInputAction
+import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
@@ -120,173 +118,118 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Tests for [FeatureFlagsFragment]. */
+/** Tests for [PlatformParametersFragment]. */
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = FeatureFlagsFragmentTest.TestApplication::class,
+  application = PlatformParametersFragmentTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class FeatureFlagsFragmentTest {
+class PlatformParametersFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
+  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private companion object {
-    private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
-    private const val LOCAL_OVERRIDE_DATABASE_NAME =
-      "local_overridden_platform_parameter_and_feature_flag_database"
-    private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterModule.reset()
+    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
   }
 
   @Test
-  fun testFeatureFlagsFragment_verifyRecyclerView_hasCorrectItemCount() {
+  fun testPlatformParametersFragment_verifyRecyclerView_hasCorrectItemCount() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      val expectedCount = getEphemeralFeatureFlags().size
-
-      onView(withId(R.id.feature_flags_recycler_view))
+      val expectedCount = getEphemeralPlatformParameters().size
+      onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = expectedCount))
 
-      // Note to developers: if you add/remove a feature flag, please update the expected count.
-      onView(withId(R.id.feature_flags_recycler_view))
-        .check(RecyclerViewMatcher.hasItemCount(count = 14))
+      // Note to developers: if you add/remove a platform parameter, please update the
+      // expected count.
+      onView(withId(R.id.platform_parameters_recycler_view))
+        .check(RecyclerViewMatcher.hasItemCount(count = 11))
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_verifyRecyclerViewItems_haveCorrectDetails() {
+  fun testPlatformParametersFragment_verifyRecyclerViewItems_haveCorrectDetails() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      getEphemeralFeatureFlags().forEachIndexed { index, ephemeralFeatureFlag ->
+      getEphemeralPlatformParameters().forEachIndexed { index, ephemeralPlatformParameter ->
         scrollToPosition(index)
-        verifyFeatureFlagDisplayName(
+        verifyPlatformParameterDisplayName(
           position = index,
-          expectedDisplayName = getFeatureFlagDisplayName(ephemeralFeatureFlag.id)
+          expectedDisplayName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
         )
-        verifyFeatureFlagSyncStatus(
+        verifyPlatformParameterSyncStatus(
           position = index,
-          expectedSyncStatus = getSyncStatusText(ephemeralFeatureFlag.syncStatus)
+          expectedSyncStatus = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
         )
-        verifyFeatureFlagSwitchState(
+        verifyPlatformParameterState(
           position = index,
-          expectedState = ephemeralFeatureFlag.currentValue
-        )
-        verifyFeatureFlagBackgroundColor(
-          position = index,
-          expectedColor = when (ephemeralFeatureFlag.syncStatus) {
-            SyncStatus.SYNCED_FROM_SERVER -> {
-              0xFF00645C.toInt()
-            }
-            SyncStatus.NOT_SYNCED_FROM_SERVER -> {
-              0xFFBE563C.toInt()
-            }
-            else -> 0xFF00645C.toInt()
-          }
+          expectedValue = ephemeralPlatformParameter.currentValue
         )
       }
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsCorrectDisplayName() {
+  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectName() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyFeatureFlagDisplayName(
+      verifyPlatformParameterDisplayName(
         position = 0,
-        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
+        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultValue() {
+  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectSyncStatus() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+
       scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
+      verifyPlatformParameterSyncStatus(
         position = 0,
-        expectedState = downloadsSupportFlag.currentValue
+        expectedSyncStatus = context.getString(R.string.platform_parameter_default_sync_status)
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultSyncStatus() {
+  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectValue() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
 
       scrollToPosition(0)
-      verifyFeatureFlagSyncStatus(
+      verifyPlatformParameterState(
         position = 0,
-        expectedSyncStatus = context.getString(R.string.feature_flag_default_sync_status)
+        expectedValue = splashScreenWelcomeMsgParameter.currentValue
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultBackgroundColor() {
+  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectBackground() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyFeatureFlagBackgroundColor(
-        position = 0,
-        expectedColor = 0xFFBE563C.toInt()
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerSyncStatus() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSyncStatus(
-        position = 0,
-        expectedSyncStatus = context.getString(R.string.feature_flag_server_sync_status)
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerBackgroundColor() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyFeatureFlagBackgroundColor(
+      verifyPlatformParameterBackgroundColor(
         position = 0,
         expectedColor = 0xFFBE563C.toInt()
       )
@@ -294,326 +237,266 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsRemoteBooleanValue() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
+  fun testPlatformParametersFragment_splashScreenWelcomeMsgParameterSwitchToggled_updatesValue() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = downloadsSupportFlag.currentValue
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsRemoteDisplayName() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyFeatureFlagDisplayName(
-        position = 0,
-        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenSyncStatus() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSyncStatus(
-        position = 0,
-        expectedSyncStatus = context.getString(R.string.feature_flag_overridden_sync_status)
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBackgroundColor() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyFeatureFlagBackgroundColor(
-        position = 0,
-        expectedColor = 0xFFBE563C.toInt()
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBooleanValue() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = downloadsSupportFlag.currentValue
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyFeatureFlagDisplayName(
-        position = 0,
-        expectedDisplayName = DOWNLOADS_SUPPORT_FLAG_NAME
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenSyncStatus() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, false)
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSyncStatus(
-        position = 0,
-        expectedSyncStatus = context.getString(R.string.feature_flag_overridden_sync_status)
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenBooleanValue() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, false)
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = true
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenBackgroundColor() {
-    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, false)
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagBackgroundColor(
-        position = 0,
-        expectedColor = 0xFFBE563C.toInt()
-      )
-    }
-  }
-
-  @Test
-  fun testFeatureFlagsFragment_whenSwitchToggled_DownloadsSupportFlagUpdatesValue() {
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
 
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
+          recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 0,
-          targetViewId = R.id.feature_flag_switch
+          targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
 
-      verifyFeatureFlagSwitchState(
+      verifyPlatformParameterState(
         position = 0,
-        expectedState = !downloadsSupportFlag.currentValue
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(!splashScreenWelcomeMsgParameter.currentValue.boolean)
+          .build()
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_configChange_persistsValue() {
+  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChanges_valuePersists() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val downloadsSupportFlag = getEphemeralFeatureFlags()[0]
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
 
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
+          recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 0,
-          targetViewId = R.id.feature_flag_switch
+          targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
 
-      verifyFeatureFlagSwitchState(
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyPlatformParameterState(
         position = 0,
-        expectedState = !downloadsSupportFlag.currentValue
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(!splashScreenWelcomeMsgParameter.currentValue.boolean)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyIntegerPlatformParameter_configChange_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(7)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("29"))
+
+      verifyPlatformParameterState(
+        position = 7,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setInteger(29)
+          .build()
       )
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = !downloadsSupportFlag.currentValue
+      verifyPlatformParameterState(
+        position = 7,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setInteger(29)
+          .build()
+      )
+    }
+  }
+
+  fun testPlatformParametersFragment_removeTextFromInputBox_showsInvalidInputError() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(7)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText(""))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).check(
+        matches(
+          hasErrorText(context.getString(R.string.platform_parameter_invalid_input_error_msg))
+        )
       )
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleDownloadsSupportFlag_scrollAndBack_persistsValue() {
+  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasServerStatus() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val originalValue = getEphemeralFeatureFlags()[0].currentValue
+
+      verifyPlatformParameterSyncStatus(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.platform_parameter_server_sync_status)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectColor() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = 0xFFBE563C.toInt()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectName() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      verifyPlatformParameterDisplayName(
+        position = 0,
+        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectValue() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
+
+      verifyPlatformParameterState(
+        position = 0,
+        expectedValue = splashScreenWelcomeMsgParameter.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyIntegerParameter_scrollAndBack_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(7)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("42"))
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setInteger(42)
+        .build()
+
+      scrollToPosition(1)
+
+      scrollToPosition(7)
+      verifyPlatformParameterState(
+        position = 7,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_toggleBooleanParameter_scrollAndBack_persistsValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val originalValue = getEphemeralPlatformParameters()[0].currentValue.boolean
 
       scrollToPosition(0)
       onView(
         atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
+          recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 0,
-          targetViewId = R.id.feature_flag_switch
+          targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
 
-      val expectedState = !originalValue
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!originalValue)
+        .build()
 
       scrollToPosition(8)
 
       scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
+      verifyPlatformParameterState(
         position = 0,
-        expectedState = expectedState
+        expectedValue = expectedValue
       )
     }
   }
 
-  @Test
-  fun testFeatureFlagsFragment_toggleFlag_navigateBackAndReopen_persistsValue() {
-    setUpTestApplicationComponent()
-    val expectedState = !getEphemeralFeatureFlags()[0].currentValue
-
-    launch(FeatureFlagsActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
-        )
-      ).perform(click())
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
-
-    launch(FeatureFlagsActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = expectedState
-      )
-    }
-  }
-
-  private fun verifyFeatureFlagDisplayName(
+  private fun verifyPlatformParameterDisplayName(
     position: Int,
     expectedDisplayName: String
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.feature_flags_recycler_view,
+        recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
-        targetViewId = R.id.feature_flag_label_text_view
+        targetViewId = R.id.platform_parameter_label_text_view
       )
     ).check(matches(withText(expectedDisplayName)))
   }
 
-  private fun verifyFeatureFlagSyncStatus(
-    position: Int,
-    expectedSyncStatus: String
-  ) {
-    onView(
-      atPositionOnView(
-        recyclerViewId = R.id.feature_flags_recycler_view,
-        position = position,
-        targetViewId = R.id.sync_status_value_text_view
-      )
-    ).check(matches(withText(expectedSyncStatus)))
-  }
-
-  private fun verifyFeatureFlagBackgroundColor(
+  private fun verifyPlatformParameterBackgroundColor(
     position: Int,
     expectedColor: Int
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.feature_flags_recycler_view,
+        recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
         targetViewId = R.id.sync_status_value_text_view
       )
@@ -624,91 +507,104 @@ class FeatureFlagsFragmentTest {
     }
   }
 
-  private fun verifyFeatureFlagSwitchState(
+  private fun verifyPlatformParameterSyncStatus(
     position: Int,
-    expectedState: Boolean
+    expectedSyncStatus: String
   ) {
     onView(
       atPositionOnView(
-        recyclerViewId = R.id.feature_flags_recycler_view,
+        recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
-        targetViewId = R.id.feature_flag_switch
+        targetViewId = R.id.sync_status_value_text_view
       )
-    ).check(matches(if (expectedState) isChecked() else not(isChecked())))
+    ).check(matches(withText(expectedSyncStatus)))
+  }
+
+  private fun verifyPlatformParameterState(
+    position: Int,
+    expectedValue: PlatformParameterValue
+  ) {
+    when {
+      expectedValue.hasBoolean() -> {
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = position,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).check(matches(if (expectedValue.boolean) isChecked() else not(isChecked())))
+      }
+
+      expectedValue.hasString() -> {
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = position,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).check(matches(withText(expectedValue.string)))
+      }
+
+      expectedValue.hasInteger() -> {
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = position,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).check(matches(withText(expectedValue.integer.toString())))
+      }
+    }
   }
 
   private fun getSyncStatusText(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        context.getString(R.string.feature_flag_unknown_sync_status)
+        context.getString(R.string.platform_parameter_unknown_sync_status)
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        context.getString(R.string.feature_flag_default_sync_status)
+        context.getString(R.string.platform_parameter_default_sync_status)
       SyncStatus.SYNCED_FROM_SERVER ->
-        context.getString(R.string.feature_flag_server_sync_status)
+        context.getString(R.string.platform_parameter_server_sync_status)
       else ->
-        context.getString(R.string.feature_flag_unknown_sync_status)
+        context.getString(R.string.platform_parameter_unknown_sync_status)
     }
   }
 
   private fun scrollToPosition(position: Int) {
-    onView(withId(R.id.feature_flags_recycler_view)).perform(
+    onView(withId(R.id.platform_parameters_recycler_view)).perform(
       scrollToPosition<RecyclerView.ViewHolder>(position)
     )
   }
 
-  private fun getEphemeralFeatureFlags(): List<EphemeralFeatureFlag> {
-    val provider = platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+  private fun getEphemeralPlatformParameters(): List<EphemeralPlatformParameter> {
+    val provider = platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
     return monitorFactory.waitForNextSuccessfulResult(provider)
   }
 
-  private fun getFeatureFlagDisplayName(id: FeatureFlagId): String {
+  private fun getPlatformParameterDisplayName(id: PlatformParameterId): String {
     return id.name
       .lowercase()
       .split('_')
       .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
   }
 
-  // Populates the remote DB with test feature flag for DOWNLOADS_SUPPORT.
-  private fun addTestRemoteFeatureFlagToDatabase(
-    component: TestApplicationComponent,
-    value: Boolean
-  ) {
+  // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
+  private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
     val database = component.getCacheStoreFactory().create(
-      REMOTE_DATABASE_NAME,
+      DATABASE_NAME,
       RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
     )
 
     database.storeDataAsync {
       RemotePlatformParameterAndFeatureFlagDatabase.newBuilder().apply {
-        addRemoteFeatureFlag(
-          RemoteFeatureFlag.newBuilder().apply {
-            id = FeatureFlagId.DOWNLOADS_SUPPORT
-            remoteIsEnabled = value
+        addRemotePlatformParameter(
+          RemotePlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+            remoteValue = PlatformParameterValue.newBuilder().apply {
+              boolean = true
+            }.build()
             syncStatus = SyncStatus.SYNCED_FROM_SERVER
           }.build()
-        )
-      }.build()
-    }.waitForSuccessfulResult(
-      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
-    )
-  }
-
-  // Populates the local override DB with test feature flag for DOWNLOADS_SUPPORT.
-  private fun addTestOverriddenFeatureFlagToDatabase(
-    component: TestApplicationComponent,
-    value: Boolean
-  ) {
-    val database = component.getCacheStoreFactory().create(
-      LOCAL_OVERRIDE_DATABASE_NAME,
-      LocalOverridePlatformParameterDatabase.getDefaultInstance()
-    )
-    database.storeDataAsync {
-      LocalOverridePlatformParameterDatabase.newBuilder().apply {
-        addOverriddenFeatureFlag(
-          OverriddenFeatureFlag.newBuilder()
-            .setId(FeatureFlagId.DOWNLOADS_SUPPORT)
-            .setOverriddenValue(value)
-            .build()
         )
       }.build()
     }.waitForSuccessfulResult(
@@ -773,7 +669,7 @@ class FeatureFlagsFragmentTest {
     // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
-      DaggerFeatureFlagsFragmentTest_TestApplicationComponent.builder()
+      DaggerPlatformParametersFragmentTest_TestApplicationComponent.builder()
         .setApplication(testApplication)
         .build() as TestApplicationComponent
     )
@@ -844,7 +740,7 @@ class FeatureFlagsFragmentTest {
       WorkManagerConfigurationModule::class
     ]
   )
-  /** [ApplicationComponent] for [FeatureFlagsFragmentTest]. */
+  /** [ApplicationComponent] for [PlatformParametersFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
     /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
@@ -853,37 +749,35 @@ class FeatureFlagsFragmentTest {
     }
 
     /**
-     * Injects [TestApplicationComponent] to [FeatureFlagsFragmentTest] providing the required
+     * Injects [TestApplicationComponent] to [PlatformParametersFragmentTest] providing the required
      * dagger modules.
      */
-    fun inject(featureFlagsFragmentTest: FeatureFlagsFragmentTest)
+    fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest)
     fun getCacheStoreFactory(): PersistentCacheStore.Factory
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
     @BackgroundDispatcher
     override fun getBackgroundDispatcher(): CoroutineDispatcher
   }
 
-  /** [Application] class for [FeatureFlagsFragmentTest]. */
+  /** [Application] class for [PlatformParametersFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerFeatureFlagsFragmentTest_TestApplicationComponent.builder()
+      DaggerPlatformParametersFragmentTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
     /** Called when setting up [TestApplication]. */
-    fun inject(featureFlagsFragmentTest: FeatureFlagsFragmentTest) {
-      component.inject(featureFlagsFragmentTest)
+    fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest) {
+      component.inject(platformParametersFragmentTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
-
     public override fun attachBaseContext(base: Context?) {
       super.attachBaseContext(base)
     }
-
     override fun getApplicationInjector(): ApplicationInjector = component
   }
 }
