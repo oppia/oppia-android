@@ -10,7 +10,7 @@ import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
-import org.oppia.android.app.model.PlatformParametersFragmentArguments
+import org.oppia.android.app.model.PlatformParametersFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
@@ -25,8 +25,8 @@ class PlatformParametersFragment : InjectableFragment() {
     fun newInstance(): PlatformParametersFragment = PlatformParametersFragment()
 
     /** State key for [PlatformParametersFragment]. */
-    const val PLATFORM_PARAMETERS_FRAGMENT_ARGUMENT_STATE_KEY =
-      "PlatformParametersFragmentArgument.state"
+    const val PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY =
+      "PlatformParametersFragment.saved_state"
   }
 
   override fun onAttach(context: Context) {
@@ -39,13 +39,12 @@ class PlatformParametersFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-
     var platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
-        PLATFORM_PARAMETERS_FRAGMENT_ARGUMENT_STATE_KEY,
-        PlatformParametersFragmentArguments.getDefaultInstance()
+        PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
+        PlatformParametersFragmentStateBundle.getDefaultInstance()
       )
       platformParameterStates = args?.platformParameterStatesList
         ?.associate { it.id to it.overriddenValue }
@@ -64,11 +63,11 @@ class PlatformParametersFragment : InjectableFragment() {
         .setOverriddenValue(it.value)
         .build()
     }
-    val proto = PlatformParametersFragmentArguments.newBuilder()
+    val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
       .build()
     outState.putProto(
-      PLATFORM_PARAMETERS_FRAGMENT_ARGUMENT_STATE_KEY, proto
+      PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto
     )
   }
 }

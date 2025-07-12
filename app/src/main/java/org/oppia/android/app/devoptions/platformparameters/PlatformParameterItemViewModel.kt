@@ -31,10 +31,10 @@ class PlatformParameterItemViewModel(
   val isTextInputMode = ObservableField(!currentValue.hasBoolean())
 
   /** The display name of the platform parameter. */
-  val platformParameterName = ObservableField(getPlatformParameterDisplayName())
+  val platformParameterDisplayName = ObservableField(retrievePlatformParameterDisplayName())
 
-  /** Error message to be displayed in case of invalid input for a platform parameters. */
-  val errorMessage = ObservableField("")
+  /** Error message to be displayed in case of invalid input type for a platform parameter. */
+  val inputErrorMsg = ObservableField("")
 
   /** The display text representing the current sync status of the parameter. */
   val syncStatusDisplayText = ObservableField(getSyncStatusText())
@@ -52,7 +52,7 @@ class PlatformParameterItemViewModel(
    * Callback invoked when a boolean-type platform parameter is toggled.
    * Passes the parameter ID and the new boolean value.
    */
-  var onPlatformParameterToggleCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
+  var onPlatformParameterToggledCallback: ((PlatformParameterId, Boolean) -> Unit)? = null
 
   /**
    * Callback invoked when a string/integer-type platform parameter is edited.
@@ -65,13 +65,13 @@ class PlatformParameterItemViewModel(
   val syncStatusBackgroundColor: Int = retrieveSyncStatusBackgroundColor().toInt()
 
   /** Called when the boolean toggle switch is clicked by the user. */
-  fun onToggleFeatureFlagSwitch() {
+  fun onTogglePlatformParameterSwitch() {
     val newValue = !(isChecked.get() ?: false)
     isChecked.set(newValue)
-    onPlatformParameterToggleCallback?.invoke(platformParameterId, newValue)
+    onPlatformParameterToggledCallback?.invoke(platformParameterId, newValue)
   }
 
-  private fun getPlatformParameterDisplayName(): String {
+  private fun retrievePlatformParameterDisplayName(): String {
     return machineLocale.run {
       when (platformParameterId) {
         PlatformParameterId.UNRECOGNIZED,

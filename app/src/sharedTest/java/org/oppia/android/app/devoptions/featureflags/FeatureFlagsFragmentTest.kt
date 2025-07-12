@@ -128,24 +128,22 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class FeatureFlagsFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
-  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
-  @Inject lateinit var context: Context
-  @Inject lateinit var oppiaLogger: OppiaLogger
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @Inject
+  lateinit var platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
+  @Inject
+  lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject
+  lateinit var context: Context
 
   private companion object {
-    private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
-    private const val LOCAL_OVERRIDE_DATABASE_NAME =
-      "local_overridden_platform_parameter_and_feature_flag_database"
+    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
     private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
-  }
-
-  @After
-  fun tearDown() {
-    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -387,6 +385,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
+
   fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
@@ -692,7 +691,7 @@ class FeatureFlagsFragmentTest {
       component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
     )
   }
-
+  
   // Populates the local override DB with test feature flag for DOWNLOADS_SUPPORT.
   private fun addTestOverriddenFeatureFlagToDatabase(
     component: TestApplicationComponent,

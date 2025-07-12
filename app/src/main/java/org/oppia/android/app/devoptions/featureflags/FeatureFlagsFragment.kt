@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.FeatureFlagId
-import org.oppia.android.app.model.FeatureFlagsFragmentArguments
+import org.oppia.android.app.model.FeatureFlagsFragmentStateBundle
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
@@ -21,8 +21,8 @@ class FeatureFlagsFragment : InjectableFragment() {
 
   companion object {
     /** State key for [FeatureFlagsFragment]. */
-    const val FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY = "FeatureFlagsFragmentArguments.state"
-
+    const val FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY = "FeatureFlagsFragment.state_key"
+    
     /** Returns a new instance of [FeatureFlagsFragment]. */
     fun newInstance(): FeatureFlagsFragment = FeatureFlagsFragment()
   }
@@ -40,8 +40,8 @@ class FeatureFlagsFragment : InjectableFragment() {
     var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
-        FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY,
-        FeatureFlagsFragmentArguments.getDefaultInstance()
+        FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
+        FeatureFlagsFragmentStateBundle.getDefaultInstance()
       )
       featureFlagStates = args?.featureFlagStatesList
         ?.associate { it.id to it.overriddenValue }
@@ -62,10 +62,10 @@ class FeatureFlagsFragment : InjectableFragment() {
           .build()
       }
 
-    val proto = FeatureFlagsFragmentArguments.newBuilder()
+    val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
       .build()
 
-    outState.putProto(FEATURE_FLAGS_FRAGMENT_ARGUMENT_STATE_KEY, proto)
+    outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
   }
 }
