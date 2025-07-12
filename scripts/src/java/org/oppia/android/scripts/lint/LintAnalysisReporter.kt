@@ -259,7 +259,7 @@ class LintAnalysisReporter {
     if (exemptions.isEmpty()) {
       return emptyMap()
     }
-    
+
     val invalidExemption = exemptions.firstOrNull {
       LintIssueId.ISSUE_UNSPECIFIED in it.lintIssueIdList
     }
