@@ -186,6 +186,10 @@ class ExplorationFragmentPresenter @Inject constructor(
 
   fun dismissConceptCard() = getStateFragment()?.dismissConceptCard()
 
+  fun onFlashbackToolbarBackPressed() {
+    getStateFragment()?.onReturnToQuestionButtonClicked()
+  }
+
   companion object {
     /** The fragment arguments key for all proto-held arguments for [ExplorationFragment]. */
     const val ARGUMENTS_KEY = "ExplorationFragment.arguments"

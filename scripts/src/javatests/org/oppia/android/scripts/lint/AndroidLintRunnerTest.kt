@@ -35,12 +35,14 @@ class AndroidLintRunnerTest {
   private lateinit var workingDirectory: File
   private lateinit var reportfile: File
   private val pathToProtoBinary = "scripts/assets/android_lint_exemptions.pb"
+  private lateinit var bazelBinFolder: File
+  private lateinit var projectDescriptionFile: File
+  private lateinit var kotlinVersion: String
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "34"
-    private const val KOTLIN_LANGUAGE_LEVEL = "1.6"
   }
 
   @Before
@@ -57,15 +59,19 @@ class AndroidLintRunnerTest {
     testBazelWorkspace = TestBazelWorkspace(tempFolder)
     tempFolder.newFolder("scripts", "assets")
     tempFolder.newFile(pathToProtoBinary)
-    buildSdkVersion = AndroidBuildSdkProperties().buildSdkVersion.toString()
-    workingDirectory = File(tempFolder.root, "lint_analysis").apply { mkdirs() }
+    val sdkProperties = AndroidBuildSdkProperties()
+    buildSdkVersion = sdkProperties.buildSdkVersion.toString()
+    kotlinVersion = sdkProperties.kotlinCompilerVersion.substringBeforeLast('.')
+    workingDirectory = tempFolder.newFolder("lint_analysis")
     reportfile = File(workingDirectory, "lint-report.xml")
+    bazelBinFolder = tempFolder.newFolder("bazel-bin")
     androidLintAnalyzerWithFakeExecutor = AndroidLintAnalyzer(
       commandExecutor = fakeCommandExecutor,
       workingDirectory = workingDirectory,
       exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
       repoRoot = tempFolder.root,
     )
+    projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
   }
 
   @After
@@ -121,7 +127,7 @@ class AndroidLintRunnerTest {
     val projectDescription = File(workingDirectory, "lint-project-description.xml")
     assertThat(projectDescription.exists()).isTrue()
     val extractedAars = File(workingDirectory, "extracted-aars")
-    val extractedAarFile = File("$extractedAars/app", "test-aar-1.0.0")
+    val extractedAarFile = File("$extractedAars/app", "test-library-1.0.0")
     assertThat(extractedAarFile.exists()).isTrue()
     val lintCacheDirectory = File(workingDirectory, "lint-cache-directory")
     assertThat(lintCacheDirectory.exists()).isTrue()
@@ -161,7 +167,12 @@ class AndroidLintRunnerTest {
       "${tempFolder.root}/$pathToProtoBinary"
     )
 
-    val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion)
+    val result = lintRunner.prepareLintArguments(
+      jdkHome,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion
+    )
 
     val expectedArguments = listOf(
       "-Wall",
@@ -174,7 +185,7 @@ class AndroidLintRunnerTest {
       "--jdk-home", jdkHome.absolutePath,
       "--sdk-home", sdkPath,
       "--compile-sdk-version", buildSdkVersion,
-      "--kotlin-language-level", KOTLIN_LANGUAGE_LEVEL,
+      "--kotlin-language-level", kotlinVersion,
       "--java-language-level", JAVA_VERSION,
       "--project", projectFile.absolutePath,
       "--xml", reportFile.absolutePath
@@ -195,7 +206,12 @@ class AndroidLintRunnerTest {
     )
     val customBuildSdk = TARGET_SDK_VERSION
 
-    val result = lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, customBuildSdk)
+    val result = lintRunner.prepareLintArguments(
+      jdkHome,
+      JAVA_VERSION,
+      customBuildSdk,
+      kotlinVersion
+    )
 
     assertThat(result).asList().contains("--compile-sdk-version")
     val sdkVersionIndex = result.indexOf("--compile-sdk-version")
@@ -220,7 +236,7 @@ class AndroidLintRunnerTest {
       "${tempFolder.root}/$pathToProtoBinary"
     )
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
     assertThat(releaseFile.readText()).isEqualTo(originalContent)
   }
@@ -232,13 +248,15 @@ class AndroidLintRunnerTest {
 
     val reportFile = File(tempFolder.root, "report.xml")
     val projectFile = File(tempFolder.root, "project.xml")
+
     val lintRunner = AndroidLintRunner(
       reportFile,
       projectFile,
       tempFolder.root,
       "${tempFolder.root}/$pathToProtoBinary"
     )
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
+
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isTrue()
@@ -253,7 +271,9 @@ class AndroidLintRunnerTest {
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupProjectStructure()
     val lintRunner = createLintRunner()
-    lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+    lintRunner.runLint(
+      lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+    )
 
     val output = outputStream.toString()
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
@@ -264,7 +284,9 @@ class AndroidLintRunnerTest {
     setupProjectWithMissingTranslation()
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+      lintRunner.runLint(
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+      )
     }
 
     val reportFile = File(workingDirectory, "lint-report.xml")
@@ -307,7 +329,9 @@ class AndroidLintRunnerTest {
     )
 
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+      lintRunner.runLint(
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+      )
     }
 
     assertThat(exception.message).contains("Lint analysis failed with exit code 3")
@@ -347,7 +371,9 @@ class AndroidLintRunnerTest {
     )
 
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+      lintRunner.runLint(
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+      )
     }
     assertThat(exception.message).contains("Lint analysis failed with exit code 5")
     assertThat(exception.message).contains("Invalid command-line argument")
@@ -367,7 +393,9 @@ class AndroidLintRunnerTest {
     )
 
     val exception = assertThrows<IllegalStateException> {
-      lintRunner.runLint(lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion))
+      lintRunner.runLint(
+        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+      )
     }
 
     assertThat(exception.message)
@@ -416,7 +444,7 @@ class AndroidLintRunnerTest {
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isFalse()
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion)
+    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
 
     // Verify release file was created
     assertThat(releaseFile.exists()).isTrue()
@@ -437,7 +465,7 @@ class AndroidLintRunnerTest {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion)
+      lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion, kotlinVersion)
     }
 
     assertThat(exception.message).contains("JDK home path does not exist or is not a directory")
@@ -453,6 +481,9 @@ class AndroidLintRunnerTest {
     assertThat(output)
       .contains("<string name=\"duplicate_value\">Same text</string>")
     assertThat(output).contains("Line: 5")
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -467,6 +498,9 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("Line: 5")
     assertThat(output)
       .contains("This `RelativeLayout` layout or its `FrameLayout` parent is unnecessary")
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -484,13 +518,18 @@ class AndroidLintRunnerTest {
         "This `FrameLayout` view is unnecessary " +
           "(no children, no `background`, no `id`, no `style`)"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withRtlHardCoded_detectsIssue() {
     setupProjectWithRtlHardCoded()
 
-    assertThrows<IllegalArgumentException> { androidLintAnalyzerWithFakeExecutor.runAnalysis() }
+    val exception = assertThrows<IllegalArgumentException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
     val output = reportfile.readText()
     assertThat(output).contains("RtlHardcoded")
     assertThat(output)
@@ -498,47 +537,69 @@ class AndroidLintRunnerTest {
     assertThat(output).contains("line=\"8\"")
     assertThat(output)
       .contains("Using left/right instead of start/end attributes")
+
+    assertThat(exception.message)
+      .contains("Unknown lint issue ID 'RtlHardcoded' found during analysis.")
+
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withRtlSymmetry_detectsIssue() {
     setupProjectWithRtlSymmetry()
-    assertThrows<IllegalArgumentException> { androidLintAnalyzerWithFakeExecutor.runAnalysis() }
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
-    val output = reportfile.readText()
+    val output = outputStream.toString()
     assertThat(output).contains("RtlSymmetry")
     assertThat(output)
-      .contains("android:paddingRight=&quot;120dip&quot;")
-    assertThat(output).contains("line=\"29\"")
+      .contains("android:paddingEnd=\"120dip\"")
+    assertThat(output).contains("Line: 29")
     assertThat(output)
       .contains(
-        "When you define `paddingRight` " +
-          "you should probably also define `paddingLeft` for right-to-left symmetry"
+        "When you define `paddingEnd` you should probably also define " +
+          "`paddingStart` for right-to-left symmetry"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withNewApi_detectsIssue() {
     setupProjectWithNewApi()
-    assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
 
-    val output = reportfile.readText()
+    val output = outputStream.toString()
     assertThat(output).contains("NewApi")
     assertThat(output)
-      .contains("val network = cm.activeNetwork // Error: Requires API 23")
-    assertThat(output).contains("line=\"9\"")
+      .contains("val network = cm.activeNetwork")
+    assertThat(output)
+      .doesNotContain("val network2 = cm.activeNetwork")
+    assertThat(output).contains("Line: 11")
     assertThat(output)
       .contains(
-        "Calling new methods on older versions"
+        "Call requires API level 23 (current min is 21): " +
+          "`android.net.ConnectivityManager#getActiveNetwork`"
       )
+    assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/NewApiUsage.kt")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withInlinedApi_detectsIssue() {
     setupProjectWithInlinedApi()
-    assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalArgumentException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
 
@@ -552,6 +613,15 @@ class AndroidLintRunnerTest {
         "Field requires API level 29 (current min is 21):" +
           " `android.media.MediaFormat#MIMETYPE_AUDIO_AC4`"
       )
+
+    assertThat(exception.message)
+      .contains("Unknown lint issue ID 'InlinedApi' found during analysis.")
+
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/InlinedApiUsage.kt")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -577,6 +647,9 @@ class AndroidLintRunnerTest {
       .contains(
         "Access to `private` constructor of class `AccessTest2` requires synthetic accessor"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/AccessTest.kt")
   }
 
   @Test
@@ -594,6 +667,9 @@ class AndroidLintRunnerTest {
       .contains(
         "Editable text fields should provide an `android:hint`"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   @Test
@@ -610,6 +686,11 @@ class AndroidLintRunnerTest {
       .contains(
         "Attribute `android:theme` is only used by `<include>` tags "
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -628,15 +709,18 @@ class AndroidLintRunnerTest {
         "It will always be more efficient to use more specific change events if you can. " +
           "Rely on `notifyDataSetChanged` as a last resort."
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/androidx/recyclerview/widget/RecyclerView.kt")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/java/org/oppia/android/app/RecyclerViewUsage.kt")
   }
 
   @Test
   fun testAndroidLintAnalyzer_withUseCompoundDrawables_detectsIssue() {
     setupProjectWithUseCompoundDrawables()
 
-    assertThrows<IllegalArgumentException> {
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
-    }
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = reportfile.readText()
     assertThat(output).contains("UseCompoundDrawables")
@@ -647,6 +731,9 @@ class AndroidLintRunnerTest {
       .contains(
         "Node can be replaced by a `TextView` with compound drawables"
       )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
   }
 
   private fun setupProjectWithUseCompoundDrawables() {
@@ -654,22 +741,22 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/layout/compound.xml",
       """
-                    <LinearLayout
-                        xmlns:android="http://schemas.android.com/apk/res/android"
+      <LinearLayout
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
 
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+          <ImageView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:contentDescription="@string/app_name" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                    </LinearLayout>
-                    """
+      </LinearLayout>
+    """
     )
   }
 
@@ -833,23 +920,26 @@ class AndroidLintRunnerTest {
 
   private fun setupProjectWithNewApi() {
     setupProjectStructure()
+
     createFileWithContent(
       "app/src/main/java/org/oppia/android/app/NewApiUsage.kt",
       """
-    package org.oppia.android.test
+      package org.oppia.android.test
 
-    import android.content.Context
-    import android.net.ConnectivityManager
-    import android.os.Build
-
-    fun test(context: Context) {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = cm.activeNetwork // Error: Requires API 23
-        if (Build.VERSION.SDK_INT >= 23) {
-            val network2 = cm.activeNetwork // OK
-        }
-    }
-  """
+      import android.annotation.SuppressLint
+      import android.content.Context
+      import android.net.ConnectivityManager
+      import android.os.Build
+      
+      @SuppressLint("MissingPermission") 
+      fun test(context: Context) {
+          val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+          val network = cm.activeNetwork 
+          if (Build.VERSION.SDK_INT >= 23) {
+              val network2 = cm.activeNetwork // OK
+          }
+      }
+      """.trimIndent()
     )
   }
 
@@ -858,60 +948,59 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/layout/rtl_symmetry.xml",
       """
-        <?xml version="1.0" encoding="utf-8"?>
-          <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-          
-              <ProgressBar
-                  android:id="@+id/loading_progress"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentLeft="true"
-                  android:layout_alignParentTop="true"
-                  android:layout_marginBottom="60dip"
-                  android:layout_marginLeft="40dip"
-                  android:layout_marginTop="40dip"
-                  android:max="10000" />
-          
-              <TextView
-                  android:id="@+id/text"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_alignParentTop="true"
-                  android:layout_alignWithParentIfMissing="true"
-                  android:layout_marginBottom="60dip"
-                  android:layout_marginLeft="40dip"
-                  android:layout_marginTop="40dip"
-                  android:layout_toRightOf="@id/loading_progress"
-                  android:ellipsize="end"
-                  android:maxLines="3"
-                  android:paddingRight="120dip"
-                  android:text="Creating Instant Mix"
-                  android:textAppearance="?android:attr/textAppearanceMedium" />
-          </RelativeLayout>
+      <?xml version="1.0" encoding="utf-8"?>
+      <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
 
-      """
+          <ProgressBar
+              android:id="@+id/loading_progress"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentStart="true"
+              android:layout_alignParentTop="true"
+              android:layout_marginBottom="60dip"
+              android:layout_marginStart="40dip"
+              android:layout_marginTop="40dip"
+              android:max="10000" />
+
+          <TextView
+              android:id="@+id/text"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:layout_alignWithParentIfMissing="true"
+              android:layout_marginBottom="60dip"
+              android:layout_marginStart="40dip"
+              android:layout_marginTop="40dip"
+              android:layout_toEndOf="@id/loading_progress"
+              android:ellipsize="end"
+              android:maxLines="3"
+              android:paddingEnd="120dip"
+              android:text="@string/app_name"
+              android:textAppearance="?android:attr/textAppearanceMedium" />
+      </RelativeLayout>
+    """
     )
 
     createFileWithContent(
       "app/src/main/AndroidManifest.xml",
       """
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-            package="org.oppia.android.app">
-        
-            <application
-                android:supportsRtl="true"
-                android:allowBackup="true"
-                android:label="RTL Test App"
-                android:icon="@mipmap/ic_launcher">
-            </application>
-        
-            <uses-sdk
-                android:minSdkVersion="$MIN_SDK_VERSION"
-                android:targetSdkVersion="$TARGET_SDK_VERSION" />
-        </manifest>
-        """
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="org.oppia.android.app">
+
+        <uses-sdk
+            android:minSdkVersion="$MIN_SDK_VERSION"
+            android:targetSdkVersion="$TARGET_SDK_VERSION" />
+
+        <application
+            android:supportsRtl="true"
+            android:allowBackup="true"
+            android:label="RTL Test App"
+            android:icon="@mipmap/ic_launcher">
+        </application>
+    </manifest>
+    """
     )
   }
 
@@ -982,6 +1071,7 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/values/strings.xml",
       """
+      <?xml version="1.0" encoding="utf-8"?>
       <resources>
           <string name="hello">Hello</string>
           <string name="goodbye">Goodbye</string>
@@ -992,6 +1082,7 @@ class AndroidLintRunnerTest {
     createFileWithContent(
       "app/src/main/res/values-es/strings.xml",
       """
+      <?xml version="1.0" encoding="utf-8"?>
       <resources>
           <string name="goodbye">Adiós</string>
       </resources>
@@ -1050,7 +1141,7 @@ class AndroidLintRunnerTest {
         <root dir="$rootPath"/>
         <sdk dir="$sdkPath"/>
         <module name="app" library="false" android="true" compile-sdk-version="$buildSdkVersion"
-                javaLanguage="$JAVA_VERSION" kotlinLanguage="$KOTLIN_LANGUAGE_LEVEL">
+                javaLanguage="$JAVA_VERSION" kotlinLanguage="$kotlinVersion">
           <manifest file="$rootPath/app/src/main/AndroidManifest.xml"/>
           <src dir="$srcPath"/>
           <resource dir="$rootPath/app/src/main/res"/>
@@ -1068,10 +1159,8 @@ class AndroidLintRunnerTest {
     createModule("domain")
     createModule("testing")
     createModule("data")
-    val aarFile = createTestAarFile("test-aar", "1.0.0")
-    val jarFile = createTestJarFile("test-jar", "1.0.0")
 
-    setupFakeCommandExecutor(aarFile.absolutePath, jarFile.absolutePath)
+    setupFakeCommandExecutor()
   }
 
   private fun createModule(
@@ -1225,22 +1314,29 @@ class AndroidLintRunnerTest {
     )
   }
 
-  private fun setupFakeCommandExecutor(aarPath: String, jarPath: String) {
+  private fun setupFakeCommandExecutor() {
+    val aarPath = createTestAarFile("test-library", "1.0.0").absolutePath
+    val jarPath = createTestJarFile("test-library", "1.0.0").absolutePath
+
     fakeCommandExecutor.registerHandler("bazel") { _, args, outputStream, _ ->
       when {
         args.contains("cquery") && args.contains("deps(//app:*)") -> {
-          outputStream.println(aarPath)
-          outputStream.println(jarPath)
+          val relativeAarPath = File(aarPath).relativeTo(tempFolder.root).path
+          outputStream.println(relativeAarPath)
+          val relativeJarPath = File(jarPath).relativeTo(tempFolder.root).path
+          outputStream.println(relativeJarPath)
           0
         }
         args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
-          // Return empty for other modules
+          // Return some dependencies for other modules
+          outputStream.println("external/junit/junit-4.12.jar")
+          outputStream.println("external/hamcrest/hamcrest-core-1.3.jar")
           0
         }
         args.contains("info") -> {
           outputStream.println("output_base: ${tempFolder.root.absolutePath}/bazel-out")
           outputStream.println("java-home: $jdkHome")
-          outputStream.println("java-runtime: OpenJDK Runtime Environment (build $JAVA_VERSION)")
+          outputStream.println("java-runtime: OpenJDK Runtime Environment (build 11.0.16+8-post)")
           0
         }
         else -> 0
@@ -1249,7 +1345,7 @@ class AndroidLintRunnerTest {
   }
 
   private fun createTestAarFile(libraryName: String, version: String): File {
-    val aarFile = tempFolder.newFile("$libraryName-$version.aar")
+    val aarFile = File(bazelBinFolder, "$libraryName-$version.aar")
 
     ZipOutputStream(FileOutputStream(aarFile)).use { zipOut ->
       // Add AndroidManifest.xml
@@ -1291,7 +1387,7 @@ class AndroidLintRunnerTest {
   }
 
   private fun createTestJarFile(libraryName: String, version: String): File {
-    val jarFile = tempFolder.newFile("$libraryName-$version.jar")
+    val jarFile = File(bazelBinFolder, "$libraryName-$version.jar")
 
     ZipOutputStream(FileOutputStream(jarFile)).use { zipOut ->
       val classEntry = ZipEntry("com/example/$libraryName/Class.class")

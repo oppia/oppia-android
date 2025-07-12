@@ -900,7 +900,7 @@ class LintAnalysisReporterTest {
   }
 
   @Test
-  fun testFindRedundantExemptions_integrationTest_complexScenario() {
+  fun testFindRedundantExemptions_mixedValidAndRedundantExemptions_returnsCorrectRedundancies() {
     val issues = listOf(warningIssue, errorIssue)
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
@@ -1030,6 +1030,9 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("Redundant exemptions")
+    assertThat(output).contains(
+      "Please remove them from scripts/assets/android_lint_exemptions.textproto"
+    )
     assertThat(output).contains("File: file1.xml")
     assertThat(output).contains("  - IssueA")
     assertThat(output).contains("  - IssueB")
@@ -1038,25 +1041,29 @@ class LintAnalysisReporterTest {
   }
 
   @Test
-  fun testFilterExemptedIssues_integrationTest_complexScenario() {
+  fun testFilterExemptedIssues_withExemptions_returnsNonExemptedIssues() {
     val issue1 = warningIssue.copy(
       locations = listOf(
         LintLocation(
-          "$repoRoot/app/src/main/res/values/colors.xml", "5"
+          "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
         )
       )
     )
     val issue2 = errorIssue.copy(
       locations = listOf(
         LintLocation(
-          "$repoRoot/app/src/main/java/MainActivity.kt", "42"
+          "${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42"
         )
       )
     )
     val issue3 = multiLocationIssue.copy(
       locations = listOf(
-        LintLocation("$repoRoot/app/src/main/res/values/strings.xml", "10"),
-        LintLocation("$repoRoot/app/src/main/res/values-es/strings.xml", "15")
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
+        ),
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values-es/strings.xml", "15"
+        )
       )
     )
     val issues = listOf(issue1, issue2, issue3)
