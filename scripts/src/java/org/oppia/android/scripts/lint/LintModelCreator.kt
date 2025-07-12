@@ -43,9 +43,12 @@ class LintModelCreator(
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "34"
 
-    private const val MODEL_CACHE_TTL_HOURS = 24L
+    // Model directories are stable and won't change frequently therefore a longer TTL
+    private const val MODEL_CACHE_TTL_HOURS = 24L // 24 hours
 
     private const val FILE_SEPARATOR = ","
+
+    private const val PROGUARD_CONFIG_PATH = "config/proguard"
   }
 
   private val logger = LintLogger(workingDirectory = modelDir)
@@ -241,14 +244,14 @@ class LintModelCreator(
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
-
+    val buildFolder = escapeXmlAttribute(buildDir.createDirectories().toFile().absolutePath)
     val content =
       """
         <lint-module
             dir="${escapeXmlAttribute(modulePath.toString())}"
             name="${escapeXmlAttribute(moduleConfig.name)}"
             type="${moduleType.name}"
-            buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
+            buildFolder="$buildFolder"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
             partialResultsDir="${escapeXmlAttribute(moduleConfig.partialResultsDir.absolutePath)}"
@@ -270,7 +273,9 @@ class LintModelCreator(
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
 
     val packageName = escapeXmlAttribute(rawPackageName)
-    val proguardAttribute = createProguardAttribute(moduleConfig.proGuardFiles)
+
+    val proguardAttribute = createProguardAttribute(moduleConfig.name)
+
     val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
     )
@@ -378,8 +383,21 @@ class LintModelCreator(
     """.trimIndent()
   }
 
-  private fun createProguardAttribute(proGuardFiles: List<String>): String {
-    return """proguardFiles="${proGuardFiles.joinToString(FILE_SEPARATOR)}" """
+  private fun createProguardAttribute(moduleName: String): String {
+    if (moduleName != ModuleName.APP.moduleName) return ""
+
+    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
+    val proguardFiles = proguardDir
+      .takeIf { it.isDirectory }
+      ?.listFiles { file -> file.name.endsWith(".pro") }
+      ?.map { it.absolutePath }
+      ?: emptyList()
+
+    return if (proguardFiles.isNotEmpty()) {
+      """proguardFiles="${proguardFiles.joinToString(",")}" """
+    } else {
+      ""
+    }.trimEnd()
   }
 
   private fun generateArtifactLibrariesXml(librariesFile: File) {

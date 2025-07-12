@@ -170,9 +170,10 @@ class LintAnalysisReporter {
       "VectorPath" to LintIssueId.VECTOR_PATH,
       "VectorRaster" to LintIssueId.VECTOR_RASTER
     )
-    private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associate {
-      it.value to it.key
-    }
+    private val issueIdToString: Map<LintIssueId, String> = issueIdMapping.entries.associateBy(
+      keySelector = { it.value },
+      valueTransform = { it.key }
+    )
 
     private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
     private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
@@ -255,6 +256,10 @@ class LintAnalysisReporter {
   private fun buildExemptionMap(
     exemptions: List<AndroidLintExemption>
   ): Map<String, Set<LintIssueId>> {
+    if (exemptions.isEmpty()) {
+      return emptyMap()
+    }
+    
     val invalidExemption = exemptions.firstOrNull {
       LintIssueId.ISSUE_UNSPECIFIED in it.lintIssueIdList
     }
@@ -262,7 +267,9 @@ class LintAnalysisReporter {
       "Exemption for file '${invalidExemption!!.exemptedFilePath}' contains invalid IssueId."
     }
 
-    return exemptions.groupBy { it.exemptedFilePath }
+    return exemptions
+      .filter { it.exemptedFilePath.isNotBlank() }
+      .groupBy { it.exemptedFilePath }
       .mapValues { (_, exemptionsForFile) ->
         exemptionsForFile.flatMap { it.lintIssueIdList }.toSet()
       }
@@ -284,10 +291,9 @@ class LintAnalysisReporter {
     val issueIdEnum = getLintIssueIdFromString(issue.id)
 
     return issue.locations.any { location ->
-      exemptionMap.any { (exemptedRelativePath, exemptedIssues) ->
-        val exemptedAbsolutePath = File(repoRoot, exemptedRelativePath).absolutePath
-        location.file == exemptedAbsolutePath && exemptedIssues.contains(issueIdEnum)
-      }
+      val relativePath = File(location.file).toRelativeString(repoRoot)
+      val exemptedIssues = exemptionMap[relativePath]
+      exemptedIssues?.contains(issueIdEnum) == true
     }
   }
 
@@ -303,7 +309,8 @@ class LintAnalysisReporter {
       ?: throw IllegalArgumentException(
         "Unknown lint issue ID '$issueId' found during analysis. " +
           "Please add this issue ID to the LintIssueId enum in the proto definition " +
-          "and update the issueIdMapping in LintAnalysisReporter."
+          "and update the issueIdMapping in LintAnalysisReporter. " +
+          "Available issue IDs: ${issueIdMapping.keys.sorted().joinToString(", ")}"
       )
   }
 
@@ -376,14 +383,14 @@ class LintAnalysisReporter {
     pathToProtoBinary: String = PROTO_BINARY_FILE_PATH
   ): AndroidLintExemptions {
     val protoBinaryFile = File(pathToProtoBinary)
-    val builder = AndroidLintExemptions.getDefaultInstance().newBuilderForType()
 
-    @Suppress("UNCHECKED_CAST")
-    val protoObj: AndroidLintExemptions =
-      FileInputStream(protoBinaryFile).use {
-        builder.mergeFrom(it)
-      }.build() as AndroidLintExemptions
-    return protoObj
+    return try {
+      FileInputStream(protoBinaryFile).use { inputStream ->
+        AndroidLintExemptions.parseFrom(inputStream)
+      }
+    } catch (e: Exception) {
+      throw IllegalStateException("Failed to parse exemption proto file: $pathToProtoBinary", e)
+    }
   }
 
   /**
