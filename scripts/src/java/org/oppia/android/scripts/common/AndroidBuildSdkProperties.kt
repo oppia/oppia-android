@@ -19,6 +19,10 @@ class AndroidBuildSdkProperties {
   val buildToolsVersion: String
     get() = androidSdkProperties.getExpectedProperty("build_tools_version")
 
+  /** The version of the Kotlin compiler used for building. */
+  val kotlinCompilerVersion: String
+    get() = androidSdkProperties.getExpectedProperty("kotlin_compiler_version")
+
   private companion object {
     private const val SDK_INFO_PROPERTIES_PATH = "sdk_info.properties"
 
