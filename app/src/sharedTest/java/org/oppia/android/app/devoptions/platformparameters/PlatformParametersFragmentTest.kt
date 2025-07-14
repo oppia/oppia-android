@@ -3,6 +3,7 @@ package org.oppia.android.app.devoptions.platformparameters
 import android.app.Application
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -474,6 +475,18 @@ class PlatformParametersFragmentTest {
         position = 0,
         expectedValue = expectedValue
       )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_opensDashboard_keyboardIsNotVisible() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val inputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+      val isKeyboardVisible = inputMethodManager.isAcceptingText
+      assertThat(isKeyboardVisible).isFalse()
     }
   }
 
