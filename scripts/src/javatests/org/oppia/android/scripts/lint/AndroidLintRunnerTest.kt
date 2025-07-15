@@ -8,6 +8,9 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
+import org.oppia.android.scripts.proto.AndroidLintExemption
+import org.oppia.android.scripts.proto.AndroidLintExemptions
+import org.oppia.android.scripts.proto.LintIssueId
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
@@ -108,6 +111,7 @@ class AndroidLintRunnerTest {
 
     val output = outputStream.toString()
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(output).contains("Total Issues: 0")
     assertThat(reportfile.exists()).isTrue()
 
     val projectDescription = File(workingDirectory, "lint-project-description.xml")
@@ -474,7 +478,12 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withDuplicateStringResources_detectsIssue() {
     setupProjectWithDuplicateStringIssue()
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
     assertThat(output).contains("DuplicateStrings")
@@ -489,7 +498,12 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withUselessParent_detectsIssue() {
     setupProjectWithUselessParent()
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
     assertThat(output).contains("UselessParent")
@@ -506,7 +520,12 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withUselessLeaf_detectsIssue() {
     setupProjectWithUselessLeaf()
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
     assertThat(output).contains("UselessLeaf")
@@ -549,7 +568,9 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withRtlSymmetry_detectsIssue() {
     setupProjectWithRtlSymmetry()
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
 
     val output = outputStream.toString()
     assertThat(output).contains("RtlSymmetry")
@@ -566,6 +587,9 @@ class AndroidLintRunnerTest {
       .contains("app/src/main/res")
     assertThat(projectDescriptionContent)
       .contains("app/src/main/AndroidManifest.xml")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -628,7 +652,11 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withSyntheticAccessor_detectsIssue() {
     setupProjectWithSyntheticAccessor()
 
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
     assertThat(output).contains("SyntheticAccessor")
@@ -656,7 +684,11 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withLabelFor_detectsIssue() {
     setupProjectWithLabelFor()
 
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
     assertThat(output).contains("LabelFor")
@@ -675,7 +707,12 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withUnusedAttribute_detectsIssue() {
     setupProjectWithUnusedAttribute()
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
     assertThat(output).contains("UnusedAttribute")
@@ -697,8 +734,11 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withNotifyDataSetChanged_detectsIssue() {
     setupProjectWithNotifyDataSetChanged()
 
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
-
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
     val output = outputStream.toString()
     assertThat(output).contains("NotifyDataSetChanged")
     assertThat(output)
@@ -720,7 +760,11 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withUseCompoundDrawables_detectsIssue() {
     setupProjectWithUseCompoundDrawables()
 
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = reportfile.readText()
     assertThat(output).contains("UseCompoundDrawables")
@@ -1201,13 +1245,14 @@ class AndroidLintRunnerTest {
       """
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.oppia.android.$moduleName">
+      package="org.oppia.android.$moduleName"
+      android:versionCode="1"
+      android:versionName="1.0.0">
       <uses-sdk android:minSdkVersion="$MIN_SDK_VERSION" android:targetSdkVersion="$TARGET_SDK_VERSION" />
       <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:label="@string/app_name"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1217,6 +1262,10 @@ class AndroidLintRunnerTest {
     </application>
     </manifest>
       """.trimIndent()
+    )
+    exemptRedundantIssue(
+      LintIssueId.GRADLE_OVERRIDES,
+      "$moduleName/src/main/AndroidManifest.xml"
     )
   }
 
@@ -1284,6 +1333,10 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
+    exemptRedundantIssue(
+      LintIssueId.UNUSED_RESOURCES,
+      "$moduleName/src/main/res/values/strings.xml"
+    )
   }
 
   private fun createFileWithContent(relativePath: String, content: String): File {
@@ -1312,6 +1365,29 @@ class AndroidLintRunnerTest {
       repoRoot = tempFolder.root,
       exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary"
     )
+  }
+
+  /** Exempt redundant issues related to test setup */
+  private fun exemptRedundantIssue(
+    issueId: LintIssueId,
+    exemptedPath: String
+  ) {
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+
+    val builder = if (exemptionFile.exists()) {
+      AndroidLintExemptions.parseFrom(exemptionFile.inputStream()).toBuilder()
+    } else {
+      AndroidLintExemptions.newBuilder()
+    }
+
+    builder.addAndroidLintExemption(
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = exemptedPath
+        addLintIssueId(issueId)
+      }.build()
+    )
+
+    builder.build().writeTo(exemptionFile.outputStream())
   }
 
   private fun setupFakeCommandExecutor() {
