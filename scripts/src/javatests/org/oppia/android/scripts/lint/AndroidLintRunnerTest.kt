@@ -1367,7 +1367,7 @@ class AndroidLintRunnerTest {
     )
   }
 
-  /** Exempt redundant issues related to test setup */
+  /** Exempt redundant issues related to test setup. */
   private fun exemptRedundantIssue(
     issueId: LintIssueId,
     exemptedPath: String
