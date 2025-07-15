@@ -2,8 +2,6 @@ package org.oppia.android.app.profile
 
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -20,18 +18,9 @@ class ProfileChooserActivityPresenter @Inject constructor(
   private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   /** Adds [ProfileChooserFragment] to view. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
-    if (enableOnboardingFlowV2.value) {
+  fun handleOnCreate() {
+    if (!enableOnboardingFlowV2.value) {
       // TODO(#4938): Ensure default profile is present when the admin resets the app data.
-      profileManagementController.updateNewProfileDetails(
-        profileId = profileId,
-        profileType = profileType,
-        newName = "Admin",
-        avatarImagePath = null,
-        colorRgb = -10710042,
-        isAdmin = true
-      )
-    } else {
       // TODO(#482): Ensures that an admin profile is present.
       // This can be removed once the new onboarding flow is finalized, as it will handle the creation of an admin profile.
       profileManagementController.addProfile(

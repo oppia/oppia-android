@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -21,6 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,11 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -84,6 +88,7 @@ class PinSetupFragmentPresenter @Inject constructor(
 
   @Composable
   fun PinSetupScreen(profileId: ProfileId) {
+    val focusManager = LocalFocusManager.current
     var pin by remember { mutableStateOf("") }
     var confirmPin by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
@@ -138,8 +143,16 @@ class PinSetupFragmentPresenter @Inject constructor(
           .padding(bottom = 8.dp),
         textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
         visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-        singleLine = true
+        keyboardOptions = KeyboardOptions(
+          imeAction = ImeAction.Next,
+          keyboardType = KeyboardType.NumberPassword
+        ),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+          unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
+          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
+          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
+        )
       )
 
       Text(
@@ -160,9 +173,28 @@ class PinSetupFragmentPresenter @Inject constructor(
           .fillMaxWidth()
           .padding(bottom = 8.dp),
         textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
+        singleLine = true,
         visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-        singleLine = true
+        keyboardOptions = KeyboardOptions(
+          imeAction = ImeAction.Done,
+          keyboardType = KeyboardType.NumberPassword
+        ),
+        keyboardActions = KeyboardActions(
+          onDone = {
+            validatePinOrShowError(
+              pin,
+              confirmPin,
+              setShowError = { showError = it },
+              setErrorMessage = { errorMessage = it }
+            )
+            focusManager.clearFocus()
+          }
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+          unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
+          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
+          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
+        )
       )
 
       Spacer(modifier = Modifier.height(16.dp))
@@ -197,11 +229,15 @@ class PinSetupFragmentPresenter @Inject constructor(
 
         Button(
           onClick = {
-            val (hasError, validationMessage) = showPinValidationError(pin, confirmPin)
-            showError = hasError
-            errorMessage = validationMessage ?: ""
+            val isValidPin = validatePinOrShowError(
+              pin,
+              confirmPin,
+              setShowError = { showError = it },
+              setErrorMessage = { errorMessage = it }
+            )
 
-            if (!showError) {
+            if (isValidPin) {
+              showError = false
               updatePin(profileId, pin)
             }
           },
@@ -236,30 +272,50 @@ class PinSetupFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun showPinValidationError(pin: String, confirmPin: String): Pair<Boolean, String?> {
+  private fun validatePinOrShowError(
+    pin: String,
+    confirmPin: String,
+    setShowError: (Boolean) -> Unit,
+    setErrorMessage: (String) -> Unit
+  ): Boolean {
     val isValidPin = pin.length == 5 && pin.all(Char::isDigit)
     val isValidConfirmPin = confirmPin.length == 5 && confirmPin.all(Char::isDigit)
 
     return when {
-      !isValidPin || !isValidConfirmPin -> true to resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_length_error
-      )
-
-      pin != confirmPin -> true to resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_mismatch_error
-      )
-
-      else -> false to null
+      !isValidPin || !isValidConfirmPin -> {
+        setShowError(true)
+        setErrorMessage(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.pin_setup_activity_length_error
+          )
+        )
+        false
+      }
+      pin != confirmPin -> {
+        setShowError(true)
+        setErrorMessage(
+          resourceHandler.getStringInLocaleWithWrapping(
+            R.string.pin_setup_activity_mismatch_error
+          )
+        )
+        false
+      }
+      else -> {
+        setShowError(false)
+        setErrorMessage("")
+        true
+      }
     }
   }
 
   private fun updatePin(profileId: ProfileId, pin: String) {
     profileManagementController.updatePin(profileId, pin).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
-        intent.decorateWithUserProfileId(profileId)
+        val intent = ProfileChooserActivity.createProfileChooserActivity(activity).also { intent ->
+          intent.decorateWithUserProfileId(profileId)
+        }
         fragment.startActivity(intent)
-        // We don't want the user to be able to go back to the onboarding screens.
+        // We don't want the user to be able to revisit the onboarding screens after this last step.
         fragment.activity?.finishAffinity()
       }
     }

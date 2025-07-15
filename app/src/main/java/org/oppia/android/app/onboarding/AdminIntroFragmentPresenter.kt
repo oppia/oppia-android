@@ -56,10 +56,6 @@ import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
-// TODO(#4938): Remove
-/** Argument key for [ProfileChooserActivity] intent parameters. */
-const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
-
 /** Test tag for the otter image. */
 const val OTTER_TEST_TAG = "TEST_TAG.otter"
 
@@ -288,9 +284,10 @@ class AdminIntroFragmentPresenter @Inject constructor(
       }
     }
   }
-
-  // TODO(#4938): Refactor to: create profile nickname screen, the next onboarding step.
-  private fun navigateToCreateProfileNicknameActivity(profileId: ProfileId, profileType: ProfileType) {
+  private fun navigateToCreateProfileNicknameActivity(
+    profileId: ProfileId,
+    profileType: ProfileType
+  ) {
     val intent = CreateProfileActivity.createProfileActivityIntent(activity)
     intent.apply {
       decorateWithUserProfileId(profileId)
