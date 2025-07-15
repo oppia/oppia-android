@@ -43,9 +43,12 @@ class LintModelCreator(
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "34"
 
-    private const val PROGUARD_CONFIG_PATH = "config/proguard"
+    // Model directories are stable and won't change frequently therefore a longer TTL
+    private const val MODEL_CACHE_TTL_HOURS = 24L // 24 hours
 
-    private const val MODEL_CACHE_TTL_HOURS = 24L
+    private const val FILE_SEPARATOR = ","
+
+    private const val PROGUARD_CONFIG_PATH = "config/proguard"
   }
 
   private val logger = LintLogger(workingDirectory = modelDir)
@@ -66,12 +69,12 @@ class LintModelCreator(
     }
     val modelPath = modelDir.toPath().createDirectories()
     val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
-    val relativeProjectPath = modelPath.absolute().relativize(repoRoot.toPath().absolute())
+    val modulePath = File(repoRoot, moduleConfig.name).toPath().absolute()
 
     generateModuleXml(
       modelPath.resolve(MODULE_XML_FILE).toFile(),
       moduleConfig,
-      relativeProjectPath,
+      modulePath,
       buildDir
     )
 
@@ -235,23 +238,23 @@ class LintModelCreator(
   private fun generateModuleXml(
     moduleFile: File,
     moduleConfig: ModuleConfig,
-    relativeProjectPath: Path,
+    modulePath: Path,
     buildDir: Path
   ) {
     val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
-
+    val buildFolder = escapeXmlAttribute(buildDir.createDirectories().toFile().absolutePath)
     val content =
       """
         <lint-module
-            dir="${escapeXmlAttribute(relativeProjectPath.toString())}"
+            dir="${escapeXmlAttribute(modulePath.toString())}"
             name="${escapeXmlAttribute(moduleConfig.name)}"
             type="${moduleType.name}"
-            maven="__non_maven__"
-            buildFolder="${escapeXmlAttribute(buildDir.toFile().absolutePath)}"
+            buildFolder="$buildFolder"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
+            partialResultsDir="${escapeXmlAttribute(moduleConfig.partialResultsDir.absolutePath)}"
             neverShrinking="true">
             <lintOptions />
             <variant name="main"/>
@@ -270,7 +273,9 @@ class LintModelCreator(
       ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
 
     val packageName = escapeXmlAttribute(rawPackageName)
+
     val proguardAttribute = createProguardAttribute(moduleConfig.name)
+
     val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
     )
@@ -287,7 +292,8 @@ class LintModelCreator(
             $proguardAttribute>
             <buildFeatures
                 coreLibraryDesugaring="true" 
-                viewBinding="true" />
+                viewBinding="true"
+                namespacing="REQUIRED" />
             <sourceProviders>
                 ${generateMainSourceProvider(moduleConfig)}
             </sourceProviders>
@@ -320,7 +326,7 @@ class LintModelCreator(
         .map { escapeXmlAttribute(File(it).absolutePath) }
         .filter { it.contains("/src/main/") }
       if (mainResDirs.isNotEmpty()) {
-        add("""resDirectories="${mainResDirs.joinToString(",")}"""")
+        add("""resDirectories="${mainResDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
       val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
@@ -345,14 +351,14 @@ class LintModelCreator(
       ).filter { File(it).exists() }
 
       if (testJavaDirs.isNotEmpty()) {
-        add("""javaDirectories="${testJavaDirs.joinToString(",")}"""")
+        add("""javaDirectories="${testJavaDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
       val testResDirs = moduleConfig.resourceDirs
         .map { File(it).absolutePath }
         .filter { it.contains("/src/test/") }
       if (testResDirs.isNotEmpty()) {
-        add("""resDirectories="${testResDirs.joinToString(",")}"""")
+        add("""resDirectories="${testResDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
       val testAssetsDir = File(repoRoot, "${moduleConfig.name}/src/test/assets")

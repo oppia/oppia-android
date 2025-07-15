@@ -15,15 +15,19 @@ import com.android.tools.lint.Main as LintCli
 
 /** The default timeout duration for executing external processes. */
 private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
+/** Default path to the exemption .pb file. */
+private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemptions.pb"
 
 /**
  * The main entrypoint to analyze the codebase for Android Lint issues.
  *
  * Usage:
- *   bazel run //scripts:android_lint_check -- <path_to_repository_root> [--group_by_severity] [--processTimeout=<minutes>]
+ *   bazel run //scripts:android_lint_check -- <path_to_repository_root>
+ *   <path_to_proto_binary> [--group_by_severity] [--processTimeout=<minutes>]
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
+ * - path_to_proto_binary: Relative path to the exemption .pb file.
  * - --group_by_severity: Optional flag to group issues by severity
  * - --processTimeout=<minutes>: Process timeout in minutes
  *
@@ -41,7 +45,17 @@ fun main(vararg args: String) {
   require(repoRoot.exists()) {
     "Repository root path does not exist: ${args[0]}"
   }
-
+  val exemptionProtoPath = if (args.size > 1) {
+    val providedPath = args[1]
+    if (!providedPath.endsWith(".pb")) {
+      throw IllegalArgumentException(
+        "Invalid exemption file: $providedPath. The file must have a .pb extension."
+      )
+    }
+    providedPath
+  } else {
+    DEFAULT_PROTO_BINARY_PATH
+  }
   val groupByIssueSeverity = args.contains("--group_by_severity")
   val processTimeout = args.find { it.startsWith("--processTimeout=") }
     ?.substringAfter("=")
@@ -63,6 +77,7 @@ fun main(vararg args: String) {
       repoRoot = repoRoot,
       workingDirectory = workingDirectory,
       commandExecutor = commandExecutor,
+      exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity
     )
 
@@ -82,6 +97,7 @@ class AndroidLintAnalyzer(
   private val repoRoot: File,
   private val workingDirectory: File,
   private val commandExecutor: CommandExecutor,
+  private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false
 ) {
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
@@ -97,6 +113,8 @@ class AndroidLintAnalyzer(
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile,
+      repoRoot = repoRoot,
+      exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity
     )
     val sdkProperties = AndroidBuildSdkProperties()
@@ -144,6 +162,8 @@ class AndroidLintAnalyzer(
 class AndroidLintRunner(
   private val reportFile: File,
   private val projectDescriptionFile: File,
+  private val repoRoot: File,
+  private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false
 ) {
   companion object {
@@ -180,10 +200,7 @@ class AndroidLintRunner(
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
 
-    val reporter = LintAnalysisReporter()
-    val issues = reporter.parseLintReport(reportFile.absolutePath)
-
-    reporter.printLintReport(issues, groupByIssueSeverity)
+    reportLintIssues()
   }
 
   /**
@@ -216,6 +233,29 @@ class AndroidLintRunner(
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath
     )
+  }
+
+  private fun reportLintIssues() {
+    val reporter = LintAnalysisReporter()
+    val allIssues = reporter.parseLintReport(reportFile.absolutePath)
+    require(File(exemptionProtoPath).exists()) {
+      "Exemption file does not exist: $exemptionProtoPath"
+    }
+    val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
+    val filteredIssues = reporter.filterExemptedIssues(
+      issues = allIssues,
+      exemptions = exemptions.androidLintExemptionList,
+      repoRoot = repoRoot
+    )
+    val redundantExemptions = reporter.findRedundantExemptions(
+      issues = allIssues,
+      exemptions = exemptions.androidLintExemptionList,
+      repoRoot = repoRoot
+    )
+    if (redundantExemptions.isNotEmpty()) {
+      reporter.logRedundantExemptions(redundantExemptions)
+    }
+    reporter.printLintReport(filteredIssues, groupByIssueSeverity)
   }
 
   /**
