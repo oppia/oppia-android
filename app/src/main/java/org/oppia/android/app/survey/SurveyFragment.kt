@@ -63,15 +63,18 @@ class SurveyFragment :
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-
-    val args = arguments!!.getProto(
+    val arguments = checkNotNull(arguments) {
+      "Expected arguments to be passed to SurveyFragment."
+    }
+    val args = arguments.getProto(
       SURVEY_FRAGMENT_ARGUMENTS_KEY,
       SurveyFragmentArguments.getDefaultInstance()
     )
 
-    val internalProfileId = arguments!!.extractCurrentUserProfileId().internalId
-    val topicId = args.topicId!!
-    val explorationId = args.explorationId!!
+    val profileId = arguments.extractCurrentUserProfileId()
+    val internalProfileId = profileId.internalId
+    val topicId = args.topicId
+    val explorationId = args.explorationId
 
     return surveyFragmentPresenter.handleCreateView(
       inflater,
