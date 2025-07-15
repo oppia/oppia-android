@@ -11,6 +11,7 @@ import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersComple
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedActivity
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.DEVELOPER_OPTIONS_ACTIVITY
@@ -31,7 +32,8 @@ class DeveloperOptionsActivity :
   RouteToViewEventLogsListener,
   RouteToForceNetworkTypeListener,
   RouteToMathExpressionParserTestListener,
-  RouteToFeatureFlagsListener {
+  RouteToFeatureFlagsListener,
+  RouteToPlatformParametersListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -82,6 +84,12 @@ class DeveloperOptionsActivity :
   override fun routeToFeatureFlags() {
     startActivity(
       FeatureFlagsActivity.createFeatureFlagsActivityIntent(this)
+    )
+  }
+
+  override fun routeToPlatformParameters() {
+    startActivity(
+      PlatformParametersActivity.createPlatformParametersActivityIntent(this)
     )
   }
 

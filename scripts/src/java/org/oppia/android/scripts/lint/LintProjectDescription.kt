@@ -222,6 +222,7 @@ class LintProjectDescription(
     private const val LINT_CACHE_DIRECTORY_NAME = "lint-cache-directory"
     private const val EXTRACTED_AARS_DIRECTORY_NAME = "extracted-aars"
     private const val LINT_MODELS_DIRECTORY = "models-directory"
+    private const val PARTIAL_RESULTS_DIRECTORY = "partial-results-directory"
 
     /**
      * Ensures a directory exists, creating it if necessary.
@@ -252,10 +253,13 @@ class LintProjectDescription(
     val extractedAarsDirectory =
       ensureDirectoryExists(File(workingDirectory, EXTRACTED_AARS_DIRECTORY_NAME))
     val modelsDirectory = ensureDirectoryExists(File(workingDirectory, LINT_MODELS_DIRECTORY))
+    val partialResultsDirectory = ensureDirectoryExists(
+      File(workingDirectory, PARTIAL_RESULTS_DIRECTORY)
+    )
 
     val moduleConfigBuilder = ModuleConfigurationBuilder(
       repoRoot, bazelClient, extractedAarsDirectory,
-      modelsDirectory,
+      modelsDirectory, partialResultsDirectory,
       cacheManager,
       logger
     )
@@ -294,6 +298,8 @@ class LintProjectDescription(
 
     appendLine("""    model="${config.lintModelDir?.absolutePath}"""")
 
+    appendLine("""    partial-results="${config.partialResultsDir.absolutePath}"""")
+
     appendLine("""    desugar="full">""")
 
     appendLine("""    <manifest file="${config.manifestFile}"/>""")
@@ -320,12 +326,20 @@ class LintProjectDescription(
       )
     }
 
+    config.proGuardFiles.forEach { proGuardFile ->
+      appendLine("""    <proguard file="$proGuardFile"/>""")
+    }
+
     config.jarFiles.forEach { jarFile ->
       appendLine("""    <classpath jar="$jarFile"/>""")
     }
 
     config.lintCheckJars.forEach { lintCheckJar ->
       appendLine("""    <lint-checks jar="$lintCheckJar"/>""")
+    }
+
+    config.annotationZips.forEach { annotationZip ->
+      appendLine("""    <annotations file="$annotationZip"/>""")
     }
 
     appendLine("  </module>")
@@ -351,8 +365,9 @@ private class ModuleConfigurationBuilder(
   bazelClient: BazelClient,
   extractedAarsDirectory: File,
   private val modelsDirectory: File,
+  private val partialResultsDirectory: File,
   cacheManager: CacheManager,
-  logger: LintLogger,
+  private val logger: LintLogger,
 ) {
 
   companion object {
@@ -391,11 +406,24 @@ private class ModuleConfigurationBuilder(
     val sourceCollector = SourceFileCollector(repoRoot, module)
     val (testFiles, srcFiles) = sourceCollector.collectSourceFiles()
       .partition { path ->
-        path.endsWith("Test.kt") ||
-          path.contains("/test/") ||
+        path.contains("/test/") ||
           path.contains("/sharedTest/")
       }
-
+    val partialResultDir = File(
+      partialResultsDirectory, "${module.moduleName}-partial-results"
+    ).apply {
+      if (!exists() && !mkdirs()) {
+        throw IllegalStateException("Failed to create partial results directory: $absolutePath")
+      }
+    }
+    val annotationZips = try {
+      dependencyResolver.extractAnnotationZips(
+        dependencyResolver.resolveAarFiles(module)
+      )
+    } catch (e: Exception) {
+      logger.logError("Failed to extract annotation zips: ${e.message}")
+      emptyList()
+    }
     return ModuleConfig(
       name = module.moduleName,
       isAndroid = true,
@@ -411,6 +439,9 @@ private class ModuleConfigurationBuilder(
       lintCheckJars = dependencyResolver.extractLintCheckJars(
         dependencyResolver.resolveAarFiles(module)
       ),
+      partialResultsDir = partialResultDir,
+      annotationZips = annotationZips,
+      proGuardFiles = sourceCollector.collectProGuardFiles(module.moduleName)
     )
   }
 
@@ -443,11 +474,18 @@ private class ModuleConfigurationBuilder(
 
 /** Helper class for collecting source files and resources for a module. */
 private class SourceFileCollector(
-  repoRoot: File,
+  private val repoRoot: File,
   module: ModuleName
 ) {
   companion object {
     private val SOURCE_EXTENSIONS = setOf("kt", "java")
+    private const val PROGUARD_CONFIG_PATH = "config/proguard"
+
+    // This file is Bazel-specific and used solely for running tests.
+    // Lint reports it as being in an incorrect project location as it's not part of the standard source set.
+    // Since the lint tool does not analyze this file, we explicitly exclude it
+    // similar to how Gradle source sets exclude this file.
+    private const val EXCLUDED_SOURCE_FILE = "DataBinderMapperImpl.java"
   }
 
   private val moduleName = module.moduleName
@@ -465,13 +503,29 @@ private class SourceFileCollector(
     }
   }
 
+  /** Collects the proguard files for the module. */
+  fun collectProGuardFiles(moduleName: String): List<String> {
+    if (moduleName != ModuleName.APP.moduleName) return emptyList()
+
+    val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
+
+    return proguardDir
+      .takeIf { it.isDirectory && it.exists() }
+      ?.listFiles { file -> file.name.endsWith(".pro") }
+      ?.map { it.absolutePath }
+      ?: emptyList()
+  }
+
   private fun collectFilesFromDirectory(directory: File): List<String> {
     require(directory.exists() && directory.isDirectory) {
       throw IllegalStateException("Source directory does not exist at: $directory")
     }
 
     return directory.walkTopDown()
-      .filter { it.isFile && it.extension in SOURCE_EXTENSIONS }
+      .filter {
+        it.isFile && it.extension in SOURCE_EXTENSIONS &&
+          it.name != EXCLUDED_SOURCE_FILE
+      }
       .map { it.absolutePath }
       .toList()
   }
@@ -519,6 +573,21 @@ private class DependencyResolver(
     aarFiles.mapNotNull { aarInfo ->
       val lintJar = File(aarInfo.extractedPath, "lint.jar")
       if (lintJar.exists()) lintJar.absolutePath else null
+    }
+
+  /** Extracts annotation zip files from the given list of AAR files. */
+  fun extractAnnotationZips(aarFiles: List<AarFileInfo>): List<String> =
+    aarFiles.mapNotNull { aarInfo ->
+      val extractedDir = File(aarInfo.extractedPath)
+      if (!extractedDir.exists() || !extractedDir.isDirectory) {
+        throw IllegalArgumentException(
+          "AAR extracted path does not exist or " +
+            "is not a directory: ${aarInfo.extractedPath}"
+        )
+      }
+
+      val annotationZip = File(extractedDir, "annotations.zip")
+      if (annotationZip.exists()) annotationZip.absolutePath else null
     }
 
   private fun getDependenciesWithCache(moduleName: String): List<String> =

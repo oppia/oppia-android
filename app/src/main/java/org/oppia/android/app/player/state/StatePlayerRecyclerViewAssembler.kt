@@ -114,6 +114,8 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.ImageTagHandler
 import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -1104,7 +1106,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val userAnswerState: UserAnswerState,
     private val consoleLogger: ConsoleLogger,
     private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
-    private val solutionViewModelFactory: SolutionViewModel.Factory
+    private val solutionViewModelFactory: SolutionViewModel.Factory,
+    private val enableFlashbackSupport: PlatformParameterValue<Boolean>
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1334,18 +1337,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
     /** Adds support for navigating to flashback state. */
     fun addRedirectionSupport(): Builder {
-      adapterBuilder.registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.FLASHBACK_BUTTON,
-        inflateDataBinding = FlashbackButtonItemBinding::inflate,
-        setViewModel = FlashbackButtonItemBinding::setButtonViewModel,
-        transformViewModel = { it as FlashbackButtonViewModel }
-      ).registerViewDataBinder(
-        viewType = StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON,
-        inflateDataBinding = ReturnToQuestionButtonItemBinding::inflate,
-        setViewModel = ReturnToQuestionButtonItemBinding::setButtonViewModel,
-        transformViewModel = { it as ReturnToQuestionViewModel }
-      )
-      featureSets += PlayerFeatureSet(flashbackNavigationSupport = true)
+      if (enableFlashbackSupport.value) {
+        adapterBuilder.registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.FLASHBACK_BUTTON,
+          inflateDataBinding = FlashbackButtonItemBinding::inflate,
+          setViewModel = FlashbackButtonItemBinding::setButtonViewModel,
+          transformViewModel = { it as FlashbackButtonViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON,
+          inflateDataBinding = ReturnToQuestionButtonItemBinding::inflate,
+          setViewModel = ReturnToQuestionButtonItemBinding::setButtonViewModel,
+          transformViewModel = { it as ReturnToQuestionViewModel }
+        )
+        featureSets += PlayerFeatureSet(flashbackNavigationSupport = true)
+      }
       return this
     }
 
@@ -1683,7 +1688,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
       private val consoleLogger: ConsoleLogger,
       private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
-      private val solutionViewModelFactory: SolutionViewModel.Factory
+      private val solutionViewModelFactory: SolutionViewModel.Factory,
+      @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1712,7 +1718,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           userAnswerState,
           consoleLogger,
           conceptCardTagHandlerFactory,
-          solutionViewModelFactory
+          solutionViewModelFactory,
+          enableFlashbackSupport
         )
       }
     }

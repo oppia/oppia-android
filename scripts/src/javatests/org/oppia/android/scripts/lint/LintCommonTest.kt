@@ -7,12 +7,13 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.File
-import java.util.Locale
 
-/** Tests for [LintCommonTest]. */
+/** Tests for [LintCommon]. */
 @Suppress("FunctionName")
 class LintCommonTest {
-  @field:[Rule JvmField] val tempFolder = TemporaryFolder()
+  @field:[Rule JvmField]
+  val tempFolder = TemporaryFolder()
+
   private lateinit var workingDirectory: File
 
   @Before
@@ -21,163 +22,159 @@ class LintCommonTest {
   }
 
   @Test
-  fun testModuleName_app_hasCorrectModuleName() {
-    val appModule = ModuleName.APP
-
-    assertThat(appModule.moduleName).isEqualTo("app")
+  fun testModuleName_allModules_haveCorrectNames() {
+    assertThat(ModuleName.APP.moduleName).isEqualTo("app")
+    assertThat(ModuleName.DOMAIN.moduleName).isEqualTo("domain")
+    assertThat(ModuleName.TESTING.moduleName).isEqualTo("testing")
+    assertThat(ModuleName.UTILITY.moduleName).isEqualTo("utility")
+    assertThat(ModuleName.DATA.moduleName).isEqualTo("data")
   }
 
   @Test
-  fun testModuleName_domain_hasCorrectModuleName() {
-    val domainModule = ModuleName.DOMAIN
-
-    assertThat(domainModule.moduleName).isEqualTo("domain")
+  fun testModuleName_applicationModule_isAppModule() {
+    assertThat(ModuleName.APPLICATION_MODULE).isEqualTo(ModuleName.APP)
+    assertThat(ModuleName.APPLICATION_MODULE.moduleName).isEqualTo("app")
   }
 
   @Test
-  fun testModuleName_testing_hasCorrectModuleName() {
-    val testingModule = ModuleName.TESTING
-
-    assertThat(testingModule.moduleName).isEqualTo("testing")
-  }
-
-  @Test
-  fun testModuleName_utility_hasCorrectModuleName() {
-    val utilityModule = ModuleName.UTILITY
-
-    assertThat(utilityModule.moduleName).isEqualTo("utility")
-  }
-
-  @Test
-  fun testModuleName_data_hasCorrectModuleName() {
-    val dataModule = ModuleName.DATA
-
-    assertThat(dataModule.moduleName).isEqualTo("data")
-  }
-
-  @Test
-  fun testModuleName_applicationModule_returnsAppModule() {
-    val applicationModule = ModuleName.APPLICATION_MODULE
-
-    assertThat(applicationModule).isEqualTo(ModuleName.APP)
-    assertThat(applicationModule.moduleName).isEqualTo("app")
-  }
-
-  @Test
-  fun testModuleName_libraryModules_containsAllLibraryModules() {
+  fun testModuleName_libraryModules_containsExpectedModules() {
     val libraryModules = ModuleName.LIBRARY_MODULES
+    val expectedModules =
+      listOf(ModuleName.DOMAIN, ModuleName.TESTING, ModuleName.UTILITY, ModuleName.DATA)
 
-    assertThat(libraryModules).hasSize(4)
-    assertThat(libraryModules).contains(ModuleName.DOMAIN)
-    assertThat(libraryModules).contains(ModuleName.TESTING)
-    assertThat(libraryModules).contains(ModuleName.UTILITY)
-    assertThat(libraryModules).contains(ModuleName.DATA)
-  }
-
-  @Test
-  fun testModuleName_libraryModules_doesNotContainAppModule() {
-    val libraryModules = ModuleName.LIBRARY_MODULES
-
+    assertThat(libraryModules).containsExactlyElementsIn(expectedModules)
     assertThat(libraryModules).doesNotContain(ModuleName.APP)
   }
 
   @Test
-  fun testModuleConfig_createWithAllParameters_setsAllProperties() {
-    val aarFileInfo = AarFileInfo("original/path", "extracted/path")
-    val moduleConfig = ModuleConfig(
-      name = "test-module",
-      isAndroid = true,
-      isLibrary = false,
-      isTest = true,
-      srcFiles = listOf("src/main/java/Test.kt"),
-      testFiles = listOf("src/test/java/TestTest.kt"),
-      resourceDirs = listOf("src/main/res"),
-      manifestFile = "src/main/AndroidManifest.xml",
-      dependencies = listOf("dependency1", "dependency2"),
-      aarFiles = listOf(aarFileInfo),
-      jarFiles = listOf("test.jar"),
-      lintCheckJars = listOf("lint-check.jar"),
-      lintModelDir = workingDirectory
-    )
+  fun testModuleConfig_validConfiguration_createsSuccessfully() {
+    val config = createValidModuleConfig()
 
-    assertThat(moduleConfig.name).isEqualTo("test-module")
-    assertThat(moduleConfig.isAndroid).isTrue()
-    assertThat(moduleConfig.isLibrary).isFalse()
-    assertThat(moduleConfig.isTest).isTrue()
-    assertThat(moduleConfig.srcFiles).containsExactly("src/main/java/Test.kt")
-    assertThat(moduleConfig.testFiles).containsExactly("src/test/java/TestTest.kt")
-    assertThat(moduleConfig.resourceDirs).containsExactly("src/main/res")
-    assertThat(moduleConfig.manifestFile).isEqualTo("src/main/AndroidManifest.xml")
-    assertThat(moduleConfig.dependencies).containsExactly("dependency1", "dependency2")
-    assertThat(moduleConfig.aarFiles).containsExactly(aarFileInfo)
-    assertThat(moduleConfig.jarFiles).containsExactly("test.jar")
-    assertThat(moduleConfig.lintCheckJars).containsExactly("lint-check.jar")
-    assertThat(moduleConfig.lintModelDir).isEqualTo(workingDirectory)
+    assertThat(config.name).isEqualTo("test-module")
+    assertThat(config.isAndroid).isTrue()
+    assertThat(config.isLibrary).isFalse()
+    assertThat(config.isTest).isTrue()
+    assertThat(config.lintModelDir).isNotNull()
   }
 
   @Test
-  fun testModuleConfig_createWithDefaultLintModelDir_hasNullLintModelDir() {
-    val moduleConfig = ModuleConfig(
-      name = "test-module",
-      isAndroid = true,
-      isLibrary = false,
-      isTest = false,
-      srcFiles = emptyList(),
-      testFiles = emptyList(),
-      resourceDirs = emptyList(),
-      manifestFile = "",
-      dependencies = emptyList(),
-      aarFiles = emptyList(),
-      jarFiles = emptyList(),
-      lintCheckJars = emptyList()
-    )
+  fun testModuleConfig_defaultLintModelDir_isNull() {
+    val config = createMinimalModuleConfig()
 
-    assertThat(moduleConfig.lintModelDir).isNull()
+    assertThat(config.lintModelDir).isNull()
   }
 
   @Test
-  fun testModuleConfig_createLibraryModule_hasCorrectLibraryFlag() {
-    val moduleConfig = createTestModuleConfig("utility", isLibrary = true)
+  fun testModuleConfig_blankName_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(name = "")
+    }
 
-    assertThat(moduleConfig.isLibrary).isTrue()
-    assertThat(moduleConfig.name).isEqualTo("utility")
+    assertThat(exception).hasMessageThat().contains("Module name cannot be blank")
   }
 
   @Test
-  fun testModuleConfig_createAppModule_hasCorrectLibraryFlag() {
-    val moduleConfig = createTestModuleConfig("app", isLibrary = false)
+  fun testModuleConfig_nonExistentProGuardFile_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(proGuardFiles = listOf("/non/existent/proguard.pro"))
+    }
 
-    assertThat(moduleConfig.isLibrary).isFalse()
-    assertThat(moduleConfig.name).isEqualTo("app")
+    assertThat(exception).hasMessageThat().contains("ProGuard files do not exist")
+    assertThat(exception).hasMessageThat().contains("/non/existent/proguard.pro")
   }
 
   @Test
-  fun testAarFileInfo_createWithPaths_setsCorrectPaths() {
-    val aarFileInfo = AarFileInfo(
+  fun testModuleConfig_nonExistentAarFile_throwsException() {
+    val nonExistentAar =
+      AarFileInfo("/non/existent/test.aar", "extracted/path")
+
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(aarFiles = listOf(nonExistentAar))
+    }
+
+    assertThat(exception).hasMessageThat().contains("AAR files do not exist")
+    assertThat(exception).hasMessageThat().contains("/non/existent/test.aar")
+  }
+
+  @Test
+  fun testModuleConfig_nonExistentResourceDir_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(resourceDirs = listOf("/non/existent/res"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("Missing or invalid resource directories")
+  }
+
+  @Test
+  fun testModuleConfig_nonExistentSourceFiles_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(srcFiles = listOf("/non/existent/Source.kt"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("Missing source files")
+  }
+
+  @Test
+  fun testModuleConfig_nonExistentTestFiles_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(testFiles = listOf("/non/existent/Test.kt"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("Missing test files")
+  }
+
+  @Test
+  fun testModuleConfig_nonExistentJarFiles_throwsException() {
+    val exception = assertThrows<IllegalArgumentException> {
+      createMinimalModuleConfig(jarFiles = listOf("/non/existent/lib.jar"))
+    }
+
+    assertThat(exception).hasMessageThat().contains("Missing JAR files")
+  }
+
+  @Test
+  fun testModuleConfig_libraryModule_hasCorrectFlags() {
+    val config = createMinimalModuleConfig(name = "utility", isLibrary = true)
+
+    assertThat(config.isLibrary).isTrue()
+    assertThat(config.name).isEqualTo("utility")
+  }
+
+  @Test
+  fun testModuleConfig_appModule_hasCorrectFlags() {
+    val config = createMinimalModuleConfig(name = "app", isLibrary = false)
+
+    assertThat(config.isLibrary).isFalse()
+    assertThat(config.name).isEqualTo("app")
+  }
+
+  @Test
+  fun testAarFileInfo_creation_setsCorrectPaths() {
+    val aarInfo = AarFileInfo(
       originalPath = "/original/path/library.aar",
       extractedPath = "/extracted/path/library"
     )
 
-    assertThat(aarFileInfo.originalPath).isEqualTo("/original/path/library.aar")
-    assertThat(aarFileInfo.extractedPath).isEqualTo("/extracted/path/library")
+    assertThat(aarInfo.originalPath).isEqualTo("/original/path/library.aar")
+    assertThat(aarInfo.extractedPath).isEqualTo("/extracted/path/library")
   }
 
   @Test
-  fun testAarFileInfo_createMultipleInstances_maintainsIndependentPaths() {
-    val aarFileInfo1 = AarFileInfo("path1/lib1.aar", "extracted1/lib1")
-    val aarFileInfo2 = AarFileInfo("path2/lib2.aar", "extracted2/lib2")
+  fun testAarFileInfo_multipleInstances_maintainIndependentPaths() {
+    val aar1 = AarFileInfo("path1/lib1.aar", "extracted1/lib1")
+    val aar2 = AarFileInfo("path2/lib2.aar", "extracted2/lib2")
 
-    assertThat(aarFileInfo1.originalPath).isEqualTo("path1/lib1.aar")
-    assertThat(aarFileInfo1.extractedPath).isEqualTo("extracted1/lib1")
-    assertThat(aarFileInfo2.originalPath).isEqualTo("path2/lib2.aar")
-    assertThat(aarFileInfo2.extractedPath).isEqualTo("extracted2/lib2")
+    assertThat(aar1.originalPath).isEqualTo("path1/lib1.aar")
+    assertThat(aar1.extractedPath).isEqualTo("extracted1/lib1")
+    assertThat(aar2.originalPath).isEqualTo("path2/lib2.aar")
+    assertThat(aar2.extractedPath).isEqualTo("extracted2/lib2")
   }
 
   @Test
   fun testLintLogger_logError_createsLogFile() {
-    val lintLogger = LintLogger(workingDirectory)
+    val logger = LintLogger(workingDirectory)
 
-    lintLogger.logError("Test error message")
+    logger.logError("Test error message")
 
     val logFile = File(workingDirectory, "error-logs")
     assertThat(logFile.exists()).isTrue()
@@ -185,9 +182,9 @@ class LintCommonTest {
 
   @Test
   fun testLintLogger_logError_writesMessageWithTimestamp() {
-    val lintLogger = LintLogger(workingDirectory)
+    val logger = LintLogger(workingDirectory)
 
-    lintLogger.logError("Test error message")
+    logger.logError("Test error message")
 
     val logFile = File(workingDirectory, "error-logs")
     val content = logFile.readText()
@@ -197,73 +194,68 @@ class LintCommonTest {
   }
 
   @Test
-  fun testLintLogger_logMultipleErrors_appendsToSameFile() {
-    val lintLogger = LintLogger(workingDirectory)
+  fun testLintLogger_multipleErrors_appendsToSameFile() {
+    val logger = LintLogger(workingDirectory)
 
-    lintLogger.logError("First error")
-    lintLogger.logError("Second error")
+    logger.logError("First error")
+    logger.logError("Second error")
 
     val logFile = File(workingDirectory, "error-logs")
     val content = logFile.readText()
+    val lines = content.lines().filter { it.isNotEmpty() }
+
     assertThat(content).contains("First error")
     assertThat(content).contains("Second error")
-
-    val lines = content.lines().filter { it.isNotEmpty() }
     assertThat(lines).hasSize(2)
   }
 
   @Test
-  fun testJavaConfiguration_createWithValidBazelInfo_setsCorrectProperties() {
-    val bazelInfo = mapOf(
-      "java-home" to "/usr/lib/jvm/java-11",
-      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post)"
-    )
+  fun testJavaConfiguration_validBazelInfo_setsCorrectProperties() {
+    val bazelInfo = createValidBazelInfo()
 
-    val javaConfiguration = JavaConfiguration(bazelInfo)
+    val javaConfig = JavaConfiguration(bazelInfo)
 
-    assertThat(javaConfiguration.getJdkHome()).isEqualTo(File("/usr/lib/jvm/java-11"))
-    assertThat(javaConfiguration.getVersion()).isEqualTo("11.0.16")
+    assertThat(javaConfig.getJdkHome()).isEqualTo(File("/usr/lib/jvm/java-11"))
+    assertThat(javaConfig.getVersion()).isEqualTo("11.0.16")
   }
 
   @Test
-  fun testJavaConfiguration_createWithDifferentJavaVersion_extractsCorrectVersion() {
+  fun testJavaConfiguration_differentJavaVersion_extractsCorrectVersion() {
     val bazelInfo = mapOf(
       "java-home" to "/usr/lib/jvm/java-17",
       "java-runtime" to "OpenJDK Runtime Environment (build 17.0.2+8-Ubuntu)"
     )
 
-    val javaConfiguration = JavaConfiguration(bazelInfo)
+    val javaConfig = JavaConfiguration(bazelInfo)
 
-    assertThat(javaConfiguration.getJdkHome()).isEqualTo(File("/usr/lib/jvm/java-17"))
-    assertThat(javaConfiguration.getVersion()).isEqualTo("17.0.2")
+    assertThat(javaConfig.getJdkHome()).isEqualTo(File("/usr/lib/jvm/java-17"))
+    assertThat(javaConfig.getVersion()).isEqualTo("17.0.2")
   }
 
   @Test
-  fun testJavaConfiguration_createWithMissingJavaHome_throwsError() {
-    val bazelInfo = mapOf(
-      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post)"
-    )
+  fun testJavaConfiguration_missingJavaHome_throwsException() {
+    val bazelInfo = mapOf("java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post)")
 
     val exception = assertThrows<IllegalStateException> {
       JavaConfiguration(bazelInfo)
     }
-    assertThat(exception.message).contains("java-home not found in bazel info output")
+
+    assertThat(exception).hasMessageThat().contains("java-home not found in bazel info output")
   }
 
   @Test
-  fun testJavaConfiguration_createWithMissingJavaRuntime_throwsError() {
-    val bazelInfo = mapOf(
-      "java-home" to "/usr/lib/jvm/java-11"
-    )
+  fun testJavaConfiguration_missingJavaRuntime_throwsException() {
+    val bazelInfo = mapOf("java-home" to "/usr/lib/jvm/java-11")
 
     val exception = assertThrows<IllegalStateException> {
       JavaConfiguration(bazelInfo)
     }
-    assertThat(exception.message).contains("java-runtime not found in bazel info output")
+
+    assertThat(exception).hasMessageThat().contains("java-runtime not found in bazel info output")
   }
 
   @Test
-  fun testJavaConfiguration_createWithInvalidVersionFormat_throwsError() {
+  fun testJavaConfiguration_invalidVersionFormat_throwsException() {
     val bazelInfo = mapOf(
       "java-home" to "/usr/lib/jvm/java-11",
       "java-runtime" to "Invalid runtime string without version"
@@ -272,34 +264,79 @@ class LintCommonTest {
     val exception = assertThrows<IllegalStateException> {
       JavaConfiguration(bazelInfo)
     }
-    assertThat(exception.message).contains("Could not extract Java version from:")
+
+    assertThat(exception).hasMessageThat().contains("Could not extract Java version from:")
   }
 
-  private fun createTestModuleConfig(moduleName: String, isLibrary: Boolean): ModuleConfig {
-    val manifestPath = "${tempFolder.root}/$moduleName/src/main/AndroidManifest.xml"
-    val resourceDirs = listOf("${tempFolder.root}/$moduleName/src/main/res")
-    val srcFiles =
-      listOf("${tempFolder.root}/$moduleName/src/main/java/${moduleName.capitalize()}Class.kt")
-    val testFiles =
-      listOf("${tempFolder.root}/$moduleName/src/test/java/${moduleName.capitalize()}ClassTest.kt")
-
+  private fun createMinimalModuleConfig(
+    name: String = "test-module",
+    isLibrary: Boolean = false,
+    isAndroid: Boolean = true,
+    isTest: Boolean = false,
+    srcFiles: List<String> = emptyList(),
+    testFiles: List<String> = emptyList(),
+    resourceDirs: List<String> = emptyList(),
+    jarFiles: List<String> = emptyList(),
+    aarFiles: List<AarFileInfo> = emptyList(),
+    proGuardFiles: List<String> = emptyList()
+  ): ModuleConfig {
     return ModuleConfig(
-      name = moduleName,
+      name = name,
       isLibrary = isLibrary,
-      isAndroid = true,
-      isTest = false,
-      manifestFile = manifestPath,
-      resourceDirs = resourceDirs,
-      dependencies = emptyList(),
+      isAndroid = isAndroid,
+      isTest = isTest,
       srcFiles = srcFiles,
       testFiles = testFiles,
-      jarFiles = emptyList(),
-      aarFiles = emptyList(),
-      lintCheckJars = emptyList()
+      resourceDirs = resourceDirs,
+      manifestFile = "",
+      dependencies = emptyList(),
+      jarFiles = jarFiles,
+      aarFiles = aarFiles,
+      lintCheckJars = emptyList(),
+      annotationZips = emptyList(),
+      partialResultsDir = File(workingDirectory, "partial-results"),
+      proGuardFiles = proGuardFiles
     )
   }
 
-  private fun String.capitalize(): String {
-    return replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+  private fun createValidModuleConfig(): ModuleConfig {
+    val proGuardFile = File(workingDirectory, "proguard-rules.pro").apply { createNewFile() }
+    val lintCheckJar = File(workingDirectory, "lint-check.jar").apply { createNewFile() }
+    val aarFile = File(workingDirectory, "test.aar").apply { createNewFile() }
+    val jarFile = File(workingDirectory, "test.jar").apply { createNewFile() }
+
+    val srcDir = File(workingDirectory, "src/main/java").apply { mkdirs() }
+    val srcFile = File(srcDir, "Test.kt").apply { createNewFile() }
+
+    val testDir = File(workingDirectory, "src/test/java").apply { mkdirs() }
+    val testFile = File(testDir, "TestTest.kt").apply { createNewFile() }
+
+    val resourceDir = File(workingDirectory, "src/main/res").apply { mkdirs() }
+
+    return ModuleConfig(
+      name = "test-module",
+      isAndroid = true,
+      isLibrary = false,
+      isTest = true,
+      srcFiles = listOf(srcFile.absolutePath),
+      testFiles = listOf(testFile.absolutePath),
+      resourceDirs = listOf(resourceDir.absolutePath),
+      manifestFile = "src/main/AndroidManifest.xml",
+      dependencies = listOf("dependency1", "dependency2"),
+      aarFiles = listOf(AarFileInfo(aarFile.absolutePath, "extracted/path")),
+      jarFiles = listOf(jarFile.absolutePath),
+      lintCheckJars = listOf(lintCheckJar.absolutePath),
+      lintModelDir = File(workingDirectory, "model-dir"),
+      annotationZips = listOf("annotation.zip"),
+      proGuardFiles = listOf(proGuardFile.absolutePath),
+      partialResultsDir = File(workingDirectory, "partial-results")
+    )
+  }
+
+  private fun createValidBazelInfo(): Map<String, String> {
+    return mapOf(
+      "java-home" to "/usr/lib/jvm/java-11",
+      "java-runtime" to "OpenJDK Runtime Environment (build 11.0.16+8-post)"
+    )
   }
 }
