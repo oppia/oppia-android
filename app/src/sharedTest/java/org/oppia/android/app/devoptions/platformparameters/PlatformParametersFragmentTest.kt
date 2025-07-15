@@ -3,7 +3,6 @@ package org.oppia.android.app.devoptions.platformparameters
 import android.app.Application
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -12,6 +11,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -322,6 +322,7 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
   fun testPlatformParametersFragment_removeTextFromInputBox_showsInvalidInputError() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
@@ -335,12 +336,11 @@ class PlatformParametersFragmentTest {
           targetViewId = R.id.platform_parameter_input_edit_text
         )
       ).perform(editTextInputAction.replaceText(""))
-
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 7,
-          targetViewId = R.id.platform_parameter_input_edit_text
+          targetViewId = R.id.platform_parameter_input_layout
         )
       ).check(
         matches(
@@ -478,15 +478,21 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Config(sdk = [27])
   @Test
   fun testPlatformParametersFragment_opensDashboard_keyboardIsNotVisible() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      val inputMethodManager =
-        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-      val isKeyboardVisible = inputMethodManager.isAcceptingText
-      assertThat(isKeyboardVisible).isFalse()
+
+      scrollToPosition(1)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 1,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).check(matches(not(hasFocus())))
     }
   }
 
