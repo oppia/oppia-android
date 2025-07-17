@@ -493,6 +493,10 @@ class PlatformParametersFragmentTest {
           targetViewId = R.id.platform_parameter_input_edit_text
         )
       ).check(matches(not(hasFocus())))
+
+      onView(
+        withId(R.id.platform_parameters_container)
+      ).check(matches(hasFocus()))
     }
   }
 
