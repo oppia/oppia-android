@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,11 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
+import org.oppia.android.app.model.OverriddenPlatformParameter
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
@@ -29,6 +35,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val platformParametersViewModel: PlatformParametersViewModel,
   resourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger,
+  private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
 ) {
   private lateinit var binding: PlatformParametersFragmentBinding
@@ -54,8 +61,20 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     )
 
     binding.platformParametersToolbar.setNavigationOnClickListener {
-      (activity as PlatformParametersActivity).finish()
+      onBackNavigation()
     }
+
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          onBackNavigation()
+          // The dispatcher can hold a reference to the host
+          // so we need to null it out to prevent memory leaks.
+          this.remove()
+        }
+      }
+    )
 
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
@@ -83,6 +102,32 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         setViewModel = this::bindPlatformParameterItem
       )
       .build()
+  }
+
+  private fun onBackNavigation() {
+    val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
+      OverriddenPlatformParameter.newBuilder()
+        .setId(id)
+        .setOverriddenValue(value)
+        .build()
+    }
+
+    platformParameterControllerDebugImpl
+      .updateOverriddenPlatformParameters(overriddenPlatformParameters)
+      .toLiveData().observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "PlatformParametersFragmentPresenter",
+              "Failed to override platform parameters: ",
+              it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
+      }
+    (activity as PlatformParametersActivity).finish()
   }
 
   private fun bindPlatformParameterItem(
@@ -139,6 +184,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
         model.inputValue.set(displayValue)
       }
+
       model.currentValue.hasString() -> {
         editText.inputType = InputType.TYPE_CLASS_TEXT
         model.inputValue.set(paramState?.string ?: model.currentValue.string)
@@ -159,26 +205,34 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
         when {
           model.currentValue.hasInteger() -> {
-            val parsed = text.toIntOrNull()
-            if (parsed == null) {
-              model.inputErrorMsg.set(invalidInputErrorText)
-              platformParameterStates[id] =
-                PlatformParameterValue.newBuilder().setInteger(-1).build()
+            if (text == model.currentValue.integer.toString()) {
+              platformParameterStates.remove(id)
             } else {
-              model.inputErrorMsg.set("")
-              platformParameterStates[id] =
-                PlatformParameterValue.newBuilder().setInteger(parsed).build()
+              val parsed = text.toIntOrNull()
+              if (parsed == null) {
+                model.inputErrorMsg.set(invalidInputErrorText)
+                platformParameterStates[id] =
+                  PlatformParameterValue.newBuilder().setInteger(-1).build()
+              } else {
+                model.inputErrorMsg.set("")
+                platformParameterStates[id] =
+                  PlatformParameterValue.newBuilder().setInteger(parsed).build()
+              }
             }
           }
           model.currentValue.hasString() -> {
-            if (text.isBlank()) {
-              model.inputErrorMsg.set(invalidInputErrorText)
+            if (text == model.currentValue.string) {
+              platformParameterStates.remove(id)
             } else {
-              model.inputErrorMsg.set("")
+              if (text.isBlank()) {
+                model.inputErrorMsg.set(invalidInputErrorText)
+              } else {
+                model.inputErrorMsg.set("")
+              }
+              platformParameterStates[id] = PlatformParameterValue.newBuilder()
+                .setString(text)
+                .build()
             }
-            platformParameterStates[id] = PlatformParameterValue.newBuilder()
-              .setString(text)
-              .build()
           }
         }
       }
@@ -190,9 +244,13 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     model.onPlatformParameterToggledCallback = { id, value ->
-      platformParameterStates[id] = PlatformParameterValue.newBuilder()
-        .setBoolean(value)
-        .build()
+      if (value == model.currentValue.boolean) {
+        platformParameterStates.remove(id)
+      } else {
+        platformParameterStates[id] = PlatformParameterValue.newBuilder()
+          .setBoolean(value)
+          .build()
+      }
     }
   }
 }

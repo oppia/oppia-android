@@ -104,7 +104,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> (activity as FeatureFlagsActivity).finish()
           is AsyncResult.Failure -> {
             oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
+              "FeatureFlagsFragmentPresenter",
               "Failed to override feature flags: ",
               it.error
             )
