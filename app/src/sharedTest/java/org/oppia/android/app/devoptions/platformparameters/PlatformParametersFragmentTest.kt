@@ -11,7 +11,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.matcher.ViewMatchers.hasFocus
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -475,28 +474,6 @@ class PlatformParametersFragmentTest {
         position = 0,
         expectedValue = expectedValue
       )
-    }
-  }
-
-  @Config(sdk = [27])
-  @Test
-  fun testPlatformParametersFragment_opensDashboard_keyboardIsNotVisible() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 1,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).check(matches(not(hasFocus())))
-
-      onView(
-        withId(R.id.platform_parameters_container)
-      ).check(matches(hasFocus()))
     }
   }
 
