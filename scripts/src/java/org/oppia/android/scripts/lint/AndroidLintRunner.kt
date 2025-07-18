@@ -23,11 +23,11 @@ private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemp
  *
  * Usage:
  *   bazel run //scripts:android_lint_check -- <path_to_repository_root>
- *   <path_to_proto_binary> [--group_by_severity] [--processTimeout=<minutes>]
+ *   [--proto=<path_to_proto_binary>] [--group_by_severity] [--processTimeout=<minutes>]
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
- * - path_to_proto_binary: Relative path to the exemption .pb file.
+ * - --proto=<path_to_proto_binary>: Relative path to the exemption .pb file.
  * - --group_by_severity: Optional flag to group issues by severity
  * - --processTimeout=<minutes>: Process timeout in minutes
  *
@@ -45,17 +45,13 @@ fun main(vararg args: String) {
   require(repoRoot.exists()) {
     "Repository root path does not exist: ${args[0]}"
   }
-  val exemptionProtoPath = if (args.size > 1) {
-    val providedPath = args[1]
-    if (!providedPath.endsWith(".pb")) {
-      throw IllegalArgumentException(
-        "Invalid exemption file: $providedPath. The file must have a .pb extension."
-      )
+  val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
+    val path = option.substringAfter("=")
+    require(path.endsWith(".pb")) {
+      "Invalid exemption file: $path. The file must have a .pb extension."
     }
-    providedPath
-  } else {
-    DEFAULT_PROTO_BINARY_PATH
-  }
+    path
+  } ?: DEFAULT_PROTO_BINARY_PATH
   val groupByIssueSeverity = args.contains("--group_by_severity")
   val processTimeout = args.find { it.startsWith("--processTimeout=") }
     ?.substringAfter("=")
