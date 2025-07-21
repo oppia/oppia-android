@@ -135,7 +135,9 @@ class PlatformParametersFragmentTest {
   @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private companion object {
-    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val LOCAL_OVERRIDE_DATABASE_NAME =
+      "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
   }
 
@@ -352,7 +354,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasServerStatus() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
+      addTestRemotePlatformParameterToDatabase(component,true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -369,7 +371,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectColor() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
+      addTestRemotePlatformParameterToDatabase(component,true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -386,7 +388,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectName() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
+      addTestRemotePlatformParameterToDatabase(component,true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -403,7 +405,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectValue() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
+      addTestRemotePlatformParameterToDatabase(component,true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -417,6 +419,9 @@ class PlatformParametersFragmentTest {
       )
     }
   }
+
+
+
 
   @Test
   fun testPlatformParametersFragment_modifyIntegerParameter_scrollAndBack_persistsValue() {
@@ -589,9 +594,12 @@ class PlatformParametersFragmentTest {
   }
 
   // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
-  private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
+  private fun addTestRemotePlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
-      DATABASE_NAME,
+      REMOTE_DATABASE_NAME,
       RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
     )
 
@@ -601,7 +609,34 @@ class PlatformParametersFragmentTest {
           RemotePlatformParameter.newBuilder().apply {
             id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
             remoteValue = PlatformParameterValue.newBuilder().apply {
-              boolean = true
+              boolean = value
+            }.build()
+            syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          }.build()
+        )
+      }.build()
+    }.waitForSuccessfulResult(
+      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
+    )
+  }
+
+  // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
+  private fun addTestOverriddenPlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
+    val database = component.getCacheStoreFactory().create(
+      LOCAL_OVERRIDE_DATABASE_NAME,
+      LocPlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
+    )
+
+    database.storeDataAsync {
+      RemotePlatformParameterAndFeatureFlagDatabase.newBuilder().apply {
+        addRemotePlatformParameter(
+          RemotePlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+            remoteValue = PlatformParameterValue.newBuilder().apply {
+              boolean = value
             }.build()
             syncStatus = SyncStatus.SYNCED_FROM_SERVER
           }.build()
