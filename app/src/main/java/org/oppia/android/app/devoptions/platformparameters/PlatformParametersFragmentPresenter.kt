@@ -103,7 +103,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun onBackNavigation() {
+  fun onBackNavigation() {
     val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
       OverriddenPlatformParameter.newBuilder()
         .setId(id)
