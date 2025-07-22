@@ -2,7 +2,7 @@
 
 # Download buf
 download_buf() {
-  BUFVERSION="v0.37.1"
+  BUFVERSION="v0.42.0"
   echo Using Bufbuild version $BUFVERSION
   curl -sSLOC - https://github.com/bufbuild/buf/releases/download/$BUFVERSION/buf-$(uname -s)-$(uname -m)
   chmod a+x buf-$(uname -s)-$(uname -m)
