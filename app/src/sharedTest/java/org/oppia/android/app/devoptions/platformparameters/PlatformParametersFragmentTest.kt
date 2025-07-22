@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -41,6 +42,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParametersTestActivity
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.RemotePlatformParameter
@@ -354,7 +357,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasServerStatus() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component,true)
+      addTestRemotePlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -371,7 +374,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectColor() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component,true)
+      addTestRemotePlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -388,7 +391,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectName() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component,true)
+      addTestRemotePlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -405,7 +408,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectValue() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component,true)
+      addTestRemotePlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -420,8 +423,171 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
+  fun testPlatformParametersFragment_withOnlyOverriddenValue_returnsOverriddenBooleanValue() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
+      verifyPlatformParameterState(
+        position = 0,
+        expectedValue = splashScreenWelcomeMsgParameter.currentValue
+      )
+    }
+  }
 
+  @Test
+  fun testPlatformParametersFragment_withOnlyOverriddenValue_returnsCorrectDisplayName() {
+    executeInPreviousAppInstance { testApplicationComponent ->
+      addTestOverriddenPlatformParameterToDatabase(testApplicationComponent, true)
+      testApplicationComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyPlatformParameterDisplayName(
+        position = 0,
+        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOnlyOverriddenValue_returnsOverriddenSyncStatus() {
+    executeInPreviousAppInstance { testApplicationComponent ->
+      addTestOverriddenPlatformParameterToDatabase(testApplicationComponent, true)
+      testApplicationComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyPlatformParameterSyncStatus(
+        position = 0,
+        expectedSyncStatus = context.getString(
+          R.string.platform_parameter_overridden_sync_status
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPlatfromParametersFragment_withOnlyOverriddenValue_returnsOverriddenBackgroundColor() {
+    executeInPreviousAppInstance { testApplicationComponent ->
+      addTestOverriddenPlatformParameterToDatabase(testApplicationComponent, true)
+      testApplicationComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = 0xFFBE563C.toInt()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withRemoteAndOverriddenValues_returnsOverriddenSyncStatus() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component, true)
+      addTestOverriddenPlatformParameterToDatabase(component, false)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterSyncStatus(
+        position = 0,
+        expectedSyncStatus = context.getString(
+          R.string.platform_parameter_overridden_sync_status
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withRemoteAndOverriddenValues_returnsOverriddenBooleanValue() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component, true)
+      addTestOverriddenPlatformParameterToDatabase(component, false)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
+      verifyPlatformParameterState(
+        position = 0,
+        expectedValue = splashScreenWelcomeMsgParameter.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withRemoteAndOverriddenValues_returnsOverriddenBackground() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component, true)
+      addTestOverriddenPlatformParameterToDatabase(component, false)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = 0xFFBE563C.toInt()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_toggleParameter_navigateBackAndReopen_persistsValue() {
+    setUpTestApplicationComponent()
+    val expectedState = !getEphemeralPlatformParameters()[0].currentValue.boolean
+
+    launch(PlatformParametersActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      scenario.close()
+    }
+
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterState(
+        position = 0,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(expectedState)
+          .build()
+      )
+    }
+  }
 
   @Test
   fun testPlatformParametersFragment_modifyIntegerParameter_scrollAndBack_persistsValue() {
@@ -620,25 +786,24 @@ class PlatformParametersFragmentTest {
     )
   }
 
-  // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
+  // Populates the Local Overridden DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
   private fun addTestOverriddenPlatformParameterToDatabase(
     component: TestApplicationComponent,
     value: Boolean
   ) {
     val database = component.getCacheStoreFactory().create(
       LOCAL_OVERRIDE_DATABASE_NAME,
-      LocPlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
+      LocalOverridePlatformParameterDatabase.getDefaultInstance()
     )
 
     database.storeDataAsync {
-      RemotePlatformParameterAndFeatureFlagDatabase.newBuilder().apply {
-        addRemotePlatformParameter(
-          RemotePlatformParameter.newBuilder().apply {
+      LocalOverridePlatformParameterDatabase.newBuilder().apply {
+        addOverriddenPlatformParameter(
+          OverriddenPlatformParameter.newBuilder().apply {
             id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
-            remoteValue = PlatformParameterValue.newBuilder().apply {
-              boolean = value
-            }.build()
-            syncStatus = SyncStatus.SYNCED_FROM_SERVER
+            overriddenValue = PlatformParameterValue.newBuilder()
+              .setBoolean(value)
+              .build()
           }.build()
         )
       }.build()

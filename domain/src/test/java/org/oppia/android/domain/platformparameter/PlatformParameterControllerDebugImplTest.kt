@@ -21,6 +21,7 @@ import org.junit.runner.RunWith
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
 import org.oppia.android.app.model.OverriddenFeatureFlag
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.RemoteFeatureFlag
@@ -47,8 +48,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.jetbrains.annotations.TestOnly
-import org.oppia.android.app.model.OverriddenPlatformParameter
 
 /** Tests for [PlatformParameterControllerDebugImpl]. */
 @RunWith(AndroidJUnit4::class)

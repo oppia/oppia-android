@@ -87,15 +87,15 @@ class PlatformParameterItemViewModel(
   private fun getSyncStatusText(): String {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
+        resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_default_sync_status)
+        resourceHandler.getStringInLocale(R.string.platform_parameter_default_sync_status)
       SyncStatus.SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_server_sync_status)
+        resourceHandler.getStringInLocale(R.string.platform_parameter_server_sync_status)
       SyncStatus.LOCAL_OVERRIDE ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_overridden_sync_status)
+        resourceHandler.getStringInLocale(R.string.platform_parameter_overridden_sync_status)
       else ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
+        resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
     }
   }
 

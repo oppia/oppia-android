@@ -14,18 +14,17 @@ import com.google.android.material.textfield.TextInputEditText
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import javax.inject.Inject
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
-import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import javax.inject.Inject
 
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope

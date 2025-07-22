@@ -9,6 +9,7 @@ import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
 import org.oppia.android.app.model.OverriddenFeatureFlag
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -17,7 +18,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.model.OverriddenPlatformParameter
 
 /**
  * Debug implementation for the controller to manage and synchronize platform parameters and
@@ -102,7 +102,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       val remoteParamById = remoteParameters.associateBy { it.id }
       val localParameters = loadOverriddenPlatformParameters()
       val localParamsById = localParameters.associateBy { it.id }
-
 
       val ephemeralParameters = defaultParameters.map { paramDefinition ->
         val remoteParam = remoteParamById[paramDefinition.id]
@@ -280,7 +279,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
-
 
   private companion object {
     private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
