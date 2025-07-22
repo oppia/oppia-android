@@ -321,6 +321,7 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
   fun testPlatformParametersFragment_removeTextFromInputBox_showsInvalidInputError() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
@@ -334,12 +335,11 @@ class PlatformParametersFragmentTest {
           targetViewId = R.id.platform_parameter_input_edit_text
         )
       ).perform(editTextInputAction.replaceText(""))
-
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 7,
-          targetViewId = R.id.platform_parameter_input_edit_text
+          targetViewId = R.id.platform_parameter_input_layout
         )
       ).check(
         matches(
