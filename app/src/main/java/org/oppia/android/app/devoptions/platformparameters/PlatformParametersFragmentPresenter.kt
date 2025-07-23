@@ -103,6 +103,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
+  /**
+   * Called when the back button is pressed in the toolbar or on the device.
+   */
   fun onBackNavigation() {
     val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
       OverriddenPlatformParameter.newBuilder()
