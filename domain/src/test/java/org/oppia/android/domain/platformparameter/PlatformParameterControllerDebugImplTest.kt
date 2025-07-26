@@ -59,6 +59,7 @@ class PlatformParameterControllerDebugImplTest {
     private const val TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS = true
     private const val TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS = 24
     private const val TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS = 30
+    private const val TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG = true
     private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
@@ -349,7 +350,10 @@ class PlatformParameterControllerDebugImplTest {
   @Test
   fun testLoadEphemeralPlatformParameter_withRemoteAndNoLocalOverride_returnsRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemotePlatformParameterToDatabase(testComponent, 24)
+      addTestRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -366,9 +370,12 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameters_withRemoteParameter_hasSyncedFromServerStatus() {
+  fun testLoadEphemeralPlatformParameters_intParam_withRemoteParameter_hasSyncedFromServerStatus() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemotePlatformParameterToDatabase(testComponent, 24)
+      addTestRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -384,9 +391,12 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameters_withLocalOverrideAndNoRemote_returnsOverrideValue() {
+  fun testLoadEphemeralPlatformParameters_intParam_withOnlyLocalOverride_returnsOverrideValue() {
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenPlatformParameterToDatabase(testComponent, 30)
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -403,9 +413,33 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameters_withLocalOverrideAndNoRemote_hasLocalOverrideStatus() {
+  fun testLoadEphemeralPlatformParameters_boolParam_withOnlyLocalOverride_returnsOverrideValue() {
     executeInPreviousAppInstance { testComponent ->
-      addTestOverriddenPlatformParameterToDatabase(testComponent, 30)
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+    val ephemeralSyncUpWorkerTimePeriodValue = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE }
+      ?.currentValue?.boolean
+
+    assertThat(ephemeralSyncUpWorkerTimePeriodValue)
+      .isEqualTo(TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG)
+  }
+  @Test
+  fun testLoadEphemeralPlatformParameters_intParam_withOnlyLocalOverride_hasLocalOverrideStatus() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -421,10 +455,16 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameters_withLocalOverrideAndRemoteParam_hasLocalOverrideValue() {
+  fun testLoadEphemeralPlatformParameters_intParam_withOverrideAndRemote_hasLocalOverrideValue() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemotePlatformParameterToDatabase(testComponent, 24)
-      addTestOverriddenPlatformParameterToDatabase(testComponent, 30)
+      addTestRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -441,10 +481,16 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameters_withLocalOverrideAndRemoteParam_hasLocalOverrideStatus() {
+  fun testLoadEphemeralPlatformParameters_intParam_withOverrideAndRemote_hasOverriddenSyncStatus() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemotePlatformParameterToDatabase(testComponent, 24)
-      addTestOverriddenPlatformParameterToDatabase(testComponent, 30)
+      addTestRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -461,9 +507,12 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
-  fun testLoadParametersAsync_withRemoteAndNoLocalOverride_setsProcessStateToRemoteValue() {
+  fun testLoadParametersAsync_intParam_withRemoteAndNoLocalOverride_setsProcessStateToRemote() {
     executeInPreviousAppInstance { testComponent ->
-      addTestRemotePlatformParameterToDatabase(testComponent, 24)
+      addTestRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
@@ -599,8 +648,34 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
+  // Populates the Local Overridden DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
+  private fun addTestBooleanOverriddenPlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
+    val database = component.getCacheStoreFactory().create(
+      LOCAL_OVERRIDE_DATABASE_NAME,
+      LocalOverridePlatformParameterDatabase.getDefaultInstance()
+    )
+
+    database.storeDataAsync {
+      LocalOverridePlatformParameterDatabase.newBuilder().apply {
+        addOverriddenPlatformParameter(
+          OverriddenPlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+            overriddenValue = PlatformParameterValue.newBuilder()
+              .setBoolean(value)
+              .build()
+          }.build()
+        )
+      }.build()
+    }.waitForSuccessfulResult(
+      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
+    )
+  }
+
   // Populates the Local Overridden DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
-  private fun addTestOverriddenPlatformParameterToDatabase(
+  private fun addTestIntegerOverriddenPlatformParameterToDatabase(
     component: TestApplicationComponent,
     value: Int
   ) {

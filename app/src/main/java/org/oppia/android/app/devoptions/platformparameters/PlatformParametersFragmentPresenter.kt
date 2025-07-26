@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -107,29 +108,48 @@ class PlatformParametersFragmentPresenter @Inject constructor(
    * Called when the back button is pressed in the toolbar or on the device.
    */
   fun onBackNavigation() {
-    val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
-      OverriddenPlatformParameter.newBuilder()
-        .setId(id)
-        .setOverriddenValue(value)
-        .build()
-    }
-
-    platformParameterControllerDebugImpl
-      .updateOverriddenPlatformParameters(overriddenPlatformParameters)
-      .toLiveData().observe(fragment) {
-        when (it) {
-          is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
-              "Failed to override platform parameters: ",
-              it.error
-            )
-          }
-          is AsyncResult.Pending -> {} // Wait for a result.
-        }
+    var hasInavlidInput = false
+    platformParameterStates.map { (_, value) ->
+      if (value.integer == -1) {
+        hasInavlidInput = true
+        return@map
       }
-    (activity as PlatformParametersActivity).finish()
+    }
+    if (!hasInavlidInput) {
+      val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
+        OverriddenPlatformParameter.newBuilder()
+          .setId(id)
+          .setOverriddenValue(value)
+          .build()
+      }
+
+      platformParameterControllerDebugImpl
+        .updateOverriddenPlatformParameters(overriddenPlatformParameters)
+        .toLiveData().observe(fragment) {
+          when (it) {
+            is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "PlatformParametersFragmentPresenter",
+                "Failed to override platform parameters: ",
+                it.error
+              )
+            }
+            is AsyncResult.Pending -> {} // Wait for a result.
+          }
+        }
+    } else {
+      val alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+        .setTitle(R.string.platform_parameter_invalid_input_alert_dialog_title)
+        .setPositiveButton(
+          R.string.platform_parameter_invalid_input_alert_dialog_Ok_msg
+        ) { dialog, _ ->
+          dialog.dismiss()
+        }
+        .setCancelable(false)
+        .create()
+      alertDialog.show()
+    }
   }
 
   private fun bindPlatformParameterItem(
@@ -209,6 +229,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.currentValue.hasInteger() -> {
             if (text == model.currentValue.integer.toString()) {
               platformParameterStates.remove(id)
+              model.inputErrorMsg.set("")
             } else {
               val parsed = text.toIntOrNull()
               if (parsed == null) {
@@ -225,6 +246,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.currentValue.hasString() -> {
             if (text == model.currentValue.string) {
               platformParameterStates.remove(id)
+              model.inputErrorMsg.set("")
             } else {
               if (text.isBlank()) {
                 model.inputErrorMsg.set(invalidInputErrorText)

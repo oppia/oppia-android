@@ -82,7 +82,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   /** Loads the locally overridden platform parameters from the database. */
-  suspend fun loadOverriddenPlatformParameters(): List<OverriddenPlatformParameter> {
+  suspend fun loadLocalOverriddenPlatformParameters(): List<OverriddenPlatformParameter> {
     return databaseStore.readDataAsync().await().overriddenPlatformParameterList
   }
 
@@ -100,7 +100,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       val defaultParameters = platformParameterControllerProdImpl.loadSupportedPlatformParameters()
       val remoteParameters = platformParameterControllerProdImpl.loadRemotePlatformParameters()
       val remoteParamById = remoteParameters.associateBy { it.id }
-      val localParameters = loadOverriddenPlatformParameters()
+
+      val localParameters = loadLocalOverriddenPlatformParameters()
       val localParamsById = localParameters.associateBy { it.id }
 
       val ephemeralParameters = defaultParameters.map { paramDefinition ->
@@ -110,6 +111,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         val currentValue = localParam?.overriddenValue
           ?: remoteParam?.remoteValue
           ?: paramDefinition.defaultValue
+
         val syncStatus = localParam?.let { SyncStatus.LOCAL_OVERRIDE }
           ?: remoteParam?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
@@ -140,8 +142,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       val remoteFlags = platformParameterControllerProdImpl.loadRemoteFeatureFlags()
       val remoteFlagById = remoteFlags.associateBy { it.id }
 
-      val localOverrides = loadLocalOverriddenFeatureFlags()
-      val localFlagById = localOverrides.associateBy { it.id }
+      val localFlags = loadLocalOverriddenFeatureFlags()
+      val localFlagById = localFlags.associateBy { it.id }
 
       val ephemeralFlags = defaultFlags.map { flagDefinition ->
         val localFlag = localFlagById[flagDefinition.id]
