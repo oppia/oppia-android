@@ -1789,6 +1789,7 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/profile_edit_fragment_test_activity.xml"
+  lint_issue_id: UNUSED_IDS
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
