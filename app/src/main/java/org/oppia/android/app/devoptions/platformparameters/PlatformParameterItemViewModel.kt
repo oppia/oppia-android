@@ -64,7 +64,10 @@ class PlatformParameterItemViewModel(
   @ColorInt
   val syncStatusBackgroundColor: Int = retrieveSyncStatusBackgroundColor().toInt()
 
+  /** Indicates whether the reset button should be shown for this parameter. */
   val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+
+  /** Tracks whether the reset button is currently enabled (clickable). */
   val isResetButtonActive = ObservableField(true)
 
   /** Called when the boolean toggle switch is clicked by the user. */
