@@ -64,6 +64,9 @@ class PlatformParameterItemViewModel(
   @ColorInt
   val syncStatusBackgroundColor: Int = retrieveSyncStatusBackgroundColor().toInt()
 
+  val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+  val isResetButtonActive = ObservableField(true)
+
   /** Called when the boolean toggle switch is clicked by the user. */
   fun onTogglePlatformParameterSwitch() {
     val newValue = !(isChecked.get() ?: false)
