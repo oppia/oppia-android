@@ -10,6 +10,8 @@ import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.model.OverriddenPlatformParameter
+import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -282,6 +284,48 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
+  /**
+   * Resets the locally overridden platform parameter corresponding to the specified [id].
+   *
+   * This removes any locally overridden value for the specified platform parameter from the local
+   * override database and returns the currently active value from either the server or the default.
+   *
+   * @param id the [PlatformParameterId] of the platform parameter to reset
+   * @return a [DataProvider] that returns the current [PlatformParameterValue] for the given [id],
+   * or the default instance if no such parameter is found
+   */
+  fun resetPlatformParameter(id: PlatformParameterId): DataProvider<PlatformParameterValue?> {
+    return dataProviders.createInMemoryDataProviderAsync(
+      RESET_OVERRIDDEN_PLATFORM_PARAMETER_PROVIDER_ID
+    ) {
+      databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
+        val updatedOverrides = oldDatabase.overriddenPlatformParameterList
+          .filterNot { it.id == id }
+
+        oldDatabase.toBuilder()
+          .clearOverriddenPlatformParameter()
+          .addAllOverriddenPlatformParameter(updatedOverrides)
+          .build()
+      }.await()
+
+      return@createInMemoryDataProviderAsync when (
+        val result = loadEphemeralPlatformParameters().retrieveData()
+      ) {
+        is AsyncResult.Success -> {
+          val restoredValue = result.value
+            .firstOrNull { it.id == id }
+            ?.currentValue ?: PlatformParameterValue.getDefaultInstance()
+          AsyncResult.Success(restoredValue)
+        }
+        is AsyncResult.Failure -> {
+          AsyncResult.Failure(result.error)
+        }
+        is AsyncResult.Pending -> {
+          AsyncResult.Pending()
+        }
+      }
+    }
+  }
   private companion object {
     private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
       "load_ephemeral_platform_parameters"
@@ -291,6 +335,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       "update_overridden_feature_flags"
     private const val UPDATE_OVERRIDDEN_PLATFORM_PARAMETERS_PROVIDER_ID =
       "update_overridden_platform_parameters"
+    private const val RESET_OVERRIDDEN_PLATFORM_PARAMETER_PROVIDER_ID =
+      "reset_overridden_platform_parameter"
     private const val GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID =
       "get_parameter_initialization_status"
     private const val DATABASE_NAME =

@@ -75,9 +75,9 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:textAlignment="center"
-        app:errorMessage="@{viewModel.inputErrorMsg}"
         android:visibility="@{viewModel.isTextInputMode ? View.VISIBLE : View.GONE}"
         app:errorIconDrawable="@null"
+        app:errorMessage="@{viewModel.inputErrorMsg}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -130,12 +130,63 @@
         android:paddingEnd="20dp"
         android:paddingBottom="6dp"
         android:text="@{viewModel.syncStatusDisplayText}"
-        android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:textAlignment="center"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
         app:largeRoundedRectDrawableWithColor="@{viewModel.syncStatusBackgroundColor}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/reset_server_defaults_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="64dp"
+      android:background="@color/component_color_shared_screen_tertiary_background_color"
+      android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/sync_status_constraint_layout">
+
+      <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/component_color_shared_divider_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:id="@+id/reset_server_defaults_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Reset to Server / Defaults"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/reset_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <Button
+        android:id="@+id/reset_button"
+        style="@style/StateButtonActive"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginVertical="15dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="20dp"
+        android:background="@{viewModel.isResetButtonActive ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+        android:enabled="@{viewModel.isResetButtonActive}"
+        android:text="Reset"
+        android:textColor="@{viewModel.isResetButtonActive ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/reset_server_defaults_text_view"
         app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -145,6 +196,6 @@
       android:background="@color/component_color_shared_divider_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/sync_status_constraint_layout" />
+      app:layout_constraintTop_toBottomOf="@id/reset_server_defaults_constraint_layout" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
