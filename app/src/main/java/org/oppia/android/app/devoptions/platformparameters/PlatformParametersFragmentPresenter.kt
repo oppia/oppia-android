@@ -108,14 +108,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
    * Called when the back button is pressed in the toolbar or on the device.
    */
   fun onBackNavigation() {
-    var hasInavlidInput = false
+    var hasInvalidInput = false
     platformParameterStates.map { (_, value) ->
       if (value.integer == -1) {
-        hasInavlidInput = true
+        hasInvalidInput = true
         return@map
       }
     }
-    if (!hasInavlidInput) {
+    if (!hasInvalidInput) {
       val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
         OverriddenPlatformParameter.newBuilder()
           .setId(id)
