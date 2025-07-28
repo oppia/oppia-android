@@ -573,6 +573,31 @@ class PlatformParameterControllerDebugImplTest {
     assertThat(downloadResult).isInstanceOf(AsyncResult.Success::class.java)
   }
 
+  @Test
+  fun testResetPlatformParameter_withLocalOverride_resetsParameter_returnsDefaultSyncStatus() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    platformParameterControllerDebugImpl.resetPlatformParameter(
+      PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    )
+
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+    val ephemeralSyncUpWorkerTimePeriodValue = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    assertThat(ephemeralSyncUpWorkerTimePeriodValue?.syncStatus)
+      .isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
+  }
+
   // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOM.
   private fun addTestRemoteFeatureFlagToDatabase(
     component: TestApplicationComponent,
