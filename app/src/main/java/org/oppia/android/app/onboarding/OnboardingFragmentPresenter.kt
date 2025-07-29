@@ -82,31 +82,30 @@ class OnboardingFragmentPresenter @Inject constructor(
       )
 
       onboardingAppLanguageViewModel.supportedAppLanguagesList.observe(
-        fragment,
-        { languagesList ->
-          supportedLanguages = languagesList
-          val adapter = ArrayAdapter(
-            fragment.requireContext(),
-            R.layout.onboarding_language_dropdown_item,
-            R.id.onboarding_language_text_view,
-            languagesList.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
-          )
-          onboardingLanguageDropdown.setAdapter(adapter)
-        }
-      )
+        fragment
+      ) { languagesList ->
+        supportedLanguages = languagesList
+        val adapter = ArrayAdapter(
+          fragment.requireContext(),
+          R.layout.onboarding_language_dropdown_item,
+          R.id.onboarding_language_text_view,
+          languagesList.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+        )
+        onboardingLanguageDropdown.setAdapter(adapter)
+      }
 
-      onboardingAppLanguageViewModel.languageSelectionLiveData.observe(
-        fragment,
-        { language ->
-          selectedLanguage = language
-          onboardingLanguageDropdown.setText(
-            appLanguageResourceHandler.computeLocalizedDisplayName(
-              language
-            ),
-            false
-          )
-        }
-      )
+      onboardingAppLanguageViewModel.selectedLanguageLiveData.observe(
+        fragment
+      ) { language ->
+        selectedLanguage = language
+        onboardingLanguageDropdown.setText(
+          appLanguageResourceHandler.computeLocalizedDisplayName(
+            language
+          ),
+          false
+        )
+        updateSelectedLanguage(language)
+      }
 
       onboardingLanguageDropdown.apply {
         setRawInputType(EditorInfo.TYPE_NULL)
@@ -125,12 +124,10 @@ class OnboardingFragmentPresenter @Inject constructor(
       }
 
       onboardingLanguageLetsGoButton.setOnClickListener {
-        updateSelectedLanguage(selectedLanguage).also {
-          val intent =
-            OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
-          intent.decorateWithUserProfileId(profileId)
-          fragment.startActivity(intent)
-        }
+        val intent =
+          OnboardingProfileTypeActivity.createOnboardingProfileTypeActivityIntent(activity)
+        intent.decorateWithUserProfileId(profileId)
+        fragment.startActivity(intent)
       }
     }
 

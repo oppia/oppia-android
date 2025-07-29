@@ -469,6 +469,7 @@ class SplashActivityPresenter @Inject constructor(
       }
 
       activity.startActivity(intent)
+      activity.finish()
     }
 
     private fun logInToProfile(profileId: ProfileId) {
