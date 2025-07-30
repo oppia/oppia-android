@@ -47,6 +47,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+  private val alreadyBoundIds = mutableSetOf<PlatformParameterId>()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -69,9 +70,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
           onBackNavigation()
-          // The dispatcher can hold a reference to the host
-          // so we need to null it out to prevent memory leaks.
-          this.remove()
         }
       }
     )
@@ -104,17 +102,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
-  /**
-   * Called when the back button is pressed in the toolbar or on the device.
-   */
-  fun onBackNavigation() {
-    var hasInvalidInput = false
-    platformParameterStates.map { (_, value) ->
-      if (value.integer == -1) {
-        hasInvalidInput = true
-        return@map
-      }
-    }
+  private fun onBackNavigation() {
+    val hasInvalidInput = platformParameterStates.values.any { it.integer == -1 }
+
     if (!hasInvalidInput) {
       val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
         OverriddenPlatformParameter.newBuilder()
@@ -139,16 +129,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           }
         }
     } else {
-      val alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
         .setTitle(R.string.platform_parameter_invalid_input_alert_dialog_title)
+        .setMessage(R.string.platform_parameter_invalid_input_alert_dialog_message)
         .setPositiveButton(
-          R.string.platform_parameter_invalid_input_alert_dialog_Ok_msg
-        ) { dialog, _ ->
-          dialog.dismiss()
-        }
+          R.string.platform_parameter_invalid_input_alert_dialog_okay_button
+        ) { dialog, _ -> dialog.dismiss() }
         .setCancelable(false)
-        .create()
-      alertDialog.show()
+        .show()
     }
   }
 
@@ -214,14 +202,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     }
 
-    editText.setTag(R.id.platform_parameter_text_change_flag, true)
-
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
-        val ignoreInitialBinding =
-          editText.getTag(R.id.platform_parameter_text_change_flag) as? Boolean ?: false
-        if (ignoreInitialBinding) {
-          editText.setTag(R.id.platform_parameter_text_change_flag, false)
+        if (!alreadyBoundIds.contains(id)) {
+          alreadyBoundIds.add(id)
           return@onPlatformParameterTextChangedCallback
         }
 
