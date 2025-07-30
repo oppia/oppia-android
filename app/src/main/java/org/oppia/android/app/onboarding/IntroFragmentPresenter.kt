@@ -15,6 +15,7 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** The presenter for [IntroFragment]. */
 class IntroFragmentPresenter @Inject constructor(
@@ -62,7 +63,8 @@ class IntroFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
         fragment.requireContext(),
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE,
+        AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
       )
       intent.decorateWithUserProfileId(profileId)
       fragment.startActivity(intent)

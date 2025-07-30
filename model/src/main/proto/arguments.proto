@@ -261,6 +261,21 @@ message ReadingTextSizeFragmentStateBundle {
 message AudioLanguageActivityParams {
   // The default audio language previously selected by the user (upon opening the activity).
   AudioLanguage audio_language = 1;
+
+  // The screen from which the AudioLanguageActivity was opened.
+  ParentScreen parent_screen = 2;
+
+  // Different parent screens that can open a new AudioLanguageActivity instance.
+  enum ParentScreen {
+    // Indicates that the originating screen isn't actually known.
+    PARENT_SCREEN_UNSPECIFIED = 0;
+
+    // Corresponds to the introduction screen in the onboarding flow.
+    LEARNER_INTRO_SCREEN = 1;
+
+    // Corresponds to the options screen.
+    OPTIONS_SCREEN = 2;
+  }
 }
 
 // The bundle of properties that are saved upon configuration changes in AudioLanguageActivity.
@@ -279,6 +294,9 @@ message AudioLanguageActivityResultBundle {
 message AudioLanguageFragmentArguments {
   // The default audio language previously selected by the user (upon opening the fragment).
   AudioLanguage audio_language = 1;
+
+  // The screen from which the AudioLanguageActivity activity was opened.
+  AudioLanguageActivityParams.ParentScreen parent_screen = 2;
 }
 
 // The bundle of properties that are saved upon configuration changes in AudioLanguageFragment.

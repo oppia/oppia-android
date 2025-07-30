@@ -25,9 +25,11 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     val profileId = intent.extractCurrentUserProfileId()
+    val parentScreen = intent.retrieveParentScreenFromParams()
     audioLanguageActivityPresenter.handleOnCreate(
       savedInstanceState?.retrieveLanguageFromSavedState() ?: intent.retrieveLanguageFromParams(),
-      profileId
+      profileId,
+      parentScreen
     )
   }
 
@@ -48,11 +50,13 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
     /** Returns a new [Intent] to route to [AudioLanguageActivity]. */
     fun createAudioLanguageActivityIntent(
       context: Context,
-      audioLanguage: AudioLanguage
+      audioLanguage: AudioLanguage,
+      parentScreen: AudioLanguageActivityParams.ParentScreen
     ): Intent {
       return Intent(context, AudioLanguageActivity::class.java).apply {
         val arguments = AudioLanguageActivityParams.newBuilder().apply {
           this.audioLanguage = audioLanguage
+          this.parentScreen = parentScreen
         }.build()
         putProtoExtra(ACTIVITY_PARAMS_KEY, arguments)
         decorateWithScreenName(AUDIO_LANGUAGE_ACTIVITY)
@@ -63,6 +67,12 @@ class AudioLanguageActivity : InjectableAutoLocalizedAppCompatActivity() {
       return getProtoExtra(
         ACTIVITY_PARAMS_KEY, AudioLanguageActivityParams.getDefaultInstance()
       ).audioLanguage
+    }
+
+    private fun Intent.retrieveParentScreenFromParams(): AudioLanguageActivityParams.ParentScreen {
+      return getProtoExtra(
+        ACTIVITY_PARAMS_KEY, AudioLanguageActivityParams.getDefaultInstance()
+      ).parentScreen
     }
 
     private fun Bundle.retrieveLanguageFromSavedState(): AudioLanguage {

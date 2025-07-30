@@ -27,6 +27,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** [String] key for mapping to [ReadingTextSizeFragment]. */
 const val READING_TEXT_SIZE_FRAGMENT = "READING_TEXT_SIZE_FRAGMENT"
@@ -161,7 +162,11 @@ class OptionsActivity :
   }
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
-    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage)
+    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
+      this,
+      audioLanguage,
+      AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+    )
     intent.decorateWithUserProfileId(profileId)
     audioLanguageLauncher.launch(intent)
   }

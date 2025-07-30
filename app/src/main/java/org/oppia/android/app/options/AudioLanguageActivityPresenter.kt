@@ -12,6 +12,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
+import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
@@ -19,7 +20,11 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
   private lateinit var audioLanguage: AudioLanguage
 
   /** Handles when the activity is first created. */
-  fun handleOnCreate(audioLanguage: AudioLanguage, profileId: ProfileId) {
+  fun handleOnCreate(
+    audioLanguage: AudioLanguage,
+    profileId: ProfileId,
+    parentScreen: AudioLanguageActivityParams.ParentScreen
+  ) {
     this.audioLanguage = audioLanguage
 
     val binding: AudioLanguageActivityBinding =
@@ -27,10 +32,17 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
     binding.audioLanguageToolbar.setNavigationOnClickListener {
       finishWithResult()
     }
+
     if (getAudioLanguageFragment() == null) {
-      val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage, profileId)
+      val audioLanguageFragment = AudioLanguageFragment.newInstance(
+        audioLanguage,
+        profileId,
+        parentScreen
+        )
+
       activity.supportFragmentManager.beginTransaction()
-        .add(R.id.audio_language_fragment_container, audioLanguageFragment).commitNow()
+        .add(R.id.audio_language_fragment_container, audioLanguageFragment)
+        .commitNow()
     }
   }
 

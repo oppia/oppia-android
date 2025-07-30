@@ -21,6 +21,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 
+private const val PROFILE_LANGUAGE_PROVIDER_ID = "profileLanguageProvider"
 private const val PRE_SELECTED_LANGUAGE_PROVIDER_ID = "systemLanguage+appLanguageProvider"
 
 /** ViewModel for managing language selection in [AudioLanguageFragment]. */
@@ -48,6 +49,7 @@ class AudioLanguageSelectionViewModel @Inject constructor(
           )
           OppiaLanguage.LANGUAGE_UNSPECIFIED
         }
+
         is AsyncResult.Pending -> OppiaLanguage.LANGUAGE_UNSPECIFIED
         is AsyncResult.Success -> languageResult.value
       }
@@ -89,14 +91,24 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   // TODO(#4938): Update the pre-selection logic to include the admin profile audio language for
   //  non-sole learners.
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
-    appLanguageSelectionProvider.combineWith(
+    profileAudioLanguageSelectionProvider.combineWith(
+      appLanguageSelectionProvider,
+      PROFILE_LANGUAGE_PROVIDER_ID
+    ) { profileAudioLanguage, appLanguageSelection ->
+      if (profileAudioLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED ||
+        profileAudioLanguage != OppiaLanguage.UNRECOGNIZED)
+        profileAudioLanguage else appLanguageSelection.selectedLanguage
+    }.combineWith(
       systemLanguageProvider,
       PRE_SELECTED_LANGUAGE_PROVIDER_ID
-    ) { appLanguageSelection: AppLanguageSelection, displayLocale: OppiaLocale.DisplayLocale ->
-      val appLanguage = appLanguageSelection.selectedLanguage
+    ) { oppiaLanguage: OppiaLanguage, displayLocale: OppiaLocale.DisplayLocale ->
       val systemLanguage = displayLocale.getCurrentLanguage()
-      computePreselection(appLanguage, systemLanguage)
+      computePreselection(oppiaLanguage, systemLanguage)
     }
+  }
+
+  private val profileAudioLanguageSelectionProvider: DataProvider<OppiaLanguage> by lazy {
+    translationController.getAudioTranslationContentLanguage(profileId)
   }
 
   private val appLanguageSelectionProvider: DataProvider<AppLanguageSelection> by lazy {
