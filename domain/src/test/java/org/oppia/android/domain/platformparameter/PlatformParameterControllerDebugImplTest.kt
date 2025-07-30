@@ -166,7 +166,7 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
-  fun testLoadParametersAsync_intParam_withRemoteAndLocalOverride_setsProcessStateToOverriddenValue() {
+  fun testLoadParametersAsync_intParam_withRemoteAndOverride_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -718,7 +718,6 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
-
   // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
   private fun addTestBooleanRemotePlatformParameterToDatabase(
     component: TestApplicationComponent,
@@ -798,7 +797,6 @@ class PlatformParameterControllerDebugImplTest {
       component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
     )
   }
-
 
   // Populates the Local Overridden DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
   private fun addTestIntegerOverriddenPlatformParameterToDatabase(
