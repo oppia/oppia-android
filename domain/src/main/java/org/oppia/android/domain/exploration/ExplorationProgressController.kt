@@ -383,9 +383,10 @@ class ExplorationProgressController @Inject constructor(
    * Navigates to the flashback state in the graph.
    * @return a [DataProvider] indicating whether the movement to the flashback state was successful.
    */
-  fun moveToFlashback(stateName: String, isFlashbackViewed: Boolean): DataProvider<Any?> {
+  fun moveToFlashback(stateName: String, flashbackViewed: Boolean): DataProvider<Any?> {
     val moveResultFlow = createAsyncResultStateFlow<Any?>()
-    val message = ControllerMessage.MoveToFlashback(stateName, isFlashbackViewed, activeSessionId, moveResultFlow)
+    val message = ControllerMessage
+      .MoveToFlashback(stateName, flashbackViewed, activeSessionId, moveResultFlow)
     sendCommandForOperation(message) { "Failed to schedule command for moving to the next state." }
     return moveResultFlow.convertToSessionProvider(MOVE_TO_FLASHBACK_STATE_RESULT_PROVIDER_ID)
   }
@@ -557,7 +558,7 @@ class ExplorationProgressController @Inject constructor(
               controllerState.moveToFlashbackImpl(
                 message.callbackFlow,
                 message.stateName,
-                message.isFlashbackViewed
+                message.flashbackViewed
               )
             is ControllerMessage.MoveBackToLatest ->
               controllerState.moveBackToLatestImpl(message.callbackFlow)
@@ -889,7 +890,7 @@ class ExplorationProgressController @Inject constructor(
   private suspend fun ControllerState.moveToFlashbackImpl(
     moveToFlashbackStateResultFlow: MutableStateFlow<AsyncResult<Any?>>,
     stateName: String,
-    isFlashbackViewed: Boolean
+    flashbackViewed: Boolean
   ) {
     tryOperation(moveToFlashbackStateResultFlow, false) {
       check(explorationProgress.playStage != NOT_PLAYING) {
@@ -904,7 +905,7 @@ class ExplorationProgressController @Inject constructor(
 
       hintHandler.navigateToPreviousState()
       recomputeCurrentFlashbackStateAndNotifySync(stateName)
-      if (!isFlashbackViewed) {
+      if (!flashbackViewed) {
         explorationProgress.stateDeck.setFlashbackIsViewed()
       }
     }
@@ -1560,7 +1561,7 @@ class ExplorationProgressController @Inject constructor(
     /** [ControllerMessage] to move to the flashback state in the exploration. */
     data class MoveToFlashback(
       val stateName: String,
-      val isFlashbackViewed: Boolean,
+      val flashbackViewed: Boolean,
       override val sessionId: String,
       override val callbackFlow: MutableStateFlow<AsyncResult<Any?>>
     ) : ControllerMessage<Any?>()

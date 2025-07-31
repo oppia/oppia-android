@@ -254,12 +254,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     val interaction = ephemeralState.state.interaction
     var flashbackStateName: String? = null
-    var isFlashbackViewed: Boolean = false
+    var flashbackViewed = false
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
       val latestAnswer = ephemeralState.pendingState.wrongAnswerList.lastOrNull()
       flashbackStateName = latestAnswer?.stateNameToRevisit
-      isFlashbackViewed = latestAnswer?.isFlashbackViewed == true
+      flashbackViewed = latestAnswer?.flashbackViewed == true
 
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         (fragment as ShowHintAvailabilityListener).onHintAvailable(
@@ -387,7 +387,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
         continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
         flashbackStateName,
-        isFlashbackViewed
+        flashbackViewed
       )
     }
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
@@ -495,31 +495,21 @@ class StatePlayerRecyclerViewAssembler private constructor(
           }
         }
 
-        //subha
-        if (answerAndResponse.isFlashbackViewed) {
-          if (playerFeatureSet.flashbackNavigationSupport) {
-            //subha need to modify addFlashbackButton to support this format
+        if (playerFeatureSet.flashbackNavigationSupport && answerAndResponse.flashbackViewed) {
+          addFlashbackButton(
+            answerAndResponse.stateNameToRevisit,
+            answerAndResponse.flashbackViewed
+          ).let { viewModel ->
             if (showPreviousAnswers) {
-              addFlashbackButton(
-                pendingItemList,
-                rightPendingItemList,
-                answerAndResponse.stateNameToRevisit,
-                answerAndResponse.isFlashbackViewed
-              )
+              pendingItemList += viewModel
             }
-            addFlashbackButton(
-              previousAnswerViewModels,
-              rightPendingItemList,
-              answerAndResponse.stateNameToRevisit,
-              answerAndResponse.isFlashbackViewed
-            )
+            previousAnswerViewModels += viewModel
           }
 
           if (playerFeatureSet.feedbackSupport) {
             createFeedbackItem(
               SubtitledHtml.newBuilder()
-                .setContentId("flashback_button_feedback")
-                .setHtml("This is flashback button feedback")
+                .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
                 .build(),
               gcsEntityId,
               writtenTranslationContext
@@ -530,7 +520,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
               previousAnswerViewModels += viewModel
             }
           }
-
         }
       }
     }
@@ -555,26 +544,27 @@ class StatePlayerRecyclerViewAssembler private constructor(
           pendingItemList::add
         )
       }
-      if (answerAndResponse.isFlashbackViewed) {
-        if (playerFeatureSet.flashbackNavigationSupport) {
+
+      if (playerFeatureSet.flashbackNavigationSupport && answerAndResponse.flashbackViewed) {
+        if (isSplitView.get()!!) {
           addFlashbackButton(
-            pendingItemList,
-            rightPendingItemList,
             answerAndResponse.stateNameToRevisit,
-            answerAndResponse.isFlashbackViewed
-          )
+            answerAndResponse.flashbackViewed
+          ).let(rightPendingItemList::add)
+        } else {
+          addFlashbackButton(
+            answerAndResponse.stateNameToRevisit,
+            answerAndResponse.flashbackViewed
+          ).let(pendingItemList::add)
         }
 
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
             SubtitledHtml.newBuilder()
-              .setContentId("flashback_button_feedback")
-              .setHtml("This is flashback button feedback")
+              .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
               .build(),
             gcsEntityId, writtenTranslationContext
-          )?.let(
-            pendingItemList::add
-          )
+          )?.let(pendingItemList::add)
         }
       }
     }
@@ -758,7 +748,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     shouldAnimateContinueButton: Boolean,
     continueButtonAnimationTimestampMs: Long,
     flashbackStateName: String?,
-    isFlashbackViewed: Boolean
+    flashbackViewed: Boolean
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
@@ -806,13 +796,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // Otherwise, there's no navigation button that should be shown since the current interaction
       // handles this or navigation in this context is disabled.
     }
-    if (!flashbackStateName.isNullOrBlank() && !isFlashbackViewed && playerFeatureSet.flashbackNavigationSupport) {
-      addFlashbackButton(
-        conversationPendingItemList,
-        extraInteractionPendingItemList,
-        flashbackStateName,
-        isFlashbackViewed
-      )
+    if (!flashbackStateName.isNullOrBlank() &&
+      !flashbackViewed &&
+      playerFeatureSet.flashbackNavigationSupport
+    ) {
+      addFlashbackButton(flashbackStateName, flashbackViewed).let { viewModel ->
+        if (isSplitView.get() == true) {
+          extraInteractionPendingItemList += viewModel
+        } else {
+          conversationPendingItemList += viewModel
+        }
+      }
     }
   }
 
@@ -937,20 +931,15 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun addFlashbackButton(
-    conversationPendingItemList: MutableList<StateItemViewModel>,
-    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
     flashbackStateName: String,
-    isFlashbackViewed: Boolean
-  ) {
-    val targetList =
-      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
-
-    targetList += FlashbackButtonViewModel(
+    flashbackViewed: Boolean
+  ): FlashbackButtonViewModel {
+    return FlashbackButtonViewModel(
       hasConversationView,
       isSplitView.get()!!,
       fragment as FlashbackButtonListener,
       flashbackStateName,
-      isFlashbackViewed
+      flashbackViewed
     )
   }
 

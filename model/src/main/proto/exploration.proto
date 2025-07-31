@@ -339,8 +339,8 @@ message AnswerAndResponse {
   // a flashback button should be shown.
   string state_name_to_revisit = 4;
 
-  // Whether the flashback is viewed by this button.//subha
-  bool is_flashback_viewed = 5;
+  // Whether the flashback associated with this answer has been viewed by the learner.
+  bool flashback_viewed = 5;
 }
 
 message AnswerOutcome {

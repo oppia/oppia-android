@@ -24,11 +24,11 @@ class FlashbackConfirmationDialogFragment : InjectableDialogFragment() {
     /** Returns a new instance of [FlashbackConfirmationDialogFragment]. */
     fun newInstance(
       stateName: String,
-      isFlashbackViewed: Boolean
+      flashbackViewed: Boolean
     ): FlashbackConfirmationDialogFragment {
       val args = FlashbackConfirmationDialogFragmentArguments.newBuilder()
         .setStateName(stateName)
-        .setIsFlashbackViewed(isFlashbackViewed)
+        .setFlashbackViewed(flashbackViewed)
         .build()
       return FlashbackConfirmationDialogFragment().apply {
         arguments = Bundle().apply {
@@ -50,8 +50,8 @@ class FlashbackConfirmationDialogFragment : InjectableDialogFragment() {
     )
     val stateName = args?.stateName
     checkNotNull(stateName) { "State name must not be null" }
-    val isFlashbackViewed = args.isFlashbackViewed
+    val flashbackViewed = args.flashbackViewed
     return flashbackConfirmationDialogFragmentPresenter
-      .handleOnCreateDialog(stateName, isFlashbackViewed)
+      .handleOnCreateDialog(stateName, flashbackViewed)
   }
 }

@@ -282,13 +282,16 @@ class StateDeck constructor(
       ?: EphemeralState.getDefaultInstance()
   }
 
-  //subha
+  /**
+   *  Sets the `flashback_viewed` field to true for the last [AnswerAndResponse] in the
+   *  [currentDialogInteractions] list.
+   */
   fun setFlashbackIsViewed() {
     if (currentDialogInteractions.isNotEmpty()) {
       val lastIndex = currentDialogInteractions.lastIndex
       val lastAnswerAndResponse = currentDialogInteractions[lastIndex]
       val updatedAnswerAndResponse = lastAnswerAndResponse.toBuilder()
-        .setIsFlashbackViewed(true)
+        .setFlashbackViewed(true)
         .build()
 
       currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
