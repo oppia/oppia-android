@@ -13,12 +13,16 @@ import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.AudioLanguageSelectionFragmentBinding
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.options.AudioLanguageSelectionViewModel
+import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -31,10 +35,6 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
-import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen
-import org.oppia.android.app.options.AudioLanguageActivity
-import org.oppia.android.app.options.OptionsActivity
 
 /** The presenter for [AudioLanguageFragment]. */
 class AudioLanguageFragmentPresenter @Inject constructor(

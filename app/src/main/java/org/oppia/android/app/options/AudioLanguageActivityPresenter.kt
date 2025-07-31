@@ -7,12 +7,12 @@ import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.AudioLanguageActivityBinding
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.ui.R
 import org.oppia.android.util.extensions.putProtoExtra
 import javax.inject.Inject
-import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** The presenter for [AudioLanguageActivity]. */
 @ActivityScope
@@ -38,7 +38,7 @@ class AudioLanguageActivityPresenter @Inject constructor(private val activity: A
         audioLanguage,
         profileId,
         parentScreen
-        )
+      )
 
       activity.supportFragmentManager.beginTransaction()
         .add(R.id.audio_language_fragment_container, audioLanguageFragment)

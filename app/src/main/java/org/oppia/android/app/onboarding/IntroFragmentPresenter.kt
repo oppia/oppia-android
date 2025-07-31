@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
@@ -15,7 +16,6 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
-import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** The presenter for [IntroFragment]. */
 class IntroFragmentPresenter @Inject constructor(

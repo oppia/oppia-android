@@ -287,11 +287,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun ensureProfileOnboarded(profile: Profile) {
-    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOnboarding) {
-      logInToProfile(profile)
-    } else {
-      launchOnboardingScreen(profile.id, profile.name)
-    }
+    if (profile.profileType != ProfileType.SUPERVISOR && !profile.completedProfileOnboarding) {
+      profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
+        if (it is AsyncResult.Success) {
+          launchOnboardingScreen(profile.id, profile.name)
+        }
+      }
+    } else { launchHomeScreen(profile) }
   }
 
   private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
@@ -309,7 +311,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     activity.startActivity(intent)
   }
 
-  private fun logInToProfile(profile: Profile) {
+  private fun launchHomeScreen(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
       profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
         if (it is AsyncResult.Success) {

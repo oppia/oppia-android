@@ -96,7 +96,8 @@ class AudioLanguageSelectionViewModel @Inject constructor(
       PROFILE_LANGUAGE_PROVIDER_ID
     ) { profileAudioLanguage, appLanguageSelection ->
       if (profileAudioLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED ||
-        profileAudioLanguage != OppiaLanguage.UNRECOGNIZED)
+        profileAudioLanguage != OppiaLanguage.UNRECOGNIZED
+      )
         profileAudioLanguage else appLanguageSelection.selectedLanguage
     }.combineWith(
       systemLanguageProvider,
