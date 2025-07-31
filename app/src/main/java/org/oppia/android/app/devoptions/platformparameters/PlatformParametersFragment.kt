@@ -41,6 +41,7 @@ class PlatformParametersFragment : InjectableFragment() {
   ): View {
     var platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+   var invalidInputPlatformparameters: MutableList<PlatformParameterId> = mutableListOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -49,10 +50,13 @@ class PlatformParametersFragment : InjectableFragment() {
       platformParameterStates = args?.platformParameterStatesList
         ?.associate { it.id to it.overriddenValue }
         ?.toMutableMap() ?: mutableMapOf()
+      invalidInputPlatformparameters = args?.invalidInputPlatformParametersList
+        ?.toMutableList() ?: mutableListOf()
     }
 
     return platformParametersFragmentPresenter
-      .handleCreateView(inflater, container, platformParameterStates)
+      .handleCreateView(inflater, container, platformParameterStates,
+        invalidInputPlatformparameters)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -63,8 +67,13 @@ class PlatformParametersFragment : InjectableFragment() {
         .setOverriddenValue(it.value)
         .build()
     }
+    val invalidInputPlatformparameters =
+      platformParametersFragmentPresenter.invalidInputPlatformparameters
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
+      .addAllInvalidInputPlatformParameters(
+        invalidInputPlatformparameters
+      )
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto

@@ -154,6 +154,9 @@ class PlatformParametersFragmentTest {
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
     private const val SYNC_UP_WORKER_PARAMETER_NAME = "Sync Up Worker Time Period In Hours"
+    private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
+    private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
+    private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
   }
 
   @Test
@@ -223,7 +226,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(0)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = DEFAULT_BACKGROUND_COLOR
       )
     }
   }
@@ -280,7 +283,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(1)
       verifyPlatformParameterBackgroundColor(
         position = 1,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = DEFAULT_BACKGROUND_COLOR
       )
     }
   }
@@ -339,10 +342,10 @@ class PlatformParametersFragmentTest {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
+println(getEphemeralPlatformParameters()[0].syncStatus)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = SERVER_BACKGROUND_COLOR
       )
     }
   }
@@ -424,7 +427,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(1)
       verifyPlatformParameterBackgroundColor(
         position = 1,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = SERVER_BACKGROUND_COLOR
       )
     }
   }
@@ -528,7 +531,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(0)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
       )
     }
   }
@@ -612,7 +615,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(1)
       verifyPlatformParameterBackgroundColor(
         position = 1,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
       )
     }
   }
@@ -691,7 +694,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(0)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
       )
     }
   }
@@ -795,7 +798,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(1)
       verifyPlatformParameterBackgroundColor(
         position = 1,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
       )
     }
   }
