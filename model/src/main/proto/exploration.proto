@@ -338,6 +338,9 @@ message AnswerAndResponse {
   // The name of the state the learner can revisit to review a concept. It's presence indicates that
   // a flashback button should be shown.
   string state_name_to_revisit = 4;
+
+  // Whether the flashback is viewed by this button.//subha
+  bool is_flashback_viewed = 5;
 }
 
 message AnswerOutcome {

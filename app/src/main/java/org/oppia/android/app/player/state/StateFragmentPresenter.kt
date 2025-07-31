@@ -221,8 +221,8 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
-  fun onFlashbackButtonClicked(stateName: String) {
-    val dialogFragment = FlashbackConfirmationDialogFragment.newInstance(stateName)
+  fun onFlashbackButtonClicked(stateName: String, isFlashbackViewed: Boolean) {
+    val dialogFragment = FlashbackConfirmationDialogFragment.newInstance(stateName, isFlashbackViewed)
     dialogFragment.showNow(fragment.childFragmentManager, TAG_FLASHBACK_CONFIRMATION_DIALOG)
   }
 

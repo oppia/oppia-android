@@ -281,4 +281,17 @@ class StateDeck constructor(
     return previousStates.find { it.state.name == stateName }
       ?: EphemeralState.getDefaultInstance()
   }
+
+  //subha
+  fun setFlashbackIsViewed() {
+    if (currentDialogInteractions.isNotEmpty()) {
+      val lastIndex = currentDialogInteractions.lastIndex
+      val lastAnswerAndResponse = currentDialogInteractions[lastIndex]
+      val updatedAnswerAndResponse = lastAnswerAndResponse.toBuilder()
+        .setIsFlashbackViewed(true)
+        .build()
+
+      currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
+    }
+  }
 }
