@@ -670,6 +670,96 @@ class PlatformParameterControllerDebugImplTest {
     assertThat(downloadResult).isInstanceOf(AsyncResult.Success::class.java)
   }
 
+  @Test
+  fun testUpdateOverriddenFeatureFlags_returnsCorrectValue() {
+    setUpTestApplicationComponent()
+    val testFlag = OverriddenFeatureFlag.newBuilder()
+      .setId(FeatureFlagId.MULTIPLE_CLASSROOMS)
+      .setOverriddenValue(true)
+      .build()
+
+    val updateProvider = platformParameterControllerDebugImpl.updateOverriddenFeatureFlags(
+      listOf(testFlag)
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val ephemeralFlagsProvider = platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    val ephemeralFlags = monitorFactory.waitForNextSuccessfulResult(ephemeralFlagsProvider)
+    val updatedFlag = ephemeralFlags.find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    assertThat(updatedFlag?.currentValue).isEqualTo(true)
+  }
+
+  @Test
+  fun testUpdateOverriddenFeatureFlags_returnsOverriddenSyncStatus() {
+    setUpTestApplicationComponent()
+    val testFlag = OverriddenFeatureFlag.newBuilder()
+      .setId(FeatureFlagId.MULTIPLE_CLASSROOMS)
+      .setOverriddenValue(true)
+      .build()
+
+    val updateProvider = platformParameterControllerDebugImpl.updateOverriddenFeatureFlags(
+      listOf(testFlag)
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val ephemeralFlagsProvider = platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    val ephemeralFlags = monitorFactory.waitForNextSuccessfulResult(ephemeralFlagsProvider)
+    val updatedFlag = ephemeralFlags.find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    assertThat(updatedFlag?.syncStatus).isEqualTo(SyncStatus.LOCAL_OVERRIDE)
+  }
+
+  @Test
+  fun testUpdateOverriddenPlatformParameters_returnsOverriddenSyncStatus() {
+    setUpTestApplicationComponent()
+    val testParam = OverriddenPlatformParameter.newBuilder()
+      .setId(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+      .setOverriddenValue(
+        PlatformParameterValue.newBuilder()
+          .setInteger(48)
+          .build()
+      )
+      .build()
+
+    val updateProvider = platformParameterControllerDebugImpl.updateOverriddenPlatformParameters(
+      listOf(testParam)
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val ephemeralParamsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralParams = monitorFactory.waitForNextSuccessfulResult(ephemeralParamsProvider)
+    val updatedParam = ephemeralParams.find {
+      it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    }
+
+    assertThat(updatedParam?.syncStatus).isEqualTo(SyncStatus.LOCAL_OVERRIDE)
+  }
+
+  @Test
+  fun testUpdateOverriddenPlatformParameters_returnsCorrectValue() {
+    setUpTestApplicationComponent()
+    val testParam = OverriddenPlatformParameter.newBuilder()
+      .setId(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+      .setOverriddenValue(PlatformParameterValue.newBuilder().setInteger(48).build())
+      .build()
+
+    val updateProvider = platformParameterControllerDebugImpl.updateOverriddenPlatformParameters(
+      listOf(testParam)
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val ephemeralParamsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralParams = monitorFactory.waitForNextSuccessfulResult(ephemeralParamsProvider)
+    val updatedParam = ephemeralParams.find {
+      it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    }
+
+    assertThat(updatedParam?.currentValue?.integer).isEqualTo(48)
+  }
+
   // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOM.
   private fun addTestRemoteFeatureFlagToDatabase(
     component: TestApplicationComponent,

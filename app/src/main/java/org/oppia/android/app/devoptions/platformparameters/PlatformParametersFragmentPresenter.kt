@@ -47,7 +47,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-   var invalidInputPlatformparameters = mutableListOf<PlatformParameterId>()
+  var invalidInputPlatformparameters = mutableListOf<PlatformParameterId>()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -78,7 +78,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
-    if( invalidInputPlatformparameters.isNotEmpty() ) {
+    if (invalidInputPlatformparameters.isNotEmpty()) {
       this.invalidInputPlatformparameters = invalidInputPlatformparameters.toMutableList()
     }
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -183,11 +183,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         editText.inputType = InputType.TYPE_CLASS_NUMBER
         val displayValue = when (val storedValue = paramState?.integer) {
           null -> {
-            if(invalidInputPlatformparameters.contains(model.platformParameterId)) {
+            if (invalidInputPlatformparameters.contains(model.platformParameterId)) {
               model.inputErrorMsg.set(invalidInputErrorText)
               ""
-            }
-            else {
+            } else {
               model.inputErrorMsg.set("")
               model.currentValue.integer.toString()
             }
@@ -207,7 +206,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     }
 
-   var  isSettingInitialValue = false
+    var isSettingInitialValue = false
 
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->

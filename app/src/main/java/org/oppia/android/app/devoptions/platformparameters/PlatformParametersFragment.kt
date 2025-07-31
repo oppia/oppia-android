@@ -41,7 +41,7 @@ class PlatformParametersFragment : InjectableFragment() {
   ): View {
     var platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-   var invalidInputPlatformparameters: MutableList<PlatformParameterId> = mutableListOf()
+    var invalidInputPlatformparameters: MutableList<PlatformParameterId> = mutableListOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -55,8 +55,10 @@ class PlatformParametersFragment : InjectableFragment() {
     }
 
     return platformParametersFragmentPresenter
-      .handleCreateView(inflater, container, platformParameterStates,
-        invalidInputPlatformparameters)
+      .handleCreateView(
+        inflater, container, platformParameterStates,
+        invalidInputPlatformparameters
+      )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

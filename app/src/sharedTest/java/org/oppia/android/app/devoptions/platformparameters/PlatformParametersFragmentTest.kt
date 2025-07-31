@@ -342,7 +342,7 @@ class PlatformParametersFragmentTest {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-println(getEphemeralPlatformParameters()[0].syncStatus)
+      println(getEphemeralPlatformParameters()[0].syncStatus)
       verifyPlatformParameterBackgroundColor(
         position = 0,
         expectedColor = SERVER_BACKGROUND_COLOR
