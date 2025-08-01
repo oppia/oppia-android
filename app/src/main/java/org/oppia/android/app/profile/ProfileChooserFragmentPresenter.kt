@@ -287,21 +287,26 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun computeLoginRoute(profile: Profile) {
-    if (profile.profileType != ProfileType.SUPERVISOR && !profile.completedProfileOnboarding) {
-      if (profile.pin.isNullOrBlank()) {
-        launchOnboardingScreen(profile.id, profile.name)
-      } else {
-        launchPinScreen(profile.id)
-      }
-      return
+    when {
+      profile.profileType == ProfileType.SUPERVISOR -> { routeToHomeOrPinScreens(profile) }
+      !profile.completedProfileOnboarding -> { routeToOnboardingOrPinScreens(profile) }
+      else -> { routeToHomeOrPinScreens(profile) }
     }
+  }
 
-    if (profile.completedProfileOnboarding) {
-      if (profile.pin.isNullOrBlank()) {
-        launchHomeScreen(profile)
-      } else {
-        launchPinScreen(profile.id)
-      }
+  private fun routeToOnboardingOrPinScreens(profile: Profile) {
+    if (profile.pin.isNullOrBlank()) {
+      launchOnboardingScreen(profile.id, profile.name)
+    } else {
+      launchPinScreen(profile.id)
+    }
+  }
+
+  private fun routeToHomeOrPinScreens(profile: Profile) {
+    if (profile.pin.isNullOrBlank()) {
+      launchHomeScreen(profile.id)
+    } else {
+      launchPinScreen(profile.id)
     }
   }
 
@@ -320,16 +325,16 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     activity.startActivity(intent)
   }
 
-  private fun launchHomeScreen(profile: Profile) {
-    profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
+  private fun launchHomeScreen(profileId: ProfileId) {
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
       if (it is AsyncResult.Success) {
         if (enableMultipleClassrooms.value) {
           activity.startActivity(
-            ClassroomListActivity.createClassroomListActivity(activity, profile.id)
+            ClassroomListActivity.createClassroomListActivity(activity, profileId)
           )
         } else {
           activity.startActivity(
-            HomeActivity.createHomeActivity(activity, profile.id)
+            HomeActivity.createHomeActivity(activity, profileId)
           )
         }
       }

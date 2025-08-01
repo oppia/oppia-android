@@ -10,8 +10,10 @@ import androidx.lifecycle.Observer
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.PinPasswordActivityBinding
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -22,15 +24,13 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 import kotlin.system.exitProcess
-import org.oppia.android.app.model.IntroActivityParams
-import org.oppia.android.app.onboarding.IntroActivity
-import org.oppia.android.util.extensions.putProtoExtra
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -110,17 +110,20 @@ class PinPasswordActivityPresenter @Inject constructor(
         ) {
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
-              .loginToProfile(profileId).toLiveData().observe(activity, Observer
-              {
-                if (it is AsyncResult.Success) {
-                  if (enableOnboardingFlowV2.value) {
-                    ensureProfileIsOnboarded()
-                  } else {
-                    launchHomeScreen()
+              .loginToProfile(profileId).toLiveData().observe(
+                activity,
+                Observer
+                {
+                  if (it is AsyncResult.Success) {
+                    if (enableOnboardingFlowV2.value) {
+                      ensureProfileIsOnboarded()
+                    } else {
+                      launchHomeScreen()
+                    }
+                    activity.finish()
                   }
-                  activity.finish()
                 }
-              })
+              )
           } else {
             pinViewModel.errorMessage.set(
               resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
@@ -232,11 +235,14 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialog.dismiss()
       }
       .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(activity, Observer {
-          // Regardless of the result of the operation, always restart the app.
-          confirmedDeletion = true
-          activity.finishAffinity()
-        })
+        profileManagementController.deleteAllProfiles().toLiveData().observe(
+          activity,
+          Observer {
+            // Regardless of the result of the operation, always restart the app.
+            confirmedDeletion = true
+            activity.finishAffinity()
+          }
+        )
       }.create()
     alertDialog.setCanceledOnTouchOutside(false)
     alertDialog.show()

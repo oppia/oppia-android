@@ -33,7 +33,7 @@ class AppStartupStateController @Inject constructor(
   private val deprecationController: DeprecationController,
   @EnableAppAndOsDeprecation
   private val enableAppAndOsDeprecation: Provider<PlatformParameterValue<Boolean>>,
-  private val analyticsController: AnalyticsController,
+  private val analyticsController: AnalyticsController
 ) {
   private val onboardingFlowStore by lazy {
     cacheStoreFactory.create("on_boarding_flow", OnboardingState.getDefaultInstance())
@@ -62,12 +62,7 @@ class AppStartupStateController @Inject constructor(
     }
   }
 
-  /**
-   * Saves that the user has completed the app onboarding flow.
-   *
-   * Note that this does not notify existing subscribers of the changed state, nor can future
-   * subscribers observe this state until the app restarts.
-   */
+  /** Saves that the user has completed the app onboarding flow. */
   fun markOnboardingFlowCompleted(profileId: ProfileId? = null) {
     updateOnboardingState { alreadyOnboardedApp = true }
     logAppOnboardedEvent(profileId)
@@ -118,7 +113,7 @@ class AppStartupStateController @Inject constructor(
     // Note that the flavor must be written here since it only gets updated on-disk and never
     // in-memory (which means it will be inadvertently overwritten when updating onboarding state
     // here).
-    val deferred = onboardingFlowStore.storeDataAsync(updateInMemoryCache = false) { state ->
+    val deferred = onboardingFlowStore.storeDataAsync { state ->
       state.toBuilder().apply {
         updateState()
         lastUsedBuildFlavor = currentBuildFlavor
