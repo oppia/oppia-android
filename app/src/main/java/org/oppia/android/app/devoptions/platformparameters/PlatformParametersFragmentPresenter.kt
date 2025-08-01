@@ -48,11 +48,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
 
+  /** List of the [PlatformParameterId] which has invalid input. */
+  var invalidInputPlatformparameters = mutableListOf<PlatformParameterId>()
+
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>
+    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>,
+    invalidInputPlatformparameters: List<PlatformParameterId>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -69,9 +73,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
           onBackNavigation()
-          // The dispatcher can hold a reference to the host
-          // so we need to null it out to prevent memory leaks.
-          this.remove()
         }
       }
     )
@@ -79,7 +80,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
-
+    if (invalidInputPlatformparameters.isNotEmpty()) {
+      this.invalidInputPlatformparameters = invalidInputPlatformparameters.toMutableList()
+    }
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
     binding.platformParametersRecyclerView.apply {
@@ -104,17 +107,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
-  /**
-   * Called when the back button is pressed in the toolbar or on the device.
-   */
-  fun onBackNavigation() {
-    var hasInvalidInput = false
-    platformParameterStates.map { (_, value) ->
-      if (value.integer == -1) {
-        hasInvalidInput = true
-        return@map
-      }
-    }
+  private fun onBackNavigation() {
+    val hasInvalidInput = invalidInputPlatformparameters.isNotEmpty()
+
     if (!hasInvalidInput) {
       val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
         OverriddenPlatformParameter.newBuilder()
@@ -139,16 +134,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           }
         }
     } else {
-      val alertDialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+      AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
         .setTitle(R.string.platform_parameter_invalid_input_alert_dialog_title)
+        .setMessage(R.string.platform_parameter_invalid_input_alert_dialog_message)
         .setPositiveButton(
-          R.string.platform_parameter_invalid_input_alert_dialog_Ok_msg
-        ) { dialog, _ ->
-          dialog.dismiss()
-        }
+          R.string.platform_parameter_invalid_input_alert_dialog_okay_button
+        ) { dialog, _ -> dialog.dismiss() }
         .setCancelable(false)
-        .create()
-      alertDialog.show()
+        .show()
     }
   }
 
@@ -160,10 +153,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val editText = binding.platformParameterInputEditText
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
-
-    binding.resetButton.setOnClickListener {
-      handleResetParam(model, binding)
-    }
 
     if (model.currentValue.hasBoolean()) {
       handleBooleanParameter(model)
@@ -185,44 +174,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     editText.setTag(R.id.platform_parameter_text_watcher, newWatcher)
   }
 
-  private fun handleResetParam(
-    model: PlatformParameterItemViewModel,
-    binding: PlatformParameterItemBinding
-  ) {
-    platformParameterControllerDebugImpl
-      .resetPlatformParameter(model.platformParameterId)
-      .toLiveData()
-      .observe(fragment) {
-        when (it) {
-          is AsyncResult.Success -> {
-            binding.resetButton.isEnabled = false
-            if (model.currentValue.hasBoolean()) {
-              model.isChecked.set(it.value?.boolean)
-            } else {
-              binding.platformParameterInputEditText
-                .setTag(R.id.platform_parameter_text_change_flag, true)
-              when {
-                model.currentValue.hasInteger() -> {
-                  model.inputValue.set(it.value?.integer.toString())
-                }
-                model.currentValue.hasString() -> {
-                  model.inputValue.set(it.value?.string)
-                }
-              }
-            }
-            model.isResetButtonActive.set(false)
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
-              "Failed to reset parameter: ${model.platformParameterId}", it.error
-            )
-          }
-          is AsyncResult.Pending -> {} // No action required
-        }
-      }
-  }
-
   private fun handleTextInputParameter(
     model: PlatformParameterItemViewModel,
     editText: TextInputEditText
@@ -233,13 +184,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       model.currentValue.hasInteger() -> {
         editText.inputType = InputType.TYPE_CLASS_NUMBER
         val displayValue = when (val storedValue = paramState?.integer) {
-          -1 -> {
-            model.inputErrorMsg.set(invalidInputErrorText)
-            ""
-          }
           null -> {
-            model.inputErrorMsg.set("")
-            model.currentValue.integer.toString()
+            if (invalidInputPlatformparameters.contains(model.platformParameterId)) {
+              model.inputErrorMsg.set(invalidInputErrorText)
+              ""
+            } else {
+              model.inputErrorMsg.set("")
+              model.currentValue.integer.toString()
+            }
           }
           else -> {
             model.inputErrorMsg.set("")
@@ -256,14 +208,11 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     }
 
-    editText.setTag(R.id.platform_parameter_text_change_flag, true)
+    var isSettingInitialValue = false
 
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
-        val ignoreInitialBinding =
-          editText.getTag(R.id.platform_parameter_text_change_flag) as? Boolean ?: false
-        if (ignoreInitialBinding) {
-          editText.setTag(R.id.platform_parameter_text_change_flag, false)
+        if (isSettingInitialValue) {
           return@onPlatformParameterTextChangedCallback
         }
 
@@ -272,14 +221,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             if (text == model.currentValue.integer.toString()) {
               platformParameterStates.remove(id)
               model.inputErrorMsg.set("")
+              invalidInputPlatformparameters.remove(id)
             } else {
               val parsed = text.toIntOrNull()
               if (parsed == null) {
                 model.inputErrorMsg.set(invalidInputErrorText)
-                platformParameterStates[id] =
-                  PlatformParameterValue.newBuilder().setInteger(-1).build()
+                invalidInputPlatformparameters.add(id)
+                platformParameterStates.remove(id)
               } else {
                 model.inputErrorMsg.set("")
+                invalidInputPlatformparameters.remove(id)
                 platformParameterStates[id] =
                   PlatformParameterValue.newBuilder().setInteger(parsed).build()
               }

@@ -186,7 +186,7 @@ class PlatformParameterIntegrationDebugTest {
   }
 
   @Test
-  fun testIntegration_withRemoteAndLocalOverride_overriddenTakesPrecedence_displaysWelcomeMsg() {
+  fun testIntegration_withRemoteAndLocalOverride_overrideTakesPrecedence_displaysWelcomeMsg() {
     executeInPreviousAppInstance { component ->
       addTestRemotePlatformParameterToDatabase(component, false)
       addTestOverriddenPlatformParameterToDatabase(component, true)
@@ -204,6 +204,7 @@ class PlatformParameterIntegrationDebugTest {
       assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SPLASH_MESSAGE)
     }
   }
+
   @Suppress("DeferredResultUnused")
   private fun setUpTestEnvironment() {
     setUpTestApplicationComponent()
