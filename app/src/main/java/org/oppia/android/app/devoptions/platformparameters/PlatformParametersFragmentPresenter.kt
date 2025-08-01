@@ -149,6 +149,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
 
+    binding.resetButton.setOnClickListener {
+      handleResetParam(model, binding)
+    }
+
     if (model.currentValue.hasBoolean()) {
       handleBooleanParameter(model)
     } else {
@@ -167,6 +171,43 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     editText.addTextChangedListener(newWatcher)
     editText.setTag(R.id.platform_parameter_text_watcher, newWatcher)
+  }
+
+  private fun handleResetParam(
+    model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
+  ) {
+    platformParameterControllerDebugImpl
+      .resetPlatformParameter(model.platformParameterId)
+      .toLiveData()
+      .observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> {
+            binding.resetButton.isEnabled = false
+            if (model.currentValue.hasBoolean()) {
+              model.isChecked.set(it.value?.boolean)
+            } else {
+              alreadyBoundsId.remove(model.platformParameterId)
+              when {
+                model.currentValue.hasInteger() -> {
+                  model.inputValue.set(it.value?.integer.toString())
+                }
+                model.currentValue.hasString() -> {
+                  model.inputValue.set(it.value?.string)
+                }
+              }
+            }
+            model.isResetButtonActive.set(false)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "PlatformParametersFragmentPresenter",
+              "Failed to reset parameter: ${model.platformParameterId}", it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // No action required
+        }
+      }
   }
 
   private fun handleTextInputParameter(
