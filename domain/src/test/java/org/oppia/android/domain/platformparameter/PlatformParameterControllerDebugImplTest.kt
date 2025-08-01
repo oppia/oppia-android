@@ -418,7 +418,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameter_withNoRemoteOrLocalOverrides_returnsCorrectDefaultValue() {
+  fun testLoadEphemeralPlatformParameters_withNoRemoteOrLocalOverride_returnsCorrectDefaultValue() {
     setUpTestApplicationComponent()
     val ephemeralPlatformParametersProvider =
       platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
@@ -441,7 +441,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameter_withNoRemoteLocalOverride_hasNotSyncedFromServerStatus() {
+  fun testLoadEphemeralPlatformParameters_withNoRemoteLocalOverride_hasNotSyncedFromServerStatus() {
     setUpTestApplicationComponent()
     val ephemeralPlatformParametersProvider =
       platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
