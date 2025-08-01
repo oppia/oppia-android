@@ -112,7 +112,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           is AsyncResult.Pending -> {} // Wait for a result.
         }
       }
-    (activity as FeatureFlagsActivity).finish()
   }
 
   private fun bindFeatureFlagItem(
