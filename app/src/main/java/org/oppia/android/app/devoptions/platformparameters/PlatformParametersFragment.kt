@@ -57,7 +57,7 @@ class PlatformParametersFragment : InjectableFragment() {
     return platformParametersFragmentPresenter
       .handleCreateView(
         inflater, container, platformParameterStates,
-        invalidInputPlatformparameters
+        invalidInputPlatformparameters.toSet()
       )
   }
 
@@ -70,7 +70,7 @@ class PlatformParametersFragment : InjectableFragment() {
         .build()
     }
     val invalidInputPlatformparameters =
-      platformParametersFragmentPresenter.invalidInputPlatformparameters
+      platformParametersFragmentPresenter.invalidInputPlatformparameters.toList()
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
       .addAllInvalidInputPlatformParameters(

@@ -43,20 +43,20 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
-
+  private val alreadyBoundsId = mutableSetOf<PlatformParameterId>()
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
 
   /** List of the [PlatformParameterId] which has invalid input. */
-  var invalidInputPlatformparameters = mutableListOf<PlatformParameterId>()
+  var invalidInputPlatformparameters = mutableSetOf<PlatformParameterId>()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>,
-    invalidInputPlatformparameters: List<PlatformParameterId>
+    invalidInputPlatformparameters: Set<PlatformParameterId>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -81,7 +81,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
     if (invalidInputPlatformparameters.isNotEmpty()) {
-      this.invalidInputPlatformparameters = invalidInputPlatformparameters.toMutableList()
+      this.invalidInputPlatformparameters = invalidInputPlatformparameters.toMutableSet()
     }
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
@@ -207,15 +207,12 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
-
-    var isSettingInitialValue = false
-
+    alreadyBoundsId.add(model.platformParameterId)
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
-        if (isSettingInitialValue) {
+        if (alreadyBoundsId.contains(id).not()) {
           return@onPlatformParameterTextChangedCallback
         }
-
         when {
           model.currentValue.hasInteger() -> {
             if (text == model.currentValue.integer.toString()) {
