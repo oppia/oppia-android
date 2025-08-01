@@ -46,7 +46,7 @@ class IntroFragmentPresenter @Inject constructor(
 
     profileManagementController.markProfileOnboardingStarted(profileId)
 
-    if (parentScreen == IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN) {
+    if (parentScreen != IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN) {
       binding.onboardingStepsCount?.visibility = View.GONE
     }
 

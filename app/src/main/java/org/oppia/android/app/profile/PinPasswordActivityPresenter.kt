@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.PinPasswordActivityBinding
 import org.oppia.android.app.home.HomeActivity
@@ -25,6 +26,11 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import kotlin.system.exitProcess
+import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.onboarding.IntroActivity
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 
 private const val TAG_ADMIN_SETTINGS_DIALOG = "ADMIN_SETTINGS_DIALOG"
 private const val TAG_RESET_PIN_DIALOG = "RESET_PIN_DIALOG"
@@ -38,6 +44,7 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val accessibilityService: AccessibilityService,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private var internalProfileId = -1
   private var profileId = ProfileId.getDefaultInstance()
@@ -86,7 +93,8 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     // If the screen reader is off, the EditText will receive focus.
     // If the screen reader is on, the EditText won't receive focus.
-    // This is needed because requesting focus on the EditText when the screen reader is on gives TalkBack priority over other views in the screen, ignoring view hierachy.
+    // This is needed because requesting focus on the EditText when the screen reader is on gives
+    // TalkBack priority over other views in the screen, ignoring view hierachy.
     if (!accessibilityService.isScreenReaderEnabled())
       binding.pinPasswordInputPinEditText.requestFocus()
 
@@ -102,20 +110,17 @@ class PinPasswordActivityPresenter @Inject constructor(
         ) {
           if (inputtedPin == pinViewModel.correctPin.get()) {
             profileManagementController
-              .loginToProfile(profileId).toLiveData().observe(
-                activity,
-                {
-                  if (it is AsyncResult.Success) {
-                    activity.startActivity(
-                      if (enableMultipleClassrooms.value)
-                        ClassroomListActivity.createClassroomListActivity(activity, profileId)
-                      else
-                        HomeActivity.createHomeActivity(activity, profileId)
-                    )
-                    activity.finish()
+              .loginToProfile(profileId).toLiveData().observe(activity, Observer
+              {
+                if (it is AsyncResult.Success) {
+                  if (enableOnboardingFlowV2.value) {
+                    ensureProfileIsOnboarded()
+                  } else {
+                    launchHomeScreen()
                   }
+                  activity.finish()
                 }
-              )
+              })
           } else {
             pinViewModel.errorMessage.set(
               resourceHandler.getStringInLocale(R.string.pin_password_incorrect_pin)
@@ -128,6 +133,7 @@ class PinPasswordActivityPresenter @Inject constructor(
             )
             lifecycleSafeTimerFactory.createTimer(1000).observe(
               activity,
+              Observer
               {
                 binding.pinPasswordInputPinEditText.setText("")
               }
@@ -226,11 +232,11 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialog.dismiss()
       }
       .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(activity) {
+        profileManagementController.deleteAllProfiles().toLiveData().observe(activity, Observer {
           // Regardless of the result of the operation, always restart the app.
           confirmedDeletion = true
           activity.finishAffinity()
-        }
+        })
       }.create()
     alertDialog.setCanceledOnTouchOutside(false)
     alertDialog.show()
@@ -256,5 +262,39 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
+  }
+
+  private fun ensureProfileIsOnboarded() {
+    val profile = checkNotNull(pinViewModel.profile.value)
+
+    if (!profile.completedProfileOnboarding) {
+      launchOnboardingScreen(profile.id, profile.name)
+    } else {
+      launchHomeScreen()
+    }
+  }
+
+  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
+    val introActivityParams = IntroActivityParams.newBuilder()
+      .setProfileNickname(profileName)
+      .setParentScreen(IntroActivityParams.ParentScreen.PIN_PASSWORD_SCREEN)
+      .build()
+
+    val intent = IntroActivity.createIntroActivity(activity)
+    intent.apply {
+      putProtoExtra(IntroActivity.PARAMS_KEY, introActivityParams)
+      decorateWithUserProfileId(profileId)
+    }
+
+    activity.startActivity(intent)
+  }
+
+  private fun launchHomeScreen() {
+    activity.startActivity(
+      if (enableMultipleClassrooms.value)
+        ClassroomListActivity.createClassroomListActivity(activity, profileId)
+      else
+        HomeActivity.createHomeActivity(activity, profileId)
+    )
   }
 }

@@ -286,14 +286,23 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun ensureProfileOnboarded(profile: Profile) {
+  private fun computeLoginRoute(profile: Profile) {
     if (profile.profileType != ProfileType.SUPERVISOR && !profile.completedProfileOnboarding) {
-      profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
-        if (it is AsyncResult.Success) {
-          launchOnboardingScreen(profile.id, profile.name)
-        }
+      if (profile.pin.isNullOrBlank()) {
+        launchOnboardingScreen(profile.id, profile.name)
+      } else {
+        launchPinScreen(profile.id)
       }
-    } else { launchHomeScreen(profile) }
+      return
+    }
+
+    if (profile.completedProfileOnboarding) {
+      if (profile.pin.isNullOrBlank()) {
+        launchHomeScreen(profile)
+      } else {
+        launchPinScreen(profile.id)
+      }
+    }
   }
 
   private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
@@ -312,28 +321,29 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   }
 
   private fun launchHomeScreen(profile: Profile) {
-    if (profile.pin.isNullOrBlank()) {
-      profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
-        if (it is AsyncResult.Success) {
-          if (enableMultipleClassrooms.value) {
-            activity.startActivity(
-              ClassroomListActivity.createClassroomListActivity(activity, profile.id)
-            )
-          } else {
-            activity.startActivity(
-              HomeActivity.createHomeActivity(activity, profile.id)
-            )
-          }
+    profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
+      if (it is AsyncResult.Success) {
+        if (enableMultipleClassrooms.value) {
+          activity.startActivity(
+            ClassroomListActivity.createClassroomListActivity(activity, profile.id)
+          )
+        } else {
+          activity.startActivity(
+            HomeActivity.createHomeActivity(activity, profile.id)
+          )
         }
       }
-    } else {
-      val pinPasswordIntent = PinPasswordActivity.createPinPasswordActivityIntent(
+    }
+  }
+
+  private fun launchPinScreen(profileId: ProfileId) {
+    activity.startActivity(
+      PinPasswordActivity.createPinPasswordActivityIntent(
         activity,
         chooserViewModel.adminPin,
-        profile.id.internalId
+        profileId.internalId
       )
-      activity.startActivity(pinPasswordIntent)
-    }
+    )
   }
 
   /** Handles navigation to either the [AdministratorControlsActivity] or [AdminAuthActivity]. */
@@ -363,6 +373,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   /** Click listener for handling clicks to login to a profile. */
   fun onProfileClick(profile: Profile) {
     updateLearnerIdIfAbsent(profile)
-    ensureProfileOnboarded(profile)
+    computeLoginRoute(profile)
   }
 }

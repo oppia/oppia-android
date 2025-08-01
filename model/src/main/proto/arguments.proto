@@ -924,6 +924,9 @@ message IntroActivityParams {
 
     // Corresponds to the profile list screen.
     PROFILE_CHOOSER_SCREEN = 2;
+
+    // Corresponds to the pin password screen.
+    PIN_PASSWORD_SCREEN = 3;
   }
 }
 
