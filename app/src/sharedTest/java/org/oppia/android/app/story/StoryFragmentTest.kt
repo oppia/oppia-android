@@ -683,7 +683,7 @@ class StoryFragmentTest {
           2
         )
       )
-      onView(
+      onView
         atPositionOnView(
           recyclerViewId = R.id.story_chapter_list,
           position = 2,

@@ -3362,6 +3362,8 @@ class ExplorationProgressControllerTest {
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
       .isEqualTo("Fractions")
+    // Verify answer and response contains the flashbackViewed is false.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(false)
   }
 
   @Test
@@ -3418,7 +3420,7 @@ class ExplorationProgressControllerTest {
 
     // Trigger flashback dialog and click Continue button.
     val expectedEphemeralState =
-      moveToFlashbackState(answerAndResponse.stateNameToRevisit)
+      moveToFlashbackState(answerAndResponse.stateNameToRevisit, answerAndResponse.flashbackViewed)
 
     // Verify returned EphemeralState is a completed state.
     assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
@@ -3462,6 +3464,14 @@ class ExplorationProgressControllerTest {
 
     // Verify that there is exactly one wrong answer.
     assertThat(expectedEphemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = expectedEphemeralState.pendingState.wrongAnswerList[0]
+
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit).isEqualTo("Fractions")
+    // Verify answer and response contains the flashbackViewed is true.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(true)
   }
 
   @Test
@@ -3501,7 +3511,7 @@ class ExplorationProgressControllerTest {
     val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
 
     // Trigger flashback dialog and click Continue button.
-    moveToFlashbackState(answerAndResponse.stateNameToRevisit)
+    moveToFlashbackState(answerAndResponse.stateNameToRevisit, answerAndResponse.flashbackViewed)
   }
 
   private fun navigateToPrototypeRatioInputState() {
@@ -3513,9 +3523,9 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState6AndMoveToNextState()
   }
 
-  private fun moveToFlashbackState(stateName: String): EphemeralState {
+  private fun moveToFlashbackState(stateName: String, flashbackViewed: Boolean): EphemeralState {
     monitorFactory.waitForNextSuccessfulResult(
-      explorationProgressController.moveToFlashback(stateName)
+      explorationProgressController.moveToFlashback(stateName, flashbackViewed)
     )
     return waitForGetCurrentStateSuccessfulLoad()
   }

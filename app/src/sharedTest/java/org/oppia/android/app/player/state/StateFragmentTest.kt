@@ -25,6 +25,7 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
@@ -96,6 +97,7 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
@@ -5719,12 +5721,40 @@ class StateFragmentTest {
         " The ratio of the two numbers is:"
       verifyContentContains(expectedText)
 
+
       // Verify feedback is visible.
-      val expectedFeedback = "This doesn't seem right. Let's go back and look at the previous" +
+      val expectedFeedback1 = "This doesn't seem right. Let's go back and look at the previous" +
         " question and answer to understand better."
-      scrollToViewType(FEEDBACK)
-      onView(withId(R.id.feedback_text_view))
-        .check(matches(withText(containsString(expectedFeedback))))
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(2)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.state_recycler_view,
+          position = 2,
+          targetViewId = R.id.feedback_text_view
+        )
+      ).check(matches(withText(containsString(expectedFeedback1))))
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+
+      // Verify feedback is visible.
+      val expectedFeedback2 = "Now that you have reviewed the solution to the previous question," +
+        " let's try again."
+      onView(withId(R.id.state_recycler_view)).perform(
+        scrollToPosition<RecyclerView.ViewHolder>(4)
+      )
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.state_recycler_view,
+          position = 4,
+          targetViewId = R.id.feedback_text_view
+        )
+      ).check(matches(withText(containsString(expectedFeedback2))))
 
       // Verify ratio expression input interaction is being displayed.
       scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
@@ -5735,12 +5765,63 @@ class StateFragmentTest {
       onView(withId(R.id.submit_answer_button)).check(
         matches(withText(R.string.state_submit_button))
       )
+    }
+  }
 
-      // Verify flashback button is visible.
-      scrollToViewType(FLASHBACK_BUTTON)
-      onView(withId(R.id.flashback_button)).check(
-        matches(withText(R.string.state_flashback_button))
-      )
+  @Test
+  fun testFlashback_submitTwoWrongAns_CompleteTwoFlashbackView_verifyPreviousResponseText() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:8")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Click continue button on flashback confirmation dialog.
+      onView(withId(R.id.continue_confirmation_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Continue")))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Verify Previous Responses Header text.
+      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
+      onView(withId(R.id.previous_responses_header_text))
+        .check(matches(withText(containsString("PREVIOUS RESPONSES (1)"))))
+    }
+  }
+
+  @Test
+  fun testFlashback_completeFlashbackView_submitCorrectAnswer_canSuccessfullyMoveToNextState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Submit correct answer.
+      typeRatioExpression("4:5")
+      clickSubmitAnswerButton()
+
+      // Click continue navigation button.
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the eighth state.
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+      verifyViewTypeIsPresent(TEXT_INPUT_INTERACTION)
     }
   }
 
