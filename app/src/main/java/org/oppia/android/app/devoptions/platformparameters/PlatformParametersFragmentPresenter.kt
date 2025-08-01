@@ -47,6 +47,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+
+  /** List of the [PlatformParameterId] which has invalid input. */
   var invalidInputPlatformparameters = mutableListOf<PlatformParameterId>()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
