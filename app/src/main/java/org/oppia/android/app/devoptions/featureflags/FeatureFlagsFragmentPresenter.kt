@@ -56,9 +56,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
           onBackNavigation()
-          // The dispatcher can hold a reference to the host
-          // so we need to null it out to prevent memory leaks.
-          this.remove()
         }
       }
     )
@@ -120,6 +117,10 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   ) {
     binding.viewModel = model
 
+    binding.resetButton.setOnClickListener {
+      handleResetFeatureFlag(model, binding)
+    }
+
     if (featureFlagStates.containsKey(model.featureFlagId)) {
       model.isChecked.set(featureFlagStates[model.featureFlagId])
     }
@@ -130,5 +131,30 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         featureFlagStates[id] = value
       }
     }
+  }
+  private fun handleResetFeatureFlag(
+    model: FeatureFlagItemViewModel,
+    binding: FeatureFlagsItemBinding
+  ) {
+    platformParameterControllerDebugImpl
+      .resetFeatureFlag(model.featureFlagId)
+      .toLiveData()
+      .observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> {
+            binding.resetButton.isEnabled = false
+            model.isChecked.set(it.value)
+            model.isResetButtonActive.set(false)
+            featureFlagStates.remove(model.featureFlagId)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "FeatureFlagsFragmentPresenter",
+              "Failed to reset feature flag: ${model.featureFlagId}", it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // No action required
+        }
+      }
   }
 }
