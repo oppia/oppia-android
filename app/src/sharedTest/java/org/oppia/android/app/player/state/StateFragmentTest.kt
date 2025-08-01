@@ -5721,7 +5721,6 @@ class StateFragmentTest {
         " The ratio of the two numbers is:"
       verifyContentContains(expectedText)
 
-
       // Verify feedback is visible.
       val expectedFeedback1 = "This doesn't seem right. Let's go back and look at the previous" +
         " question and answer to understand better."
