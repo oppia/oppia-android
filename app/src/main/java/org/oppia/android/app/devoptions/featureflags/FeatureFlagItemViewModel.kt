@@ -38,6 +38,12 @@ class FeatureFlagItemViewModel(
   @ColorInt
   val backgroundColor: Int = retrieveBackgroundColor().toInt()
 
+  /** Indicates whether the reset button should be shown for this flag. */
+  val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+
+  /** Tracks whether the reset button is currently enabled (clickable). */
+  val isResetButtonActive = ObservableField(true)
+
   /** Called when the feature flag switch is toggled in the UI. */
   fun onToggleFeatureFlagSwitch() {
     val newValue = !(isChecked.get() ?: false)

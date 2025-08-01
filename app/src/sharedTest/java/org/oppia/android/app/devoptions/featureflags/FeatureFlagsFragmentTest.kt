@@ -13,6 +13,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -584,6 +586,126 @@ class FeatureFlagsFragmentTest {
         position = 0,
         expectedState = expectedState
       )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverriddenFlag_resetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverride_clickResetButton_resetsFlagToDefaultValue() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverride_clickResetButton_disablesResetButton() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      scenario.close()
+    }
+
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
