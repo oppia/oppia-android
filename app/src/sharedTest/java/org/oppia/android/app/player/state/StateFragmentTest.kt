@@ -5716,6 +5716,11 @@ class StateFragmentTest {
       // Click Return to question button.
       clickReturnToQuestionButton()
 
+      // Verify Previous Responses Header text.
+      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
+      onView(withId(R.id.previous_responses_header_text))
+        .check(matches(withText(containsString("PREVIOUS RESPONSES (1)"))))
+
       // Verify learner returns to the latest pending state.
       val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
         " The ratio of the two numbers is:"
