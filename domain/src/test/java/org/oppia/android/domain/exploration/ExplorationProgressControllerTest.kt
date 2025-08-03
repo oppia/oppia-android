@@ -3420,7 +3420,7 @@ class ExplorationProgressControllerTest {
 
     // Trigger flashback dialog and click Continue button.
     val expectedEphemeralState =
-      moveToFlashbackState(answerAndResponse.stateNameToRevisit, answerAndResponse.flashbackViewed)
+      moveToFlashbackState(answerAndResponse.stateNameToRevisit)
 
     // Verify returned EphemeralState is a completed state.
     assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
@@ -3511,7 +3511,7 @@ class ExplorationProgressControllerTest {
     val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
 
     // Trigger flashback dialog and click Continue button.
-    moveToFlashbackState(answerAndResponse.stateNameToRevisit, answerAndResponse.flashbackViewed)
+    moveToFlashbackState(answerAndResponse.stateNameToRevisit)
   }
 
   private fun navigateToPrototypeRatioInputState() {
@@ -3523,9 +3523,9 @@ class ExplorationProgressControllerTest {
     playThroughPrototypeState6AndMoveToNextState()
   }
 
-  private fun moveToFlashbackState(stateName: String, flashbackViewed: Boolean): EphemeralState {
+  private fun moveToFlashbackState(stateName: String): EphemeralState {
     monitorFactory.waitForNextSuccessfulResult(
-      explorationProgressController.moveToFlashback(stateName, flashbackViewed)
+      explorationProgressController.moveToFlashback(stateName)
     )
     return waitForGetCurrentStateSuccessfulLoad()
   }

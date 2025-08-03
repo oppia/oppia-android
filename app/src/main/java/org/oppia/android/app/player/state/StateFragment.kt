@@ -134,8 +134,8 @@ class StateFragment :
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
-  override fun onFlashbackButtonClicked(stateName: String, flashbackViewed: Boolean) {
-    stateFragmentPresenter.onFlashbackButtonClicked(stateName, flashbackViewed)
+  override fun onFlashbackButtonClicked(stateName: String) {
+    stateFragmentPresenter.onFlashbackButtonClicked(stateName)
   }
 
   override fun onReturnToQuestionButtonClicked() {

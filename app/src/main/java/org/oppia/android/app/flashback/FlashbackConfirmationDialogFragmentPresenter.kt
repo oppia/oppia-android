@@ -22,7 +22,7 @@ class FlashbackConfirmationDialogFragmentPresenter @Inject constructor(
 ) {
 
   /** Sets up data binding. */
-  fun handleOnCreateDialog(stateName: String, flashbackViewed: Boolean): Dialog {
+  fun handleOnCreateDialog(stateName: String): Dialog {
     val binding = FlashbackConfirmationDialogFragmentBinding.inflate(
       activity.layoutInflater,
       /* parent= */ null,
@@ -36,7 +36,7 @@ class FlashbackConfirmationDialogFragmentPresenter @Inject constructor(
     dialog.setCanceledOnTouchOutside(false)
 
     binding.continueConfirmationButton.setOnClickListener {
-      explorationProgressController.moveToFlashback(stateName, flashbackViewed)
+      explorationProgressController.moveToFlashback(stateName)
       dialog.dismiss()
     }
 

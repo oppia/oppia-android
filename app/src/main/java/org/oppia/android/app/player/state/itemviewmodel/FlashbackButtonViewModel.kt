@@ -7,12 +7,11 @@ class FlashbackButtonViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
   private val flashbackButtonListener: FlashbackButtonListener,
-  private val flashbackStateName: String,
-  private val flashbackViewed: Boolean
+  private val flashbackStateName: String
 ) : StateItemViewModel(ViewType.FLASHBACK_BUTTON) {
 
   /** Called when the 'See example' button is clicked. */
   fun onFlashbackButtonClicked() {
-    flashbackButtonListener.onFlashbackButtonClicked(flashbackStateName, flashbackViewed)
+    flashbackButtonListener.onFlashbackButtonClicked(flashbackStateName)
   }
 }

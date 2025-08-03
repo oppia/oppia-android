@@ -497,8 +497,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
         if (playerFeatureSet.flashbackNavigationSupport && answerAndResponse.flashbackViewed) {
           addFlashbackButton(
-            answerAndResponse.stateNameToRevisit,
-            answerAndResponse.flashbackViewed
+            answerAndResponse.stateNameToRevisit
           ).let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
@@ -524,6 +523,71 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      if (
+        playerFeatureSet.flashbackNavigationSupport &&
+        !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+        answerAndResponse.flashbackViewed
+      ) {
+        PreviousResponsesHeaderViewModel(
+          answersAndResponses.size,
+          hasConversationView,
+          ObservableBoolean(hasPreviousResponsesExpanded),
+          fragment as PreviousResponsesHeaderClickListener,
+          isSplitView.get()!!,
+          resourceHandler
+        ).let { viewModel ->
+          pendingItemList += viewModel
+          previousAnswerViewModels += viewModel
+        }
+        // Only add previous answers if current responses are expanded, or if collapsing is disabled.
+        val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing ||
+          hasPreviousResponsesExpanded
+
+        if (playerFeatureSet.pastAnswerSupport) {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            /* isAnswerCorrect= */ false
+          )?.let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+        }
+        if (playerFeatureSet.feedbackSupport) {
+          createFeedbackItem(
+            answerAndResponse.feedback,
+            gcsEntityId,
+            writtenTranslationContext
+          )?.let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+        }
+
+        addFlashbackButton(
+          answerAndResponse.stateNameToRevisit
+        ).let { viewModel ->
+          if (showPreviousAnswers) {
+            pendingItemList += viewModel
+          }
+          previousAnswerViewModels += viewModel
+        }
+
+        if (playerFeatureSet.feedbackSupport) {
+          createFeedbackItem(
+            SubtitledHtml.newBuilder()
+              .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
+              .build(),
+            gcsEntityId, writtenTranslationContext
+          )?.let(pendingItemList::add)
+        }
+        return
+      }
+
       if (playerFeatureSet.pastAnswerSupport) {
         if (isLastAnswerCorrect && isSplitView.get()!!) {
           createSubmittedAnswer(
@@ -543,29 +607,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
         createFeedbackItem(answerAndResponse.feedback, gcsEntityId, writtenTranslationContext)?.let(
           pendingItemList::add
         )
-      }
-
-      if (playerFeatureSet.flashbackNavigationSupport && answerAndResponse.flashbackViewed) {
-        if (isSplitView.get()!!) {
-          addFlashbackButton(
-            answerAndResponse.stateNameToRevisit,
-            answerAndResponse.flashbackViewed
-          ).let(rightPendingItemList::add)
-        } else {
-          addFlashbackButton(
-            answerAndResponse.stateNameToRevisit,
-            answerAndResponse.flashbackViewed
-          ).let(pendingItemList::add)
-        }
-
-        if (playerFeatureSet.feedbackSupport) {
-          createFeedbackItem(
-            SubtitledHtml.newBuilder()
-              .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
-              .build(),
-            gcsEntityId, writtenTranslationContext
-          )?.let(pendingItemList::add)
-        }
       }
     }
   }
@@ -800,7 +841,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       !flashbackViewed &&
       playerFeatureSet.flashbackNavigationSupport
     ) {
-      addFlashbackButton(flashbackStateName, flashbackViewed).let { viewModel ->
+      addFlashbackButton(flashbackStateName).let { viewModel ->
         if (isSplitView.get() == true) {
           extraInteractionPendingItemList += viewModel
         } else {
@@ -931,15 +972,13 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun addFlashbackButton(
-    flashbackStateName: String,
-    flashbackViewed: Boolean
+    flashbackStateName: String
   ): FlashbackButtonViewModel {
     return FlashbackButtonViewModel(
       hasConversationView,
       isSplitView.get()!!,
       fragment as FlashbackButtonListener,
-      flashbackStateName,
-      flashbackViewed
+      flashbackStateName
     )
   }
 

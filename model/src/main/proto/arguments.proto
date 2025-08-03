@@ -970,7 +970,4 @@ message PlatformParametersFragmentStateBundle {
 message FlashbackConfirmationDialogFragmentArguments {
   // The name of the state that will be shown as a flashback.
   string state_name = 1;
-
-  // Whether the flashback has been viewed by the learner.
-  bool flashback_viewed = 2;
 }

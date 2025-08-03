@@ -297,4 +297,12 @@ class StateDeck constructor(
       currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
     }
   }
+
+  /**
+   *  Returns true if any [AnswerAndResponse] in [currentDialogInteractions] has `flashback_viewed`
+   *  set to true.
+   */
+  fun isFlashbackViewed(): Boolean {
+    return currentDialogInteractions.any { it.flashbackViewed }
+  }
 }

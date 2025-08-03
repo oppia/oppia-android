@@ -5722,38 +5722,14 @@ class StateFragmentTest {
       verifyContentContains(expectedText)
 
       // Verify feedback is visible.
-      val expectedFeedback1 = "This doesn't seem right. Let's go back and look at the previous" +
-        " question and answer to understand better."
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(2)
-      )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.state_recycler_view,
-          position = 2,
-          targetViewId = R.id.feedback_text_view
-        )
-      ).check(matches(withText(containsString(expectedFeedback1))))
-
-      // Verify flashback button is visible.
-      scrollToViewType(FLASHBACK_BUTTON)
-      onView(withId(R.id.flashback_button)).check(
-        matches(withText(R.string.state_flashback_button))
-      )
-
-      // Verify feedback is visible.
-      val expectedFeedback2 = "Now that you have reviewed the solution to the previous question," +
+      val expectedFeedback = "Now that you have reviewed the solution to the previous question," +
         " let's try again."
+
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(4)
       )
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.state_recycler_view,
-          position = 4,
-          targetViewId = R.id.feedback_text_view
-        )
-      ).check(matches(withText(containsString(expectedFeedback2))))
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString(expectedFeedback))))
 
       // Verify ratio expression input interaction is being displayed.
       scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
@@ -5768,7 +5744,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_submitTwoWrongAns_CompleteTwoFlashbackView_verifyPreviousResponseText() {
+  fun testFlashback_CompleteFlashbackView_submitWrongAnsAgain_verifyFlashbackButtonisNotOffered() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5781,23 +5757,18 @@ class StateFragmentTest {
       typeRatioExpression("4:8")
       clickSubmitAnswerButton()
 
-      // Click on flashback button.
-      clickFlashbackButton()
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
 
-      // Click continue button on flashback confirmation dialog.
-      onView(withId(R.id.continue_confirmation_button))
-        .inRoot(isDialog())
-        .check(matches(withText("Continue")))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
 
-      // Click Return to question button.
-      clickReturnToQuestionButton()
-
-      // Verify Previous Responses Header text.
-      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
-      onView(withId(R.id.previous_responses_header_text))
-        .check(matches(withText(containsString("PREVIOUS RESPONSES (1)"))))
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
     }
   }
 
