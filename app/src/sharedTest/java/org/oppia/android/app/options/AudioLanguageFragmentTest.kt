@@ -9,6 +9,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -16,6 +17,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
@@ -50,6 +52,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
 import org.oppia.android.app.model.AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.retrieveLanguageFromArguments
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.recyclerview.RecyclerViewMatcher.Companion.atPositionOnView
@@ -88,7 +91,6 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.BuildEnvironment
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.RunOn
 import org.oppia.android.testing.TestLogReportingModule
@@ -246,89 +248,178 @@ class AudioLanguageFragmentTest {
 
   @Test
   fun testAudioLanguage_onboardingV2Enabled_allViewsAreDisplayed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
-      )
-      onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
-      )
-      onView(withId(R.id.audio_language_dropdown_list)).check(
-        matches(withText(context.getString(R.string.english_localized_language_name)))
-      )
-      onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-      onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-    }
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use {
+        onView(withId(R.id.audio_language_text)).check(
+          matches(withText("In Oppia, you can listen to lessons!"))
+        )
+        onView(withId(R.id.audio_language_subtitle)).check(
+          matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+        )
+        onView(withId(R.id.audio_language_dropdown_list)).check(
+          matches(withText(context.getString(R.string.english_localized_language_name)))
+        )
+        onView(withId(R.id.onboarding_navigation_back)).check(
+          matches(withEffectiveVisibility(Visibility.VISIBLE))
+        )
+        onView(withId(R.id.onboarding_navigation_continue)).check(
+          matches(withEffectiveVisibility(Visibility.VISIBLE))
+        )
+      }
   }
 
   @Test
   fun testAudioLanguage_onboardingV2Enabled_configChange_allViewsAreDisplayed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.audio_language_text)).check(
-        matches(withText("In Oppia, you can listen to lessons!"))
-      )
-      onView(withId(R.id.audio_language_subtitle)).check(
-        matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
-      )
-      onView(withId(R.id.audio_language_dropdown_list)).check(
-        matches(withText(context.getString(R.string.english_localized_language_name)))
-      )
-      onView(withId(R.id.onboarding_navigation_back)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-      onView(withId(R.id.onboarding_navigation_continue)).check(
-        matches(withEffectiveVisibility(Visibility.VISIBLE))
-      )
-    }
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use {
+        rotateToLandscape()
+        onView(withId(R.id.audio_language_text)).check(
+          matches(withText("In Oppia, you can listen to lessons!"))
+        )
+        onView(withId(R.id.audio_language_subtitle)).check(
+          matches(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+        )
+        onView(withId(R.id.audio_language_dropdown_list)).check(
+          matches(withText(context.getString(R.string.english_localized_language_name)))
+        )
+        onView(withId(R.id.onboarding_navigation_back)).check(
+          matches(withEffectiveVisibility(Visibility.VISIBLE))
+        )
+        onView(withId(R.id.onboarding_navigation_continue)).check(
+          matches(withEffectiveVisibility(Visibility.VISIBLE))
+        )
+      }
+  }
+
+  @Test
+  fun testAudioLanguage_fromOptions_onboardingV2Enabled_navigationViewsAreNotDisplayed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use {
+        onView(withText("In Oppia, you can listen to lessons!")).check(matches(isDisplayed()))
+        onView(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+          .check(matches(isDisplayed()))
+        onView(withId(R.id.audio_language_dropdown_list)).check(matches(isDisplayed()))
+        onView(withId(R.id.onboarding_steps_count)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.onboarding_navigation_back)).check(
+          matches(withEffectiveVisibility(Visibility.GONE))
+        )
+        onView(withId(R.id.onboarding_navigation_continue)).check(
+          matches(withEffectiveVisibility(Visibility.GONE))
+        )
+      }
+  }
+
+  @Test
+  fun testAudioLanguage_fromOptions_landscape_onboardingV2Enabled_navigationViewsAreNotDisplayed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use {
+        onView(withText("In Oppia, you can listen to lessons!")).check(matches(isDisplayed()))
+        onView(withText(context.getString(R.string.audio_language_fragment_subtitle)))
+          .check(matches(isDisplayed()))
+        onView(withId(R.id.audio_language_dropdown_list)).check(matches(isDisplayed()))
+        onView(withId(R.id.onboarding_steps_count)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.onboarding_navigation_back)).check(
+          matches(withEffectiveVisibility(Visibility.GONE))
+        )
+        onView(withId(R.id.onboarding_navigation_continue)).check(
+          matches(withEffectiveVisibility(Visibility.GONE))
+        )
+      }
+  }
+
+  @Test
+  fun testAudioLanguage_fromOptions_onboardingV2Enabled_toolbarIsDisplayed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use {
+        onView(withId(R.id.reading_list_app_bar_layout)).check(matches(isDisplayed()))
+      }
+  }
+
+  @Test
+  fun testAudioLanguage_fromOnboarding_onboardingV2Enabled_toolbarIsNotDisplayed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { onView(withId(R.id.reading_list_app_bar_layout)).check(matches(not(isDisplayed()))) }
   }
 
   @Test
   fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use { scenario ->
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-        assertThat(activity.isFinishing).isTrue()
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { scenario ->
+        onView(withId(R.id.onboarding_navigation_back)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+          assertThat(activity.isFinishing).isTrue()
+        }
       }
-    }
   }
 
   @Test
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use { scenario ->
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
-      onView(withId(R.id.onboarding_navigation_back)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
-        assertThat(activity.isFinishing).isTrue()
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { scenario ->
+        rotateToLandscape()
+        onView(withId(R.id.onboarding_navigation_back)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+          assertThat(activity.isFinishing).isTrue()
+        }
       }
-    }
+  }
+
+  @Test
+  fun testFragment_portraitMode_systemBackButtonPressed_currentScreenIsDestroyed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use { scenario ->
+        onView(isRoot()).perform(pressBack())
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+          assertThat(activity.isFinishing).isTrue()
+        }
+      }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_systemBackButtonPressed_currentScreenIsDestroyed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use { scenario ->
+        rotateToLandscape()
+        onView(isRoot()).perform(pressBack())
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+          assertThat(activity.isFinishing).isTrue()
+        }
+      }
+  }
+
+  @Test
+  fun testFragment_portraitMode_toolbarBackButtonPressed_currentScreenIsDestroyed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use { scenario ->
+        onView(withContentDescription(R.string.navigate_up)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+          assertThat(activity.isFinishing).isTrue()
+        }
+      }
+  }
+
+  @Test
+  fun testFragment_landscapeMode_toolbarBackButtonPressed_currentScreenIsDestroyed() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use { scenario ->
+        rotateToLandscape()
+        onView(withContentDescription(R.string.navigate_up)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+        scenario.onActivity { activity ->
+          assertThat(activity.isFinishing).isTrue()
+        }
+      }
   }
 
   @Test
   fun testFragment_portraitMode_continueButtonClicked_launchesHomeScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN).use {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -340,12 +431,8 @@ class AudioLanguageFragmentTest {
   @Test
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN).use {
+      rotateToLandscape()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -357,12 +444,7 @@ class AudioLanguageFragmentTest {
   @Test
   fun testFragment_multipleClassroomsEnabled_continueButtonClicked_launchesClassroomScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN).use {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -374,12 +456,8 @@ class AudioLanguageFragmentTest {
   @Test
   fun testFragment_landscapeMode_multipleClassroomsEnabled_continueButtonLaunchesClassroomScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use {
-      onView(isRoot()).perform(orientationLandscape())
-      testCoroutineDispatchers.runCurrent()
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN).use {
+      rotateToLandscape()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -389,116 +467,127 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testFragment_languageSelectionChanged_selectionIsUpdated() {
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testFragment_fromOnboarding_languageSelectionChanged_selectionIsUpdated() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { scenario ->
+        scenario.onActivity { activity ->
+          onView(withId(R.id.audio_language_dropdown_list)).perform(click())
 
-      scenario.onActivity { activity ->
-        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+          onData(allOf(`is`(instanceOf(String::class.java)), `is`("Naijá")))
+            .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+            .perform(click())
 
-        onData(allOf(`is`(instanceOf(String::class.java)), `is`("Naijá")))
-          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
-          .perform(click())
+          testCoroutineDispatchers.runCurrent()
 
-        testCoroutineDispatchers.runCurrent()
+          onView(withId(R.id.audio_language_dropdown_list)).check(
+            matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          )
 
-        onView(withId(R.id.audio_language_dropdown_list)).check(
-          matches(withText(R.string.nigerian_pidgin_localized_language_name))
-        )
-
-        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
-        testCoroutineDispatchers.runCurrent()
-        intended(hasComponent(HomeActivity::class.java.name))
+          onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+          testCoroutineDispatchers.runCurrent()
+          intended(hasComponent(HomeActivity::class.java.name))
+        }
       }
-    }
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testFragment_languageSelectionChanged_configChange_selectionIsUpdated() {
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testFragment_fromOnboarding_languageSelectionChanged_configChange_selectionIsUpdated() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { scenario ->
+        scenario.onActivity { activity ->
+          onView(withId(R.id.audio_language_dropdown_list)).perform(click())
 
-      scenario.onActivity { activity ->
-        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
-
-        onData(
-          CoreMatchers.allOf(
-            `is`(instanceOf(String::class.java)), `is`("Naijá")
+          onData(
+            CoreMatchers.allOf(
+              `is`(instanceOf(String::class.java)), `is`("Naijá")
+            )
           )
-        )
-          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
-          .perform(click())
+            .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+            .perform(click())
 
-        onView(isRoot()).perform(orientationLandscape())
-        testCoroutineDispatchers.runCurrent()
+          rotateToLandscape()
 
-        // Verifies that the selected language is still set successfully after configuration change.
-        onView(withId(R.id.audio_language_dropdown_list)).check(
-          matches(withText(R.string.nigerian_pidgin_localized_language_name))
-        )
+          // Verifies that the selected language is still set successfully after configuration change.
+          onView(withId(R.id.audio_language_dropdown_list)).check(
+            matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          )
 
-        onView(withId(R.id.onboarding_navigation_continue)).perform(click())
-        testCoroutineDispatchers.runCurrent()
+          onView(withId(R.id.onboarding_navigation_continue)).perform(click())
 
-        intended(hasComponent(HomeActivity::class.java.name))
+          testCoroutineDispatchers.runCurrent()
+
+          intended(hasComponent(HomeActivity::class.java.name))
+        }
       }
-    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testFragment_fromOptions_languageSelectionChanged_selectionIsUpdated() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.OPTIONS_SCREEN)
+      .use { scenario ->
+        scenario.onActivity { activity ->
+          onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+          onData(allOf(`is`(instanceOf(String::class.java)), `is`("Naijá")))
+            .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+            .perform(click())
+
+          testCoroutineDispatchers.runCurrent()
+
+          onView(withId(R.id.audio_language_dropdown_list)).check(
+            matches(withText(R.string.nigerian_pidgin_localized_language_name))
+          )
+
+          testCoroutineDispatchers.runCurrent()
+
+          assertThat(activity.isFinishing).isTrue()
+        }
+      }
   }
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      scenario.onActivity { activity ->
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { scenario ->
+        scenario.onActivity { activity ->
 
-        val fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
-        val receivedAudioLanguage = fragment.arguments?.retrieveLanguageFromArguments()
+          val fragment = activity.supportFragmentManager
+            .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+          val receivedAudioLanguage = fragment.arguments?.retrieveLanguageFromArguments()
 
-        assertThat(ENGLISH_AUDIO_LANGUAGE).isEqualTo(receivedAudioLanguage)
+          assertThat(ENGLISH_AUDIO_LANGUAGE).isEqualTo(receivedAudioLanguage)
+        }
       }
-    }
   }
 
   @Test
   fun testFragment_saveInstanceState_verifyCorrectStateRestored() {
-    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
-    launch<AudioLanguageActivity>(
-      createDefaultAudioActivityIntent(ENGLISH_AUDIO_LANGUAGE)
-    ).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-      var language: AudioLanguage? = null
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, ParentScreen.LEARNER_INTRO_SCREEN)
+      .use { scenario ->
+        var language: AudioLanguage? = null
 
-      scenario.onActivity { activity ->
-        var fragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
-        language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+        scenario.onActivity { activity ->
+          var fragment = activity.supportFragmentManager
+            .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+          language = fragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+        }
+
+        scenario.recreate()
+
+        scenario.onActivity { activity ->
+          val newfragment = activity.supportFragmentManager
+            .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
+          val restoredAudioLanguage =
+            newfragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
+
+          assertThat(restoredAudioLanguage).isEqualTo(language)
+        }
       }
-
-      scenario.recreate()
-
-      scenario.onActivity { activity ->
-        val newfragment = activity.supportFragmentManager
-          .findFragmentById(R.id.audio_language_fragment_container) as AudioLanguageFragment
-        val restoredAudioLanguage =
-          newfragment.audioLanguageFragmentPresenterV1.getLanguageSelected()
-
-        assertThat(restoredAudioLanguage).isEqualTo(language)
-      }
-    }
   }
 
   @Test
@@ -527,6 +616,18 @@ class AudioLanguageFragmentTest {
     }
   }
 
+  private fun launchV2FlowWithLanguage(
+    audioLanguage: AudioLanguage,
+    parentScreen: ParentScreen
+  ): ActivityScenario<AudioLanguageActivity> {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = true)
+    return launch<AudioLanguageActivity>(
+      createDefaultAudioActivityIntent(audioLanguage, parentScreen)
+    ).also {
+      testCoroutineDispatchers.runCurrent()
+    }
+  }
+
   private fun launchActivityWithLanguage(
     audioLanguage: AudioLanguage
   ): ActivityScenario<AppLanguageActivity> {
@@ -535,8 +636,10 @@ class AudioLanguageFragmentTest {
     }
   }
 
-  private fun createDefaultAudioActivityIntent(audioLanguage: AudioLanguage) =
-    AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+  private fun createDefaultAudioActivityIntent(
+    audioLanguage: AudioLanguage,
+    parentScreen: ParentScreen = ParentScreen.OPTIONS_SCREEN
+  ) = AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage, parentScreen)
 
   private fun rotateToLandscape() {
     onView(isRoot()).perform(orientationLandscape())
