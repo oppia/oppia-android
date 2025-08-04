@@ -19,7 +19,6 @@ class ContentViewModel(
   fun getContentDescription(): String {
     val contentDescription = CustomHtmlContentHandler.getContentDescription(
       htmlContent.toString(),
-      imageRetriever = null,
       customTagHandlers = customTagHandlers
     )
     return replaceRegexWithBlank(contentDescription)
