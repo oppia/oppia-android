@@ -1123,7 +1123,6 @@ class ListItemLeadingMarginSpanTest {
       WorkManagerConfigurationModule::class
     ]
   )
-
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {

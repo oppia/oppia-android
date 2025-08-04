@@ -11,7 +11,9 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Assert.fail
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,6 +63,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -74,11 +77,6 @@ import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.Shadows
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -117,6 +115,17 @@ class AudioPlayerControllerTest {
   private val TEST_FAIL_URL = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2"
 
   private val profileId by lazy { ProfileId.newBuilder().apply { internalId = 0 }.build() }
+
+  @Before
+  fun setUp() {
+    PlatformParameterTestModule.forceEnableNpsSurvey(true)
+    PlatformParameterTestModule.forceEnableOnboardingFlowV2(true)
+  }
+
+  @After
+  fun tearDown() {
+    PlatformParameterTestModule.reset()
+  }
 
   @Test
   fun testController_initializePlayer_invokePrepared_reportsSuccessfulInit() {
@@ -871,7 +880,8 @@ class AudioPlayerControllerTest {
   }
 
   private fun setUpMediaReadyApplicationWithLearnerStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(true)
+    PlatformParameterTestModule.forceEnableLoggingLearnerStudyIds(true)
     setUpMediaReadyApplication()
   }
 
@@ -897,50 +907,10 @@ class AudioPlayerControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    companion object {
-      var enableLearnerStudyAnalytics: Boolean = false
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
       return application
-    }
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
     }
   }
 
@@ -978,6 +948,7 @@ class AudioPlayerControllerTest {
       NumericInputRuleModule::class,
       PerformanceMetricsAssessorTestModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RatioInputModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,

@@ -126,7 +126,6 @@ class PolicyPageTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = POLICY_PAGE_LINK_MARKUP_1,
-        imageRetriever = null,
         customTagHandlers = tagHandlersWithPolicyPageSupport
       )
 

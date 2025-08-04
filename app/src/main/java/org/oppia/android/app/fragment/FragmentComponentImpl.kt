@@ -10,14 +10,17 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDe
 import org.oppia.android.app.classroom.ClassroomListFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
 import org.oppia.android.app.devoptions.markstoriescompleted.MarkStoriesCompletedFragment
 import org.oppia.android.app.devoptions.marktopicscompleted.MarkTopicsCompletedFragment
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserFragment
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
 import org.oppia.android.app.devoptions.vieweventlogs.ViewEventLogsFragment
 import org.oppia.android.app.drawer.ExitProfileDialogFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
+import org.oppia.android.app.flashback.FlashbackConfirmationDialogFragment
 import org.oppia.android.app.help.HelpFragment
 import org.oppia.android.app.help.faq.FAQListFragment
 import org.oppia.android.app.help.thirdparty.LicenseListFragment
@@ -138,6 +141,8 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(explorationManagerFragment: ExplorationManagerFragment)
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
+  fun inject(featureFlagsFragment: FeatureFlagsFragment)
+  fun inject(platformParametersFragment: PlatformParametersFragment)
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
   fun inject(forcedAppDeprecationNoticeDialogFragment: ForcedAppDeprecationNoticeDialogFragment)
   fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
@@ -204,4 +209,5 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
   fun inject(createProfileFragment: CreateProfileFragment)
   fun inject(introFragment: IntroFragment)
+  fun inject(flashbackConfirmationDialogFragment: FlashbackConfirmationDialogFragment)
 }

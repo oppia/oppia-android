@@ -133,7 +133,7 @@ class ExplorationStorageProdModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(explorationStorageModuleTest: ExplorationStorageProdModuleTest)
+    fun inject(test: ExplorationStorageProdModuleTest)
   }
 
   class TestApplication : Application(), DataProvidersInjectorProvider {
@@ -143,8 +143,8 @@ class ExplorationStorageProdModuleTest {
         .build()
     }
 
-    fun inject(explorationStorageModuleTest: ExplorationStorageProdModuleTest) {
-      component.inject(explorationStorageModuleTest)
+    fun inject(test: ExplorationStorageProdModuleTest) {
+      component.inject(test)
     }
 
     override fun getDataProvidersInjector(): DataProvidersInjector = component

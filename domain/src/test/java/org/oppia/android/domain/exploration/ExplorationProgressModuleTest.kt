@@ -16,10 +16,10 @@ import org.junit.runner.RunWith
 import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.testing.LogReportingTestModule
-import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.testing.LocaleTestModule
@@ -84,6 +84,7 @@ class ExplorationProgressModuleTest {
   @Singleton
   @Component(
     modules = [
+      AssetModule::class,
       DispatcherTestModule::class,
       ExplorationProgressModule::class,
       ExplorationStorageTestModule::class,

@@ -1047,6 +1047,7 @@ class SplashActivityTest {
       val monitor = monitorFactory.createMonitor(appStartupStateController.getAppStartupState())
       testCoroutineDispatchers.advanceUntilIdle()
       monitor.ensureNextResultIsSuccess()
+      PlatformParameterTestModule.reset()
     }
   }
 
@@ -1173,6 +1174,7 @@ class SplashActivityTest {
     runInNewTestApplication {
       appStartupStateController.markOnboardingFlowCompleted()
       testCoroutineDispatchers.advanceUntilIdle()
+      PlatformParameterTestModule.reset()
     }
   }
 
@@ -1198,6 +1200,7 @@ class SplashActivityTest {
   private fun recreateExistingApplication() {
     testCoroutineDispatchers.unregisterIdlingResource()
     ApplicationProvider.getApplicationContext<TestApplication>().recreateDaggerGraph()
+    PlatformParameterTestModule.reset()
     initializeTestApplication()
 
     // Reset any intents previously recorded.
@@ -1230,8 +1233,8 @@ class SplashActivityTest {
   }
 
   private fun initializeTestApplication(onboardingV2Enabled: Boolean = false) {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     PlatformParameterTestModule.forceEnableOnboardingFlowV2(onboardingV2Enabled)
+    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
     testCoroutineDispatchers.registerIdlingResource()
     setAutoAppExpirationEnabled(enabled = false) // Default to disabled.
   }

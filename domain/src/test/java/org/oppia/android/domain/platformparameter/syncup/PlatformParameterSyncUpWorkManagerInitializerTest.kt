@@ -33,6 +33,7 @@ import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -165,6 +166,7 @@ class PlatformParameterSyncUpWorkManagerInitializerTest {
   @Component(
     modules = [
       ApplicationLifecycleModule::class,
+      AssetModule::class,
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,

@@ -23,13 +23,11 @@ import org.junit.runner.RunWith
 import org.oppia.android.data.backends.gae.OppiaRetrofit
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.REMOTE_PLATFORM_PARAMETERS_WITH_UNSUPPORTED_TYPE
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_BOOLEAN_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_INTEGER_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_STRING_PARAM_NAME
+import org.oppia.android.data.backends.gae.testing.PlatformParameterServiceTestOrchestrator.Companion.TEST_UNKNOWN_PARAM_NAME
 import org.oppia.android.testing.assertThrows
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_BOOLEAN_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_INTEGER_PARAM_SERVER_VALUE
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_NAME
-import org.oppia.android.testing.platformparameter.TEST_STRING_PARAM_SERVER_VALUE
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.robolectric.annotation.Config
@@ -119,9 +117,9 @@ class PlatformParameterServiceTestOrchestratorTest {
 
     val paramVals = result.body?.source()?.let { mapAdapter.fromJson(it) }
     assertThat(paramVals).hasSize(3)
-    assertThat(paramVals?.get(TEST_STRING_PARAM_NAME)).isEqualTo(TEST_STRING_PARAM_SERVER_VALUE)
-    assertThat(paramVals?.get(TEST_INTEGER_PARAM_NAME)).isEqualTo(TEST_INTEGER_PARAM_SERVER_VALUE)
-    assertThat(paramVals?.get(TEST_BOOLEAN_PARAM_NAME)).isEqualTo(TEST_BOOLEAN_PARAM_SERVER_VALUE)
+    assertThat(paramVals?.get(TEST_STRING_PARAM_NAME)).isEqualTo("test_string_param_value")
+    assertThat(paramVals?.get(TEST_INTEGER_PARAM_NAME)).isEqualTo(1)
+    assertThat(paramVals?.get(TEST_BOOLEAN_PARAM_NAME)).isEqualTo(true)
   }
 
   @Test
@@ -131,8 +129,8 @@ class PlatformParameterServiceTestOrchestratorTest {
     val result = retrofit.sendRawOkHttpRequestWithShortTimeout(createRequest())
 
     val paramVals = result.body?.source()?.let { mapAdapter.fromJson(it) }
-    assertThat(paramVals).hasSize(3)
-    assertThat(paramVals?.get(TEST_BOOLEAN_PARAM_NAME)).isEqualTo(emptyList<String>())
+    assertThat(paramVals).hasSize(1)
+    assertThat(paramVals?.get(TEST_UNKNOWN_PARAM_NAME)).isEqualTo(emptyList<String>())
   }
 
   @Test

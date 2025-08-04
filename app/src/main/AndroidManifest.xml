@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   package="org.oppia.android">
-
+  <uses-sdk android:minSdkVersion="21"
+      android:targetSdkVersion="34" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -304,6 +305,20 @@
       android:name=".app.devoptions.forcenetworktype.ForceNetworkTypeActivity"
       android:label="@string/force_network_type_activity_title"
       android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+        android:name=".app.devoptions.featureflags.FeatureFlagsActivity"
+        android:label="@string/feature_flags_activity_title"
+        android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+        android:name=".app.devoptions.featureflags.testing.FeatureFlagsTestActivity"
+        android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+        android:name=".app.devoptions.platformparameters.PlatformParametersActivity"
+        android:label="@string/platform_parameters_activity_title"
+        android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
+        android:name=".app.devoptions.platformparameters.testing.PlatformParametersTestActivity"
+        android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.devoptions.forcenetworktype.testing.ForceNetworkTypeTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />

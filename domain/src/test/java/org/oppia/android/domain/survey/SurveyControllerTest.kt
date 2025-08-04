@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,6 +24,7 @@ import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.logging.SyncStatusTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -37,8 +39,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -73,7 +73,13 @@ class SurveyControllerTest {
 
   @Before
   fun setUp() {
+    PlatformParameterTestModule.forceEnableLearnerStudyAnalytics(true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    PlatformParameterTestModule.reset()
   }
 
   @Test
@@ -185,13 +191,6 @@ class SurveyControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Enable the study by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
   }
 
   @Module
@@ -220,6 +219,7 @@ class SurveyControllerTest {
       LogStorageModule::class,
       NetworkConnectionUtilDebugModule::class,
       PerformanceMetricsAssessorTestModule::class,
+      PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,
       TestLoggingIdentifierModule::class,

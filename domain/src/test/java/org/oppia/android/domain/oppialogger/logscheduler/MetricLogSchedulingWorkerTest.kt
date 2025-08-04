@@ -19,6 +19,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -104,6 +105,11 @@ class MetricLogSchedulingWorkerTest {
       .setWorkerFactory(metricLogSchedulingWorkerFactory)
       .build()
     WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
+  }
+
+  @After
+  fun tearDown() {
+    PlatformParameterTestModule.reset()
   }
 
   @Test

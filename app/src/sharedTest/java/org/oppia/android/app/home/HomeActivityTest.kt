@@ -227,25 +227,27 @@ class HomeActivityTest {
 
   @Before
   fun setUp() {
+    PlatformParameterTestModule.forceEnableSpotlightUi(true)
     Intents.init()
-    setUpTestApplicationComponent()
-    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
-    profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
-    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
+    profileId1 = ProfileId.newBuilder().setInternalId(internalProfileId1).build()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
+    setUpTestApplicationComponent()
     val screenName = createHomeActivityIntent(internalProfileId).extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.HOME_ACTIVITY)
@@ -253,6 +255,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_loadingItemsPending_progressbarIsDisplayed() {
+    setUpTestApplicationComponent()
     fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId)).use {
       onView(withId(R.id.home_fragment_progress_bar)).check(
@@ -281,6 +284,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_hasCorrectActivityLabel() {
+    setUpTestApplicationComponent()
     launch(HomeActivity::class.java).use { scenario ->
       scenario.onActivity { activity ->
         val title = activity.title
@@ -356,6 +360,7 @@ class HomeActivityTest {
 
   @Test
   fun testHomeActivity_logUserInFirstTime_checkPromotedStoriesIsNotDisplayed() {
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.recently_played_stories_text_view)).check(doesNotExist())
@@ -392,6 +397,7 @@ class HomeActivityTest {
 
   @Test
   fun testPromotedStoriesSpotlight_setToShowOnSecondLogin_checkNotShownOnFirstLogin() {
+    setUpTestApplicationComponent()
     launch<HomeActivity>(createHomeActivityIntent(internalProfileId1)).use {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.promoted_story_spotlight_hint)).check(doesNotExist())
@@ -2065,7 +2071,7 @@ class HomeActivityTest {
   }
 
   private fun setUpTestWithOnboardingV2Disabled() {
-    PlatformParameterTestModule.forceEnableOnboardingFlowV2(true)
+    PlatformParameterTestModule.forceEnableOnboardingFlowV2(false)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles()
   }

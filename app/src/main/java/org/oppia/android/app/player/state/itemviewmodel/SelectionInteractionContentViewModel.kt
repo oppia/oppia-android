@@ -28,7 +28,6 @@ class SelectionInteractionContentViewModel(
       )
     return CustomHtmlContentHandler.getContentDescription(
       contentSubtitledHtml,
-      imageRetriever = null,
       customTagHandlers = customTagHandlers
     )
   }

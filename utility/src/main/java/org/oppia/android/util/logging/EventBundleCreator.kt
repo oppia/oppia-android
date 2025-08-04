@@ -688,17 +688,17 @@ class EventBundleCreator @Inject constructor(
       value: FeatureFlagListEventContext
     ) : EventActivityContext<FeatureFlagListEventContext>(activityName, value) {
       override fun EventLog.FeatureFlagListContext.storeValue(store: PropertyStore) {
+        // Note that flag IDs are used instead of names for more compact logging to address Google
+        // Analytics character limits. GA4 limits the characters permitted in a log event parameter
+        // value to a maximum of 100 characters as of March 2025. See:
+        // https://firebase.google.com/docs/reference/android/com/google/firebase/analytics/FirebaseAnalytics.html#logEvent(java.lang.String,android.os.Bundle)
+        val featureFlagIds = featureFlagsList.map { it.id.number }
+        val featureFlagSyncStatuses = featureFlagsList.map { it.syncStatus.number }
+        val featureFlagEnabledStates = featureFlagsList.map { if (it.isEnabled) 1 else 0 }
 
-        val featureFlagNames = featureFlagsList.map {
-          FeatureFlagNameToNumericIdConverter.convertToNumericId(it.flagName)
-        }
-
-        val featureFlagSyncStatuses = featureFlagsList.map { it.flagSyncStatus.number }
-        val featureFlagEnabledStates = featureFlagsList.map { if (it.flagEnabledState) 1 else 0 }
-
-        store.putNonSensitiveValue("feature_flag_names", featureFlagNames)
         store.putNonSensitiveValue("feature_flag_enabled_states", featureFlagEnabledStates)
         store.putNonSensitiveValue("feature_flag_sync_statuses", featureFlagSyncStatuses)
+        store.putNonSensitiveValue("feature_flag_names", featureFlagIds)
       }
     }
 
@@ -886,6 +886,8 @@ class EventBundleCreator @Inject constructor(
       ScreenName.ONBOARDING_PROFILE_TYPE_ACTIVITY -> "onboarding_profile_type_activity"
       ScreenName.CREATE_PROFILE_ACTIVITY -> "create_profile_activity"
       ScreenName.INTRO_ACTIVITY -> "intro_activity"
+      ScreenName.FEATURE_FLAGS_ACTIVITY -> "feature_flags_activity"
+      ScreenName.PLATFORM_PARAMETERS_ACTIVITY -> "platform_parameters_activity"
     }
 
     private fun AppLanguageSelection.toAnalyticsText(): String {

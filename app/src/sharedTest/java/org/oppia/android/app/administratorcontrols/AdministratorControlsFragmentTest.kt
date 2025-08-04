@@ -149,25 +149,28 @@ class AdministratorControlsFragmentTest {
   @Before
   fun setUp() {
     PlatformParameterTestModule.forceEnableEditAccountsOptionsUi(true)
-    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
     Intents.init()
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
-    testCoroutineDispatchers.registerIdlingResource()
+    // TODO(#5835): Call setUpTestApplicationComponent() here once flag overrides init earlier.
   }
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    profileTestHelper.initializeProfiles()
+    testCoroutineDispatchers.registerIdlingResource()
   }
 
   @Test
   fun testAdministratorControlsFragment_generalAndProfileManagementIsDisplayed() {
+    // TODO(#5835): Make this the default for the test suite & remove it from other tests.
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -202,6 +205,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettingsIsDisplayed() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -231,6 +236,7 @@ class AdministratorControlsFragmentTest {
   @Test
   fun testAdministratorControlsFragment_downloadPermissionsAndSettings_autoUpdateIsNotDisplayed() {
     PlatformParameterTestModule.forceEnableDownloadsSupport(false)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -253,6 +259,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_applicationSettingsIsDisplayed() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -287,6 +295,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_wifiSwitchIsUnchecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -299,6 +309,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_autoUpdateSwitchIsUnchecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -312,6 +324,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_wifiSwitchIsChecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -328,6 +342,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_orientationLand_wifiSwitchIsChecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -346,6 +362,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickWifiContainer_configChange_wifiSwitchIsChecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -365,6 +383,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControls_clickWifiContainer_orientationLand_autoUpdateSwitchIsChecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -382,6 +402,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControls_clickWifiContainer_configChange_autoUpdateSwitchIsChecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -400,6 +422,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_clickAutoUpdateContainer_autoUpdateSwitchIsChecked() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -415,6 +439,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_nonDownloadPermissionProfile_wifiSwitchIsNonClickable() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -428,6 +454,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testAdministratorControlsFragment_autoUpdateSwitchIsNonClickable() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId
@@ -441,6 +469,8 @@ class AdministratorControlsFragmentTest {
 
   @Test
   fun testFragment_argumentsAreCorrect() {
+    PlatformParameterTestModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsFragmentTestActivity>(
       createAdministratorControlsFragmentTestActivityIntent(
         profileId = internalProfileId

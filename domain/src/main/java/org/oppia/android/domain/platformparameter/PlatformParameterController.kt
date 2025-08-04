@@ -1,96 +1,58 @@
 package org.oppia.android.domain.platformparameter
 
 import kotlinx.coroutines.Deferred
-import org.oppia.android.app.model.PlatformParameter
-import org.oppia.android.app.model.RemotePlatformParameterDatabase
-import org.oppia.android.data.persistence.PersistentCacheStore
-import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.platformparameter.PlatformParameterSingleton
-import javax.inject.Inject
-import javax.inject.Singleton
 
-/** Controller for fetching and updating platform parameters in the database. */
-@Singleton
-class PlatformParameterController @Inject constructor(
-  cacheStoreFactory: PersistentCacheStore.Factory,
-  private val dataProviders: DataProviders,
-  platformParameterSingleton: PlatformParameterSingleton
-) {
-  private val platformParameterDatabaseStore = cacheStoreFactory.create(
-    PLATFORM_PARAMETER_DATABASE_NAME,
-    RemotePlatformParameterDatabase.getDefaultInstance()
-  )
-
-  /** The state of the platform parameter caching process. */
-  private enum class PlatformParameterCachingStatus {
-    /** Whether the caching operation corresponding to this status was successful. */
-    SUCCESS
-  }
-
-  companion object {
-    /** ID for all the data providers used in [PlatformParameterController]. */
-    private const val PLATFORM_PARAMETER_DATA_PROVIDER_ID = "platform_parameter_data_provider_id"
-    /** Name of the platform parameter database in cache store. */
-    private const val PLATFORM_PARAMETER_DATABASE_NAME = "platform_parameter_database"
-  }
-
-  private val platformParameterDataProvider by lazy {
-    // After this transformation the cached List of Platform Parameters gets converted into a simple
-    // map where the keys corresponds to the name of Platform Parameter and value will correspond to
-    // the PlatformParameter object itself
-    platformParameterDatabaseStore.transform(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
-      platformParameterDatabase ->
-      val platformParameterMap = mutableMapOf<String, PlatformParameter>()
-      platformParameterDatabase.platformParameterList.forEach {
-        platformParameterMap[it.name] = it
-      }
-      platformParameterSingleton.setPlatformParameterMap(platformParameterMap)
-      return@transform
-    }
-  }
-
+/** Controller for managing and synchronizing platform parameters and feature flags. */
+interface PlatformParameterController {
   /**
-   * Updates the platform parameter database in cache store.
+   * Ensures platform parameter and feature flag states are properly loaded and able to be directly
+   * injected through Dagger.
    *
-   * @param platformParameterList list of [PlatformParameter] objects which needs to be cached
-   * @return a [DataProvider] that indicates the success/failure of this update operation
-   */
-  fun updatePlatformParameterDatabase(
-    platformParameterList: List<PlatformParameter>
-  ): DataProvider<Any?> {
-    val deferredTask = platformParameterDatabaseStore.storeDataWithCustomChannelAsync(
-      updateInMemoryCache = false
-    ) {
-      Pair(
-        it.toBuilder().addAllPlatformParameter(platformParameterList).build(),
-        PlatformParameterCachingStatus.SUCCESS
-      )
-    }
-    return dataProviders.createInMemoryDataProviderAsync(PLATFORM_PARAMETER_DATA_PROVIDER_ID) {
-      return@createInMemoryDataProviderAsync getDeferredResult(deferredTask)
-    }
-  }
-
-  /**
-   * Executes and transforms the [Deferred] task into an [AsyncResult].
+   * This method *must* be called before attempting to inject any platform parameters or feature
+   * flags. Note that platform parameters and feature flags will not have state changes after this
+   * method is called for the lifetime of the process.
    *
-   * @param deferred task which needs to be executed
-   * @return async result for success or failure after the execution of deferred task
+   * It's safe to call this method more than once, even after loading, as the returned [Deferred]
+   * will be the same across calls and complete when parameters have finished loading. For UI-bound
+   * observers of this state, use [getParameterInitializationStatus].
+   *
+   * @return a [Deferred] that indicates the completion of loading parameters. Note that the
+   *    [Deferred] will fail if something went wrong. Also, the actual value returned does not have
+   *    any significant meaning.
    */
-  private suspend fun getDeferredResult(
-    deferred: Deferred<PlatformParameterCachingStatus>
-  ): AsyncResult<Any?> {
-    return when (deferred.await()) {
-      PlatformParameterCachingStatus.SUCCESS -> AsyncResult.Success(null)
-    }
-  }
+  fun loadParametersAsync(): Deferred<Unit>
 
   /**
-   * Returns a [DataProvider] which can be used to confirm that PlatformParameterDatabase read
-   * process has been completed.
+   * Returns a [DataProvider] that will switch from a value of 'false' to 'true' when parameters
+   * have finished loading.
+   *
+   * This method and the returned [DataProvider] are safe to use for the lifetime of the process,
+   * even before [loadParametersAsync] is called. Calling this method will not initiate any actual
+   * initialization--[loadParametersAsync] must be used for that, instead.
+   *
+   * The returned [DataProvider] will never return a pending state, nor will it represent the
+   * failure state if parameter loading via [loadParametersAsync] fails.
    */
-  fun getParameterDatabase(): DataProvider<Unit> = platformParameterDataProvider
+  fun getParameterInitializationStatus(): DataProvider<Boolean>
+
+  /**
+   * Downloads all Android app-specific platform parameters and feature flag states from the remote
+   * Oppia web server.
+   *
+   * This method must be called after [loadParametersAsync] and, specifically, after parameters
+   * have finished loading.
+   *
+   * Note that the parameter and flag states downloaded from Oppia web will be saved locally but
+   * will not affect parameter or flag state in the currently running app process. These changes do
+   * not take effect until the next time [loadParametersAsync] is called (that is, upon the next app
+   * start).
+   *
+   * Note that the returned [DataProvider] will never have a pending state and will never have more
+   * than one success/fail result.
+   *
+   * @return a [DataProvider] that indicates the success/failure of downloading parameters. Note
+   *    that the actual value returned does not have any significant meaning.
+   */
+  fun downloadRemoteParameters(): DataProvider<Unit>
 }

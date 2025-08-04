@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -102,6 +103,11 @@ class ExplorationActiveTimeControllerTest {
   @Before
   fun setUp() {
     PlatformParameterTestModule.forceEnableNpsSurvey(true)
+  }
+
+  @After
+  fun tearDown() {
+    PlatformParameterTestModule.reset()
   }
 
   @Test

@@ -192,6 +192,7 @@ class ProfileAndDeviceIdFragmentTest {
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }

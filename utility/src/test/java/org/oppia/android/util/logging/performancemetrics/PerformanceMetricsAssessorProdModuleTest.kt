@@ -62,7 +62,7 @@ class PerformanceMetricsAssessorProdModuleTest {
   }
 
   @Module
-  interface TestLogReportingModule {
+  interface LogReportingTestModule {
 
     @Binds
     fun bindFakeExceptionLogger(fakeExceptionLogger: FakeExceptionLogger): ExceptionLogger
@@ -84,11 +84,11 @@ class PerformanceMetricsAssessorProdModuleTest {
       DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
+      LogReportingTestModule::class,
       LoggerModule::class,
       PerformanceMetricsAssessorProdModule::class,
       PerformanceMetricsConfigurationsModule::class,
       RobolectricModule::class,
-      TestLogReportingModule::class,
       TestModule::class
     ]
   )

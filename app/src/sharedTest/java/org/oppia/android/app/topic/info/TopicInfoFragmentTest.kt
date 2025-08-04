@@ -171,6 +171,7 @@ class TopicInfoFragmentTest {
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
