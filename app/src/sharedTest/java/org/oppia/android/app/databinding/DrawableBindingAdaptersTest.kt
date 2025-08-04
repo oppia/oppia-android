@@ -30,6 +30,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
 import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
+import org.oppia.android.app.databinding.DrawableBindingAdapters.setLargeBorderRadiusBackgroundDrawable
 import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
@@ -73,6 +74,7 @@ import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -155,6 +157,32 @@ class DrawableBindingAdaptersTest {
     }
   }
 
+  @Test
+  fun testSetLargeBorderRadiusBackgroundDrawable_hasCorrectLargeBorderRadiusBackgroundDrawable() {
+    runWithLaunchedActivity {
+      onActivity {
+        val view: View = getView(it)
+        setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
+      }
+    }
+  }
+
+  @Test
+  fun testSetLargeBorderRadiusBackgroundDrawable_hasCorrectCornerRadius() {
+    runWithLaunchedActivity {
+      onActivity {
+        val view: View = getView(it)
+        setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
+
+        val background = view.background as GradientDrawable
+        val expectedCornerRadius = 24f * view.resources.displayMetrics.density
+
+        assertThat(background.cornerRadius).isEqualTo(expectedCornerRadius)
+      }
+    }
+  }
+
   private fun getView(it: DrawableBindingAdaptersTestActivity): View {
     return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
@@ -226,13 +254,19 @@ class DrawableBindingAdaptersTest {
       PerformanceMetricsAssessorTestModule::class,
       PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
       SyncStatusProdModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

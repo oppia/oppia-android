@@ -40,6 +40,7 @@ import org.oppia.android.domain.testing.oppialogger.loguploader.FakeLogUploader
 import org.oppia.android.testing.FakeExceptionLogger
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -335,6 +336,7 @@ class LogReportWorkManagerInitializerTest {
       PerformanceMetricsAssessorTestModule::class,
       PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusProdModule::class,
       TestFirebaseLogUploaderModule::class,

@@ -55,6 +55,7 @@ import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.environment.TestEnvironmentConfig
 import org.oppia.android.testing.firebase.AuthenticationTestModule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -493,6 +494,7 @@ class ExplorationDataControllerTest {
       PerformanceMetricsAssessorTestModule::class,
       PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       RatioInputModule::class,
       RobolectricModule::class,
       SyncStatusProdModule::class,

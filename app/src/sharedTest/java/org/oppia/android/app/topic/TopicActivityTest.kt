@@ -147,6 +147,7 @@ class TopicActivityTest {
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     Intents.release()
   }
 

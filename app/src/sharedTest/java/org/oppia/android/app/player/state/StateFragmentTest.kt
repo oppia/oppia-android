@@ -89,12 +89,15 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
@@ -228,6 +231,7 @@ class StateFragmentTest {
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -5397,6 +5401,382 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_inputRatio_wrongAnswerSubmitted_continueButtonIsVisible() {
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Continue button is displayed for redirection.
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_flashbackButtonIsVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_flashbackFeatureOff_onSubmitWrongRatioAnswer_flashbackButtonIsNotVisible() {
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify continue button is visible.
+      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
+      onView(withId(R.id.continue_navigation_button)).check(
+        matches(withText(R.string.state_continue_button))
+      )
+
+      // Verify submit button is not visible.
+      onView(withId(R.id.submit_answer_button)).check(doesNotExist())
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_retainStateOnConfigurationChange() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_onClickFlashbackButton_verifyConfirmationDialogIsVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Verify flashback confirmation dialog.
+      onView(withText("Need help? No problem.")).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.confirmation_message_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .check(matches(withText("Review the previous question's solution")))
+
+      // Verify the buttons in the dialog.
+      onView(withId(R.id.not_now_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Not now")))
+      onView(withId(R.id.continue_confirmation_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Continue")))
+    }
+  }
+
+  @Test
+  fun testFlashback_onCancelFlashbackConfirmationDialog_DialogIsNotVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button is visible.
+      clickFlashbackButton()
+
+      // Verify confirmation dialog.
+      onView(withText("Need help? No problem.")).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      // Click Not now buttons in the dialog
+      onView(withId(R.id.not_now_button))
+        .check(matches(withText("Not now")))
+        .perform(click())
+
+      // Verify dialog is not visible.
+      onView(withText("Need help? No problem.")).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFlashback_onCancelFlashbackConfirmationDialog_returnsToPendingStateAgain() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Verify confirmation dialog.
+      onView(withText("Need help? No problem.")).inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      // Click Not now buttons in the dialog
+      onView(withId(R.id.not_now_button))
+        .check(matches(withText("Not now")))
+        .perform(click())
+
+      // Verify learner returns to the pending state.
+      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
+        " The ratio of the two numbers is:"
+      verifyContentContains(expectedText)
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_verifyFlashbackState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify content is visible.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.content_text_view))
+        .check(matches(withText(containsString("What fraction represents half of something?"))))
+
+      // Verify solution is visible.
+      scrollToViewType(FLASHBACK_SOLUTION)
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText("The only solution is: 1/2")))
+
+      val expectedSolutionSummary = "Half of something has one part in the numerator for" +
+        " every two parts in the denominator."
+      onView(withId(R.id.solution_summary))
+        .check(matches(withText(containsString(expectedSolutionSummary))))
+
+      onView(withId(R.id.solution_summary))
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
+      // Verify Return to question button is visible.
+      scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+      onView(withId(R.id.return_to_question_button)).check(
+        matches(withText(R.string.state_return_to_question_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_retainStateOnConfigurationChange() { // ktlint-disable max-line-length
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      rotateToLandscape()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify content is visible.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.content_text_view))
+        .check(matches(withText(containsString("What fraction represents half of something?"))))
+
+      // Verify solution is visible.
+      scrollToViewType(FLASHBACK_SOLUTION)
+      onView(withId(R.id.solution_correct_answer))
+        .check(matches(withText("The only solution is: 1/2")))
+
+      val expectedSolutionSummary = "Half of something has one part in the numerator for" +
+        " every two parts in the denominator."
+      onView(withId(R.id.solution_summary))
+        .check(matches(withText(containsString(expectedSolutionSummary))))
+
+      onView(withId(R.id.solution_summary))
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
+      // Verify Return to question button is visible.
+      scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+      onView(withId(R.id.return_to_question_button)).check(
+        matches(withText(R.string.state_return_to_question_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_clickOnReturnToQuestionButton_returnsToLatestPendingState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Verify learner returns to the latest pending state.
+      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
+        " The ratio of the two numbers is:"
+      verifyContentContains(expectedText)
+
+      // Verify feedback is visible.
+      val expectedFeedback = "This doesn't seem right. Let's go back and look at the previous" +
+        " question and answer to understand better."
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString(expectedFeedback))))
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  private fun moveToFlashbackState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+
+    // Submit wrong answer.
+    typeRatioExpression("4:8")
+    clickSubmitAnswerButton()
+
+    // Click on flashback button.
+    clickFlashbackButton()
+
+    // Click continue button on flashback confirmation dialog.
+    onView(withId(R.id.continue_confirmation_button))
+      .inRoot(isDialog())
+      .check(matches(withText("Continue")))
+      .perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun navigateToPrototypeRatioInputState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+  }
+
   private fun playThroughRatioExplorationState1() {
     clickContinueInteractionButton()
   }
@@ -5474,6 +5854,18 @@ class StateFragmentTest {
     typeTextInput("2:1")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
+
+  private fun submitIncorrectAnswerToTriggerFlashbackButton() {
+    // Select an incorrect answer in a multiple-choice interaction and submit.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 1,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).perform(click())
+    clickSubmitAnswerButton()
   }
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
@@ -5868,6 +6260,18 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  private fun clickFlashbackButton() {
+    scrollToViewType(FLASHBACK_BUTTON)
+    onView(withId(R.id.flashback_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickReturnToQuestionButton() {
+    scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+    onView(withId(R.id.return_to_question_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun waitForImageViewInteractionToFullyLoad() {
     // TODO(#1523): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
     waitForTheView(
@@ -6033,6 +6437,16 @@ class StateFragmentTest {
 
   private fun setUpTestWithSurveyFeatureOff() {
     PlatformParameterTestModule.forceEnableNpsSurvey(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOn() {
+    PlatformParameterTestModule.forceEnableFlashbackSupport(true)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOff() {
+    PlatformParameterTestModule.forceEnableFlashbackSupport(false)
     setUpTest()
   }
 

@@ -330,7 +330,6 @@ class ImageTagHandlerTest {
     val contentDescription =
       CustomHtmlContentHandler.getContentDescription(
         html = IMAGE_TAG_MARKUP_1,
-        imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithImageTagSupport
       )
     assertThat(contentDescription).isEqualTo("Image illustrating alt text 1")

@@ -530,4 +530,9 @@
   <dimen name="classrooms_card_icon_size">100dp</dimen>
   <dimen name="classrooms_card_margin_start">0dp</dimen>
   <dimen name="classrooms_card_margin_end">16dp</dimen>
+
+  <!-- Flashback Solution -->
+  <dimen name="flashback_solution_summary_card_margin_start">176dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">208dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
 </resources>

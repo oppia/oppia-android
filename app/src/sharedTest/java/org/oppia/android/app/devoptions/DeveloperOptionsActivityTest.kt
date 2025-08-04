@@ -49,7 +49,9 @@ import org.oppia.android.app.application.ApplicationInjectorProvider
 import org.oppia.android.app.application.ApplicationModule
 import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
 import org.oppia.android.app.devoptions.mathexpressionparser.MathExpressionParserActivity
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
@@ -94,6 +96,7 @@ import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -218,6 +221,50 @@ class DeveloperOptionsActivityTest {
       testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(MathExpressionParserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_selectFeatureFlags_routesToFeatureFlagsActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      onView(withId(R.id.developer_options_list))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.feature_flags_text_view
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(FeatureFlagsActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptions_selectPlatformParameters_routesToPlatformParametersActivity() {
+    launch<DeveloperOptionsActivity>(
+      createDeveloperOptionsActivityIntent(internalProfileId)
+    ).use {
+      onView(withId(R.id.developer_options_list))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.developer_options_list,
+          position = 2,
+          targetViewId = R.id.platform_parameters_text_view
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(PlatformParametersActivity::class.java.name))
     }
   }
 
@@ -360,13 +407,18 @@ class DeveloperOptionsActivityTest {
       PerformanceMetricsAssessorTestModule::class,
       PlatformParameterProdModule::class,
       PlatformParameterSingletonModule::class,
+      PlatformParameterTestModule::class,
       QuestionModule::class,
       RatioInputModule::class,
       RetrofitModule::class,
       RetrofitServiceModule::class,
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
       SyncStatusProdModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

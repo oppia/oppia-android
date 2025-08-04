@@ -202,6 +202,7 @@ class TopicLessonsFragmentTest {
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }

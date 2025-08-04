@@ -11,7 +11,8 @@ import dagger.Provides
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.model.PlatformParameter.SyncStatus
+import org.oppia.android.app.model.FeatureFlagId
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.domain.oppialogger.EventLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.ExceptionLogStorageCacheSize
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -25,11 +26,6 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.logging.SyncStatusTestModule
-import org.oppia.android.testing.platformparameter.EnableTestFeatureFlag
-import org.oppia.android.testing.platformparameter.EnableTestFeatureFlagWithEnabledDefault
-import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
-import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG
-import org.oppia.android.testing.platformparameter.TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -44,20 +40,9 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.performancemetrics.testing.PerformanceMetricsAssessorTestModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.APP_AND_OS_DEPRECATION
-import org.oppia.android.util.platformparameter.DOWNLOADS_SUPPORT
-import org.oppia.android.util.platformparameter.EDIT_ACCOUNTS_OPTIONS_UI
-import org.oppia.android.util.platformparameter.ENABLE_MULTIPLE_CLASSROOMS
-import org.oppia.android.util.platformparameter.ENABLE_NPS_SURVEY
-import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2
-import org.oppia.android.util.platformparameter.ENABLE_PERFORMANCE_METRICS_COLLECTION
-import org.oppia.android.util.platformparameter.EXTRA_TOPIC_TABS_UI
-import org.oppia.android.util.platformparameter.FAST_LANGUAGE_SWITCHING_IN_LESSON
-import org.oppia.android.util.platformparameter.INTERACTION_CONFIG_CHANGE_STATE_RETENTION
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS
-import org.oppia.android.util.platformparameter.LOGGING_LEARNER_STUDY_IDS
+import org.oppia.android.util.platformparameter.EnableDownloadsSupport
+import org.oppia.android.util.platformparameter.EnableNpsSurvey
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.platformparameter.SPOTLIGHT_UI
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -78,13 +63,15 @@ class FeatureFlagsLoggerTest {
   @Inject lateinit var featureFlagsLogger: FeatureFlagsLogger
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
-  @field:[Inject EnableTestFeatureFlag]
+  @field:[Inject EnableDownloadsSupport]
   lateinit var testFeatureFlag: PlatformParameterValue<Boolean>
-  @field:[Inject EnableTestFeatureFlagWithEnabledDefault]
+  @field:[Inject EnableNpsSurvey]
   lateinit var testFeatureFlagWithEnabledDefault: PlatformParameterValue<Boolean>
 
   @Parameter var index: Int = Int.MIN_VALUE
-  @Parameter lateinit var flagName: String
+  @Parameter lateinit var flagId: String
+
+  private val flagIdEnum get() = FeatureFlagId.valueOf(flagId)
 
   @Before
   fun setUp() {
@@ -117,7 +104,7 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlag_hasCorrectDefaultValues() {
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG to testFeatureFlag)
+      mapOf(FeatureFlagId.DOWNLOADS_SUPPORT to testFeatureFlag)
     )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
@@ -126,7 +113,7 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG)
+        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.DOWNLOADS_SUPPORT)
         hasFeatureFlagEnabledStateThat().isEqualTo(false)
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
       }
@@ -136,7 +123,7 @@ class FeatureFlagsLoggerTest {
   @Test
   fun testLogFeatureFlags_logsTestFeatureFlagWithEnabledDefaults_hasCorrectDefaultValues() {
     featureFlagsLogger.setFeatureFlagItemMap(
-      mapOf(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS to testFeatureFlagWithEnabledDefault)
+      mapOf(FeatureFlagId.NPS_SURVEY to testFeatureFlagWithEnabledDefault)
     )
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
@@ -145,16 +132,16 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThatAtIndex(0) {
-        hasFeatureFlagNameThat().isEqualTo(TEST_FEATURE_FLAG_WITH_ENABLED_DEFAULTS)
+        hasFeatureFlagIdThat().isEqualTo(FeatureFlagId.NPS_SURVEY)
         hasFeatureFlagEnabledStateThat().isEqualTo(true)
-        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
+        hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
       }
     }
   }
 
   @Test
   fun testLogFeatureFlags_correctNumberOfFeatureFlagsIsLogged() {
-    val expectedFeatureFlagCount = 13
+    val expectedFeatureFlagCount = 14
 
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
     testCoroutineDispatchers.runCurrent()
@@ -166,29 +153,21 @@ class FeatureFlagsLoggerTest {
   }
 
   @Test
-  @Iteration("downloads_support", "index=0", "flagName=$DOWNLOADS_SUPPORT")
-  @Iteration("extra_topic_tabs_ui", "index=1", "flagName=$EXTRA_TOPIC_TABS_UI")
-  @Iteration("learner_study_analytics", "index=2", "flagName=$LEARNER_STUDY_ANALYTICS")
-  @Iteration(
-    "fast_language_switching_in_lesson", "index=3",
-    "flagName=$FAST_LANGUAGE_SWITCHING_IN_LESSON"
-  )
-  @Iteration("logging_learner_study_ids", "index=4", "flagName=$LOGGING_LEARNER_STUDY_IDS")
-  @Iteration("edit_accounts_options_ui", "index=5", "flagName=$EDIT_ACCOUNTS_OPTIONS_UI")
-  @Iteration(
-    "enable_performance_metrics_collection", "index=6",
-    "flagName=$ENABLE_PERFORMANCE_METRICS_COLLECTION"
-  )
-  @Iteration("spotlight_ui", "index=7", "flagName=$SPOTLIGHT_UI")
-  @Iteration(
-    "interaction_config_change_state_retention", "index=8",
-    "flagName=$INTERACTION_CONFIG_CHANGE_STATE_RETENTION"
-  )
-  @Iteration("app_and_os_deprecation", "index=9", "flagName=$APP_AND_OS_DEPRECATION")
-  @Iteration("enable_nps_survey", "index=10", "flagName=$ENABLE_NPS_SURVEY")
-  @Iteration("enable_onboarding_flow_v2", "index=11", "flagName=$ENABLE_ONBOARDING_FLOW_V2")
-  @Iteration("enable_multiple_classrooms", "index=12", "flagName=$ENABLE_MULTIPLE_CLASSROOMS")
-  fun testLogFeatureFlags_allFeatureFlagNamesAreLogged() {
+  @Iteration("learner_study_analytics", "index=0", "flagId=LEARNER_STUDY_ANALYTICS")
+  @Iteration("performance_metrics_collection", "index=1", "flagId=PERFORMANCE_METRICS_COLLECTION")
+  @Iteration("edit_accounts_options_ui", "index=2", "flagId=EDIT_ACCOUNTS_OPTIONS_UI")
+  @Iteration("spotlight_ui", "index=3", "flagId=SPOTLIGHT_UI")
+  @Iteration("extra_topic_tabs_ui", "index=4", "flagId=EXTRA_TOPIC_TABS_UI")
+  @Iteration("downloads_support", "index=5", "flagId=DOWNLOADS_SUPPORT")
+  @Iteration("config_change_state", "index=6", "flagId=INTERACTION_CONFIG_CHANGE_STATE_RETENTION")
+  @Iteration("app_and_os_deprecation", "index=7", "flagId=APP_AND_OS_DEPRECATION")
+  @Iteration("fast_lang_switching_in_lesson", "index=8", "flagId=FAST_LANGUAGE_SWITCHING_IN_LESSON")
+  @Iteration("logging_learner_study_ids", "index=9", "flagId=LOGGING_LEARNER_STUDY_IDS")
+  @Iteration("nps_survey", "index=10", "flagId=NPS_SURVEY")
+  @Iteration("onboarding_flow_v2", "index=11", "flagId=ONBOARDING_FLOW_V2")
+  @Iteration("multiple_classrooms", "index=12", "flagId=MULTIPLE_CLASSROOMS")
+  @Iteration("flashback_support", "index=13", "flagId=FLASHBACK_SUPPORT")
+  fun testLogFeatureFlags_allFeatureFlagIdsAreLogged() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 
     testCoroutineDispatchers.runCurrent()
@@ -196,7 +175,7 @@ class FeatureFlagsLoggerTest {
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).hasFeatureFlagContextThat {
       hasFeatureFlagItemContextThatAtIndex(index) {
-        hasFeatureFlagNameThat().isEqualTo(flagName)
+        hasFeatureFlagIdThat().isEqualTo(flagIdEnum)
       }
     }
   }

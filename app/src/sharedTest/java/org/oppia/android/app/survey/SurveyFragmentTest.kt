@@ -90,10 +90,10 @@ import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.logging.EventLogSubject
-import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -531,20 +531,49 @@ class SurveyFragmentTest {
 
         val surveyFragment = activity.supportFragmentManager
           .findFragmentById(R.id.survey_fragment_placeholder) as SurveyFragment
-        val args = surveyFragment.arguments!!.getProto(
+
+        assertThat(surveyFragment.arguments).isNotNull()
+        val arguments = surveyFragment.arguments!!
+
+        val args = arguments.getProto(
           SurveyFragment.SURVEY_FRAGMENT_ARGUMENTS_KEY,
           SurveyFragmentArguments.getDefaultInstance()
         )
-        val receivedInternalProfileId = surveyFragment.arguments!!
-          .extractCurrentUserProfileId().internalId
-        val receivedTopicId = args.topicId!!
-        val receivedExplorationId = args.explorationId!!
+
+        val profileId = arguments.extractCurrentUserProfileId()
+        assertThat(profileId).isNotNull()
+        val receivedInternalProfileId = profileId.internalId
+
+        val receivedTopicId = args.topicId
+        val receivedExplorationId = args.explorationId
 
         assertThat(receivedInternalProfileId).isEqualTo(0)
         assertThat(receivedTopicId).isEqualTo(TEST_TOPIC_ID_0)
         assertThat(receivedExplorationId).isEqualTo(TEST_EXPLORATION_ID_2)
       }
     }
+  }
+
+  @Test
+  fun testSurveyFragment_withNullArguments_throwsIllegalStateException() {
+    val fragment = SurveyFragment()
+
+    val exception = assertThrows<IllegalStateException> {
+      launch<SurveyActivity>(
+        createSurveyActivityIntent()
+      ).use { scenario ->
+        scenario.onActivity { activity ->
+          val fragmentTransaction = activity.supportFragmentManager.beginTransaction()
+          fragmentTransaction.add(R.id.survey_fragment_placeholder, fragment, "test_fragment")
+          fragmentTransaction.commitNow()
+        }
+      }
+    }
+
+    assertThat(exception).isNotNull()
+    assertThat(exception.message).contains(
+      "Expected arguments to be passed to SurveyFragment."
+    )
   }
 
   private fun selectNpsAnswerAndMoveToNextQuestion(npsScore: Int) {

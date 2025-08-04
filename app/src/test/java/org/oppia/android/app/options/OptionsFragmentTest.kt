@@ -120,6 +120,7 @@ class OptionsFragmentTest {
 
   @After
   fun tearDown() {
+    PlatformParameterTestModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 

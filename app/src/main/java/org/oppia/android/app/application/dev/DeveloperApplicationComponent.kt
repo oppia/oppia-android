@@ -41,6 +41,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.PlatformParameterDebugModule
 import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
@@ -90,6 +91,8 @@ import javax.inject.Singleton
     FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
     PlatformParameterProdModule::class, PlatformParameterSingletonModule::class,
     ExplorationStorageProdModule::class, DeveloperOptionsStarterModule::class,
+    PlatformParameterSingletonModule::class, PlatformParameterDebugModule::class,
+    ExplorationStorageModule::class, DeveloperOptionsStarterModule::class,
     DeveloperOptionsModule::class, PlatformParameterSyncUpWorkerModule::class,
     NetworkConnectionUtilDebugModule::class, NetworkConfigProdModule::class, AssetModule::class,
     LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
@@ -102,6 +105,7 @@ import javax.inject.Singleton
     DeveloperBuildFlavorModule::class,
     CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
     AuthenticationProdModule::class,
+    AuthenticationModule::class
   ]
 )
 interface DeveloperApplicationComponent : ApplicationComponent {

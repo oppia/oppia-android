@@ -81,6 +81,17 @@ public final class ImageViewBindingAdapters {
   }
 
   /**
+   * Applies the specified color tint to the ImageView.
+   *
+   * @param imageView the view to apply the tint on
+   * @param color the resolved color int to apply as tint
+   */
+  @BindingAdapter("tint")
+  public static void setTint(@NonNull ImageView imageView, int color) {
+    imageView.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+  }
+
+  /**
    * Binds a drawable indicated by {@link ChapterPlayState} to an {@link ImageView} via
    * "android:src".
    * <p/>

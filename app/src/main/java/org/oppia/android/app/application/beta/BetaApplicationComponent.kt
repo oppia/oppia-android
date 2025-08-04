@@ -100,6 +100,12 @@ import javax.inject.Singleton
     BetaBuildFlavorModule::class, ActivityRouterModule::class,
     CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorProdModule::class,
     ExplorationProgressModule::class, AuthenticationProdModule::class,
+    SyncStatusModule::class, LogReportingModule::class, NetworkConnectionUtilProdModule::class,
+    HintsAndSolutionProdModule::class, MetricLogSchedulerModule::class,
+    PerformanceMetricsConfigurationsModule::class, BetaBuildFlavorModule::class,
+    ActivityRouterModule::class,
+    CpuPerformanceSnapshotterModule::class, PerformanceMetricsAssessorModule::class,
+    ExplorationProgressModule::class, AuthenticationModule::class
   ]
 )
 interface BetaApplicationComponent : ApplicationComponent {

@@ -1,0 +1,70 @@
+platform_parameter_definition {
+  id: SPLASH_SCREEN_WELCOME_MESSAGE
+  default_value: {
+    boolean: false
+  }
+}
+platform_parameter_definition {
+  id: SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+  default_value: {
+    integer: 12
+  }
+}
+platform_parameter_definition {
+  id: CACHE_LATEX_RENDERING
+  default_value: {
+    boolean: true
+  }
+}
+platform_parameter_definition {
+  id: PERFORMANCE_METRICS_COLLECTION_UPLOAD_TIME_INTERVAL_IN_MINUTES
+  default_value: {
+    integer: 15
+  }
+}
+platform_parameter_definition {
+  id: PERFORMANCE_METRICS_COLLECTION_HIGH_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+  default_value: {
+    integer: 15
+  }
+}
+platform_parameter_definition {
+  id: PERFORMANCE_METRICS_COLLECTION_LOW_FREQUENCY_TIME_INTERVAL_IN_MINUTES
+  default_value: {
+    integer: 1440
+  }
+}
+platform_parameter_definition {
+  id: OPTIONAL_APP_UPDATE_VERSION_CODE
+  remote_server_name: "android_optional_app_update_version_code"
+  default_value: {
+    integer: 0
+  }
+}
+platform_parameter_definition {
+  id: FORCED_APP_UPDATE_VERSION_CODE
+  remote_server_name: "android_forced_app_update_version_code"
+  default_value: {
+    integer: 0
+  }
+}
+platform_parameter_definition {
+  id: LOWEST_SUPPORTED_API_LEVEL
+  remote_server_name: "lowest_supported_api_level"
+  default_value: {
+    # The lowest supported version of the app is currently Lollipop.
+    integer: 21
+  }
+}
+platform_parameter_definition {
+  id: NPS_SURVEY_GRACE_PERIOD_IN_DAYS
+  default_value: {
+    integer: 30
+  }
+}
+platform_parameter_definition {
+  id: NPS_SURVEY_MINIMUM_AGGREGATE_LEARNING_TIME_IN_A_TOPIC_IN_MINUTES
+  default_value: {
+    integer: 5
+  }
+}
