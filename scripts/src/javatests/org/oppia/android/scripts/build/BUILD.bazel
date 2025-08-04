@@ -1,5 +1,5 @@
 """
-Tests corresponding to build pipeline scripts & checks.
+Tests corresponding to build pipeline scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_test")

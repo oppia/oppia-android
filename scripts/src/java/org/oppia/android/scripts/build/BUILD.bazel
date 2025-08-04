@@ -1,19 +1,8 @@
 """
-Libraries corresponding to build pipeline scripts & checks.
+Libraries corresponding to build pipeline scripts.
 """
 
 load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
-
-kt_jvm_library(
-    name = "dagger_module_consistency_and_correctness_check_lib",
-    testonly = True,
-    srcs = ["DaggerModuleConsistencyAndCorrectnessCheck.kt"],
-    visibility = ["//scripts:oppia_script_binary_visibility"],
-    deps = [
-        "//scripts/src/java/org/oppia/android/scripts/common:repository_file",
-        "//third_party:org_jetbrains_kotlin_kotlin-compiler-embeddable",
-    ],
-)
 
 kt_jvm_library(
     name = "filter_per_language_resources_lib",
