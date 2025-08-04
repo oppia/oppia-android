@@ -17,7 +17,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
 /** The presenter for [AppLanguageFragment]. */
-class AppLanguageFragmentPresenter @Inject constructor(
+class AppLanguageFragmentPresenterV1 @Inject constructor(
   private val fragment: Fragment,
   private val appLanguageSelectionViewModel: AppLanguageSelectionViewModel,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,

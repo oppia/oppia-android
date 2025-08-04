@@ -245,7 +245,8 @@ class AppLanguageFragmentTest {
         scenario.onActivity { activity ->
           var appLanguageFragment = activity.supportFragmentManager
             .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
-          appLanguageFragment.appLanguageFragmentPresenter.onLanguageSelected(OppiaLanguage.ARABIC)
+          appLanguageFragment.appLanguageFragmentPresenterV1
+            .onLanguageSelected(OppiaLanguage.ARABIC)
         }
 
         scenario.recreate()
@@ -254,7 +255,7 @@ class AppLanguageFragmentTest {
           val newAppLanguageFragment = activity.supportFragmentManager
             .findFragmentById(R.id.app_language_fragment_container) as AppLanguageFragment
           val restoredLanguage =
-            newAppLanguageFragment.appLanguageFragmentPresenter.getLanguageSelected()
+            newAppLanguageFragment.appLanguageFragmentPresenterV1.getLanguageSelected()
 
           assertThat(restoredLanguage).isEqualTo(OppiaLanguage.ARABIC)
         }
