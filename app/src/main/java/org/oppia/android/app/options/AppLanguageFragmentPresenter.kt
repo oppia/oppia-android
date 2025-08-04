@@ -26,6 +26,7 @@ import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
+/** The presenter for [AppLanguageFragment]. */
 class AppLanguageFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
@@ -38,12 +39,12 @@ class AppLanguageFragmentPresenter @Inject constructor(
   private lateinit var selectedLanguage: OppiaLanguage
   private lateinit var supportedLanguages: List<OppiaLanguage>
 
-  /** Handle creation and binding of the [AppLanguageFragment] layout. */
+  /** Handles the creation and binding of the [AppLanguageFragment] layout. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     outState: Bundle?,
-    prefSummaryValue: OppiaLanguage,
+    currentSelection: OppiaLanguage,
     profileId: ProfileId
   ): View {
     this.profileId = profileId
@@ -59,7 +60,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
       OnboardingFragmentStateBundle.getDefaultInstance()
     )?.selectedLanguage
 
-    selectedLanguage = savedSelectedLanguage ?: prefSummaryValue
+    selectedLanguage = savedSelectedLanguage ?: currentSelection
 
     appLanguageViewModel.setSelectedLanguageLivedata(selectedLanguage)
 
@@ -155,7 +156,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
         when (result) {
           is AsyncResult.Success -> {
             updateAppLanguage(result.value.selectedLanguage)
-            // TODO (#4938): Add tests for redirection once a product decision has been reached.
+            // TODO (#5911): Add tests for redirection once a product decision has been reached.
           }
           is AsyncResult.Failure -> oppiaLogger.e(
             "AppLanguageFragment",
