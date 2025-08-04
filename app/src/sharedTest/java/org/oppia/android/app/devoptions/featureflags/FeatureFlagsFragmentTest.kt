@@ -56,9 +56,9 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction
-import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
+import org.oppia.android.data.backends.gae.testing.NetworkConfigTestModule
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
@@ -75,10 +75,10 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
-import org.oppia.android.domain.exploration.ExplorationStorageProdModule
+import org.oppia.android.domain.exploration.testing.ExplorationStorageTestModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverProdModule
+import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -90,11 +90,13 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
+import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
+import org.oppia.android.testing.logging.SyncStatusTestModule
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -105,14 +107,12 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.GcsResourceModule
-import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -799,9 +799,9 @@ class FeatureFlagsFragmentTest {
       DeveloperOptionsStarterModule::class,
       DispatcherTestModule::class,
       DragDropSortInputModule::class,
-      ExpirationMetaDataRetrieverProdModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
       ExplorationProgressModule::class,
-      ExplorationStorageProdModule::class,
+      ExplorationStorageTestModule::class,
       FakeOppiaClockModule::class,
       FirebaseLogUploaderModule::class,
       FractionInputModule::class,
@@ -810,11 +810,11 @@ class FeatureFlagsFragmentTest {
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
       ImageClickInputModule::class,
-      ImageLoaderProdModule::class,
+      ImageLoaderTestModule::class,
       ImageParsingModule::class,
       InteractionsModule::class,
       ItemSelectionInputModule::class,
-      LocaleProdModule::class,
+      LocaleTestModule::class,
       LogReportWorkerModule::class,
       LogReportingTestModule::class,
       LogStorageModule::class,
@@ -823,7 +823,7 @@ class FeatureFlagsFragmentTest {
       MathEquationInputModule::class,
       MetricLogSchedulerModule::class,
       MultipleChoiceInputModule::class,
-      NetworkConfigProdModule::class,
+      NetworkConfigTestModule::class,
       NetworkConnectionDebugUtilModule::class,
       NetworkConnectionUtilDebugModule::class,
       NumberWithUnitsRuleModule::class,
@@ -837,7 +837,7 @@ class FeatureFlagsFragmentTest {
       RetrofitServiceModule::class,
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
-      SyncStatusProdModule::class,
+      SyncStatusTestModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
