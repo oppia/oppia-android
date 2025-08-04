@@ -88,6 +88,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** Tests for [AudioLanguageActivity]. */
 @RunWith(AndroidJUnit4::class)
@@ -111,7 +112,11 @@ class AudioLanguageActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val intent =
-      AudioLanguageActivity.createAudioLanguageActivityIntent(context, ENGLISH_AUDIO_LANGUAGE)
+      AudioLanguageActivity.createAudioLanguageActivityIntent(
+        context,
+        ENGLISH_AUDIO_LANGUAGE,
+        AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+      )
 
     val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.AUDIO_LANGUAGE_ACTIVITY)
@@ -139,7 +144,11 @@ class AudioLanguageActivityTest {
     audioLanguage: AudioLanguage,
     testBlock: ActivityScenario<AudioLanguageActivity>.() -> Unit
   ) {
-    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
+      context,
+      audioLanguage,
+      AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+    )
     ActivityScenario.launch<AudioLanguageActivity>(intent).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.testBlock()
