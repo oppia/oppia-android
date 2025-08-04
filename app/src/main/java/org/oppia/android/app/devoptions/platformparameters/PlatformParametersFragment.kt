@@ -73,9 +73,7 @@ class PlatformParametersFragment : InjectableFragment() {
       platformParametersFragmentPresenter.invalidInputPlatformparameters.toList()
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(platformParameterStates)
-      .addAllInvalidInputPlatformParameters(
-        invalidInputPlatformparameters
-      )
+      .addAllInvalidInputPlatformParameters(invalidInputPlatformparameters)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto

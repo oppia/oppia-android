@@ -43,7 +43,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
-  private val alreadyBoundsId = mutableSetOf<PlatformParameterId>()
+  private val boundParamIds = mutableSetOf<PlatformParameterId>()
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
@@ -207,10 +207,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
-    alreadyBoundsId.add(model.platformParameterId)
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
-        if (alreadyBoundsId.contains(id).not()) {
+        if (boundParamIds.contains(id).not()) {
+          boundParamIds.add(model.platformParameterId)
           return@onPlatformParameterTextChangedCallback
         }
         when {

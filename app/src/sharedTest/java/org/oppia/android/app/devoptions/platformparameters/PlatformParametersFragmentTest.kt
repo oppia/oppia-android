@@ -854,7 +854,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChanges_valuePersists() {
+  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChange_persistsValue() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1127,7 +1127,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_withInvalidInput_navigateBack_showsAlertDialog() {
+  fun testPlatformParametersFragment_navigateBackWithInvalidInput_displaysAlertDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1152,7 +1152,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_showsalertDialogWithInvalidInput_succeedsAfterValidInput() {
+  fun testPlatformParametersFragment_invalidInputAlert_withValidInput_doesNotShowDialog() {
     setUpTestApplicationComponent()
     Intents.init()
     launch(PlatformParametersActivity::class.java).use { _ ->
@@ -1306,54 +1306,6 @@ class PlatformParametersFragmentTest {
       .lowercase()
       .split('_')
       .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
-  }
-
-  // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOM.
-  private fun addTestRemoteFeatureFlagToDatabase(
-    component: TestApplicationComponent,
-    value: Boolean
-  ) {
-    val database = component.getCacheStoreFactory().create(
-      REMOTE_DATABASE_NAME,
-      RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
-    )
-
-    database.storeDataAsync {
-      RemotePlatformParameterAndFeatureFlagDatabase.newBuilder().apply {
-        addRemoteFeatureFlag(
-          RemoteFeatureFlag.newBuilder().apply {
-            id = FeatureFlagId.MULTIPLE_CLASSROOMS
-            remoteIsEnabled = value
-            syncStatus = SyncStatus.SYNCED_FROM_SERVER
-          }.build()
-        )
-      }.build()
-    }.waitForSuccessfulResult(
-      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
-    )
-  }
-
-  // Populates the Local Override DB with test Overridden feature flag for MULTIPLE_CLASSROOMS.
-  private fun addTestOverriddenFeatureFlagToDatabase(
-    component: TestApplicationComponent,
-    value: Boolean
-  ) {
-    val database = component.getCacheStoreFactory().create(
-      LOCAL_OVERRIDE_DATABASE_NAME,
-      LocalOverridePlatformParameterDatabase.getDefaultInstance()
-    )
-    database.storeDataAsync {
-      LocalOverridePlatformParameterDatabase.newBuilder().apply {
-        addOverriddenFeatureFlag(
-          OverriddenFeatureFlag.newBuilder()
-            .setId(FeatureFlagId.MULTIPLE_CLASSROOMS)
-            .setOverriddenValue(value)
-            .build()
-        )
-      }.build()
-    }.waitForSuccessfulResult(
-      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
-    )
   }
 
   // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
@@ -1514,6 +1466,7 @@ class PlatformParametersFragmentTest {
     )
   }
 
+  // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
   @Singleton
   @Component(
     modules = [
