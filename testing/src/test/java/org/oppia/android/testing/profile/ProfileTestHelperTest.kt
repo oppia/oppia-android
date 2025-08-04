@@ -224,10 +224,7 @@ class ProfileTestHelperTest {
       PlatformParameterSingletonModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
-      SyncStatusModule::class,
       SyncStatusProdModule::class,
-      TestDispatcherModule::class,
-      TestLogReportingModule::class,
       TestModule::class
     ]
   )

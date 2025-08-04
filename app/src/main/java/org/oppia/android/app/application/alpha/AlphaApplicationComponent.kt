@@ -40,7 +40,7 @@ import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterM
 import org.oppia.android.domain.oppialogger.exceptions.UncaughtExceptionLoggerModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
+import org.oppia.android.domain.platformparameter.PlatformParameterProdModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUpWorkerModule
 import org.oppia.android.domain.question.QuestionModule
@@ -71,39 +71,72 @@ import javax.inject.Singleton
  * All application-scoped modules should be included in this component.
  */
 @Singleton
-@Component(
-  modules = [
-    ApplicationModule::class, DispatcherProdModule::class, LoggerModule::class,
-    OppiaClockModule::class, ContinueModule::class, FractionInputModule::class,
-    ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-    NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-    DragDropSortInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-    ImageLoaderProdModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-    CachingProdModule::class, QuestionModule::class, AccessibilityProdModule::class,
-    ImageClickInputModule::class, LogStorageModule::class, IntentFactoryShimModule::class,
-    ViewBindingShimModule::class, ExpirationMetaDataRetrieverProdModule::class,
-    RatioInputModule::class, UncaughtExceptionLoggerModule::class,
-    ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-    WorkManagerConfigurationModule::class, HintsAndSolutionConfigModule::class,
-    FirebaseLogUploaderModule::class, RetrofitModule::class, RetrofitServiceModule::class,
-    PlatformParameterAlphaModule::class, PlatformParameterSingletonModule::class,
-    ExplorationStorageProdModule::class, DeveloperOptionsModule::class,
-    PlatformParameterModule::class, PlatformParameterSingletonModule::class,
-    ExplorationStorageModule::class, DeveloperOptionsModule::class,
-    PlatformParameterSyncUpWorkerModule::class, NetworkConfigProdModule::class, AssetModule::class,
-    LocaleProdModule::class, ActivityRecreatorProdModule::class, ActivityRouterModule::class,
-    NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-    MathEquationInputModule::class, SplitScreenInteractionModule::class,
-    LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-    NetworkConnectionDebugUtilModule::class, LoggingIdentifierModule::class,
-    SyncStatusProdModule::class, LogReportingProdModule::class,
-    NetworkConnectionUtilProdModule::class, HintsAndSolutionProdModule::class,
-    MetricLogSchedulerModule::class, PerformanceMetricsConfigurationsModule::class,
-    AlphaBuildFlavorModule::class, CpuPerformanceSnapshotterModule::class,
-    PerformanceMetricsAssessorProdModule::class, ExplorationProgressModule::class,
-    AuthenticationProdModule::class,
-  ]
-)
+  @Component(
+    modules = [
+      AccessibilityProdModule::class,
+      ActivityRecreatorProdModule::class,
+      ActivityRouterModule::class,
+      AlgebraicExpressionInputModule::class,
+      AlphaBuildFlavorModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      AuthenticationProdModule::class,
+      CachingProdModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DispatcherProdModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverProdModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageProdModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageLoaderProdModule::class,
+      ImageParsingModule::class,
+      IntentFactoryShimModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogReportingProdModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilProdModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      OppiaClockModule::class,
+      PerformanceMetricsAssessorProdModule::class,
+      PerformanceMetricsConfigurationsModule::class,
+      PlatformParameterProdModule::class,
+      PlatformParameterSingletonModule::class,
+      PlatformParameterSyncUpWorkerModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusProdModule::class,
+      TextInputRuleModule::class,
+      UncaughtExceptionLoggerModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
+    ]
+  )
 interface AlphaApplicationComponent : ApplicationComponent {
   /**
    * The [ApplicationComponent.Builder] for this component. Dagger will generate an implementation

@@ -12,11 +12,11 @@ import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.oppia.android.domain.oppialogger.LogStorageModule
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
@@ -74,15 +74,15 @@ class PlatformParameterControllerProdImplTest {
   @Component(
     modules = [
       AssetModule::class,
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
+      LogReportingTestModule::class,
       LogStorageModule::class,
       LoggerModule::class,
       NetworkConnectionUtilDebugModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
-      TestDispatcherModule::class,
-      TestLogReportingModule::class,
       TestModule::class
     ]
   )

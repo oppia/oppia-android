@@ -91,7 +91,7 @@ kt_android_library(
         "FeatureFlagBindingModule.kt",
         "FeatureFlagsMapBindingModule.kt",
         "PlatformParameterBindingModule.kt",
-        "PlatformParameterModule.kt",
+        "PlatformParameterProdModule.kt",
         "PlatformParameterSingletonModule.kt",
     ],
     visibility = ["//:oppia_prod_module_visibility"],

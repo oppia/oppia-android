@@ -13,10 +13,10 @@ import dagger.Module
 import dagger.Provides
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
@@ -122,14 +122,13 @@ class PlatformParameterTestModuleTest {
   @Component(
     modules = [
       AssetModule::class,
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
+      LogReportingTestModule::class,
       LoggerModule::class,
-      PlatformParameterModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
-      TestDispatcherModule::class,
-      TestLogReportingModule::class,
       TestModule::class
     ]
   )
@@ -141,7 +140,7 @@ class PlatformParameterTestModuleTest {
       fun build(): TestApplicationComponent
     }
 
-    fun inject(platformParameterModuleTest: PlatformParameterTestModuleTest)
+    fun inject(test: PlatformParameterTestModuleTest)
   }
 
   class TestApplication : Application() {
@@ -151,8 +150,8 @@ class PlatformParameterTestModuleTest {
         .build()
     }
 
-    fun inject(platformParameterModuleTest: PlatformParameterTestModuleTest) {
-      component.inject(platformParameterModuleTest)
+    fun inject(test: PlatformParameterTestModuleTest) {
+      component.inject(test)
     }
   }
 

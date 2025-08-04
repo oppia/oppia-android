@@ -1035,7 +1035,6 @@ class AppStartupStateControllerTest {
       ApplicationLifecycleModule::class,
       AssetModule::class,
       DispatcherTestModule::class,
-      ExpirationMetaDataRetrieverModule::class,
       ExpirationMetaDataRetrieverProdModule::class,
       LocaleProdModule::class,
       LocaleTestModule::class,

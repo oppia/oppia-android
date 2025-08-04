@@ -194,8 +194,6 @@ class PerformanceMetricsLogSchedulerTest {
       PlatformParameterTestModule::class,
       RobolectricModule::class,
       SyncStatusTestModule::class,
-      TestDispatcherModule::class,
-      TestLogReportingModule::class,
       TestModule::class
     ]
   )

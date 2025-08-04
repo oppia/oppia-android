@@ -700,7 +700,7 @@ class ViewEventLogsFragmentTest {
   }
 
   @Module
-  class TestLogReportingModule {
+  class LogReportingTestModule {
     @Provides
     @Singleton
     fun provideExceptionLogger(): ExceptionLogger =
@@ -767,6 +767,7 @@ class ViewEventLogsFragmentTest {
       ItemSelectionInputModule::class,
       LocaleProdModule::class,
       LogReportWorkerModule::class,
+      LogReportingTestModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
       MathEquationInputModule::class,
@@ -790,7 +791,6 @@ class ViewEventLogsFragmentTest {
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
       SyncStatusProdModule::class,
-      TestLogReportingModule::class,
       TestLogStorageModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

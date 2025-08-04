@@ -88,7 +88,7 @@ import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.model.ScreenName.SCREEN_NAME_UNSPECIFIED
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
-import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Iteration
 import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.Parameter
@@ -96,7 +96,7 @@ import org.oppia.android.testing.junit.OppiaParameterizedTestRunner.SelectRunner
 import org.oppia.android.testing.junit.ParameterizedRobolectricTestRunner
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.locale.testing.LocaleTestModule
@@ -2652,13 +2652,13 @@ class EventBundleCreatorTest {
   @Component(
     modules = [
       AssetModule::class,
+      DispatcherTestModule::class,
       FakeOppiaClockModule::class,
       LocaleTestModule::class,
+      LogReportingTestModule::class,
       LoggerModule::class,
       PlatformParameterTestModule::class,
       RobolectricModule::class,
-      TestDispatcherModule::class,
-      TestLogReportingModule::class,
       TestModule::class
     ]
   )

@@ -61,10 +61,10 @@ import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModu
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
 import org.oppia.android.domain.exploration.ExplorationProgressModule
-import org.oppia.android.domain.exploration.ExplorationStorageModule
+import org.oppia.android.domain.exploration.ExplorationStorageProdModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverProdModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
@@ -84,12 +84,12 @@ import org.oppia.android.domain.platformparameter.syncup.PlatformParameterSyncUp
 import org.oppia.android.domain.platformparameter.testing.TestPlatformParameterConfigRetriever
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.TestLogReportingModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.LogReportingTestModule
+import org.oppia.android.testing.firebase.AuthenticationTestModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.DispatcherTestModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
-import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
@@ -98,12 +98,12 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
-import org.oppia.android.util.logging.SyncStatusModule
+import org.oppia.android.util.logging.SyncStatusProdModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
 import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
-import org.oppia.android.util.parser.image.GlideImageLoaderModule
+import org.oppia.android.util.parser.image.ImageLoaderProdModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
@@ -306,29 +306,32 @@ class PlatformParameterIntegrationDebugTest {
       ApplicationModule::class,
       ApplicationStartupListenerModule::class,
       AssetModule::class,
+      AuthenticationTestModule::class,
       CachingTestModule::class,
       ContinueModule::class,
       CpuPerformanceSnapshotterModule::class,
       DeveloperOptionsModule::class,
       DeveloperOptionsStarterModule::class,
+      DispatcherTestModule::class,
       DragDropSortInputModule::class,
-      ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverProdModule::class,
       ExplorationProgressModule::class,
-      ExplorationStorageModule::class,
+      ExplorationStorageProdModule::class,
       FakeOppiaClockModule::class,
       FirebaseLogUploaderModule::class,
       FractionInputModule::class,
       GcsResourceModule::class,
-      GlideImageLoaderModule::class,
       HintsAndSolutionConfigModule::class,
       HintsAndSolutionProdModule::class,
       HtmlParserEntityTypeModule::class,
       ImageClickInputModule::class,
+      ImageLoaderProdModule::class,
       ImageParsingModule::class,
       InteractionsModule::class,
       ItemSelectionInputModule::class,
       LocaleProdModule::class,
       LogReportWorkerModule::class,
+      LogReportingTestModule::class,
       LogStorageModule::class,
       LoggerModule::class,
       LoggingIdentifierModule::class,
@@ -348,10 +351,7 @@ class PlatformParameterIntegrationDebugTest {
       RetrofitServiceModule::class,
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
-      SyncStatusModule::class,
-      TestAuthenticationModule::class,
-      TestDispatcherModule::class,
-      TestLogReportingModule::class,
+      SyncStatusProdModule::class,
       TestModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,

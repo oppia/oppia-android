@@ -67,7 +67,6 @@ import org.oppia.android.testing.ImageLoaderTestModule
 import org.oppia.android.testing.LogReportingTestModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.AuthenticationTestModule
-import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.platformparameter.PlatformParameterTestModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.DispatcherTestModule
@@ -235,12 +234,7 @@ class TextInputLayoutBindingAdaptersTest {
       RetrofitServiceModule::class,
       RobolectricModule::class,
       SplitScreenInteractionModule::class,
-      SyncStatusModule::class,
       SyncStatusProdModule::class,
-      TestAuthenticationModule::class,
-      TestDispatcherModule::class,
-      TestImageLoaderModule::class,
-      TestLogReportingModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
