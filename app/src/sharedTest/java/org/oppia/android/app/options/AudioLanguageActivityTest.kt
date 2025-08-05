@@ -25,6 +25,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -88,7 +89,6 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.AudioLanguageActivityParams
 
 /** Tests for [AudioLanguageActivity]. */
 @RunWith(AndroidJUnit4::class)

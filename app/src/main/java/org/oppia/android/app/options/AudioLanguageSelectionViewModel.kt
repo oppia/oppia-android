@@ -49,7 +49,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
           )
           OppiaLanguage.LANGUAGE_UNSPECIFIED
         }
-
         is AsyncResult.Pending -> OppiaLanguage.LANGUAGE_UNSPECIFIED
         is AsyncResult.Success -> languageResult.value
       }
