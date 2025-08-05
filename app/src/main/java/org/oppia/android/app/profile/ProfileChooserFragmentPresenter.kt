@@ -288,13 +288,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun computeLoginRoute(profile: Profile) {
     when {
-      profile.profileType == ProfileType.SUPERVISOR -> { routeToHomeOrPinScreens(profile) }
-      !profile.completedProfileOnboarding -> { routeToOnboardingOrPinScreens(profile) }
-      else -> { routeToHomeOrPinScreens(profile) }
+      !profile.completedProfileOnboarding && profile.profileType != ProfileType.SUPERVISOR ->
+        routeToOnboardingOrPinScreen(profile)
+      else -> routeToHomeOrPinScreen(profile)
     }
   }
 
-  private fun routeToOnboardingOrPinScreens(profile: Profile) {
+  private fun routeToOnboardingOrPinScreen(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
       launchOnboardingScreen(profile.id, profile.name)
     } else {
@@ -302,7 +302,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun routeToHomeOrPinScreens(profile: Profile) {
+  private fun routeToHomeOrPinScreen(profile: Profile) {
     if (profile.pin.isNullOrBlank()) {
       launchHomeScreen(profile.id)
     } else {
