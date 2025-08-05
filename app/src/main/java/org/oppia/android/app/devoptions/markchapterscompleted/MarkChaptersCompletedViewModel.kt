@@ -71,7 +71,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     var nextStoryIndex: Int
     var chapterIndex = 0
     storyMap.forEach { storyMapItem ->
-      storyMapItem.value.forEach { ephemeralStorySummary ->
+      storyMapItem.value.iterator().forEach { ephemeralStorySummary ->
         val storySummary = ephemeralStorySummary.storySummary
         val storyTitle =
           translationController.extractString(

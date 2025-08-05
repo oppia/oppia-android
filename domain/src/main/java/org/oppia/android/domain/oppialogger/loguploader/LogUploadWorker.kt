@@ -92,7 +92,7 @@ class LogUploadWorker private constructor(
   private suspend fun uploadPerformanceMetrics(): Result {
     return try {
       val performanceMetricsLogs = performanceMetricsController.getMetricLogStoreList()
-      performanceMetricsLogs.forEach { performanceMetricsLog ->
+      performanceMetricsLogs.iterator().forEach { performanceMetricsLog ->
         performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
         performanceMetricsController.removeFirstMetricLogFromStore()
       }
