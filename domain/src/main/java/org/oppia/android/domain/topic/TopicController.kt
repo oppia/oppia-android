@@ -374,7 +374,7 @@ class TopicController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
-    storyProgressList.forEach { storyProgress ->
+    storyProgressList.iterator().forEach { storyProgress ->
       val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&

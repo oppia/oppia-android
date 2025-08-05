@@ -8,6 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -510,6 +513,19 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+    }
+  }
+
+  @Test
+  fun testFragment_nicknameEditText_hasAutofillDisabled() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .check { view, _ ->
+          val editText = view as EditText
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            assertThat(editText.importantForAutofill).isEqualTo(View.IMPORTANT_FOR_AUTOFILL_NO)
+          }
+        }
     }
   }
 
