@@ -209,6 +209,54 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
+  fun testLoadParametersAsync_withOnlyOverrideFlag_setsProcessStateToOverriddenValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestOverriddenFeatureFlagToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    val featureFlagValueFromProcessState = platformParameterProcessState
+      .retrieveFeatureFlagState(
+        FeatureFlagId.MULTIPLE_CLASSROOMS
+      )
+
+    assertThat(featureFlagValueFromProcessState)
+      .isEqualTo(TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS)
+  }
+
+  @Test
+  @Suppress("DeferredResultUnused")
+  fun testLoadParametersAsync_withRemoteAndOverrideFlag_setsProcessStateToOverriddenValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(
+        testComponent,
+        TEST_REMOTE_MULTIPLE_CLASSROOMS
+      )
+      addTestOverriddenFeatureFlagToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    platformParameterControllerDebugImpl.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    val featureFlagValueFromProcessState = platformParameterProcessState
+      .retrieveFeatureFlagState(
+        FeatureFlagId.MULTIPLE_CLASSROOMS
+      )
+
+    assertThat(featureFlagValueFromProcessState)
+      .isEqualTo(TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS)
+  }
+
+  @Test
+  @Suppress("DeferredResultUnused")
   fun testGetParameterInitializationStatus_onLoadingParameters_returnsTrue() {
     setUpTestApplicationComponent()
     platformParameterControllerDebugImpl.loadParametersAsync()
