@@ -43,20 +43,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
-  private val alreadyBoundsId = mutableSetOf<PlatformParameterId>()
+  private val boundParamIds = mutableSetOf<PlatformParameterId>()
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
-    MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-
-  /** List of the [PlatformParameterId] which has invalid input. */
-  var invalidInputPlatformparameters = mutableSetOf<PlatformParameterId>()
+    MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>,
-    invalidInputPlatformparameters: Set<PlatformParameterId>
+    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -80,9 +76,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
-    if (invalidInputPlatformparameters.isNotEmpty()) {
-      this.invalidInputPlatformparameters = invalidInputPlatformparameters.toMutableSet()
-    }
+
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
     binding.platformParametersRecyclerView.apply {
@@ -108,7 +102,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
-    val hasInvalidInput = invalidInputPlatformparameters.isNotEmpty()
+    val hasInvalidInput = platformParameterStates.containsValue(null)
 
     if (!hasInvalidInput) {
       val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
@@ -224,22 +218,18 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     when {
       model.currentValue.hasInteger() -> {
         editText.inputType = InputType.TYPE_CLASS_NUMBER
-        val displayValue = when (val storedValue = paramState?.integer) {
-          null -> {
-            if (invalidInputPlatformparameters.contains(model.platformParameterId)) {
-              model.inputErrorMsg.set(invalidInputErrorText)
-              ""
-            } else {
-              model.inputErrorMsg.set("")
-              model.currentValue.integer.toString()
-            }
-          }
-          else -> {
+        if (platformParameterStates.containsKey(model.platformParameterId)) {
+          if (paramState == null) {
+            model.inputErrorMsg.set(invalidInputErrorText)
+            model.inputValue.set("")
+          } else {
             model.inputErrorMsg.set("")
-            storedValue.toString()
+            model.inputValue.set(paramState.integer.toString())
           }
+        } else {
+          model.inputErrorMsg.set("")
+          model.inputValue.set(model.currentValue.integer.toString())
         }
-        model.inputValue.set(displayValue)
       }
 
       model.currentValue.hasString() -> {
@@ -248,10 +238,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
-    alreadyBoundsId.add(model.platformParameterId)
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
-        if (alreadyBoundsId.contains(id).not()) {
+        if (boundParamIds.contains(id).not()) {
+          boundParamIds.add(model.platformParameterId)
           return@onPlatformParameterTextChangedCallback
         }
         when {
@@ -259,16 +249,13 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             if (text == model.currentValue.integer.toString()) {
               platformParameterStates.remove(id)
               model.inputErrorMsg.set("")
-              invalidInputPlatformparameters.remove(id)
             } else {
               val parsed = text.toIntOrNull()
               if (parsed == null) {
                 model.inputErrorMsg.set(invalidInputErrorText)
-                invalidInputPlatformparameters.add(id)
-                platformParameterStates.remove(id)
+                platformParameterStates[id] = null
               } else {
                 model.inputErrorMsg.set("")
-                invalidInputPlatformparameters.remove(id)
                 platformParameterStates[id] =
                   PlatformParameterValue.newBuilder().setInteger(parsed).build()
               }

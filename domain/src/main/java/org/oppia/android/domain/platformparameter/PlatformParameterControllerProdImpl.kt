@@ -39,7 +39,12 @@ class PlatformParameterControllerProdImpl(
   }
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
-  private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
+
+  /**
+   * A [MutableStateFlow] that indicates whether all platform parameters and feature flags have
+   * been successfully loaded and initialized.
+   */
+  val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
 
   init {
     // Ensure that parameters and flags are fully loaded ahead of a call to retrieveData() since
