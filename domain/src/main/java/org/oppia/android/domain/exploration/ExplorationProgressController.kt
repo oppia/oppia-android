@@ -732,8 +732,7 @@ class ExplorationProgressController @Inject constructor(
         when {
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME &&
             (
-              !enableFlashbackSupport.value ||
-                answerOutcome.labelledAsCorrectAnswer ||
+              answerOutcome.labelledAsCorrectAnswer ||
                 !explorationProgress.stateDeck.isFlashbackViewed()
               ) -> {
 

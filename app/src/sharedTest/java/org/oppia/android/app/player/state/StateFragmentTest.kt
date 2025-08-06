@@ -5727,8 +5727,7 @@ class StateFragmentTest {
       verifyContentContains(expectedText)
 
       // Verify feedback is visible.
-      val expectedFeedback = "Now that you have reviewed the solution to the previous question," +
-        " let's try again."
+      val expectedFeedback = "Now that you’ve seen an example, let’s try again."
 
       onView(withId(R.id.state_recycler_view)).perform(
         scrollToPosition<RecyclerView.ViewHolder>(4)

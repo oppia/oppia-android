@@ -3309,8 +3309,7 @@ class ExplorationProgressControllerTest {
     // Verify that the answer submission was successful.
     val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
 
-    val expectedFeedback = "<p>This doesn't seem right. Let's go back and look at the previous" +
-      " question and answer to understand better.</p>"
+    val expectedFeedback = "<p>That answer isn't correct. Let's look at an example.</p>"
 
     assertThat(answerOutcome.labelledAsCorrectAnswer).isEqualTo(false)
     assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
