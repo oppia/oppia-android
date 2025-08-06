@@ -40,40 +40,43 @@ class PlatformParametersFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View {
     var platformParameterStates:
-      MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-    var invalidInputPlatformparameters: MutableList<PlatformParameterId> = mutableListOf()
+      MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
         PlatformParametersFragmentStateBundle.getDefaultInstance()
       )
-      platformParameterStates = args?.platformParameterStatesList
-        ?.associate { it.id to it.overriddenValue }
-        ?.toMutableMap() ?: mutableMapOf()
-      invalidInputPlatformparameters = args?.invalidInputPlatformParametersList
-        ?.toMutableList() ?: mutableListOf()
+      args?.platformParameterStatesList?.forEach {
+        platformParameterStates[it.id] = it.overriddenValue
+      }
+      args?.invalidInputPlatformParametersList?.forEach {
+        platformParameterStates[it] = null
+      }
     }
 
     return platformParametersFragmentPresenter
       .handleCreateView(
-        inflater, container, platformParameterStates,
-        invalidInputPlatformparameters.toSet()
+        inflater, container, platformParameterStates
       )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val platformParameterStates = platformParametersFragmentPresenter.platformParameterStates.map {
-      OverriddenPlatformParameter.newBuilder()
-        .setId(it.key)
-        .setOverriddenValue(it.value)
-        .build()
-    }
-    val invalidInputPlatformparameters =
-      platformParametersFragmentPresenter.invalidInputPlatformparameters.toList()
+    val validParameterOverrides =
+      platformParametersFragmentPresenter.platformParameterStates.mapNotNull { (key, value) ->
+        value?.let {
+          OverriddenPlatformParameter.newBuilder()
+            .setId(key)
+            .setOverriddenValue(it)
+            .build()
+        }
+      }
+    val invalidParameterIds = platformParametersFragmentPresenter.platformParameterStates
+      .filterValues { it == null }
+      .keys
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
-      .addAllPlatformParameterStates(platformParameterStates)
-      .addAllInvalidInputPlatformParameters(invalidInputPlatformparameters)
+      .addAllPlatformParameterStates(validParameterOverrides)
+      .addAllInvalidInputPlatformParameters(invalidParameterIds)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto

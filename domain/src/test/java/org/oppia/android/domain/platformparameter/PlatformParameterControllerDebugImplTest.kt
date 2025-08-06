@@ -299,6 +299,25 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
+  fun testLoadEphemeralFeatureFlags_withRemoteFlagAndNoLocalOverride_hasSyncedFromServerStatus() {
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    val ephemeralFeatureFlagsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    val ephemeralFeatureFlags =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
+    val ephemeralMultipleClassroomValue = ephemeralFeatureFlags
+      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    assertThat(ephemeralMultipleClassroomValue?.syncStatus)
+      .isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
+  }
+
+  @Test
   fun testLoadEphemeralFeatureFlags_withLocalOverrideFlagAndNoRemote_returnsOverriddenValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
@@ -339,28 +358,6 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideStatus() {
-    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
-    executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, false)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-
-    val ephemeralFeatureFlagsProvider =
-      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
-    val ephemeralFeatureFlags =
-      monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
-    val ephemeralMultipleClassroomValue = ephemeralFeatureFlags
-      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
-
-    assertThat(ephemeralMultipleClassroomValue?.syncStatus)
-      .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
-  }
-
-  @Test
   fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
@@ -383,13 +380,16 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withRemoteFlagAndNoLocalOverride_hasSyncedFromServerStatus() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasLocalOverrideStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
-      addTestRemoteFeatureFlagToDatabase(testComponent, true)
+      addTestRemoteFeatureFlagToDatabase(testComponent, false)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
+
     val ephemeralFeatureFlagsProvider =
       platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
     val ephemeralFeatureFlags =
@@ -398,7 +398,7 @@ class PlatformParameterControllerDebugImplTest {
       .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
 
     assertThat(ephemeralMultipleClassroomValue?.syncStatus)
-      .isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
+      .isEqualTo(SyncStatus.LOCAL_OVERRIDE)
   }
 
   @Test
@@ -542,7 +542,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralPlatformParameters_boolParam_withOnlyLocalOverride_returnsOverrideValue() {
+  fun testLoadEphemeralPlatformParameters_boolParam_withOnlyLocalOverride_returnsOverridenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanOverriddenPlatformParameterToDatabase(
         testComponent,
@@ -740,7 +740,7 @@ class PlatformParameterControllerDebugImplTest {
       .setId(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
       .setOverriddenValue(
         PlatformParameterValue.newBuilder()
-          .setInteger(48)
+          .setInteger(TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS)
           .build()
       )
       .build()
