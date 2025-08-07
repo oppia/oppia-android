@@ -3361,7 +3361,7 @@ class ExplorationProgressControllerTest {
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
       .isEqualTo("Fractions")
-    // Verify answer and response contains the flashbackViewed is false.
+    // Verify the answer and response has the flashbackViewed field set to false.
     assertThat(answerAndResponse.flashbackViewed).isEqualTo(false)
   }
 
@@ -3469,7 +3469,7 @@ class ExplorationProgressControllerTest {
 
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit).isEqualTo("Fractions")
-    // Verify answer and response contains the flashbackViewed is true.
+    // Verify the answer and response has the flashbackViewed field set to true.
     assertThat(answerAndResponse.flashbackViewed).isEqualTo(true)
   }
 

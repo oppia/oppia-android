@@ -495,7 +495,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
           }
         }
 
-        if (playerFeatureSet.flashbackNavigationSupport && answerAndResponse.flashbackViewed) {
+        if (
+          playerFeatureSet.flashbackNavigationSupport &&
+          !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+          answerAndResponse.flashbackViewed
+        ) {
           addFlashbackButton(
             answerAndResponse.stateNameToRevisit
           ).let { viewModel ->

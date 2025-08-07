@@ -283,8 +283,8 @@ class StateDeck constructor(
   }
 
   /**
-   *  Sets the `flashback_viewed` field to true for the last [AnswerAndResponse] in the
-   *  [currentDialogInteractions] list.
+   *  Sets the `flashback_viewed` field of [AnswerAndResponse] to true for the last
+   *  [AnswerAndResponse] in the [currentDialogInteractions] list.
    */
   fun setFlashbackIsViewed() {
     if (currentDialogInteractions.isNotEmpty()) {

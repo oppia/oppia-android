@@ -925,6 +925,7 @@ class ExplorationProgressController @Inject constructor(
       if (!explorationProgress.stateDeck.isFlashbackViewed()) {
         explorationProgress.stateDeck.setFlashbackIsViewed()
       }
+
       if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
         hintHandler.navigateBackToLatestPendingState()
 

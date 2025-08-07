@@ -5728,10 +5728,8 @@ class StateFragmentTest {
 
       // Verify feedback is visible.
       val expectedFeedback = "Now that you’ve seen an example, let’s try again."
-
-      onView(withId(R.id.state_recycler_view)).perform(
-        scrollToPosition<RecyclerView.ViewHolder>(4)
-      )
+      onView(withId(R.id.state_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(4))
       onView(withId(R.id.feedback_text_view))
         .check(matches(withText(containsString(expectedFeedback))))
 
@@ -5748,7 +5746,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_CompleteFlashbackView_submitWrongAnsAgain_verifyFlashbackButtonisNotOffered() {
+  fun testFlashback_viewFlashback_submitWrongAnsAgain_verifyFlashbackButtonIsNotOffered() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5777,7 +5775,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_completeFlashbackView_submitCorrectAnswer_canSuccessfullyMoveToNextState() {
+  fun testFlashback_viewFlashback_submitCorrectAnswer_canSuccessfullyMoveToNextState() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5796,6 +5794,29 @@ class StateFragmentTest {
       // Verify that the user is now on the eighth state.
       verifyContentContains("In which language does Oppia mean 'to learn'?")
       verifyViewTypeIsPresent(TEXT_INPUT_INTERACTION)
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitOneWrongRatioAnswer_previousResponseHeaderIsNotShown() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify previous response header is not visible.
+      onView(withId(R.id.previous_response_header)).check(doesNotExist())
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
     }
   }
 
