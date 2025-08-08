@@ -450,10 +450,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext
   ) {
-    if (answersAndResponses.size > 1) {
+    // 'flashbackRecentlyViewed' determines whether the flashback was recently viewed by the
+    // learner.
+    // True if flashback navigation is supported and the latest AnswerAndResponse has a
+    // valid stateNameToRevisit with flashbackViewed set to true.
+    var flashbackRecentlyViewed = false
+    answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      flashbackRecentlyViewed = playerFeatureSet.flashbackNavigationSupport &&
+        !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+        answerAndResponse.flashbackViewed
+    }
+    val previousAnswerCount = if (flashbackRecentlyViewed)
+      answersAndResponses.size else answersAndResponses.size -1
+
+    if (answersAndResponses.size > 1 || flashbackRecentlyViewed) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
-          answersAndResponses.size - 1,
+          previousAnswerCount,
           hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
@@ -527,22 +540,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
-      if (
-        playerFeatureSet.flashbackNavigationSupport &&
-        !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
-        answerAndResponse.flashbackViewed
-      ) {
-        PreviousResponsesHeaderViewModel(
-          answersAndResponses.size,
-          hasConversationView,
-          ObservableBoolean(hasPreviousResponsesExpanded),
-          fragment as PreviousResponsesHeaderClickListener,
-          isSplitView.get()!!,
-          resourceHandler
-        ).let { viewModel ->
-          pendingItemList += viewModel
-          previousAnswerViewModels += viewModel
-        }
+      if (flashbackRecentlyViewed) {
         // Only add previous answers if current responses are expanded, or if collapsing is disabled.
         val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing ||
           hasPreviousResponsesExpanded
@@ -559,6 +557,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             previousAnswerViewModels += viewModel
           }
         }
+
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
             answerAndResponse.feedback,
