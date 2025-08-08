@@ -461,7 +461,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         answerAndResponse.flashbackViewed
     }
     val previousAnswerCount = if (flashbackRecentlyViewed)
-      answersAndResponses.size else answersAndResponses.size -1
+      answersAndResponses.size else answersAndResponses.size - 1
 
     if (answersAndResponses.size > 1 || flashbackRecentlyViewed) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
