@@ -87,7 +87,7 @@ class OnboardingFragmentPresenter @Inject constructor(
         supportedLanguages = languagesList
         val adapter = ArrayAdapter(
           fragment.requireContext(),
-          R.layout.onboarding_language_dropdown_item,
+          R.layout.language_dropdown_item,
           R.id.onboarding_language_text_view,
           languagesList.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
         )

@@ -330,31 +330,6 @@ class AppLanguageFragmentTest {
     }
   }
 
-//  @Test
-//  @DefineAppLanguageLocaleContext(
-//    oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,
-//    appStringIetfTag = "ar",
-//    appStringAndroidLanguageId = "ar"
-//  )
-//  @RunOn(TestPlatform.ROBOLECTRIC)
-//  fun testFragment_onboardingV2Enabled_arabicLocale_arabicIsPreselected() {
-//    setUpTestWithOnboardingV2Enabled()
-//    forceDefaultLoca le(OnboardingFragmentTest.EGYPT_ARABIC_LOCALE)
-//    launch(OnboardingActivity::class.java).use {
-//      testCoroutineDispatchers.runCurrent()
-//
-//      // Verify that the display locale is set up correctly (for string formatting).
-//      val displayLocale = appLanguageLocaleHandler.getDisplayLocale()
-//      val localeContext = displayLocale.localeContext
-//      assertThat(localeContext.languageDefinition.language)
-//        .isEqualTo(OppiaLanguage.ARABIC)
-//
-//      onView(withId(R.id.onboarding_language_dropdown)).check(
-//        matches(withText(R.string.arabic_localized_language_name))
-//      )
-//    }
-//  }
-
   @Test
   @DefineAppLanguageLocaleContext(
     oppiaLanguageEnumId = OppiaLanguage.ARABIC_VALUE,

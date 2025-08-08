@@ -1720,7 +1720,7 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_language_dropdown_item.xml"
+  exempted_file_path: "app/src/main/res/layout/language_dropdown_item.xml"
   lint_issue_id: SELECTABLE_TEXT
 }
 android_lint_exemption: {
