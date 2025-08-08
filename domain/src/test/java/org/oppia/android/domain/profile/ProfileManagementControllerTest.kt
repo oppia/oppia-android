@@ -1835,7 +1835,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
+  fun testProfileOnboardingState_oneAdminProfileWithoutPin_returnsSoleLeanerTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
 
@@ -1853,7 +1853,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyMode() {
+  fun testProfileOnboardingState_oneAdminProfileWithPin_returnsAdminOnlyMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
 
@@ -1891,18 +1891,6 @@ class ProfileManagementControllerTest {
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
     assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.NEW_INSTALL)
-  }
-
-  @Test
-  fun testProfileOnboardingState_existingProfilesV1_returnsUnknownProfileTypeMode() {
-    setUpTestWithOnboardingV2Enabled(true)
-    addAdminProfileAndWait(name = "James")
-
-    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
-    val profileOnboardingModeResult =
-      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
-
-    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.UNKNOWN_PROFILE_TYPE)
   }
 
   @Test
