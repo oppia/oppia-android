@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
@@ -39,6 +40,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
+  private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
 
   init {
     // Ensure that parameters and flags are fully loaded ahead of a call to retrieveData() since
@@ -61,7 +63,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
   override fun getParameterInitializationStatus(): DataProvider<Boolean> {
     return dataProviders.run {
-      platformParameterControllerProdImpl.parametersAreLoadedFlow.convertToAutomaticDataProvider(
+      parametersAreLoadedFlow.convertToAutomaticDataProvider(
         GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID
       )
     }
@@ -218,7 +220,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       processState.initializeFeatureFlagSyncStatuses(statusesById)
 
       // Let observers know that parameters have been initialized.
-      platformParameterControllerProdImpl.parametersAreLoadedFlow.value = true
+      parametersAreLoadedFlow.value = true
     }
   }
 

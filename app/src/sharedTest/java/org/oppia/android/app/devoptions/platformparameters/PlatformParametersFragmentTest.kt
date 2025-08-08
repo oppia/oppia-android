@@ -166,7 +166,8 @@ class PlatformParametersFragmentTest {
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = expectedCount))
 
-      // Note to developers: if you add/remove a feature flag, please update the expected count.
+      // Note to developers: if you add/remove a platform parameter, please update the
+      // expected count.
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = 11))
     }
@@ -1227,8 +1228,19 @@ class PlatformParametersFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
   private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
     val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
       DaggerPlatformParametersFragmentTest_TestApplicationComponent.builder()
@@ -1302,12 +1314,18 @@ class PlatformParametersFragmentTest {
       WorkManagerConfigurationModule::class
     ]
   )
+  /** [ApplicationComponent] for [PlatformParametersFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
     }
 
+    /**
+     * Injects [TestApplicationComponent] to [PlatformParametersFragmentTest] providing the required
+     * dagger modules.
+     */
     fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest)
     fun getCacheStoreFactory(): PersistentCacheStore.Factory
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
@@ -1315,6 +1333,7 @@ class PlatformParametersFragmentTest {
     override fun getBackgroundDispatcher(): CoroutineDispatcher
   }
 
+  /** [Application] class for [PlatformParametersFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerPlatformParametersFragmentTest_TestApplicationComponent.builder()
@@ -1322,10 +1341,10 @@ class PlatformParametersFragmentTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest) {
       component.inject(platformParametersFragmentTest)
     }
-
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }

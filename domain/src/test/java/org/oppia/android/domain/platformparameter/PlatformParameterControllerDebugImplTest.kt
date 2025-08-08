@@ -1004,8 +1004,19 @@ class PlatformParameterControllerDebugImplTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
   private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
     val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
       DaggerPlatformParameterControllerDebugImplTest_TestApplicationComponent.builder()
@@ -1014,8 +1025,10 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -1046,6 +1059,7 @@ class PlatformParameterControllerDebugImplTest {
       PlatformParameterProcessState()
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [

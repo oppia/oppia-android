@@ -44,6 +44,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
+
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
@@ -52,7 +53,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
+    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
