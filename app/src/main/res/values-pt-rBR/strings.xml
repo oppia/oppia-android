@@ -206,32 +206,26 @@
   <string name="unselected_image_region_selection_content_description">Selecione %1$s imagem</string>
   <plurals name="chapter_count">
     <item quantity="one">%s Capítulo</item>
-    <item quantity="many">%s Capítulos</item>
     <item quantity="other">%s Capítulos</item>
   </plurals>
   <plurals name="story_count">
     <item quantity="one">%s Story</item>
-    <item quantity="many">%s Stories</item>
     <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%1$s of %2$s Chapter Completed</item>
-    <item quantity="many">%1$s of %2$s Chapters Completed</item>
     <item quantity="other">%1$s of %2$s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
     <item quantity="one">%s Lesson</item>
-    <item quantity="many">%s Lessons</item>
     <item quantity="other">%s Lessons</item>
   </plurals>
   <plurals name="completed_story_count">
     <item quantity="one">%s Story Completed</item>
-    <item quantity="many">%s Stories Completed</item>
     <item quantity="other">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
     <item quantity="one">%s Topic in Progress</item>
-    <item quantity="many">%s Topics in Progress</item>
     <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="profile_chooser_activity_label">Página de seleção de perfil</string>
@@ -460,17 +454,14 @@
   <string name="profile_last_visited">%1$s %2$s</string>
   <plurals name="minutes_ago">
     <item quantity="one">%s minute ago</item>
-    <item quantity="many">%s minutes ago</item>
     <item quantity="other">%s minutes ago</item>
   </plurals>
   <plurals name="hours_ago">
     <item quantity="one">%s hour ago</item>
-    <item quantity="many">%s hours ago</item>
     <item quantity="other">%s hours ago</item>
   </plurals>
   <plurals name="days_ago">
     <item quantity="one">%s day ago</item>
-    <item quantity="many">%s days ago</item>
     <item quantity="other">%s days ago</item>
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
