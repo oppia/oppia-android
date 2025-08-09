@@ -670,6 +670,7 @@
   <dimen name="profile_selection_fragment_scrollview_margin">72dp</dimen>
   <dimen name="profile_selection_fragment_header_margin">64dp</dimen>
   <dimen name="profile_selection_fragment_scroll_arrow_vertical_margin">32dp</dimen>
+  <dimen name="profile_selection_fragment_scroll_arrow_horizontal_margin">20dp</dimen>
   <dimen name="profile_selection_fragment_scroll_arrow_padding">8dp</dimen>
   <dimen name="profile_selection_activity_profile_icon_size">70dp</dimen>
 
