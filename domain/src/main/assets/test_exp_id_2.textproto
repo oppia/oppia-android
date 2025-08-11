@@ -290,7 +290,7 @@ states {
       }
       answer_groups {
         outcome {
-          dest_state_name: "ItemSelectionMulti"
+          dest_state_name: "MultipleChoice"
           feedback {
             html: "<p>\'Yellow\' is considered a primary color in the RYB color spectrum, but that doesn\'t correspond to light. Try again!</p>"
             content_id: "feedback_2"

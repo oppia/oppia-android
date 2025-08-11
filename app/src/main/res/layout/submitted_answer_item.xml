@@ -8,6 +8,11 @@
 
     <import type="androidx.constraintlayout.widget.ConstraintSet" />
 
+
+    <variable
+      name="SelectionSubmittedListAnswer"
+      type="java.util.List&lt;org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel&gt;" />
+
     <variable
       name="submittedListAnswer"
       type="org.oppia.android.app.model.ListOfSetsOfHtmlStrings" />
@@ -80,6 +85,17 @@
         app:itemDecorator="@{@drawable/divider}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selection_submitted_answer_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/submitted_answer_background"
+        android:visibility="gone"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:list="@{SelectionSubmittedListAnswer}" />
     </LinearLayout>
 
     <ImageView

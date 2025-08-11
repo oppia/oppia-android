@@ -73,7 +73,7 @@
               }
             }],
             "outcome": {
-              "dest": "ItemSelectionMulti",
+              "dest": "MultipleChoice",
               "feedback": {
                 "content_id": "feedback_2",
                 "html": "<p>'Yellow' is considered a primary color in the RYB color spectrum, but that doesn't correspond to light. Try again!</p>"

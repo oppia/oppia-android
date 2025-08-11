@@ -323,6 +323,9 @@ message UserAnswer {
   // instead of whatever is currently being used in the active progress controller since that one
   // may have changed, but the user's answer is fixed.
   WrittenTranslationContext written_translation_context = 6;
+
+  // User's selection for selection input interactions.
+  ItemSelectionAnswerState item_selection = 7;
 }
 
 message AnswerAndResponse {
