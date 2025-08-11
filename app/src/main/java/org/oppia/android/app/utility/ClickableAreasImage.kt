@@ -100,7 +100,8 @@ class ClickableAreasImage(
     parentView.children.filter {
       it.id != imageView.id && it.id != defaultRegionView.id
     }.forEach(parentView::removeView)
-    clickableAreas.iterator().forEach { clickableArea ->
+    @Suppress("NewApi")
+    clickableAreas.forEach { clickableArea ->
       val imageRect = RectF(
         getXCoordinate(clickableArea.region.area.upperLeft.x),
         getYCoordinate(clickableArea.region.area.upperLeft.y),

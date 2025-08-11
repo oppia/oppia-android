@@ -74,7 +74,8 @@ abstract class AbstractOppiaApplication(
           }
           WorkManager.initialize(applicationContext, workManagerConfiguration)
           val workManager = WorkManager.getInstance(applicationContext)
-          component.getAnalyticsStartupListenerStartupListeners().iterator().forEach {
+          @Suppress("NewApi")
+          component.getAnalyticsStartupListenerStartupListeners().forEach {
             it.onCreate(workManager)
           }
         }

@@ -63,7 +63,8 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 
   private fun processAllTopics(allTopics: List<EphemeralTopic>): List<TopicViewModel> {
     itemList.clear()
-    allTopics.iterator().forEach { ephemeralTopic ->
+    @Suppress("NewApi")
+    allTopics.forEach { ephemeralTopic ->
       val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(ephemeralTopic)
       itemList.add(TopicViewModel(ephemeralTopic, isCompleted, translationController))
     }

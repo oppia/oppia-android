@@ -116,7 +116,8 @@ class ClassroomController @Inject constructor(
    */
   fun getClassroomIdByTopicId(topicId: String): String {
     var classroomId = ""
-    getClassrooms().iterator().forEach {
+    @Suppress("NewApi")
+    getClassrooms().forEach {
       if (it.topicPrerequisitesMap.keys.contains(topicId)) {
         classroomId = it.id
       }
