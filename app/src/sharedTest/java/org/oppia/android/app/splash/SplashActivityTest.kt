@@ -1146,9 +1146,7 @@ class SplashActivityTest {
   fun testSplashActivity_onboardingV2_onboardedAdminProfile_routesToProfileChooserActivity() {
     simulateAppAlreadyOnboarded()
     initializeTestApplication(onboardingV2Enabled = true)
-    testCoroutineDispatchers.unregisterIdlingResource()
     profileTestHelper.addOnlyAdminProfile()
-    testCoroutineDispatchers.runCurrent()
 
     launchSplashActivityPartially {
       intended(hasComponent(ProfileChooserActivity::class.java.name))
