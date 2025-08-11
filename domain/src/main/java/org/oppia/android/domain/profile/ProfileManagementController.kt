@@ -210,17 +210,7 @@ class ProfileManagementController @Inject constructor(
   /** Returns the list of created profiles. */
   fun getProfiles(): DataProvider<List<Profile>> {
     return profileDataStore.transform(GET_PROFILES_PROVIDER_ID) {
-      val profiles = if (enableOnboardingFlowV2.value) {
-        it.profilesMap.values.map { profile ->
-          if (profile.profileType.equals(ProfileType.PROFILE_TYPE_UNSPECIFIED)) {
-            updateProfileType(profile.id, computeProfileType(profile.isAdmin, profile.pin))
-          }
-          profile
-        }
-      } else {
-        it.profilesMap.values.toList()
-      }
-      profiles
+      it.profilesMap.values.toList()
     }
   }
 

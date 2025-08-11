@@ -1803,38 +1803,6 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileMigration_getExistingProfilesList_checkProfileTypeIsSet() {
-    // Simulate profiles already created in a previous app instance.
-    executeInPreviousAppInstance { testComponent ->
-      testComponent.getProfileManagementController().addProfile(
-        name = "Admin",
-        isAdmin = true,
-        allowDownloadAccess = true,
-        pin = "12345",
-        colorRgb = -1,
-        avatarImagePath = null
-      )
-      testComponent.getProfileManagementController().addProfile(
-        name = "John",
-        isAdmin = false,
-        allowDownloadAccess = true,
-        pin = "",
-        colorRgb = -1,
-        avatarImagePath = null
-      )
-      testComponent.getTestCoroutineDispatchers().runCurrent()
-      TestPlatformParameterModule.reset()
-    }
-
-    setUpTestWithOnboardingV2Enabled(true)
-    val getProfilesProvider = profileManagementController.getProfiles()
-    val profiles = monitorFactory.waitForNextSuccessfulResult(getProfilesProvider)
-
-    assertThat(profiles[0].profileType).isEqualTo(ProfileType.SUPERVISOR)
-    assertThat(profiles[1].profileType).isEqualTo(ProfileType.ADDITIONAL_LEARNER)
-  }
-
-  @Test
   fun testProfileOnboardingState_oneAdminProfileWithoutPin_returnsSoleLeanerTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
