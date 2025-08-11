@@ -7,7 +7,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
+import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.model.SyncStatus
+import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
@@ -24,12 +27,36 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   private val dataProviders: DataProviders,
   private val oppiaLogger: OppiaLogger,
   private val processState: PlatformParameterProcessState,
+  private val cacheStoreFactory: PersistentCacheStore.Factory,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher
 ) : PlatformParameterController {
+
+  private val databaseStore by lazy {
+    cacheStoreFactory.create(
+      DATABASE_NAME, LocalOverridePlatformParameterDatabase.getDefaultInstance()
+    )
+  }
 
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
   private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
+
+  init {
+    // Ensure that parameters and flags are fully loaded ahead of a call to retrieveData() since
+    // loadRemotePlatformParameters() needs to guarantee that the existing parameters are loaded
+    // despite any later calls to downloadRemoteParameters(). Note that this will also guarantee
+    // that the file is created on-disk (which is fine--it will just initially be empty).
+    databaseStore.primeInMemoryAndDiskCacheAsync(
+      updateMode = PersistentCacheStore.UpdateMode.UPDATE_IF_NEW_CACHE,
+      publishMode = PersistentCacheStore.PublishMode.PUBLISH_TO_IN_MEMORY_CACHE
+    ).invokeOnCompletion { failure ->
+      failure?.let {
+        oppiaLogger.e(
+          "PlatformParameterController", "Failed to load platform params/feature flags.", failure
+        )
+      }
+    }
+  }
 
   override fun loadParametersAsync() = initializationDeferred
 
@@ -46,6 +73,11 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       // TODO(#5345): Finish implementing forcing remote parameter downloads.
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
+  }
+
+  /** Loads the locally overridden feature flags from the database. */
+  suspend fun loadLocalOverriddenFeatureFlags(): List<OverriddenFeatureFlag> {
+    return databaseStore.readDataAsync().await().overriddenFeatureFlagList
   }
 
   /**
@@ -89,16 +121,26 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
    * back to its default value, with the appropriate [SyncStatus].
    */
   fun loadEphemeralFeatureFlags(): DataProvider<List<EphemeralFeatureFlag>> {
-    return dataProviders.createInMemoryDataProviderAsync(LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID) {
+    return dataProviders.createInMemoryDataProviderAsync(
+      LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID
+    ) {
       val defaultFlags = platformParameterControllerProdImpl.loadSupportedFeatureFlags()
       val remoteFlags = platformParameterControllerProdImpl.loadRemoteFeatureFlags()
       val remoteFlagById = remoteFlags.associateBy { it.id }
 
+      val localOverrides = loadLocalOverriddenFeatureFlags()
+      val localFlagById = localOverrides.associateBy { it.id }
+
       val ephemeralFlags = defaultFlags.map { flagDefinition ->
+        val localFlag = localFlagById[flagDefinition.id]
         val remoteFlag = remoteFlagById[flagDefinition.id]
 
-        val currentValue = remoteFlag?.remoteIsEnabled ?: flagDefinition.defaultIsEnabled
-        val syncStatus = remoteFlag?.syncStatus
+        val currentValue = localFlag?.overriddenValue
+          ?: remoteFlag?.remoteIsEnabled
+          ?: flagDefinition.defaultIsEnabled
+
+        val syncStatus = localFlag?.let { SyncStatus.LOCAL_OVERRIDE }
+          ?: remoteFlag?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         EphemeralFeatureFlag.newBuilder().apply {
@@ -168,12 +210,45 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
+  /**
+   * Updates the local override database with the provided list of overridden feature flags.
+   *
+   * @param overriddenFlags the list of [OverriddenFeatureFlag]s to store as local overrides.
+   * @return a [DataProvider] representing the result of the update operation.
+   */
+  fun updateOverriddenFeatureFlags(
+    overriddenFlags: List<OverriddenFeatureFlag>
+  ): DataProvider<Any?> {
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_OVERRIDDEN_FEATURE_FLAGS_PROVIDER_ID
+    ) {
+      databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
+        val existingOverrides = oldDatabase.overriddenFeatureFlagList.associateBy { it.id }
+        val latestValues = existingOverrides.toMutableMap().apply {
+          overriddenFlags.forEach { override ->
+            this[override.id] = override
+          }
+        }
+        oldDatabase.toBuilder()
+          .clearOverriddenFeatureFlag()
+          .addAllOverriddenFeatureFlag(latestValues.values)
+          .build()
+      }.await()
+
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+    }
+  }
+
   private companion object {
     private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
       "load_ephemeral_platform_parameters"
     private const val DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID = "download_remote_parameters"
     private const val LOAD_EPHEMERAL_FEATURE_FLAGS_PROVIDER_ID = "load_ephemeral_feature_flags"
+    private const val UPDATE_OVERRIDDEN_FEATURE_FLAGS_PROVIDER_ID =
+      "update_overridden_feature_flags"
     private const val GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID =
       "get_parameter_initialization_status"
+    private const val DATABASE_NAME =
+      "local_overridden_platform_parameter_and_feature_flag_database"
   }
 }

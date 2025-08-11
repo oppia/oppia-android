@@ -225,6 +225,9 @@ enum SyncStatus {
 
   // Indicates the parameter/flag's value has been successfully synced with the remote server.
   SYNCED_FROM_SERVER = 2;
+
+  // Indicates the parameter/flag's value have been overridden locally by the developer.
+  LOCAL_OVERRIDE = 3;
 }
 
 // Defines the list of supported platform parameters in the app.
@@ -277,4 +280,32 @@ message EphemeralFeatureFlag {
 
   // Indicates the sync status of the feature flag.
   SyncStatus sync_status = 3;
+}
+
+// Corresponds to a developer override of a feature flag.
+message OverriddenFeatureFlag {
+  // The unique ID of the overridden feature flag.
+  FeatureFlagId id = 1;
+
+  // The local value which is set by the developer.
+  bool overridden_value = 2;
+}
+
+// Corresponds to a developer override of a platform parameter.
+message OverriddenPlatformParameter {
+  //  The unique ID of the overridden platform parameter which corresponds to a
+  //  PlatformParameterDefintion
+  PlatformParameterId id = 1;
+
+  // The overridden value of the platform parameter.
+  PlatformParameterValue overridden_value = 2;
+}
+
+// The database for storing local developer overridden platform parameters and feature flags.
+message LocalOverridePlatformParameterDatabase {
+  // A list to store locally overridden platform parameters.
+  repeated OverriddenPlatformParameter overridden_platform_parameter = 1;
+
+  // A list to store locally overridden feature flags.
+  repeated OverriddenFeatureFlag overridden_feature_flag = 2;
 }
