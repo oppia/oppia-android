@@ -542,10 +542,6 @@ class AudioLanguageFragmentTest {
           onView(withId(R.id.audio_language_dropdown_list)).check(
             matches(withText(R.string.nigerian_pidgin_localized_language_name))
           )
-
-          testCoroutineDispatchers.runCurrent()
-
-          assertThat(activity.isFinishing).isTrue()
         }
       }
   }

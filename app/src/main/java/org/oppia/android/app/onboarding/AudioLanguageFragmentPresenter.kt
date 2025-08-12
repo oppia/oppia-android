@@ -131,6 +131,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
               appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
             }[it] ?: OppiaLanguage.ENGLISH
           }
+          setSelectedLanguage(selectedLanguage)
           updateSelectedAudioLanguage(selectedLanguage, profileId)
         }
     }
@@ -160,8 +161,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         when (result) {
           is AsyncResult.Success -> {
             if (parentScreen == ParentScreen.OPTIONS_SCREEN) {
-              updateAudioLanguage(getAudioLanguageFromOppiaLanguage(result.value.selectedLanguage))
-              activity.finish()
+              updateAudioLanguage(getAudioLanguageFromOppiaLanguage(selectedLanguage))
             }
           }
           is AsyncResult.Failure ->

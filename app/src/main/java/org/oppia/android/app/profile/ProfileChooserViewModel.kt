@@ -84,6 +84,8 @@ class ProfileChooserViewModel @Inject constructor(
 
     if (sortedProfileList.size == 10) {
       canAddProfile.set(false)
+    } else {
+      canAddProfile.set(true)
     }
     return sortedProfileList
   }
