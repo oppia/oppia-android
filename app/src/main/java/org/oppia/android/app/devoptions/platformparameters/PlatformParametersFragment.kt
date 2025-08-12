@@ -39,7 +39,7 @@ class PlatformParametersFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    var platformParameterStates:
+    val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
@@ -55,9 +55,7 @@ class PlatformParametersFragment : InjectableFragment() {
     }
 
     return platformParametersFragmentPresenter
-      .handleCreateView(
-        inflater, container, platformParameterStates
-      )
+      .handleCreateView(inflater, container, platformParameterStates)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {

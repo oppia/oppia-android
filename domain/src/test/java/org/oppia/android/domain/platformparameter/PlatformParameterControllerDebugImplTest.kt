@@ -144,7 +144,7 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
-  fun testLoadParametersAsync_withRemoteAndNoLocalOverride_setsProcessStateToRemoteValue() {
+  fun testLoadParametersAsync_withRemoteParamAndNoLocalOverride_setsProcessStateToRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -166,7 +166,7 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
-  fun testLoadParametersAsync_withRemoteAndOverride_setsProcessStateToOverriddenValue() {
+  fun testLoadParametersAsync_withRemoteParamAndOverride_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -763,7 +763,11 @@ class PlatformParameterControllerDebugImplTest {
     setUpTestApplicationComponent()
     val testParam = OverriddenPlatformParameter.newBuilder()
       .setId(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
-      .setOverriddenValue(PlatformParameterValue.newBuilder().setInteger(48).build())
+      .setOverriddenValue(
+        PlatformParameterValue.newBuilder()
+          .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
+          .build()
+      )
       .build()
 
     val updateProvider = platformParameterControllerDebugImpl.updateOverriddenPlatformParameters(
@@ -778,7 +782,8 @@ class PlatformParameterControllerDebugImplTest {
       it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
     }
 
-    assertThat(updatedParam?.currentValue?.integer).isEqualTo(48)
+    assertThat(updatedParam?.currentValue?.integer)
+      .isEqualTo(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
   }
 
   @Test

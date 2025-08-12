@@ -150,7 +150,6 @@ class PlatformParametersFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
-    private const val SYNC_UP_WORKER_PARAMETER_NAME = "Sync Up Worker Time Period In Hours"
     private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
     private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
     private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
@@ -170,6 +169,29 @@ class PlatformParametersFragmentTest {
       // expected count.
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = 11))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_verifyRecyclerViewItems_haveCorrectDetails() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      getEphemeralPlatformParameters().forEachIndexed { index, ephemeralPlatformParameter ->
+        scrollToPosition(index)
+        verifyPlatformParameterDisplayName(
+          position = index,
+          expectedDisplayName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
+        )
+        verifyPlatformParameterSyncStatus(
+          position = index,
+          expectedSyncStatus = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
+        )
+        verifyPlatformParameterState(
+          position = index,
+          expectedValue = ephemeralPlatformParameter.currentValue
+        )
+      }
     }
   }
 
@@ -246,21 +268,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_intParam_withNoRemoteOrOverride_returnsDefaultBackground() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
-      verifyPlatformParameterBackgroundColor(
-        position = 1,
-        expectedColor = DEFAULT_BACKGROUND_COLOR
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsCorrectValue() {
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -342,7 +350,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParmetersFragment_intParam_withOnlyRemoteValue_returnsCorrectValue() {
+  fun testPlatformParmetersFragment_intParam_withOnlyRemoteValue_returnsRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -470,7 +478,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withRemoteAndOverridden_returnsOverriddenValue() {
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -497,7 +505,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withRemoteAndOverridden_returnsOverriddenStatus() {
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsOverriddenStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -574,7 +582,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_intParam_withRemoteAndOverridden_returnsOverriddenValue() {
+  fun testPlatformParametersFragment_intParam_withRemoteAndOverride_returnsOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -714,7 +722,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_invalidValueThenValidInput_errorMessageClears() {
+  fun testPlatformParametersFragment_invalidValueThenValidInput_clearsErrorMessage() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()

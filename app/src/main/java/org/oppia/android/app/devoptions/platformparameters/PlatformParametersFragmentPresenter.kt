@@ -198,10 +198,11 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
+    boundParamIds.add(model.platformParameterId)
+
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
         if (boundParamIds.contains(id).not()) {
-          boundParamIds.add(model.platformParameterId)
           return@onPlatformParameterTextChangedCallback
         }
         when {
