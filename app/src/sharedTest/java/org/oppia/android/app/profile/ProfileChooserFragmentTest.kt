@@ -623,6 +623,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickProfile_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
@@ -934,13 +935,13 @@ class ProfileChooserFragmentTest {
           stringToMatch = "A",
           recyclerViewId = R.id.profiles_list_landscape
         )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 2)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 2,
           targetView = R.id.profile_name_text,
           stringToMatch = "B",
           recyclerViewId = R.id.profiles_list_landscape
         )
-        // Scroll after the first 3 because the UI displays 3 items at initial layout.
         scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 3)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 3,
@@ -948,26 +949,27 @@ class ProfileChooserFragmentTest {
           stringToMatch = "C",
           recyclerViewId = R.id.profiles_list_landscape
         )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 4)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 4,
           targetView = R.id.profile_name_text,
           stringToMatch = "D",
           recyclerViewId = R.id.profiles_list_landscape
         )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 5)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 5,
           targetView = R.id.profile_name_text,
           stringToMatch = "E",
           recyclerViewId = R.id.profiles_list_landscape
         )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 6)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 6,
           targetView = R.id.profile_name_text,
           stringToMatch = "F",
           recyclerViewId = R.id.profiles_list_landscape
         )
-        // In the middle of the list, the first and last items are partially displayed, while the
-        // middle two are fully displayed.
         scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 7)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 7,
@@ -975,7 +977,6 @@ class ProfileChooserFragmentTest {
           stringToMatch = "G",
           recyclerViewId = R.id.profiles_list_landscape
         )
-        // Scroll again to reveal the last items in the list.
         scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 8)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 8,
@@ -983,6 +984,7 @@ class ProfileChooserFragmentTest {
           stringToMatch = "H",
           recyclerViewId = R.id.profiles_list_landscape
         )
+        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 9)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 9,
           targetView = R.id.profile_name_text,
