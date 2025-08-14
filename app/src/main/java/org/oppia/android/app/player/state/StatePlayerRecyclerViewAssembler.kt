@@ -481,7 +481,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            answerAndResponse.feedback,
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+              answerAndResponse.feedback
+            else
+              SubtitledHtml.newBuilder()
+                .setHtml(resourceHandler.getStringInLocale(
+                  R.string.flashback_triggering_feedback_text)
+                )
+                .build(),
             gcsEntityId,
             writtenTranslationContext
           )?.let { viewModel ->
@@ -510,9 +517,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback, gcsEntityId, writtenTranslationContext)?.let(
-          pendingItemList::add
-        )
+        createFeedbackItem(
+          if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+            answerAndResponse.feedback
+          else
+            SubtitledHtml.newBuilder()
+              .setHtml(resourceHandler.getStringInLocale(
+                R.string.flashback_triggering_feedback_text)
+              )
+              .build(),
+          gcsEntityId,
+          writtenTranslationContext
+        )?.let(pendingItemList::add)
       }
     }
   }
