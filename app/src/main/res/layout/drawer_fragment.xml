@@ -42,6 +42,12 @@
           app:itemTextColor="@color/component_color_shared_drawer_item"
           app:menu="@menu/navigation_drawer_menu" />
 
+        <Space
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:minHeight="48dp" />
+
         <LinearLayout
           android:id="@+id/developer_options_linear_layout"
           android:layout_width="match_parent"
