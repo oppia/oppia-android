@@ -485,8 +485,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
               answerAndResponse.feedback
             else
               SubtitledHtml.newBuilder()
-                .setHtml(resourceHandler.getStringInLocale(
-                  R.string.flashback_triggering_feedback_text)
+                .setHtml(
+                  resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
                 )
                 .build(),
             gcsEntityId,
@@ -522,8 +522,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
             answerAndResponse.feedback
           else
             SubtitledHtml.newBuilder()
-              .setHtml(resourceHandler.getStringInLocale(
-                R.string.flashback_triggering_feedback_text)
+              .setHtml(
+                resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
               )
               .build(),
           gcsEntityId,

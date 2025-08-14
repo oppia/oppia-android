@@ -252,7 +252,6 @@ class StateDeck constructor(
     return isTopOfDeckTerminalChecker(pendingTopState)
   }
 
-
   /**
    * Updates the `state_name_to_revisit` field of the last [AnswerAndResponse] in the
    * [currentDialogInteractions] list with the given [stateName].
@@ -280,10 +279,11 @@ class StateDeck constructor(
 
   /** Returns whether flashback state exists for the given [linkedSkillId]. */
   fun hasFlashbackState(linkedSkillId: String): Boolean {
-    return linkedSkillId.isNotEmpty() && previousStates.any { it.state.linkedSkillId == linkedSkillId }
+    return linkedSkillId.isNotEmpty() &&
+      previousStates.any { it.state.linkedSkillId == linkedSkillId }
   }
 
-  /** Returns the previously visited state name with this given [linkedSkillId]. */
+  /** Returns the previously visited [State] name with this given [linkedSkillId]. */
   fun getFlashbackStateName(linkedSkillId: String): String {
     return previousStates
       .find { it.state.linkedSkillId == linkedSkillId }!!
