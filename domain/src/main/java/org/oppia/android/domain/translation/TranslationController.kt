@@ -411,7 +411,6 @@ class TranslationController @Inject constructor(
     return when (languageSelection.selectionTypeCase) {
       AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(languageSelection.selectedLanguage)
-
       AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT,
       AppLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         LanguageResolutionStatus.UseSystemLanguage
@@ -425,7 +424,6 @@ class TranslationController @Inject constructor(
     return when (contentLanguageSelection.selectionTypeCase) {
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(contentLanguageSelection.selectedLanguage)
-
       WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(appLanguageSelection)
@@ -439,7 +437,6 @@ class TranslationController @Inject constructor(
     return when (audioLanguageSelection.selectionTypeCase) {
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(audioLanguageSelection.selectedLanguage)
-
       AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(appLanguageSelection)

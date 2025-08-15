@@ -507,7 +507,6 @@ class AudioLanguageFragmentTest {
         )
 
         onView(withId(R.id.onboarding_navigation_continue)).perform(click())
-
         testCoroutineDispatchers.runCurrent()
 
         intended(hasComponent(HomeActivity::class.java.name))
