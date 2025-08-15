@@ -374,7 +374,6 @@ class TopicController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
-    @Suppress("NewApi")
     storyProgressList.forEach { storyProgress ->
       val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()

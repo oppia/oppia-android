@@ -225,7 +225,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val existingOverrides = oldDatabase.overriddenFeatureFlagList.associateBy { it.id }
         val latestValues = existingOverrides.toMutableMap().apply {
-          @Suppress("NewApi")
           overriddenFlags.forEach { override ->
             this[override.id] = override
           }

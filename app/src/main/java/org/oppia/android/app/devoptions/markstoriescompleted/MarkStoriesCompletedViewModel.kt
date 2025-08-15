@@ -69,7 +69,6 @@ class MarkStoriesCompletedViewModel @Inject constructor(
   ): List<StorySummaryViewModel> {
     itemList.clear()
     storyMap.forEach {
-      @Suppress("NewApi")
       it.value.forEach { ephemeralStorySummary ->
         val isCompleted =
           modifyLessonProgressController.checkIfStoryIsCompleted(ephemeralStorySummary)

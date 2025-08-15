@@ -71,7 +71,6 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     var nextStoryIndex: Int
     var chapterIndex = 0
     storyMap.forEach { storyMapItem ->
-      @Suppress("NewApi")
       storyMapItem.value.forEach { ephemeralStorySummary ->
         val storySummary = ephemeralStorySummary.storySummary
         val storyTitle =
