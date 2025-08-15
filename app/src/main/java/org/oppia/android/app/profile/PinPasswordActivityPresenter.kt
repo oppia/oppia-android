@@ -24,11 +24,9 @@ import org.oppia.android.util.accessibility.AccessibilityService
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
@@ -286,21 +284,17 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setParentScreen(IntroActivityParams.ParentScreen.PIN_PASSWORD_SCREEN)
       .build()
 
-    val intent = IntroActivity.createIntroActivity(activity)
-    intent.apply {
-      putProtoExtra(IntroActivity.PARAMS_KEY, introActivityParams)
-      decorateWithUserProfileId(profileId)
-    }
-
+    val intent = IntroActivity.createIntroActivity(activity, introActivityParams, profileId)
     activity.startActivity(intent)
   }
 
   private fun launchHomeScreen() {
     activity.startActivity(
-      if (enableMultipleClassrooms.value)
+      if (enableMultipleClassrooms.value) {
         ClassroomListActivity.createClassroomListActivity(activity, profileId)
-      else
+      } else {
         HomeActivity.createHomeActivity(activity, profileId)
+      }
     )
   }
 }

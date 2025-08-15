@@ -113,7 +113,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         val adapter = ArrayAdapter(
           fragment.requireContext(),
           R.layout.language_dropdown_item,
-          R.id.onboarding_language_text_view,
+          R.id.language_text_view,
           languages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
         )
         binding.audioLanguageDropdownList.setAdapter(adapter)

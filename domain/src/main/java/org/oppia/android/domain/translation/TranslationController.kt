@@ -20,7 +20,6 @@ import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.locale.LanguageConfigRetriever
 import org.oppia.android.domain.locale.LocaleController
 import org.oppia.android.domain.oppialogger.OppiaLogger
-import org.oppia.android.util.data.AsyncDataSubscriptionManager
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
@@ -54,6 +53,8 @@ private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
+private const val PROFILE_AUDIO_LANGUAGE_PROVIDER_ID = "profile_audio_language"
+private const val PRE_SELECTED_AUDIO_LANGUAGE_PROVIDER_ID = "pre_selected_audio_language"
 private const val APP_LANGUAGE_CONTENT_DATABASE = "app_language_content_database"
 private const val WRITTEN_TRANSLATION_LANGUAGE_CONTENT_DATABASE =
   "written_language_content_database"
@@ -73,7 +74,6 @@ private const val RETRIEVED_CONTENT_LANGUAGE_DATA_PROVIDER_ID =
 class TranslationController @Inject constructor(
   private val dataProviders: DataProviders,
   private val localeController: LocaleController,
-  private val asyncDataSubscriptionManager: AsyncDataSubscriptionManager,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val languageConfigRetriever: LanguageConfigRetriever,
   private val cacheStoreFactory: PersistentCacheStore.Factory,
@@ -244,6 +244,38 @@ class TranslationController @Inject constructor(
   }
 
   /**
+   * Returns a [DataProvider] for the [OppiaLanguage] representing the user's default
+   * audio language selection, determined through a prioritized fallback sequence.
+   *
+   * The selection is resolved in the following order:
+   * 1. **Profile audio language** — the language returned by [getAudioTranslationContentLanguage],
+   *    if it's not [OppiaLanguage.LANGUAGE_UNSPECIFIED] or [OppiaLanguage.UNRECOGNIZED].
+   * 2. **App language** — the language returned by [getAppLanguageSelection], if specified.
+   * 3. **System language** — the language returned by [getSystemLanguage], used as the final fallback.
+   *
+   * This ensures that user preferences take priority over application defaults, which in turn
+   * take priority over the device's system language.
+   */
+  fun getAudioLanguagePreselection(profileId: ProfileId): DataProvider<OppiaLanguage> {
+    return getAudioTranslationContentLanguage(profileId).combineWith(
+      getAppLanguageSelection(profileId), PROFILE_AUDIO_LANGUAGE_PROVIDER_ID
+    ) { profileAudioLanguageSelection, appLanguageSelection ->
+      if (
+        profileAudioLanguageSelection != OppiaLanguage.LANGUAGE_UNSPECIFIED ||
+        profileAudioLanguageSelection != OppiaLanguage.UNRECOGNIZED
+      ) {
+        profileAudioLanguageSelection
+      } else {
+        appLanguageSelection.selectedLanguage
+      }
+    }.combineWith(
+      getSystemLanguage(), PRE_SELECTED_AUDIO_LANGUAGE_PROVIDER_ID
+    ) { appLanguage: OppiaLanguage, systemLanguage: OppiaLanguage ->
+      computeAudioLanguageFallback(appLanguage, systemLanguage)
+    }
+  }
+
+  /**
    * Returns a data provider for the current [OppiaLanguage] selected for audio voiceovers for the
    * specified user (per their [profileId]).
    *
@@ -379,6 +411,7 @@ class TranslationController @Inject constructor(
     return when (languageSelection.selectionTypeCase) {
       AppLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(languageSelection.selectedLanguage)
+
       AppLanguageSelection.SelectionTypeCase.USE_SYSTEM_LANGUAGE_OR_APP_DEFAULT,
       AppLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         LanguageResolutionStatus.UseSystemLanguage
@@ -392,6 +425,7 @@ class TranslationController @Inject constructor(
     return when (contentLanguageSelection.selectionTypeCase) {
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(contentLanguageSelection.selectedLanguage)
+
       WrittenTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       WrittenTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(appLanguageSelection)
@@ -405,6 +439,7 @@ class TranslationController @Inject constructor(
     return when (audioLanguageSelection.selectionTypeCase) {
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(audioLanguageSelection.selectedLanguage)
+
       AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
       AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(appLanguageSelection)
@@ -467,6 +502,17 @@ class TranslationController @Inject constructor(
           }
         }
       }
+    }
+  }
+
+  private fun computeAudioLanguageFallback(
+    appLanguage: OppiaLanguage,
+    systemLanguage: OppiaLanguage
+  ): OppiaLanguage {
+    return when {
+      appLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED -> appLanguage
+      systemLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED -> systemLanguage
+      else -> OppiaLanguage.LANGUAGE_UNSPECIFIED
     }
   }
 

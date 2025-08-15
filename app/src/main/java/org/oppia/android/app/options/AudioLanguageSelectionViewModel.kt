@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
@@ -16,13 +15,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
-
-private const val PROFILE_LANGUAGE_PROVIDER_ID = "profileLanguageProvider"
-private const val PRE_SELECTED_LANGUAGE_PROVIDER_ID = "systemLanguage+appLanguageProvider"
 
 /** ViewModel for managing language selection in [AudioLanguageFragment]. */
 @FragmentScope
@@ -63,10 +57,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     AudioLanguage.values().filter { it !in IGNORED_AUDIO_LANGUAGES }.map(::createItemViewModel)
   }
 
-  /** Get the list of app supported languages to be displayed in the language dropdown. */
-  val availableAudioLanguages: LiveData<List<String>> get() = _availableAudioLanguages
-  private val _availableAudioLanguages = MutableLiveData<List<String>>()
-
   /** Sets the list of audio languages supported by the app based on [OppiaLanguage]. */
   val supportedOppiaLanguagesLiveData: LiveData<List<OppiaLanguage>> by lazy {
     Transformations.map(
@@ -87,52 +77,13 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
   }
 
-  // TODO(#4938): Update the pre-selection logic to include the admin profile audio language for
-  //  non-sole learners.
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
-    profileAudioLanguageSelectionProvider.combineWith(
-      appLanguageSelectionProvider,
-      PROFILE_LANGUAGE_PROVIDER_ID
-    ) { profileAudioLanguage, appLanguageSelection ->
-      if (profileAudioLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED ||
-        profileAudioLanguage != OppiaLanguage.UNRECOGNIZED
-      )
-        profileAudioLanguage else appLanguageSelection.selectedLanguage
-    }.combineWith(
-      systemLanguageProvider,
-      PRE_SELECTED_LANGUAGE_PROVIDER_ID
-    ) { oppiaLanguage: OppiaLanguage, displayLocale: OppiaLocale.DisplayLocale ->
-      val systemLanguage = displayLocale.getCurrentLanguage()
-      computePreselection(oppiaLanguage, systemLanguage)
-    }
-  }
-
-  private val profileAudioLanguageSelectionProvider: DataProvider<OppiaLanguage> by lazy {
-    translationController.getAudioTranslationContentLanguage(profileId)
-  }
-
-  private val appLanguageSelectionProvider: DataProvider<AppLanguageSelection> by lazy {
-    translationController.getAppLanguageSelection(profileId)
-  }
-
-  private val systemLanguageProvider: DataProvider<OppiaLocale.DisplayLocale> by lazy {
-    translationController.getSystemLanguageLocale()
+    translationController.getAudioLanguagePreselection(profileId)
   }
 
   /** Receives and sets the current profileId in this viewModel. */
   fun updateProfileId(profileId: ProfileId) {
     this.profileId = profileId
-  }
-
-  private fun computePreselection(
-    appLanguage: OppiaLanguage,
-    systemLanguage: OppiaLanguage
-  ): OppiaLanguage {
-    return when {
-      appLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED -> appLanguage
-      systemLanguage != OppiaLanguage.LANGUAGE_UNSPECIFIED -> systemLanguage
-      else -> OppiaLanguage.LANGUAGE_UNSPECIFIED
-    }
   }
 
   private fun createItemViewModel(language: AudioLanguage): AudioLanguageItemViewModel {

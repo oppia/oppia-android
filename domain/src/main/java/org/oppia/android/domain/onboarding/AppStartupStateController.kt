@@ -110,17 +110,10 @@ class AppStartupStateController @Inject constructor(
   }
 
   private fun updateOnboardingState(updateState: OnboardingState.Builder.() -> Unit) {
-    // Note that the flavor must be written here since it only gets updated on-disk and never
-    // in-memory (which means it will be inadvertently overwritten when updating onboarding state
-    // here).
-    val deferred = onboardingFlowStore.storeDataAsync { state ->
-      state.toBuilder().apply {
-        updateState()
-        lastUsedBuildFlavor = currentBuildFlavor
-      }.build()
-    }
-    deferred.invokeOnCompletion { failure ->
-      if (failure != null) {
+    onboardingFlowStore.storeDataAsync { state ->
+      state.toBuilder().apply(updateState).build()
+    }.invokeOnCompletion { failure ->
+      failure?.let {
         oppiaLogger.e("StartupController", "Failed to update onboarding state.", failure)
       }
     }
