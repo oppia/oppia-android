@@ -282,7 +282,7 @@ class StateDeck constructor(
     return linkedSkillId.isNotEmpty() &&
       previousStates.any { it.state.linkedSkillId == linkedSkillId }
   }
-
+git
   /** Returns the most recent previously visited [State] name with this given [linkedSkillId]. */
   fun getFlashbackStateName(linkedSkillId: String): String {
     return previousStates.last { it.state.linkedSkillId == linkedSkillId }.state.name
