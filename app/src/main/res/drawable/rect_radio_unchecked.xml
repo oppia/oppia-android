@@ -7,8 +7,8 @@
         android:width="2dp"
         android:color="@color/component_color_shared_submitted_radio_button_unchecked_color" />
       <size
-        android:width="18dp"
-        android:height="18dp" />
+        android:width="20dp"
+        android:height="20dp" />
     </shape>
   </item>
 </layer-list>

@@ -16,7 +16,8 @@ class SelectionSubmittedItemViewModel (
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
   val entityId: String,
-  val resourceHandler: AppLanguageResourceHandler
+  val resourceHandler: AppLanguageResourceHandler,
+  val isFlashback: Boolean
 ) : ObservableViewModel() {
 
   /** Returns content description by extracting text from [htmlContent]. */

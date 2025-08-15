@@ -279,7 +279,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         isLastAnswerCorrect = false,
         gcsEntityId,
         ephemeralState.writtenTranslationContext,
-        interaction// demo subha
+        interaction
       )
       if (playerFeatureSet.interactionSupport) {
         val interactionItemList =
@@ -346,7 +346,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           isLastAnswerCorrect = true,
           gcsEntityId,
           ephemeralState.writtenTranslationContext,
-          interaction// demo subha
+          interaction
         )
       }
     }
@@ -458,7 +458,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
     isLastAnswerCorrect: Boolean,
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext,
-    interaction: Interaction //demo subha,
+    interaction: Interaction
   ) {
     // 'flashbackRecentlyViewed' determines whether the flashback was recently viewed by the
     // learner.
@@ -765,8 +765,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     userAnswer: UserAnswer,
     gcsEntityId: String,
     isAnswerCorrect: Boolean,
-    interaction: Interaction, //subha
-    writtenTranslationContext: WrittenTranslationContext
+    interaction: Interaction,
+    writtenTranslationContext: WrittenTranslationContext,
+    isFlashback: Boolean = false
   ): SubmittedAnswerViewModel? {
     return userAnswer.takeIf { it.hasAnswerToDisplayToUser() }?.let {
       SubmittedAnswerViewModel(
@@ -779,7 +780,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         interaction,
         writtenTranslationContext,
         translationController,
-        consoleLogger
+        consoleLogger,
+        isFlashback
       ).also { submittedAnswerViewModel ->
         submittedAnswerViewModel.setIsCorrectAnswer(isAnswerCorrect)
         submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
@@ -1081,16 +1083,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
             answerAndResponse.userAnswer,
             gcsEntityId,
             isAnswerCorrect = true,
-            interaction, //demo subha
-            writtenTranslationContext = writtenTranslationContext
+            interaction,
+            writtenTranslationContext = writtenTranslationContext,
+            true
           )?.let(rightPendingItemList::add)
         } else {
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
             isAnswerCorrect = true,
-            interaction, //demo subha
-            writtenTranslationContext = writtenTranslationContext
+            interaction,
+            writtenTranslationContext = writtenTranslationContext,
+            true
           )?.let(pendingItemList::add)
         }
       }

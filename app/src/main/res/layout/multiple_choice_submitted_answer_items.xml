@@ -29,7 +29,7 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="12dp"
       android:importantForAccessibility="no"
-      app:srcCompat="@{viewModel.isEnabled ? @drawable/radio_checked_dark : @drawable/radio_unchecked_grey}" />
+      app:srcCompat="@{viewModel.isEnabled ? @drawable/radio_checked_grey : @drawable/radio_unchecked_grey}" />
 
     <LinearLayout
       android:layout_width="match_parent"
@@ -45,7 +45,7 @@
         android:fontFamily="sans-serif"
         android:text="@{htmlContent}"
         android:contentDescription="@{viewModel.getContentDescription()}"
-        android:textColor="@{viewModel.isEnabled ? @color/component_color_shared_selected_submitted_answer_text_color : @color/component_color_shared_secondary_2_text_color}"
+        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color"
         android:textSize="16sp" />
 
       <TextView
@@ -54,8 +54,8 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:fontFamily="sans-serif"
-        android:text="@string/submitted_answer_label_text"
-        android:textColor="@{viewModel.isEnabled ? @color/component_color_shared_selected_submitted_answer_text_color : @color/component_color_shared_secondary_2_text_color}"
+        android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
+        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color"
         android:textSize="12sp" />
     </LinearLayout>
   </LinearLayout>

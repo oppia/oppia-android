@@ -24,7 +24,8 @@ class SubmittedAnswerViewModel(
   val interaction: Interaction,
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
-  val consoleLogger: ConsoleLogger
+  val consoleLogger: ConsoleLogger,
+  isFlashback: Boolean
 ) : StateItemViewModel(ViewType.SUBMITTED_ANSWER) {
   val isCorrectAnswer = ObservableField(DEFAULT_IS_CORRECT_ANSWER)
   val submittedAnswer: ObservableField<CharSequence> = ObservableField(DEFAULT_SUBMITTED_ANSWER)
@@ -123,7 +124,8 @@ class SubmittedAnswerViewModel(
       translationController,
       customTagHandlers,
       gcsEntityId,
-      resourceHandler
+      resourceHandler,
+      isFlashback
     )
 
   private companion object {
@@ -139,7 +141,8 @@ class SubmittedAnswerViewModel(
       translationController: TranslationController,
       customTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler>,
       gcsEntityId: String,
-      resourceHandler: AppLanguageResourceHandler
+      resourceHandler: AppLanguageResourceHandler,
+      isFlashback: Boolean
     ): List<SelectionSubmittedItemViewModel> {
       return choiceSubtitledHtmls.mapIndexed { index, subtitledHtml ->
         SelectionSubmittedItemViewModel(
@@ -150,7 +153,8 @@ class SubmittedAnswerViewModel(
           writtenTranslationContext = writtenTranslationContext,
           translationController = translationController,
           gcsEntityId,
-          resourceHandler
+          resourceHandler,
+          isFlashback
         )
       }
     }

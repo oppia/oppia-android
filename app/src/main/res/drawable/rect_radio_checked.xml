@@ -4,12 +4,12 @@
     <shape android:shape="rectangle">
       <corners android:radius="1dp"/>
       <solid
-        android:color="@color/component_color_shared_selected_submitted_answer_text_color" />
+        android:color="@color/component_color_shared_submitted_radio_button_unchecked_color" />
       <size
-        android:width="18dp"
-        android:height="18dp" />
+        android:width="20dp"
+        android:height="20dp" />
     </shape>
   </item>
   <item
-    android:drawable="@drawable/ic_check_white_24" />
+    android:drawable="@drawable/ic_check_white" />
 </layer-list>
