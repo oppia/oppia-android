@@ -177,6 +177,8 @@ class LintAnalysisReporter {
 
     private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
     private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
+
+    private val falsePositiveIssues: Set<LintIssue> = setOf()
   }
 
   /**

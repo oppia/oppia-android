@@ -43,6 +43,7 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -374,8 +375,7 @@ class TopicController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
-    @Suppress("NewApi")
-    storyProgressList.forEach { storyProgress ->
+    storyProgressList.safeForEach { storyProgress ->
       val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&

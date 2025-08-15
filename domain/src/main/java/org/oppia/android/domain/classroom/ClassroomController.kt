@@ -26,6 +26,7 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -116,8 +117,7 @@ class ClassroomController @Inject constructor(
    */
   fun getClassroomIdByTopicId(topicId: String): String {
     var classroomId = ""
-    @Suppress("NewApi")
-    getClassrooms().forEach {
+    getClassrooms().safeForEach {
       if (it.topicPrerequisitesMap.keys.contains(topicId)) {
         classroomId = it.id
       }
