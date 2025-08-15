@@ -55,7 +55,7 @@
         android:visibility="gone"
         android:fontFamily="sans-serif"
         android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
-        android:textColor="@color/component_color_shared_item_selection_interaction_disabled_color"
+        android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color"
         android:textSize="12sp" />
     </LinearLayout>
   </LinearLayout>
