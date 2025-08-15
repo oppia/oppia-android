@@ -10,9 +10,9 @@ import okhttp3.mockwebserver.MockWebServer
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.NetworkApiKey
 import org.oppia.android.data.backends.gae.XssiPrefix
+import org.oppia.android.util.extensions.safeForEach
 import org.robolectric.Shadows
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 /** Provides network-specific constants specifically for tests. */
 @Module
