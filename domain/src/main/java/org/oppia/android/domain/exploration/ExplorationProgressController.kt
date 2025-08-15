@@ -735,6 +735,7 @@ class ExplorationProgressController @Inject constructor(
           !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
           !linkedSkillId.isNullOrEmpty() &&
           answerOutcome.feedback.contentId.equals("default_outcome") &&
+          !explorationProgress.stateDeck.wasFlashbackPreviouslyOffered() &&
           explorationProgress.stateDeck.hasFlashbackState(linkedSkillId)
         when {
           showFlashback -> {

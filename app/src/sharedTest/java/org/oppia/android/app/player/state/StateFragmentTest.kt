@@ -5450,6 +5450,48 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testFlashback_onSubmitTwoWrongRatioAnswer_flashbackButtonIsNotOffered() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit first wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+
+      // Submit second wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify default feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString("Not correct"))))
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testFragment_flashbackFeatureOff_onSubmitWrongRatioAnswer_flashbackButtonIsNotVisible() {
     setUpTestWithFlashbackFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {

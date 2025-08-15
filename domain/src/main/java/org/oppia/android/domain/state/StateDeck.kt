@@ -287,4 +287,12 @@ class StateDeck constructor(
   fun getFlashbackStateName(linkedSkillId: String): String {
     return previousStates.last { it.state.linkedSkillId == linkedSkillId }.state.name
   }
+
+  /**
+   *  Returns true if any [AnswerAndResponse] in [currentDialogInteractions] has
+   *  valid `state_name_to_revisit`.
+   */
+  fun wasFlashbackPreviouslyOffered(): Boolean {
+    return currentDialogInteractions.any { !it.stateNameToRevisit.isNullOrBlank() }
+  }
 }
