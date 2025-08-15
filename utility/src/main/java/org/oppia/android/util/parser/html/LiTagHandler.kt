@@ -10,6 +10,7 @@ import android.text.style.ImageSpan
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Stack
+import org.oppia.android.util.extensions.safeForEach
 
 /** The custom <li> tag corresponding to [LiTagHandler]. */
 const val CUSTOM_LIST_LI_TAG = "oppia-li"

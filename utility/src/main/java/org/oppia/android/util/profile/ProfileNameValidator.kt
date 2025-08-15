@@ -1,6 +1,5 @@
 package org.oppia.android.util.profile
 
-import org.oppia.android.util.extensions.safeForEach
 import javax.inject.Inject
 
 /** Utility to validate that profile names are correctly formatted. */
@@ -24,12 +23,7 @@ class ProfileNameValidator @Inject constructor() {
 
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
   private fun containsOnlyLettersAndAllowedSymbols(name: String): Boolean {
-    name.safeForEach {
-      if (!(it.isAlphabetic() || it in repeatableSymbols)) {
-        return false
-      }
-    }
-    return true
+    return name.all { it.isAlphabetic() || it in repeatableSymbols }
   }
 
   private fun containsNoRepeatedUseOfAllowedSymbols(name: String): Boolean {

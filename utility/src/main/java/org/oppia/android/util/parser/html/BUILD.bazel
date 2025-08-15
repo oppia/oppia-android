@@ -78,6 +78,7 @@ kt_android_library(
     ],
     deps = [
         "//third_party:androidx_core_core-ktx",
+        "//utility/src/main/java/org/oppia/android/util/extensions:iterable_extensions",
     ],
 )
 

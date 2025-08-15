@@ -113,5 +113,6 @@ kt_android_library(
     ],
     deps = [
         "//third_party:junit_junit",
+        "//utility/src/main/java/org/oppia/android/util/extensions:iterable_extensions",
     ],
 )

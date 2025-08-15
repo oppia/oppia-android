@@ -151,6 +151,7 @@ kt_android_library(
         ":comparator_extensions",
         ":real_extensions",
         "//model/src/main/proto:math_java_proto_lite",
+        "//utility/src/main/java/org/oppia/android/util/extensions:iterable_extensions",
     ],
 )
 

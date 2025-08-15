@@ -5,6 +5,7 @@ import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Polynomial.Term
 import org.oppia.android.app.model.Polynomial.Term.Variable
 import org.oppia.android.app.model.Real
+import org.oppia.android.util.extensions.safeForEach
 
 /** Represents a single-term constant polynomial with the value of 0. */
 val ZERO_POLYNOMIAL: Polynomial = createConstantPolynomial(ZERO)

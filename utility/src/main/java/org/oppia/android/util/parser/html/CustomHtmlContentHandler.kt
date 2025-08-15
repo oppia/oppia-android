@@ -7,6 +7,7 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
+import org.oppia.android.util.extensions.safeForEach
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
