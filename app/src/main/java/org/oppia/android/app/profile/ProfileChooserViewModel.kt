@@ -16,6 +16,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** The ViewModel for [ProfileChooserFragment]. */
 @FragmentScope
@@ -63,7 +64,7 @@ class ProfileChooserViewModel @Inject constructor(
       ProfileItemViewModel(it, profileClickListener::onProfileClicked)
     }
 
-    profileList.forEach { profileItemViewModel ->
+    profileList.safeForEach { profileItemViewModel ->
       if (profileItemViewModel.profile.avatar.avatarTypeCase
         == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB
       ) {
@@ -114,7 +115,7 @@ class ProfileChooserViewModel @Inject constructor(
       ProfileChooserUiModel.newBuilder().setProfile(it).build()
     }.toMutableList()
 
-    profileList.forEach {
+    profileList.safeForEach {
       if (it.profile.avatar.avatarTypeCase == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
         usedColors.add(it.profile.avatar.avatarColorRgb)
       }

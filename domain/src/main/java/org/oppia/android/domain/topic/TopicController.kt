@@ -46,6 +46,7 @@ import org.oppia.android.util.data.DataProviders.Companion.transformAsync
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"
@@ -374,7 +375,7 @@ class TopicController @Inject constructor(
     contentLocale: OppiaLocale.ContentLocale
   ): List<CompletedStory> {
     val completedStoryList = ArrayList<CompletedStory>()
-    storyProgressList.forEach { storyProgress ->
+    storyProgressList.safeForEach { storyProgress ->
       val storySummary = retrieveStory(topic.topicId, storyProgress.storyId)
       val lastChapterSummary = storySummary.chapterList.last()
       if (storyProgress.chapterProgressMap.containsKey(lastChapterSummary.explorationId) &&

@@ -263,7 +263,7 @@ class ConceptCardTagHandlerTest {
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     assertThat(clickableSpans).hasLength(2)
     // Call each of the spans.
-    clickableSpans.forEach { it.onClick(testView) }
+    clickableSpans.safeForEach { it.onClick(testView) }
     verify(mockConceptCardLinkClickListener, times(2)).onConceptCardLinkClicked(
       capture(viewCaptor),
       capture(stringCaptor)

@@ -18,6 +18,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** The presenter for [MarkChaptersCompletedFragment]. */
 @FragmentScope
@@ -82,7 +83,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
     binding.markChaptersCompletedAllCheckBoxContainer.setOnClickListener {
       if (binding.isAllChecked == null || binding.isAllChecked == false) {
         binding.isAllChecked = true
-        viewModel.getItemList().forEach { viewModel ->
+        viewModel.getItemList().safeForEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted())
               chapterSelected(
@@ -95,7 +96,7 @@ class MarkChaptersCompletedFragmentPresenter @Inject constructor(
         }
       } else if (binding.isAllChecked == true) {
         binding.isAllChecked = false
-        viewModel.getItemList().forEach { viewModel ->
+        viewModel.getItemList().safeForEach { viewModel ->
           if (viewModel is ChapterSummaryViewModel) {
             if (!viewModel.checkIfChapterIsCompleted()) {
               chapterUnselected(viewModel.chapterIndex, viewModel.nextStoryIndex)

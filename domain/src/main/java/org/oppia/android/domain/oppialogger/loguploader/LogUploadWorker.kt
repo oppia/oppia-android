@@ -20,6 +20,7 @@ import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
 class LogUploadWorker private constructor(
@@ -92,7 +93,7 @@ class LogUploadWorker private constructor(
   private suspend fun uploadPerformanceMetrics(): Result {
     return try {
       val performanceMetricsLogs = performanceMetricsController.getMetricLogStoreList()
-      performanceMetricsLogs.forEach { performanceMetricsLog ->
+      performanceMetricsLogs.safeForEach { performanceMetricsLog ->
         performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
         performanceMetricsController.removeFirstMetricLogFromStore()
       }

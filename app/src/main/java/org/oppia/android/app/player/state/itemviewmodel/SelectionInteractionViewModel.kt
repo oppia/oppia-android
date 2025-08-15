@@ -27,6 +27,7 @@ import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.ImageTagHandler
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -130,7 +131,7 @@ class SelectionInteractionViewModel private constructor(
     )
 
     if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
-      userAnswerState.itemSelection.selectedIndexesList.forEach { selectedIndex ->
+      userAnswerState.itemSelection.selectedIndexesList.safeForEach { selectedIndex ->
         selectedItems += selectedIndex
         choiceItems[selectedIndex].isAnswerSelected.set(true)
       }
@@ -230,7 +231,7 @@ class SelectionInteractionViewModel private constructor(
       }
       !areCheckboxesBound() -> {
         // De-select all other items to simulate a radio button group.
-        choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
+        choiceItems.safeForEach { item -> item.isAnswerSelected.set(false) }
         selectedItems.clear()
         selectedItems += itemIndex
         updateIsAnswerAvailable()
@@ -278,8 +279,8 @@ class SelectionInteractionViewModel private constructor(
   private fun updateItemSelectability() {
     if (selectedItems.size == maxAllowableSelectionCount) {
       // All non-selected items should be disabled when the limit is reached.
-      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }.forEach { it.set(false) }
-    } else enabledItemsList.forEach { it.set(true) } // Otherwise, all items are available.
+      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }.safeForEach { it.set(false) }
+    } else enabledItemsList.safeForEach { it.set(true) } // Otherwise, all items are available.
   }
 
   private fun areCheckboxesBound(): Boolean {

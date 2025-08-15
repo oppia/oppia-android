@@ -34,6 +34,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import java.util.Collections
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** Represents the type of errors that can be thrown by drag and drop sort interaction. */
 enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {
@@ -231,7 +232,7 @@ class DragAndDropSortInteractionViewModel private constructor(
   fun unlinkElement(itemIndex: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     val item = _choiceItems[itemIndex]
     _choiceItems.removeAt(itemIndex)
-    item.htmlContent.contentIdsList.forEach { contentId ->
+    item.htmlContent.contentIdsList.safeForEach { contentId ->
       _choiceItems.add(
         itemIndex,
         DragDropInteractionContentViewModel(

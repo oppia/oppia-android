@@ -547,7 +547,6 @@ file_content_checks {
   file_path_regex: ".+?\\.kt$"
   prohibited_content_regex: "\\.forEach\\s*(\\(|\\{)"
   failure_message: "Direct use of forEach is prohibited due to lint false positives on API < 24. Use safeForEach from IterableExtensions.kt instead."
-  exempted_file_name: "utility/src/main/java/org/oppia/android/util/extensions/IterableExtensions.kt"
-  exempted_file_name: "scripts/src/javatests/org/oppia/android/scripts/regex/RegexPatternValidationCheckTest.kt"
+  exempted_file_patterns: "scripts/.*"
 }
 

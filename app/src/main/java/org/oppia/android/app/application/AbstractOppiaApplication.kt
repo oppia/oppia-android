@@ -18,6 +18,7 @@ import org.oppia.android.app.activity.ActivityComponent
 import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.model.BuildFlavor
 import org.oppia.android.domain.oppialogger.ApplicationStartupListener
+import org.oppia.android.util.extensions.safeForEach
 
 /** The root base [Application] of the Oppia app. */
 abstract class AbstractOppiaApplication(
@@ -74,7 +75,7 @@ abstract class AbstractOppiaApplication(
           }
           WorkManager.initialize(applicationContext, workManagerConfiguration)
           val workManager = WorkManager.getInstance(applicationContext)
-          component.getAnalyticsStartupListenerStartupListeners().forEach {
+          component.getAnalyticsStartupListenerStartupListeners().safeForEach {
             it.onCreate(workManager)
           }
         }

@@ -43,6 +43,7 @@ import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 
@@ -98,7 +99,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   // TODO(#3382): Remove debug only code from prod build (also check imports, constructor and drawer_fragment.xml)
   private fun setIfDeveloperOptionsMenuItemListener() {
-    developerOptionsStarter.asSet().forEach { starter ->
+    developerOptionsStarter.asSet().safeForEach { starter ->
       footerViewModel.isDebugMode.set(true)
       binding.developerOptionsLinearLayout.setOnClickListener {
         if (footerViewModel.isDeveloperOptionsSelected.get() == true) {
@@ -356,7 +357,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected() {
-    binding.fragmentDrawerNavView.menu.forEach {
+    binding.fragmentDrawerNavView.menu.safeForEach {
       it.isCheckable = false
     }
   }

@@ -54,6 +54,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -656,7 +657,7 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
-      explorationProgressListeners.forEach {
+      explorationProgressListeners.safeForEach {
         it.onExplorationStarted(
           profileId = profileId,
           topicId = explorationProgress.currentTopicId

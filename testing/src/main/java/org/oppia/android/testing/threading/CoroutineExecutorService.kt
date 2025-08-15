@@ -26,6 +26,7 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
+import org.oppia.android.util.extensions.safeForEach
 
 /**
  * Listener for being notified when [CoroutineExecutorService] has arranged state and is immediately
@@ -99,7 +100,7 @@ class CoroutineExecutorService(
   override fun shutdownNow(): MutableList<Runnable> {
     shutdown()
     val incompleteTasks = serviceLock.withLock { pendingTasks.values }
-    incompleteTasks.map { it.deferred }.forEach { it.cancel() }
+    incompleteTasks.map { it.deferred }.safeForEach { it.cancel() }
     return incompleteTasks.map { it.runnable }.toMutableList()
   }
 
@@ -143,7 +144,7 @@ class CoroutineExecutorService(
     // is the default behavior for select).
     val resultChannel = Channel<T>()
     val taskDeferreds = tasks.map { dispatchAsync(it) }
-    taskDeferreds.forEach { deferred ->
+    taskDeferreds.safeForEach { deferred ->
       @Suppress("DeferredResultUnused") // Intentionally silence failures (including the service's).
       // Create a separate scope in case one of the operations fails--it shouldn't cause later
       // operations to fail.

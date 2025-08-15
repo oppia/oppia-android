@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
+import org.oppia.android.util.extensions.safeForEach
 
 typealias ObserveAsyncChange = suspend () -> Unit
 
@@ -85,7 +86,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     val subscriptions = subscriptionLock.withLock { computeSubscriptionClosure(id) }
 
     // Notify all subscribers (both directly for this parent & all child IDs).
-    subscriptions.forEach { observeChange -> observeChange() }
+    subscriptions.safeForEach { observeChange -> observeChange() }
   }
 
   /**
@@ -159,7 +160,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     subscriptionMap[parentId]?.let { directSubscriptions ->
       subscriptions.addAll(directSubscriptions)
     }
-    computeNotificationClosure(parentId).forEach { childId ->
+    computeNotificationClosure(parentId).safeForEach { childId ->
       subscriptionMap[childId]?.let { indirectSubscriptions ->
         subscriptions.addAll(indirectSubscriptions)
       }
@@ -183,7 +184,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
   private fun computeNotificationClosureAux(nextParentId: Any, idsToNotify: MutableSet<Any>) {
     associatedIds[nextParentId]?.let { childIds ->
       idsToNotify.addAll(childIds)
-      childIds.forEach { childId -> computeNotificationClosureAux(childId, idsToNotify) }
+      childIds.safeForEach { childId -> computeNotificationClosureAux(childId, idsToNotify) }
     }
   }
 
@@ -203,7 +204,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     appendSpacing(indent).append(parentId)
     associatedIds[parentId]?.let { childIds ->
       append(" ->")
-      childIds.forEach { childId ->
+      childIds.safeForEach { childId ->
         appendLine().computeSubscriptionTreeStringAux(childId, indent + 2)
       }
     }

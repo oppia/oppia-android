@@ -30,6 +30,7 @@ import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 /** ID of test classroom 0. */
 const val TEST_CLASSROOM_ID_0 = "test_classroom_id_0"
@@ -116,7 +117,7 @@ class ClassroomController @Inject constructor(
    */
   fun getClassroomIdByTopicId(topicId: String): String {
     var classroomId = ""
-    getClassrooms().forEach {
+    getClassrooms().safeForEach {
       if (it.topicPrerequisitesMap.keys.contains(topicId)) {
         classroomId = it.id
       }
@@ -220,7 +221,7 @@ class ClassroomController @Inject constructor(
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       val topicSummaryList = mutableListOf<TopicSummary>()
-      topicIdArray.forEach { topicId ->
+      topicIdArray.safeForEach { topicId ->
         topicSummaryList.add(createTopicSummary(topicId, classroomId))
       }
       addAllTopicSummary(topicSummaryList)
@@ -258,7 +259,7 @@ class ClassroomController @Inject constructor(
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       ClassroomRecord.TopicIdList.newBuilder().apply {
-        topicIdArray.forEach { topicId ->
+        topicIdArray.safeForEach { topicId ->
           addTopicIds(topicId)
         }
       }.build()

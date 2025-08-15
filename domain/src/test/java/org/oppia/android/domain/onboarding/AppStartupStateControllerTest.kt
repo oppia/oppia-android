@@ -72,6 +72,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -907,7 +908,7 @@ class AppStartupStateControllerTest {
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
-      previousResponses.forEach {
+      previousResponses.safeForEach {
         testComponent.getDeprecationController().saveDeprecationResponse(it)
         testComponent.getTestCoroutineDispatchers().runCurrent()
       }

@@ -171,7 +171,7 @@ class CustomHtmlContentHandler private constructor(
   private fun getContentDescription(): String {
     val rawDesc = buildString {
       var lastIndex = 0
-      tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
+      tagContentDescriptions.entries.sortedBy { it.key }.safeForEach { (index, description) ->
         if (index > lastIndex && index <= contentDescriptionBuilder.length) {
           append(
             contentDescriptionBuilder.substring(

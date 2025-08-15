@@ -41,6 +41,7 @@ import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 private const val ONE_WEEK_IN_DAYS = 7
 
@@ -365,7 +366,7 @@ class TopicListController @Inject constructor(
         topicProgressLastPlayedTimes.maxOrNull()
       }
 
-    sortedTopicProgressList.forEach { topicProgress ->
+    sortedTopicProgressList.safeForEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
       val classroom = topic?.topicId?.let { topicId ->
         val classroomId = classroomController.getClassroomIdByTopicId(topicId)
@@ -375,7 +376,7 @@ class TopicListController @Inject constructor(
       if (topic?.topicPlayAvailability?.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
         val isTopicConsideredCompleted = topic.hasAtLeastOneStoryCompleted(topicProgress)
 
-        topicProgress.storyProgressMap.values.forEach { storyProgress ->
+        topicProgress.storyProgressMap.values.safeForEach { storyProgress ->
           val storyId = storyProgress.storyId
           val story = topicController.retrieveStory(topic.topicId, storyId)
 

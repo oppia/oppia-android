@@ -7,6 +7,7 @@ import org.robolectric.annotation.RealObject
 import org.robolectric.shadow.api.Shadow
 import org.robolectric.util.ReflectionHelpers
 import java.util.Locale
+import org.oppia.android.util.extensions.safeForEach
 
 /**
  * A custom Robolectric shadow for tracking interactions with [BidiFormatter].
@@ -69,7 +70,7 @@ class ShadowBidiFormatter {
       // Similarly each individual shadow needs to be reset since Android only creates a couple of
       // Bidi formatters & Robolectric will keep a 1:1 relationship between classes and their
       // shadows.
-      lookUpFormatters().values.forEach { it.wrappedSequences.clear() }
+      lookUpFormatters().values.safeForEach { it.wrappedSequences.clear() }
       trackedFormatters.clear()
     }
 

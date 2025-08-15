@@ -30,6 +30,7 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KCallable
+import org.oppia.android.util.extensions.safeForEach
 
 /**
  * Test for [ReportSchemaVersion] that validates the proper schema version is sent in feedback
@@ -148,7 +149,7 @@ class ReportSchemaVersionTest {
     expectedFields: List<String>
   ) {
     val dataClassFields = dataClassMembers.map { it.name }
-    expectedFields.forEach { assertThat(dataClassFields.contains(it)).isTrue() }
+    expectedFields.safeForEach { assertThat(dataClassFields.contains(it)).isTrue() }
   }
 
   private fun setUpTestApplicationComponent() {

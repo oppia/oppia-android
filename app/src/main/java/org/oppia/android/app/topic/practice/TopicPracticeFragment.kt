@@ -15,6 +15,7 @@ import org.oppia.android.util.extensions.putProto
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {
@@ -88,7 +89,7 @@ class TopicPracticeFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
     val args = TopicPracticeFragmentStateBundle.newBuilder().apply {
       this.addAllSubtopicIds(topicPracticeFragmentPresenter.selectedSubtopicIdList)
-      topicPracticeFragmentPresenter.skillIdHashMap.forEach { (key, value) ->
+      topicPracticeFragmentPresenter.skillIdHashMap.safeForEach { (key, value) ->
         this.putSkillIds(
           key,
           TopicPracticeFragmentStateBundle.StringList.newBuilder().addAllValues(value).build()

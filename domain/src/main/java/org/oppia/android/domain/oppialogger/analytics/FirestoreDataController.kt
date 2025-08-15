@@ -19,6 +19,7 @@ import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 /** Controller for handling event logging for Firestore-bound data. */
 @Singleton
@@ -44,7 +45,7 @@ class FirestoreDataController @Inject constructor(
     val eventLogsToUpload = firestoreEventsStore.readDataAsync().await().eventLogsToUploadList
 
     if (eventLogsToUpload.isNotEmpty()) {
-      eventLogsToUpload.forEach { eventLog ->
+      eventLogsToUpload.safeForEach { eventLog ->
         authenticateAndUploadToFirestore(eventLog)
       }
     }

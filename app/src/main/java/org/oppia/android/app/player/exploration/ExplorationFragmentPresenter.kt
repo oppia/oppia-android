@@ -29,6 +29,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** The presenter for [ExplorationFragment]. */
 @FragmentScope
@@ -90,7 +91,7 @@ class ExplorationFragmentPresenter @Inject constructor(
   private fun showSpotlights(numberOfLogins: Int) {
     val explorationToolbar =
       fragment.requireActivity().findViewById<View>(R.id.exploration_toolbar) as Toolbar
-    explorationToolbar.forEach {
+    explorationToolbar.safeForEach {
       if (it is ImageButton) {
         // This toolbar contains only one image button, which is the back navigation icon.
         val backButtonSpotlightTarget = SpotlightTarget(

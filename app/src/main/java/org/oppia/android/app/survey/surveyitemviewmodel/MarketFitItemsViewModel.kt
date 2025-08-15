@@ -14,6 +14,7 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.util.enumfilter.filterByEnumCondition
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /** [SurveyAnswerItemViewModel] for the market fit question options. */
 class MarketFitItemsViewModel @Inject constructor(
@@ -26,7 +27,7 @@ class MarketFitItemsViewModel @Inject constructor(
   private val selectedItems: MutableList<Int> = mutableListOf()
 
   override fun updateSelection(itemIndex: Int): Boolean {
-    optionItems.forEach { item -> item.isAnswerSelected.set(false) }
+    optionItems.safeForEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
       selectedItems += itemIndex

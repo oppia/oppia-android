@@ -46,6 +46,7 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.extensions.safeForEach
 
 private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"
@@ -1006,7 +1007,7 @@ class ProfileManagementController @Inject constructor(
   fun deleteAllProfiles(): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync {
       val installationId = loggingIdentifierController.fetchInstallationId()
-      it.profilesMap.forEach { (internalProfileId, profile) ->
+      it.profilesMap.safeForEach { (internalProfileId, profile) ->
         directoryManagementUtil.deleteDir(internalProfileId.toString())
         learnerAnalyticsLogger.logDeleteProfile(installationId, profileId = null, profile.learnerId)
       }
@@ -1204,7 +1205,7 @@ class ProfileManagementController @Inject constructor(
 
   private fun isNameUnique(newName: String, profileDatabase: ProfileDatabase): Boolean {
     val lowerCaseNewName = machineLocale.run { newName.toMachineLowerCase() }
-    profileDatabase.profilesMap.values.forEach {
+    profileDatabase.profilesMap.values.safeForEach {
       if (machineLocale.run { it.name.toMachineLowerCase() } == lowerCaseNewName) {
         return false
       }
@@ -1213,7 +1214,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun alreadyHasAdmin(profileDatabase: ProfileDatabase): Boolean {
-    profileDatabase.profilesMap.values.forEach {
+    profileDatabase.profilesMap.values.safeForEach {
       if (it.isAdmin) {
         return true
       }

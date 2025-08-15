@@ -2807,6 +2807,43 @@ class RegexPatternValidationCheckTest {
       )
   }
 
+  @Test
+  fun testFileContent_includesForEachCall_fileContentIsNotCorrect() {
+    val prohibitedContent =
+      """
+      list.forEach { println(it) }
+    """.trimIndent()
+
+    tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
+    val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    val exception = assertThrows<Exception>() { runScript() }
+
+    assertThat(exception).hasMessageThat().contains(REGEX_CHECK_FAILED_OUTPUT_INDICATOR)
+    assertThat(outContent.toString().trim())
+      .contains(
+        "$stringFilePath:1: Direct use of forEach is prohibited due" +
+          " to lint false positives on API < 24. Use safeForEach from IterableExtensions.kt instead."
+      )
+  }
+
+  @Test
+  fun testFileContent_includesForEachCall_inScriptsFolder_fileIsExempted() {
+    val prohibitedContent =
+      """
+      list.forEach { println(it) }
+    """.trimIndent()
+    // This should be exempted & not fail since lint script does not cover these file.
+    tempFolder.newFolder("testfiles", "scripts")
+    val stringFilePath = "scripts/TestScript.kt"
+    tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
+
+    runScript()
+    assertThat(outContent.toString().trim()).contains(REGEX_CHECK_PASSED_OUTPUT_INDICATOR)
+  }
+
+
   /** Runs the regex_pattern_validation_check. */
   private fun runScript() {
     main(File(tempFolder.root, "testfiles").absolutePath)

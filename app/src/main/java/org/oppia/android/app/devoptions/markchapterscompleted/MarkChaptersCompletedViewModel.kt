@@ -12,6 +12,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.util.extensions.safeForEach
 
 /**
  * [ViewModel] for [MarkChaptersCompletedFragment]. It populates the recyclerview with a list of
@@ -70,8 +71,8 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     itemList.clear()
     var nextStoryIndex: Int
     var chapterIndex = 0
-    storyMap.forEach { storyMapItem ->
-      storyMapItem.value.forEach { ephemeralStorySummary ->
+    storyMap.safeForEach { storyMapItem ->
+      storyMapItem.value.safeForEach { ephemeralStorySummary ->
         val storySummary = ephemeralStorySummary.storySummary
         val storyTitle =
           translationController.extractString(
@@ -80,7 +81,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
         itemList.add(StorySummaryViewModel(storyTitle))
         chapterIndex++
         nextStoryIndex = chapterIndex + storySummary.chapterCount
-        ephemeralStorySummary.chaptersList.forEach { ephemeralChapterSummary ->
+        ephemeralStorySummary.chaptersList.safeForEach { ephemeralChapterSummary ->
           itemList.add(
             ChapterSummaryViewModel(
               chapterIndex = chapterIndex,

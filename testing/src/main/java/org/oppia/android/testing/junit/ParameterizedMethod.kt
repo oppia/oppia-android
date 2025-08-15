@@ -2,6 +2,7 @@ package org.oppia.android.testing.junit
 
 import java.lang.reflect.Field
 import java.util.Locale
+import org.oppia.android.util.extensions.safeForEach
 
 /**
  * A parameterized method used by [OppiaParameterizedTestRunner] when defining sub-tests that are
@@ -38,7 +39,7 @@ class ParameterizedMethod(
       val setterMethod = baseClass.getDeclaredMethod("set$fieldName", field.type)
       field.name to setterMethod
     }
-    values.getValue(iterationName).forEach { parameterValue ->
+    values.getValue(iterationName).safeForEach { parameterValue ->
       val fieldSetter = fieldSetters.getValue(parameterValue.key)
       fieldSetter.invoke(testClassInstance, parameterValue.value)
     }

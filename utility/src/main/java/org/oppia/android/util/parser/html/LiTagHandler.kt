@@ -67,7 +67,7 @@ class LiTagHandler(
   private fun formatImageSpans(output: Editable) {
     val imageSpans = output.getSpans(0, output.length, ImageSpan::class.java)
 
-    imageSpans.sortedByDescending { output.getSpanStart(it) }.forEach { span ->
+    imageSpans.sortedByDescending { output.getSpanStart(it) }.safeForEach { span ->
       val startIndex = output.getSpanStart(span)
       val endIndex = output.getSpanEnd(span)
 
@@ -213,7 +213,7 @@ class LiTagHandler(
       displayLocale: OppiaLocale.DisplayLocale
     ) {
       val childrenToProcess = childrenLists.toMutableMap()
-      markRangesToReplace.forEach { (startMark, endMark) ->
+      markRangesToReplace.safeForEach { (startMark, endMark) ->
         val styledSpan = startMark.toSpan(
           parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size
         )
@@ -224,7 +224,7 @@ class LiTagHandler(
       }
 
       // Process the remaining children that are not lists themselves.
-      childrenToProcess.values.forEach {
+      childrenToProcess.values.safeForEach {
         it.finishListRecursively(parentSpan = null, text, context, displayLocale)
       }
     }
