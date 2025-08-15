@@ -305,4 +305,15 @@ class StateDeck constructor(
   fun isFlashbackViewed(): Boolean {
     return currentDialogInteractions.any { it.flashbackViewed }
   }
+
+  /** Returns whether flashback state exists for the given [linkedSkillId]. */
+  fun hasFlashbackState(linkedSkillId: String): Boolean {
+    return linkedSkillId.isNotEmpty() &&
+      previousStates.any { it.state.linkedSkillId == linkedSkillId }
+  }
+
+  /** Returns the most recent previously visited [State] name with this given [linkedSkillId]. */
+  fun getFlashbackStateName(linkedSkillId: String): String {
+    return previousStates.last { it.state.linkedSkillId == linkedSkillId }.state.name
+  }
 }
