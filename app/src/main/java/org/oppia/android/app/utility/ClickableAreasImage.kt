@@ -100,7 +100,7 @@ class ClickableAreasImage(
     // Remove all views other than the default region & selectable image.
     parentView.children.filter {
       it.id != imageView.id && it.id != defaultRegionView.id
-    }.forEach(parentView::removeView)
+    }.safeForEach(parentView::removeView)
     clickableAreas.safeForEach { clickableArea ->
       val imageRect = RectF(
         getXCoordinate(clickableArea.region.area.upperLeft.x),
@@ -154,7 +154,7 @@ class ClickableAreasImage(
     // non-interactive (though it's recoverable with back & forward navigation or rotation, this
     // isn't likely to be obvious to learners and it's a generally poor user experience).
     parentView.post {
-      parentView.children.forEach(View::forceLayout)
+      parentView.children.safeForEach(View::forceLayout)
       parentView.invalidate()
       parentView.requestLayout()
     }

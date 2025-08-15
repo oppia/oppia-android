@@ -79,7 +79,7 @@ abstract class AbstractOppiaApplication(
             it.onCreate(workManager)
           }
         }
-        component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
+        component.getApplicationStartupListeners().safeForEach(ApplicationStartupListener::onCreate)
       }.invokeOnCompletion {
         if (it != null) {
           throw Exception("Failed to continue application initialization.", it)

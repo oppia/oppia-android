@@ -1926,7 +1926,7 @@ class ProfileManagementControllerTest {
     val profileAdditionProviders = PROFILES_LIST.map {
       addNonAdminProfile(it.name, pin = it.pin, allowDownloadAccess = it.allowDownloadAccess)
     }
-    profileAdditionProviders.forEach(monitorFactory::ensureDataProviderExecutes)
+    profileAdditionProviders.safeForEach(monitorFactory::ensureDataProviderExecutes)
   }
 
   private fun checkTestProfilesArePresent(resultList: List<Profile>) {

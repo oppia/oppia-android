@@ -592,7 +592,7 @@ class PeekableIteratorTest {
      */
     private fun <T> Iterator<T>.toList(): List<T> {
       return mutableListOf<T>().apply {
-        this@toList.forEach(this::add)
+        this@toList.safeForEach(this::add)
       }
     }
   }
