@@ -8,7 +8,7 @@ import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 
 /** [ObservableViewModel] for MultipleChoice or ItemSelection submitted answer. */
-class SelectionSubmittedItemViewModel (
+class SelectionSubmittedItemViewModel(
   val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
   val isEnabled: Boolean,

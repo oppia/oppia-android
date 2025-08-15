@@ -28,7 +28,9 @@ import org.oppia.android.app.databinding.databinding.FeedbackItemBinding
 import org.oppia.android.app.databinding.databinding.FlashbackButtonItemBinding
 import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.ItemSelectionSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
+import org.oppia.android.app.databinding.databinding.MultipleChoiceSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
 import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousButtonItemBinding
@@ -80,6 +82,8 @@ import org.oppia.android.app.player.state.itemviewmodel.ReplayButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReturnToQuestionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
+import org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
 import org.oppia.android.app.player.state.itemviewmodel.StateSolutionViewModel
@@ -119,10 +123,6 @@ import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
-import org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel
-import org.oppia.android.app.databinding.databinding.ItemSelectionSubmittedAnswerItemsBinding
-import org.oppia.android.app.databinding.databinding.MultipleChoiceSubmittedAnswerItemsBinding
 
 private typealias AudioUiManagerRetriever = () -> AudioUiManager?
 
@@ -1432,7 +1432,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
                   createSelectionSubmittedListAnswerAdapter(viewModel.getSelectionItemInputType())
                 binding.selectionSubmittedListAnswer = viewModel.choiceItems
               } else {
-                //below part
                 showSingleAnswer(binding)
                 val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
                   userAnswer.contentDescription
@@ -1610,7 +1609,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 ).root
               },
               bindView = { view, viewModel ->
-                val binding = DataBindingUtil.findBinding<ItemSelectionSubmittedAnswerItemsBinding>(view)!!
+                val binding = DataBindingUtil
+                  .findBinding<ItemSelectionSubmittedAnswerItemsBinding>(view)!!
                 binding.htmlContent =
                   htmlParserFactory.create(
                     resourceBucketName,
@@ -1619,7 +1619,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
                     false,
                     displayLocale = viewModel.resourceHandler.getDisplayLocale()
                   ).parseOppiaHtml(
-                    translationController.extractString(viewModel.htmlContent,viewModel.writtenTranslationContext),
+                    translationController.extractString(
+                      viewModel.htmlContent,
+                      viewModel.writtenTranslationContext
+                    ),
                     binding.itemSelectionContentTextView
                   )
                 if (viewModel.isEnabled) {
@@ -1641,13 +1644,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 ).root
               },
               bindView = { view, viewModel ->
-                val binding = DataBindingUtil.findBinding<MultipleChoiceSubmittedAnswerItemsBinding>(view)!!
+                val binding = DataBindingUtil
+                  .findBinding<MultipleChoiceSubmittedAnswerItemsBinding>(view)!!
                 binding.htmlContent =
                   htmlParserFactory.create(
-                    resourceBucketName, entityType, viewModel.entityId, /* imageCenterAlign= */ false,
+                    resourceBucketName,
+                    entityType,
+                    viewModel.entityId,
+                    /* imageCenterAlign= */ false,
                     displayLocale = viewModel.resourceHandler.getDisplayLocale()
                   ).parseOppiaHtml(
-                    translationController.extractString(viewModel.htmlContent,viewModel.writtenTranslationContext),
+                    translationController.extractString(
+                      viewModel.htmlContent,
+                      viewModel.writtenTranslationContext
+                    ),
                     binding.multipleChoiceContentTextView
                   )
                 if (viewModel.isEnabled) {
