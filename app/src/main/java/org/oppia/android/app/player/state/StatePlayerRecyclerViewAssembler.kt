@@ -1621,7 +1621,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 if (viewModel.isEnabled) {
                   binding.itemSelectionContentTextView.setTypeface(null, Typeface.BOLD)
                   binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
-                  binding.submittedAnswerHighlightOverlay.visibility = View.VISIBLE
                 }
                 binding.viewModel = viewModel
               }
@@ -1650,7 +1649,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
                 if (viewModel.isEnabled) {
                   binding.multipleChoiceContentTextView.setTypeface(null, Typeface.BOLD)
                   binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
-                  binding.submittedAnswerHighlightOverlay.visibility = View.VISIBLE
                 }
                 binding.viewModel = viewModel
               }
