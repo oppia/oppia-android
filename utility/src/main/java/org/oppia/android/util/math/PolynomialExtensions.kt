@@ -5,7 +5,6 @@ import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Polynomial.Term
 import org.oppia.android.app.model.Polynomial.Term.Variable
 import org.oppia.android.app.model.Real
-import org.oppia.android.util.extensions.safeForEach
 
 /** Represents a single-term constant polynomial with the value of 0. */
 val ZERO_POLYNOMIAL: Polynomial = createConstantPolynomial(ZERO)
@@ -355,7 +354,7 @@ private operator fun Term.times(rhs: Term): Term {
   // Simplify the variables by combining the exponents of like variables. Start with a map of 0
   // powers, then add in the powers of each variable and collect the final list of unique terms.
   val variableNamesMap = mutableMapOf<String, Int>()
-  combinedVariables.safeForEach {
+  combinedVariables.forEach {
     variableNamesMap.compute(it.name) { _, power ->
       if (power != null) power + it.power else it.power
     }

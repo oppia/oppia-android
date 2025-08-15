@@ -46,7 +46,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
@@ -657,7 +656,7 @@ class ExplorationProgressController @Inject constructor(
         recomputeCurrentStateAndNotifyAsync()
       }.launchIn(CoroutineScope(backgroundCoroutineDispatcher))
       explorationProgress.advancePlayStageTo(LOADING_EXPLORATION)
-      explorationProgressListeners.safeForEach {
+      explorationProgressListeners.forEach {
         it.onExplorationStarted(
           profileId = profileId,
           topicId = explorationProgress.currentTopicId
@@ -673,7 +672,7 @@ class ExplorationProgressController @Inject constructor(
     checkNotNull(this) { "Cannot finish playing an exploration that hasn't yet been started" }
     tryOperation(finishExplorationResultFlow, recomputeState = false) {
       explorationProgress.advancePlayStageTo(NOT_PLAYING)
-      explorationProgressListeners.safeForEach(ExplorationProgressListener::onExplorationEnded)
+      explorationProgressListeners.forEach(ExplorationProgressListener::onExplorationEnded)
     }
 
     // The only way to be sure of an exploration completion is if the user clicks the 'Return to

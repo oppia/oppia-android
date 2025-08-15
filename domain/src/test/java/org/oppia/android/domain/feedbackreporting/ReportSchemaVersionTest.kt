@@ -25,7 +25,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.SyncStatusModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
@@ -149,7 +148,7 @@ class ReportSchemaVersionTest {
     expectedFields: List<String>
   ) {
     val dataClassFields = dataClassMembers.map { it.name }
-    expectedFields.safeForEach { assertThat(dataClassFields.contains(it)).isTrue() }
+    expectedFields.forEach { assertThat(dataClassFields.contains(it)).isTrue() }
   }
 
   private fun setUpTestApplicationComponent() {

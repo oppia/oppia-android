@@ -18,7 +18,6 @@ import org.oppia.android.domain.oppialogger.ApplicationStartupListener
 import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_BACKGROUND
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsAssessor.AppIconification.APP_IN_FOREGROUND
@@ -97,7 +96,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application comes to foreground. */
   @OnLifecycleEvent(Lifecycle.Event.ON_START)
   fun onAppInForeground() {
-    applicationLifecycleListeners.safeForEach(ApplicationLifecycleListener::onAppInForeground)
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInForeground)
     val timeDifferenceMs = oppiaClock.getCurrentTimeMs() - firstTimestamp
     if (timeDifferenceMs > inactivityLimitMillis) {
       loggingIdentifierController.updateSessionId()
@@ -116,7 +115,7 @@ class ApplicationLifecycleObserver @Inject constructor(
   /** Occurs when application goes to background. */
   @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
   fun onAppInBackground() {
-    applicationLifecycleListeners.safeForEach(ApplicationLifecycleListener::onAppInBackground)
+    applicationLifecycleListeners.forEach(ApplicationLifecycleListener::onAppInBackground)
     firstTimestamp = oppiaClock.getCurrentTimeMs()
     if (enablePerformanceMetricsCollection.value) {
       cpuPerformanceSnapshotter.updateAppIconification(APP_IN_BACKGROUND)

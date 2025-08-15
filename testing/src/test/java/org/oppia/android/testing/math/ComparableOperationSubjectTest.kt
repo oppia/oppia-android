@@ -7,7 +7,6 @@ import org.junit.runners.JUnit4
 import org.oppia.android.app.model.ComparableOperation
 import org.oppia.android.app.model.Real
 import org.oppia.android.testing.math.ComparableOperationSubject.Companion.assertThat
-import org.oppia.android.util.extensions.safeForEach
 
 /** Tests for [ComparableOperationSubject]. */
 @RunWith(JUnit4::class)
@@ -31,7 +30,7 @@ class ComparableOperationSubjectTest {
   ): ComparableOperation {
     val accumulation = ComparableOperation.CommutativeAccumulation.newBuilder()
       .setAccumulationType(type)
-    operations.safeForEach { accumulation.addCombinedOperations(it) }
+    operations.forEach { accumulation.addCombinedOperations(it) }
     return ComparableOperation.newBuilder()
       .setCommutativeAccumulation(accumulation)
       .build()

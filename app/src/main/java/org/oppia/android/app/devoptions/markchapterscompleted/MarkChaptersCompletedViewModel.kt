@@ -11,7 +11,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.safeForEach
 import javax.inject.Inject
 
 /**
@@ -71,8 +70,9 @@ class MarkChaptersCompletedViewModel @Inject constructor(
     itemList.clear()
     var nextStoryIndex: Int
     var chapterIndex = 0
-    storyMap.safeForEach { storyMapItem ->
-      storyMapItem.value.safeForEach { ephemeralStorySummary ->
+    storyMap.forEach { storyMapItem ->
+      @Suppress("NewApi")
+      storyMapItem.value.forEach { ephemeralStorySummary ->
         val storySummary = ephemeralStorySummary.storySummary
         val storyTitle =
           translationController.extractString(
@@ -81,7 +81,7 @@ class MarkChaptersCompletedViewModel @Inject constructor(
         itemList.add(StorySummaryViewModel(storyTitle))
         chapterIndex++
         nextStoryIndex = chapterIndex + storySummary.chapterCount
-        ephemeralStorySummary.chaptersList.safeForEach { ephemeralChapterSummary ->
+        ephemeralStorySummary.chaptersList.forEach { ephemeralChapterSummary ->
           itemList.add(
             ChapterSummaryViewModel(
               chapterIndex = chapterIndex,

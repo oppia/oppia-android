@@ -33,7 +33,6 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -1007,7 +1006,7 @@ class ProfileManagementController @Inject constructor(
   fun deleteAllProfiles(): DataProvider<Any?> {
     val deferred = profileDataStore.storeDataWithCustomChannelAsync {
       val installationId = loggingIdentifierController.fetchInstallationId()
-      it.profilesMap.safeForEach { (internalProfileId, profile) ->
+      it.profilesMap.forEach { (internalProfileId, profile) ->
         directoryManagementUtil.deleteDir(internalProfileId.toString())
         learnerAnalyticsLogger.logDeleteProfile(installationId, profileId = null, profile.learnerId)
       }
@@ -1205,7 +1204,7 @@ class ProfileManagementController @Inject constructor(
 
   private fun isNameUnique(newName: String, profileDatabase: ProfileDatabase): Boolean {
     val lowerCaseNewName = machineLocale.run { newName.toMachineLowerCase() }
-    profileDatabase.profilesMap.values.safeForEach {
+    profileDatabase.profilesMap.values.forEach {
       if (machineLocale.run { it.name.toMachineLowerCase() } == lowerCaseNewName) {
         return false
       }
@@ -1214,7 +1213,7 @@ class ProfileManagementController @Inject constructor(
   }
 
   private fun alreadyHasAdmin(profileDatabase: ProfileDatabase): Boolean {
-    profileDatabase.profilesMap.values.safeForEach {
+    profileDatabase.profilesMap.values.forEach {
       if (it.isAdmin) {
         return true
       }

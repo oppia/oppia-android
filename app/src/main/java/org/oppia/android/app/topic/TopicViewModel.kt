@@ -15,7 +15,6 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.safeForEach
 import javax.inject.Inject
 
 /** The ObservableViewModel for [TopicFragment]. */
@@ -51,13 +50,13 @@ class TopicViewModel @Inject constructor(
       is AsyncResult.Failure -> null
       is AsyncResult.Pending -> null
       is AsyncResult.Success -> {
-        topicListResult.value.promotedStoryList.recentlyPlayedStoryList.safeForEach {
+        topicListResult.value.promotedStoryList.recentlyPlayedStoryList.forEach {
           numberOfChaptersCompleted += it.completedChapterCount
         }
-        topicListResult.value.promotedStoryList.suggestedStoryList.safeForEach {
+        topicListResult.value.promotedStoryList.suggestedStoryList.forEach {
           numberOfChaptersCompleted += it.completedChapterCount
         }
-        topicListResult.value.promotedStoryList.olderPlayedStoryList.safeForEach {
+        topicListResult.value.promotedStoryList.olderPlayedStoryList.forEach {
           numberOfChaptersCompleted += it.completedChapterCount
         }
         numberOfChaptersCompleted

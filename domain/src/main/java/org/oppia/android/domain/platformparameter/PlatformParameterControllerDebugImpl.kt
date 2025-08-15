@@ -15,7 +15,6 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -226,7 +225,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val existingOverrides = oldDatabase.overriddenFeatureFlagList.associateBy { it.id }
         val latestValues = existingOverrides.toMutableMap().apply {
-          overriddenFlags.safeForEach { override ->
+          @Suppress("NewApi")
+          overriddenFlags.forEach { override ->
             this[override.id] = override
           }
         }

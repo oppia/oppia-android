@@ -93,7 +93,6 @@ kt_android_library(
         "//third_party:androidx_annotation_annotation",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-core",
         "//third_party:org_jetbrains_kotlinx_kotlinx-coroutines-guava",
-        "//utility/src/main/java/org/oppia/android/util/extensions:iterable_extensions",
     ],
 )
 

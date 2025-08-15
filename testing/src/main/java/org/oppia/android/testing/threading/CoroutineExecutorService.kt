@@ -15,7 +15,6 @@ import kotlinx.coroutines.guava.asListenableFuture
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withTimeoutOrNull
-import org.oppia.android.util.extensions.safeForEach
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -100,7 +99,7 @@ class CoroutineExecutorService(
   override fun shutdownNow(): MutableList<Runnable> {
     shutdown()
     val incompleteTasks = serviceLock.withLock { pendingTasks.values }
-    incompleteTasks.map { it.deferred }.safeForEach { it.cancel() }
+    incompleteTasks.map { it.deferred }.forEach { it.cancel() }
     return incompleteTasks.map { it.runnable }.toMutableList()
   }
 
@@ -144,7 +143,7 @@ class CoroutineExecutorService(
     // is the default behavior for select).
     val resultChannel = Channel<T>()
     val taskDeferreds = tasks.map { dispatchAsync(it) }
-    taskDeferreds.safeForEach { deferred ->
+    taskDeferreds.forEach { deferred ->
       @Suppress("DeferredResultUnused") // Intentionally silence failures (including the service's).
       // Create a separate scope in case one of the operations fails--it shouldn't cause later
       // operations to fail.

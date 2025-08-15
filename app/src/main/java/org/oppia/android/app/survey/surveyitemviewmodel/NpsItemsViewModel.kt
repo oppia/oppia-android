@@ -9,7 +9,6 @@ import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
-import org.oppia.android.util.extensions.safeForEach
 import javax.inject.Inject
 
 class NpsItemsViewModel @Inject constructor(
@@ -21,7 +20,7 @@ class NpsItemsViewModel @Inject constructor(
   private val selectedItems: MutableList<Int> = mutableListOf()
 
   override fun updateSelection(itemIndex: Int): Boolean {
-    optionItems.safeForEach { item -> item.isAnswerSelected.set(false) }
+    optionItems.forEach { item -> item.isAnswerSelected.set(false) }
     if (!selectedItems.contains(itemIndex)) {
       selectedItems.clear()
       selectedItems += itemIndex

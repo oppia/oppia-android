@@ -14,7 +14,6 @@ import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsControll
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
 import org.oppia.android.domain.util.getStringFromData
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
@@ -93,7 +92,8 @@ class LogUploadWorker private constructor(
   private suspend fun uploadPerformanceMetrics(): Result {
     return try {
       val performanceMetricsLogs = performanceMetricsController.getMetricLogStoreList()
-      performanceMetricsLogs.safeForEach { performanceMetricsLog ->
+      @Suppress("NewApi")
+      performanceMetricsLogs.forEach { performanceMetricsLog ->
         performanceMetricsEventLogger.logPerformanceMetric(performanceMetricsLog)
         performanceMetricsController.removeFirstMetricLogFromStore()
       }

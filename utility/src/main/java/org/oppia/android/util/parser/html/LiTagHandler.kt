@@ -8,7 +8,6 @@ import android.text.Spannable
 import android.text.Spanned
 import android.text.style.ImageSpan
 import androidx.core.view.ViewCompat
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Stack
 
@@ -68,7 +67,7 @@ class LiTagHandler(
   private fun formatImageSpans(output: Editable) {
     val imageSpans = output.getSpans(0, output.length, ImageSpan::class.java)
 
-    imageSpans.sortedByDescending { output.getSpanStart(it) }.safeForEach { span ->
+    imageSpans.sortedByDescending { output.getSpanStart(it) }.forEach { span ->
       val startIndex = output.getSpanStart(span)
       val endIndex = output.getSpanEnd(span)
 
@@ -214,7 +213,7 @@ class LiTagHandler(
       displayLocale: OppiaLocale.DisplayLocale
     ) {
       val childrenToProcess = childrenLists.toMutableMap()
-      markRangesToReplace.safeForEach { (startMark, endMark) ->
+      markRangesToReplace.forEach { (startMark, endMark) ->
         val styledSpan = startMark.toSpan(
           parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size
         )
@@ -225,7 +224,7 @@ class LiTagHandler(
       }
 
       // Process the remaining children that are not lists themselves.
-      childrenToProcess.values.safeForEach {
+      childrenToProcess.values.forEach {
         it.finishListRecursively(parentSpan = null, text, context, displayLocale)
       }
     }

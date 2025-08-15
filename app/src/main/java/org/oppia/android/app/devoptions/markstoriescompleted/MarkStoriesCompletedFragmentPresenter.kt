@@ -12,7 +12,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
-import org.oppia.android.util.extensions.safeForEach
 import javax.inject.Inject
 
 /** The presenter for [MarkStoriesCompletedFragment]. */
@@ -74,12 +73,12 @@ class MarkStoriesCompletedFragmentPresenter @Inject constructor(
 
     binding.markStoriesCompletedAllCheckBox.setOnCheckedChangeListener { _, isChecked ->
       if (isChecked) {
-        viewModel.getStorySummaryMap().values.safeForEach { viewModel ->
+        viewModel.getStorySummaryMap().values.forEach { viewModel ->
           if (!viewModel.isCompleted)
             storySelected(viewModel.storySummary.storyId)
         }
       } else {
-        viewModel.getStorySummaryMap().values.safeForEach { viewModel ->
+        viewModel.getStorySummaryMap().values.forEach { viewModel ->
           if (!viewModel.isCompleted) storyUnselected(viewModel.storySummary.storyId)
         }
       }

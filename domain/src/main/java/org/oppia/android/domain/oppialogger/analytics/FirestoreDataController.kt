@@ -11,7 +11,6 @@ import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
@@ -45,7 +44,7 @@ class FirestoreDataController @Inject constructor(
     val eventLogsToUpload = firestoreEventsStore.readDataAsync().await().eventLogsToUploadList
 
     if (eventLogsToUpload.isNotEmpty()) {
-      eventLogsToUpload.safeForEach { eventLog ->
+      eventLogsToUpload.forEach { eventLog ->
         authenticateAndUploadToFirestore(eventLog)
       }
     }

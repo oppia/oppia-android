@@ -32,7 +32,6 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.safeForEach
 import java.util.Collections
 import javax.inject.Inject
 
@@ -232,7 +231,7 @@ class DragAndDropSortInteractionViewModel private constructor(
   fun unlinkElement(itemIndex: Int, adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>) {
     val item = _choiceItems[itemIndex]
     _choiceItems.removeAt(itemIndex)
-    item.htmlContent.contentIdsList.safeForEach { contentId ->
+    item.htmlContent.contentIdsList.forEach { contentId ->
       _choiceItems.add(
         itemIndex,
         DragDropInteractionContentViewModel(

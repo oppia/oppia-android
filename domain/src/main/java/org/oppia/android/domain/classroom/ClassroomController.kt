@@ -26,7 +26,6 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -117,7 +116,8 @@ class ClassroomController @Inject constructor(
    */
   fun getClassroomIdByTopicId(topicId: String): String {
     var classroomId = ""
-    getClassrooms().safeForEach {
+    @Suppress("NewApi")
+    getClassrooms().forEach {
       if (it.topicPrerequisitesMap.keys.contains(topicId)) {
         classroomId = it.id
       }
@@ -221,7 +221,7 @@ class ClassroomController @Inject constructor(
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       val topicSummaryList = mutableListOf<TopicSummary>()
-      topicIdArray.safeForEach { topicId ->
+      topicIdArray.forEach { topicId ->
         topicSummaryList.add(createTopicSummary(topicId, classroomId))
       }
       addAllTopicSummary(topicSummaryList)
@@ -259,7 +259,7 @@ class ClassroomController @Inject constructor(
       val topicIdArray = classroomJsonObject
         .getJSONObject("topic_prerequisites").keys().asSequence().toList()
       ClassroomRecord.TopicIdList.newBuilder().apply {
-        topicIdArray.safeForEach { topicId ->
+        topicIdArray.forEach { topicId ->
           addTopicIds(topicId)
         }
       }.build()

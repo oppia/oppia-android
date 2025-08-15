@@ -36,7 +36,6 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
@@ -366,7 +365,7 @@ class TopicListController @Inject constructor(
         topicProgressLastPlayedTimes.maxOrNull()
       }
 
-    sortedTopicProgressList.safeForEach { topicProgress ->
+    sortedTopicProgressList.forEach { topicProgress ->
       val topic = topicController.retrieveTopic(topicProgress.topicId)
       val classroom = topic?.topicId?.let { topicId ->
         val classroomId = classroomController.getClassroomIdByTopicId(topicId)
@@ -376,7 +375,7 @@ class TopicListController @Inject constructor(
       if (topic?.topicPlayAvailability?.availabilityCase == AVAILABLE_TO_PLAY_NOW) {
         val isTopicConsideredCompleted = topic.hasAtLeastOneStoryCompleted(topicProgress)
 
-        topicProgress.storyProgressMap.values.safeForEach { storyProgress ->
+        topicProgress.storyProgressMap.values.forEach { storyProgress ->
           val storyId = storyProgress.storyId
           val story = topicController.retrieveStory(topic.topicId, storyId)
 

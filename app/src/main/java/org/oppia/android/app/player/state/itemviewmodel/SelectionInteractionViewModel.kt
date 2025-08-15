@@ -22,7 +22,6 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
@@ -131,7 +130,7 @@ class SelectionInteractionViewModel private constructor(
     )
 
     if (userAnswerState.itemSelection.selectedIndexesCount != 0) {
-      userAnswerState.itemSelection.selectedIndexesList.safeForEach { selectedIndex ->
+      userAnswerState.itemSelection.selectedIndexesList.forEach { selectedIndex ->
         selectedItems += selectedIndex
         choiceItems[selectedIndex].isAnswerSelected.set(true)
       }
@@ -231,7 +230,7 @@ class SelectionInteractionViewModel private constructor(
       }
       !areCheckboxesBound() -> {
         // De-select all other items to simulate a radio button group.
-        choiceItems.safeForEach { item -> item.isAnswerSelected.set(false) }
+        choiceItems.forEach { item -> item.isAnswerSelected.set(false) }
         selectedItems.clear()
         selectedItems += itemIndex
         updateIsAnswerAvailable()
@@ -279,9 +278,8 @@ class SelectionInteractionViewModel private constructor(
   private fun updateItemSelectability() {
     if (selectedItems.size == maxAllowableSelectionCount) {
       // All non-selected items should be disabled when the limit is reached.
-      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }
-        .safeForEach { it.set(false) }
-    } else enabledItemsList.safeForEach { it.set(true) } // Otherwise, all items are available.
+      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }.forEach { it.set(false) }
+    } else enabledItemsList.forEach { it.set(true) } // Otherwise, all items are available.
   }
 
   private fun areCheckboxesBound(): Boolean {

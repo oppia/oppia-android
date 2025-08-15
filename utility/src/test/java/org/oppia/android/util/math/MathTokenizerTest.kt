@@ -725,7 +725,7 @@ class MathTokenizerTest {
 
     // Verify that all of the unicode characters cover in this range are invalid.
     assertThat(tokens).hasSize(charStr.length)
-    tokens.safeForEach { assertThat(it).isInvalidToken() }
+    tokens.forEach { assertThat(it).isInvalidToken() }
     // Sanity check to ensure that the tokens are actually populated.
     assertThat(tokens.size).isGreaterThan(0x7fff)
   }

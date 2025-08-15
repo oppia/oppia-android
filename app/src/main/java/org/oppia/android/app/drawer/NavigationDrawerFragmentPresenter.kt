@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -37,7 +38,6 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
@@ -98,7 +98,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
 
   // TODO(#3382): Remove debug only code from prod build (also check imports, constructor and drawer_fragment.xml)
   private fun setIfDeveloperOptionsMenuItemListener() {
-    developerOptionsStarter.asSet().safeForEach { starter ->
+    developerOptionsStarter.asSet().forEach { starter ->
       footerViewModel.isDebugMode.set(true)
       binding.developerOptionsLinearLayout.setOnClickListener {
         if (footerViewModel.isDeveloperOptionsSelected.get() == true) {
@@ -356,7 +356,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
   }
 
   private fun uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected() {
-    binding.fragmentDrawerNavView.menu.safeForEach {
+    binding.fragmentDrawerNavView.menu.forEach {
       it.isCheckable = false
     }
   }

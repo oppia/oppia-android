@@ -6,7 +6,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.oppia.android.app.model.Polynomial
 import org.oppia.android.app.model.Real
-import org.oppia.android.util.extensions.safeForEach
 
 /** Tests for [PolynomialSubject]. */
 @RunWith(JUnit4::class)
@@ -17,7 +16,7 @@ class PolynomialSubjectTest {
     return Polynomial.Term.newBuilder()
       .setCoefficient(Real.newBuilder().setInteger(coefficient))
       .apply {
-        variables.safeForEach { (name, power) ->
+        variables.forEach { (name, power) ->
           addVariable(Polynomial.Term.Variable.newBuilder().setName(name).setPower(power))
         }
       }
@@ -27,7 +26,7 @@ class PolynomialSubjectTest {
   /** Helper function to create a polynomial from multiple terms. */
   fun createPolynomial(vararg terms: Polynomial.Term): Polynomial {
     return Polynomial.newBuilder().apply {
-      terms.safeForEach { addTerm(it) }
+      terms.forEach { addTerm(it) }
     }.build()
   }
 

@@ -55,7 +55,6 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -908,7 +907,7 @@ class AppStartupStateControllerTest {
       testComponent.getAppStartupStateController().markOnboardingFlowCompleted()
       testComponent.getTestCoroutineDispatchers().runCurrent()
 
-      previousResponses.safeForEach {
+      previousResponses.forEach {
         testComponent.getDeprecationController().saveDeprecationResponse(it)
         testComponent.getTestCoroutineDispatchers().runCurrent()
       }

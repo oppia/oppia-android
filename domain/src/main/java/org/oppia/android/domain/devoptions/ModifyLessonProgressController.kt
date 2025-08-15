@@ -11,7 +11,6 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -68,8 +67,8 @@ class ModifyLessonProgressController @Inject constructor(
    * @return a [Boolean] indicating whether the topic is completed or not.
    */
   fun checkIfTopicIsCompleted(topicWithProgress: EphemeralTopic): Boolean {
-    topicWithProgress.topic.storyList.safeForEach { storySummary ->
-      storySummary.chapterList.safeForEach { chapterSummary ->
+    topicWithProgress.topic.storyList.forEach { storySummary ->
+      storySummary.chapterList.forEach { chapterSummary ->
         if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
       }
     }
@@ -83,7 +82,7 @@ class ModifyLessonProgressController @Inject constructor(
    * @return a [Boolean] indicating whether the story is completed or not.
    */
   fun checkIfStoryIsCompleted(storyWithProgress: EphemeralStorySummary): Boolean {
-    storyWithProgress.storySummary.chapterList.safeForEach { chapterSummary ->
+    storyWithProgress.storySummary.chapterList.forEach { chapterSummary ->
       if (chapterSummary.chapterPlayState != ChapterPlayState.COMPLETED) return false
     }
     return true
@@ -96,12 +95,12 @@ class ModifyLessonProgressController @Inject constructor(
    * @param topicIdList: the list of topic IDs for which progress needs modified.
    */
   fun markMultipleTopicsCompleted(profileId: ProfileId, topicIdList: List<String>) {
-    topicIdList.safeForEach { topicId ->
+    topicIdList.forEach { topicId ->
       val topic = checkNotNull(topicController.retrieveTopic(topicId)) {
         "Expected topic to be present in order to update its completion state: $topicId."
       }
-      topic.storyList.safeForEach { storySummary ->
-        storySummary.chapterList.safeForEach { chapterSummary ->
+      topic.storyList.forEach { storySummary ->
+        storySummary.chapterList.forEach { chapterSummary ->
           storyProgressController.recordCompletedChapter(
             profileId = profileId,
             topicId = topic.topicId,
@@ -122,9 +121,9 @@ class ModifyLessonProgressController @Inject constructor(
    * needs modified.
    */
   fun markMultipleStoriesCompleted(profileId: ProfileId, storyMap: Map<String, String>) {
-    storyMap.safeForEach {
+    storyMap.forEach {
       val storySummary = topicController.retrieveStory(topicId = it.value, storyId = it.key)
-      storySummary.chapterList.safeForEach { chapterSummary ->
+      storySummary.chapterList.forEach { chapterSummary ->
         storyProgressController.recordCompletedChapter(
           profileId = profileId,
           topicId = it.value,
@@ -147,7 +146,7 @@ class ModifyLessonProgressController @Inject constructor(
     profileId: ProfileId,
     chapterMap: Map<String, Pair<String, String>>
   ) {
-    chapterMap.safeForEach {
+    chapterMap.forEach {
       storyProgressController.recordCompletedChapter(
         profileId = profileId,
         topicId = it.value.second,

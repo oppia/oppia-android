@@ -14,7 +14,6 @@ import org.oppia.android.app.player.state.ImageRegionSelectionInteractionView
 import org.oppia.android.app.shim.ViewBindingShim
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.views.R
-import org.oppia.android.util.extensions.safeForEach
 import kotlin.math.roundToInt
 
 /** Helper class to handle clicks on an image along with highlighting the selected region. */
@@ -100,8 +99,9 @@ class ClickableAreasImage(
     // Remove all views other than the default region & selectable image.
     parentView.children.filter {
       it.id != imageView.id && it.id != defaultRegionView.id
-    }.safeForEach(parentView::removeView)
-    clickableAreas.safeForEach { clickableArea ->
+    }.forEach(parentView::removeView)
+    @Suppress("NewApi")
+    clickableAreas.forEach { clickableArea ->
       val imageRect = RectF(
         getXCoordinate(clickableArea.region.area.upperLeft.x),
         getYCoordinate(clickableArea.region.area.upperLeft.y),
@@ -154,7 +154,7 @@ class ClickableAreasImage(
     // non-interactive (though it's recoverable with back & forward navigation or rotation, this
     // isn't likely to be obvious to learners and it's a generally poor user experience).
     parentView.post {
-      parentView.children.safeForEach(View::forceLayout)
+      parentView.children.forEach(View::forceLayout)
       parentView.invalidate()
       parentView.requestLayout()
     }

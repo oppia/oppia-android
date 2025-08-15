@@ -7,7 +7,6 @@ import android.text.Spannable
 import androidx.core.text.HtmlCompat
 import org.json.JSONException
 import org.json.JSONObject
-import org.oppia.android.util.extensions.safeForEach
 import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
@@ -172,7 +171,7 @@ class CustomHtmlContentHandler private constructor(
   private fun getContentDescription(): String {
     val rawDesc = buildString {
       var lastIndex = 0
-      tagContentDescriptions.entries.sortedBy { it.key }.safeForEach { (index, description) ->
+      tagContentDescriptions.entries.sortedBy { it.key }.forEach { (index, description) ->
         if (index > lastIndex && index <= contentDescriptionBuilder.length) {
           append(
             contentDescriptionBuilder.substring(

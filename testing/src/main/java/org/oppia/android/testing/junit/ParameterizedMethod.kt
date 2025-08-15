@@ -1,6 +1,5 @@
 package org.oppia.android.testing.junit
 
-import org.oppia.android.util.extensions.safeForEach
 import java.lang.reflect.Field
 import java.util.Locale
 
@@ -39,7 +38,7 @@ class ParameterizedMethod(
       val setterMethod = baseClass.getDeclaredMethod("set$fieldName", field.type)
       field.name to setterMethod
     }
-    values.getValue(iterationName).safeForEach { parameterValue ->
+    values.getValue(iterationName).forEach { parameterValue ->
       val fieldSetter = fieldSetters.getValue(parameterValue.key)
       fieldSetter.invoke(testClassInstance, parameterValue.value)
     }

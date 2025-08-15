@@ -10,7 +10,6 @@ import okhttp3.mockwebserver.MockWebServer
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.NetworkApiKey
 import org.oppia.android.data.backends.gae.XssiPrefix
-import org.oppia.android.util.extensions.safeForEach
 import org.robolectric.Shadows
 import javax.inject.Singleton
 
@@ -44,7 +43,7 @@ class NetworkConfigTestModule {
 
       // Reinstall all activities that were previously registered (since installPackage above
       // overrides them).
-      existingPackageInfo.activities.safeForEach(packageManager::addOrUpdateActivity)
+      existingPackageInfo.activities.forEach(packageManager::addOrUpdateActivity)
     }
   }
 

@@ -65,7 +65,6 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -222,12 +221,12 @@ class ClassroomListFragmentPresenter @Inject constructor(
       modifier = Modifier.testTag(CLASSROOM_LIST_SCREEN_TEST_TAG),
       state = listState
     ) {
-      groupedItems.safeForEach { (type, items) ->
+      groupedItems.forEach { (type, items) ->
         when (type) {
-          WelcomeViewModel::class -> items.safeForEach { item ->
+          WelcomeViewModel::class -> items.forEach { item ->
             item { WelcomeText(welcomeViewModel = item as WelcomeViewModel) }
           }
-          PromotedStoryListViewModel::class -> items.safeForEach { item ->
+          PromotedStoryListViewModel::class -> items.forEach { item ->
             item {
               PromotedStoryList(
                 promotedStoryListViewModel = item as PromotedStoryListViewModel,
@@ -235,7 +234,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
               )
             }
           }
-          ComingSoonTopicListViewModel::class -> items.safeForEach { item ->
+          ComingSoonTopicListViewModel::class -> items.forEach { item ->
             item {
               ComingSoonTopicList(
                 comingSoonTopicListViewModel = item as ComingSoonTopicListViewModel,
@@ -243,7 +242,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
               )
             }
           }
-          AllClassroomsViewModel::class -> items.safeForEach { _ ->
+          AllClassroomsViewModel::class -> items.forEach { _ ->
             item { AllClassroomsHeaderText() }
           }
           ClassroomSummaryViewModel::class -> stickyHeader {
@@ -253,7 +252,7 @@ class ClassroomListFragmentPresenter @Inject constructor(
               isSticky = listState.firstVisibleItemIndex >= classroomListIndex
             )
           }
-          AllTopicsViewModel::class -> items.safeForEach { _ ->
+          AllTopicsViewModel::class -> items.forEach { _ ->
             item { AllTopicsHeaderText() }
           }
           TopicSummaryViewModel::class -> {

@@ -10,7 +10,6 @@ import org.junit.runner.manipulation.Sortable
 import org.junit.runner.manipulation.Sorter
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.Suite
-import org.oppia.android.util.extensions.safeForEach
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
@@ -132,12 +131,12 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
         }
       }.also { allValues ->
         // Validate no duplicate keys.
-        allValues.safeForEach { (iterationName, values) ->
+        allValues.forEach { (iterationName, values) ->
           val allKeys = values.map { it.key }
           val uniqueKeys = allKeys.toSet()
           check(allKeys.size == uniqueKeys.size) {
             val duplicateKeys = allKeys.toMutableList()
-            uniqueKeys.safeForEach { duplicateKeys.remove(it) }
+            uniqueKeys.forEach { duplicateKeys.remove(it) }
             return@check "Encountered duplicate keys in iteration $iterationName for method" +
               " ${method.name}: ${duplicateKeys.toSet()}"
           }
@@ -145,7 +144,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
 
         // Validate key consistency.
         val allKeys = allValues.values.flatten().map(ParameterValue::key).toSet()
-        allValues.safeForEach { (iterationName, values) ->
+        allValues.forEach { (iterationName, values) ->
           val iterationKeys = values.map { it.key }.toSet()
           check(iterationKeys == allKeys) {
             "Iteration $iterationName in method ${method.name} has missing keys compared with" +
@@ -156,7 +155,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
         // Validate value ordering.
         val iterationKeys = allValues.mapValues { (_, values) -> values.map { it.key } }
         val expectedOrder = iterationKeys.values.first()
-        iterationKeys.safeForEach { (iterationName, keys) ->
+        iterationKeys.forEach { (iterationName, keys) ->
           check(keys == expectedOrder) {
             "Iteration $iterationName in method ${method.name} lists its keys in the order: $keys" +
               " whereas $expectedOrder (for the first iteration) is expected for consistency." +
@@ -165,8 +164,8 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
         }
 
         // Validate that all value sets are unique (to detect redundant iterations).
-        allValues.entries.safeForEach { (outerIterationName, outerValues) ->
-          allValues.entries.safeForEach { (innerIterationName, innerValues) ->
+        allValues.entries.forEach { (outerIterationName, outerValues) ->
+          allValues.entries.forEach { (innerIterationName, innerValues) ->
             if (outerIterationName != innerIterationName) {
               // Order & counts have been verified above, so the values can be checked in order.
               val differentValues = outerValues.zip(innerValues).any { (outerValue, innerValue) ->
@@ -200,7 +199,7 @@ class OppiaParameterizedTestRunner(private val testClass: Class<*>) : Suite(test
       }.takeIf { it.isNotEmpty() }?.let { rawValues ->
         val groupedValues = rawValues.groupBy({ it.first }, { it.second })
         // Verify there are no duplicate iteration names.
-        groupedValues.safeForEach { (iterationName, iterations) ->
+        groupedValues.forEach { (iterationName, iterations) ->
           check(iterations.size == 1) {
             "Encountered duplicate iteration name: $iterationName in method ${method.name}"
           }

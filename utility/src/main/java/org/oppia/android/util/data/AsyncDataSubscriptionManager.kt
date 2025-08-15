@@ -3,7 +3,6 @@ package org.oppia.android.util.data
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
@@ -86,7 +85,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     val subscriptions = subscriptionLock.withLock { computeSubscriptionClosure(id) }
 
     // Notify all subscribers (both directly for this parent & all child IDs).
-    subscriptions.safeForEach { observeChange -> observeChange() }
+    subscriptions.forEach { observeChange -> observeChange() }
   }
 
   /**
@@ -160,7 +159,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     subscriptionMap[parentId]?.let { directSubscriptions ->
       subscriptions.addAll(directSubscriptions)
     }
-    computeNotificationClosure(parentId).safeForEach { childId ->
+    computeNotificationClosure(parentId).forEach { childId ->
       subscriptionMap[childId]?.let { indirectSubscriptions ->
         subscriptions.addAll(indirectSubscriptions)
       }
@@ -184,7 +183,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
   private fun computeNotificationClosureAux(nextParentId: Any, idsToNotify: MutableSet<Any>) {
     associatedIds[nextParentId]?.let { childIds ->
       idsToNotify.addAll(childIds)
-      childIds.safeForEach { childId -> computeNotificationClosureAux(childId, idsToNotify) }
+      childIds.forEach { childId -> computeNotificationClosureAux(childId, idsToNotify) }
     }
   }
 
@@ -204,7 +203,7 @@ class AsyncDataSubscriptionManager @Inject constructor(
     appendSpacing(indent).append(parentId)
     associatedIds[parentId]?.let { childIds ->
       append(" ->")
-      childIds.safeForEach { childId ->
+      childIds.forEach { childId ->
         appendLine().computeSubscriptionTreeStringAux(childId, indent + 2)
       }
     }

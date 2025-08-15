@@ -1,7 +1,6 @@
 package org.oppia.android.testing.robolectric
 
 import androidx.core.text.BidiFormatter
-import org.oppia.android.util.extensions.safeForEach
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
 import org.robolectric.annotation.RealObject
@@ -70,7 +69,7 @@ class ShadowBidiFormatter {
       // Similarly each individual shadow needs to be reset since Android only creates a couple of
       // Bidi formatters & Robolectric will keep a 1:1 relationship between classes and their
       // shadows.
-      lookUpFormatters().values.safeForEach { it.wrappedSequences.clear() }
+      lookUpFormatters().values.forEach { it.wrappedSequences.clear() }
       trackedFormatters.clear()
     }
 
