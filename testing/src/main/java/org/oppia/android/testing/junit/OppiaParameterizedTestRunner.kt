@@ -10,10 +10,10 @@ import org.junit.runner.manipulation.Sortable
 import org.junit.runner.manipulation.Sorter
 import org.junit.runner.notification.RunNotifier
 import org.junit.runners.Suite
+import org.oppia.android.util.extensions.safeForEach
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
-import org.oppia.android.util.extensions.safeForEach
 
 /**
  * JUnit test runner that enables support for parameterization, that is, running a single test

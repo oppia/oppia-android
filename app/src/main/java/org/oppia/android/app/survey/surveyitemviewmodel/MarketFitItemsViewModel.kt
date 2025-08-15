@@ -13,8 +13,8 @@ import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.util.enumfilter.filterByEnumCondition
-import javax.inject.Inject
 import org.oppia.android.util.extensions.safeForEach
+import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for the market fit question options. */
 class MarketFitItemsViewModel @Inject constructor(

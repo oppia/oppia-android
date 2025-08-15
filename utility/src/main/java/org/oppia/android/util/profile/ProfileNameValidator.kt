@@ -1,7 +1,7 @@
 package org.oppia.android.util.profile
 
-import javax.inject.Inject
 import org.oppia.android.util.extensions.safeForEach
+import javax.inject.Inject
 
 /** Utility to validate that profile names are correctly formatted. */
 class ProfileNameValidator @Inject constructor() {

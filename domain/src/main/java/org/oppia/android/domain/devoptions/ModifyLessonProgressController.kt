@@ -11,10 +11,10 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.system.OppiaClock
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 private const val GET_ALL_TOPICS_COMBINED_PROVIDER_ID = "get_all_topics_combined_provider_id"
 private const val GET_ALL_STORIES_PROVIDER_ID = "get_all_stories_provider_id"

@@ -1,8 +1,8 @@
 package org.oppia.android.testing.junit
 
+import org.oppia.android.util.extensions.safeForEach
 import java.lang.reflect.Field
 import java.util.Locale
-import org.oppia.android.util.extensions.safeForEach
 
 /**
  * A parameterized method used by [OppiaParameterizedTestRunner] when defining sub-tests that are

@@ -13,8 +13,8 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.util.enumfilter.filterByEnumCondition
-import javax.inject.Inject
 import org.oppia.android.util.extensions.safeForEach
+import javax.inject.Inject
 
 /** [SurveyAnswerItemViewModel] for providing the type of user question options. */
 class UserTypeItemsViewModel @Inject constructor(

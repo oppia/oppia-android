@@ -22,12 +22,12 @@ import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.domain.translation.TranslationController
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.parser.html.CUSTOM_IMG_TAG
 import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 import org.oppia.android.util.parser.html.ImageTagHandler
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 /** Corresponds to the type of input that should be used for an item selection interaction view. */
 enum class SelectionItemInputType {
@@ -279,7 +279,8 @@ class SelectionInteractionViewModel private constructor(
   private fun updateItemSelectability() {
     if (selectedItems.size == maxAllowableSelectionCount) {
       // All non-selected items should be disabled when the limit is reached.
-      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }.safeForEach { it.set(false) }
+      enabledItemsList.filterIndexed { idx, _ -> idx !in selectedItems }
+        .safeForEach { it.set(false) }
     } else enabledItemsList.safeForEach { it.set(true) } // Otherwise, all items are available.
   }
 

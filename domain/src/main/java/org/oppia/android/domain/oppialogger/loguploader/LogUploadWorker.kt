@@ -14,13 +14,13 @@ import org.oppia.android.domain.oppialogger.analytics.PerformanceMetricsControll
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.oppialogger.exceptions.toException
 import org.oppia.android.domain.util.getStringFromData
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.SyncStatusManager
 import org.oppia.android.util.logging.performancemetrics.PerformanceMetricsEventLogger
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 /** Worker class that extracts log reports from the cache store and logs them to the remote service. */
 class LogUploadWorker private constructor(

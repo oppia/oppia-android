@@ -65,6 +65,7 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.parser.html.ClassroomHtmlParserEntityType
 import org.oppia.android.util.parser.html.StoryHtmlParserEntityType
@@ -73,7 +74,6 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 /** Test tag for the classroom list screen. */
 const val CLASSROOM_LIST_SCREEN_TEST_TAG = "TEST_TAG.classroom_list_screen"

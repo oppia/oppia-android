@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -38,12 +37,12 @@ import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.topic.TopicController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 const val TAG_SWITCH_PROFILE_DIALOG = "SWITCH_PROFILE_DIALOG"
 

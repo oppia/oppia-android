@@ -15,9 +15,9 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 /**
  * Debug implementation for the controller to manage and synchronize platform parameters and

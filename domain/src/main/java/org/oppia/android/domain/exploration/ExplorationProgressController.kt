@@ -46,6 +46,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.system.OppiaClock
@@ -54,7 +55,6 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"

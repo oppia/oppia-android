@@ -9,8 +9,8 @@ import org.oppia.android.app.survey.PreviousAnswerHandler
 import org.oppia.android.app.survey.SelectedAnswerAvailabilityReceiver
 import org.oppia.android.app.survey.SelectedAnswerHandler
 import org.oppia.android.app.viewmodel.ObservableArrayList
-import javax.inject.Inject
 import org.oppia.android.util.extensions.safeForEach
+import javax.inject.Inject
 
 class NpsItemsViewModel @Inject constructor(
   private val selectedAnswerAvailabilityReceiver: SelectedAnswerAvailabilityReceiver,

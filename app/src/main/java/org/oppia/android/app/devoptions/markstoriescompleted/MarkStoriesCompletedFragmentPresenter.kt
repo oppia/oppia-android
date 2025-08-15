@@ -12,8 +12,8 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.domain.devoptions.ModifyLessonProgressController
-import javax.inject.Inject
 import org.oppia.android.util.extensions.safeForEach
+import javax.inject.Inject
 
 /** The presenter for [MarkStoriesCompletedFragment]. */
 @FragmentScope

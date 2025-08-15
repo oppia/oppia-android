@@ -25,12 +25,12 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.SyncStatusModule
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.reflect.KCallable
-import org.oppia.android.util.extensions.safeForEach
 
 /**
  * Test for [ReportSchemaVersion] that validates the proper schema version is sent in feedback

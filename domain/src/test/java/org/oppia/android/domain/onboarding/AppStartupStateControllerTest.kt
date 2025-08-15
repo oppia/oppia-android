@@ -55,6 +55,7 @@ import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
@@ -72,7 +73,6 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 /** Tests for [AppStartupStateController]. */
 // FunctionName: test names are conventionally named with underscores.

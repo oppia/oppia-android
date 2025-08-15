@@ -12,10 +12,10 @@ import org.oppia.android.app.model.TopicPracticeFragmentArguments
 import org.oppia.android.app.model.TopicPracticeFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 /** Fragment that displays skills for topic practice mode. */
 class TopicPracticeFragment : InjectableFragment() {

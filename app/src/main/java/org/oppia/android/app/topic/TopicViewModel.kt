@@ -15,8 +15,8 @@ import org.oppia.android.domain.topic.TopicListController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import javax.inject.Inject
 import org.oppia.android.util.extensions.safeForEach
+import javax.inject.Inject
 
 /** The ObservableViewModel for [TopicFragment]. */
 @FragmentScope

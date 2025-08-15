@@ -15,6 +15,7 @@ import kotlinx.coroutines.guava.asListenableFuture
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withTimeoutOrNull
+import org.oppia.android.util.extensions.safeForEach
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.ExecutorService
@@ -26,7 +27,6 @@ import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
-import org.oppia.android.util.extensions.safeForEach
 
 /**
  * Listener for being notified when [CoroutineExecutorService] has arranged state and is immediately

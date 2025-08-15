@@ -32,9 +32,9 @@ import org.oppia.android.domain.exploration.ExplorationProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.safeForEach
 import java.util.Collections
 import javax.inject.Inject
-import org.oppia.android.util.extensions.safeForEach
 
 /** Represents the type of errors that can be thrown by drag and drop sort interaction. */
 enum class DragAndDropSortInteractionError(@StringRes private var error: Int?) {

@@ -36,12 +36,12 @@ import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.system.OppiaClock
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 private const val ONE_WEEK_IN_DAYS = 7
 

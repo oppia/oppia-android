@@ -43,10 +43,10 @@ import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.combineWith
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 const val TEST_SKILL_ID_0 = "test_skill_id_0"
 const val TEST_SKILL_ID_1 = "test_skill_id_1"

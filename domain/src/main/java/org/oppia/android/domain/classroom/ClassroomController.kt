@@ -26,11 +26,11 @@ import org.oppia.android.util.caching.AssetRepository
 import org.oppia.android.util.caching.LoadLessonProtosFromAssets
 import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders.Companion.transform
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 /** ID of test classroom 0. */
 const val TEST_CLASSROOM_ID_0 = "test_classroom_id_0"

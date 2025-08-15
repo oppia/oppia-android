@@ -11,6 +11,7 @@ import org.oppia.android.domain.auth.AuthenticationController
 import org.oppia.android.domain.oppialogger.FirestoreLogStorageCacheSize
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProvider
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.logging.ConsoleLogger
 import org.oppia.android.util.logging.ExceptionLogger
 import org.oppia.android.util.logging.firebase.FirestoreEventLogger
@@ -19,7 +20,6 @@ import org.oppia.android.util.system.OppiaClock
 import org.oppia.android.util.threading.BlockingDispatcher
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 /** Controller for handling event logging for Firestore-bound data. */
 @Singleton

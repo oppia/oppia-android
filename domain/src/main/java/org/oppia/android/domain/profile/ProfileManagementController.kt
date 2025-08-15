@@ -33,6 +33,7 @@ import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.data.DataProviders
 import org.oppia.android.util.data.DataProviders.Companion.transform
 import org.oppia.android.util.data.DataProviders.Companion.transformAsync
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -46,7 +47,6 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.util.extensions.safeForEach
 
 private const val DEFAULT_LOGGED_OUT_INTERNAL_PROFILE_ID = -1
 private const val GET_PROFILES_PROVIDER_ID = "get_profiles_provider_id"

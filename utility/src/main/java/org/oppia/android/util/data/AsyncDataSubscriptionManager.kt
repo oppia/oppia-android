@@ -3,6 +3,7 @@ package org.oppia.android.util.data
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.oppia.android.util.extensions.safeForEach
 import org.oppia.android.util.threading.BackgroundDispatcher
 import java.lang.IllegalStateException
 import java.lang.StringBuilder
@@ -10,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.withLock
-import org.oppia.android.util.extensions.safeForEach
 
 typealias ObserveAsyncChange = suspend () -> Unit
 
