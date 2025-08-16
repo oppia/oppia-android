@@ -37,7 +37,7 @@ class FeatureFlagsViewModel @Inject constructor(
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }
 
-  private fun processEphemeralFlagResult(
+  fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
   ): List<EphemeralFeatureFlag> {
     return when (result) {

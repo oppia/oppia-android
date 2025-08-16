@@ -254,4 +254,6 @@
   <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_greenish_black_2</color>
   <!-- FLASHBACK -->
   <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
+  <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
+  <color name="color_palette_overridden_background_color">@color/color_def_confetti_bright_gold</color>
 </resources>

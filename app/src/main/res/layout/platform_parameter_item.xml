@@ -21,7 +21,7 @@
       android:id="@+id/platform_parameter_constraint_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:background="@color/component_color_shared_item_background_solid_color"
+      android:background="@{viewModel.isResetAvailable ? @color/component_color_platform_parameter_overridden_background_color : @color/component_color_shared_item_background_solid_color}"
       android:minHeight="64dp"
       android:paddingStart="16dp"
       app:layout_constraintEnd_toEndOf="parent"
@@ -96,59 +96,13 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/sync_status_constraint_layout"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:minHeight="64dp"
-      android:paddingStart="16dp"
-      android:paddingEnd="16dp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/platform_parameter_constraint_layout">
-
-      <TextView
-        android:id="@+id/sync_status_text_view"
-        style="@style/Subtitle1ViewStart"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/platform_parameter_sync_status"
-        android:textColor="@color/component_color_shared_primary_dark_text_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/sync_status_value_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/sync_status_value_text_view"
-        style="@style/Subtitle2ViewCenterVertical"
-        android:layout_width="112sp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="4dp"
-        android:paddingStart="20dp"
-        android:paddingTop="6dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="6dp"
-        android:text="@{viewModel.syncStatusDisplayText}"
-        android:textAlignment="center"
-        android:textColor="@color/component_color_shared_secondary_4_text_color"
-        app:largeRoundedRectDrawableWithColor="@{viewModel.syncStatusBackgroundColor}"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/sync_status_text_view"
-        app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/reset_server_defaults_constraint_layout"
       android:layout_width="match_parent"
       android:layout_height="64dp"
       android:background="@color/component_color_shared_screen_tertiary_background_color"
-      android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/sync_status_constraint_layout">
+      app:layout_constraintTop_toBottomOf="@id/platform_parameter_constraint_layout">
 
       <View
         android:layout_width="0dp"
@@ -158,18 +112,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+      <ImageView
+        android:id="@+id/alert_icon_image"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/platform_parameter_alert_icon_content_description"
+        android:src="@drawable/ic_alert"
+        android:visibility="@{viewModel.isResetButtonActive &amp;&amp; viewModel.isResetAvailable ? View.VISIBLE : View.GONE}"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
       <TextView
-        android:id="@+id/reset_server_defaults_text_view"
-        style="@style/Subtitle1ViewStart"
+        android:id="@+id/sync_details_text_view"
+        style="@style/SubtitleLight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="@string/platform_parameter_reset_to_server_or_default"
+        android:text="@{viewModel.syncDetails}"
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/reset_button"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/alert_icon_image"
         app:layout_constraintTop_toTopOf="parent" />
 
       <Button
@@ -184,9 +151,10 @@
         android:enabled="@{viewModel.isResetButtonActive}"
         android:text="@string/platform_parameter_reset"
         android:textColor="@{viewModel.isResetButtonActive ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
+        android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/reset_server_defaults_text_view"
+        app:layout_constraintStart_toEndOf="@id/sync_details_text_view"
         app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

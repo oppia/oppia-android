@@ -38,6 +38,7 @@ class FeatureFlagsFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View {
     var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    var resetFlags: MutableList<FeatureFlagId> = mutableListOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
@@ -46,9 +47,13 @@ class FeatureFlagsFragment : InjectableFragment() {
       featureFlagStates = args?.featureFlagStatesList
         ?.associate { it.id to it.overriddenValue }
         ?.toMutableMap() ?: mutableMapOf()
+      resetFlags = args?.resetFeatureFlagsList ?: mutableListOf()
     }
 
-    return featureFlagsFragmentPresenter.handleCreateView(inflater, container, featureFlagStates)
+    return featureFlagsFragmentPresenter.handleCreateView(
+      inflater, container, featureFlagStates,
+      resetFlags
+    )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -61,9 +66,11 @@ class FeatureFlagsFragment : InjectableFragment() {
           .setOverriddenValue(it.value)
           .build()
       }
+    val resetFlags = featureFlagsFragmentPresenter.resetFlags.keys.toList()
 
     val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
+      .addAllResetFeatureFlags(resetFlags)
       .build()
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
