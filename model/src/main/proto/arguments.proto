@@ -958,6 +958,9 @@ message StatePlayerRecyclerViewAssemblerState {
 message FeatureFlagsFragmentStateBundle {
   // List of locally overridden feature flag states.
   repeated OverriddenFeatureFlag feature_flag_states = 1;
+
+  // List of feature flags IDs that had gone reset.
+  repeated FeatureFlagId reset_feature_flags = 3;
 }
 
 // The bundle of properties that are saved on configuration change in PlatformParametersFragment.
@@ -967,6 +970,9 @@ message PlatformParametersFragmentStateBundle {
 
   // List of platform parameter IDs with invalid values.
   repeated PlatformParameterId invalid_input_platform_parameters = 2;
+
+  // List of platform parameter IDs that had gone reset.
+  repeated PlatformParameterId reset_platform_parameters = 3;
 }
 
 // Arguments required when creating an FlashbackConfirmationDialogFragment.

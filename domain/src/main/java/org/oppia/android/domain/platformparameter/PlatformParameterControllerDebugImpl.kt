@@ -122,7 +122,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           this.currentValue = currentValue
           this.syncStatus = syncStatus
         }.build()
-      }
+      }.sortedByDescending { it.syncStatus == SyncStatus.LOCAL_OVERRIDE }
 
       return@createInMemoryDataProviderAsync AsyncResult.Success(ephemeralFlags)
     }
@@ -163,7 +163,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           this.currentValue = currentValue
           this.syncStatus = syncStatus
         }.build()
-      }
+      }.sortedByDescending { it.syncStatus == SyncStatus.LOCAL_OVERRIDE }
 
       return@createInMemoryDataProviderAsync AsyncResult.Success(ephemeralParameters)
     }

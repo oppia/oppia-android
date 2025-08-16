@@ -711,4 +711,10 @@
   <string name="flashback_confirmation_dialog_title_text">Need help? No problem.</string>
   <string name="flashback_confirmation_dialog_message_text">Review the previous question\'s solution</string>
 
+  <!-- PlatformParametersFragment  -->
+  <string name="platform_parameter_alert_icon_content_description"> Alert Icon for Overridden Parameter</string>
+
+  <!-- FeatureFlagsFragment  -->
+  <string name="feature_flag_alert_icon_content_description"> Alert Icon for Overridden Flagr</string>
+
 </resources>
