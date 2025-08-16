@@ -1494,7 +1494,7 @@
             "tagged_skill_misconception_id": ""
           }],
           "default_outcome": {
-            "dest": "ItemSelectionMinOne",
+            "dest": "MultipleChoice",
             "feedback": {
               "content_id": "default_outcome",
               "html": "<p>Not quite. Try again.</p>"

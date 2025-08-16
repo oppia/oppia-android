@@ -740,12 +740,9 @@ class ExplorationProgressController @Inject constructor(
             val wasVisitedBefore = explorationProgress.stateDeck
               .wasStatePreviouslyVisited(answerOutcome.stateName)
 
-            val hasSolution = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-              .interaction.solution?.let { it.hasExplanation() && it.hasCorrectAnswer() } == true
-
             // Checks whether the learner submitted a wrong answer, the expected destination name
             // was previously visited and the destination state has a solution.
-            if (enableFlashbackSupport.value && hasSolution &&
+            if (enableFlashbackSupport.value &&
               !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
               !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
             ) {

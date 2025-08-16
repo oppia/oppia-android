@@ -2019,7 +2019,7 @@ states {
         }
       }
       default_outcome {
-        dest_state_name: "ItemSelectionMinOne"
+        dest_state_name: "MultipleChoice"
         feedback {
           html: "<p>Not quite. Try again.</p>"
           content_id: "default_outcome"
