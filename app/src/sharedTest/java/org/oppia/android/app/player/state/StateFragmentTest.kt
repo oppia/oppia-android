@@ -5890,7 +5890,7 @@ class StateFragmentTest {
         labelTextId = R.string.submitted_answer_label_text
       )
 
-      //Verify unselected options in Multiple choice submitted answer.
+      // Verify unselected options in Multiple choice submitted answer.
       verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
         optionPosition = 0,
         expectedOptionText = "Penguin"
@@ -5945,7 +5945,7 @@ class StateFragmentTest {
         labelTextId = R.string.flashback_submitted_answer_label_text
       )
 
-      //Verify unselected options in Multiple choice submitted answer.
+      // Verify unselected options in Multiple choice submitted answer.
       verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
         optionPosition = 0,
         expectedOptionText = "Penguin"
