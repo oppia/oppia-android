@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.databinding.databinding.StateFragmentBinding
-import org.oppia.android.app.flashback.FlashbackConfirmationDialogFragment
-import org.oppia.android.app.flashback.TAG_FLASHBACK_CONFIRMATION_DIALOG
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
