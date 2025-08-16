@@ -144,7 +144,7 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
-  fun testLoadParametersAsync_withRemoteAndNoLocalOverride_setsProcessStateToRemoteValue() {
+  fun testLoadParametersAsync_withRemoteParamAndNoLocalOverride_setsProcessStateToRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -166,7 +166,7 @@ class PlatformParameterControllerDebugImplTest {
 
   @Test
   @Suppress("DeferredResultUnused")
-  fun testLoadParametersAsync_withRemoteAndOverride_setsProcessStateToOverriddenValue() {
+  fun testLoadParametersAsync_withRemoteParamAndOverride_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -763,7 +763,11 @@ class PlatformParameterControllerDebugImplTest {
     setUpTestApplicationComponent()
     val testParam = OverriddenPlatformParameter.newBuilder()
       .setId(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
-      .setOverriddenValue(PlatformParameterValue.newBuilder().setInteger(48).build())
+      .setOverriddenValue(
+        PlatformParameterValue.newBuilder()
+          .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
+          .build()
+      )
       .build()
 
     val updateProvider = platformParameterControllerDebugImpl.updateOverriddenPlatformParameters(
@@ -778,7 +782,8 @@ class PlatformParameterControllerDebugImplTest {
       it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
     }
 
-    assertThat(updatedParam?.currentValue?.integer).isEqualTo(48)
+    assertThat(updatedParam?.currentValue?.integer)
+      .isEqualTo(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
   }
 
   @Test
@@ -806,6 +811,60 @@ class PlatformParameterControllerDebugImplTest {
     }
 
     assertThat(updatedParam?.syncStatus).isEqualTo(SyncStatus.LOCAL_OVERRIDE)
+  }
+
+  @Test
+  fun testResetPlatformParameter_withLocalOverride_resetsParameter_returnsDefaultSyncStatus() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    val resetProvider = platformParameterControllerDebugImpl.resetPlatformParameter(
+      PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    )
+    monitorFactory.waitForNextSuccessfulResult(resetProvider)
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+    val ephemeralSyncUpWorkerTimePeriodValue = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    assertThat(ephemeralSyncUpWorkerTimePeriodValue?.syncStatus)
+      .isEqualTo(SyncStatus.NOT_SYNCED_FROM_SERVER)
+  }
+
+  @Test
+  fun testResetPlatformParameter_withRemoteAndLocalOverride_resetsParameter_returnsServerStatus() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    val resetProvider = platformParameterControllerDebugImpl.resetPlatformParameter(
+      PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+    )
+    monitorFactory.waitForNextSuccessfulResult(resetProvider)
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+    val ephemeralSyncUpWorkerTimePeriodValue = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    assertThat(ephemeralSyncUpWorkerTimePeriodValue?.syncStatus)
+      .isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
   }
 
   // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOMS.
@@ -1004,8 +1063,19 @@ class PlatformParameterControllerDebugImplTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
   private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
     val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
       DaggerPlatformParameterControllerDebugImplTest_TestApplicationComponent.builder()
@@ -1014,8 +1084,10 @@ class PlatformParameterControllerDebugImplTest {
     )
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -1046,6 +1118,7 @@ class PlatformParameterControllerDebugImplTest {
       PlatformParameterProcessState()
   }
 
+  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [

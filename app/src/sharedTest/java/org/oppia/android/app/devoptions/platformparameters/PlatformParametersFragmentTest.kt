@@ -151,7 +151,6 @@ class PlatformParametersFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
-    private const val SYNC_UP_WORKER_PARAMETER_NAME = "Sync Up Worker Time Period In Hours"
     private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
     private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
     private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
@@ -167,9 +166,33 @@ class PlatformParametersFragmentTest {
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = expectedCount))
 
-      // Note to developers: if you add/remove a feature flag, please update the expected count.
+      // Note to developers: if you add/remove a platform parameter, please update the
+      // expected count.
       onView(withId(R.id.platform_parameters_recycler_view))
         .check(RecyclerViewMatcher.hasItemCount(count = 11))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_verifyRecyclerViewItems_haveCorrectDetails() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      getEphemeralPlatformParameters().forEachIndexed { index, ephemeralPlatformParameter ->
+        scrollToPosition(index)
+        verifyPlatformParameterDisplayName(
+          position = index,
+          expectedDisplayName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
+        )
+        verifyPlatformParameterSyncStatus(
+          position = index,
+          expectedSyncStatus = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
+        )
+        verifyPlatformParameterState(
+          position = index,
+          expectedValue = ephemeralPlatformParameter.currentValue
+        )
+      }
     }
   }
 
@@ -246,21 +269,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_intParam_withNoRemoteOrOverride_returnsDefaultBackground() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
-      verifyPlatformParameterBackgroundColor(
-        position = 1,
-        expectedColor = DEFAULT_BACKGROUND_COLOR
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsCorrectValue() {
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -342,7 +351,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParmetersFragment_intParam_withOnlyRemoteValue_returnsCorrectValue() {
+  fun testPlatformParmetersFragment_intParam_withOnlyRemoteValue_returnsRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -470,7 +479,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withRemoteAndOverridden_returnsOverriddenValue() {
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -497,7 +506,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withRemoteAndOverridden_returnsOverriddenStatus() {
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsOverriddenStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -574,7 +583,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_intParam_withRemoteAndOverridden_returnsOverriddenValue() {
+  fun testPlatformParametersFragment_intParam_withRemoteAndOverride_returnsOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
         testComponent,
@@ -714,7 +723,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_invalidValueThenValidInput_errorMessageClears() {
+  fun testPlatformParametersFragment_invalidValueThenValidInput_clearsErrorMessage() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1366,8 +1375,19 @@ class PlatformParametersFragmentTest {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  /**
+   * Creates a separate test application component and executes the specified block. This should be
+   * called before [setUpTestApplicationComponent] to avoid undefined behavior in production code.
+   * This can be used to simulate arranging state in a "prior" run of the app.
+   *
+   * Note that only dependencies fetched from the specified [TestApplicationComponent] should be
+   * used, not any class-level injected dependencies.
+   */
   private fun executeInPreviousAppInstance(block: (TestApplicationComponent) -> Unit) {
     val testApplication = TestApplication()
+    // The true application is hooked as a base context. This is to make sure the new application
+    // can behave like a real Android application class (per Robolectric) without having a shared
+    // Dagger dependency graph with the application under test.
     testApplication.attachBaseContext(ApplicationProvider.getApplicationContext())
     block(
       DaggerPlatformParametersFragmentTest_TestApplicationComponent.builder()
@@ -1441,12 +1461,18 @@ class PlatformParametersFragmentTest {
       WorkManagerConfigurationModule::class
     ]
   )
+  /** [ApplicationComponent] for [PlatformParametersFragmentTest]. */
   interface TestApplicationComponent : ApplicationComponent {
+    /** [ApplicationComponent.Builder] for [TestApplicationComponent]. */
     @Component.Builder
     interface Builder : ApplicationComponent.Builder {
       override fun build(): TestApplicationComponent
     }
 
+    /**
+     * Injects [TestApplicationComponent] to [PlatformParametersFragmentTest] providing the required
+     * dagger modules.
+     */
     fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest)
     fun getCacheStoreFactory(): PersistentCacheStore.Factory
     fun getTestCoroutineDispatchers(): TestCoroutineDispatchers
@@ -1454,6 +1480,7 @@ class PlatformParametersFragmentTest {
     override fun getBackgroundDispatcher(): CoroutineDispatcher
   }
 
+  /** [Application] class for [PlatformParametersFragmentTest]. */
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerPlatformParametersFragmentTest_TestApplicationComponent.builder()
@@ -1461,10 +1488,10 @@ class PlatformParametersFragmentTest {
         .build() as TestApplicationComponent
     }
 
+    /** Called when setting up [TestApplication]. */
     fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest) {
       component.inject(platformParametersFragmentTest)
     }
-
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }
