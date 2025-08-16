@@ -61,7 +61,7 @@ enum class LintSeverity(val displayName: String) {
   }
 
   /** Returns true if this severity represents a critical issue. */
-  fun isCritical(): Boolean = this == FATAL || this == ERROR
+  fun isCritical(): Boolean = this == FATAL || this == ERROR || this == WARNING
 
   /** Returns the ANSI color code for this severity level. */
   fun getColor(): String = when (this) {
