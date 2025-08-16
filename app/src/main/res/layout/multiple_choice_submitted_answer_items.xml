@@ -40,23 +40,19 @@
 
       <TextView
         android:id="@+id/multiple_choice_content_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
+        style="@style/SubmittedAnswerText"
         android:text="@{htmlContent}"
         android:contentDescription="@{viewModel.getContentDescription()}"
-        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color"
-        android:textSize="16sp" />
+        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
 
       <TextView
         android:id="@+id/submitted_answer_label_text_view"
+        style="@style/TextFieldLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:fontFamily="sans-serif"
         android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
-        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color"
-        android:textSize="12sp" />
+        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
     </LinearLayout>
   </LinearLayout>
 </layout>
