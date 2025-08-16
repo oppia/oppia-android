@@ -255,5 +255,5 @@
   <!-- FLASHBACK -->
   <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
   <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
-  <color name="color_palette_overridden_background_color">@color/color_def_confetti_bright_gold</color>
+  <color name="color_palette_overridden_background_color">@color/color_def_avatar_background_15</color>
 </resources>
