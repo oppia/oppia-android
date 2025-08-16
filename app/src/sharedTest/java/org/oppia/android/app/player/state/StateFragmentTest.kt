@@ -5500,113 +5500,6 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testFlashback_onClickFlashbackButton_verifyConfirmationDialogIsVisible() {
-    setUpTestWithFlashbackFeatureOn()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-
-      navigateToPrototypeRatioInputState()
-
-      // Submit wrong answer.
-      typeRatioExpression("4:7")
-      clickSubmitAnswerButton()
-
-      // Click on flashback button.
-      clickFlashbackButton()
-
-      // Verify flashback confirmation dialog.
-      onView(withText("Need help? No problem.")).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      onView(withId(R.id.confirmation_message_text))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-        .check(matches(withText("Review the previous question's solution")))
-
-      // Verify the buttons in the dialog.
-      onView(withId(R.id.not_now_button))
-        .inRoot(isDialog())
-        .check(matches(withText("Not now")))
-      onView(withId(R.id.continue_confirmation_button))
-        .inRoot(isDialog())
-        .check(matches(withText("Continue")))
-    }
-  }
-
-  @Test
-  fun testFlashback_onCancelFlashbackConfirmationDialog_DialogIsNotVisible() {
-    setUpTestWithFlashbackFeatureOn()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-
-      navigateToPrototypeRatioInputState()
-
-      // Submit wrong answer.
-      typeRatioExpression("4:7")
-      clickSubmitAnswerButton()
-
-      // Verify flashback button is visible.
-      clickFlashbackButton()
-
-      // Verify confirmation dialog.
-      onView(withText("Need help? No problem.")).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-
-      // Click Not now buttons in the dialog
-      onView(withId(R.id.not_now_button))
-        .check(matches(withText("Not now")))
-        .perform(click())
-
-      // Verify dialog is not visible.
-      onView(withText("Need help? No problem.")).check(doesNotExist())
-    }
-  }
-
-  @Test
-  fun testFlashback_onCancelFlashbackConfirmationDialog_returnsToPendingStateAgain() {
-    setUpTestWithFlashbackFeatureOn()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
-      startPlayingExploration()
-
-      navigateToPrototypeRatioInputState()
-
-      // Submit wrong answer.
-      typeRatioExpression("4:7")
-      clickSubmitAnswerButton()
-
-      // Click on flashback button.
-      clickFlashbackButton()
-
-      // Verify confirmation dialog.
-      onView(withText("Need help? No problem.")).inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      // Click Not now buttons in the dialog
-      onView(withId(R.id.not_now_button))
-        .check(matches(withText("Not now")))
-        .perform(click())
-
-      // Verify learner returns to the pending state.
-      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
-        " The ratio of the two numbers is:"
-      verifyContentContains(expectedText)
-
-      // Verify ratio expression input interaction is being displayed.
-      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
-      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
-
-      // Verify submit button is visible.
-      scrollToViewType(SUBMIT_ANSWER_BUTTON)
-      onView(withId(R.id.submit_answer_button)).check(
-        matches(withText(R.string.state_submit_button))
-      )
-      // Verify flashback button is visible.
-      scrollToViewType(FLASHBACK_BUTTON)
-      onView(withId(R.id.flashback_button)).check(
-        matches(withText(R.string.state_flashback_button))
-      )
-    }
-  }
-
-  @Test
   fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_verifyFlashbackState() {
     setUpTestWithFlashbackFeatureOn()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -5918,13 +5811,6 @@ class StateFragmentTest {
       // Click on flashback button.
       clickFlashbackButton()
 
-      // Click continue button on flashback confirmation dialog.
-      onView(withId(R.id.continue_confirmation_button))
-        .inRoot(isDialog())
-        .check(matches(withText("Continue")))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
       // Verify feedback is visible.
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view))
@@ -5973,13 +5859,6 @@ class StateFragmentTest {
       // Click on flashback button.
       clickFlashbackButton()
 
-      // Click continue button on flashback confirmation dialog.
-      onView(withId(R.id.continue_confirmation_button))
-        .inRoot(isDialog())
-        .check(matches(withText("Continue")))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
       // Verify feedback is visible.
       scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view))
@@ -6012,13 +5891,6 @@ class StateFragmentTest {
 
     // Click on flashback button.
     clickFlashbackButton()
-
-    // Click continue button on flashback confirmation dialog.
-    onView(withId(R.id.continue_confirmation_button))
-      .inRoot(isDialog())
-      .check(matches(withText("Continue")))
-      .perform(click())
-    testCoroutineDispatchers.runCurrent()
   }
 
   private fun navigateToPrototypeRatioInputState() {
