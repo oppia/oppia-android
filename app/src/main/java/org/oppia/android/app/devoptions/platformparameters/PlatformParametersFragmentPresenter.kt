@@ -33,7 +33,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val platformParametersViewModel: PlatformParametersViewModel,
-  resourceHandler: AppLanguageResourceHandler,
+  private val resourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
@@ -45,6 +45,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
 
+  /** List of platform parameters that have been reset.. */
+  var resetParameters: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
     MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
@@ -53,7 +56,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>
+    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
+    resetParameters: List<PlatformParameterId>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -76,6 +80,11 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates = platformParameterStates.toMutableMap()
+    }
+    if (resetParameters.isNotEmpty()) {
+      resetParameters.forEach { id ->
+        this.resetParameters[id] = PlatformParameterValue.getDefaultInstance()
+      }
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -106,11 +115,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val hasInvalidInput = platformParameterStates.containsValue(null)
 
     if (!hasInvalidInput) {
-      val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
-        OverriddenPlatformParameter.newBuilder()
-          .setId(id)
-          .setOverriddenValue(value)
-          .build()
+      val overriddenPlatformParameters = mutableListOf<OverriddenPlatformParameter>()
+      platformParameterStates.map { (id, value) ->
+        if (resetParameters[id] != value) {
+          overriddenPlatformParameters.add(
+            OverriddenPlatformParameter.newBuilder()
+              .setId(id)
+              .setOverriddenValue(value)
+              .build()
+          )
+        }
       }
 
       platformParameterControllerDebugImpl
@@ -125,6 +139,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
                 it.error
               )
             }
+
             is AsyncResult.Pending -> {} // Wait for a result.
           }
         }
@@ -149,8 +164,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
 
+    if (resetParameters.containsKey(model.platformParameterId)) {
+      resetParameters[model.platformParameterId] = model.currentValue
+      model.isResetAvailable.set(true)
+      model.isResetButtonActive.set(false)
+    }
+
     binding.resetButton.setOnClickListener {
-      handleResetParam(model, binding)
+      handleResetParameter(model, binding)
     }
 
     if (model.currentValue.hasBoolean()) {
@@ -165,6 +186,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.platformParameterId, s.toString()
         )
       }
+
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
     }
@@ -173,38 +195,46 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     editText.setTag(R.id.platform_parameter_text_watcher, newWatcher)
   }
 
-  private fun handleResetParam(
+  private fun handleResetParameter(
     model: PlatformParameterItemViewModel,
     binding: PlatformParameterItemBinding
   ) {
     platformParameterControllerDebugImpl
       .resetPlatformParameter(model.platformParameterId)
       .toLiveData()
-      .observe(fragment) {
-        when (it) {
+      .observe(fragment) { afterResetValue ->
+        when (afterResetValue) {
           is AsyncResult.Success -> {
+            resetParameters[model.platformParameterId] = afterResetValue.value
+              ?: PlatformParameterValue.getDefaultInstance()
             binding.resetButton.isEnabled = false
+            model.syncDetails.set(
+              resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+            )
             if (model.currentValue.hasBoolean()) {
-              model.isChecked.set(it.value?.boolean)
+              platformParameterStates[model.platformParameterId] = afterResetValue.value
+              model.isChecked.set(afterResetValue.value?.boolean)
             } else {
-              alreadyBoundsId.remove(model.platformParameterId)
               when {
                 model.currentValue.hasInteger() -> {
-                  model.inputValue.set(it.value?.integer.toString())
+                  model.inputValue.set(afterResetValue.value?.integer.toString())
                 }
+
                 model.currentValue.hasString() -> {
-                  model.inputValue.set(it.value?.string)
+                  model.inputValue.set(afterResetValue.value?.string)
                 }
               }
             }
             model.isResetButtonActive.set(false)
           }
+
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "PlatformParametersFragmentPresenter",
-              "Failed to reset parameter: ${model.platformParameterId}", it.error
+              "Failed to reset parameter: ${model.platformParameterId}", afterResetValue.error
             )
           }
+
           is AsyncResult.Pending -> {} // No action required
         }
       }
@@ -239,11 +269,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
-    boundParamIds.add(model.platformParameterId)
-
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
         if (boundParamIds.contains(id).not()) {
+          boundParamIds.add(model.platformParameterId)
           return@onPlatformParameterTextChangedCallback
         }
         when {
@@ -263,6 +292,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
               }
             }
           }
+
           model.currentValue.hasString() -> {
             if (text == model.currentValue.string) {
               platformParameterStates.remove(id)

@@ -39,8 +39,9 @@ class PlatformParametersFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    val platformParameterStates:
+    var platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
+    var resetParamList: MutableList<PlatformParameterId> = mutableListOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -52,10 +53,13 @@ class PlatformParametersFragment : InjectableFragment() {
       args?.invalidInputPlatformParametersList?.forEach {
         platformParameterStates[it] = null
       }
+      resetParamList = args?.resetPlatformParametersList?.toMutableList() ?: mutableListOf()
     }
 
     return platformParametersFragmentPresenter
-      .handleCreateView(inflater, container, platformParameterStates)
+      .handleCreateView(
+        inflater, container, platformParameterStates, resetParamList
+      )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -72,9 +76,12 @@ class PlatformParametersFragment : InjectableFragment() {
     val invalidParameterIds = platformParametersFragmentPresenter.platformParameterStates
       .filterValues { it == null }
       .keys
+    val resetParamList =
+      platformParametersFragmentPresenter.resetParameters.keys.toList()
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
       .addAllInvalidInputPlatformParameters(invalidParameterIds)
+      .addAllResetPlatformParameters(resetParamList)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto

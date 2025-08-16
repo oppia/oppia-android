@@ -70,6 +70,18 @@ class PlatformParameterItemViewModel(
   /** Tracks whether the reset button is currently enabled (clickable). */
   val isResetButtonActive = ObservableField(true)
 
+  /** Message for displaying the sync details of the platform parameter. */
+  var syncDetails = ObservableField(processSyncDetails())
+
+  private fun processSyncDetails(): String {
+    return if (syncStatus == SyncStatus.LOCAL_OVERRIDE)
+      resourceHandler
+        .getStringInLocale(R.string.platform_parameter_currently_overridden_message)
+    else {
+      resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    }
+  }
+
   /** Called when the boolean toggle switch is clicked by the user. */
   fun onTogglePlatformParameterSwitch() {
     val newValue = !(isChecked.get() ?: false)
@@ -82,6 +94,7 @@ class PlatformParameterItemViewModel(
       when (platformParameterId) {
         PlatformParameterId.UNRECOGNIZED,
         PlatformParameterId.PLATFORM_PARAMETER_ID_UNSPECIFIED -> "Unknown"
+
         else ->
           platformParameterId.name.toMachineLowerCase()
             .split("_")
@@ -94,12 +107,16 @@ class PlatformParameterItemViewModel(
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
+
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_default_sync_status)
+
       SyncStatus.SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_server_sync_status)
+
       SyncStatus.LOCAL_OVERRIDE ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_overridden_sync_status)
+
       else ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
     }
