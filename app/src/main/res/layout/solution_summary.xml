@@ -58,7 +58,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@string/hint_list_solution_title"
+            android:text="@{viewModel.isFlashback ? @string/flashback_explanation_box_title:  @string/hint_list_solution_title}"
             android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +85,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toEndOf="@+id/hint_title"
             app:layout_constraintTop_toTopOf="parent" />
 
           <ImageButton
@@ -141,7 +140,8 @@
             android:contentDescription="@{viewModel.correctAnswerContentDescription}"
             android:fontFamily="sans-serif"
             android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="@{viewModel.isFlashback ? View.GONE : View.VISIBLE}" />
 
           <LinearLayout
             android:layout_width="match_parent"
@@ -158,7 +158,8 @@
               android:fontFamily="sans-serif-color_def_black"
               android:text="@string/explanation"
               android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-              android:textSize="16sp" />
+              android:textSize="16sp"
+              android:visibility="@{viewModel.isFlashback ? View.GONE : View.VISIBLE}" />
 
             <TextView
               android:id="@+id/solution_summary"

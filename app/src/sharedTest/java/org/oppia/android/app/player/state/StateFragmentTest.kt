@@ -5633,8 +5633,8 @@ class StateFragmentTest {
 
       // Verify solution is visible.
       scrollToViewType(FLASHBACK_SOLUTION)
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withText("The only solution is: 1/2")))
+      onView(withId(R.id.solution_title)).check(matches(withText("Explanation")))
+      onView(withId(R.id.solution_summary_label)).check(matches(withEffectiveVisibility(GONE)))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
         " every two parts in the denominator."
@@ -5685,8 +5685,8 @@ class StateFragmentTest {
 
       // Verify solution is visible.
       scrollToViewType(FLASHBACK_SOLUTION)
-      onView(withId(R.id.solution_correct_answer))
-        .check(matches(withText("The only solution is: 1/2")))
+      onView(withId(R.id.solution_title)).check(matches(withText("Explanation")))
+      onView(withId(R.id.solution_summary_label)).check(matches(withEffectiveVisibility(GONE)))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
         " every two parts in the denominator."
