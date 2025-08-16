@@ -1482,7 +1482,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/downloads_tab_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: USELESS_LEAF
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drag_drop_interaction_item.xml"
@@ -1502,7 +1501,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drawer_fragment.xml"
-  lint_issue_id: USELESS_LEAF
   lint_issue_id: USE_COMPOUND_DRAWABLES
 }
 android_lint_exemption: {
@@ -2132,7 +2130,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/updates_tab_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: USELESS_LEAF
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/view_event_logs_event_log_item_view.xml"
@@ -2232,18 +2229,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-sw600dp-port/dimens.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21"
-  lint_issue_id: OBSOLETE_SDK_INT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21/styles.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21/themes.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
