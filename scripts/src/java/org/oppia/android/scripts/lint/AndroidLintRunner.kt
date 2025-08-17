@@ -18,6 +18,53 @@ private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
 /** Default path to the exemption .pb file. */
 private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemptions.pb"
 
+/** Elapsed time displayer that shows running time. */
+class ElapsedTimeDisplayer {
+  private val startTime = System.currentTimeMillis()
+  private var isRunning = true
+  private var displayThread: Thread? = null
+  private var lastOutputWasTimer = false
+
+  fun start() {
+    displayThread = Thread {
+      while (isRunning) {
+        val elapsed = System.currentTimeMillis() - startTime
+        val seconds = elapsed / 1000
+        val minutes = seconds / 60
+        val hours = minutes / 60
+
+        print("\r\u001B[K")
+        print("Elapsed time: %02d:%02d:%02d".format(hours, minutes % 60, seconds % 60))
+        System.out.flush()
+        lastOutputWasTimer = true
+
+        Thread.sleep(1000)
+      }
+    }.apply {
+      isDaemon = true
+      start()
+    }
+  }
+
+  fun clearLine() {
+    if (lastOutputWasTimer) {
+      print("\r\u001B[K")
+      System.out.flush()
+      lastOutputWasTimer = false
+    }
+  }
+
+  fun stop(): Long {
+    isRunning = false
+    displayThread?.interrupt()
+    val totalTime = System.currentTimeMillis() - startTime
+    if (lastOutputWasTimer) {
+      print("\r\u001B[K")
+    }
+    return totalTime
+  }
+}
+
 /**
  * The main entrypoint to analyze the codebase for Android Lint issues.
  *
@@ -37,47 +84,62 @@ private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemp
  *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=15
  */
 fun main(vararg args: String) {
-  require(args.isNotEmpty()) {
-    "<path_to_repository_root argument> is required: \$(pwd)"
-  }
+  val timer = ElapsedTimeDisplayer()
+  timer.start()
 
-  val repoRoot = File(args[0])
-  require(repoRoot.exists()) {
-    "Repository root path does not exist: ${args[0]}"
-  }
-  val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
-    val path = option.substringAfter("=")
-    require(path.endsWith(".pb")) {
-      "Invalid exemption file: $path. The file must have a .pb extension."
+  try {
+    require(args.isNotEmpty()) {
+      "<path_to_repository_root argument> is required: \$(pwd)"
     }
-    path
-  } ?: DEFAULT_PROTO_BINARY_PATH
-  val groupByIssueSeverity = args.contains("--group_by_severity")
-  val processTimeout = args.find { it.startsWith("--processTimeout=") }
-    ?.substringAfter("=")
-    ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
 
-  val temporaryDir = Files.createTempDirectory("").parent.toFile()
-  val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
+    val repoRoot = File(args[0])
+    require(repoRoot.exists()) {
+      "Repository root path does not exist: ${args[0]}"
+    }
+    val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
+      val path = option.substringAfter("=")
+      require(path.endsWith(".pb")) {
+        "Invalid exemption file: $path. The file must have a .pb extension."
+      }
+      path
+    } ?: DEFAULT_PROTO_BINARY_PATH
+    val groupByIssueSeverity = args.contains("--group_by_severity")
+    val processTimeout = args.find { it.startsWith("--processTimeout=") }
+      ?.substringAfter("=")
+      ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
 
-  println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
+    val temporaryDir = Files.createTempDirectory("").parent.toFile()
+    val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
 
-  ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
-    val commandExecutor = CommandExecutorImpl(
-      scriptBgDispatcher,
-      processTimeout = processTimeout,
-      processTimeoutUnit = TimeUnit.MINUTES
+    timer.clearLine()
+    println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
+
+    ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+      val commandExecutor = CommandExecutorImpl(
+        scriptBgDispatcher,
+        processTimeout = processTimeout,
+        processTimeoutUnit = TimeUnit.MINUTES
+      )
+
+      val lintAnalyzer = AndroidLintAnalyzer(
+        repoRoot = repoRoot,
+        workingDirectory = workingDirectory,
+        commandExecutor = commandExecutor,
+        exemptionProtoPath = exemptionProtoPath,
+        groupByIssueSeverity = groupByIssueSeverity
+      )
+
+      lintAnalyzer.runAnalysis()
+    }
+  } finally {
+    val totalTimeMs = timer.stop()
+    val totalSeconds = totalTimeMs / 1000
+    val totalMinutes = totalSeconds / 60
+    val totalHours = totalMinutes / 60
+    println(
+      "Total execution time: %02d:%02d:%02d"
+      .format(totalHours, totalMinutes % 60, totalSeconds % 60)
     )
-
-    val lintAnalyzer = AndroidLintAnalyzer(
-      repoRoot = repoRoot,
-      workingDirectory = workingDirectory,
-      commandExecutor = commandExecutor,
-      exemptionProtoPath = exemptionProtoPath,
-      groupByIssueSeverity = groupByIssueSeverity
-    )
-
-    lintAnalyzer.runAnalysis()
   }
 }
 
