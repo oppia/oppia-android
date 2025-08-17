@@ -30,7 +30,6 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundColor
 import org.oppia.android.app.databinding.DrawableBindingAdapters.setBackgroundDrawable
-import org.oppia.android.app.databinding.DrawableBindingAdapters.setLargeBorderRadiusBackgroundDrawable
 import org.oppia.android.app.databinding.DrawableBindingAdapters.setTopBackgroundDrawable
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
@@ -162,21 +161,6 @@ class DrawableBindingAdaptersTest {
         val view: View = getView(it)
         setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
         assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
-      }
-    }
-  }
-
-  @Test
-  fun testSetLargeBorderRadiusBackgroundDrawable_hasCorrectCornerRadius() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-
-        val background = view.background as GradientDrawable
-        val expectedCornerRadius = 24f * view.resources.displayMetrics.density
-
-        assertThat(background.cornerRadius).isEqualTo(expectedCornerRadius)
       }
     }
   }

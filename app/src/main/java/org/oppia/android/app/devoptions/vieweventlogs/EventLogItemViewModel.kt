@@ -1,6 +1,5 @@
 package org.oppia.android.app.devoptions.vieweventlogs
 
-import androidx.annotation.ColorInt
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -12,10 +11,6 @@ class EventLogItemViewModel(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
-
-  /** The background color for the priority chip. */
-  @ColorInt
-  val priorityBackgroundColor = 0xFFBE563C.toInt()
 
   /** Returns the event log timestamp in a human readable format. */
   fun processDateAndTime(): String = resourceHandler.computeDateTimeString(eventLog.timestamp)
