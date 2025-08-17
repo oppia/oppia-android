@@ -198,6 +198,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.inputErrorMsg.set("")
       }
     }
+
     boundParamIds.add(model.platformParameterId)
 
     model.onPlatformParameterTextChangedCallback =
