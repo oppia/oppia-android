@@ -1,34 +1,9 @@
 android_lint_exemption: {
   exempted_file_path: "app/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
   lint_issue_id: LOCKED_ORIENTATION_ACTIVITY
   lint_issue_id: MISSING_VERSION
   lint_issue_id: OLD_TARGET_API
   lint_issue_id: REDUNDANT_LABEL
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/AdministratorControlsActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ControlButtonsViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/DeviceIdItemViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileLearnerIdItemViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/ProfileListViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/administratorcontrols/learneranalytics/SyncStatusItemViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
@@ -45,10 +20,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/application/ga/GaOppiaApplication.kt"
   lint_issue_id: REGISTERED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/classroom/ClassroomListViewModel.kt"
@@ -95,10 +66,6 @@ android_lint_exemption: {
   lint_issue_id: NOTIFY_DATA_SET_CHANGED
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt"
   lint_issue_id: NEW_API
 }
@@ -120,7 +87,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
@@ -132,24 +98,8 @@ android_lint_exemption: {
   lint_issue_id: SUSPICIOUS_INDENTATION
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/SolutionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileViewModel.kt"
@@ -160,98 +110,32 @@ android_lint_exemption: {
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingFragmentPresenterV1.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragment.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AudioLanguageFragment.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationActivityPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/exploration/ExplorationViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/DragDropSortInteractionView.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StateFragmentPresenter.kt"
   lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StatePlayerRecyclerViewAssembler.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/StateViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ContinueInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/DragAndDropSortInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/FractionInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ImageRegionSelectionInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/MathExpressionInteractionsViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/NumericInputViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/RatioExpressionInputInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionInteractionViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/TextInputViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt"
@@ -294,10 +178,6 @@ android_lint_exemption: {
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileEditActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/settings/profile/ProfileRenameViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
 }
@@ -308,26 +188,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   lint_issue_id: CUSTOM_SPLASH_SCREEN
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivityPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/spotlight/SpotlightFragment.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/story/StoryFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/story/storyitemviewmodel/StoryChapterSummaryViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/SurveyViewModel.kt"
@@ -362,24 +222,8 @@ android_lint_exemption: {
   lint_issue_id: REGISTERED
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/activity/TestActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/TopicFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/info/TopicInfoViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivity.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerFragmentPresenter.kt"
@@ -388,10 +232,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
@@ -2272,8 +2112,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values/strings.xml"
-  lint_issue_id: DUPLICATE_STRINGS
-  lint_issue_id: MISSING_TRANSLATION
   lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_QUOTES
   lint_issue_id: UNUSED_RESOURCES
@@ -2297,241 +2135,39 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "data/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
   lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "data/src/main/java/org/oppia/android/data/persistence/PersistentCacheStore.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
   lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/audio/AudioPlayerController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/InteractionObjectTypeExtractorRepository.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput/AlgebraicExpressionInputIsEquivalentToRuleClassifierProvider.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput/AlgebraicExpressionInputMatchesExactlyWithRuleClassifierProvider.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/algebraicexpressioninput/AlgebraicExpressionInputMatchesUpToTrivialManipulationsRuleClassifierProvider.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput/MathEquationInputIsEquivalentToRuleClassifierProvider.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput/MathEquationInputMatchesExactlyWithRuleClassifierProvider.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classify/rules/mathequationinput/MathEquationInputMatchesUpToTrivialManipulationsRuleClassifierProvider.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classroom/ClassroomController.kt"
   lint_issue_id: NEW_API
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/clipboard/ClipboardController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/exploration/ExplorationProgressController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandlerDebugImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/hintsandsolution/HintHandlerProdImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/AnalyticsController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/LearnerAnalyticsLogger.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/analytics/PerformanceMetricsLogger.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/logscheduler/MetricLogSchedulingWorker.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
   lint_issue_id: NEW_API
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagBindingModule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerDebugImpl.kt"
   lint_issue_id: NEW_API
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterBindingModule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/syncup/PlatformParameterSyncUpWorker.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/question/QuestionAssessmentCalculation.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt"
   lint_issue_id: NEW_API
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicListController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/translation/TranslationController.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "testing/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
   lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/OppiaTestRule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/data/DataProviderTestMonitor.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/espresso/GenericViewMatchers.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRule.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/junit/ParameterizedRobolectricTestRunner.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/CoroutineExecutorService.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatcher.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatcherEspressoImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatcherRobolectricImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/threading/TestCoroutineDispatchersEspressoImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "utility/src/main/AndroidManifest.xml"
-  lint_issue_id: GRADLE_OVERRIDES
   lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/data/InMemoryBlockingCache.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/AndroidLocaleFactory.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/DisplayLocaleImpl.kt"
   lint_issue_id: APP_BUNDLE_LOCALE_CHANGES
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/MachineLocaleImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/OppiaBidiFormatterImpl.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/testing/TestOppiaBidiFormatter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/logging/firebase/FirebaseAnalyticsEventLogger.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/ExpressionToComparableOperationConverter.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/math/MathExpressionParser.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/HtmlParser.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/LiTagHandler.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/html/MathTagHandler.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/image/UrlImageParser.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/math/MathBitmapModelLoader.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/parser/svg/SvgPictureDrawable.kt"
-  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
   exempted_file_path: "utility/src/main/res/values/dimens.xml"

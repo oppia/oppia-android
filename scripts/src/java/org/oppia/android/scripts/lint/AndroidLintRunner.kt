@@ -138,7 +138,7 @@ fun main(vararg args: String) {
     val totalHours = totalMinutes / 60
     println(
       "Total execution time: %02d:%02d:%02d"
-      .format(totalHours, totalMinutes % 60, totalSeconds % 60)
+        .format(totalHours, totalMinutes % 60, totalSeconds % 60)
     )
   }
 }
@@ -161,6 +161,13 @@ class AndroidLintAnalyzer(
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
     private const val LINT_REPORT_FILE = "lint-report.xml"
+
+    private val suppressLintIssues = setOf(
+      "MissingTranslation",
+      "GradleOverrides",
+      "SyntheticAccessor",
+      "DuplicateStrings",
+    )
   }
 
   private val reportFile = File(workingDirectory, LINT_REPORT_FILE)
@@ -184,7 +191,8 @@ class AndroidLintAnalyzer(
       jdkHome = javaConfig.getJdkHome(),
       javaVersion = javaConfig.getVersion(),
       buildSdkVersion = buildSdkVersion.toString(),
-      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
+      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion),
+      suppressLintIssues = suppressLintIssues
     )
 
     lintRunner.runLint(cliArgs)
@@ -272,10 +280,11 @@ class AndroidLintRunner(
     jdkHome: File,
     javaVersion: String,
     buildSdkVersion: String,
-    kotlinCompilerVersion: String
+    kotlinCompilerVersion: String,
+    suppressLintIssues: Set<String>
   ): Array<String> {
     prepareJdkEnvironment(jdkHome)
-    return arrayOf(
+    val arguments = mutableListOf(
       "-Wall",
       "--quiet",
       "--fullpath",
@@ -291,6 +300,11 @@ class AndroidLintRunner(
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath
     )
+    if (suppressLintIssues.isNotEmpty()) {
+      arguments.add("--disable")
+      arguments.add(suppressLintIssues.joinToString(","))
+    }
+    return arguments.toTypedArray()
   }
 
   private fun reportLintIssues() {
