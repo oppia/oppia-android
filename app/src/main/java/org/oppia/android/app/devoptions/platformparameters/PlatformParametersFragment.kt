@@ -73,14 +73,14 @@ class PlatformParametersFragment : InjectableFragment() {
             .build()
         }
       }
-    val invalidParameterIds = platformParametersFragmentPresenter.platformParameterStates
+    val invalidInputParameterIds = platformParametersFragmentPresenter.platformParameterStates
       .filterValues { it == null }
       .keys
     val resetParamList =
       platformParametersFragmentPresenter.resetParameters.keys.toList()
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
-      .addAllInvalidInputPlatformParameters(invalidParameterIds)
+      .addAllInvalidInputPlatformParameters(invalidInputParameterIds)
       .addAllResetPlatformParameters(resetParamList)
       .build()
     outState.putProto(
