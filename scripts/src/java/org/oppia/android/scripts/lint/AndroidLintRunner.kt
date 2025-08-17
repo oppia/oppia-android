@@ -19,7 +19,7 @@ private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
 private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemptions.pb"
 
 /** Elapsed time displayer that shows running time. */
-class ElapsedTimeDisplayer {
+private class ElapsedTimeDisplayer {
   private val startTime = System.currentTimeMillis()
   private var isRunning = true
   private var displayThread: Thread? = null
