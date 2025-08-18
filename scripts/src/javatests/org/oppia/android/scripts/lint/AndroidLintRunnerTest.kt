@@ -45,7 +45,7 @@ class AndroidLintRunnerTest {
   companion object {
     private const val JAVA_VERSION = "11.0.6"
     private const val MIN_SDK_VERSION = "21"
-    private const val TARGET_SDK_VERSION = "34"
+    private const val TARGET_SDK_VERSION = "35"
   }
 
   @Before
