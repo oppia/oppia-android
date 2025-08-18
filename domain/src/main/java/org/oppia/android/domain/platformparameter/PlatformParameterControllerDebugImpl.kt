@@ -131,8 +131,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
    * Returns a [DataProvider] that loads the current values of all supported
    * platform parameters as a list of [EphemeralPlatformParameter].
    *
-   * For each parameter, uses a remote override if available; otherwise falls
-   * back to its default value, with the appropriate [SyncStatus].
+   * Each parameter uses a remote override if available, otherwise falls
+   * back to its default value with the appropriate [SyncStatus].
    */
   fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
     return dataProviders.createInMemoryDataProviderAsync(
