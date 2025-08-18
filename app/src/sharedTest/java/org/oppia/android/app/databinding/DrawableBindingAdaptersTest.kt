@@ -154,17 +154,6 @@ class DrawableBindingAdaptersTest {
     }
   }
 
-  @Test
-  fun testSetLargeBorderRadiusBackgroundDrawable_hasCorrectLargeBorderRadiusBackgroundDrawable() {
-    runWithLaunchedActivity {
-      onActivity {
-        val view: View = getView(it)
-        setLargeBorderRadiusBackgroundDrawable(view, /* colorRgb= */ colorRgb)
-        assertThat((view.background as GradientDrawable).color?.defaultColor).isEqualTo(colorRgb)
-      }
-    }
-  }
-
   private fun getView(it: DrawableBindingAdaptersTestActivity): View {
     return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }

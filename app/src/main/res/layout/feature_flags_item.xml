@@ -56,7 +56,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/reset_server_defaults_constraint_layout"
+      android:id="@+id/sync_details_constraint_layout"
       android:layout_width="match_parent"
       android:layout_height="64dp"
       android:background="@color/component_color_shared_screen_tertiary_background_color"
