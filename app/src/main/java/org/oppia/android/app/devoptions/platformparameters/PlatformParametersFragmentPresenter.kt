@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,16 +43,17 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<PlatformParameterItemViewModel>
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
+  private val boundParamIds = mutableSetOf<PlatformParameterId>()
 
   /** List of platform parameter states to be used in the fragment. */
   var platformParameterStates:
-    MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+    MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
-    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue>
+    platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -68,9 +70,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
           onBackNavigation()
-          // The dispatcher can hold a reference to the host
-          // so we need to null it out to prevent memory leaks.
-          this.remove()
         }
       }
     )
@@ -103,33 +102,42 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
-  /**
-   * Called when the back button is pressed in the toolbar or on the device.
-   */
-  fun onBackNavigation() {
-    val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
-      OverriddenPlatformParameter.newBuilder()
-        .setId(id)
-        .setOverriddenValue(value)
-        .build()
-    }
+  private fun onBackNavigation() {
+    val hasInvalidInput = platformParameterStates.containsValue(null)
 
-    platformParameterControllerDebugImpl
-      .updateOverriddenPlatformParameters(overriddenPlatformParameters)
-      .toLiveData().observe(fragment) {
-        when (it) {
-          is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
-              "Failed to override platform parameters: ",
-              it.error
-            )
-          }
-          is AsyncResult.Pending -> {} // Wait for a result.
-        }
+    if (!hasInvalidInput) {
+      val overriddenPlatformParameters = platformParameterStates.map { (id, value) ->
+        OverriddenPlatformParameter.newBuilder()
+          .setId(id)
+          .setOverriddenValue(value)
+          .build()
       }
-    (activity as PlatformParametersActivity).finish()
+
+      platformParameterControllerDebugImpl
+        .updateOverriddenPlatformParameters(overriddenPlatformParameters)
+        .toLiveData().observe(fragment) {
+          when (it) {
+            is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "PlatformParametersFragmentPresenter",
+                "Failed to override platform parameters: ",
+                it.error
+              )
+            }
+            is AsyncResult.Pending -> {} // Wait for a result.
+          }
+        }
+    } else {
+      AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+        .setTitle(R.string.platform_parameter_invalid_input_alert_dialog_title)
+        .setMessage(R.string.platform_parameter_invalid_input_alert_dialog_message)
+        .setPositiveButton(
+          R.string.platform_parameter_invalid_input_alert_dialog_okay_button
+        ) { dialog, _ -> dialog.dismiss() }
+        .setCancelable(false)
+        .show()
+    }
   }
 
   private fun bindPlatformParameterItem(
@@ -170,21 +178,18 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     when {
       model.currentValue.hasInteger() -> {
         editText.inputType = InputType.TYPE_CLASS_NUMBER
-        val displayValue = when (val storedValue = paramState?.integer) {
-          -1 -> {
+        if (platformParameterStates.containsKey(model.platformParameterId)) {
+          if (paramState == null) {
             model.inputErrorMsg.set(invalidInputErrorText)
-            ""
-          }
-          null -> {
+            model.inputValue.set("")
+          } else {
             model.inputErrorMsg.set("")
-            model.currentValue.integer.toString()
+            model.inputValue.set(paramState.integer.toString())
           }
-          else -> {
-            model.inputErrorMsg.set("")
-            storedValue.toString()
-          }
+        } else {
+          model.inputErrorMsg.set("")
+          model.inputValue.set(model.currentValue.integer.toString())
         }
-        model.inputValue.set(displayValue)
       }
 
       model.currentValue.hasString() -> {
@@ -194,27 +199,23 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     }
 
-    editText.setTag(R.id.platform_parameter_text_change_flag, true)
+    boundParamIds.add(model.platformParameterId)
 
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
-        val ignoreInitialBinding =
-          editText.getTag(R.id.platform_parameter_text_change_flag) as? Boolean ?: false
-        if (ignoreInitialBinding) {
-          editText.setTag(R.id.platform_parameter_text_change_flag, false)
+        if (boundParamIds.contains(id).not()) {
           return@onPlatformParameterTextChangedCallback
         }
-
         when {
           model.currentValue.hasInteger() -> {
             if (text == model.currentValue.integer.toString()) {
               platformParameterStates.remove(id)
+              model.inputErrorMsg.set("")
             } else {
               val parsed = text.toIntOrNull()
               if (parsed == null) {
                 model.inputErrorMsg.set(invalidInputErrorText)
-                platformParameterStates[id] =
-                  PlatformParameterValue.newBuilder().setInteger(-1).build()
+                platformParameterStates[id] = null
               } else {
                 model.inputErrorMsg.set("")
                 platformParameterStates[id] =
@@ -225,6 +226,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.currentValue.hasString() -> {
             if (text == model.currentValue.string) {
               platformParameterStates.remove(id)
+              model.inputErrorMsg.set("")
             } else {
               if (text.isBlank()) {
                 model.inputErrorMsg.set(invalidInputErrorText)
