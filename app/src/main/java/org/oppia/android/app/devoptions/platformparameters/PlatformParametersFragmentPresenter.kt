@@ -57,7 +57,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
-    resetParameters: List<PlatformParameterId>
+    resetParameters: Map<PlatformParameterId, PlatformParameterValue>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -82,9 +82,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       this.platformParameterStates = platformParameterStates.toMutableMap()
     }
     if (resetParameters.isNotEmpty()) {
-      resetParameters.forEach { id ->
-        this.resetParameters[id] = PlatformParameterValue.getDefaultInstance()
-      }
+      this.resetParameters = resetParameters.toMutableMap()
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -165,8 +163,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     previousWatcher?.let { editText.removeTextChangedListener(it) }
 
     if (resetParameters.containsKey(model.platformParameterId)) {
-      resetParameters[model.platformParameterId] = model.currentValue
-      model.isResetAvailable.set(true)
+      model.isParamOverridden.set(true)
       model.isResetButtonActive.set(false)
     }
 
@@ -186,7 +183,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.platformParameterId, s.toString()
         )
       }
-
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
     }
@@ -202,39 +198,37 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     platformParameterControllerDebugImpl
       .resetPlatformParameter(model.platformParameterId)
       .toLiveData()
-      .observe(fragment) { afterResetValue ->
-        when (afterResetValue) {
+      .observe(fragment) { restoredParameterValue ->
+        when (restoredParameterValue) {
           is AsyncResult.Success -> {
-            resetParameters[model.platformParameterId] = afterResetValue.value
+            resetParameters[model.platformParameterId] = restoredParameterValue.value
               ?: PlatformParameterValue.getDefaultInstance()
             binding.resetButton.isEnabled = false
             model.syncDetails.set(
               resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
             )
             if (model.currentValue.hasBoolean()) {
-              platformParameterStates[model.platformParameterId] = afterResetValue.value
-              model.isChecked.set(afterResetValue.value?.boolean)
+              platformParameterStates[model.platformParameterId] = restoredParameterValue.value
+              model.isChecked.set(restoredParameterValue.value?.boolean)
             } else {
               when {
                 model.currentValue.hasInteger() -> {
-                  model.inputValue.set(afterResetValue.value?.integer.toString())
+                  model.inputValue.set(restoredParameterValue.value?.integer.toString())
                 }
-
                 model.currentValue.hasString() -> {
-                  model.inputValue.set(afterResetValue.value?.string)
+                  model.inputValue.set(restoredParameterValue.value?.string)
                 }
               }
             }
             model.isResetButtonActive.set(false)
           }
-
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "PlatformParametersFragmentPresenter",
-              "Failed to reset parameter: ${model.platformParameterId}", afterResetValue.error
+              "Failed to reset parameter: ${model.platformParameterId}",
+              restoredParameterValue.error
             )
           }
-
           is AsyncResult.Pending -> {} // No action required
         }
       }
@@ -277,7 +271,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
         when {
           model.currentValue.hasInteger() -> {
-            if (text == model.currentValue.integer.toString()) {
+            if (text == model.currentValue.integer.toString() && !resetParameters.containsKey(id)) {
               platformParameterStates.remove(id)
               model.inputErrorMsg.set("")
             } else {
@@ -294,7 +288,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           }
 
           model.currentValue.hasString() -> {
-            if (text == model.currentValue.string) {
+            if (text == model.currentValue.string && !resetParameters.containsKey(id)) {
               platformParameterStates.remove(id)
               model.inputErrorMsg.set("")
             } else {
@@ -318,7 +312,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     model.onPlatformParameterToggledCallback = { id, value ->
-      if (value == model.currentValue.boolean) {
+      if (value == model.currentValue.boolean && !resetParameters.containsKey(id)) {
         platformParameterStates.remove(id)
       } else {
         platformParameterStates[id] = PlatformParameterValue.newBuilder()

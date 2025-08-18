@@ -1,6 +1,5 @@
 package org.oppia.android.app.devoptions.platformparameters
 
-import androidx.annotation.ColorInt
 import androidx.databinding.ObservableField
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
@@ -36,9 +35,6 @@ class PlatformParameterItemViewModel(
   /** Error message to be displayed in case of invalid input type for a platform parameter. */
   val inputErrorMsg = ObservableField("")
 
-  /** The display text representing the current sync status of the parameter. */
-  val syncStatusDisplayText = ObservableField(getSyncStatusText())
-
   /** The user-editable value of the platform parameter (if it is a string or integer). */
   val inputValue = ObservableField(
     when {
@@ -60,12 +56,8 @@ class PlatformParameterItemViewModel(
    */
   var onPlatformParameterTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
 
-  /** The background color of the sync status chip, determined by its sync state. */
-  @ColorInt
-  val syncStatusBackgroundColor: Int = retrieveSyncStatusBackgroundColor().toInt()
-
-  /** Indicates whether the reset button should be shown for this parameter. */
-  val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+  /** Indicates whether the parameter is overridden. */
+  val isParamOverridden = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
   val isResetButtonActive = ObservableField(true)
@@ -74,11 +66,15 @@ class PlatformParameterItemViewModel(
   var syncDetails = ObservableField(processSyncDetails())
 
   private fun processSyncDetails(): String {
-    return if (syncStatus == SyncStatus.LOCAL_OVERRIDE)
-      resourceHandler
-        .getStringInLocale(R.string.platform_parameter_currently_overridden_message)
-    else {
-      resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    return when (syncStatus) {
+      SyncStatus.LOCAL_OVERRIDE ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)
+      SyncStatus.SYNCED_FROM_SERVER -> {
+        // TODO (#5345): Remove this filler message once the server sync logic is implemented.
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
+      }
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
     }
   }
 
@@ -100,36 +96,6 @@ class PlatformParameterItemViewModel(
             .split("_")
             .joinToString(" ") { it.capitalizeForMachines() }
       }
-    }
-  }
-
-  private fun getSyncStatusText(): String {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
-
-      SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.platform_parameter_default_sync_status)
-
-      SyncStatus.SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.platform_parameter_server_sync_status)
-
-      SyncStatus.LOCAL_OVERRIDE ->
-        resourceHandler.getStringInLocale(R.string.platform_parameter_overridden_sync_status)
-
-      else ->
-        resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
-    }
-  }
-
-  @ColorInt
-  private fun retrieveSyncStatusBackgroundColor(): Long {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF4F4F4F
-      SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
-      SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
-      SyncStatus.LOCAL_OVERRIDE -> 0xFFC2B71B
-      else -> 0xFF00645C
     }
   }
 }

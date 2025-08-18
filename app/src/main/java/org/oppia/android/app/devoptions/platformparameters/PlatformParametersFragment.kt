@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
+import org.oppia.android.app.model.PlatformParameterDefinition
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.PlatformParametersFragmentStateBundle
@@ -39,9 +40,9 @@ class PlatformParametersFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    var platformParameterStates:
+    val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
-    var resetParamList: MutableList<PlatformParameterId> = mutableListOf()
+    var resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -53,7 +54,9 @@ class PlatformParametersFragment : InjectableFragment() {
       args?.invalidInputPlatformParametersList?.forEach {
         platformParameterStates[it] = null
       }
-      resetParamList = args?.resetPlatformParametersList?.toMutableList() ?: mutableListOf()
+      args?.resetPlatformParametersList?.forEach {
+        resetParamList[it.id] = it.defaultValue
+      }
     }
 
     return platformParametersFragmentPresenter
@@ -77,7 +80,12 @@ class PlatformParametersFragment : InjectableFragment() {
       .filterValues { it == null }
       .keys
     val resetParamList =
-      platformParametersFragmentPresenter.resetParameters.keys.toList()
+      platformParametersFragmentPresenter.resetParameters.mapNotNull { (id, value) ->
+        PlatformParameterDefinition.newBuilder()
+          .setId(id)
+          .setDefaultValue(value)
+          .build()
+      }
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
       .addAllInvalidInputPlatformParameters(invalidParameterIds)

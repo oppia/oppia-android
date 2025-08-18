@@ -102,7 +102,8 @@
   <color name="color_def_bright_violet">#7659B6</color>
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
-  <color name="color_def_light_chalky">#FFFFB8</color>
+  <color name="color_def_pale_yellow">#FFFFB8</color>
+  <color name="color_def_dark_golden">#856B03</color>
   <color name="color_def_dark_purple">#441530</color>
   <color name="color_def_blue_sapphire">#205D86</color>
   <color name="color_def_dark_silver_40">#80707070</color>

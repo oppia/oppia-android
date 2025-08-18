@@ -19,7 +19,7 @@
       android:id="@+id/feature_flag_constraint_layout"
       android:layout_width="match_parent"
       android:layout_height="64dp"
-      android:background="@{viewModel.isResetAvailable ? @color/component_color_feature_flag_overridden_background_color : @color/component_color_shared_item_background_solid_color}"
+      android:background="@{viewModel.isFlagOverridden ? @color/component_color_feature_flag_overridden_background_color : @color/component_color_shared_item_background_solid_color}"
       android:paddingStart="16dp"
       android:paddingEnd="16dp">
 
@@ -64,23 +64,15 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/feature_flag_constraint_layout">
 
-      <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="@color/component_color_shared_divider_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
       <ImageView
-        android:id="@+id/alert_icon_image"
+        android:id="@+id/currently_overridden_alert_icon"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/feature_flag_alert_icon_content_description"
-        android:src="@drawable/ic_alert"
-        android:visibility="@{viewModel.isResetButtonActive &amp;&amp; viewModel.isResetAvailable ? View.VISIBLE : View.GONE}"
+        app:srcCompat="@drawable/ic_alert_icon_yellow_24dp"
+        android:visibility="@{viewModel.isFlagOverridden &amp;&amp; viewModel.isResetButtonActive  ? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -96,7 +88,7 @@
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/reset_button"
-        app:layout_constraintStart_toEndOf="@id/alert_icon_image"
+        app:layout_constraintStart_toEndOf="@id/currently_overridden_alert_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
       <Button
@@ -111,7 +103,7 @@
         android:enabled="@{viewModel.isResetButtonActive}"
         android:text="@string/feature_flag_reset"
         android:textColor="@{viewModel.isResetButtonActive ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color }"
-        android:visibility="@{viewModel.isResetAvailable ? View.VISIBLE : View.GONE}"
+        android:visibility="@{viewModel.isFlagOverridden ? View.VISIBLE : View.GONE}"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/sync_details_text_view"

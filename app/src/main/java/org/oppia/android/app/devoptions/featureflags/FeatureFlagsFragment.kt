@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
+import org.oppia.android.app.model.FeatureFlagDefinition
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.FeatureFlagsFragmentStateBundle
 import org.oppia.android.app.model.OverriddenFeatureFlag
@@ -38,7 +39,7 @@ class FeatureFlagsFragment : InjectableFragment() {
     savedInstanceState: Bundle?
   ): View {
     var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
-    var resetFlags: MutableList<FeatureFlagId> = mutableListOf()
+    var resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
@@ -47,7 +48,9 @@ class FeatureFlagsFragment : InjectableFragment() {
       featureFlagStates = args?.featureFlagStatesList
         ?.associate { it.id to it.overriddenValue }
         ?.toMutableMap() ?: mutableMapOf()
-      resetFlags = args?.resetFeatureFlagsList ?: mutableListOf()
+      resetFlags = args?.resetFeatureFlagsList
+        ?.associate { it.id to it.defaultIsEnabled }
+        ?.toMutableMap() ?: mutableMapOf()
     }
 
     return featureFlagsFragmentPresenter.handleCreateView(
@@ -66,7 +69,12 @@ class FeatureFlagsFragment : InjectableFragment() {
           .setOverriddenValue(it.value)
           .build()
       }
-    val resetFlags = featureFlagsFragmentPresenter.resetFlags.keys.toList()
+    val resetFlags = featureFlagsFragmentPresenter.resetFlags.map {
+      FeatureFlagDefinition.newBuilder()
+        .setId(it.key)
+        .setDefaultIsEnabled(it.value)
+        .build()
+    }
 
     val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)

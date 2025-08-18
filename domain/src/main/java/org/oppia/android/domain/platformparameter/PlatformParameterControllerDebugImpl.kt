@@ -356,9 +356,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         val result = loadEphemeralPlatformParameters().retrieveData()
       ) {
         is AsyncResult.Success -> {
-          val restoredValue = result.value
-            .firstOrNull { it.id == id }
-            ?.currentValue ?: PlatformParameterValue.getDefaultInstance()
+          val restoredValue = result.value.first { it.id == id }.currentValue
           AsyncResult.Success(restoredValue)
         }
         is AsyncResult.Failure -> {

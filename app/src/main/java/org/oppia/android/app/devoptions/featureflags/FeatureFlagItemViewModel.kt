@@ -1,6 +1,5 @@
 package org.oppia.android.app.devoptions.featureflags
 
-import androidx.annotation.ColorInt
 import androidx.databinding.ObservableField
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
@@ -24,22 +23,14 @@ class FeatureFlagItemViewModel(
   val featureFlagDisplayName: ObservableField<String> =
     ObservableField(getFeatureFlagDisplayName(featureFlagId))
 
-  /** The text representing the sync status of the feature flag. */
-  val syncStatusDisplayText: ObservableField<String> =
-    ObservableField(getSyncStatusText())
-
   /**
    * Callback to be invoked when the feature flag toggle is changed by the user.
    * Passes the [FeatureFlagId] and the new boolean value.
    */
   var onFeatureFlagToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
 
-  /** The background color associated with the current sync status of the feature flag. */
-  @ColorInt
-  val backgroundColor: Int = retrieveBackgroundColor().toInt()
-
-  /** Indicates whether the reset button should be shown for this flag. */
-  val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+  /** Indicates whether the flag is overridden. */
+  val isFlagOverridden = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
   val isResetButtonActive = ObservableField(true)
@@ -73,32 +64,6 @@ class FeatureFlagItemViewModel(
             .split("_")
             .joinToString(" ") { it.capitalizeForMachines() }
       }
-    }
-  }
-
-  private fun getSyncStatusText(): String {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
-      SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_default_sync_status)
-      SyncStatus.SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_server_sync_status)
-      SyncStatus.LOCAL_OVERRIDE ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_overridden_sync_status)
-      else ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
-    }
-  }
-
-  @ColorInt
-  private fun retrieveBackgroundColor(): Long {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF4F4F4F
-      SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
-      SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
-      SyncStatus.LOCAL_OVERRIDE -> 0xFFC2B71B
-      else -> 0xFF00645C
     }
   }
 }

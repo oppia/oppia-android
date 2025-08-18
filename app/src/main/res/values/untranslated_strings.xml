@@ -33,27 +33,18 @@
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
-  <string name="feature_flag_sync_status" translatable="false">Sync Status</string>
-  <string name="feature_flag_default_sync_status" translatable="false">Default</string>
-  <string name="feature_flag_server_sync_status" translatable="false">Server</string>
-  <string name="feature_flag_overridden_sync_status" translatable="false">Overridden</string>
-  <string name="feature_flag_unknown_sync_status" translatable="false">Unknown</string>
-  <string name="feature_flag_reset_to_server_or_default" translatable="false">Reset to Server / Defaults</string>
+  <string name="platform_parameters_activity_title" translatable="false">Platform Parameters</string>
   <string name="feature_flag_reset" translatable="false">Reset</string>
-  <string name="platform_parameters_activity_title" translatable="false">Platform Parmeters</string>
-  <string name="platform_parameter_sync_status" translatable="false">Sync Status</string>
-  <string name="platform_parameter_default_sync_status" translatable="false">Default</string>
-  <string name="platform_parameter_server_sync_status" translatable="false">Server</string>
-  <string name="platform_parameter_overridden_sync_status" translatable="false">Overridden</string>
-  <string name="platform_parameter_unknown_sync_status" translatable="false">Unknown</string>
   <string name="platform_parameter_invalid_input_error_msg" translatable="false">Invalid Value</string>
-  <string name="platform_parameter_invalid_input_alert_dialog_title" translatable="false">Invalid Inputs!</string>
+  <string name="platform_parameter_invalid_input_alert_dialog_title" translatable="false">Invalid Inputs</string>
   <string name="platform_parameter_invalid_input_alert_dialog_message" translatable="false">Please ensure all fields have valid values to continue.</string>
-  <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">Ok</string>
-  <string name="platform_parameter_reset_to_server_or_default" translatable="false">Reset to Server / Defaults</string>
+  <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">OK</string>
   <string name="platform_parameter_reset" translatable="false">Reset</string>
   <string name="platform_parameter_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
   <string name="platform_parameter_currently_overridden_message" translatable="false">Currently Overridden.</string>
+  <string name="platform_parameter_synced_from_server_message" translatable="false">Synced with the Server.</string>
+  <string name="platform_parameter_alert_icon_content_description" translatable="false">Overridden platform parameter indicator</string>
+  <string name="feature_flag_alert_icon_content_description" translatable="false">Overridden feature flag indicator</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>

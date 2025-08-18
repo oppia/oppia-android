@@ -47,7 +47,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     featureFlagStates: Map<FeatureFlagId, Boolean>,
-    resetFlags: List<FeatureFlagId>
+    resetFlags: Map<FeatureFlagId, Boolean>
   ): View {
     binding = FeatureFlagsFragmentBinding.inflate(
       inflater,
@@ -71,7 +71,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       this.featureFlagStates = featureFlagStates.toMutableMap()
     }
     if (resetFlags.isNotEmpty()) {
-      this.resetFlags = resetFlags.associateWith { true }.toMutableMap()
+      this.resetFlags = resetFlags.toMutableMap()
     }
     binding.apply {
       this.lifecycleOwner = fragment
@@ -138,8 +138,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       handleResetFeatureFlag(model, binding)
     }
     if (resetFlags.containsKey(model.featureFlagId)) {
-      resetFlags[model.featureFlagId] = model.currentValue
-      model.isResetAvailable.set(true)
+      model.isFlagOverridden.set(true)
       model.isResetButtonActive.set(false)
     }
 
@@ -147,7 +146,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       model.isChecked.set(featureFlagStates[model.featureFlagId])
     }
     model.onFeatureFlagToggleCallback = { id, value ->
-      if (model.currentValue == value) {
+      if (model.currentValue == value && !resetFlags.containsKey(id)) {
         featureFlagStates.remove(id)
       } else {
         featureFlagStates[id] = value
