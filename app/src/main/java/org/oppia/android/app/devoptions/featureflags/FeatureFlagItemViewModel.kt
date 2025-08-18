@@ -47,6 +47,24 @@ class FeatureFlagItemViewModel(
     }
   }
 
+  /** Indicates whether the reset button should be shown for this flag. */
+  val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+
+  /** Tracks whether the reset button is currently enabled (clickable). */
+  val isResetButtonActive = ObservableField(true)
+
+  /** Message for displaying the sync details of the platform parameter. */
+  var syncDetails = ObservableField(processSyncDetails())
+
+  private fun processSyncDetails(): String {
+    return if (syncStatus == SyncStatus.LOCAL_OVERRIDE)
+      resourceHandler
+        .getStringInLocale(R.string.platform_parameter_currently_overridden_message)
+    else {
+      resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    }
+  }
+
   /** Called when the feature flag switch is toggled in the UI. */
   fun onToggleFeatureFlagSwitch() {
     val newValue = !(isChecked.get() ?: false)
