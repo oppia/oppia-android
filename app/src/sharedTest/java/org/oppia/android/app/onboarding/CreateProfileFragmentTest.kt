@@ -517,13 +517,22 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_nicknameEditText_hasAutofillDisabled() {
+  @Config(sdk = [25, 30])
+  fun testFragment_nicknameEditText_autofillBehavior_multiSdk() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .check { view, _ ->
           val editText = view as EditText
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            assertThat(editText.importantForAutofill).isEqualTo(View.IMPORTANT_FOR_AUTOFILL_NO)
+          when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+              // API 26+ - test autofill behavior
+              assertThat(editText.importantForAutofill).isEqualTo(View.IMPORTANT_FOR_AUTOFILL_NO)
+            }
+            else -> {
+              // API < 26 - autofill doesn't exist
+              assertThat(editText).isNotNull()
+              assertThat(editText.inputType).isNotEqualTo(0)
+            }
           }
         }
     }
