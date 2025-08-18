@@ -96,6 +96,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Re
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FlashbackContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SwitchInLessonLanguageContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
@@ -130,6 +131,7 @@ import org.oppia.android.app.model.EventLog.RetrofitCallFailedContext as Retrofi
 import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
+import org.oppia.android.app.model.EventLog.FlashbackContext as FlashbackEventContext
 import org.oppia.android.app.model.EventLog.SurveyContext as SurveyEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
@@ -139,6 +141,8 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsa
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -243,6 +247,8 @@ class EventBundleCreator @Inject constructor(
       SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
       REVEAL_SOLUTION_CONTEXT -> ExplorationContext(activityName, revealSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
+      OPEN_FLASHBACK -> FlashbackContext(activityName, openFlashback)//subha
+      CLOSE_FLASHBACK -> CardContext(activityName, closeFlashback)//subha
       PLAY_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, playVoiceOverContext)
       PAUSE_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, pauseVoiceOverContext)
       APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
@@ -543,6 +549,18 @@ class EventBundleCreator @Inject constructor(
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
         store.putNonSensitiveValue("submitted_answer", adjustedAnswer)
         store.putNonSensitiveValue("is_answer_correct", isAnswerCorrect.toString())
+      }
+    }
+    //subha
+
+    class FlashbackContext(
+      activityName: String,
+      value: FlashbackEventContext
+    ) : EventActivityContext<FlashbackEventContext>(activityName, value) {
+      override fun FlashbackEventContext.storeValue(store: PropertyStore) {
+        store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
+        store.putNonSensitiveValue("skill_id", skillId)
+        store.putNonSensitiveValue("state_name_to_revisit", stateNameToRevisit)
       }
     }
 

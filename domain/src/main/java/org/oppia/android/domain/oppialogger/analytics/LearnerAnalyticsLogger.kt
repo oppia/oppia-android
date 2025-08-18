@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
@@ -375,6 +376,10 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setStartCardContext)
     }
 
+//    fun logEndFlashback() {
+//      logStateEvent(linkedSkillId, ::createFlashbackContext, EventBuilder::setOpenFlashbackContext)
+//    }
+
     /** Logs that this card has been completed. */
     fun logEndCard() {
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setEndCardContext)
@@ -474,6 +479,24 @@ class LearnerAnalyticsLogger @Inject constructor(
         isCorrect,
         ::createSubmitAnswerContext,
         EventBuilder::setSubmitAnswerContext
+      )
+    }
+
+    //subha
+    fun logOpenFlashback(stateNameToRevisit: String) {
+      logStateEvent(
+        linkedSkillId,
+        stateNameToRevisit,
+        ::createFlashbackContext,
+        EventBuilder::setOpenFlashback
+      )
+    }
+
+    fun logCloseFlashback() {
+      logStateEvent(
+        linkedSkillId,
+        ::createCardContext,
+        EventBuilder::setCloseFlashback
       )
     }
 
@@ -657,6 +680,17 @@ class LearnerAnalyticsLogger @Inject constructor(
       explorationDetails: ExplorationContext
     ) = CardContext.newBuilder().apply {
       this.skillId = skillId
+      this.explorationDetails = explorationDetails
+    }.build()
+
+    //subha
+    private fun createFlashbackContext(
+      skillId: String,
+      stateNameToRevisit: String,
+      explorationDetails: ExplorationContext
+    ) = FlashbackContext.newBuilder().apply {
+      this.skillId = skillId
+      this.stateNameToRevisit = stateNameToRevisit
       this.explorationDetails = explorationDetails
     }.build()
 
