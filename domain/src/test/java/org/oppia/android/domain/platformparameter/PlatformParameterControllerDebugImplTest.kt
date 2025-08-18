@@ -79,7 +79,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withNoRemoteOrLocalOverrides_loadsCorrectDefaultFlagValue() {
     setUpTestApplicationComponent()
     platformParameterControllerDebugImpl.loadParametersAsync()
@@ -99,7 +99,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withNoRemoteOrLocalOverrides_loadsCorrectDefaultParameterValue() {
     setUpTestApplicationComponent()
     platformParameterControllerDebugImpl.loadParametersAsync()
@@ -121,7 +121,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withOnlyLocalOverrideParameter_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerOverriddenPlatformParameterToDatabase(
@@ -143,7 +143,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withRemoteParamAndNoLocalOverride_setsProcessStateToRemoteValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
@@ -165,7 +165,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withRemoteParamAndOverride_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
@@ -191,7 +191,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withRemoteFlagAndNoLocalOverride_setsProcessStateToRemoteValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
@@ -208,7 +208,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withOnlyOverrideFlag_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(
@@ -230,7 +230,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testLoadParametersAsync_withRemoteAndOverrideFlag_setsProcessStateToOverriddenValue() {
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(
@@ -256,7 +256,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  @Suppress("DeferredResultUnused")
+  @Suppress("DeferredResultUnused") // Suppressed since the deferred result is intentionally ignored.
   fun testGetParameterInitializationStatus_onLoadingParameters_returnsTrue() {
     setUpTestApplicationComponent()
     platformParameterControllerDebugImpl.loadParametersAsync()

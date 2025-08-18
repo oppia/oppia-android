@@ -12,7 +12,6 @@ import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
@@ -188,7 +187,7 @@ class PlatformParametersFragmentTest {
           position = index,
           expectedSyncStatus = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
         )
-        verifyPlatformParameterState(
+        verifyPlatformParameterValue(
           position = index,
           expectedValue = ephemeralPlatformParameter.currentValue
         )
@@ -232,7 +231,7 @@ class PlatformParametersFragmentTest {
       val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
 
       scrollToPosition(0)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = splashScreenWelcomeMsgParameter.currentValue
       )
@@ -261,7 +260,7 @@ class PlatformParametersFragmentTest {
       val syncUpWorkerParameter = getEphemeralPlatformParameters()[1]
 
       scrollToPosition(1)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 1,
         expectedValue = syncUpWorkerParameter.currentValue
       )
@@ -281,7 +280,7 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE)
@@ -363,7 +362,7 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(1)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 1,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS)
@@ -385,7 +384,7 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG)
@@ -469,7 +468,7 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 1,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
@@ -496,7 +495,7 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG)
@@ -600,7 +599,7 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(1)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 1,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
@@ -625,7 +624,7 @@ class PlatformParametersFragmentTest {
         )
       ).perform(click())
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(!splashScreenWelcomeMsgParameter.currentValue.boolean)
@@ -652,7 +651,7 @@ class PlatformParametersFragmentTest {
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(!splashScreenWelcomeMsgParameter.currentValue.boolean)
@@ -676,7 +675,7 @@ class PlatformParametersFragmentTest {
         )
       ).perform(editTextInputAction.replaceText("29"))
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 7,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(29)
@@ -685,7 +684,7 @@ class PlatformParametersFragmentTest {
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 7,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(29)
@@ -804,7 +803,7 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(expectedState)
@@ -839,7 +838,7 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(1)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 1,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(expectedState)
@@ -870,7 +869,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(1)
 
       scrollToPosition(7)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 7,
         expectedValue = expectedValue
       )
@@ -900,7 +899,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(8)
 
       scrollToPosition(0)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = expectedValue
       )
@@ -1159,7 +1158,7 @@ class PlatformParametersFragmentTest {
     ).check(matches(withText(expectedSyncStatus)))
   }
 
-  private fun verifyPlatformParameterState(
+  private fun verifyPlatformParameterValue(
     position: Int,
     expectedValue: PlatformParameterValue
   ) {
