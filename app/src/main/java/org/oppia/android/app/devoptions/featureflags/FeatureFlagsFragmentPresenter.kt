@@ -135,7 +135,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.viewModel = model
 
     binding.resetButton.setOnClickListener {
-      handleResetFeatureFlag(model, binding)
+      handleResetFeatureFlag(model)
     }
     if (resetFlags.containsKey(model.featureFlagId)) {
       model.isFlagOverridden.set(true)
@@ -155,8 +155,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun handleResetFeatureFlag(
-    model: FeatureFlagItemViewModel,
-    binding: FeatureFlagsItemBinding
+    model: FeatureFlagItemViewModel
   ) {
     platformParameterControllerDebugImpl
       .resetFeatureFlag(model.featureFlagId)
@@ -166,21 +165,19 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             resetFlags[model.featureFlagId] = it.value
             featureFlagStates[model.featureFlagId] = it.value
-            binding.resetButton.isEnabled = false
             model.isChecked.set(it.value)
             model.isResetButtonActive.set(false)
+            // TODO(#5345): Remove this filler message once the server sync logic is implemented.
             model.syncDetails.set(
               resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
             )
           }
-
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "FeatureFlagsFragmentPresenter",
               "Failed to reset feature flag: ${model.featureFlagId}", it.error
             )
           }
-
           is AsyncResult.Pending -> {} // No action required
         }
       }

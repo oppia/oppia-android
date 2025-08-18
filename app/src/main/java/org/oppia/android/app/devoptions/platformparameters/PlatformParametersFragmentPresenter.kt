@@ -168,7 +168,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     binding.resetButton.setOnClickListener {
-      handleResetParameter(model, binding)
+      handleResetParameter(model)
     }
 
     if (model.currentValue.hasBoolean()) {
@@ -192,8 +192,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun handleResetParameter(
-    model: PlatformParameterItemViewModel,
-    binding: PlatformParameterItemBinding
+    model: PlatformParameterItemViewModel
   ) {
     platformParameterControllerDebugImpl
       .resetPlatformParameter(model.platformParameterId)
@@ -203,7 +202,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           is AsyncResult.Success -> {
             resetParameters[model.platformParameterId] = restoredParameterValue.value
               ?: PlatformParameterValue.getDefaultInstance()
-            binding.resetButton.isEnabled = false
+            // TODO(#5345): Remove this filler message once the server sync logic is implemented.
             model.syncDetails.set(
               resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
             )

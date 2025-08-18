@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.FeatureFlagDefinition
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.FeatureFlagsFragmentStateBundle
 import org.oppia.android.app.model.OverriddenFeatureFlag
@@ -49,7 +48,7 @@ class FeatureFlagsFragment : InjectableFragment() {
         ?.associate { it.id to it.overriddenValue }
         ?.toMutableMap() ?: mutableMapOf()
       resetFlags = args?.resetFeatureFlagsList
-        ?.associate { it.id to it.defaultIsEnabled }
+        ?.associate { it.id to it.overriddenValue }
         ?.toMutableMap() ?: mutableMapOf()
     }
 
@@ -70,9 +69,9 @@ class FeatureFlagsFragment : InjectableFragment() {
           .build()
       }
     val resetFlags = featureFlagsFragmentPresenter.resetFlags.map {
-      FeatureFlagDefinition.newBuilder()
+      OverriddenFeatureFlag.newBuilder()
         .setId(it.key)
-        .setDefaultIsEnabled(it.value)
+        .setOverriddenValue(it.value)
         .build()
     }
 

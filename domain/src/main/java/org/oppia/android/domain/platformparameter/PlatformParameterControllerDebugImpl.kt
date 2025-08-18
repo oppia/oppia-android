@@ -318,12 +318,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
             ?.currentValue == true
           AsyncResult.Success(restoredValue)
         }
-        is AsyncResult.Failure -> {
-          AsyncResult.Failure(result.error)
-        }
-        is AsyncResult.Pending -> {
-          AsyncResult.Pending()
-        }
+        is AsyncResult.Failure -> { AsyncResult.Failure(result.error) }
+        is AsyncResult.Pending -> { AsyncResult.Pending() }
       }
     }
   }
@@ -364,6 +360,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       }
     }
   }
+
   private companion object {
     private const val LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID =
       "load_ephemeral_platform_parameters"

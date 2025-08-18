@@ -960,7 +960,7 @@ message FeatureFlagsFragmentStateBundle {
   repeated OverriddenFeatureFlag feature_flag_states = 1;
 
   // List of feature flags that had gone reset.
-  repeated FeatureFlagDefinition reset_feature_flags = 3;
+  repeated OverriddenFeatureFlag reset_feature_flags = 3;
 }
 
 // The bundle of properties that are saved on configuration change in PlatformParametersFragment.
@@ -972,7 +972,7 @@ message PlatformParametersFragmentStateBundle {
   repeated PlatformParameterId invalid_input_platform_parameters = 2;
 
   // List of platform parameters that had gone reset.
-  repeated PlatformParameterDefinition reset_platform_parameters = 3;
+  repeated OverriddenPlatformParameter reset_platform_parameters = 3;
 }
 
 // Arguments required when creating an FlashbackConfirmationDialogFragment.

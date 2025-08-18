@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
-import org.oppia.android.app.model.PlatformParameterDefinition
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.PlatformParametersFragmentStateBundle
@@ -55,7 +54,7 @@ class PlatformParametersFragment : InjectableFragment() {
         platformParameterStates[it] = null
       }
       args?.resetPlatformParametersList?.forEach {
-        resetParamList[it.id] = it.defaultValue
+        resetParamList[it.id] = it.overriddenValue
       }
     }
 
@@ -81,9 +80,9 @@ class PlatformParametersFragment : InjectableFragment() {
       .keys
     val resetParamList =
       platformParametersFragmentPresenter.resetParameters.mapNotNull { (id, value) ->
-        PlatformParameterDefinition.newBuilder()
+        OverriddenPlatformParameter.newBuilder()
           .setId(id)
-          .setDefaultValue(value)
+          .setOverriddenValue(value)
           .build()
       }
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
