@@ -359,12 +359,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           val restoredValue = result.value.first { it.id == id }.currentValue
           AsyncResult.Success(restoredValue)
         }
-        is AsyncResult.Failure -> {
-          AsyncResult.Failure(result.error)
-        }
-        is AsyncResult.Pending -> {
-          AsyncResult.Pending()
-        }
+        is AsyncResult.Failure -> { AsyncResult.Failure(result.error) }
+        is AsyncResult.Pending -> { AsyncResult.Pending() }
       }
     }
   }

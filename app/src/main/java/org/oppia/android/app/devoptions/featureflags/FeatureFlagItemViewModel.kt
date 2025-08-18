@@ -30,25 +30,31 @@ class FeatureFlagItemViewModel(
   var onFeatureFlagToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
 
   /** Indicates whether the flag is overridden. */
-  val isFlagOverridden = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+  val isFlagOverridden: ObservableField<Boolean> =
+    ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
-  val isResetButtonActive = ObservableField(true)
+  val isResetButtonActive: ObservableField<Boolean> = ObservableField(true)
 
   /** Message for displaying the sync details of the platform parameter. */
-  var syncDetails = ObservableField(processSyncDetails())
+  var syncDetails: ObservableField<String> = ObservableField(processSyncDetails())
 
   private fun processSyncDetails(): String {
-    return if (syncStatus == SyncStatus.LOCAL_OVERRIDE)
-      resourceHandler
-        .getStringInLocale(R.string.platform_parameter_currently_overridden_message)
-    else {
-      resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    return when (syncStatus) {
+      SyncStatus.LOCAL_OVERRIDE ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)
+      SyncStatus.SYNCED_FROM_SERVER -> {
+        // TODO(#5345): Remove this filler message once the server sync logic is implemented.
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
+      }
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
     }
   }
 
-  /** Indicates whether the reset button should be shown for this flag. */
-  val isResetAvailable = ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+  /** Indicates whether the reset button should be visible for this flag. */
+  val isResetAvailable: ObservableField<Boolean> =
+    ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Called when the feature flag switch is toggled in the UI. */
   fun onToggleFeatureFlagSwitch() {

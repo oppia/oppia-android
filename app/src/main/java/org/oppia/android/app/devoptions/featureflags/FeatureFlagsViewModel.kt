@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
@@ -41,7 +42,13 @@ class FeatureFlagsViewModel @Inject constructor(
     result: AsyncResult<List<EphemeralFeatureFlag>>
   ): List<EphemeralFeatureFlag> {
     return when (result) {
-      is AsyncResult.Success -> result.value
+      is AsyncResult.Success -> {
+        result.value.sortedWith(
+          compareByDescending<EphemeralFeatureFlag> {
+            it.syncStatus == SyncStatus.LOCAL_OVERRIDE
+          }.thenBy { it.id.name }
+        )
+      }
       else -> emptyList()
     }
   }
