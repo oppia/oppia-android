@@ -54,6 +54,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.domain.state.StateDeck
 
 private const val BEGIN_EXPLORATION_RESULT_PROVIDER_ID =
   "ExplorationProgressController.begin_exploration_result"
@@ -730,13 +731,7 @@ class ExplorationProgressController @Inject constructor(
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
         val linkedSkillId = explorationProgress.stateDeck.getCurrentState().linkedSkillId
-        val showFlashback = enableFlashbackSupport.value &&
-          !answerOutcome.labelledAsCorrectAnswer &&
-          !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
-          !linkedSkillId.isNullOrEmpty() &&
-          answerOutcome.feedback.contentId.equals("default_outcome") &&
-          !explorationProgress.stateDeck.wasFlashbackPreviouslyOffered() &&
-          explorationProgress.stateDeck.hasFlashbackState(linkedSkillId)
+        val showFlashback = shouldOfferFlashback(answerOutcome, explorationProgress.stateDeck)
         when {
           showFlashback -> {
             val stateName = explorationProgress.stateDeck.getFlashbackStateName(linkedSkillId)
@@ -1267,6 +1262,18 @@ class ExplorationProgressController @Inject constructor(
       // The ephemeral state technically changes when a checkpoint is successfully saved.
       recomputeCurrentStateAndNotifySync()
     }
+  }
+
+  /** Returns whether flashback should be offered based on the current state and [outcome]. */
+  private fun shouldOfferFlashback(outcome: AnswerOutcome, stateDeck: StateDeck): Boolean {
+    val linkedSkillId = stateDeck.getCurrentState().linkedSkillId
+    return enableFlashbackSupport.value &&
+      !outcome.labelledAsCorrectAnswer &&
+      !doesInteractionAutoContinue(outcome.state.interaction.id) &&
+      !linkedSkillId.isNullOrEmpty() &&
+      outcome.feedback.contentId.equals("default_outcome") &&
+      !stateDeck.wasFlashbackPreviouslyOffered() &&
+      stateDeck.hasFlashbackState(linkedSkillId)
   }
 
   /**

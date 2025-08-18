@@ -486,7 +486,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
             else
               SubtitledHtml.newBuilder()
                 .setHtml(
-                  resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
                 )
                 .build(),
             gcsEntityId,
@@ -523,7 +523,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
           else
             SubtitledHtml.newBuilder()
               .setHtml(
-                resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
+                resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
               )
               .build(),
           gcsEntityId,
