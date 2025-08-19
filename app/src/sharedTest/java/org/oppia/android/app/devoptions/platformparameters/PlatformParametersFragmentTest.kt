@@ -2,7 +2,7 @@ package org.oppia.android.app.devoptions.platformparameters
 
 import android.app.Application
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -151,9 +151,6 @@ class PlatformParametersFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
-    private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
-    private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
-    private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
   }
 
   @Test
@@ -184,7 +181,7 @@ class PlatformParametersFragmentTest {
           position = index,
           expectedDisplayName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
         )
-        verifyPlatformParameterSyncStatus(
+        verifyPlatformParameterSyncDetails(
           position = index,
           expectedSyncStatus = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
         )
@@ -202,9 +199,10 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(0)
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
       verifyPlatformParameterDisplayName(
-        position = 0,
+        position = position,
         expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
       )
     }
@@ -217,9 +215,9 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyPlatformParameterSyncStatus(
+      verifyPlatformParameterSyncDetails(
         position = 0,
-        expectedSyncStatus = context.getString(R.string.platform_parameter_default_sync_status)
+        expectedSyncStatus = context.getString(R.string.platform_parameter_never_synced_message)
       )
     }
   }
@@ -248,7 +246,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(0)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = DEFAULT_BACKGROUND_COLOR
+        expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
       )
     }
   }
@@ -281,8 +279,10 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
       verifyPlatformParameterValue(
-        position = 0,
+        position = position,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE)
           .build()
@@ -303,9 +303,12 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      verifyPlatformParameterSyncStatus(
-        position = 0,
-        expectedSyncStatus = context.getString(R.string.platform_parameter_server_sync_status)
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterSyncDetails(
+        position = position,
+        expectedSyncStatus =
+          context.getString(R.string.platform_parameter_synced_from_server_message)
       )
     }
   }
@@ -325,7 +328,7 @@ class PlatformParametersFragmentTest {
       println(getEphemeralPlatformParameters()[0].syncStatus)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = SERVER_BACKGROUND_COLOR
+        expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
       )
     }
   }
@@ -343,8 +346,10 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
       verifyPlatformParameterDisplayName(
-        position = 0,
+        position = position,
         expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
       )
     }
@@ -362,9 +367,11 @@ class PlatformParametersFragmentTest {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      scrollToPosition(1)
+
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
       verifyPlatformParameterValue(
-        position = 1,
+        position = position,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS)
           .build()
@@ -384,9 +391,10 @@ class PlatformParametersFragmentTest {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
       verifyPlatformParameterValue(
-        position = 0,
+        position = position,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG)
           .build()
@@ -427,10 +435,10 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
-      verifyPlatformParameterSyncStatus(
+      verifyPlatformParameterSyncDetails(
         position = 0,
         expectedSyncStatus = context.getString(
-          R.string.platform_parameter_overridden_sync_status
+          R.string.platform_parameter_currently_overridden_message
         )
       )
     }
@@ -451,7 +459,8 @@ class PlatformParametersFragmentTest {
       scrollToPosition(0)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_overridden_background_color)
       )
     }
   }
@@ -469,8 +478,10 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
       verifyPlatformParameterValue(
-        position = 1,
+        position = position,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
           .build()
@@ -523,10 +534,10 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
-      verifyPlatformParameterSyncStatus(
+      verifyPlatformParameterSyncDetails(
         position = 0,
         expectedSyncStatus = context.getString(
-          R.string.platform_parameter_overridden_sync_status
+          R.string.platform_parameter_currently_overridden_message
         )
       )
     }
@@ -552,7 +563,8 @@ class PlatformParametersFragmentTest {
       scrollToPosition(0)
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_overridden_background_color)
       )
     }
   }
@@ -599,9 +611,10 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(1)
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
       verifyPlatformParameterValue(
-        position = 1,
+        position = position,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
           .build()
@@ -820,12 +833,12 @@ class PlatformParametersFragmentTest {
 
     launch(PlatformParametersActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 1,
+          position = position,
           targetViewId = R.id.platform_parameter_input_edit_text
         )
       ).perform(editTextInputAction.replaceText("16"))
@@ -837,10 +850,9 @@ class PlatformParametersFragmentTest {
 
     launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
+      scrollToPosition(0)
       verifyPlatformParameterValue(
-        position = 1,
+        position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(expectedState)
           .build()
@@ -1009,11 +1021,12 @@ class PlatformParametersFragmentTest {
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(1)
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 1,
+          position = position,
           targetViewId = R.id.reset_button
         )
       ).check(matches(isDisplayed()))
@@ -1039,7 +1052,7 @@ class PlatformParametersFragmentTest {
         )
       ).perform(click())
       testCoroutineDispatchers.runCurrent()
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(false)
@@ -1137,16 +1150,15 @@ class PlatformParametersFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
-        targetViewId = R.id.sync_status_value_text_view
+        targetViewId = R.id.platform_parameter_constraint_layout
       )
     ).check { view, _ ->
-      val background = view.background
-      val color = (background as GradientDrawable).color?.defaultColor
+      val color = (view.background as ColorDrawable).color
       assertThat(color).isEqualTo(expectedColor)
     }
   }
 
-  private fun verifyPlatformParameterSyncStatus(
+  private fun verifyPlatformParameterSyncDetails(
     position: Int,
     expectedSyncStatus: String
   ) {
@@ -1154,7 +1166,7 @@ class PlatformParametersFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
-        targetViewId = R.id.sync_status_value_text_view
+        targetViewId = R.id.sync_details_text_view
       )
     ).check(matches(withText(expectedSyncStatus)))
   }
@@ -1199,13 +1211,15 @@ class PlatformParametersFragmentTest {
   private fun getSyncStatusText(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        context.getString(R.string.platform_parameter_unknown_sync_status)
+        context.getString(R.string.feature_flag_never_synced_message)
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        context.getString(R.string.platform_parameter_default_sync_status)
+        context.getString(R.string.feature_flag_never_synced_message)
       SyncStatus.SYNCED_FROM_SERVER ->
-        context.getString(R.string.platform_parameter_server_sync_status)
+        context.getString(R.string.feature_flag_synced_from_server_message)
+      SyncStatus.LOCAL_OVERRIDE ->
+        context.getString(R.string.feature_flag_currently_overridden_message)
       else ->
-        context.getString(R.string.platform_parameter_unknown_sync_status)
+        context.getString(R.string.feature_flag_never_synced_message)
     }
   }
 
@@ -1217,7 +1231,11 @@ class PlatformParametersFragmentTest {
 
   private fun getEphemeralPlatformParameters(): List<EphemeralPlatformParameter> {
     val provider = platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
-    return monitorFactory.waitForNextSuccessfulResult(provider)
+    return monitorFactory.waitForNextSuccessfulResult(provider).sortedWith(
+      compareByDescending<EphemeralPlatformParameter> {
+        it.syncStatus == SyncStatus.LOCAL_OVERRIDE
+      }.thenBy { it.id.name }
+    )
   }
 
   private fun getPlatformParameterDisplayName(id: PlatformParameterId): String {
@@ -1225,6 +1243,22 @@ class PlatformParametersFragmentTest {
       .lowercase()
       .split('_')
       .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
+  }
+
+  private fun getSplashScreenWelcomeMsgPosition(): Int {
+    return getEphemeralPlatformParameters().indexOf(
+      getEphemeralPlatformParameters().first {
+        it.id == PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+      }
+    )
+  }
+
+  private fun getSyncUpWorkerTimePeriodPosition(): Int {
+    return getEphemeralPlatformParameters().indexOf(
+      getEphemeralPlatformParameters().first {
+        it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+      }
+    )
   }
 
   // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.

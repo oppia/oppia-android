@@ -91,7 +91,6 @@ class PlatformParameterItemViewModel(
       when (platformParameterId) {
         PlatformParameterId.UNRECOGNIZED,
         PlatformParameterId.PLATFORM_PARAMETER_ID_UNSPECIFIED -> "Unknown"
-
         else ->
           platformParameterId.name.toMachineLowerCase()
             .split("_")
