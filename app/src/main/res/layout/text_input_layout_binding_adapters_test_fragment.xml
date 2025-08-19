@@ -13,9 +13,10 @@
 
       <TextView
         android:id="@+id/test_input_label"
+        style="@style/AudioLanguageSubtitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/test_input_label"
+        android:text="@string/audio_language_fragment_subtitle"
         android:labelFor="@id/test_autocomplete_view" />
 
       <AutoCompleteTextView
