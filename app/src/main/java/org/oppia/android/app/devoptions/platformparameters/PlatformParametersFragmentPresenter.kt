@@ -32,7 +32,7 @@ import javax.inject.Inject
 class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val platformParametersViewModel: PlatformParametersViewModel,
+  private val platformParameterViewModelFactory: PlatformParametersViewModel.Factory,
   private val resourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
@@ -94,7 +94,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = platformParametersViewModel
+      this.viewModel = platformParameterViewModelFactory.create(resetParameters.keys.toList())
     }
 
     return binding.root

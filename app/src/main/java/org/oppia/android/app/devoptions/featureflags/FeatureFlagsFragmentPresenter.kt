@@ -26,7 +26,7 @@ import javax.inject.Inject
 class FeatureFlagsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val featureFlagsViewModel: FeatureFlagsViewModel,
+  private val featureFlagsViewModelFactory: FeatureFlagsViewModel.Factory,
   private val oppiaLogger: OppiaLogger,
   private val resourceHandler: AppLanguageResourceHandler,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
@@ -75,7 +75,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     }
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = featureFlagsViewModel
+      this.viewModel = featureFlagsViewModelFactory.create(resetFlags.keys.toList())
     }
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -18,10 +19,11 @@ import javax.inject.Inject
  * [PlatformParameterItemViewModel] which in turn display the available Platform Parameters.
  */
 @FragmentScope
-class PlatformParametersViewModel @Inject constructor(
+class PlatformParametersViewModel private constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val resetParamList: List<PlatformParameterId>
 ) : ObservableViewModel() {
   private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
     Transformations.map(
@@ -45,7 +47,7 @@ class PlatformParametersViewModel @Inject constructor(
       is AsyncResult.Success -> {
         result.value.sortedWith(
           compareByDescending<EphemeralPlatformParameter> {
-            it.syncStatus == SyncStatus.LOCAL_OVERRIDE
+            it.syncStatus == SyncStatus.LOCAL_OVERRIDE || resetParamList.contains(it.id)
           }.thenBy { it.id.name }
         )
       }
@@ -63,6 +65,22 @@ class PlatformParametersViewModel @Inject constructor(
         syncStatus = ephemeralPlatformParameter.syncStatus,
         machineLocale = machineLocale,
         resourceHandler = resourceHandler
+      )
+    }
+  }
+
+  class Factory @Inject constructor(
+    private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
+    private val machineLocale: OppiaLocale.MachineLocale,
+    private val resourceHandler: AppLanguageResourceHandler
+  ) {
+    /** Creates a new [PlatformParametersViewModel]. */
+    fun create(resetParamList: List<PlatformParameterId>): PlatformParametersViewModel {
+      return PlatformParametersViewModel(
+        platformParameterControllerDebugImpl,
+        machineLocale,
+        resourceHandler,
+        resetParamList
       )
     }
   }
