@@ -2013,7 +2013,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-ar/strings.xml"
-  lint_issue_id: DUPLICATE_STRINGS
   lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_DASHES
   lint_issue_id: TYPOGRAPHY_QUOTES
@@ -2054,13 +2053,11 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-pcm-rNG/strings.xml"
-  lint_issue_id: DUPLICATE_STRINGS
   lint_issue_id: TYPOGRAPHY_QUOTES
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-pt-rBR/strings.xml"
-  lint_issue_id: DUPLICATE_STRINGS
   lint_issue_id: IMPLIED_QUANTITY
   lint_issue_id: TYPOGRAPHY_QUOTES
   lint_issue_id: TYPOS
@@ -2068,7 +2065,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-sw/strings.xml"
-  lint_issue_id: DUPLICATE_STRINGS
   lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_QUOTES
   lint_issue_id: UNUSED_RESOURCES
