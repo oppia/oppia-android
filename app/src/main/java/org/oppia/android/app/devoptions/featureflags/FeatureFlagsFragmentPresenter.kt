@@ -160,12 +160,12 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     platformParameterControllerDebugImpl
       .resetFeatureFlag(model.featureFlagId)
       .toLiveData()
-      .observe(fragment) {
-        when (it) {
+      .observe(fragment) { restoredFlagValue ->
+        when (restoredFlagValue) {
           is AsyncResult.Success -> {
-            resetFlags[model.featureFlagId] = it.value
-            featureFlagStates[model.featureFlagId] = it.value
-            model.isChecked.set(it.value)
+            resetFlags[model.featureFlagId] = restoredFlagValue.value
+            featureFlagStates[model.featureFlagId] = restoredFlagValue.value
+            model.isChecked.set(restoredFlagValue.value)
             model.isResetButtonActive.set(false)
             // TODO(#5345): Remove this filler message once the server sync logic is implemented.
             model.syncDetails.set(
@@ -175,7 +175,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "FeatureFlagsFragmentPresenter",
-              "Failed to reset feature flag: ${model.featureFlagId}", it.error
+              "Failed to reset feature flag: ${model.featureFlagId}", restoredFlagValue.error
             )
           }
           is AsyncResult.Pending -> {} // No action required

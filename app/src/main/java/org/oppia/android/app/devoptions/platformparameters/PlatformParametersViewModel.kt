@@ -69,6 +69,7 @@ class PlatformParametersViewModel private constructor(
     }
   }
 
+  /** Factory for creating instances of [PlatformParametersViewModel]. */
   class Factory @Inject constructor(
     private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
     private val machineLocale: OppiaLocale.MachineLocale,
