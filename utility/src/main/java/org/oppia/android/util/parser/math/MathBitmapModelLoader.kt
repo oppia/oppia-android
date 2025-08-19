@@ -225,6 +225,7 @@ class MathBitmapModelLoader private constructor(
       }
 
       override fun drawPath(path: Path, paint: Paint) {
+        @Suppress("DEPRECATION") // we don't have the library version required to use path.bounds
         val pathBounds = RectF().also { path.computeBounds(it, /* unusedExact= */ true) }
         currentBounds.union(pathBounds.intersection(currentClip))
       }
@@ -272,7 +273,7 @@ class MathBitmapModelLoader private constructor(
       }
 
       override fun restore() {
-        currentClip = pastClips.removeLast()
+        currentClip = pastClips.removeAt(pastClips.lastIndex)
       }
 
       override fun save() {

@@ -138,7 +138,7 @@ class SpotlightFragment : InjectableFragment(), SpotlightNavigationListener, Spo
         }
 
         override fun onEnded() {
-          if (targetList.isNotEmpty()) targetList.removeFirst()
+          if (targetList.isNotEmpty()) targetList.removeFirstOrNull()
           val profileId = ProfileId.newBuilder()
             .setInternalId(internalProfileId)
             .build()

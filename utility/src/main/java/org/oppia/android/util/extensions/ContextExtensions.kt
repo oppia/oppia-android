@@ -5,7 +5,7 @@ import android.content.Context
 // Extension functions for Context that act as getters for PackageManager.
 
 /** Returns the current app version name. */
-fun Context.getVersionName(): String {
+fun Context.getVersionName(): String? {
   // TODO(#3616): Migrate to the proper SDK 28+ APIs.
   @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
   return this.packageManager.getPackageInfo(this.packageName, /* flags = */ 0).versionName

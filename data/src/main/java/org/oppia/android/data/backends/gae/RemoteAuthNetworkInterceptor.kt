@@ -39,7 +39,7 @@ class RemoteAuthNetworkInterceptor @Inject constructor() : Interceptor {
     return request.newBuilder()
       .addHeader("api_key", networkApiKey)
       .addHeader("app_package_name", context.packageName)
-      .addHeader("app_version_name", context.getVersionName())
+      .addHeader("app_version_name", context.getVersionName().toString())
       .addHeader("app_version_code", context.getVersionCode().toString())
       .build()
   }
