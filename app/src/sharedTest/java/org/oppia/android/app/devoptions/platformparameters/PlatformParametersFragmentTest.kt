@@ -209,7 +209,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_returnsDefaultSyncStatus() {
+  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_returnsNeverSyncedMessage() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -291,7 +291,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsServerSyncStatus() {
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsSyncedFromServerMessage() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -423,7 +423,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_onlyOverriddenValue_returnsOverriddenSyncStatus() {
+  fun testPlatformParametersFragment_boolParam_onlyOverriddenValue_returnsCurrentlyOverriddenMsg() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanOverriddenPlatformParameterToDatabase(
         testComponent,
@@ -486,6 +486,24 @@ class PlatformParametersFragmentTest {
           .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
           .build()
       )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_intParam_withOnlyOverrddenValue_alertIconIsVisible() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyOverriddenAlertIconIsVisible(0)
     }
   }
 
@@ -1091,6 +1109,34 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_returnsNeverSyncedMessage() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.platform_parameter_never_synced_message)
+      )
+    }
+  }
+
   fun testPlatformParametersFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
     executeInPreviousAppInstance { component ->
       addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
@@ -1259,6 +1305,16 @@ class PlatformParametersFragmentTest {
         it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
       }
     )
+  }
+
+  private fun verifyOverriddenAlertIconIsVisible(position: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.platform_parameters_recycler_view,
+        position = position,
+        targetViewId = R.id.currently_overridden_alert_icon
+      )
+    ).check(matches(isDisplayed()))
   }
 
   // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
