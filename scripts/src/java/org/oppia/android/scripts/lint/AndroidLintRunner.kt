@@ -87,7 +87,7 @@ class ElapsedTimeDisplayer(private val coroutineScope: CoroutineScope) {
     }
   }
 
-  /** Formats duration in milliseconds to HH:MM:SS format.*/
+  /** Formats duration in milliseconds to HH:MM:SS format. */
   private fun formatDuration(durationMs: Long): String {
     val totalSeconds = durationMs / 1000
     val hours = totalSeconds / 3600
@@ -98,7 +98,7 @@ class ElapsedTimeDisplayer(private val coroutineScope: CoroutineScope) {
   }
 }
 
-/** Extension function to format total execution time consistently */
+/** Extension function to format total execution time consistently. */
 private fun Long.toFormattedDuration(): String {
   val totalSeconds = this / 1000
   val hours = totalSeconds / 3600
