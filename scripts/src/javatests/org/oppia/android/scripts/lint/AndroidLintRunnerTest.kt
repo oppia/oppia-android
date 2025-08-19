@@ -1,12 +1,16 @@
 package org.oppia.android.scripts.lint
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.scripts.proto.AndroidLintExemption
 import org.oppia.android.scripts.proto.AndroidLintExemptions
@@ -41,6 +45,8 @@ class AndroidLintRunnerTest {
   private lateinit var bazelBinFolder: File
   private lateinit var projectDescriptionFile: File
   private lateinit var kotlinVersion: String
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private lateinit var elapsedTimeDisplayer: ElapsedTimeDisplayer
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
@@ -75,11 +81,13 @@ class AndroidLintRunnerTest {
       repoRoot = tempFolder.root,
     )
     projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
+    elapsedTimeDisplayer = ElapsedTimeDisplayer(CoroutineScope(scriptBgDispatcher))
   }
 
   @After
   fun tearDown() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -102,6 +110,51 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains("Repository root path does not exist")
+  }
+
+  @Test
+  fun testStart_firstTime_startsTimer() = runBlocking {
+    elapsedTimeDisplayer.start()
+
+    delay(1100)
+
+    val output = outputStream.toString()
+    assertThat(output.contains("Elapsed time:")).isTrue()
+    assertThat(output.contains("00:00:01")).isTrue()
+  }
+
+  @Test
+  fun testStart_calledMultipleTimes_onlyStartsOnce(): Unit = runBlocking {
+    elapsedTimeDisplayer.start()
+    elapsedTimeDisplayer.start()
+    delay(2100)
+
+    val output = outputStream.toString()
+    assertThat(output.contains("00:00:02"))
+  }
+
+  @Test
+  fun testStop_afterRunning_returnsCorrectElapsedTime(): Unit = runBlocking {
+    elapsedTimeDisplayer.start()
+
+    delay(2000)
+
+    val elapsedTime = elapsedTimeDisplayer.stop()
+
+    assertThat(elapsedTime in 1800..2200)
+  }
+
+  @Test
+  fun testStop_clearsTimerLine(): Unit = runBlocking {
+    elapsedTimeDisplayer.start()
+    delay(1100)
+
+    outputStream.reset()
+
+    elapsedTimeDisplayer.stop()
+
+    val output = outputStream.toString()
+    assertThat(output.contains("\r\u001B[K"))
   }
 
   @Test
@@ -814,70 +867,6 @@ class AndroidLintRunnerTest {
       .contains("app/src/main/res")
   }
 
-  @Test
-  fun testElapsedTimeDisplayer_start_displaysInitialTime() {
-    val testableElapsedTimeDisplayer = TestableElapsedTimeDisplayer()
-    testableElapsedTimeDisplayer.setCurrentTime(1000L)
-
-    testableElapsedTimeDisplayer.start()
-    testableElapsedTimeDisplayer.triggerUpdate()
-
-    val output = outputStream.toString()
-    assertThat(output).contains("Elapsed time: 00:00:01")
-  }
-
-  @Test
-  fun testElapsedTimeDisplayer_stop_returnsElapsedTime() {
-    val testableElapsedTimeDisplayer = TestableElapsedTimeDisplayer()
-    testableElapsedTimeDisplayer.start()
-    testableElapsedTimeDisplayer.setCurrentTime(2500L)
-
-    val elapsedTime = testableElapsedTimeDisplayer.stop()
-
-    assertThat(elapsedTime).isEqualTo(2500L)
-  }
-
-  @Test
-  fun testElapsedTimeDisplayer_stop_clearsTimerLine() {
-    val testableElapsedTimeDisplayer = TestableElapsedTimeDisplayer()
-    testableElapsedTimeDisplayer.start()
-    testableElapsedTimeDisplayer.setCurrentTime(1000L)
-    testableElapsedTimeDisplayer.triggerUpdate()
-
-    testableElapsedTimeDisplayer.stop()
-
-    val output = outputStream.toString()
-    assertThat(output).contains("\u001B[K")
-  }
-
-  @Test
-  fun testElapsedTimeDisplayer_stopWithoutStart_returnsValidTime() {
-    val testableElapsedTimeDisplayer = TestableElapsedTimeDisplayer()
-    testableElapsedTimeDisplayer.setCurrentTime(500L)
-
-    val elapsedTime = testableElapsedTimeDisplayer.stop()
-
-    assertThat(elapsedTime).isEqualTo(500L)
-  }
-
-  @Test
-  fun testElapsedTimeDisplayer_multipleUpdates_showProgressingTime() {
-    val testableElapsedTimeDisplayer = TestableElapsedTimeDisplayer()
-    testableElapsedTimeDisplayer.start()
-
-    testableElapsedTimeDisplayer.setCurrentTime(1000L)
-    testableElapsedTimeDisplayer.triggerUpdate()
-    val firstOutput = outputStream.toString()
-
-    outputStream.reset()
-    testableElapsedTimeDisplayer.setCurrentTime(3000L)
-    testableElapsedTimeDisplayer.triggerUpdate()
-    val secondOutput = outputStream.toString()
-
-    assertThat(firstOutput).contains("00:00:01")
-    assertThat(secondOutput).contains("00:00:03")
-  }
-
   private fun setupProjectWithUseCompoundDrawables() {
     setupProjectStructure()
     createFileWithContent(
@@ -1571,53 +1560,5 @@ class AndroidLintRunnerTest {
     }
 
     return jarFile
-  }
-
-  /** Testable version of ElapsedTimeDisplayer. */
-  private class TestableElapsedTimeDisplayer {
-    private var startTime = System.currentTimeMillis()
-    private var currentTime = System.currentTimeMillis()
-    private var lastOutputWasTimer = false
-    private var isStarted = false
-
-    fun start() {
-      startTime = currentTime
-      isStarted = true
-    }
-
-    fun setCurrentTime(elapsedMs: Long) {
-      currentTime = startTime + elapsedMs
-    }
-
-    fun triggerUpdate() {
-      if (!isStarted) return
-
-      val elapsed = currentTime - startTime
-      val seconds = elapsed / 1000
-      val minutes = seconds / 60
-      val hours = minutes / 60
-
-      print("\r\u001B[K")
-      print("Elapsed time: %02d:%02d:%02d".format(hours, minutes % 60, seconds % 60))
-      System.out.flush()
-      lastOutputWasTimer = true
-    }
-
-    fun clearLine() {
-      if (lastOutputWasTimer) {
-        print("\r\u001B[K")
-        System.out.flush()
-        lastOutputWasTimer = false
-      }
-    }
-
-    fun stop(): Long {
-      val totalTime = currentTime - startTime
-      if (lastOutputWasTimer) {
-        print("\r\u001B[K")
-      }
-      isStarted = false
-      return totalTime
-    }
   }
 }
