@@ -22,7 +22,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 
-/** Tag for displaying [PlatformParameterRestartDialogFragment] */
+/** Tag for displaying [PlatformParameterRestartDialogFragment]. */
 const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 
 /** The presenter for [FeatureFlagsFragment]. */
