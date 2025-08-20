@@ -97,6 +97,7 @@ import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -529,9 +530,10 @@ class CreateProfileFragmentTest {
               assertThat(editText.importantForAutofill).isEqualTo(View.IMPORTANT_FOR_AUTOFILL_NO)
             }
             else -> {
-              // API < 26 - autofill doesn't exist
-              assertThat(editText).isNotNull()
-              assertThat(editText.inputType).isNotEqualTo(0)
+              // API < 26 - autofill API not available
+              assertThrows<NoSuchMethodError>() {
+                editText.importantForAutofill
+              }
             }
           }
         }
