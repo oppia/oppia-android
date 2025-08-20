@@ -11,7 +11,8 @@ import javax.inject.Inject
 class PlatformParameterRestartDialogFragment : InjectableDialogFragment() {
 
   @Inject
-  lateinit var presenter: PlatformParameterRestartDialogFragmentPresenter
+  lateinit var platformParameterRestartDialogFragmentPresenter:
+    PlatformParameterRestartDialogFragmentPresenter
   companion object {
     /** Returns a new instance of [PlatformParameterRestartDialogFragment]. */
     fun newInstance(): PlatformParameterRestartDialogFragment =
@@ -23,6 +24,6 @@ class PlatformParameterRestartDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return presenter.handleOnCreateDialog()
+    return platformParameterRestartDialogFragmentPresenter.handleOnCreateDialog()
   }
 }
