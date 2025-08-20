@@ -1136,7 +1136,6 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_invalidInputAlert_withValidInput_doesNotShowDialog() {
     setUpTestApplicationComponent()
-    Intents.init()
     launch(PlatformParametersActivity::class.java).use { _ ->
       testCoroutineDispatchers.runCurrent()
 
@@ -1279,6 +1278,44 @@ class PlatformParametersFragmentTest {
           )
         ).check(matches(not(isChecked())))
       }
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParameter_navigateBack_displaysResetAlertDialog() {
+    Intents.init()
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.platform_parameter_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBack_doesNotShowResetAlertDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use { _ ->
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.platform_parameter_restart_dialog_title))
+        .check(doesNotExist())
     }
   }
 
