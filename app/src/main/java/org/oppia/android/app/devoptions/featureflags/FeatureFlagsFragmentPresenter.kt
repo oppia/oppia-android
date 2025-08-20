@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
@@ -20,7 +21,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 
 const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 
@@ -101,7 +101,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
-    if(featureFlagStates.isNotEmpty()) {
+    if (featureFlagStates.isNotEmpty()) {
       val overriddenFeatureFlags: MutableList<OverriddenFeatureFlag> = mutableListOf()
       featureFlagStates.map { (id, value) ->
         if (resetFlags[id] != value) {
@@ -133,8 +133,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
             is AsyncResult.Pending -> {} // Wait for a result.
           }
         }
-    }
-    else {
+    } else {
       (activity as FeatureFlagsActivity).finish()
     }
   }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
@@ -26,7 +27,6 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
-import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 
 const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
 
@@ -115,10 +115,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private fun onBackNavigation() {
     val hasInvalidInput = platformParameterStates.containsValue(null)
 
-    if(platformParameterStates.isEmpty()){
+    if (platformParameterStates.isEmpty()) {
       (activity as PlatformParametersActivity).finish()
-    }
-    else if (!hasInvalidInput) {
+    } else if (!hasInvalidInput) {
       val overriddenPlatformParameters = mutableListOf<OverriddenPlatformParameter>()
       platformParameterStates.map { (id, value) ->
         if (resetParameters[id] != value) {

@@ -3,18 +3,19 @@ package org.oppia.android.app.devoptions
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import javax.inject.Inject
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableDialogFragment
+import javax.inject.Inject
 
-/** Dialog fragment that prompts the user to restart the app when platform parameters are updated. */
-class PlatformParameterRestartDialogFragment: InjectableDialogFragment() {
+/** Dialog fragment to restart the app when platform parameters are updated. */
+class PlatformParameterRestartDialogFragment : InjectableDialogFragment() {
 
   @Inject
   lateinit var presenter: PlatformParameterRestartDialogFragmentPresenter
-  companion object{
+  companion object {
     /** Returns a new instance of [PlatformParameterRestartDialogFragment]. */
-    fun newInstance(): PlatformParameterRestartDialogFragment = PlatformParameterRestartDialogFragment()
+    fun newInstance(): PlatformParameterRestartDialogFragment =
+      PlatformParameterRestartDialogFragment()
   }
   override fun onAttach(context: Context) {
     super.onAttach(context)
@@ -22,6 +23,6 @@ class PlatformParameterRestartDialogFragment: InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-       return presenter.handleOnCreateDialog()
+    return presenter.handleOnCreateDialog()
   }
 }

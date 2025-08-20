@@ -5,11 +5,10 @@ import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import javax.inject.Inject
-import org.oppia.android.app.ui.R
 import org.oppia.android.app.databinding.databinding.RestartDialogFragmentBinding
 import org.oppia.android.app.splash.SplashActivity
-import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
+import org.oppia.android.app.ui.R
+import javax.inject.Inject
 
 /** Presenter for the [PlatformParameterRestartDialogFragment]. */
 class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
@@ -35,7 +34,7 @@ class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
     dialog.setCanceledOnTouchOutside(true)
 
     binding.restartButton.setOnClickListener {
-     val intent = Intent(activity, SplashActivity::class.java).also {
+      val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
       }
@@ -45,5 +44,4 @@ class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
     }
     return dialog
   }
-
 }
