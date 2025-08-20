@@ -2,13 +2,6 @@ package org.oppia.android.app.devoptions
 
 import android.app.AlertDialog
 import android.app.Dialog
-<<<<<<< HEAD
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import org.oppia.android.app.databinding.databinding.RestartDialogFragmentBinding
-import org.oppia.android.app.ui.R
-import javax.inject.Inject
-=======
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -17,7 +10,6 @@ import org.oppia.android.app.ui.R
 import org.oppia.android.app.databinding.databinding.RestartDialogFragmentBinding
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.domain.platformparameter.PlatformParameterControllerDebugImpl
->>>>>>> 18896503a (added restart dialog implementation)
 
 /** Presenter for the [PlatformParameterRestartDialogFragment]. */
 class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
@@ -40,17 +32,6 @@ class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()
-<<<<<<< HEAD
-    dialog.setCanceledOnTouchOutside(false)
-
-    binding.restartButton.setOnClickListener {
-      dialog.dismiss()
-      activity.finishAffinity()
-    }
-    return dialog
-  }
-}
-=======
     dialog.setCanceledOnTouchOutside(true)
 
     binding.restartButton.setOnClickListener {
@@ -66,4 +47,3 @@ class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
   }
 
 }
->>>>>>> 18896503a (added restart dialog implementation)

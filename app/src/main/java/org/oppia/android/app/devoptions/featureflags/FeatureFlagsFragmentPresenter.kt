@@ -20,6 +20,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
+
+const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 
 /** The presenter for [FeatureFlagsFragment]. */
 @FragmentScope
@@ -98,34 +101,42 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
-    val overriddenFeatureFlags: MutableList<OverriddenFeatureFlag> = mutableListOf()
-
-    featureFlagStates.map { (id, value) ->
-      if (resetFlags[id] != value) {
-        overriddenFeatureFlags.add(
-          OverriddenFeatureFlag.newBuilder()
-            .setId(id)
-            .setOverriddenValue(value)
-            .build()
-        )
-      }
-    }
-
-    platformParameterControllerDebugImpl
-      .updateOverriddenFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
-        when (it) {
-          is AsyncResult.Success -> (activity as FeatureFlagsActivity).finish()
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "FeatureFlagsFragmentPresenter",
-              "Failed to override feature flags: ",
-              it.error
-            )
-          }
-
-          is AsyncResult.Pending -> {} // Wait for a result.
+    if(featureFlagStates.isNotEmpty()) {
+      val overriddenFeatureFlags: MutableList<OverriddenFeatureFlag> = mutableListOf()
+      featureFlagStates.map { (id, value) ->
+        if (resetFlags[id] != value) {
+          overriddenFeatureFlags.add(
+            OverriddenFeatureFlag.newBuilder()
+              .setId(id)
+              .setOverriddenValue(value)
+              .build()
+          )
         }
       }
+
+      platformParameterControllerDebugImpl
+        .updateOverriddenFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
+          when (it) {
+            is AsyncResult.Success -> {
+              val dialog = PlatformParameterRestartDialogFragment.newInstance()
+              dialog.showNow(activity.supportFragmentManager, TAG_FEATURE_FLAG_RESTART_DIALOG)
+            }
+
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "FeatureFlagsFragmentPresenter",
+                "Failed to override feature flags: ",
+                it.error
+              )
+            }
+
+            is AsyncResult.Pending -> {} // Wait for a result.
+          }
+        }
+    }
+    else {
+      (activity as FeatureFlagsActivity).finish()
+    }
   }
 
   private fun bindFeatureFlagItem(
