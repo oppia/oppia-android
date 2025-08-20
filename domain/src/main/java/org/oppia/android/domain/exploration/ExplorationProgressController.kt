@@ -39,6 +39,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
 import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.topic.StoryProgressController
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
@@ -729,32 +730,23 @@ class ExplorationProgressController @Inject constructor(
 
         // Follow the answer's outcome to another part of the graph if it's different.
         val ephemeralState = computeBaseCurrentEphemeralState()
+        val linkedSkillId = explorationProgress.stateDeck.getCurrentState().linkedSkillId
+        val showFlashback = shouldOfferFlashback(answerOutcome, explorationProgress.stateDeck)
         when {
+          showFlashback -> {
+            val stateName = explorationProgress.stateDeck.getFlashbackStateName(linkedSkillId)
+            explorationProgress.stateDeck.addFlashbackState(stateName)
+          }
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
-            val wasVisitedBefore = explorationProgress.stateDeck
-              .wasStatePreviouslyVisited(answerOutcome.stateName)
-
-            val hasSolution = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-              .interaction.solution?.let { it.hasExplanation() && it.hasCorrectAnswer() } == true
-
-            // Checks whether the learner submitted a wrong answer, the expected destination name
-            // was previously visited and the destination state has a solution.
-            if (enableFlashbackSupport.value && hasSolution &&
-              !doesInteractionAutoContinue(answerOutcome.state.interaction.id) &&
-              !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
-            ) {
-              explorationProgress.stateDeck.addFlashbackState(answerOutcome.stateName)
-            } else {
-              endState()
-              val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
-              explorationProgress.stateDeck.pushState(
-                newState,
-                prohibitSameStateName = true,
-                timestamp = startSessionTimeMs + continueButtonAnimationDelay,
-                isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
-              )
-              hintHandler.finishState(newState)
-            }
+            endState()
+            val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)
+            explorationProgress.stateDeck.pushState(
+              newState,
+              prohibitSameStateName = true,
+              timestamp = startSessionTimeMs + continueButtonAnimationDelay,
+              isContinueButtonAnimationSeen = isContinueButtonAnimationSeen
+            )
+            hintHandler.finishState(newState)
           }
           ephemeralState.stateTypeCase == EphemeralState.StateTypeCase.PENDING_STATE -> {
             // Schedule, or show immediately, a new hint or solution based on the current
@@ -1270,6 +1262,18 @@ class ExplorationProgressController @Inject constructor(
       // The ephemeral state technically changes when a checkpoint is successfully saved.
       recomputeCurrentStateAndNotifySync()
     }
+  }
+
+  /** Returns whether flashback should be offered based on the current state and [outcome]. */
+  private fun shouldOfferFlashback(outcome: AnswerOutcome, stateDeck: StateDeck): Boolean {
+    val linkedSkillId = stateDeck.getCurrentState().linkedSkillId
+    return enableFlashbackSupport.value &&
+      !outcome.labelledAsCorrectAnswer &&
+      !doesInteractionAutoContinue(outcome.state.interaction.id) &&
+      !linkedSkillId.isNullOrEmpty() &&
+      outcome.feedback.contentId.equals("default_outcome") &&
+      !stateDeck.wasFlashbackPreviouslyOffered() &&
+      stateDeck.hasFlashbackState(linkedSkillId)
   }
 
   /**
