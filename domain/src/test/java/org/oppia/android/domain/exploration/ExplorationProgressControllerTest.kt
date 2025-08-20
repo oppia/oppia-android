@@ -2260,7 +2260,7 @@ class ExplorationProgressControllerTest {
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -2305,7 +2305,7 @@ class ExplorationProgressControllerTest {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -2326,7 +2326,7 @@ class ExplorationProgressControllerTest {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -3309,11 +3309,9 @@ class ExplorationProgressControllerTest {
     // Verify that the answer submission was successful.
     val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
 
-    val expectedFeedback = "<p>That answer isn't correct. Let's look at an example.</p>"
-
     assertThat(answerOutcome.labelledAsCorrectAnswer).isEqualTo(false)
-    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
-    assertThat(answerOutcome.feedback.html).contains(expectedFeedback)
+    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
+    assertThat(answerOutcome.feedback.contentId).contains("default_outcome")
   }
 
   @Test
@@ -3336,6 +3334,9 @@ class ExplorationProgressControllerTest {
     // appended.
     assertThat(ephemeralState.stateTypeCase).isEqualTo(EphemeralState.StateTypeCase.PENDING_STATE)
     assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Verify linked Skill Id of this state.
+    assertThat(ephemeralState.state.linkedSkillId).isEqualTo("test_skill_id_0")
   }
 
   @Test
@@ -3425,6 +3426,9 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState2.stateTypeCase).isEqualTo(COMPLETED_STATE)
     // Verify flashback state is true in the returned EphemeralState.
     assertThat(ephemeralState2.flashbackState).isEqualTo(true)
+
+    // Verify linked Skill Id of this state.
+    assertThat(ephemeralState2.state.linkedSkillId).isEqualTo("test_skill_id_0")
   }
 
   @Test

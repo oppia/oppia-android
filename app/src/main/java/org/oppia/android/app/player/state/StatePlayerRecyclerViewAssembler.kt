@@ -497,12 +497,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            if (answerAndResponse.stateNameToRevisit.isNullOrBlank()) //subha
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
               answerAndResponse.feedback
             else
               SubtitledHtml.newBuilder()
                 .setHtml(
-                  resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
                 )
                 .build(),
             gcsEntityId,
@@ -567,12 +567,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            if (answerAndResponse.stateNameToRevisit.isNullOrBlank()) //subha
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
               answerAndResponse.feedback
             else
               SubtitledHtml.newBuilder()
                 .setHtml(
-                  resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
                 )
                 .build(),
             gcsEntityId,
@@ -622,16 +622,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
       if (playerFeatureSet.feedbackSupport) {
         createFeedbackItem(
-          if (answerAndResponse.stateNameToRevisit.isNullOrBlank()) //subha
+          if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
             answerAndResponse.feedback
           else
             SubtitledHtml.newBuilder()
               .setHtml(
-                resourceHandler.getStringInLocale(R.string.flashback_triggering_feedback_text)
+                resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
               )
               .build(),
           gcsEntityId,
-          writtenTranslationContext)?.let(pendingItemList::add)
+          writtenTranslationContext
+        )?.let(pendingItemList::add)
       }
     }
   }
