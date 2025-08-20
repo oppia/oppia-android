@@ -10,6 +10,7 @@ import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDe
 import org.oppia.android.app.classroom.ClassroomListFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
@@ -182,6 +183,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
+  fun inject(platformParameterRestartDialogFragment: PlatformParameterRestartDialogFragment)
   fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)

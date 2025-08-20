@@ -26,6 +26,9 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
+
+const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
 
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
@@ -112,7 +115,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private fun onBackNavigation() {
     val hasInvalidInput = platformParameterStates.containsValue(null)
 
-    if (!hasInvalidInput) {
+    if(platformParameterStates.isEmpty()){
+      (activity as PlatformParametersActivity).finish()
+    }
+    else if (!hasInvalidInput) {
       val overriddenPlatformParameters = mutableListOf<OverriddenPlatformParameter>()
       platformParameterStates.map { (id, value) ->
         if (resetParameters[id] != value) {
@@ -129,7 +135,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         .updateOverriddenPlatformParameters(overriddenPlatformParameters)
         .toLiveData().observe(fragment) {
           when (it) {
-            is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
+            is AsyncResult.Success -> {
+              val dialog = PlatformParameterRestartDialogFragment.newInstance()
+              dialog.showNow(activity.supportFragmentManager, TAG_PLATFORM_PARAMETER_RESTART_DIALOG)
+            }
             is AsyncResult.Failure -> {
               oppiaLogger.e(
                 "PlatformParametersFragmentPresenter",

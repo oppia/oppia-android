@@ -49,6 +49,9 @@
   <string name="platform_parameter_alert_icon_content_description" translatable="false">Overridden platform parameter indicator</string>
   <string name="feature_flag_alert_icon_content_description" translatable="false">Overridden feature flag indicator</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
+  <string name="platform_parameter_restart_dialog_title" translatable="false">App Behaviours Overridden.</string>
+  <string name="platform_parameter_restart_dialog_message" translatable="false">Restart required to apply new configurations.</string>
+  <string name="platform_parameter_restart_dialog_button_text" translatable="false">Restart</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
   <string name="math_expression_parse_result_label" translatable="false">Parse result: %s</string>
