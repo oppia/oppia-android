@@ -423,6 +423,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/PlatformParameterRestartDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/PlatformParameterRestartDialogFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToForceNetworkTypeListener.kt"
   test_file_not_required: true
 }
