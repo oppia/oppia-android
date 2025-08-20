@@ -206,6 +206,7 @@ class AndroidLintAnalyzer(
       "GradleOverrides",
       "SyntheticAccessor",
       "DuplicateStrings",
+      "SelectableText"
     )
   }
 
