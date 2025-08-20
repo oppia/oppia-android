@@ -9,6 +9,7 @@ import org.oppia.android.app.databinding.databinding.RestartDialogFragmentBindin
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
+import kotlin.system.exitProcess
 
 /** Presenter for the [PlatformParameterRestartDialogFragment]. */
 class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
@@ -41,6 +42,7 @@ class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
       dialog.dismiss()
       activity.finishAffinity()
       activity.startActivity(intent)
+      exitProcess(0)
     }
     return dialog
   }
