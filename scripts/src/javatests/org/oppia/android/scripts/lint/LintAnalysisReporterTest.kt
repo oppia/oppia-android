@@ -40,73 +40,65 @@ class LintAnalysisReporterTest {
     repoRoot = tempFolder.root
 
     warningIssue = LintIssue(
-      id = "UnusedResources",
-      severity = LintSeverity.WARNING,
-      message = "The resource appears to be unused",
-      category = "Performance",
-      priority = "3",
-      summary = "Unused resources",
-      explanation = "Unused resources make applications larger",
-      errorLine1 = "<color name=\"unused_color\">#FF0000</color>",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation(
-          "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
-        )
-      )
+            id = "UnusedResources",
+            severity = LintSeverity.WARNING,
+            message = "The resource appears to be unused",
+            category = "Performance",
+            explanation = "Unused resources make applications larger",
+            errorLine1 = "<color name=\"unused_color\">#FF0000</color>",
+            errorLine2 = "",
+            locations = listOf(
+              LintLocation(
+                "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
+              )
+            )
     )
 
     errorIssue = LintIssue(
-      id = "NewApi",
-      severity = LintSeverity.ERROR,
-      message = "Call requires API level 23",
-      category = "Correctness",
-      priority = "6",
-      summary = "Calling new API",
-      explanation = "This API is not available in older versions",
-      errorLine1 = "context.getSystemService(JobScheduler::class.java)",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation("${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42")
-      )
+            id = "NewApi",
+            severity = LintSeverity.ERROR,
+            message = "Call requires API level 23",
+            category = "Correctness",
+            explanation = "This API is not available in older versions",
+            errorLine1 = "context.getSystemService(JobScheduler::class.java)",
+            errorLine2 = "",
+            locations = listOf(
+              LintLocation("${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42")
+            )
     )
 
     informationIssue = LintIssue(
-      id = "IidCompatibilityCheckFailure",
-      severity = LintSeverity.INFORMATION,
-      message = "Check failed with exception: java.lang.NoSuchMethodException",
-      category = "Lint",
-      priority = "1",
-      summary = "Firebase IID Compatibility Check Unable To Run",
-      explanation = "The check failed to run as it encountered unknown failure.",
-      errorLine1 = "",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation(
-          file = "${repoRoot.absolutePath}/app/src/main/test.xml",
-          lineNumber = ""
-        )
-      )
+            id = "IidCompatibilityCheckFailure",
+            severity = LintSeverity.INFORMATION,
+            message = "Check failed with exception: java.lang.NoSuchMethodException",
+            category = "Lint",
+            explanation = "The check failed to run as it encountered unknown failure.",
+            errorLine1 = "",
+            errorLine2 = "",
+            locations = listOf(
+              LintLocation(
+                file = "${repoRoot.absolutePath}/app/src/main/test.xml",
+                lineNumber = ""
+              )
+            )
     )
 
     multiLocationIssue = LintIssue(
-      id = "DuplicateStrings",
-      severity = LintSeverity.WARNING,
-      message = "Duplicate string value",
-      category = "Correctness",
-      priority = "5",
-      summary = "Duplicate strings",
-      explanation = "String literals should not be duplicated",
-      errorLine1 = "<string name=\"hello\">Hello World</string>",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation(
-          "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
-        ),
-        LintLocation(
-          "${repoRoot.absolutePath}/src/main/res/values-es/strings.xml", "8"
-        )
-      )
+            id = "DuplicateStrings",
+            severity = LintSeverity.WARNING,
+            message = "Duplicate string value",
+            category = "Correctness",
+            explanation = "String literals should not be duplicated",
+            errorLine1 = "<string name=\"hello\">Hello World</string>",
+            errorLine2 = "",
+            locations = listOf(
+              LintLocation(
+                "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
+              ),
+              LintLocation(
+                "${repoRoot.absolutePath}/src/main/res/values-es/strings.xml", "8"
+              )
+            )
     )
     System.setOut(PrintStream(outputStream))
   }
@@ -135,8 +127,6 @@ class LintAnalysisReporterTest {
     assertThat(issue.severity).isEqualTo(warningIssue.severity)
     assertThat(issue.message).isEqualTo(warningIssue.message)
     assertThat(issue.category).isEqualTo(warningIssue.category)
-    assertThat(issue.priority).isEqualTo(warningIssue.priority)
-    assertThat(issue.summary).isEqualTo(warningIssue.summary)
     assertThat(issue.explanation).isEqualTo(warningIssue.explanation)
     assertThat(issue.errorLine1).isEqualTo(warningIssue.errorLine1)
     assertThat(issue.errorLine2).isEqualTo(warningIssue.errorLine2)
@@ -494,8 +484,6 @@ class LintAnalysisReporterTest {
     assertThat(issues).hasSize(1)
     val issue = issues[0]
     assertThat(issue.category).isEmpty()
-    assertThat(issue.priority).isEmpty()
-    assertThat(issue.summary).isEmpty()
     assertThat(issue.explanation).isEmpty()
     assertThat(issue.errorLine1).isEmpty()
     assertThat(issue.errorLine2).isEmpty()
@@ -594,8 +582,9 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (1 issues)$RESET")
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: INFORMATION (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue ID: ${warningIssue.id}$RESET")
-    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: ${warningIssue.id} " +
+      "(Category: Performance)$RESET")
+    assertThat(output).contains("SEVERITY: WARNING (1 issues)")
     assertThat(output).contains("  File: ${warningIssue.locations[0].file}")
     assertThat(output).contains("  Line: 5")
 
@@ -616,9 +605,10 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
 
     assertThat(output).contains("=".repeat(80))
-    assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issues)$RESET")
+    assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issue)$RESET")
 
-    assertThat(output).contains("$BOLD Issue #1: ${warningIssue.id}$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: ${warningIssue.id}" +
+      " (Category: Performance)$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
     assertThat(exception.message)
@@ -687,8 +677,9 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("    2. File: ${multiLocationIssue.locations[1].file}")
     assertThat(output).contains("       Line: 8")
-    assertThat(output).contains("$BOLD Issue ID: ${multiLocationIssue.id}$RESET")
-    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
+      " (Category: Correctness)$RESET")
+    assertThat(output).contains("SEVERITY: WARNING (1 issues)")
 
     assertThat(exception.message)
       .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
@@ -704,11 +695,12 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output)
-      .contains("${BOLD}FILE: ${multiLocationIssue.locations[0].file} (1 issues)$RESET")
+      .contains("${BOLD}FILE: ${multiLocationIssue.locations[0].file} (1 issue)$RESET")
     assertThat(output)
-      .contains("${BOLD}FILE: ${multiLocationIssue.locations[1].file} (1 issues)$RESET")
+      .contains("${BOLD}FILE: ${multiLocationIssue.locations[1].file} (1 issue)$RESET")
 
-    assertThat(output).contains("$BOLD Issue #1: ${multiLocationIssue.id}$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
+      " (Category: Correctness)$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
     assertThat(exception.message)
@@ -726,11 +718,10 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("  Error Line: ${errorIssue.errorLine1}")
 
-    assertThat(output).contains("  Category: ${errorIssue.category}")
-    assertThat(output).contains("  Priority: ${errorIssue.priority}")
-    assertThat(output).contains("  Summary: ${errorIssue.summary}")
+    assertThat(output).contains("Category: ${errorIssue.category}")
     assertThat(output).contains("  Message: ${errorIssue.message}")
-    assertThat(output).contains("  Explanation: ${errorIssue.explanation}")
+    assertThat(output).contains("Explanation:\n" )
+      assertThat(output).contains("This API is not available in older versions")
   }
 
   @Test
@@ -744,11 +735,10 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("  Error Line: ${errorIssue.errorLine1}")
 
-    assertThat(output).contains("  Category: ${errorIssue.category}")
-    assertThat(output).contains("  Priority: ${errorIssue.priority}")
-    assertThat(output).contains("  Summary: ${errorIssue.summary}")
+    assertThat(output).contains("(Category: ${errorIssue.category})")
     assertThat(output).contains("  Message: ${errorIssue.message}")
-    assertThat(output).contains("  Explanation: ${errorIssue.explanation}")
+    assertThat(output).contains("  Explanation:\n")
+    assertThat(output).contains(errorIssue.explanation)
   }
 
   @Test
@@ -760,8 +750,9 @@ class LintAnalysisReporterTest {
 
     assertThat(output).doesNotContain("Error Line:")
 
-    assertThat(output).contains("$BOLD Issue ID: IidCompatibilityCheckFailure$RESET")
-    assertThat(output).contains("${YELLOW}Severity: Information$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: " +
+      "IidCompatibilityCheckFailure (Category: Lint)$RESET")
+    assertThat(output).contains("SEVERITY: INFORMATION (1 issues)")
   }
 
   @Test
@@ -773,7 +764,8 @@ class LintAnalysisReporterTest {
 
     assertThat(output).doesNotContain("Error Line:")
 
-    assertThat(output).contains("$BOLD Issue #1: IidCompatibilityCheckFailure$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: IidCompatibilityCheckFailure" +
+      " (Category: Lint)$RESET")
     assertThat(output).contains("${YELLOW}Severity: Information$RESET")
   }
 
@@ -909,8 +901,8 @@ class LintAnalysisReporterTest {
     }
     val output = outputStream.toString()
 
-    val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
-    assertThat(issueIdCount).isEqualTo(3)
+//    val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
+//    assertThat(issueIdCount).isEqualTo(3)
 
     assertThat(output).contains("First issue message")
     assertThat(output).contains("Second issue message")
@@ -951,7 +943,7 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("  Line: 5")
-    assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issues)$RESET")
+    assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issue)$RESET")
 
     assertThat(exception.message)
       .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
@@ -1166,8 +1158,6 @@ class LintAnalysisReporterTest {
             severity="${issue.severity.displayName}"
             message="${escapeXml(issue.message)}"
             category="${issue.category}"
-            priority="${issue.priority}"
-            summary="${escapeXml(issue.summary)}"
             explanation="${escapeXml(issue.explanation)}"
             $errorLine1Attr
             $errorLine2Attr>

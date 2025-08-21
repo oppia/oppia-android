@@ -234,24 +234,36 @@ class AndroidLintRunner(
   private fun reportLintIssues() {
     val reporter = LintAnalysisReporter()
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
+
     require(File(exemptionProtoPath).exists()) {
       "Exemption file does not exist: $exemptionProtoPath"
     }
+
     val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
+
+    // Collect unknown issue IDs
+    val unknownIssueIds = reporter.collectUnknownIssueIds(allIssues)
+
+    // Filter issues - this will now include unknown issues in the report
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
       exemptions = exemptions.androidLintExemptionList,
       repoRoot = repoRoot
     )
+
     val redundantExemptions = reporter.findRedundantExemptions(
       issues = allIssues,
       exemptions = exemptions.androidLintExemptionList,
       repoRoot = repoRoot
     )
-    if (redundantExemptions.isNotEmpty()) {
-      reporter.logRedundantExemptions(redundantExemptions)
-    }
-    reporter.printLintReport(filteredIssues, groupByIssueSeverity)
+
+    // Print the main report with redundant exemptions and unknown IDs
+    reporter.printLintReport(
+      issues = filteredIssues,
+      groupByIssueSeverity = groupByIssueSeverity,
+      redundantExemptions = redundantExemptions,
+      unknownIssueIds = unknownIssueIds
+    )
   }
 
   /**

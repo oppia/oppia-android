@@ -546,19 +546,20 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withRtlHardCoded_detectsIssue() {
     setupProjectWithRtlHardCoded()
 
-    val exception = assertThrows<IllegalArgumentException> {
+  val exception =  assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
-    val output = reportfile.readText()
+    val output = outputStream.toString()
     assertThat(output).contains("RtlHardcoded")
     assertThat(output)
-      .contains("android:layout_alignParentRight=&quot;true&quot; />")
-    assertThat(output).contains("line=\"8\"")
+      .contains("<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"")
+    assertThat(output).contains("Line: 8")
     assertThat(output)
-      .contains("Using left/right instead of start/end attributes")
+      .contains("Consider replacing `android:layout_alignParentRight`" +
+        " with `android:layout_alignParentEnd=\"true\"` to better support right-to-left layouts")
 
     assertThat(exception.message)
-      .contains("Unknown lint issue ID 'RtlHardcoded' found during analysis.")
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val projectDescriptionContent = projectDescriptionFile.readText()
     assertThat(projectDescriptionContent)
@@ -623,7 +624,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withInlinedApi_detectsIssue() {
     setupProjectWithInlinedApi()
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
 
@@ -639,7 +640,7 @@ class AndroidLintRunnerTest {
       )
 
     assertThat(exception.message)
-      .contains("Unknown lint issue ID 'InlinedApi' found during analysis.")
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val projectDescriptionContent = projectDescriptionFile.readText()
     assertThat(projectDescriptionContent)
@@ -1333,10 +1334,12 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
-    exemptRedundantIssue(
-      LintIssueId.UNUSED_RESOURCES,
-      "$moduleName/src/main/res/values/strings.xml"
-    )
+   if(moduleName!="app") {
+      exemptRedundantIssue(
+        LintIssueId.UNUSED_RESOURCES,
+        "$moduleName/src/main/res/values/strings.xml"
+      )
+    }
   }
 
   private fun createFileWithContent(relativePath: String, content: String): File {
