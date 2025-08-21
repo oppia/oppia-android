@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
   <string name="app_name" translatable="false">Oppia</string>
   <!-- DeveloperOptionsActivity -->
   <string name="developer_options_activity_title" translatable="false">Developer Options</string>
@@ -41,7 +41,7 @@
   <string name="platform_parameter_invalid_input_error_msg" translatable="false">Invalid Value</string>
   <string name="platform_parameter_invalid_input_alert_dialog_title" translatable="false">Invalid Inputs</string>
   <string name="platform_parameter_invalid_input_alert_dialog_message" translatable="false">Please ensure all fields have valid values to continue.</string>
-  <string name="platform_parameter_invalid_input_alert_dialog_okay_button" tools:ignore="ButtonCase,Typos" translatable="false">Ok</string>
+  <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">OK</string>
   <string name="platform_parameter_reset" translatable="false">Reset</string>
   <string name="platform_parameter_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
   <string name="platform_parameter_currently_overridden_message" translatable="false">Currently Overridden.</string>
