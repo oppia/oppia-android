@@ -40,65 +40,65 @@ class LintAnalysisReporterTest {
     repoRoot = tempFolder.root
 
     warningIssue = LintIssue(
-            id = "UnusedResources",
-            severity = LintSeverity.WARNING,
-            message = "The resource appears to be unused",
-            category = "Performance",
-            explanation = "Unused resources make applications larger",
-            errorLine1 = "<color name=\"unused_color\">#FF0000</color>",
-            errorLine2 = "",
-            locations = listOf(
-              LintLocation(
-                "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
-              )
-            )
+      id = "UnusedResources",
+      severity = LintSeverity.WARNING,
+      message = "The resource appears to be unused",
+      category = "Performance",
+      explanation = "Unused resources make applications larger",
+      errorLine1 = "<color name=\"unused_color\">#FF0000</color>",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
+        )
+      )
     )
 
     errorIssue = LintIssue(
-            id = "NewApi",
-            severity = LintSeverity.ERROR,
-            message = "Call requires API level 23",
-            category = "Correctness",
-            explanation = "This API is not available in older versions",
-            errorLine1 = "context.getSystemService(JobScheduler::class.java)",
-            errorLine2 = "",
-            locations = listOf(
-              LintLocation("${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42")
-            )
+      id = "NewApi",
+      severity = LintSeverity.ERROR,
+      message = "Call requires API level 23",
+      category = "Correctness",
+      explanation = "This API is not available in older versions",
+      errorLine1 = "context.getSystemService(JobScheduler::class.java)",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation("${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42")
+      )
     )
 
     informationIssue = LintIssue(
-            id = "IidCompatibilityCheckFailure",
-            severity = LintSeverity.INFORMATION,
-            message = "Check failed with exception: java.lang.NoSuchMethodException",
-            category = "Lint",
-            explanation = "The check failed to run as it encountered unknown failure.",
-            errorLine1 = "",
-            errorLine2 = "",
-            locations = listOf(
-              LintLocation(
-                file = "${repoRoot.absolutePath}/app/src/main/test.xml",
-                lineNumber = ""
-              )
-            )
+      id = "IidCompatibilityCheckFailure",
+      severity = LintSeverity.INFORMATION,
+      message = "Check failed with exception: java.lang.NoSuchMethodException",
+      category = "Lint",
+      explanation = "The check failed to run as it encountered unknown failure.",
+      errorLine1 = "",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation(
+          file = "${repoRoot.absolutePath}/app/src/main/test.xml",
+          lineNumber = ""
+        )
+      )
     )
 
     multiLocationIssue = LintIssue(
-            id = "DuplicateStrings",
-            severity = LintSeverity.WARNING,
-            message = "Duplicate string value",
-            category = "Correctness",
-            explanation = "String literals should not be duplicated",
-            errorLine1 = "<string name=\"hello\">Hello World</string>",
-            errorLine2 = "",
-            locations = listOf(
-              LintLocation(
-                "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
-              ),
-              LintLocation(
-                "${repoRoot.absolutePath}/src/main/res/values-es/strings.xml", "8"
-              )
-            )
+      id = "DuplicateStrings",
+      severity = LintSeverity.WARNING,
+      message = "Duplicate string value",
+      category = "Correctness",
+      explanation = "String literals should not be duplicated",
+      errorLine1 = "<string name=\"hello\">Hello World</string>",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
+        ),
+        LintLocation(
+          "${repoRoot.absolutePath}/src/main/res/values-es/strings.xml", "8"
+        )
+      )
     )
     System.setOut(PrintStream(outputStream))
   }
@@ -582,8 +582,10 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (1 issues)$RESET")
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: INFORMATION (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue 1 of 1: ${warningIssue.id} " +
-      "(Category: Performance)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: ${warningIssue.id} " +
+        "(Category: Performance)$RESET"
+    )
     assertThat(output).contains("SEVERITY: WARNING (1 issues)")
     assertThat(output).contains("  File: ${warningIssue.locations[0].file}")
     assertThat(output).contains("  Line: 5")
@@ -607,8 +609,10 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("=".repeat(80))
     assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issue)$RESET")
 
-    assertThat(output).contains("$BOLD Issue 1 of 1: ${warningIssue.id}" +
-      " (Category: Performance)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: ${warningIssue.id}" +
+        " (Category: Performance)$RESET"
+    )
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
     assertThat(exception.message)
@@ -677,8 +681,10 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("    2. File: ${multiLocationIssue.locations[1].file}")
     assertThat(output).contains("       Line: 8")
-    assertThat(output).contains("$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
-      " (Category: Correctness)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
+        " (Category: Correctness)$RESET"
+    )
     assertThat(output).contains("SEVERITY: WARNING (1 issues)")
 
     assertThat(exception.message)
@@ -699,8 +705,10 @@ class LintAnalysisReporterTest {
     assertThat(output)
       .contains("${BOLD}FILE: ${multiLocationIssue.locations[1].file} (1 issue)$RESET")
 
-    assertThat(output).contains("$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
-      " (Category: Correctness)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
+        " (Category: Correctness)$RESET"
+    )
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
     assertThat(exception.message)
@@ -720,8 +728,8 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("Category: ${errorIssue.category}")
     assertThat(output).contains("  Message: ${errorIssue.message}")
-    assertThat(output).contains("Explanation:\n" )
-      assertThat(output).contains("This API is not available in older versions")
+    assertThat(output).contains("Explanation:\n")
+    assertThat(output).contains("This API is not available in older versions")
   }
 
   @Test
@@ -750,8 +758,10 @@ class LintAnalysisReporterTest {
 
     assertThat(output).doesNotContain("Error Line:")
 
-    assertThat(output).contains("$BOLD Issue 1 of 1: " +
-      "IidCompatibilityCheckFailure (Category: Lint)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: " +
+        "IidCompatibilityCheckFailure (Category: Lint)$RESET"
+    )
     assertThat(output).contains("SEVERITY: INFORMATION (1 issues)")
   }
 
@@ -764,8 +774,10 @@ class LintAnalysisReporterTest {
 
     assertThat(output).doesNotContain("Error Line:")
 
-    assertThat(output).contains("$BOLD Issue 1 of 1: IidCompatibilityCheckFailure" +
-      " (Category: Lint)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: IidCompatibilityCheckFailure" +
+        " (Category: Lint)$RESET"
+    )
     assertThat(output).contains("${YELLOW}Severity: Information$RESET")
   }
 

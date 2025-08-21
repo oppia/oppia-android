@@ -284,7 +284,6 @@ class LintAnalysisReporter {
     // Unknown issues cannot be exempted, so they should appear in the report
     val issueIdEnum = getLintIssueIdFromString(issue.id) ?: return false
 
-
     return issue.locations.any { location ->
       val relativePath = File(location.file).toRelativeString(repoRoot)
       val exemptedIssues = exemptionMap[relativePath]
@@ -487,7 +486,8 @@ class LintAnalysisReporter {
     }
 
     // Add helper URL after redundant exemptions and unknown IDs are logged
-    println("If you need additional help to resolve an issue, see https://developer.android.com/studio/write/lint")
+    println("If you need additional help to resolve an issue," +
+      " see https://developer.android.com/studio/write/lint")
     println()
 
     if (groupByIssueSeverity) {

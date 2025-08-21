@@ -546,7 +546,7 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withRtlHardCoded_detectsIssue() {
     setupProjectWithRtlHardCoded()
 
-  val exception =  assertThrows<IllegalStateException> {
+    val exception = assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
     val output = outputStream.toString()
@@ -555,8 +555,10 @@ class AndroidLintRunnerTest {
       .contains("<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"")
     assertThat(output).contains("Line: 8")
     assertThat(output)
-      .contains("Consider replacing `android:layout_alignParentRight`" +
-        " with `android:layout_alignParentEnd=\"true\"` to better support right-to-left layouts")
+      .contains(
+        "Consider replacing `android:layout_alignParentRight`" +
+          " with `android:layout_alignParentEnd=\"true\"` to better support right-to-left layouts"
+      )
 
     assertThat(exception.message)
       .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
@@ -1334,7 +1336,7 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
-   if(moduleName!="app") {
+    if (moduleName != "app") {
       exemptRedundantIssue(
         LintIssueId.UNUSED_RESOURCES,
         "$moduleName/src/main/res/values/strings.xml"
