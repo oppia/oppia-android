@@ -141,6 +141,9 @@ class FeatureFlagsFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
+    private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
+    private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
+    private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
   }
 
   @After
@@ -188,10 +191,13 @@ class FeatureFlagsFragmentTest {
           position = index,
           expectedColor = when (ephemeralFeatureFlag.syncStatus) {
             SyncStatus.SYNCED_FROM_SERVER -> {
-              0xFF00645C.toInt()
+              SERVER_BACKGROUND_COLOR
             }
             SyncStatus.NOT_SYNCED_FROM_SERVER -> {
-              0xFFBE563C.toInt()
+              DEFAULT_BACKGROUND_COLOR
+            }
+            SyncStatus.LOCAL_OVERRIDE -> {
+              OVERRIDDEN_BACKGROUND_COLOR
             }
             else -> 0xFF00645C.toInt()
           }
@@ -251,7 +257,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = DEFAULT_BACKGROUND_COLOR
       )
     }
   }
@@ -288,7 +294,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = SERVER_BACKGROUND_COLOR
       )
     }
   }
@@ -362,7 +368,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
       )
     }
   }
@@ -462,7 +468,7 @@ class FeatureFlagsFragmentTest {
       scrollToPosition(0)
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = 0xFFBE563C.toInt()
+        expectedColor = OVERRIDDEN_BACKGROUND_COLOR
       )
     }
   }

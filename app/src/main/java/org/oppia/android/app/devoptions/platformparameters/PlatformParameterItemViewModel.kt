@@ -92,6 +92,8 @@ class PlatformParameterItemViewModel(
         resourceHandler.getStringInLocale(R.string.platform_parameter_default_sync_status)
       SyncStatus.SYNCED_FROM_SERVER ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_server_sync_status)
+      SyncStatus.LOCAL_OVERRIDE ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_overridden_sync_status)
       else ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_unknown_sync_status)
     }
@@ -100,9 +102,10 @@ class PlatformParameterItemViewModel(
   @ColorInt
   private fun retrieveSyncStatusBackgroundColor(): Long {
     return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF00645C
+      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF4F4F4F
       SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
       SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
+      SyncStatus.LOCAL_OVERRIDE -> 0xFFC2B71B
       else -> 0xFF00645C
     }
   }
