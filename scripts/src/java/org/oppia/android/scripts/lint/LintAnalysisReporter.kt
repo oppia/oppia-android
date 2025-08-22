@@ -108,6 +108,21 @@ data class LintIssue(
   val locations: List<LintLocation>
 )
 
+/**
+ * Represents a known false positive lint issue with workaround information.
+ *
+ * @property issueId the unique identifier of the lint issue
+ * @property message the message pattern to match against
+ * @property severity the severity level of the issue
+ * @property workaroundMessage the workaround or explanation for why this is a false positive
+ */
+data class FalsePositiveIssue(
+  val issueId: String,
+  val message: String,
+  val severity: LintSeverity,
+  val workaroundMessage: String
+)
+
 private data class CacheEntry(
   val fileHash: String,
   val issues: List<LintIssue>
@@ -177,6 +192,17 @@ class LintAnalysisReporter {
 
     private const val PROTO_BINARY_FILE_PATH = "scripts/assets/android_lint_exemptions.pb"
     private const val EXEMPTIONS_FILE_PATH = "scripts/assets/android_lint_exemptions.textproto"
+
+    private val falsePositiveIssues: Set<FalsePositiveIssue> = setOf(
+      // TODO(#5930): Remove this once lint no longer falsely triggers on Iterable#forEach.
+      FalsePositiveIssue(
+        issueId = "NewApi",
+        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
+        severity = LintSeverity.ERROR,
+        workaroundMessage = "Use safeForEach from IterableExtensions.kt instead of directly" +
+          " calling forEach to avoid known lint false positives on API < 24."
+      )
+    )
   }
 
   /**
@@ -294,6 +320,20 @@ class LintAnalysisReporter {
       val relativePath = File(location.file).toRelativeString(repoRoot)
       val exemptedIssues = exemptionMap[relativePath]
       exemptedIssues?.contains(issueIdEnum) == true
+    }
+  }
+
+  /**
+   * Checks if a lint issue matches any known false positive patterns.
+   *
+   * @param issue The lint issue to check
+   * @return The matching FalsePositiveIssue if found, null otherwise
+   */
+  private fun findMatchingFalsePositive(issue: LintIssue): FalsePositiveIssue? {
+    return falsePositiveIssues.find { falsePositive ->
+      falsePositive.issueId == issue.id &&
+        falsePositive.severity == issue.severity &&
+        issue.message.contains(falsePositive.message, ignoreCase = true)
     }
   }
 
@@ -465,6 +505,8 @@ class LintAnalysisReporter {
     )
 
     sortedIssues.forEach { issue ->
+      val falsePositive = findMatchingFalsePositive(issue)
+
       println("\n$BOLD Issue ID: $issueId$RESET")
       println("  ${colorizeSeverity(issue.severity)}")
 
@@ -487,7 +529,11 @@ class LintAnalysisReporter {
         }
       }
 
-      printIssueBasicInfo(issue)
+      if (falsePositive != null) {
+        printFalsePositiveInfo(issue, falsePositive)
+      } else {
+        printIssueBasicInfo(issue)
+      }
       println("-".repeat(ISSUE_SEPARATOR_LENGTH))
     }
   }
@@ -519,14 +565,46 @@ class LintAnalysisReporter {
       )
 
       sortedByLine.forEachIndexed { index, (issue, location) ->
+        val falsePositive = findMatchingFalsePositive(issue)
+
         println("\n$BOLD Issue #${index + 1}: ${issue.id}$RESET")
-        println("  ${colorizeSeverity(issue.severity)}")
+        if (falsePositive != null) {
+          println("  ${colorizeSeverity(issue.severity)} (FALSE POSITIVE)")
+        } else {
+          println("  ${colorizeSeverity(issue.severity)}")
+        }
         if (location.lineNumber.isNotBlank()) {
           println("  Line: ${location.lineNumber}")
         }
-        printIssueBasicInfo(issue, indent = "  ")
+
+        if (falsePositive != null) {
+          printFalsePositiveInfo(issue, falsePositive, "  ")
+        } else {
+          printIssueBasicInfo(issue, indent = "  ")
+        }
         println("-".repeat(ISSUE_SEPARATOR_LENGTH))
       }
+    }
+  }
+
+  /** Prints false positive issue information. */
+  private fun printFalsePositiveInfo(
+    issue: LintIssue,
+    falsePositive: FalsePositiveIssue,
+    indent: String = "  "
+  ) {
+    if (issue.errorLine1.isNotBlank()) {
+      println("${indent}Error Line: ${issue.errorLine1}")
+      if (issue.errorLine2.isNotBlank()) {
+        println("${indent.padEnd(indent.length + "Error Line: ".length)}${issue.errorLine2}")
+      }
+    }
+
+    listOf(
+      "Message" to falsePositive.message,
+      "Workaround" to falsePositive.workaroundMessage
+    ).forEach { (label, value) ->
+      if (value.isNotBlank()) println("$indent$label: $value")
     }
   }
 
