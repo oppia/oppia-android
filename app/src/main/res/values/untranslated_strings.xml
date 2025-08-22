@@ -42,8 +42,12 @@
   <string name="platform_parameter_sync_status" translatable="false">Sync Status</string>
   <string name="platform_parameter_default_sync_status" translatable="false">Default</string>
   <string name="platform_parameter_server_sync_status" translatable="false">Server</string>
+  <string name="platform_parameter_overridden_sync_status" translatable="false">Overridden</string>
   <string name="platform_parameter_unknown_sync_status" translatable="false">Unknown</string>
   <string name="platform_parameter_invalid_input_error_msg" translatable="false">Invalid Value</string>
+  <string name="platform_parameter_invalid_input_alert_dialog_title" translatable="false">Invalid Inputs</string>
+  <string name="platform_parameter_invalid_input_alert_dialog_message" translatable="false">Please ensure all fields have valid values to continue.</string>
+  <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">OK</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
