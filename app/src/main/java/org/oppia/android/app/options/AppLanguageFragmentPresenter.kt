@@ -156,7 +156,6 @@ class AppLanguageFragmentPresenter @Inject constructor(
         when (result) {
           is AsyncResult.Success -> {
             updateAppLanguage(result.value.selectedLanguage)
-            // TODO(#5911): Add tests for redirection once a product decision has been reached.
           }
           is AsyncResult.Failure -> oppiaLogger.e(
             "AppLanguageFragment",

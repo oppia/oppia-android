@@ -223,11 +223,10 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  @Config(qualifiers = "sw600dp")
-  fun testAudioLanguage_configChange_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
+  @Config(qualifiers = "+land")
+  fun testAudioLanguage_landscape_changeLanguageToPortuguese_selectedLanguageIsPortuguese() {
     initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
     launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
-      rotateToLandscape()
 
       selectPortuguese()
 
@@ -269,9 +268,9 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
-  fun testAudioLanguage_onboardingV2Enabled_configChange_allViewsAreDisplayed() {
+  @Config(qualifiers = "land")
+  fun testAudioLanguage_onboardingV2Enabled_landscapeMode_allViewsAreDisplayed() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use {
-      rotateToLandscape()
       onView(withId(R.id.audio_language_text)).check(
         matches(withText("In Oppia, you can listen to lessons!"))
       )
@@ -351,9 +350,9 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testFragment_landscapeMode_backButtonPressed_currentScreenIsDestroyed() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use { scenario ->
-      rotateToLandscape()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -374,9 +373,9 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testFragment_landscapeMode_systemBackButtonPressed_currentScreenIsDestroyed() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, OPTIONS_SCREEN).use { scenario ->
-      rotateToLandscape()
       onView(isRoot()).perform(pressBack())
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -397,9 +396,9 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testFragment_landscapeMode_toolbarBackButtonPressed_currentScreenIsDestroyed() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, OPTIONS_SCREEN).use { scenario ->
-      rotateToLandscape()
       onView(withContentDescription(R.string.navigate_up)).perform(click())
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
@@ -421,10 +420,10 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testFragment_landscapeMode_continueButtonClicked_launchesHomeScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use {
-      rotateToLandscape()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -446,10 +445,10 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "land")
   fun testFragment_landscapeMode_multipleClassroomsEnabled_continueButtonLaunchesClassroomScreen() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(true)
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use {
-      rotateToLandscape()
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
@@ -516,7 +515,19 @@ class AudioLanguageFragmentTest {
 
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testFragment_fromOptions_languageSelectionChanged_selectionIsUpdated() {
+  fun testFragment_fromOptions_withEnglishLanguage_defaultSelectionIsEnglish() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, OPTIONS_SCREEN).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.audio_language_dropdown_list)).check(
+        matches(withText(R.string.english_localized_language_name))
+      )
+    }
+  }
+
+  @Test
+  @RunOn(TestPlatform.ROBOLECTRIC)
+  fun testFragment_fromOptions_withEnglishLang_naijaSelected_selectionIsUpdatedToNaija() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, OPTIONS_SCREEN).use { scenario ->
       scenario.onActivity { activity ->
         onView(withId(R.id.audio_language_dropdown_list)).perform(click())

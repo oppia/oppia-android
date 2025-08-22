@@ -1383,7 +1383,7 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLanguagePreselection_IndiaDefaultLocale_returnsHindiLanguageAsPreselection() {
+  fun testGetAudioLanguagePreselection_indiaDefaultLocale_returnsHindiLanguageAsPreselection() {
     forceDefaultLocale(INDIA_HINDI_LOCALE)
 
     val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
