@@ -11,6 +11,7 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.safeForEach
 import javax.inject.Inject
 
 /**
@@ -63,7 +64,7 @@ class MarkTopicsCompletedViewModel @Inject constructor(
 
   private fun processAllTopics(allTopics: List<EphemeralTopic>): List<TopicViewModel> {
     itemList.clear()
-    allTopics.forEach { ephemeralTopic ->
+    allTopics.safeForEach { ephemeralTopic ->
       val isCompleted = modifyLessonProgressController.checkIfTopicIsCompleted(ephemeralTopic)
       itemList.add(TopicViewModel(ephemeralTopic, isCompleted, translationController))
     }
