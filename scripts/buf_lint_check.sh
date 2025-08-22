@@ -30,11 +30,23 @@ lint_protobuf_files() {
 populate_jar_config_file_paths() {
   buf_file_name=$?
 
-  if [ "$1" = "Linux" ]; then
-    buf_file_name="buf-Linux-x86_64"
-  else
-    buf_file_name="buf-Darwin-x86_64"
-  fi
+  case "$1" in
+    Linux)
+      buf_file_name="buf-Linux-x86_64"
+      ;;
+    Darwin)
+      if [ "$(uname -m)" = "arm64" ]; then
+        buf_file_name="buf-Darwin-arm64"
+      else
+        buf_file_name="buf-Darwin-x86_64"
+      fi
+      ;;
+    *)
+      echo "Protobuf lint check not available on $1"
+      exit 0
+      ;;
+  esac
+
 
   if [ $github_actions_path ]; then
     jar_file_path="$github_actions_path/oppia-android-tools/$buf_file_name"

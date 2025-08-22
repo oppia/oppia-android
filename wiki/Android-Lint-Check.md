@@ -84,11 +84,11 @@ Example: `bazel run //scripts:android_lint_check -- $(pwd)`
 
 **Arguments:**
 - `<path_to_repository_root>`: The root path of the repository (required)
-- `[path_to_proto_binary]`: Optional relative path to the exemption .pb file (defaults to `scripts/assets/android_lint_exemptions.pb`)
+- `[--proto=<path_to_proto_binary>]`: Optional relative path to the exemption .pb file (defaults to `scripts/assets/android_lint_exemptions.pb`)
 - `[--group_by_severity]`: Optional flag to group issues by severity level
 - `[--processTimeout=<minutes>]`: Optional process timeout in minutes (defaults to 10 minutes)
 
-Example: `bazel run //scripts:android_lint_check -- $(pwd) scripts/assets/android_lint_exemptions.pb --group_by_severity --processTimeout=20`
+Example: `bazel run //scripts:android_lint_check -- $(pwd) --proto=scripts/assets/android_lint_exemptions.pb --group_by_severity --processTimeout=20`
 
 The script can also be analyzed through the **Static Checks CI workflow** for automated code quality monitoring in continuous integration.
 

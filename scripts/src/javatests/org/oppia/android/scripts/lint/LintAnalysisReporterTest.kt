@@ -581,7 +581,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_groupBySeverity_printsCorrectFormat() {
     val issues = listOf(warningIssue, informationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Warning: 1$RESET")
@@ -597,14 +599,17 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("  File: ${warningIssue.locations[0].file}")
     assertThat(output).contains("  Line: 5")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_groupByFile_printsCorrectFormat() {
     val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Warning: 1$RESET")
@@ -616,7 +621,8 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("$BOLD Issue #1: ${warningIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -635,15 +641,32 @@ class LintAnalysisReporterTest {
   }
 
   @Test
-  fun testPrintLintReport_onlyWarnings_passesLintCheck() {
-    val issues = listOf(warningIssue, informationIssue)
+  fun testPrintLintReport_onlyWarnings_failsLintCheck() {
+    val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    assertThat(output).doesNotContain("PASSED")
+  }
+
+  @Test
+  fun testPrintLintReport_onlyInformation_passesLintCheck() {
+    val issues = listOf(informationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+
+    val output = outputStream.toString()
+
     assertThat(output).contains("${YELLOW}Information: 1$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
 
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
     assertThat(output).doesNotContain("FAILED")
@@ -653,7 +676,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_multipleLocationsIssue_groupBySeverity_printsAllLocations() {
     val issues = listOf(multiLocationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("  Locations:")
@@ -664,13 +689,18 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("       Line: 8")
     assertThat(output).contains("$BOLD Issue ID: ${multiLocationIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_multipleLocationsIssue_groupByFile_printsAllFiles() {
     val issues = listOf(multiLocationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output)
@@ -680,6 +710,9 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("$BOLD Issue #1: ${multiLocationIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -742,6 +775,52 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("$BOLD Issue #1: IidCompatibilityCheckFailure$RESET")
     assertThat(output).contains("${YELLOW}Severity: Information$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_falsePositiveIssue_printsWorkaround() {
+    val issues = listOf(
+      LintIssue(
+        id = "NewApi",
+        severity = LintSeverity.ERROR,
+        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
+        category = "Correctness",
+        priority = "6",
+        summary = "Calling new methods on older versions",
+        explanation = "This check scans through all the Android API " +
+          "calls in the application and warns about any calls that are not available",
+        errorLine1 = "          component.getAnalyticsStartupListenerStartupListeners().forEach {",
+        errorLine2 = "                                                                  ~~~~~~~",
+        locations = listOf(
+          LintLocation(
+            file = "${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt",
+            lineNumber = "42"
+          )
+        )
+      )
+    )
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("$BOLD Issue #1: NewApi$RESET")
+    assertThat(output).contains("${RED}Severity: Error$RESET (FALSE POSITIVE)")
+    assertThat(output).contains("Line: 42")
+    assertThat(output).contains(
+      "Error Line:           " +
+        "component.getAnalyticsStartupListenerStartupListeners().forEach {"
+    )
+    assertThat(output).contains(
+      "Message: Call requires API level 24 " +
+        "(current min is 21): `java.lang.Iterable#forEach`"
+    )
+    assertThat(output).contains(
+      "Workaround: Use safeForEach from IterableExtensions.kt" +
+        " instead of directly calling forEach to avoid known lint false positives on API < 24."
+    )
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -812,13 +891,18 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(issue1, issue2)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     val aFilePos = output.indexOf("FILE: a_file.kt")
     val zFilePos = output.indexOf("FILE: z_file.xml")
 
     assertThat(aFilePos).isLessThan(zFilePos)
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -833,13 +917,18 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(issue1, issue2)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     val line10Pos = output.indexOf("Line: 10")
     val line50Pos = output.indexOf("Line: 50")
 
     assertThat(line10Pos).isLessThan(line50Pos)
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -861,7 +950,9 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(issue1, issue2, issue3)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
@@ -874,29 +965,42 @@ class LintAnalysisReporterTest {
     val anotherFilePos = output.indexOf("File: another_file.kt")
     val testFilePos = output.indexOf("File: test_file.kt")
     assertThat(anotherFilePos).isLessThan(testFilePos)
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_singleLocationIssue_groupBySeverity_printsFileAndLine() {
     val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("  File: ${warningIssue.locations[0].file}")
     assertThat(output).contains("  Line: 5")
     assertThat(output).doesNotContain("Locations:")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_singleLocationIssue_groupByFile_printsLine() {
     val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("  Line: 5")
     assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issues)$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
