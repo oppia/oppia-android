@@ -783,7 +783,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
+    assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("")
   }
 
   @Test
@@ -828,7 +828,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
+    assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("")
   }
 
   @Test

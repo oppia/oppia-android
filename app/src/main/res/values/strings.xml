@@ -202,6 +202,7 @@
   <string name="submitted_answer_label_text_content_description">Your submitted answer</string>
   <string name="flashback_submitted_answer_label_text">(This is the correct answer)</string>
   <string name="flashback_submitted_answer_label_text_content_description">This is the correct answer</string>
+  <string name="flashback_feedback_prompt">That answer isn\'t correct. Let\'s look at an example.</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
