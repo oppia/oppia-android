@@ -55,13 +55,32 @@ class ElapsedTimeDisplayer(
     }
   }
 
-  /** Clears the timer line if it's currently displayed, preparing console for new output. */
+  /**
+   * Clears the timer line if it's currently displayed, preparing console for new output.
+   * This method ensures proper synchronization with the timer display.
+   */
   fun clearLine() {
+    synchronized(System.out) {
+      if (needsLineClear) {
+        print("\r\u001B[K")
+        System.out.flush()
+        needsLineClear = false
+      }
+    }
+  }
+
+  /**
+   * Prints a message with proper timer line handling.
+   * This ensures the timer doesn't interfere with the message output.
+   */
+  fun printMessage(message: String) {
     synchronized(System.out) {
       if (needsLineClear) {
         print("\r\u001B[K")
         needsLineClear = false
       }
+      println(message)
+      System.out.flush()
     }
   }
 
@@ -114,18 +133,20 @@ private fun Long.toFormattedDuration(): String {
  *
  * Usage:
  *   bazel run //scripts:android_lint_check -- <path_to_repository_root>
- *   [--proto=<path_to_proto_binary>] [--group_by_severity] [--processTimeout=<minutes>]
+ *   [--proto=<path_to_proto_binary>] [--group_by_severity] [--processTimeout=<minutes>] [--timer]
  *
  * Arguments:
  * - path_to_repository_root: The root path of the repository (required)
  * - --proto=<path_to_proto_binary>: Relative path to the exemption .pb file.
  * - --group_by_severity: Optional flag to group issues by severity
  * - --processTimeout=<minutes>: Process timeout in minutes
+ * - --timer: Optional flag to display elapsed time during execution
  *
  * Examples:
  *   bazel run //scripts:android_lint_check -- $(pwd)
  *   bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
  *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=15
+ *   bazel run //scripts:android_lint_check -- $(pwd) --timer
  */
 fun main(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
@@ -145,18 +166,29 @@ fun main(vararg args: String) {
       path
     } ?: DEFAULT_PROTO_BINARY_PATH
     val groupByIssueSeverity = args.contains("--group_by_severity")
+    val showTimer = args.contains("--timer")
     val processTimeout = args.find { it.startsWith("--processTimeout=") }
       ?.substringAfter("=")
       ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
 
     val temporaryDir = Files.createTempDirectory("").parent.toFile()
     val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
-    val timer = ElapsedTimeDisplayer(CoroutineScope(scriptBgDispatcher))
-    timer.start()
+    val timer = if (showTimer) {
+      ElapsedTimeDisplayer(CoroutineScope(scriptBgDispatcher))
+    } else {
+      null
+    }
+
+    timer?.start()
 
     try {
-      timer.clearLine()
-      println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
+      if (timer != null) {
+        timer.printMessage(
+          "Using ${workingDirectory.absolutePath} as an intermediary working directory"
+        )
+      } else {
+        println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
+      }
 
       val commandExecutor = CommandExecutorImpl(
         scriptBgDispatcher,
@@ -175,8 +207,10 @@ fun main(vararg args: String) {
 
       lintAnalyzer.runAnalysis()
     } finally {
-      val totalTimeMs = timer.stop()
-      println("Total execution time: ${totalTimeMs.toFormattedDuration()}")
+      val totalTimeMs = timer?.stop()
+      if (totalTimeMs != null) {
+        println("Total execution time: ${totalTimeMs.toFormattedDuration()}")
+      }
     }
   }
 }
@@ -188,6 +222,7 @@ fun main(vararg args: String) {
  * @param workingDirectory the temporary working directory for lint analysis
  * @param commandExecutor executes the specified command in the specified working directory
  * @param groupByIssueSeverity whether to group issues by severity in the output
+ * @param timer optional elapsed time displayer for showing progress
  */
 class AndroidLintAnalyzer(
   private val repoRoot: File,
@@ -265,6 +300,7 @@ class AndroidLintAnalyzer(
  * @param reportFile the XML file where lint results will be written
  * @param projectDescriptionFile the XML file containing project configuration
  * @param groupByIssueSeverity whether to group issues by severity in the output
+ * @param timer optional elapsed time displayer for clearing display lines
  */
 class AndroidLintRunner(
   private val reportFile: File,
