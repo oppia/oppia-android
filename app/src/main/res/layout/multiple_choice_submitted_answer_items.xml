@@ -1,5 +1,5 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
     <variable
@@ -10,49 +10,54 @@
       type="org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel" />
   </data>
 
-  <LinearLayout
-    android:id="@+id/radio_container"
+  <RelativeLayout
+    android:id="@+id/checkbox_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:importantForAccessibility="yes"
     android:minHeight="48dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
     android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:orientation="horizontal">
+    android:paddingBottom="12dp">
 
     <ImageView
       android:id="@+id/multiple_choice_radio_icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
+      android:layout_marginStart="4dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
       android:importantForAccessibility="no"
       app:srcCompat="@{viewModel.isEnabled ? @drawable/radio_checked_grey : @drawable/radio_unchecked_grey}" />
 
-    <LinearLayout
-      android:layout_width="match_parent"
+    <TextView
+      android:id="@+id/multiple_choice_content_text_view"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="18dp"
-      android:layout_marginEnd="12dp"
-      android:orientation="vertical">
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_toEndOf="@+id/multiple_choice_radio_icon"
+      android:fontFamily="sans-serif"
+      android:textSize="16sp"
+      android:text="@{htmlContent}"
+      android:contentDescription="@{viewModel.getContentDescription()}"
+      android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
 
-      <TextView
-        android:id="@+id/multiple_choice_content_text_view"
-        style="@style/SubmittedAnswerText"
-        android:text="@{htmlContent}"
-        android:contentDescription="@{viewModel.getContentDescription()}"
-        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
-
-      <TextView
-        android:id="@+id/submitted_answer_label_text_view"
-        style="@style/TextFieldLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
-        android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
-    </LinearLayout>
-  </LinearLayout>
+    <TextView
+      android:id="@+id/submitted_answer_label_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_toEndOf="@+id/multiple_choice_radio_icon"
+      android:layout_below="@id/multiple_choice_content_text_view"
+      android:visibility="gone"
+      android:fontFamily="sans-serif"
+      android:textSize="12sp"
+      android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
+      android:contentDescription="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text_content_description : @string/submitted_answer_label_text_content_description}"
+      android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
+  </RelativeLayout>
 </layout>
