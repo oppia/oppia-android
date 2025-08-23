@@ -24,8 +24,11 @@ private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
 private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemptions.pb"
 
 /** Elapsed time displayer that shows running time of the script. */
-class ElapsedTimeDisplayer(private val coroutineScope: CoroutineScope) {
-  private val startTime = System.currentTimeMillis()
+class ElapsedTimeDisplayer(
+  private val coroutineScope: CoroutineScope,
+  private val timeProvider: () -> Long = { System.currentTimeMillis() }
+) {
+  private var startTime: Long = 0L
   private var timerJob: Job? = null
 
   @Volatile
@@ -34,12 +37,11 @@ class ElapsedTimeDisplayer(private val coroutineScope: CoroutineScope) {
   @Volatile
   private var needsLineClear = false
 
-  /**
-   * Starts the elapsed time display timer.
-   */
+  /** Starts the elapsed time display timer. */
   fun start() {
     if (isTimerRunning) return
 
+    startTime = timeProvider()
     timerJob = coroutineScope.launch {
       isTimerRunning = true
       try {
@@ -65,8 +67,7 @@ class ElapsedTimeDisplayer(private val coroutineScope: CoroutineScope) {
 
   /** Stops the timer and returns the total elapsed time in milliseconds. */
   fun stop(): Long {
-    val totalTime = System.currentTimeMillis() - startTime
-
+    val totalTime = timeProvider() - startTime
     timerJob?.cancel()
     timerJob = null
 
@@ -77,7 +78,7 @@ class ElapsedTimeDisplayer(private val coroutineScope: CoroutineScope) {
 
   /** Displays the current elapsed time, overwriting the previous display. */
   private fun displayElapsedTime() {
-    val elapsed = System.currentTimeMillis() - startTime
+    val elapsed = timeProvider() - startTime
     val formattedTime = formatDuration(elapsed)
 
     synchronized(System.out) {
@@ -128,33 +129,32 @@ private fun Long.toFormattedDuration(): String {
  */
 fun main(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
+    require(args.isNotEmpty()) {
+      "<path_to_repository_root argument> is required: \$(pwd)"
+    }
+
+    val repoRoot = File(args[0])
+    require(repoRoot.exists()) {
+      "Repository root path does not exist: ${args[0]}"
+    }
+    val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
+      val path = option.substringAfter("=")
+      require(path.endsWith(".pb")) {
+        "Invalid exemption file: $path. The file must have a .pb extension."
+      }
+      path
+    } ?: DEFAULT_PROTO_BINARY_PATH
+    val groupByIssueSeverity = args.contains("--group_by_severity")
+    val processTimeout = args.find { it.startsWith("--processTimeout=") }
+      ?.substringAfter("=")
+      ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
+
+    val temporaryDir = Files.createTempDirectory("").parent.toFile()
+    val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
     val timer = ElapsedTimeDisplayer(CoroutineScope(scriptBgDispatcher))
     timer.start()
 
     try {
-      require(args.isNotEmpty()) {
-        "<path_to_repository_root argument> is required: \$(pwd)"
-      }
-
-      val repoRoot = File(args[0])
-      require(repoRoot.exists()) {
-        "Repository root path does not exist: ${args[0]}"
-      }
-      val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
-        val path = option.substringAfter("=")
-        require(path.endsWith(".pb")) {
-          "Invalid exemption file: $path. The file must have a .pb extension."
-        }
-        path
-      } ?: DEFAULT_PROTO_BINARY_PATH
-      val groupByIssueSeverity = args.contains("--group_by_severity")
-      val processTimeout = args.find { it.startsWith("--processTimeout=") }
-        ?.substringAfter("=")
-        ?.toLongOrNull() ?: DEFAULT_PROCESS_TIMEOUT_MINUTES
-
-      val temporaryDir = Files.createTempDirectory("").parent.toFile()
-      val workingDirectory = File(temporaryDir, "lint_analysis").apply { mkdirs() }
-
       timer.clearLine()
       println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
 

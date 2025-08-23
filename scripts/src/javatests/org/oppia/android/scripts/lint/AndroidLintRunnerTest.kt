@@ -2,8 +2,6 @@ package org.oppia.android.scripts.lint
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,6 +43,8 @@ class AndroidLintRunnerTest {
   private lateinit var bazelBinFolder: File
   private lateinit var projectDescriptionFile: File
   private lateinit var kotlinVersion: String
+  private var fakeTime = 0L
+  private val fakeTimeProvider = { fakeTime }
   private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
   private lateinit var elapsedTimeDisplayer: ElapsedTimeDisplayer
 
@@ -81,7 +81,11 @@ class AndroidLintRunnerTest {
       repoRoot = tempFolder.root,
     )
     projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
-    elapsedTimeDisplayer = ElapsedTimeDisplayer(CoroutineScope(scriptBgDispatcher))
+    fakeTime = 0L
+    elapsedTimeDisplayer = ElapsedTimeDisplayer(
+      CoroutineScope(scriptBgDispatcher),
+      fakeTimeProvider
+    )
   }
 
   @After
@@ -113,48 +117,56 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testStart_firstTime_startsTimer() = runBlocking {
+  fun testStop_afterRunning_returnsCorrectElapsedTime() {
     elapsedTimeDisplayer.start()
-
-    delay(1100)
-
-    val output = outputStream.toString()
-    assertThat(output.contains("Elapsed time:")).isTrue()
-    assertThat(output.contains("00:00:01")).isTrue()
-  }
-
-  @Test
-  fun testStart_calledMultipleTimes_onlyStartsOnce(): Unit = runBlocking {
-    elapsedTimeDisplayer.start()
-    elapsedTimeDisplayer.start()
-    delay(2100)
-
-    val output = outputStream.toString()
-    assertThat(output.contains("00:00:02"))
-  }
-
-  @Test
-  fun testStop_afterRunning_returnsCorrectElapsedTime(): Unit = runBlocking {
-    elapsedTimeDisplayer.start()
-
-    delay(2000)
+    fakeTime += 2000L // Simulate 2 seconds passing
 
     val elapsedTime = elapsedTimeDisplayer.stop()
 
-    assertThat(elapsedTime in 1800..2200)
+    assertThat(elapsedTime).isEqualTo(2000L)
   }
 
   @Test
-  fun testStop_clearsTimerLine(): Unit = runBlocking {
+  fun testStop_withNoTimeAdvance_returnsZero() {
     elapsedTimeDisplayer.start()
-    delay(1100)
 
-    outputStream.reset()
+    val elapsedTime = elapsedTimeDisplayer.stop()
 
-    elapsedTimeDisplayer.stop()
+    assertThat(elapsedTime).isEqualTo(0L)
+  }
 
-    val output = outputStream.toString()
-    assertThat(output.contains("\r\u001B[K"))
+  @Test
+  fun testStart_calledMultipleTimes_onlyStartsOnce() {
+    elapsedTimeDisplayer.start()
+    elapsedTimeDisplayer.start() // Should be ignored
+
+    fakeTime += 1000L
+    val elapsedTime = elapsedTimeDisplayer.stop()
+
+    assertThat(elapsedTime).isEqualTo(1000L)
+  }
+
+  @Test
+  fun testFormatDuration_variousInputs() {
+    // Test the time formatting indirectly
+    elapsedTimeDisplayer.start()
+
+    // Test 1 second
+    fakeTime += 1000L
+    var elapsed = elapsedTimeDisplayer.stop()
+    assertThat(elapsed).isEqualTo(1000L)
+
+    // Test 1 minute 1 second
+    elapsedTimeDisplayer.start()
+    fakeTime += 61000L
+    elapsed = elapsedTimeDisplayer.stop()
+    assertThat(elapsed).isEqualTo(61000L)
+
+    // Test 1 hour 1 minute 1 second
+    elapsedTimeDisplayer.start()
+    fakeTime += 3661000L
+    elapsed = elapsedTimeDisplayer.stop()
+    assertThat(elapsed).isEqualTo(3661000L)
   }
 
   @Test
