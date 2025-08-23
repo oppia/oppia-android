@@ -46,128 +46,128 @@ class EditTextInputActionTest {
   @Test
   fun testAppendText_withEmptyText_setsTextCorrectly() {
     editText.setText("")
-    
+
     editTextInputAction.appendText("Hello").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Hello")
   }
 
   @Test
   fun testAppendText_withExistingText_appendsCorrectly() {
     editText.setText("123")
-    
+
     editTextInputAction.appendText("45").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("12345")
   }
 
   @Test
   fun testAppendText_multipleAppends_appendsCorrectly() {
     editText.setText("A")
-    
+
     editTextInputAction.appendText("B").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
     editTextInputAction.appendText("C").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("ABC")
   }
 
   @Test
   fun testAppendText_withSpaces_appendsCorrectly() {
     editText.setText("Hello")
-    
+
     editTextInputAction.appendText(" World").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Hello World")
   }
 
   @Test
   fun testReplaceText_withEmptyText_setsTextCorrectly() {
     editText.setText("")
-    
+
     editTextInputAction.replaceText("Hello").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Hello")
   }
 
   @Test
   fun testReplaceText_withExistingText_replacesCorrectly() {
     editText.setText("123")
-    
+
     editTextInputAction.replaceText("45").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("45")
   }
 
   @Test
   fun testReplaceText_multipleReplaces_replacesCorrectly() {
     editText.setText("Original")
-    
+
     editTextInputAction.replaceText("First").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
     editTextInputAction.replaceText("Second").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Second")
   }
 
   @Test
   fun testAppendText_afterReplaceText_behavesCorrectly() {
     editText.setText("Original")
-    
+
     editTextInputAction.replaceText("New").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
     editTextInputAction.appendText("Text").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("NewText")
   }
 
   @Test
   fun testReplaceText_afterAppendText_behavesCorrectly() {
     editText.setText("Base")
-    
+
     editTextInputAction.appendText("Added").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
     editTextInputAction.replaceText("Replaced").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Replaced")
   }
 
   @Test
   fun testAppendText_withSpecialCharacters_appendsCorrectly() {
     editText.setText("Test")
-    
+
     editTextInputAction.appendText("@#$%").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Test@#$%")
   }
 
   @Test
   fun testReplaceText_withEmptyString_clearsText() {
     editText.setText("SomeText")
-    
+
     editTextInputAction.replaceText("").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("")
   }
 
   @Test
   fun testAppendText_withEmptyString_doesNotChangeText() {
     editText.setText("Original")
-    
+
     editTextInputAction.appendText("").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
-    
+
     assertThat(editText.text.toString()).isEqualTo("Original")
   }
 
