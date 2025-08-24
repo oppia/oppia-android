@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Bazel
-        uses: abhinavsingh/setup-bazel@v3
+        uses: ./.github/actions/set-up-android-bazel-build-environment
         with:
           version: 6.5.0
       - name: Run test 100 times
