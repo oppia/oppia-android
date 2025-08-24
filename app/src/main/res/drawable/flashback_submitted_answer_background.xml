@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:shape="rectangle">
+  <stroke
+    android:width="2dp"
+    android:color="@color/component_color_shared_submitted_answer_item_stroke_color"/>
+  <corners
+    android:radius="4dp"/>
+  <solid
+    android:color="@color/component_color_shared_submitted_answer_item_solid_color"/>
+</shape>
+<!--subha-->
