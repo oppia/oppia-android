@@ -24,6 +24,7 @@
       android:background="@color/component_color_shared_item_background_solid_color"
       android:minHeight="64dp"
       android:paddingStart="16dp"
+      android:paddingEnd="16dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
