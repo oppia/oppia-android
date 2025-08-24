@@ -433,7 +433,11 @@ class LintAnalysisReporter {
       severity != LintSeverity.INFORMATION && count > 0
     }
 
-    if (hasNonInformationalIssues) {
+    val hasFailureConditions = hasNonInformationalIssues ||
+      redundantExemptionsCount > 0 ||
+      unknownIssueIdsCount > 0
+
+    if (hasFailureConditions) {
       println("${RED}LINT CHECKS FAILED. Please fix the Issues below.$RESET")
       println()
     }
@@ -472,20 +476,20 @@ class LintAnalysisReporter {
     redundantExemptions: Map<String, List<String>> = emptyMap(),
     unknownIssueIds: Set<String> = emptySet()
   ) {
-    printSeveritySummary(issues, redundantExemptions.values.sumOf { it.size }, unknownIssueIds.size)
+    val redundantExemptionsCount = redundantExemptions.values.sumOf { it.size }
+    val unknownIssueIdsCount = unknownIssueIds.size
+
+    printSeveritySummary(issues, redundantExemptionsCount, unknownIssueIdsCount)
     println()
 
-    // Log redundant exemptions if any
     if (redundantExemptions.isNotEmpty()) {
       logRedundantExemptions(redundantExemptions)
     }
 
-    // Log unknown issue IDs if any
     if (unknownIssueIds.isNotEmpty()) {
       logUnknownIssueIds(unknownIssueIds)
     }
 
-    // Add helper URL after redundant exemptions and unknown IDs are logged
     println("If you need additional help to resolve an issue," +
       " see https://developer.android.com/studio/write/lint")
     println()
@@ -496,7 +500,7 @@ class LintAnalysisReporter {
       printGroupedByFilePath(issues)
     }
 
-    printFinalResult(issues)
+    printFinalResult(issues, redundantExemptionsCount, unknownIssueIdsCount)
   }
 
   /**
@@ -676,16 +680,24 @@ class LintAnalysisReporter {
   }
 
   /** Prints the final result summary. */
-  private fun printFinalResult(issues: List<LintIssue>) {
+  private fun printFinalResult(
+    issues: List<LintIssue>,
+    redundantExemptionsCount: Int = 0,
+    unknownIssueIdsCount: Int = 0
+  ) {
     val nonInformationalIssues = issues.filter { it.severity != LintSeverity.INFORMATION }
 
     val hasInternalLintIssues = nonInformationalIssues.any {
       it.id == issueIdToString[LintIssueId.LINT_ERROR]
     }
 
+    val hasFailureConditions = nonInformationalIssues.isNotEmpty() ||
+      redundantExemptionsCount > 0 ||
+      unknownIssueIdsCount > 0
+
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
     when {
-      nonInformationalIssues.isEmpty() -> {
+      !hasFailureConditions -> {
         println("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
       }
       hasInternalLintIssues -> {
@@ -696,6 +708,7 @@ class LintAnalysisReporter {
       }
     }
   }
+
 
   /** Extracts all locations from the issue's location elements. */
   private fun extractLocations(issueElement: Element): List<LintLocation> {

@@ -1147,6 +1147,238 @@ class LintAnalysisReporterTest {
     assertThat(filteredIssues[0]).isEqualTo(issue2)
   }
 
+  @Test
+  fun testLogRedundantExemptions_emptyRedundantExemptions_printsNothing() {
+    val redundantExemptions = emptyMap<String, List<String>>()
+
+    lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
+    val output = outputStream.toString()
+
+    assertThat(output).isEmpty()
+  }
+
+  @Test
+  fun testLogRedundantExemptions_singleFileMultipleIssues_printsCorrectFormat() {
+    val redundantExemptions = mapOf(
+      "app/src/main/java/TestFile.kt" to listOf("UnusedResources", "NewApi", "Typos")
+    )
+
+    lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
+    assertThat(output).contains("Please remove them from scripts/assets/android_lint_exemptions.textproto")
+    assertThat(output).contains("${BOLD}File: app/src/main/java/TestFile.kt$RESET")
+    assertThat(output).contains("  - UnusedResources")
+    assertThat(output).contains("  - NewApi")
+    assertThat(output).contains("  - Typos")
+  }
+
+  @Test
+  fun testLogRedundantExemptions_multipleFilesSortedAlphabetically_printsSortedOrder() {
+    val redundantExemptions = mapOf(
+      "z_file.xml" to listOf("IssueZ"),
+      "a_file.kt" to listOf("IssueA"),
+      "m_file.java" to listOf("IssueM")
+    )
+
+    lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
+    val output = outputStream.toString()
+
+    val aFilePos = output.indexOf("File: a_file.kt")
+    val mFilePos = output.indexOf("File: m_file.java")
+    val zFilePos = output.indexOf("File: z_file.xml")
+
+    assertThat(aFilePos).isLessThan(mFilePos)
+    assertThat(mFilePos).isLessThan(zFilePos)
+  }
+
+  @Test
+  fun testLogRedundantExemptions_customExemptionFilePath_printsCustomPath() {
+    val redundantExemptions = mapOf(
+      "test_file.kt" to listOf("TestIssue")
+    )
+    val customPath = "custom/path/to/exemptions.textproto"
+
+    lintAnalysisReporter.logRedundantExemptions(redundantExemptions, customPath)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("Please remove them from $customPath")
+  }
+
+  @Test
+  fun testLogUnknownIssueIds_emptySet_printsNothing() {
+    val unknownIssueIds = emptySet<String>()
+
+    lintAnalysisReporter.logUnknownIssueIds(unknownIssueIds)
+    val output = outputStream.toString()
+
+    assertThat(output).isEmpty()
+  }
+
+  @Test
+  fun testLogUnknownIssueIds_singleUnknownId_printsCorrectFormat() {
+    val unknownIssueIds = setOf("CustomLintRule")
+
+    lintAnalysisReporter.logUnknownIssueIds(unknownIssueIds)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
+    assertThat(output).contains("Please add these issue IDs to the LintIssueId enum in the proto definition")
+    assertThat(output).contains("and update the issueIdMapping in LintAnalysisReporter.")
+    assertThat(output).contains("  - CustomLintRule")
+  }
+
+  @Test
+  fun testLogUnknownIssueIds_multipleUnknownIds_printsSortedOrder() {
+    val unknownIssueIds = setOf("ZCustomRule", "ACustomRule", "MCustomRule")
+
+    lintAnalysisReporter.logUnknownIssueIds(unknownIssueIds)
+    val output = outputStream.toString()
+
+    val aRulePos = output.indexOf("- ACustomRule")
+    val mRulePos = output.indexOf("- MCustomRule")
+    val zRulePos = output.indexOf("- ZCustomRule")
+
+    assertThat(aRulePos).isLessThan(mRulePos)
+    assertThat(mRulePos).isLessThan(zRulePos)
+
+    assertThat(output).contains("  - ACustomRule")
+    assertThat(output).contains("  - MCustomRule")
+    assertThat(output).contains("  - ZCustomRule")
+  }
+
+  @Test
+  fun testCollectUnknownIssueIds_mixedKnownAndUnknownIds_returnsOnlyUnknown() {
+    val knownIssue = warningIssue.copy(id = "UnusedResources")
+    val unknownIssue1 = warningIssue.copy(id = "CustomRule1")
+    val unknownIssue2 = warningIssue.copy(id = "CustomRule2")
+    val anotherKnownIssue = errorIssue.copy(id = "NewApi")
+
+    val issues = listOf(knownIssue, unknownIssue1, unknownIssue2, anotherKnownIssue)
+
+    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
+
+    assertThat(unknownIds).containsExactly("CustomRule1", "CustomRule2")
+    assertThat(unknownIds).doesNotContain("UnusedResources")
+    assertThat(unknownIds).doesNotContain("NewApi")
+  }
+
+  @Test
+  fun testCollectUnknownIssueIds_allKnownIds_returnsEmptySet() {
+    val issues = listOf(warningIssue, errorIssue) // Both have known IDs
+
+    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
+
+    assertThat(unknownIds).isEmpty()
+  }
+
+  @Test
+  fun testCollectUnknownIssueIds_allUnknownIds_returnsAllIds() {
+    val unknownIssue1 = warningIssue.copy(id = "UnknownRule1")
+    val unknownIssue2 = errorIssue.copy(id = "UnknownRule2")
+    val issues = listOf(unknownIssue1, unknownIssue2)
+
+    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
+
+    assertThat(unknownIds).containsExactly("UnknownRule1", "UnknownRule2")
+  }
+
+  @Test
+  fun testCollectUnknownIssueIds_duplicateUnknownIds_returnsUniqueSet() {
+    val unknownIssue1 = warningIssue.copy(id = "DuplicateUnknown")
+    val unknownIssue2 = errorIssue.copy(id = "DuplicateUnknown")
+    val unknownIssue3 = informationIssue.copy(id = "AnotherUnknown")
+    val issues = listOf(unknownIssue1, unknownIssue2, unknownIssue3)
+
+    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
+
+    assertThat(unknownIds).containsExactly("DuplicateUnknown", "AnotherUnknown")
+    assertThat(unknownIds).hasSize(2) // Ensures no duplicates
+  }
+
+  @Test
+  fun testPrintLintReport_withRedundantExemptionsAndUnknownIds_includesInSummary() {
+    val unknownIssue = warningIssue.copy(id = "UnknownCustomRule")
+    val issues = listOf(warningIssue, unknownIssue)
+    val redundantExemptions = mapOf(
+      "file1.xml" to listOf("RedundantRule1", "RedundantRule2")
+    )
+    val unknownIssueIds = setOf("UnknownCustomRule", "AnotherUnknownRule")
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues,
+        groupByIssueSeverity = true,
+        redundantExemptions = redundantExemptions,
+        unknownIssueIds = unknownIssueIds
+      )
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Warning: 2$RESET")
+    assertThat(output).contains("${YELLOW}Redundant Exemptions: 2$RESET")
+    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 2$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 6$RESET") // 2 + 2 + 2 = 6
+
+    // Check redundant exemptions are logged
+    assertThat(output).contains("Redundant exemptions (no corresponding lint issues found)")
+    assertThat(output).contains("File: file1.xml")
+    assertThat(output).contains("  - RedundantRule1")
+    assertThat(output).contains("  - RedundantRule2")
+
+    assertThat(output).contains("Unknown Issue IDs found")
+    assertThat(output).contains("  - AnotherUnknownRule")
+    assertThat(output).contains("  - UnknownCustomRule")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_onlyRedundantExemptions_stillFailsCheck() {
+    val issues = emptyList<LintIssue>()
+    val redundantExemptions = mapOf(
+      "file1.xml" to listOf("RedundantRule1")
+    )
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues,
+        groupByIssueSeverity = false,
+        redundantExemptions = redundantExemptions
+      )
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Redundant Exemptions: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_onlyUnknownIssueIds_stillFailsCheck() {
+    val issues = emptyList<LintIssue>()
+    val unknownIssueIds = setOf("UnknownRule1", "UnknownRule2")
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues,
+        groupByIssueSeverity = false,
+        unknownIssueIds = unknownIssueIds
+      )
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 2$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
     val xmlFile = tempFolder.newFile(fileName)
     xmlFile.writeText(content)
