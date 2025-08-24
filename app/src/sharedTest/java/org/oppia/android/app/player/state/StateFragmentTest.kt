@@ -26,7 +26,6 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
@@ -5405,7 +5404,7 @@ class StateFragmentTest {
   }
 
   @Test
-  fun testStateFragment_inputRatio_wrongAnswerSubmitted_continueButtonIsVisible() {
+  fun testStateFragment_inputRatio_wrongAnswerSubmitted_ratioInputInteractionVisible() {
     setUpTestWithFlashbackFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
       startPlayingExploration()
@@ -5416,9 +5415,15 @@ class StateFragmentTest {
       typeRatioExpression("4:7")
       clickSubmitAnswerButton()
 
-      // Continue button is displayed for redirection.
-      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
-      onView(withId(R.id.continue_navigation_button)).check(matches(isDisplayed()))
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
     }
   }
 
@@ -5448,6 +5453,48 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testFlashback_onSubmitTwoWrongRatioAnswer_flashbackButtonIsNotOffered() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit first wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+
+      // Submit second wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify default feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString("Not correct"))))
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testFragment_flashbackFeatureOff_onSubmitWrongRatioAnswer_flashbackButtonIsNotVisible() {
     setUpTestWithFlashbackFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -5459,14 +5506,6 @@ class StateFragmentTest {
       typeRatioExpression("4:7")
       clickSubmitAnswerButton()
 
-      // Verify continue button is visible.
-      scrollToViewType(CONTINUE_NAVIGATION_BUTTON)
-      onView(withId(R.id.continue_navigation_button)).check(
-        matches(withText(R.string.state_continue_button))
-      )
-
-      // Verify submit button is not visible.
-      onView(withId(R.id.submit_answer_button)).check(doesNotExist())
       // Verify flashback button is not visible.
       onView(withId(R.id.flashback_button)).check(doesNotExist())
     }
@@ -5524,10 +5563,14 @@ class StateFragmentTest {
       onView(withId(R.id.content_text_view))
         .check(matches(withText(containsString("What fraction represents half of something?"))))
 
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
       // Verify solution is visible.
       scrollToViewType(FLASHBACK_SOLUTION)
-      onView(withId(R.id.solution_title)).check(matches(withText("Explanation")))
-      onView(withId(R.id.solution_summary_label)).check(matches(withEffectiveVisibility(GONE)))
+      onView(withId(R.id.solution_title)).check(matches(withEffectiveVisibility(GONE)))
+      onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
         " every two parts in the denominator."
@@ -5536,10 +5579,6 @@ class StateFragmentTest {
 
       onView(withId(R.id.solution_summary))
         .perform(openClickableSpan("test_skill_id_1 concept card"))
-
-      // Verify user's submitted answer is visible.
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
 
       // Verify Return to question button is visible.
       scrollToViewType(RETURN_TO_QUESTION_BUTTON)
@@ -5576,10 +5615,14 @@ class StateFragmentTest {
       onView(withId(R.id.content_text_view))
         .check(matches(withText(containsString("What fraction represents half of something?"))))
 
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
       // Verify solution is visible.
       scrollToViewType(FLASHBACK_SOLUTION)
-      onView(withId(R.id.solution_title)).check(matches(withText("Explanation")))
-      onView(withId(R.id.solution_summary_label)).check(matches(withEffectiveVisibility(GONE)))
+      onView(withId(R.id.solution_title)).check(matches(withEffectiveVisibility(GONE)))
+      onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
 
       val expectedSolutionSummary = "Half of something has one part in the numerator for" +
         " every two parts in the denominator."
@@ -5588,10 +5631,6 @@ class StateFragmentTest {
 
       onView(withId(R.id.solution_summary))
         .perform(openClickableSpan("test_skill_id_1 concept card"))
-
-      // Verify user's submitted answer is visible.
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
 
       // Verify Return to question button is visible.
       scrollToViewType(RETURN_TO_QUESTION_BUTTON)
@@ -5611,20 +5650,19 @@ class StateFragmentTest {
       // Click Return to question button.
       clickReturnToQuestionButton()
 
-      // Verify Previous Responses Header text.
-      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
-      onView(withId(R.id.previous_responses_header_text))
-        .check(matches(withText(containsString("PREVIOUS RESPONSES (1)"))))
-
       // Verify learner returns to the latest pending state.
       val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
         " The ratio of the two numbers is:"
       verifyContentContains(expectedText)
 
+      // Verify Previous Responses Header text.
+      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
+      onView(withId(R.id.previous_responses_header_text))
+        .check(matches(withText(containsString("PREVIOUS RESPONSES (1)"))))
+
       // Verify feedback is visible.
       val expectedFeedback = "Now that you’ve seen an example, let’s try again."
-      onView(withId(R.id.state_recycler_view))
-        .perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      scrollToViewType(FEEDBACK)
       onView(withId(R.id.feedback_text_view))
         .check(matches(withText(containsString(expectedFeedback))))
 

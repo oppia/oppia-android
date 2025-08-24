@@ -10,53 +10,52 @@
       type="org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel" />
   </data>
 
-  <LinearLayout
+  <RelativeLayout
     android:id="@+id/checkbox_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:importantForAccessibility="yes"
     android:minHeight="48dp"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp"
     android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:orientation="horizontal">
+    android:paddingBottom="12dp">
 
     <ImageView
       android:id="@+id/item_selection_checkbox_icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="12dp"
+      android:layout_marginStart="4dp"
+      android:layout_marginTop="6dp"
+      android:layout_marginEnd="8dp"
       android:importantForAccessibility="no"
       app:srcCompat="@{viewModel.isEnabled ? @drawable/rect_radio_checked : @drawable/rect_radio_unchecked}" />
 
-    <LinearLayout
-      android:layout_width="match_parent"
+    <TextView
+      android:id="@+id/item_selection_content_text_view"
+      style="@style/SubmittedAnswerTextStyle"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginStart="20dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
       android:layout_marginEnd="8dp"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/item_selection_content_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:text="@{htmlContent}"
-        android:contentDescription="@{viewModel.getContentDescription()}"
-        android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color"
-        android:textSize="16sp" />
-
-      <TextView
-        android:id="@+id/submitted_answer_label_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:fontFamily="sans-serif"
-        android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
-        android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color"
-        android:textSize="12sp" />
-    </LinearLayout>
-  </LinearLayout>
+      android:layout_toEndOf="@+id/item_selection_checkbox_icon"
+      android:text="@{htmlContent}"
+      android:contentDescription="@{viewModel.getContentDescription()}"
+      android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color" />
+    
+    <TextView
+      android:id="@+id/submitted_answer_label_text_view"
+      style="@style/TextFieldLabel"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_toEndOf="@+id/item_selection_checkbox_icon"
+      android:layout_below="@id/item_selection_content_text_view"
+      android:visibility="gone"
+      android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
+      android:contentDescription="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text_content_description : @string/submitted_answer_label_text_content_description}"
+      android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color" />
+  </RelativeLayout>
 </layout>

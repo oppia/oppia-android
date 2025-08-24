@@ -92,8 +92,10 @@
         android:layout_height="wrap_content"
         android:background="@{viewModel.isFlashback ? @drawable/flashback_submitted_answer_background : @drawable/submitted_answer_background}"
         android:visibility="gone"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingStart="@dimen/selection_interaction_item_padding_start"
+        android:paddingTop="12dp"
+        android:paddingEnd="@dimen/selection_interaction_item_padding_end"
+        android:paddingBottom="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:list="@{SelectionSubmittedListAnswer}" />
     </LinearLayout>
