@@ -14,4 +14,4 @@ jobs:
           version: 6.5.0
       - name: Run test 100 times
         run: |
-          bazel test //app/src/sharedTest/java/org/oppia/android/app/profileprogress:ProfileProgressFragmentTest --runs_per_test=100
+          bazel test --runs_per_test=100 app/src/sharedTest/java/org/oppia/android/app/profileprogress/ProfileProgressFragmentTest
