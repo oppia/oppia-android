@@ -1,0 +1,17 @@
+name: Flaky Test (Manual)
+
+on:
+  workflow_dispatch: # allows manual trigger from Actions tab
+
+jobs:
+  run-flaky-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Bazel
+        uses: theayushyadav11/setup-bazel@v3
+        with:
+          version: 6.5.0
+      - name: Run test 100 times
+        run: |
+          bazel test //app/src/sharedTest/java/org/oppia/android/app/profileprogress:ProfileProgressFragmentTest --runs_per_test=100
