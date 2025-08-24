@@ -30,7 +30,6 @@
   </com.google.android.material.appbar.AppBarLayout>
 
   <View
-    android:id="@+id/profile_and_device_id_shadow_view"
     android:layout_width="0dp"
     android:layout_height="4dp"
     android:layout_gravity="top"
