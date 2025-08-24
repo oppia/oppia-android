@@ -160,3 +160,27 @@ def generate_todo_assets_list_from_text_protos(
         proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
         proto_package = "proto",
     )
+
+def generate_android_lint_assets_list_from_text_protos(
+        name,
+        android_lint_exemptions_name):
+    """
+    Converts a list of Android Lint exemption text proto assets to binary format.
+
+    Args:
+        name: str. The name of this generation instance. This will be a prefix for derived targets.
+        android_lint_exemptions_name: list of str. The list of android lint exemptions file name.
+
+    Returns:
+        list of str. The list of new proto binary asset files that were generated.
+    """
+    return generate_proto_binary_assets(
+        name = name,
+        names = android_lint_exemptions_name,
+        proto_dep_name = "android_lint_checks",
+        proto_type_name = "AndroidLintExemptions",
+        name_prefix = "android_lint_exemptions",
+        asset_dir = "assets",
+        proto_dep_bazel_target_prefix = "//scripts/src/java/org/oppia/android/scripts/proto",
+        proto_package = "proto",
+    )
