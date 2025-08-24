@@ -76,7 +76,6 @@ class SolutionViewModel private constructor(
     ).toString()
   }
 
-  //subha
   /** Stroke width for the solution box border. */
   val solutionBoxStrokeWidth by lazy {
     activity.resources.getDimensionPixelSize(
