@@ -23,6 +23,7 @@ kt_android_library(
         "//domain/src/main/java/org/oppia/android/domain/oppialogger:startup_listener",
         "//third_party:androidx_work_work-runtime-ktx",
         "//third_party:com_google_firebase_firebase-common",
+        "//utility/src/main/java/org/oppia/android/util/extensions:context_extensions",
     ],
 )
 

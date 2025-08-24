@@ -252,11 +252,6 @@ class StateDeck constructor(
     return isTopOfDeckTerminalChecker(pendingTopState)
   }
 
-  /** Returns whether the given state was previously visited. */
-  fun wasStatePreviouslyVisited(stateName: String): Boolean {
-    return previousStates.any { it.state.name == stateName }
-  }
-
   /**
    * Updates the `state_name_to_revisit` field of the last [AnswerAndResponse] in the
    * [currentDialogInteractions] list with the given [stateName].
@@ -271,5 +266,33 @@ class StateDeck constructor(
 
       currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
     }
+  }
+
+  /**
+   * Returns the previously visited [EphemeralState] with the given [stateName], or a default
+   * instance if not found.
+   */
+  fun getFlashbackEphemeralState(stateName: String): EphemeralState {
+    return previousStates.find { it.state.name == stateName }
+      ?: EphemeralState.getDefaultInstance()
+  }
+
+  /** Returns whether flashback state exists for the given [linkedSkillId]. */
+  fun hasFlashbackState(linkedSkillId: String): Boolean {
+    return linkedSkillId.isNotEmpty() &&
+      previousStates.any { it.state.linkedSkillId == linkedSkillId }
+  }
+
+  /** Returns the most recent previously visited [State] name with this given [linkedSkillId]. */
+  fun getFlashbackStateName(linkedSkillId: String): String {
+    return previousStates.last { it.state.linkedSkillId == linkedSkillId }.state.name
+  }
+
+  /**
+   *  Returns true if any [AnswerAndResponse] in [currentDialogInteractions] has
+   *  valid `state_name_to_revisit`.
+   */
+  fun wasFlashbackPreviouslyOffered(): Boolean {
+    return currentDialogInteractions.any { !it.stateNameToRevisit.isNullOrBlank() }
   }
 }

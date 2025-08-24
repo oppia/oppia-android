@@ -6,6 +6,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import org.oppia.android.scripts.proto.AndroidLintExemption
+import org.oppia.android.scripts.proto.AndroidLintExemptions
+import org.oppia.android.scripts.proto.LintIssueId
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -22,50 +25,53 @@ class LintAnalysisReporterTest {
   private lateinit var lintAnalysisReporter: LintAnalysisReporter
   private val originalOut = System.out
   private val outputStream = ByteArrayOutputStream()
+  private val pathToProtoBinary = "scripts/assets/android_lint_exemptions.pb"
+  private lateinit var repoRoot: File
+  private lateinit var warningIssue: LintIssue
+  private lateinit var errorIssue: LintIssue
+  private lateinit var informationIssue: LintIssue
+  private lateinit var multiLocationIssue: LintIssue
 
-  companion object {
-    private const val XML_HEADER =
-      """<issues format="6" by="lint 7.3.1">"""
-    private const val XML_FOOTER =
-      """</issues>"""
+  @Before
+  fun setUp() {
+    lintAnalysisReporter = LintAnalysisReporter()
+    tempFolder.newFolder("scripts", "assets")
+    tempFolder.newFile(pathToProtoBinary)
+    repoRoot = tempFolder.root
 
-    private val warningIssue = LintIssue(
-      id = "UsesMinSdkAttributes",
+    warningIssue = LintIssue(
+      id = "UnusedResources",
       severity = LintSeverity.WARNING,
-      message = "Manifest should specify a minimum API level",
-      category = "Correctness",
-      priority = "9",
-      summary = "Minimum SDK and target SDK attributes not defined",
-      explanation = "The manifest should contain a uses-sdk element",
-      errorLine1 = "    <application",
-      errorLine2 = "    ~~~~~~~~~~~~",
+      message = "The resource appears to be unused",
+      category = "Performance",
+      priority = "3",
+      summary = "Unused resources",
+      explanation = "Unused resources make applications larger",
+      errorLine1 = "<color name=\"unused_color\">#FF0000</color>",
+      errorLine2 = "",
       locations = listOf(
         LintLocation(
-          file = "src/main/AndroidManifest.xml",
-          lineNumber = "5"
+          "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
         )
       )
     )
 
-    private val errorIssue = LintIssue(
+    errorIssue = LintIssue(
       id = "NewApi",
       severity = LintSeverity.ERROR,
-      message = "Call requires API level 24 (current min is 19)",
+      message = "Call requires API level 23",
       category = "Correctness",
       priority = "6",
-      summary = "Calling new methods on older versions",
-      explanation = "This check scans through all the Android API calls",
-      errorLine1 = "        stream.forEach { println(it) }",
-      errorLine2 = "               ~~~~~~~",
+      summary = "Calling new API",
+      explanation = "This API is not available in older versions",
+      errorLine1 = "context.getSystemService(JobScheduler::class.java)",
+      errorLine2 = "",
       locations = listOf(
-        LintLocation(
-          file = "src/main/java/MainActivity.kt",
-          lineNumber = "42"
-        )
+        LintLocation("${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42")
       )
     )
 
-    private val informationIssue = LintIssue(
+    informationIssue = LintIssue(
       id = "IidCompatibilityCheckFailure",
       severity = LintSeverity.INFORMATION,
       message = "Check failed with exception: java.lang.NoSuchMethodException",
@@ -77,45 +83,44 @@ class LintAnalysisReporterTest {
       errorLine2 = "",
       locations = listOf(
         LintLocation(
-          file = "test.xml",
+          file = "${repoRoot.absolutePath}/app/src/main/test.xml",
           lineNumber = ""
         )
       )
     )
 
-    private val multiLocationIssue = LintIssue(
-      id = "UnusedResources",
+    multiLocationIssue = LintIssue(
+      id = "DuplicateStrings",
       severity = LintSeverity.WARNING,
-      message =
-        "The resource `R.color.color_palette_save_button_border_color` appears to be unused",
-      category = "Performance",
-      priority = "3",
-      summary = "Unused resources",
-      explanation = "Unused resources make applications larger and slow down builds.",
-      errorLine1 = "    <color name=\"color_palette_save_button_border_color\">#FF0000</color>",
-      errorLine2 = "           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+      message = "Duplicate string value",
+      category = "Correctness",
+      priority = "5",
+      summary = "Duplicate strings",
+      explanation = "String literals should not be duplicated",
+      errorLine1 = "<string name=\"hello\">Hello World</string>",
+      errorLine2 = "",
       locations = listOf(
         LintLocation(
-          file = "app/src/main/res/values/color_palette.xml",
-          lineNumber = "164"
+          "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
         ),
         LintLocation(
-          file = "app/src/main/res/values-night/color_palette.xml",
-          lineNumber = "159"
+          "${repoRoot.absolutePath}/src/main/res/values-es/strings.xml", "8"
         )
       )
     )
-  }
-
-  @Before
-  fun setUp() {
-    lintAnalysisReporter = LintAnalysisReporter()
     System.setOut(PrintStream(outputStream))
   }
 
   @After
   fun tearDown() {
     System.setOut(originalOut)
+  }
+
+  companion object {
+    private const val XML_HEADER =
+      """<issues format="6" by="lint 7.3.1">"""
+    private const val XML_FOOTER =
+      """</issues>"""
   }
 
   @Test
@@ -136,7 +141,7 @@ class LintAnalysisReporterTest {
     assertThat(issue.errorLine1).isEqualTo(warningIssue.errorLine1)
     assertThat(issue.errorLine2).isEqualTo(warningIssue.errorLine2)
     assertThat(issue.locations).hasSize(1)
-    assertThat(issue.locations[0].file).isEqualTo("src/main/AndroidManifest.xml")
+    assertThat(issue.locations[0].file).isEqualTo(warningIssue.locations[0].file)
     assertThat(issue.locations[0].lineNumber).isEqualTo("5")
   }
 
@@ -165,18 +170,18 @@ class LintAnalysisReporterTest {
 
     assertThat(issues).hasSize(1)
     val issue = issues[0]
-    assertThat(issue.id).isEqualTo("UnusedResources")
+    assertThat(issue.id).isEqualTo(multiLocationIssue.id)
     assertThat(issue.errorLine1).isEqualTo(multiLocationIssue.errorLine1)
     assertThat(issue.errorLine2).isEqualTo(multiLocationIssue.errorLine2)
     assertThat(issue.locations).hasSize(2)
 
     assertThat(issue.locations[0].file)
-      .isEqualTo("app/src/main/res/values/color_palette.xml")
-    assertThat(issue.locations[0].lineNumber).isEqualTo("164")
+      .isEqualTo(multiLocationIssue.locations[0].file)
+    assertThat(issue.locations[0].lineNumber).isEqualTo(multiLocationIssue.locations[0].lineNumber)
 
     assertThat(issue.locations[1].file)
-      .isEqualTo("app/src/main/res/values-night/color_palette.xml")
-    assertThat(issue.locations[1].lineNumber).isEqualTo("159")
+      .isEqualTo(multiLocationIssue.locations[1].file)
+    assertThat(issue.locations[1].lineNumber).isEqualTo(multiLocationIssue.locations[1].lineNumber)
   }
 
   @Test
@@ -201,7 +206,7 @@ class LintAnalysisReporterTest {
 
     assertThat(issues).hasSize(1)
     assertThat(issues[0].locations).hasSize(1)
-    assertThat(issues[0].locations[0].file).isEqualTo("test.xml")
+    assertThat(issues[0].locations[0].file).isEqualTo(informationIssue.locations.first().file)
     assertThat(issues[0].locations[0].lineNumber).isEmpty()
     assertThat(issues[0].errorLine1).isEmpty()
     assertThat(issues[0].errorLine2).isEmpty()
@@ -548,7 +553,7 @@ class LintAnalysisReporterTest {
 
     assertThat(issues1).hasSize(1)
     assertThat(issues2).hasSize(1)
-    assertThat(issues1[0].id).isEqualTo("UsesMinSdkAttributes")
+    assertThat(issues1[0].id).isEqualTo(warningIssue.id)
     assertThat(issues2[0].id).isEqualTo("NewApi")
   }
 
@@ -576,7 +581,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_groupBySeverity_printsCorrectFormat() {
     val issues = listOf(warningIssue, informationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Warning: 1$RESET")
@@ -587,31 +594,35 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (1 issues)$RESET")
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: INFORMATION (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue ID: UsesMinSdkAttributes$RESET")
+    assertThat(output).contains("$BOLD Issue ID: ${warningIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
-    assertThat(output).contains("  File: src/main/AndroidManifest.xml")
+    assertThat(output).contains("  File: ${warningIssue.locations[0].file}")
     assertThat(output).contains("  Line: 5")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_groupByFile_printsCorrectFormat() {
     val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Warning: 1$RESET")
     assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
 
     assertThat(output).contains("=".repeat(80))
-    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)$RESET")
+    assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue #1: UsesMinSdkAttributes$RESET")
+    assertThat(output).contains("$BOLD Issue #1: ${warningIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
 
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -630,15 +641,32 @@ class LintAnalysisReporterTest {
   }
 
   @Test
-  fun testPrintLintReport_onlyWarnings_passesLintCheck() {
-    val issues = listOf(warningIssue, informationIssue)
+  fun testPrintLintReport_onlyWarnings_failsLintCheck() {
+    val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    assertThat(output).doesNotContain("PASSED")
+  }
+
+  @Test
+  fun testPrintLintReport_onlyInformation_passesLintCheck() {
+    val issues = listOf(informationIssue)
+
+    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+
+    val output = outputStream.toString()
+
     assertThat(output).contains("${YELLOW}Information: 1$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
 
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
     assertThat(output).doesNotContain("FAILED")
@@ -648,33 +676,43 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_multipleLocationsIssue_groupBySeverity_printsAllLocations() {
     val issues = listOf(multiLocationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("  Locations:")
-    assertThat(output).contains("    1. File: app/src/main/res/values-night/color_palette.xml")
-    assertThat(output).contains("       Line: 159")
+    assertThat(output).contains("    1. File: ${multiLocationIssue.locations[0].file}")
+    assertThat(output).contains("       Line: 10")
 
-    assertThat(output).contains("    2. File: app/src/main/res/values/color_palette.xml")
-    assertThat(output).contains("       Line: 164")
-    assertThat(output).contains("$BOLD Issue ID: UnusedResources$RESET")
+    assertThat(output).contains("    2. File: ${multiLocationIssue.locations[1].file}")
+    assertThat(output).contains("       Line: 8")
+    assertThat(output).contains("$BOLD Issue ID: ${multiLocationIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_multipleLocationsIssue_groupByFile_printsAllFiles() {
     val issues = listOf(multiLocationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output)
-      .contains("${BOLD}FILE: app/src/main/res/values/color_palette.xml (1 issues)$RESET")
+      .contains("${BOLD}FILE: ${multiLocationIssue.locations[0].file} (1 issues)$RESET")
     assertThat(output)
-      .contains("${BOLD}FILE: app/src/main/res/values-night/color_palette.xml (1 issues)$RESET")
+      .contains("${BOLD}FILE: ${multiLocationIssue.locations[1].file} (1 issues)$RESET")
 
-    assertThat(output).contains("$BOLD Issue #1: UnusedResources$RESET")
+    assertThat(output).contains("$BOLD Issue #1: ${multiLocationIssue.id}$RESET")
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -687,7 +725,6 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("  Error Line: ${errorIssue.errorLine1}")
-    assertThat(output).contains("              ${errorIssue.errorLine2}")
 
     assertThat(output).contains("  Category: ${errorIssue.category}")
     assertThat(output).contains("  Priority: ${errorIssue.priority}")
@@ -706,7 +743,6 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("  Error Line: ${errorIssue.errorLine1}")
-    assertThat(output).contains("              ${errorIssue.errorLine2}")
 
     assertThat(output).contains("  Category: ${errorIssue.category}")
     assertThat(output).contains("  Priority: ${errorIssue.priority}")
@@ -739,6 +775,52 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains("$BOLD Issue #1: IidCompatibilityCheckFailure$RESET")
     assertThat(output).contains("${YELLOW}Severity: Information$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_falsePositiveIssue_printsWorkaround() {
+    val issues = listOf(
+      LintIssue(
+        id = "NewApi",
+        severity = LintSeverity.ERROR,
+        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
+        category = "Correctness",
+        priority = "6",
+        summary = "Calling new methods on older versions",
+        explanation = "This check scans through all the Android API " +
+          "calls in the application and warns about any calls that are not available",
+        errorLine1 = "          component.getAnalyticsStartupListenerStartupListeners().forEach {",
+        errorLine2 = "                                                                  ~~~~~~~",
+        locations = listOf(
+          LintLocation(
+            file = "${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt",
+            lineNumber = "42"
+          )
+        )
+      )
+    )
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("$BOLD Issue #1: NewApi$RESET")
+    assertThat(output).contains("${RED}Severity: Error$RESET (FALSE POSITIVE)")
+    assertThat(output).contains("Line: 42")
+    assertThat(output).contains(
+      "Error Line:           " +
+        "component.getAnalyticsStartupListenerStartupListeners().forEach {"
+    )
+    assertThat(output).contains(
+      "Message: Call requires API level 24 " +
+        "(current min is 21): `java.lang.Iterable#forEach`"
+    )
+    assertThat(output).contains(
+      "Workaround: Use safeForEach from IterableExtensions.kt" +
+        " instead of directly calling forEach to avoid known lint false positives on API < 24."
+    )
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -809,13 +891,18 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(issue1, issue2)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     val aFilePos = output.indexOf("FILE: a_file.kt")
     val zFilePos = output.indexOf("FILE: z_file.xml")
 
     assertThat(aFilePos).isLessThan(zFilePos)
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -830,13 +917,18 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(issue1, issue2)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     val line10Pos = output.indexOf("Line: 10")
     val line50Pos = output.indexOf("Line: 50")
 
     assertThat(line10Pos).isLessThan(line50Pos)
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
@@ -858,7 +950,9 @@ class LintAnalysisReporterTest {
     )
     val issues = listOf(issue1, issue2, issue3)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
     val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
@@ -871,29 +965,228 @@ class LintAnalysisReporterTest {
     val anotherFilePos = output.indexOf("File: another_file.kt")
     val testFilePos = output.indexOf("File: test_file.kt")
     assertThat(anotherFilePos).isLessThan(testFilePos)
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_singleLocationIssue_groupBySeverity_printsFileAndLine() {
     val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    }
     val output = outputStream.toString()
 
-    assertThat(output).contains("  File: src/main/AndroidManifest.xml")
+    assertThat(output).contains("  File: ${warningIssue.locations[0].file}")
     assertThat(output).contains("  Line: 5")
     assertThat(output).doesNotContain("Locations:")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   @Test
   fun testPrintLintReport_singleLocationIssue_groupByFile_printsLine() {
     val issues = listOf(warningIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
     val output = outputStream.toString()
 
     assertThat(output).contains("  Line: 5")
-    assertThat(output).contains("${BOLD}FILE: src/main/AndroidManifest.xml (1 issues)$RESET")
+    assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issues)$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testFindRedundantExemptions_mixedValidAndRedundantExemptions_returnsCorrectRedundancies() {
+    val issues = listOf(warningIssue, errorIssue)
+    val exemptions = listOf(
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values/colors.xml"
+        addLintIssueId(LintIssueId.UNUSED_RESOURCES) // Valid exemption
+        addLintIssueId(LintIssueId.DUPLICATE_STRINGS) // Redundant
+      }.build(),
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/java/MainActivity.kt"
+        addLintIssueId(LintIssueId.NEW_API) // Valid exemption
+        addLintIssueId(LintIssueId.TYPOS) // Redundant
+      }.build(),
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "nonexistent/file.xml"
+        addLintIssueId(LintIssueId.UNUSED_RESOURCES) // Redundant (file doesn't exist)
+      }.build()
+    )
+
+    val redundantExemptions =
+      lintAnalysisReporter.findRedundantExemptions(issues, exemptions, repoRoot)
+
+    assertThat(redundantExemptions).hasSize(3)
+    assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
+      .containsExactly("DuplicateStrings")
+    assertThat(redundantExemptions["app/src/main/java/MainActivity.kt"])
+      .containsExactly("Typos")
+    assertThat(redundantExemptions["nonexistent/file.xml"]).containsExactly("UnusedResources")
+  }
+
+  @Test
+  fun testLoadExemptionsProto_validProtoBinaryFile_loadsCorrectly() {
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+    val exemptions = AndroidLintExemptions.newBuilder().apply {
+      addAndroidLintExemption(
+        AndroidLintExemption.newBuilder().apply {
+          exemptedFilePath = "test/file.xml"
+          addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+        }.build()
+      )
+    }.build()
+    exemptions.writeTo(exemptionFile.outputStream())
+
+    val loadedExemptions = lintAnalysisReporter
+      .loadExemptionsProto("${tempFolder.root}/$pathToProtoBinary")
+
+    assertThat(loadedExemptions.androidLintExemptionList).hasSize(1)
+    assertThat(loadedExemptions.androidLintExemptionList[0].exemptedFilePath)
+      .isEqualTo("test/file.xml")
+    assertThat(loadedExemptions.androidLintExemptionList[0].lintIssueIdList)
+      .containsExactly(LintIssueId.UNUSED_RESOURCES)
+  }
+
+  @Test
+  fun testFilterExemptedIssues_multipleIssueIdsInSingleExemption_filtersAllMatching() {
+    val issues = listOf(warningIssue, errorIssue)
+    val exemptions = listOf(
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values/colors.xml"
+        addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+        addLintIssueId(LintIssueId.NEW_API)
+      }.build()
+    )
+
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+
+    assertThat(filteredIssues).hasSize(1)
+    assertThat(filteredIssues[0]).isEqualTo(errorIssue)
+  }
+
+  @Test
+  fun testFilterExemptedIssues_issueWithMultipleLocations_notExemptedIfNoLocationMatches() {
+    val issues = listOf(multiLocationIssue)
+    val exemptions = listOf(
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values/other.xml"
+        addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
+      }.build()
+    )
+
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+
+    assertThat(filteredIssues).hasSize(1)
+    assertThat(filteredIssues[0]).isEqualTo(multiLocationIssue)
+  }
+
+  @Test
+  fun testFilterExemptedIssues_noExemptions_returnsAllIssues() {
+    val issues = listOf(warningIssue, errorIssue)
+    val exemptions = emptyList<AndroidLintExemption>()
+
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+
+    assertThat(filteredIssues).hasSize(2)
+    assertThat(filteredIssues).containsExactly(warningIssue, errorIssue)
+  }
+
+  @Test
+  fun testFindRedundantExemptions_multipleRedundantExemptionsForSameFile_returnsSortedList() {
+    val issues = listOf(warningIssue)
+    val exemptions = listOf(
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values/colors.xml"
+        addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+        addLintIssueId(LintIssueId.NEW_API)
+        addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
+      }.build()
+    )
+
+    val redundantExemptions = lintAnalysisReporter
+      .findRedundantExemptions(issues, exemptions, repoRoot)
+
+    assertThat(redundantExemptions).hasSize(1)
+    assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
+      .containsExactly("DuplicateStrings", "NewApi")
+  }
+
+  @Test
+  fun testLogRedundantExemptions_withRedundantExemptions_printsFormattedOutput() {
+    val redundantExemptions = mapOf(
+      "file1.xml" to listOf("IssueA", "IssueB"),
+      "file2.kt" to listOf("IssueC")
+    )
+    val outputStream = ByteArrayOutputStream()
+    System.setOut(PrintStream(outputStream))
+
+    lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
+    val output = outputStream.toString()
+
+    assertThat(output).contains("Redundant exemptions")
+    assertThat(output).contains(
+      "Please remove them from scripts/assets/android_lint_exemptions.textproto"
+    )
+    assertThat(output).contains("File: file1.xml")
+    assertThat(output).contains("  - IssueA")
+    assertThat(output).contains("  - IssueB")
+    assertThat(output).contains("File: file2.kt")
+    assertThat(output).contains("  - IssueC")
+  }
+
+  @Test
+  fun testFilterExemptedIssues_withExemptions_returnsNonExemptedIssues() {
+    val issue1 = warningIssue.copy(
+      locations = listOf(
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values/colors.xml", "5"
+        )
+      )
+    )
+    val issue2 = errorIssue.copy(
+      locations = listOf(
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt", "42"
+        )
+      )
+    )
+    val issue3 = multiLocationIssue.copy(
+      locations = listOf(
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
+        ),
+        LintLocation(
+          "${repoRoot.absolutePath}/app/src/main/res/values-es/strings.xml", "15"
+        )
+      )
+    )
+    val issues = listOf(issue1, issue2, issue3)
+
+    val exemptions = listOf(
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values/colors.xml"
+        addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+      }.build(),
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values-es/strings.xml"
+        addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
+      }.build()
+    )
+
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+
+    assertThat(filteredIssues).hasSize(1)
+    assertThat(filteredIssues[0]).isEqualTo(issue2)
   }
 
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {

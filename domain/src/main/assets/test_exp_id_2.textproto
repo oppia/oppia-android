@@ -385,7 +385,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -609,7 +608,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -956,7 +954,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -1244,7 +1241,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -1547,9 +1543,9 @@ states {
         }
       }
       default_outcome {
-        dest_state_name: "Fractions"
+        dest_state_name: "RatioInput"
         feedback {
-          html: "<p>This doesn\'t seem right. Let\'s go back and look at the previous question and answer to understand better.</p>"
+          html: "<p>Not correct</p>"
           content_id: "default_outcome"
         }
       }
@@ -1829,7 +1825,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2069,7 +2064,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2461,7 +2455,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2805,7 +2798,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 states {
@@ -2854,7 +2846,6 @@ states {
         }
       }
     }
-    linked_skill_id: "test_skill_id_0"
   }
 }
 init_state_name: "Continue"
