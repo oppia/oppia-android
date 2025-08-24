@@ -1,7 +1,7 @@
 name: Flaky Test (Manual)
 
 on:
-  workflow_dispatch: # allows manual trigger from Actions tab
+  pull_request:
 
 jobs:
   run-flaky-test:
