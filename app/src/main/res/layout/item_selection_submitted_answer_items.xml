@@ -25,27 +25,27 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:layout_marginTop="4dp"
+      android:layout_marginTop="6dp"
       android:layout_marginEnd="8dp"
       android:importantForAccessibility="no"
       app:srcCompat="@{viewModel.isEnabled ? @drawable/rect_radio_checked : @drawable/rect_radio_unchecked}" />
 
     <TextView
       android:id="@+id/item_selection_content_text_view"
+      style="@style/SubmittedAnswerTextStyle"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
       android:layout_marginTop="4dp"
       android:layout_marginEnd="8dp"
       android:layout_toEndOf="@+id/item_selection_checkbox_icon"
-      android:fontFamily="sans-serif"
-      android:textSize="16sp"
       android:text="@{htmlContent}"
       android:contentDescription="@{viewModel.getContentDescription()}"
       android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color" />
     
     <TextView
       android:id="@+id/submitted_answer_label_text_view"
+      style="@style/TextFieldLabel"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
@@ -54,8 +54,6 @@
       android:layout_toEndOf="@+id/item_selection_checkbox_icon"
       android:layout_below="@id/item_selection_content_text_view"
       android:visibility="gone"
-      android:fontFamily="sans-serif"
-      android:textSize="12sp"
       android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
       android:contentDescription="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text_content_description : @string/submitted_answer_label_text_content_description}"
       android:textColor="@color/component_color_shared_item_selection_interaction_enabled_color" />
