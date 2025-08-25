@@ -69,21 +69,6 @@ class ElapsedTimeDisplayer(
     }
   }
 
-  /**
-   * Prints a message with proper timer line handling.
-   * This ensures the timer doesn't interfere with the message output.
-   */
-  fun printMessage(message: String) {
-    synchronized(System.out) {
-      if (needsLineClear) {
-        print("\r\u001B[K")
-        needsLineClear = false
-      }
-      println(message)
-      System.out.flush()
-    }
-  }
-
   /** Stops the timer and returns the total elapsed time in milliseconds. */
   fun stop(): Long {
     val totalTime = timeProvider() - startTime
@@ -182,11 +167,9 @@ fun main(vararg args: String) {
     timer?.start()
 
     try {
-      if (timer != null) {
-        timer.printMessage(
-          "Using ${workingDirectory.absolutePath} as an intermediary working directory"
-        )
-      } else {
+
+      synchronized(System.out) {
+        timer?.clearLine()
         println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
       }
 
@@ -237,10 +220,15 @@ class AndroidLintAnalyzer(
     private const val LINT_REPORT_FILE = "lint-report.xml"
 
     private val suppressLintIssues = setOf(
+      // Managed via TranslateWiki, safe to suppress in lint reports.
       "MissingTranslation",
+      // Gradle-specific; not relevant since project has migrated to Bazel.
       "GradleOverrides",
+      // Fixing requires tedious lambda refactoring; suppression preferred.
       "SyntheticAccessor",
+      // Allowed since context-specific translations may differ; false positive in lint.
       "DuplicateStrings",
+      // TextViews are kept non-selectable to avoid conflicts with user interactions.
       "SelectableText"
     )
   }

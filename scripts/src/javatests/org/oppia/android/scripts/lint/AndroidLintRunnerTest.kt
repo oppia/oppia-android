@@ -117,7 +117,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testStop_afterRunning_returnsCorrectElapsedTime() {
+  fun testStopTimer_afterRunning_returnsCorrectElapsedTime() {
     elapsedTimeDisplayer.start()
     fakeTime += 2000L // Simulate 2 seconds passing
 
@@ -127,7 +127,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testStop_withNoTimeAdvance_returnsZero() {
+  fun testStopTimer_withNoTimeAdvance_returnsZero() {
     elapsedTimeDisplayer.start()
 
     val elapsedTime = elapsedTimeDisplayer.stop()
@@ -136,7 +136,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testStart_calledMultipleTimes_onlyStartsOnce() {
+  fun testStartTimer_calledMultipleTimes_onlyStartsOnce() {
     elapsedTimeDisplayer.start()
     elapsedTimeDisplayer.start() // Should be ignored
 
@@ -147,8 +147,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testFormatDuration_variousInputs() {
-    // Test the time formatting indirectly
+  fun testStopTimer_withVariousElapsedTimes_returnsCorrectDuration() {
     elapsedTimeDisplayer.start()
 
     // Test 1 second
@@ -605,7 +604,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withDuplicateStringResources_issueSuppressed() {
+  fun testAndroidLintAnalyzer_withDuplicateStringResources_issueIsSuppressed() {
     setupProjectWithDuplicateStringIssue()
 
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
@@ -769,7 +768,7 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withSyntheticAccessor_issueSuppressed() {
+  fun testAndroidLintAnalyzer_withSyntheticAccessor_issueIsSuppressed() {
     setupProjectWithSyntheticAccessor()
 
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
