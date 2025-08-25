@@ -217,8 +217,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
           activity.startActivity(
             if (enableMultipleClassrooms.value) {
               ClassroomListActivity.createClassroomListActivity(activity, profileId)
-            }
-            else {
+            } else {
               HomeActivity.createHomeActivity(activity, profileId)
             }
           )
@@ -299,8 +298,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
           width = if (isFocused) 2.dp else 1.dp,
           color = if (isFocused) {
             colorResource(id = R.color.component_color_profile_login_shared_primary_color)
-          }
-          else {
+          } else {
             colorResource(
               id = R.color.component_color_profile_login_unfocused_outline_color
             )
