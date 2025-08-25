@@ -1,5 +1,5 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
     <variable
@@ -25,7 +25,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:layout_marginTop="6dp"
+      android:layout_marginTop="4dp"
       android:layout_marginEnd="8dp"
       android:importantForAccessibility="no"
       app:srcCompat="@{viewModel.isEnabled ? @drawable/radio_checked_grey : @drawable/radio_unchecked_grey}" />
@@ -36,7 +36,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="4dp"
+      android:layout_marginTop="2dp"
       android:layout_marginEnd="8dp"
       android:layout_toEndOf="@+id/multiple_choice_radio_icon"
       android:text="@{htmlContent}"
