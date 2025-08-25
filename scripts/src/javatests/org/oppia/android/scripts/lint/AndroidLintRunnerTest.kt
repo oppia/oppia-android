@@ -299,7 +299,8 @@ class AndroidLintRunnerTest {
     val output = outputStream.toString()
     assertThat(output).contains(
       "If you need additional help to resolve an issue," +
-        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html")
+        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
+    )
     assertThat(output).contains("MissingTranslation")
   }
 

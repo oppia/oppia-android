@@ -1166,8 +1166,12 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
     val output = outputStream.toString()
 
-    assertThat(output).contains("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
-    assertThat(output).contains("Please remove them from scripts/assets/android_lint_exemptions.textproto")
+    assertThat(output).contains(
+      "${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET"
+    )
+    assertThat(output).contains(
+      "Please remove them from scripts/assets/android_lint_exemptions.textproto"
+    )
     assertThat(output).contains("${BOLD}File: app/src/main/java/TestFile.kt$RESET")
     assertThat(output).contains("  - UNUSED_RESOURCES")
     assertThat(output).contains("  - NEW_API")
@@ -1224,7 +1228,9 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
-    assertThat(output).contains("Please add these issue IDs to the LintIssueId enum in the proto definition")
+    assertThat(output).contains(
+      "Please add these issue IDs to the LintIssueId enum in the proto definition"
+    )
     assertThat(output).contains("and update the issueIdMapping in LintAnalysisReporter.")
     assertThat(output).contains("  - CUSTOM_LINT_RULE")
   }
