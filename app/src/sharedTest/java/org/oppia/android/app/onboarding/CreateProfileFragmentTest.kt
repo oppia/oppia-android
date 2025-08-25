@@ -8,6 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import android.os.Build
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -94,6 +97,7 @@ import org.oppia.android.testing.DisableAccessibilityChecks
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -510,6 +514,29 @@ class CreateProfileFragmentTest {
 
       onView(withId(R.id.create_profile_nickname_error))
         .check(matches(withText(R.string.add_profile_error_name_only_letters)))
+    }
+  }
+
+  @Test
+  @Config(sdk = [25, 30])
+  fun testFragment_nicknameEditText_autofillBehavior_multiSdk() {
+    launchNewLearnerProfileActivity().use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .check { view, _ ->
+          val editText = view as EditText
+          when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+              // API 26+ - test autofill behavior
+              assertThat(editText.importantForAutofill).isEqualTo(View.IMPORTANT_FOR_AUTOFILL_NO)
+            }
+            else -> {
+              // API < 26 - autofill API not available
+              assertThrows<NoSuchMethodError>() {
+                editText.importantForAutofill
+              }
+            }
+          }
+        }
     }
   }
 
