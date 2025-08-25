@@ -10,6 +10,7 @@ import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext
@@ -1245,6 +1246,24 @@ class EventLogSubjectTest {
       .setContext(
         EventLog.Context.newBuilder()
           .setEndCardContext(cardContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasEndCardContextThat()
+      .isEqualTo(cardContext)
+  }
+
+  //subha
+  @Test
+  fun testEventLogSubject_hasEndCardContext_hasFlashbackContext() {
+    val flashbackContext = FlashbackContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setEndCardContext(flashbackContext)
       )
       .build()
 

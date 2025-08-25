@@ -87,6 +87,7 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXP_5_STATE_THREE_NAME = "NumericExpressionInput.IsEquivalentTo"
     private const val TEST_EXP_5_STATE_FOUR_NAME = "AlgebraicExpressionInput.MatchesExactlyWith"
+    private const val TEST_EXP_2_STATE_EIGHT_NAME = "RatioInput"
     private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
 
@@ -1915,6 +1916,84 @@ class LearnerAnalyticsLoggerTest {
       }
       hasSwitchFromLanguageThat().isEqualTo(OppiaLanguage.SWAHILI)
       hasSwitchToLanguageThat().isEqualTo(OppiaLanguage.ENGLISH)
+    }
+  }
+
+//  ssertThat(eventLog).hasViewExistingSolutionContextThat() {
+//    hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+//    hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+//    hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+//    hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_5)
+//    hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+//    hasVersionThat().isEqualTo(5)
+//    hasStateNameThat().isEqualTo(TEST_EXP_5_STATE_THREE_NAME)
+//    hasLearnerDetailsThat {
+//      hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+//      hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+//    }
+//  }
+
+  //subha
+  @Test
+  fun testStateAnalyticsLogger_logHintUnlocked_diffIndex_logsStateEventWithOpenFlashabckDetails() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logOpenFlashback("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenFlashbackThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(5)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+  }
+
+  //subha
+  @Test
+  fun testStateAnalyticsLogger_logHintUnlocked_diffIndex_logsStateEventWithCloseFlashabckDetails() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logOpenFlashback("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasCloseFlashbackThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(5)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
     }
   }
 

@@ -62,6 +62,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.SWITCH_I
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_HINT_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.VIEW_EXISTING_SOLUTION_CONTEXT
 import org.oppia.android.app.model.EventLog.FeatureFlagItemContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.MarketFitAnswer
 import org.oppia.android.app.model.OppiaLanguage
@@ -70,6 +71,8 @@ import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK
 
 /**
  * Truth subject for verifying properties of [EventLog]s.
@@ -444,6 +447,23 @@ class EventLogSubject private constructor(
   fun hasStartCardContextThat(): CardContextSubject {
     hasStartCardContext()
     return CardContextSubject.assertThat(actual.context.startCardContext)
+  }
+
+  //subha
+  fun hasOpenFlashback() {
+    assertThat(actual.context.activityContextCase).isEqualTo(OPEN_FLASHBACK)
+  }
+  fun hasOpenFlashbackThat(): FlashbackContextSubject {
+    hasOpenFlashback()
+    return FlashbackContextSubject.assertThat(actual.context.openFlashback)
+  }
+
+  fun hasCloseFlashback() {
+    assertThat(actual.context.activityContextCase).isEqualTo(CLOSE_FLASHBACK)
+  }
+  fun hasCloseFlashbackThat(): CardContextSubject {
+    hasCloseFlashback()
+    return CardContextSubject.assertThat(actual.context.closeFlashback)
   }
 
   /**
@@ -2475,6 +2495,57 @@ class EventLogSubject private constructor(
        */
       fun assertThat(actual: EventLog.ProfileOnboardingContext): ProfileOnboardingContextSubject =
         assertAbout(::ProfileOnboardingContextSubject).that(actual)
+    }
+  }
+
+//subha
+  /**
+   * Truth subject for verifying properties of [EventLog.CardContext]s.
+   *
+   * Note that this class is also a [LiteProtoSubject] so other aspects of the underlying
+   * [EventLog.CardContext] proto can be verified through inherited methods.
+   *
+   * Call [CardContextSubject.assertThat] to create the subject.
+   */
+  class FlashbackContextSubject private constructor(
+    metadata: FailureMetadata,
+    private val actual: EventLog.FlashbackContext
+  ) : LiteProtoSubject(metadata, actual) {
+    /**
+     * Returns a [ExplorationContextSubject] to test [EventLog.CardContext.getExplorationDetails].
+     *
+     * This method never fails since the underlying property defaults to empty proto if it's not
+     * defined in the context.
+     */
+    fun hasExplorationDetailsThat(): ExplorationContextSubject =
+      ExplorationContextSubject.assertThat(actual.explorationDetails)
+
+    /**
+     * Executes [block] in the context returned by [hasExplorationDetailsThat], similar to
+     * [hasOpenExplorationActivityContextThat].
+     */
+    fun hasExplorationDetailsThat(block: ExplorationContextSubject.() -> Unit) {
+      hasExplorationDetailsThat().block()
+    }
+
+    /**
+     * Returns a [StringSubject] to test [EventLog.CardContext.getSkillId].
+     *
+     * This method never fails since the underlying property defaults to empty string if it's not
+     * defined in the context.
+     */
+    fun hasSkillIdThat(): StringSubject = assertThat(actual.skillId)
+
+    //subha
+    fun hasStateNameToRevisit(): StringSubject = assertThat(actual.stateNameToRevisit)
+
+    companion object {
+      /**
+       * Returns a new [CardContextSubject] to verify aspects of the specified
+       * [EventLog.CardContext] value.
+       */
+      fun assertThat(actual: EventLog.FlashbackContext): FlashbackContextSubject =
+        assertAbout(::FlashbackContextSubject).that(actual)
     }
   }
 
