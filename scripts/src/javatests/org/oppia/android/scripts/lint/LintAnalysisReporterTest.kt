@@ -583,7 +583,7 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${BOLD}$YELLOW SEVERITY: INFORMATION (1 issues)$RESET")
 
     assertThat(output).contains(
-      "$BOLD Issue 1 of 1: ${warningIssue.id} " +
+      "$BOLD Issue 1 of 1: ${toUpperSnakeCase(warningIssue.id)} " +
         "(Category: Performance)$RESET"
     )
     assertThat(output).contains("SEVERITY: WARNING (1 issues)")
@@ -610,7 +610,7 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${BOLD}FILE: ${warningIssue.locations[0].file} (1 issue)$RESET")
 
     assertThat(output).contains(
-      "$BOLD Issue 1 of 1: ${warningIssue.id}" +
+      "$BOLD Issue 1 of 1: ${toUpperSnakeCase(warningIssue.id)}" +
         " (Category: Performance)$RESET"
     )
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
@@ -682,7 +682,7 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("    2. File: ${multiLocationIssue.locations[1].file}")
     assertThat(output).contains("       Line: 8")
     assertThat(output).contains(
-      "$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
+      "$BOLD Issue 1 of 1: ${toUpperSnakeCase(multiLocationIssue.id)}" +
         " (Category: Correctness)$RESET"
     )
     assertThat(output).contains("SEVERITY: WARNING (1 issues)")
@@ -706,7 +706,7 @@ class LintAnalysisReporterTest {
       .contains("${BOLD}FILE: ${multiLocationIssue.locations[1].file} (1 issue)$RESET")
 
     assertThat(output).contains(
-      "$BOLD Issue 1 of 1: ${multiLocationIssue.id}" +
+      "$BOLD Issue 1 of 1: ${toUpperSnakeCase(multiLocationIssue.id)}" +
         " (Category: Correctness)$RESET"
     )
     assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
@@ -760,7 +760,7 @@ class LintAnalysisReporterTest {
 
     assertThat(output).contains(
       "$BOLD Issue 1 of 1: " +
-        "IidCompatibilityCheckFailure (Category: Lint)$RESET"
+        "IID_COMPATIBILITY_CHECK_FAILURE (Category: Lint)$RESET"
     )
     assertThat(output).contains("SEVERITY: INFORMATION (1 issues)")
   }
@@ -775,7 +775,7 @@ class LintAnalysisReporterTest {
     assertThat(output).doesNotContain("Error Line:")
 
     assertThat(output).contains(
-      "$BOLD Issue 1 of 1: IidCompatibilityCheckFailure" +
+      "$BOLD Issue 1 of 1: IID_COMPATIBILITY_CHECK_FAILURE" +
         " (Category: Lint)$RESET"
     )
     assertThat(output).contains("${YELLOW}Severity: Information$RESET")
@@ -1096,10 +1096,10 @@ class LintAnalysisReporterTest {
       "Please remove them from scripts/assets/android_lint_exemptions.textproto"
     )
     assertThat(output).contains("File: file1.xml")
-    assertThat(output).contains("  - IssueA")
-    assertThat(output).contains("  - IssueB")
+    assertThat(output).contains("  - ISSUE_A")
+    assertThat(output).contains("  - ISSUE_B")
     assertThat(output).contains("File: file2.kt")
-    assertThat(output).contains("  - IssueC")
+    assertThat(output).contains("  - ISSUE_C")
   }
 
   @Test
@@ -1169,9 +1169,9 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
     assertThat(output).contains("Please remove them from scripts/assets/android_lint_exemptions.textproto")
     assertThat(output).contains("${BOLD}File: app/src/main/java/TestFile.kt$RESET")
-    assertThat(output).contains("  - UnusedResources")
-    assertThat(output).contains("  - NewApi")
-    assertThat(output).contains("  - Typos")
+    assertThat(output).contains("  - UNUSED_RESOURCES")
+    assertThat(output).contains("  - NEW_API")
+    assertThat(output).contains("  - TYPOS")
   }
 
   @Test
@@ -1226,26 +1226,7 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
     assertThat(output).contains("Please add these issue IDs to the LintIssueId enum in the proto definition")
     assertThat(output).contains("and update the issueIdMapping in LintAnalysisReporter.")
-    assertThat(output).contains("  - CustomLintRule")
-  }
-
-  @Test
-  fun testLogUnknownIssueIds_multipleUnknownIds_printsSortedOrder() {
-    val unknownIssueIds = setOf("ZCustomRule", "ACustomRule", "MCustomRule")
-
-    lintAnalysisReporter.logUnknownIssueIds(unknownIssueIds)
-    val output = outputStream.toString()
-
-    val aRulePos = output.indexOf("- ACustomRule")
-    val mRulePos = output.indexOf("- MCustomRule")
-    val zRulePos = output.indexOf("- ZCustomRule")
-
-    assertThat(aRulePos).isLessThan(mRulePos)
-    assertThat(mRulePos).isLessThan(zRulePos)
-
-    assertThat(output).contains("  - ACustomRule")
-    assertThat(output).contains("  - MCustomRule")
-    assertThat(output).contains("  - ZCustomRule")
+    assertThat(output).contains("  - CUSTOM_LINT_RULE")
   }
 
   @Test
@@ -1266,7 +1247,7 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testCollectUnknownIssueIds_allKnownIds_returnsEmptySet() {
-    val issues = listOf(warningIssue, errorIssue) // Both have known IDs
+    val issues = listOf(warningIssue, errorIssue)
 
     val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
 
@@ -1294,7 +1275,7 @@ class LintAnalysisReporterTest {
     val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
 
     assertThat(unknownIds).containsExactly("DuplicateUnknown", "AnotherUnknown")
-    assertThat(unknownIds).hasSize(2) // Ensures no duplicates
+    assertThat(unknownIds).hasSize(2)
   }
 
   @Test
@@ -1319,17 +1300,16 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("${YELLOW}Warning: 2$RESET")
     assertThat(output).contains("${YELLOW}Redundant Exemptions: 2$RESET")
     assertThat(output).contains("${YELLOW}Unknown Issue Ids: 2$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 6$RESET") // 2 + 2 + 2 = 6
+    assertThat(output).contains("${BOLD}Total Issues: 6$RESET")
 
-    // Check redundant exemptions are logged
     assertThat(output).contains("Redundant exemptions (no corresponding lint issues found)")
     assertThat(output).contains("File: file1.xml")
-    assertThat(output).contains("  - RedundantRule1")
-    assertThat(output).contains("  - RedundantRule2")
+    assertThat(output).contains("  - REDUNDANT_RULE1")
+    assertThat(output).contains("  - REDUNDANT_RULE2")
 
     assertThat(output).contains("Unknown Issue IDs found")
-    assertThat(output).contains("  - AnotherUnknownRule")
-    assertThat(output).contains("  - UnknownCustomRule")
+    assertThat(output).contains("  - ANOTHER_UNKNOWN_RULE")
+    assertThat(output).contains("  - UNKNOWN_CUSTOM_RULE")
 
     assertThat(exception.message)
       .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
@@ -1379,6 +1359,123 @@ class LintAnalysisReporterTest {
       .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
+  @Test
+  fun testPrintLintReport_issueWithUnknownId_groupByFile_includesFullIssueDetails() {
+    val unknownIdIssue = LintIssue(
+      id = "AnotherCustomRule",
+      severity = LintSeverity.WARNING,
+      message = "Another unknown custom rule violation",
+      category = "Performance",
+      explanation = "This rule identifies performance issues in custom implementations.",
+      errorLine1 = "for (i in 0..largeList.size) {",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation("${repoRoot.absolutePath}/app/src/main/java/PerformanceFile.kt", "42")
+      )
+    )
+
+    val issues = listOf(unknownIdIssue, errorIssue)
+    val unknownIssueIds = setOf("AnotherCustomRule")
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues,
+        groupByIssueSeverity = false,
+        unknownIssueIds = unknownIssueIds
+      )
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
+    assertThat(output).contains("  - ANOTHER_CUSTOM_RULE")
+
+    assertThat(output).contains("${BOLD}FILE: ${unknownIdIssue.locations[0].file} (1 issue)$RESET")
+    assertThat(output).contains(
+      "$BOLD Issue 1 of 1: ANOTHER_CUSTOM_RULE (Category: Performance)$RESET"
+    )
+
+    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
+    assertThat(output).contains("  Line: 42")
+    assertThat(output).contains("  Error Line: for (i in 0..largeList.size) {")
+    assertThat(output).contains("  Message: Another unknown custom rule violation")
+    assertThat(output).contains("  Explanation:")
+    assertThat(output).contains("This rule identifies performance issues")
+
+    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
+    assertThat(output).contains("${RED}Error: 1$RESET")
+    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 3$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_multipleIssuesWithSameUnknownId_showsAllInstancesWithDetails() {
+    val unknownIdIssue1 = LintIssue(
+      id = "DuplicateUnknownRule",
+      severity = LintSeverity.WARNING,
+      message = "First instance of unknown rule violation",
+      category = "Correctness",
+      explanation = "This unknown rule checks for correctness issues.",
+      errorLine1 = "val result1 = processData(input1)",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation("${repoRoot.absolutePath}/app/src/main/java/File1.kt", "10")
+      )
+    )
+
+    val unknownIdIssue2 = LintIssue(
+      id = "DuplicateUnknownRule",
+      severity = LintSeverity.WARNING,
+      message = "Second instance of unknown rule violation",
+      category = "Correctness",
+      explanation = "This unknown rule checks for correctness issues.",
+      errorLine1 = "val result2 = processData(input2)",
+      errorLine2 = "",
+      locations = listOf(
+        LintLocation("${repoRoot.absolutePath}/app/src/main/java/File2.kt", "15")
+      )
+    )
+
+    val issues = listOf(unknownIdIssue1, unknownIdIssue2)
+    val unknownIssueIds = setOf("DuplicateUnknownRule")
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues,
+        groupByIssueSeverity = true,
+        unknownIssueIds = unknownIssueIds
+      )
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
+    assertThat(output).contains("  - DUPLICATE_UNKNOWN_RULE")
+    val unknownIdMatches = "- DUPLICATE_UNKNOWN_RULE".toRegex().findAll(output).count()
+    assertThat(unknownIdMatches).isEqualTo(1)
+
+    assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (2 issues)$RESET")
+    assertThat(output).contains("Issue 1 of 2: DUPLICATE_UNKNOWN_RULE")
+    assertThat(output).contains("Issue 2 of 2: DUPLICATE_UNKNOWN_RULE")
+
+    assertThat(output).contains("First instance of unknown rule violation")
+    assertThat(output).contains("Second instance of unknown rule violation")
+    assertThat(output).contains("val result1 = processData(input1)")
+    assertThat(output).contains("val result2 = processData(input2)")
+    assertThat(output).contains("File: ${unknownIdIssue1.locations[0].file}")
+    assertThat(output).contains("File: ${unknownIdIssue2.locations[0].file}")
+    assertThat(output).contains("Line: 10")
+    assertThat(output).contains("Line: 15")
+
+    assertThat(output).contains("${YELLOW}Warning: 2$RESET")
+    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 1$RESET")
+    assertThat(output).contains("${BOLD}Total Issues: 3$RESET")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
     val xmlFile = tempFolder.newFile(fileName)
     xmlFile.writeText(content)
@@ -1415,6 +1512,12 @@ class LintAnalysisReporterTest {
         $issueElements
       $XML_FOOTER
     """.trimIndent()
+  }
+
+  private fun toUpperSnakeCase(input: String): String {
+    return input
+      .replace(Regex("([a-z])([A-Z])"), "$1_$2")
+      .uppercase()
   }
 
   private fun escapeXml(text: String): String {

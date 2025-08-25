@@ -241,10 +241,8 @@ class AndroidLintRunner(
 
     val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
 
-    // Collect unknown issue IDs
     val unknownIssueIds = reporter.collectUnknownIssueIds(allIssues)
 
-    // Filter issues - this will now include unknown issues in the report
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
       exemptions = exemptions.androidLintExemptionList,
@@ -257,7 +255,6 @@ class AndroidLintRunner(
       repoRoot = repoRoot
     )
 
-    // Print the main report with redundant exemptions and unknown IDs
     reporter.printLintReport(
       issues = filteredIssues,
       groupByIssueSeverity = groupByIssueSeverity,

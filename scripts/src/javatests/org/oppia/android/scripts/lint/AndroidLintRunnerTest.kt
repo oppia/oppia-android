@@ -274,6 +274,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupProjectStructure()
+    removeAllExemptions()
     val lintRunner = createLintRunner()
     lintRunner.runLint(
       lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
@@ -292,11 +293,13 @@ class AndroidLintRunnerTest {
         lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
       )
     }
-
     val reportFile = File(workingDirectory, "lint-report.xml")
     assertThat(reportFile.exists()).isTrue()
     assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
     val output = outputStream.toString()
+    assertThat(output).contains(
+      "If you need additional help to resolve an issue," +
+        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html")
     assertThat(output).contains("MissingTranslation")
   }
 
@@ -486,7 +489,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("DuplicateStrings")
+    assertThat(output).contains("DUPLICATE_STRINGS")
     assertThat(output)
       .contains("<string name=\"duplicate_value\">Same text</string>")
     assertThat(output).contains("Line: 5")
@@ -506,7 +509,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("UselessParent")
+    assertThat(output).contains("USELESS_PARENT")
     assertThat(output)
       .contains("<RelativeLayout")
     assertThat(output).contains("Line: 5")
@@ -528,7 +531,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("UselessLeaf")
+    assertThat(output).contains("USELESS_LEAF")
     assertThat(output)
       .contains("<FrameLayout")
     assertThat(output).contains("Line: 5")
@@ -550,7 +553,7 @@ class AndroidLintRunnerTest {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
     val output = outputStream.toString()
-    assertThat(output).contains("RtlHardcoded")
+    assertThat(output).contains("RTL_HARDCODED")
     assertThat(output)
       .contains("<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"")
     assertThat(output).contains("Line: 8")
@@ -576,7 +579,7 @@ class AndroidLintRunnerTest {
     }
 
     val output = outputStream.toString()
-    assertThat(output).contains("RtlSymmetry")
+    assertThat(output).contains("RTL_SYMMETRY")
     assertThat(output)
       .contains("android:paddingEnd=\"120dip\"")
     assertThat(output).contains("Line: 29")
@@ -662,7 +665,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("SyntheticAccessor")
+    assertThat(output).contains("SYNTHETIC_ACCESSOR")
     assertThat(output)
       .contains("hiddenMethod()")
     assertThat(output)
@@ -694,7 +697,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("LabelFor")
+    assertThat(output).contains("LABEL_FOR")
     assertThat(output)
       .contains("android:hint=\"\"")
     assertThat(output).contains("Line: 11")
@@ -718,7 +721,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("UnusedAttribute")
+    assertThat(output).contains("UNUSED_ATTRIBUTE")
     assertThat(output)
       .contains("android:theme=\"@android:style/Theme.Holo\" />")
     assertThat(output).contains("Line: 11")
@@ -1465,6 +1468,17 @@ class AndroidLintRunnerTest {
     }
 
     return aarFile
+  }
+
+  /** Remove exemptions related to test setup. */
+  private fun removeAllExemptions() {
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+
+    val emptyExemptions = AndroidLintExemptions.newBuilder().build()
+
+    exemptionFile.outputStream().use { outputStream ->
+      emptyExemptions.writeTo(outputStream)
+    }
   }
 
   private fun createTestJarFile(libraryName: String, version: String): File {

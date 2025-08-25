@@ -368,7 +368,7 @@ class LintAnalysisReporter {
       println()
 
       unknownIssueIds.sorted().forEach { issueId ->
-        println("  - $issueId")
+        println("  - ${toUpperSnakeCase(issueId)}")
       }
       println()
     }
@@ -490,8 +490,10 @@ class LintAnalysisReporter {
       logUnknownIssueIds(unknownIssueIds)
     }
 
-    println("If you need additional help to resolve an issue," +
-      " see https://developer.android.com/studio/write/lint")
+    println(
+      "If you need additional help to resolve an issue," +
+        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
+    )
     println()
 
     if (groupByIssueSeverity) {
@@ -541,7 +543,7 @@ class LintAnalysisReporter {
       redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
         println("${BOLD}File: $filePath$RESET")
         issueIds.forEach { issueId ->
-          println("  - $issueId")
+          println("  - ${toUpperSnakeCase(issueId)}")
         }
         println()
       }
@@ -581,7 +583,7 @@ class LintAnalysisReporter {
     sortedIssues.forEachIndexed { index, issue ->
       println(
         "\n$BOLD Issue ${index + 1} of ${sortedIssues.size}:" +
-          " $issueId (Category: ${issue.category})$RESET"
+          " ${toUpperSnakeCase(issueId)} (Category: ${issue.category})$RESET"
       )
 
       if (issue.locations.size == 1) {
@@ -642,7 +644,7 @@ class LintAnalysisReporter {
       sortedByLine.forEachIndexed { index, (issue, location) ->
         println(
           "\n$BOLD Issue ${index + 1} of ${sortedByLine.size}:" +
-            " ${issue.id} (Category: ${issue.category})$RESET"
+            " ${toUpperSnakeCase(issue.id)} (Category: ${issue.category})$RESET"
         )
         println("  ${colorizeSeverity(issue.severity)}")
         if (location.lineNumber.isNotBlank()) {
@@ -709,7 +711,6 @@ class LintAnalysisReporter {
     }
   }
 
-
   /** Extracts all locations from the issue's location elements. */
   private fun extractLocations(issueElement: Element): List<LintLocation> {
     val locationNodes = issueElement.getElementsByTagName("location")
@@ -730,6 +731,18 @@ class LintAnalysisReporter {
     val digest = MessageDigest.getInstance("SHA-1")
     val hashBytes = digest.digest(fileBytes)
     return hashBytes.joinToString("") { "%02x".format(it) }
+  }
+
+  /**
+   * Converts PascalCase string to UPPER_SNAKE_CASE.
+   *
+   * @param input the input string to convert
+   * @return the converted UPPER_SNAKE_CASE string
+   */
+  private fun toUpperSnakeCase(input: String): String {
+    return input
+      .replace(Regex("([a-z])([A-Z])"), "$1_$2")
+      .uppercase()
   }
 
   /**
