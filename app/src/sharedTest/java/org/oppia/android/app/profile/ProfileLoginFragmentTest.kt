@@ -6,7 +6,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -128,29 +127,14 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileLoginFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var profileTestHelper: ProfileTestHelper
-
-  @Inject
-  lateinit var profileManagementController: ProfileManagementController
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-
-  @get:Rule
-  val composeRule = createEmptyComposeRule()
-
-  @Inject
-  lateinit var editTextInputAction: EditTextInputAction
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var profileManagementController: ProfileManagementController
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  @get:Rule val composeRule = createEmptyComposeRule()
+  @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
 
@@ -172,14 +156,14 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(GREETING_TEST_TAG)
-        .assertTextContains(
-          context.getString(R.string.profile_login_activity_greeting_text, "Admin")
-        )
-      composeRule.onNodeWithTag(PROMPT_TEST_TAG)
-        .assertTextContains(context.getString(R.string.profile_login_activity_enter_pin_prompt))
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG)
-        .assertTextContains(context.getString(R.string.profile_login_activity_forgot_pin_text))
+      composeRule
+        .onNodeWithText(context.getString(R.string.profile_login_activity_greeting_text, "Admin"))
+        .assertIsDisplayed()
+      composeRule
+        .onNodeWithText(context.getString(R.string.profile_login_activity_enter_pin_prompt))
+        .assertIsDisplayed()
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_activity_forgot_pin_text))
+        .assertIsDisplayed()
     }
   }
 
@@ -191,10 +175,9 @@ class ProfileLoginFragmentTest {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(GREETING_TEST_TAG)
-        .assertTextContains(
-          context.getString(R.string.profile_login_activity_greeting_text, "Admin")
-        )
+      composeRule
+        .onNodeWithText(context.getString(R.string.profile_login_activity_greeting_text, "Admin"))
+        .assertIsDisplayed()
     }
   }
 
@@ -246,7 +229,7 @@ class ProfileLoginFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
-        .onNodeWithTag(PIN_ERROR_TEST_TAG)
+        .onNodeWithText(context.getString(R.string.profile_login_activity_pin_error))
         .assertDoesNotExist()
     }
   }
@@ -335,8 +318,8 @@ class ProfileLoginFragmentTest {
         .performTextInput("111")
 
       composeRule
-        .onNodeWithTag(PIN_ERROR_TEST_TAG)
-        .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
+        .onNodeWithText(context.getString(R.string.profile_login_activity_pin_error))
+        .assertIsDisplayed()
     }
   }
 
@@ -431,8 +414,8 @@ class ProfileLoginFragmentTest {
         .performTextInput("22222")
 
       composeRule
-        .onNodeWithTag(PIN_ERROR_TEST_TAG)
-        .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
+        .onNodeWithText(context.getString(R.string.profile_login_activity_pin_error))
+        .assertIsDisplayed()
     }
   }
 
@@ -443,14 +426,12 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
-      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-        .assertExists()
-        .assertIsDisplayed()
-
-      composeRule
-        .onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
         .assertIsDisplayed()
 
       composeRule
@@ -484,16 +465,19 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
-      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
         .assertIsDisplayed()
 
       composeRule
         .onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_cancel_button))
         .performClick()
 
-      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
         .assertDoesNotExist()
     }
   }
@@ -505,7 +489,10 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
       composeRule
         .onNodeWithText(
@@ -517,19 +504,15 @@ class ProfileLoginFragmentTest {
         .assertIsDisplayed()
         .performClick()
 
-      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
         .assertDoesNotExist()
 
-      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
-        .assertIsDisplayed()
-
-      composeRule
-        .onNodeWithText(
-          context.getString(
-            R.string.admin_confirm_app_wipe_title,
-            context.getString(R.string.app_name)
-          )
+      composeRule.onNodeWithText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_title,
+          context.getString(R.string.app_name)
         )
+      )
         .assertIsDisplayed()
 
       composeRule
@@ -557,9 +540,12 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
-      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
         .assertIsDisplayed()
 
       composeRule
@@ -571,14 +557,18 @@ class ProfileLoginFragmentTest {
         )
         .performClick()
 
-      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
-        .assertIsDisplayed()
+      composeRule.onNodeWithText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_title,
+          context.getString(R.string.app_name)
+        )
+      )
 
       composeRule
         .onNodeWithText(context.getString(R.string.admin_confirm_app_wipe_negative_button_text))
         .performClick()
 
-      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(context.getString(R.string.admin_confirm_app_wipe_title))
         .assertDoesNotExist()
 
       scenario.onActivity { assertThat(it.isFinishing).isFalse() }
@@ -592,9 +582,12 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
-      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
         .assertExists()
         .assertIsDisplayed()
 
@@ -607,7 +600,12 @@ class ProfileLoginFragmentTest {
         )
         .performClick()
 
-      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+      composeRule.onNodeWithText(
+        context.getString(
+          R.string.admin_confirm_app_wipe_title,
+          context.getString(R.string.app_name)
+        )
+      )
         .assertExists()
         .assertIsDisplayed()
 
@@ -630,7 +628,10 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
       composeRule.waitForIdle()
 
@@ -647,7 +648,10 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
       composeRule.waitForIdle()
 
@@ -668,7 +672,10 @@ class ProfileLoginFragmentTest {
     launch(ProfileLoginActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithText(
+        context.getString(R.string.profile_login_activity_forgot_pin_text)
+      )
+        .performClick()
 
       composeRule.waitForIdle()
 
@@ -697,7 +704,10 @@ class ProfileLoginFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+    composeRule.onNodeWithText(
+      context.getString(R.string.profile_login_activity_forgot_pin_text)
+    )
+      .performClick()
 
     composeRule.waitForIdle()
 
@@ -725,7 +735,10 @@ class ProfileLoginFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+    composeRule.onNodeWithText(
+      context.getString(R.string.profile_login_activity_forgot_pin_text)
+    )
+      .performClick()
 
     composeRule.waitForIdle()
 
@@ -764,7 +777,10 @@ class ProfileLoginFragmentTest {
     )
     testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+    composeRule.onNodeWithText(
+      context.getString(R.string.profile_login_activity_forgot_pin_text)
+    )
+      .performClick()
 
     composeRule.waitForIdle()
 

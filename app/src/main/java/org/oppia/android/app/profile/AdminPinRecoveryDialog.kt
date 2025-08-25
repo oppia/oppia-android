@@ -10,9 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import org.oppia.android.app.ui.R
 
-/** Test tag for the admin's forgot pin dialog. */
-const val ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG = "TEST_TAG.admin_forgot_pin"
-
 /** Composable that represents the admin's forgot pin dialog. */
 @Composable
 fun AdminPinRecoveryDialog(
@@ -46,7 +43,6 @@ fun AdminPinRecoveryDialog(
       ) {
         Text(stringResource(R.string.profile_login_forgot_pin_dialog_reset_button, appName))
       }
-    },
-    modifier = Modifier.testTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+    }
   )
 }

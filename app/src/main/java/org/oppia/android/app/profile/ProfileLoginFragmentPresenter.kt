@@ -71,20 +71,8 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-/** Test tag for the greeting text. */
-const val GREETING_TEST_TAG = "TEST_TAG.greeting"
-
-/** Test tag for the prompt. */
-const val PROMPT_TEST_TAG = "TEST_TAG.prompt"
-
 /** Test tag for the pin input boxes. */
 const val PIN_INPUT_TEST_TAG = "TEST_TAG.input"
-
-/** Test tag for the pin error text. */
-const val PIN_ERROR_TEST_TAG = "TEST_TAG.error"
-
-/** Test tag for the forgot pin button. */
-const val FORGOT_PIN_TEST_TAG = "TEST_TAG.forgot_pin"
 
 /** Test tag for the forgot pin button. */
 const val PIN_BOX_TEST_TAG = "TEST_TAG.pin_box_"
@@ -227,10 +215,12 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       .observe(fragment) {
         if (it is AsyncResult.Success) {
           activity.startActivity(
-            if (enableMultipleClassrooms.value)
+            if (enableMultipleClassrooms.value) {
               ClassroomListActivity.createClassroomListActivity(activity, profileId)
-            else
+            }
+            else {
               HomeActivity.createHomeActivity(activity, profileId)
+            }
           )
           activity.finish()
         }
@@ -247,8 +237,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
         color = colorResource(id = R.color.component_color_profile_login_primary_text_color)
-      ),
-      modifier = Modifier.testTag(GREETING_TEST_TAG),
+      )
     )
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -261,8 +250,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       style = TextStyle(
         fontSize = 16.sp,
         color = colorResource(id = R.color.component_color_profile_login_primary_text_color)
-      ),
-      modifier = Modifier.testTag(PROMPT_TEST_TAG)
+      )
     )
   }
 
@@ -309,12 +297,14 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         .aspectRatio(0.7F)
         .border(
           width = if (isFocused) 2.dp else 1.dp,
-          color = if (isFocused)
+          color = if (isFocused) {
             colorResource(id = R.color.component_color_profile_login_shared_primary_color)
-          else
+          }
+          else {
             colorResource(
               id = R.color.component_color_profile_login_unfocused_outline_color
-            ),
+            )
+          },
           shape = RoundedCornerShape(4.dp)
         )
         .background(
@@ -343,8 +333,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
         style = TextStyle(
           fontSize = 14.sp,
           color = colorResource(id = R.color.component_color_shared_error_color)
-        ),
-        modifier = Modifier.testTag(PIN_ERROR_TEST_TAG)
+        )
       )
 
       LaunchedEffect(true) {
@@ -375,7 +364,6 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     val openConfirmationDialog = remember { mutableStateOf(false) }
 
     TextButton(
-      modifier = Modifier.testTag(FORGOT_PIN_TEST_TAG),
       onClick = { openForgotPinDialog.value = true }
     ) {
       Text(
