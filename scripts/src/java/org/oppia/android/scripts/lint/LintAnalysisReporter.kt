@@ -622,7 +622,7 @@ class LintAnalysisReporter {
 
     sortedIssues.forEachIndexed { index, issue ->
       val falsePositive = findMatchingFalsePositive(issue)
-      
+
       println(
         "\n$BOLD Issue ${index + 1} of ${sortedIssues.size}:" +
           " ${toUpperSnakeCase(issueId)} (Category: ${issue.category})$RESET"

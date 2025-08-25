@@ -789,8 +789,6 @@ class LintAnalysisReporterTest {
         severity = LintSeverity.ERROR,
         message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
         category = "Correctness",
-        priority = "6",
-        summary = "Calling new methods on older versions",
         explanation = "This check scans through all the Android API " +
           "calls in the application and warns about any calls that are not available",
         errorLine1 = "          component.getAnalyticsStartupListenerStartupListeners().forEach {",
@@ -808,7 +806,7 @@ class LintAnalysisReporterTest {
     }
     val output = outputStream.toString()
 
-    assertThat(output).contains("$BOLD Issue #1: NewApi$RESET")
+    assertThat(output).contains("$BOLD Issue 1 of 1: NEW_API (Category: Correctness)$RESET")
     assertThat(output).contains("${RED}Severity: Error$RESET (FALSE POSITIVE)")
     assertThat(output).contains("Line: 42")
     assertThat(output).contains(
