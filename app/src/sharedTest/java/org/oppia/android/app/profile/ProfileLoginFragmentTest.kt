@@ -22,6 +22,7 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -31,6 +32,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
+import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -126,14 +128,29 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class ProfileLoginFragmentTest {
-  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @Inject lateinit var context: Context
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
-  @Inject lateinit var profileManagementController: ProfileManagementController
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @get:Rule val composeRule = createEmptyComposeRule()
-  @Inject lateinit var editTextInputAction: EditTextInputAction
+  @get:Rule
+  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+
+  @get:Rule
+  val oppiaTestRule = OppiaTestRule()
+
+  @Inject
+  lateinit var context: Context
+
+  @Inject
+  lateinit var profileTestHelper: ProfileTestHelper
+
+  @Inject
+  lateinit var profileManagementController: ProfileManagementController
+
+  @Inject
+  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+
+  @get:Rule
+  val composeRule = createEmptyComposeRule()
+
+  @Inject
+  lateinit var editTextInputAction: EditTextInputAction
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
 
@@ -152,109 +169,119 @@ class ProfileLoginFragmentTest {
   fun testFragment_onLaunch_allTextViewsHaveCorrectContent() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(GREETING_TEST_TAG)
-      .assertTextContains(context.getString(R.string.profile_login_activity_greeting_text, "Admin"))
-      .assertIsDisplayed()
-    composeRule.onNodeWithTag(PROMPT_TEST_TAG).assertIsDisplayed()
-      .assertTextContains(context.getString(R.string.profile_login_activity_enter_pin_prompt))
-      .assertIsDisplayed()
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG)
-      .assertTextContains(context.getString(R.string.profile_login_activity_forgot_pin_text))
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(GREETING_TEST_TAG)
+        .assertTextContains(
+          context.getString(R.string.profile_login_activity_greeting_text, "Admin")
+        )
+      composeRule.onNodeWithTag(PROMPT_TEST_TAG)
+        .assertTextContains(context.getString(R.string.profile_login_activity_enter_pin_prompt))
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG)
+        .assertTextContains(context.getString(R.string.profile_login_activity_forgot_pin_text))
+    }
   }
 
   @Test
   fun testFragment_onConfigChange_profileNameIsRetained() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    onView(isRoot()).perform(orientationLandscape())
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(GREETING_TEST_TAG)
-      .assertTextContains(context.getString(R.string.profile_login_activity_greeting_text, "Admin"))
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(GREETING_TEST_TAG)
+        .assertTextContains(
+          context.getString(R.string.profile_login_activity_greeting_text, "Admin")
+        )
+    }
   }
 
   @Test
   fun testFragment_onLaunch_adminProfile_fivePinInputBoxesAreDisplayed() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    repeat(5) { index ->
+      repeat(5) { index ->
+        composeRule
+          .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
+          .assertIsDisplayed()
+      }
+
+      // Ensure there's no 6th box
       composeRule
-        .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
-        .assertIsDisplayed()
+        .onNodeWithTag("pin_box_5", useUnmergedTree = true)
+        .assertDoesNotExist()
     }
-
-    // Ensure there's no 6th box
-    composeRule
-      .onNodeWithTag("pin_box_5", useUnmergedTree = true)
-      .assertDoesNotExist()
   }
 
   @Test
   fun testFragment_onLaunch_learnerProfile_threePinInputBoxesAreDisplayed() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    repeat(3) { index ->
+      repeat(3) { index ->
+        composeRule
+          .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
+          .assertIsDisplayed()
+      }
+
+      // Ensure there's no 4th box
       composeRule
-        .onNodeWithTag(PIN_BOX_TEST_TAG + index, useUnmergedTree = true)
-        .assertIsDisplayed()
+        .onNodeWithTag("pin_box_3", useUnmergedTree = true)
+        .assertDoesNotExist()
     }
-
-    // Ensure there's no 4th box
-    composeRule
-      .onNodeWithTag("pin_box_3", useUnmergedTree = true)
-      .assertDoesNotExist()
   }
 
   @Test
   fun testFragment_onLaunch_errorMessageDoesNotShow() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_ERROR_TEST_TAG)
-      .assertDoesNotExist()
+      composeRule
+        .onNodeWithTag(PIN_ERROR_TEST_TAG)
+        .assertDoesNotExist()
+    }
   }
 
   @Test
   fun testFragment_nonAdmin_enterTwoDigits_doesNotTriggerLogin() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("12")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12")
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 0, useUnmergedTree = true)
-      .assertContentDescriptionEquals("1")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 0, useUnmergedTree = true)
+        .assertContentDescriptionEquals("1")
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 1, useUnmergedTree = true)
-      .assertContentDescriptionEquals("2")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 1, useUnmergedTree = true)
+        .assertContentDescriptionEquals("2")
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 2, useUnmergedTree = true)
-      .assertContentDescriptionEquals("")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 2, useUnmergedTree = true)
+        .assertContentDescriptionEquals("")
+        .assertIsDisplayed()
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ClassroomListActivity::class.java.name), times(0))
+    }
   }
 
   @Test
@@ -263,89 +290,94 @@ class ProfileLoginFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("123")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("123")
 
-    testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.runCurrent()
 
-    intended(hasComponent(HomeActivity::class.java.name))
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
   }
 
   @Test
   fun testFragment_nonAdmin_classroomsEnabled_enterCorrectThreeDigits_opensClassroomsScreen() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("123")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("123")
 
-    testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.runCurrent()
 
-    intended(hasComponent(ClassroomListActivity::class.java.name))
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
   }
 
   @Test
   fun testFragment_nonAdmin_enterWrongThreeDigits_showsErrorMessage() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("111")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("111")
 
-    composeRule
-      .onNodeWithTag(PIN_ERROR_TEST_TAG)
-      .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_ERROR_TEST_TAG)
+        .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
+    }
   }
 
   fun testFragment_adminProfile_enterFourDigits_doesNotTriggerLogin() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("1234")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("1234")
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 0, useUnmergedTree = true)
-      .assertContentDescriptionEquals("1")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 0, useUnmergedTree = true)
+        .assertContentDescriptionEquals("1")
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 1, useUnmergedTree = true)
-      .assertContentDescriptionEquals("2")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 1, useUnmergedTree = true)
+        .assertContentDescriptionEquals("2")
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 2, useUnmergedTree = true)
-      .assertContentDescriptionEquals("3")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 2, useUnmergedTree = true)
+        .assertContentDescriptionEquals("3")
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 3, useUnmergedTree = true)
-      .assertContentDescriptionEquals("4")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 3, useUnmergedTree = true)
+        .assertContentDescriptionEquals("4")
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithTag(PIN_BOX_TEST_TAG + 4, useUnmergedTree = true)
-      .assertContentDescriptionEquals("")
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_BOX_TEST_TAG + 4, useUnmergedTree = true)
+        .assertContentDescriptionEquals("")
+        .assertIsDisplayed()
+
+      intended(hasComponent(ClassroomListActivity::class.java.name), times(0))
+    }
   }
 
   @Test
@@ -354,308 +386,305 @@ class ProfileLoginFragmentTest {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     setUpTestApplicationComponentWithoutFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("12345")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
 
-    testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.runCurrent()
 
-    intended(hasComponent(HomeActivity::class.java.name))
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
   }
 
   @Test
   fun testFragment_adminProfile_classroomsEnabled_enterFiveDigits_opensClassroomScreen() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("12345")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
 
-    testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.runCurrent()
 
-    intended(hasComponent(ClassroomListActivity::class.java.name))
+      intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
   }
 
   @Test
   fun testFragment_adminProfile_enterWrongFiveDigits_showsErrorMessage() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule
-      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
-      .performClick()
-      .performTextInput("22222")
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("22222")
 
-    composeRule
-      .onNodeWithTag(PIN_ERROR_TEST_TAG)
-      .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithTag(PIN_ERROR_TEST_TAG)
+        .assertTextContains(context.getString(R.string.profile_login_activity_pin_error))
+    }
   }
 
   @Test
   fun testFragment_adminUser_clickForgotPin_opensAdminForgotPinDialogFlow() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+        .assertExists()
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.profile_login_forgot_pin_dialog_message,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.profile_login_forgot_pin_dialog_message,
+            context.getString(R.string.app_name)
+          )
         )
-      )
-      .assertIsDisplayed()
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_cancel_button)
-      )
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_cancel_button))
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.profile_login_forgot_pin_dialog_reset_button,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.profile_login_forgot_pin_dialog_reset_button,
+            context.getString(R.string.app_name)
+          )
         )
-      )
-      .assertIsDisplayed()
+        .assertIsDisplayed()
+    }
   }
 
   @Test
   fun testFragment_adminUser_openForgotPin_clickCancel_dismissesTheDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(R.string.profile_login_forgot_pin_dialog_cancel_button)
-      )
-      .performClick()
+      composeRule
+        .onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_cancel_button))
+        .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-      .assertDoesNotExist()
+      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+        .assertDoesNotExist()
+    }
   }
 
   @Test
   fun testFragment_adminUser_forgotPin_clickResetData_opensResetDataDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.profile_login_forgot_pin_dialog_reset_button,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.profile_login_forgot_pin_dialog_reset_button,
+            context.getString(R.string.app_name)
+          )
         )
-      )
-      .assertIsDisplayed()
-      .performClick()
+        .assertIsDisplayed()
+        .performClick()
 
-    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-      .assertDoesNotExist()
+      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+        .assertDoesNotExist()
 
-    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.admin_confirm_app_wipe_title,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.admin_confirm_app_wipe_title,
+            context.getString(R.string.app_name)
+          )
         )
-      )
-      .assertIsDisplayed()
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.admin_confirm_app_wipe_message,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.admin_confirm_app_wipe_message, context.getString(R.string.app_name)
+          )
         )
-      )
-      .assertIsDisplayed()
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(R.string.admin_confirm_app_wipe_negative_button_text)
-      )
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithText(context.getString(R.string.admin_confirm_app_wipe_negative_button_text))
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(R.string.admin_confirm_app_wipe_positive_button_text)
-      )
-      .assertIsDisplayed()
+      composeRule
+        .onNodeWithText(context.getString(R.string.admin_confirm_app_wipe_positive_button_text))
+        .assertIsDisplayed()
+    }
   }
 
   @Test
   fun testFragment_adminUser_declineDataReset_dismissesTheDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.profile_login_forgot_pin_dialog_reset_button,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.profile_login_forgot_pin_dialog_reset_button,
+            context.getString(R.string.app_name)
+          )
         )
-      )
-      .performClick()
+        .performClick()
 
-    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(R.string.admin_confirm_app_wipe_negative_button_text)
-      )
-      .performClick()
+      composeRule
+        .onNodeWithText(context.getString(R.string.admin_confirm_app_wipe_negative_button_text))
+        .performClick()
 
-    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
-      .assertDoesNotExist()
+      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+        .assertDoesNotExist()
+
+      scenario.onActivity { assertThat(it.isFinishing).isFalse() }
+    }
   }
 
   @Test
   fun testFragment_adminUser_confirmDataReset_closesTheApp() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addOnlyAdminProfile()
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(ADMIN_PIN_RECOVERY_DIALOG_TEST_TAG)
+        .assertExists()
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(
-          R.string.profile_login_forgot_pin_dialog_reset_button,
-          context.getString(R.string.app_name)
+      composeRule
+        .onNodeWithText(
+          context.getString(
+            R.string.profile_login_forgot_pin_dialog_reset_button,
+            context.getString(R.string.app_name)
+          )
         )
-      )
-      .performClick()
+        .performClick()
 
-    composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
-      .assertExists()
-      .assertIsDisplayed()
+      composeRule.onNodeWithTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+        .assertExists()
+        .assertIsDisplayed()
 
-    composeRule
-      .onNodeWithText(
-        context.getString(R.string.admin_confirm_app_wipe_positive_button_text)
-      )
-      .performClick()
+      composeRule
+        .onNodeWithText(
+          context.getString(R.string.admin_confirm_app_wipe_positive_button_text)
+        )
+        .performClick()
 
-    testCoroutineDispatchers.runCurrent()
+      testCoroutineDispatchers.runCurrent()
 
-    assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+      assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+    }
   }
 
   @Test
   fun testFragment_nonAdminUser_clickForgotPin_opensNonAdminForgotPinDialogFlow() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.waitForIdle()
+      composeRule.waitForIdle()
 
-    onView(withText(context.getString(R.string.admin_settings_heading)))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.admin_settings_heading)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
   }
 
   @Test
   fun testFragment_nonAdminUser_forgotPinDialog_clickCancel_dismissesTheDialog() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.waitForIdle()
+      composeRule.waitForIdle()
 
-    onView(withText(context.getString(R.string.admin_settings_cancel)))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
-      .perform(click())
+      onView(withText(context.getString(R.string.admin_settings_cancel)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
 
-    onView(withText(context.getString(R.string.admin_settings_heading)))
-      .check(doesNotExist())
+      onView(withText(context.getString(R.string.admin_settings_heading)))
+        .check(doesNotExist())
+    }
   }
 
   @Test
   fun testFragment_nonAdminUser_enterWrongAdminPin_showsWrongAdminPinError() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
-    scenario = launch(ProfileLoginActivity::class.java)
-    testCoroutineDispatchers.runCurrent()
+    launch(ProfileLoginActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+      composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
 
-    composeRule.waitForIdle()
+      composeRule.waitForIdle()
 
-    onView(withId(R.id.admin_settings_input_pin_edit_text))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
-      .perform(editTextInputAction.appendText("1111"), closeSoftKeyboard())
+      onView(withId(R.id.admin_settings_input_pin_edit_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(editTextInputAction.appendText("1111"), closeSoftKeyboard())
 
-    onView(withText(context.getString(R.string.admin_settings_submit)))
-      .inRoot(isDialog())
-      .perform(click())
+      onView(withText(context.getString(R.string.admin_settings_submit)))
+        .inRoot(isDialog())
+        .perform(click())
 
-    onView(withText(context.getString(R.string.admin_settings_incorrect)))
-      .inRoot(isDialog())
-      .check(matches(isDisplayed()))
+      onView(withText(context.getString(R.string.admin_settings_incorrect)))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
   }
 
   @Test
@@ -723,6 +752,60 @@ class ProfileLoginFragmentTest {
     onView(withText(context.getString(R.string.profile_login_reset_pin_success_dialog_message)))
       .inRoot(isDialog())
       .check(matches(isDisplayed()))
+  }
+
+  @Test
+  fun testFragment_nonAdminUser_resetPin_canLogInWithNewPin() {
+    setUpTestApplicationComponentWithFeatureFlags()
+    profileTestHelper.initializeProfiles()
+    val currentUserProfileId = ProfileId.newBuilder().setInternalId(1).build()
+    scenario = launch(
+      ProfileLoginActivity.createProfileLoginActivityIntent(context, currentUserProfileId)
+    )
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule.onNodeWithTag(FORGOT_PIN_TEST_TAG).performClick()
+
+    composeRule.waitForIdle()
+
+    onView(withId(R.id.admin_settings_input_pin_edit_text))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
+      .perform(editTextInputAction.appendText("12345"), closeSoftKeyboard())
+
+    onView(withText(context.getString(R.string.admin_settings_submit)))
+      .inRoot(isDialog())
+      .perform(click())
+
+    onView(withId(R.id.reset_pin_input_pin_edit_text))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
+      .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+
+    onView(withText(context.getString(R.string.admin_settings_submit)))
+      .inRoot(isDialog())
+      .perform(click())
+
+    testCoroutineDispatchers.runCurrent()
+
+    onView(withText(context.getString(R.string.profile_login_reset_pin_success_dialog_message)))
+      .inRoot(isDialog())
+      .check(matches(isDisplayed()))
+
+    onView(withText(context.getString(R.string.profile_login_reset_pin_success_dialog_close)))
+      .inRoot(isDialog())
+      .perform(click())
+
+    testCoroutineDispatchers.runCurrent()
+
+    composeRule
+      .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+      .performClick()
+      .performTextInput("111")
+
+    testCoroutineDispatchers.runCurrent()
+
+    intended(hasComponent(ClassroomListActivity::class.java.name))
   }
 
   private fun setUpTestApplicationComponentWithFeatureFlags() {
