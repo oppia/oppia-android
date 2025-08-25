@@ -959,6 +959,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/flashback_submitted_answer_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/survey_edit_text_background_border.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
