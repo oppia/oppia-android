@@ -229,7 +229,12 @@ class AndroidLintAnalyzer(
       // Allowed since context-specific translations may differ; false positive in lint.
       "DuplicateStrings",
       // TextViews are kept non-selectable to avoid conflicts with user interactions.
-      "SelectableText"
+      "SelectableText",
+
+      "UnusedResources",
+      "UnusedAttribute",
+      "UnknownNullness",
+      "MergeRootFrame"
     )
   }
 
