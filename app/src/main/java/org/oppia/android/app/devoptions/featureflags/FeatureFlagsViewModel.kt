@@ -2,6 +2,7 @@ package org.oppia.android.app.devoptions.featureflags
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
@@ -41,6 +42,7 @@ class FeatureFlagsViewModel private constructor(
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }
 
+  var isSaveButtonActive = ObservableField(false)
   private fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
   ): List<EphemeralFeatureFlag> {

@@ -2,6 +2,7 @@ package org.oppia.android.app.devoptions.platformparameters
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.databinding.ObservableField
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
@@ -39,6 +40,8 @@ class PlatformParametersViewModel private constructor(
   val platformParameterList: LiveData<List<PlatformParameterItemViewModel>> by lazy {
     Transformations.map(ephemeralParametersLiveData, ::processPlatformParameterList)
   }
+
+  var isSaveButtonActive = ObservableField(false)
 
   private fun processEphemeralParameterResult(
     result: AsyncResult<List<EphemeralPlatformParameter>>
