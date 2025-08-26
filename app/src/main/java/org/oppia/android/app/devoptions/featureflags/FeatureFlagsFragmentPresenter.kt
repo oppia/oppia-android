@@ -29,8 +29,8 @@ import javax.inject.Inject
 class FeatureFlagsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val featureFlagsViewModelFactory: FeatureFlagsViewModel.Factory,
   private val oppiaLogger: OppiaLogger,
+  private val featureFlagsViewModel: FeatureFlagsViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
@@ -39,7 +39,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
 
-  /** List of feature flags that have been reset.. */
+  /** List of feature flags that have been reset. */
   var resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
 
   /** List of feature flag switch states to be used in the fragment. */
@@ -86,7 +86,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
 
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = featureFlagsViewModelFactory.create(resetFlags.keys.toList())
+      this.viewModel = featureFlagsViewModel
     }
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -109,18 +109,16 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
-    val overriddenFeatureFlags: MutableList<OverriddenFeatureFlag> = mutableListOf()
 
-    featureFlagStates.value?.map { (id, value) ->
-      if (resetFlags[id] != value) {
-        overriddenFeatureFlags.add(
-          OverriddenFeatureFlag.newBuilder()
-            .setId(id)
-            .setOverriddenValue(value)
-            .build()
-        )
+    val overriddenFeatureFlags = featureFlagStates.value
+      ?.filter { (id, value) -> resetFlags[id] != value }
+      ?.map { (id, value) ->
+        OverriddenFeatureFlag.newBuilder()
+          .setId(id)
+          .setOverriddenValue(value)
+          .build()
       }
-    }
+      .orEmpty()
 
     platformParameterControllerDebugImpl.resetFeatureFlags(resetFlags.keys.toList())
       .toLiveData().observe(fragment) {
@@ -164,11 +162,12 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     model: FeatureFlagItemViewModel
   ) {
     binding.viewModel = model
+
     binding.resetButton.setOnClickListener {
       handleResetFeatureFlag(model, binding)
     }
-
     setFeatureFlagBackgroundColor(model, binding)
+
     if (resetFlags.containsKey(model.featureFlagId)) {
       model.isFlagOverridden.set(true)
       model.isResetButtonActive.set(false)
@@ -180,9 +179,10 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         model.isChecked.set(states[model.featureFlagId])
       }
     }
+
     model.onFeatureFlagToggleCallback = { id, value ->
       val currentMap = featureFlagStates.value ?: mutableMapOf()
-      if (model.currentValue == value && !resetFlags.containsKey(id)) {
+      if (model.currentValue == value && id !in resetFlags) {
         currentMap.remove(id)
       } else {
         currentMap[id] = value
@@ -211,7 +211,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private fun getSyncDetails(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNCED_FROM_SERVER -> {
-        // TODO(#5345): Remove this filler message once the server sync logic is implemented.
+        // TODO(#5345): Replace this placeholder message with the actual server last-synced timestamp when available.
         resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
       }
       else ->

@@ -34,7 +34,7 @@ import javax.inject.Inject
 class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val platformParameterViewModelFactory: PlatformParametersViewModel.Factory,
+  private val platformParameterViewModel: PlatformParametersViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
@@ -115,7 +115,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = platformParameterViewModelFactory.create(resetParameters.keys.toList())
+      this.viewModel = platformParameterViewModel
     }
 
     return binding.root
@@ -130,43 +130,18 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
-  private fun overridePlatformParameters(
-    overriddenPlatformParameters: List<OverriddenPlatformParameter>
-  ) {
-    platformParameterControllerDebugImpl
-      .updateOverriddenPlatformParameters(overriddenPlatformParameters).toLiveData()
-      .observe(fragment) {
-        when (it) {
-          is AsyncResult.Success -> {
-            (activity as PlatformParametersActivity).finish()
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
-              "Failed to reset platform parameters: ",
-              it.error
-            )
-          }
-          is AsyncResult.Pending -> {} // Wait for a result.
-        }
-      }
-  }
-
   private fun onBackNavigation() {
     val hasInvalidInput = platformParameterStates.value?.containsValue(null) ?: false
 
     if (!hasInvalidInput) {
-      val overriddenPlatformParameters = mutableListOf<OverriddenPlatformParameter>()
-      platformParameterStates.value?.map { (id, value) ->
-        if (resetParameters[id] != value) {
-          overriddenPlatformParameters.add(
-            OverriddenPlatformParameter.newBuilder()
-              .setId(id)
-              .setOverriddenValue(value)
-              .build()
-          )
-        }
-      }
+      val overriddenPlatformParameters = platformParameterStates.value
+        ?.filter { (id, value) -> resetParameters[id] != value }
+        ?.map { (id, value) ->
+          OverriddenPlatformParameter.newBuilder()
+            .setId(id)
+            .setOverriddenValue(value)
+            .build()
+        }.orEmpty()
 
       platformParameterControllerDebugImpl.resetPlatformParameters(resetParameters.keys.toList())
         .toLiveData().observe(fragment) {
@@ -196,12 +171,35 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun overridePlatformParameters(
+    overriddenPlatformParameters: List<OverriddenPlatformParameter>
+  ) {
+    platformParameterControllerDebugImpl
+      .updateOverriddenPlatformParameters(overriddenPlatformParameters).toLiveData()
+      .observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> {
+            (activity as PlatformParametersActivity).finish()
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "PlatformParametersFragmentPresenter",
+              "Failed to reset platform parameters: ",
+              it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
+      }
+  }
+
   private fun bindPlatformParameterItem(
     binding: PlatformParameterItemBinding,
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
     setPlatformParameterBackgroundColor(model, binding)
+
     val editText = binding.platformParameterInputEditText
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
@@ -243,6 +241,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val restoredParameterValue = model.afterResetValue
     resetParameters[model.platformParameterId] = restoredParameterValue
     model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
+
     if (model.currentValue.hasBoolean()) {
       platformParameterStates.value = platformParameterStates.value?.apply {
         this[model.platformParameterId] = restoredParameterValue
@@ -259,6 +258,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
       }
     }
+
     model.isResetButtonActive.set(false)
     setPlatformParameterBackgroundColor(model, binding)
   }
@@ -282,22 +282,23 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.inputValue.set(model.currentValue.integer.toString())
         }
       }
-
       model.currentValue.hasString() -> {
         editText.inputType = InputType.TYPE_CLASS_TEXT
         model.inputValue.set(paramState?.string ?: model.currentValue.string)
         model.inputErrorMsg.set("")
       }
     }
+
+    boundParamIds.add(model.platformParameterId)
+
     model.onPlatformParameterTextChangedCallback =
       onPlatformParameterTextChangedCallback@{ id, text ->
         if (boundParamIds.contains(id).not()) {
-          boundParamIds.add(model.platformParameterId)
           return@onPlatformParameterTextChangedCallback
         }
         when {
           model.currentValue.hasInteger() -> {
-            if (text == model.currentValue.integer.toString() && !resetParameters.containsKey(id)) {
+            if (text == model.currentValue.integer.toString() && id !in resetParameters) {
               platformParameterStates.value = platformParameterStates.value?.apply {
                 remove(id)
               }
@@ -318,7 +319,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             }
           }
           model.currentValue.hasString() -> {
-            if (text == model.currentValue.string && !resetParameters.containsKey(id)) {
+            if (text == model.currentValue.string && id !in resetParameters) {
               platformParameterStates.value = platformParameterStates.value?.apply {
                 remove(id)
               }
@@ -368,7 +369,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private fun getSyncDetails(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNCED_FROM_SERVER -> {
-        // TODO(#5345): Remove this filler message once the server sync logic is implemented.
+        // TODO(#5345): Replace this placeholder message with the actual server last-synced timestamp when available..
         resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
       }
       else ->

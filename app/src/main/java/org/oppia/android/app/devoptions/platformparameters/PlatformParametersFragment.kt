@@ -42,7 +42,7 @@ class PlatformParametersFragment : InjectableFragment() {
     val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
 
-    var resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+    val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
 
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
@@ -59,7 +59,10 @@ class PlatformParametersFragment : InjectableFragment() {
 
     return platformParametersFragmentPresenter
       .handleCreateView(
-        inflater, container, platformParameterStates, resetParamList
+        inflater,
+        container,
+        platformParameterStates,
+        resetParamList
       )
   }
 

@@ -58,24 +58,23 @@ class PlatformParameterItemViewModel(
    */
   var onPlatformParameterTextChangedCallback: ((PlatformParameterId, String) -> Unit)? = null
 
-  /** Indicates whether the parameter is overridden. */
+  /** Indicates whether this platform parameter has been overridden locally. */
   val isParamOverridden: ObservableField<Boolean> =
     ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
   val isResetButtonActive: ObservableField<Boolean> = ObservableField(true)
 
-  /** Message for displaying the sync details of the platform parameter. */
+  /** Represents the platform parameter’s server-sync or override state. */
   var syncDetails = ObservableField(processSyncDetails())
 
   private fun processSyncDetails(): String {
     return when (syncStatus) {
       SyncStatus.LOCAL_OVERRIDE ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)
-      SyncStatus.SYNCED_FROM_SERVER -> {
-        // TODO(#5345): Remove this filler message once the server sync logic is implemented.
+      SyncStatus.SYNCED_FROM_SERVER ->
+        // TODO(#5345): Replace this placeholder message with the actual server last-synced timestamp when available.
         resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
-      }
       else ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
     }
