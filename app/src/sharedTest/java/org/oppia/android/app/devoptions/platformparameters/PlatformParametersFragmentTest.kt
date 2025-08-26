@@ -933,7 +933,7 @@ class PlatformParametersFragmentTest {
 
       scrollToPosition(8)
       scrollToPosition(0)
-      
+
       verifyPlatformParameterValue(
         position = 0,
         expectedValue = expectedValue

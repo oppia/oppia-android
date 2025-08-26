@@ -92,47 +92,6 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
   /**
    * Returns a [DataProvider] that loads the current values of all supported
-   * platform parameters as a list of [EphemeralPlatformParameter].
-   *
-   * Each parameter uses a remote override if available, otherwise falls
-   * back to its default value with the appropriate [SyncStatus].
-   */
-  fun loadEphemeralPlatformParameters(): DataProvider<List<EphemeralPlatformParameter>> {
-    return dataProviders.createInMemoryDataProviderAsync(
-      LOAD_EPHEMERAL_PLATFORM_PARAMETERS_PROVIDER_ID
-    ) {
-      val defaultParameters = platformParameterControllerProdImpl.loadSupportedPlatformParameters()
-      val remoteParameters = platformParameterControllerProdImpl.loadRemotePlatformParameters()
-      val remoteParamById = remoteParameters.associateBy { it.id }
-
-      val localParameters = loadLocalOverriddenPlatformParameters()
-      val localParamsById = localParameters.associateBy { it.id }
-
-      val ephemeralParameters = defaultParameters.map { paramDefinition ->
-        val remoteParam = remoteParamById[paramDefinition.id]
-        val localParam = localParamsById[paramDefinition.id]
-
-        val currentValue = localParam?.overriddenValue
-          ?: remoteParam?.remoteValue
-          ?: paramDefinition.defaultValue
-
-        val syncStatus = localParam?.let { SyncStatus.LOCAL_OVERRIDE }
-          ?: remoteParam?.syncStatus
-          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
-
-        EphemeralPlatformParameter.newBuilder().apply {
-          this.id = paramDefinition.id
-          this.currentValue = currentValue
-          this.syncStatus = syncStatus
-        }.build()
-      }
-
-      return@createInMemoryDataProviderAsync AsyncResult.Success(ephemeralParameters)
-    }
-  }
-
-  /**
-   * Returns a [DataProvider] that loads the current values of all supported
    * feature flags as a list of [EphemeralFeatureFlag].
    *
    * For each flag, uses a remote override if available; otherwise falls
