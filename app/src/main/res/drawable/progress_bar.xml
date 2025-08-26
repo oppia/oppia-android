@@ -9,7 +9,7 @@
         android:color="@color/component_color_shared_progress_bar_stroke_color" />
     </shape>
   </item>
-  <item android:id="@+id/progress">
+  <item>
     <scale android:scaleWidth="100%">
       <shape>
         <corners android:radius="8dp" />

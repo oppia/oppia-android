@@ -277,6 +277,30 @@ class StateDeck constructor(
       ?: EphemeralState.getDefaultInstance()
   }
 
+  /**
+   *  Sets the `flashback_viewed` field of [AnswerAndResponse] to true for the last
+   *  [AnswerAndResponse] in the [currentDialogInteractions] list.
+   */
+  fun setFlashbackIsViewed() {
+    if (currentDialogInteractions.isNotEmpty()) {
+      val lastIndex = currentDialogInteractions.lastIndex
+      val lastAnswerAndResponse = currentDialogInteractions[lastIndex]
+      val updatedAnswerAndResponse = lastAnswerAndResponse.toBuilder()
+        .setFlashbackViewed(true)
+        .build()
+
+      currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
+    }
+  }
+
+  /**
+   *  Returns true if any [AnswerAndResponse] in [currentDialogInteractions] has `flashback_viewed`
+   *  set to true.
+   */
+  fun isFlashbackViewed(): Boolean {
+    return currentDialogInteractions.any { it.flashbackViewed }
+  }
+
   /** Returns whether flashback state exists for the given [linkedSkillId]. */
   fun hasFlashbackState(linkedSkillId: String): Boolean {
     return linkedSkillId.isNotEmpty() &&
