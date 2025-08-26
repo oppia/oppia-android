@@ -38,8 +38,8 @@ class PerformanceMetricsAssessorImpl @Inject constructor(
     // TODO(#3616): Migrate to the proper SDK 28+ APIs.
     @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
     val apkPath =
-      context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo?.sourceDir
-    return File(apkPath.toString()).length()
+      context.packageManager.getPackageInfo(context.packageName, 0).applicationInfo.sourceDir
+    return File(apkPath).length()
   }
 
   override fun getUsedStorage(): Long {

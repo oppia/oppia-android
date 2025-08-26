@@ -62,6 +62,13 @@ class NetworkConfigTestModuleTest {
   }
 
   @Test
+  fun testModule_withoutInjectingMockWebServer_doesNotSetAppTestVersionName() {
+    val versionName = context.getVersionName()
+
+    assertThat(versionName).isEqualTo("Missing version name")
+  }
+
+  @Test
   fun testModule_doesNotOverrideAlreadyRegisteredActivity() {
     TestActivity.registerWithPackageManager<SampleTestActivity>(context)
     mockWebServerProvider.get() // Starting the server initializes the test package.

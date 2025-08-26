@@ -17,7 +17,7 @@ class AppVersionViewModel @Inject constructor(
   context: Context
 ) : ObservableViewModel() {
 
-  private val versionName: String = context.getVersionName().toString()
+  private val versionName: String = context.getVersionName()
   private val lastUpdateDateTime = context.getLastUpdateTime()
 
   /** Returns a localized, human-readable app version name. */
