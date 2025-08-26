@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.MutableLiveData
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
@@ -72,8 +72,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       onBackNavigation()
     }
 
-    binding.saveButton.setOnClickListener{
-     onBackNavigation()
+    binding.saveButton.setOnClickListener {
+      onBackNavigation()
     }
     activity.onBackPressedDispatcher.addCallback(
       fragment,
@@ -255,7 +255,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     when {
       model.currentValue.hasInteger() -> {
         editText.inputType = InputType.TYPE_CLASS_NUMBER
-        if (platformParameterStates.value?.containsKey(model.platformParameterId) == true && paramState!=null) {
+        if (platformParameterStates.value?.containsKey(model.platformParameterId) == true &&
+          paramState != null
+        ) {
           model.inputErrorMsg.set("")
           model.inputValue.set(paramState.integer.toString())
         } else {

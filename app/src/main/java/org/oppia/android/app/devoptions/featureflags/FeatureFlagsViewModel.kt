@@ -1,8 +1,8 @@
 package org.oppia.android.app.devoptions.featureflags
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag

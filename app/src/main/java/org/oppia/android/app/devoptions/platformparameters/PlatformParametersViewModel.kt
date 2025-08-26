@@ -1,8 +1,8 @@
 package org.oppia.android.app.devoptions.platformparameters
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.databinding.ObservableField
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
@@ -41,6 +41,7 @@ class PlatformParametersViewModel private constructor(
     Transformations.map(ephemeralParametersLiveData, ::processPlatformParameterList)
   }
 
+  /** Tracks whether the Save button is currently enabled (clickable). */
   var isSaveButtonActive = ObservableField(false)
 
   private fun processEphemeralParameterResult(

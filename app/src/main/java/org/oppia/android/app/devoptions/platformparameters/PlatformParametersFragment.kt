@@ -64,7 +64,8 @@ class PlatformParametersFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val validParameterOverrides =
-      platformParametersFragmentPresenter.platformParameterStates.value?.mapNotNull { (key, value) ->
+      platformParametersFragmentPresenter.platformParameterStates
+        .value?.mapNotNull { (key, value) ->
         value?.let {
           OverriddenPlatformParameter.newBuilder()
             .setId(key)
