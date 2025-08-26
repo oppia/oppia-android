@@ -53,7 +53,6 @@
         app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/sync_details_constraint_layout"
       android:layout_width="match_parent"

@@ -296,6 +296,30 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         if (boundParamIds.contains(id).not()) {
           return@onPlatformParameterTextChangedCallback
         }
+        val originalValue = if (resetParameters.containsKey(model.platformParameterId)) {
+          when {
+            model.afterResetValue.hasInteger() -> model.afterResetValue.integer.toString()
+            model.afterResetValue.hasString() -> model.afterResetValue.string
+            else -> ""
+          }
+        } else {
+          when {
+            model.currentValue.hasInteger() -> model.currentValue.integer.toString()
+            model.currentValue.hasString() -> model.currentValue.string
+            else -> ""
+          }
+        }
+
+        editText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+          if (!hasFocus) {
+            val currentText = editText.text?.toString().orEmpty()
+            if (currentText.isBlank()) {
+              model.inputValue.set(originalValue)
+              model.inputErrorMsg.set("")
+            }
+          }
+        }
+
         when {
           model.currentValue.hasInteger() -> {
             if (text == model.currentValue.integer.toString() && id !in resetParameters) {

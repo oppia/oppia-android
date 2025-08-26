@@ -180,6 +180,7 @@ class DrawableBindingAdaptersTest {
       }
     }
   }
+
   private fun getView(it: DrawableBindingAdaptersTestActivity): View {
     return it.findViewById(R.id.view_for_drawable_binding_adapters_test)
   }
