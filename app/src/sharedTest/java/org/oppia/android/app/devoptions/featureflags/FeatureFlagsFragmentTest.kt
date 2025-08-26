@@ -143,6 +143,9 @@ class FeatureFlagsFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val DOWNLOADS_SUPPORT_FLAG_NAME = "Downloads Support"
+    private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
+    private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
+    private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
   }
 
   @After

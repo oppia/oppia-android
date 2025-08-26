@@ -84,6 +84,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     )
 
+    activity.onBackPressedDispatcher.addCallback(
+      fragment,
+      object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+          onBackNavigation()
+        }
+      }
+    )
+
     if (platformParameterStates.isNotEmpty()) {
       this.platformParameterStates =
         MutableLiveData(platformParameterStates.toMutableMap())
@@ -148,7 +157,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
                 it.error
               )
             }
-
             is AsyncResult.Pending -> {} // Wait for a result.
           }
         }
@@ -302,6 +310,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           }
 
           model.currentValue.hasString() -> {
+
             if (text == model.currentValue.string && !resetParameters.containsKey(id)) {
               platformParameterStates.value = platformParameterStates.value?.apply {
                 remove(id)

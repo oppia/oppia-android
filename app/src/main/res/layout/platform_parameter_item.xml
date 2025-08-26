@@ -24,6 +24,7 @@
       android:background="@{viewModel.isParamOverridden ? @color/component_color_platform_parameter_overridden_background_color : @color/component_color_shared_item_background_solid_color}"
       android:minHeight="80dp"
       android:paddingStart="16dp"
+      android:paddingEnd="16dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">

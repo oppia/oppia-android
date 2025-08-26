@@ -764,7 +764,6 @@
     <item name="android:paddingTop">@dimen/onboarding_shared_padding_small</item>
     <item name="android:paddingEnd">@dimen/onboarding_shared_padding_medium</item>
     <item name="android:paddingBottom">@dimen/onboarding_shared_padding_small</item>
-    <item name="android:autofillHints">false</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="android:minHeight">@dimen/clickable_item_min_height</item>
     <item name="android:inputType">text|textCapSentences</item>
