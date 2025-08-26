@@ -3362,6 +3362,8 @@ class ExplorationProgressControllerTest {
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
       .isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to false.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(false)
   }
 
   @Test
@@ -3408,13 +3410,13 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeRatioInputState()
 
     // Submit a wrong answer.
-    val ephemeralState = submitRatioInputAnswer(
+    val ephemeralState1 = submitRatioInputAnswer(
       RatioExpression.newBuilder().apply {
         addAllRatioComponent(listOf(4, 7))
       }.build()
     )
     // Access the first answer and response in the list.
-    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+    val answerAndResponse = ephemeralState1.pendingState.wrongAnswerList[0]
 
     // Trigger flashback dialog and click Continue button.
     val ephemeralState2 =
@@ -3424,6 +3426,7 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState2.stateTypeCase).isEqualTo(COMPLETED_STATE)
     // Verify flashback state is true in the returned EphemeralState.
     assertThat(ephemeralState2.flashbackState).isEqualTo(true)
+
     // Verify linked Skill Id of this state.
     assertThat(ephemeralState2.state.linkedSkillId).isEqualTo("test_skill_id_0")
   }
@@ -3464,6 +3467,14 @@ class ExplorationProgressControllerTest {
 
     // Verify that there is exactly one wrong answer.
     assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit).isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to true.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(true)
   }
 
   @Test
