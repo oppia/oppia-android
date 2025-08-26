@@ -42,6 +42,7 @@
 
           <TextView
             android:id="@+id/toolbar_title"
+            style="@style/ToolbarTitle"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"

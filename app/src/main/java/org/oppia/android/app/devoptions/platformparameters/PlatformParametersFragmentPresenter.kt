@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.textfield.TextInputEditText
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
@@ -201,6 +201,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
+    setPlatformParameterBackgroundColor(model, binding)
     val editText = binding.platformParameterInputEditText
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
@@ -212,13 +213,13 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     binding.resetButton.setOnClickListener {
-      handleResetParameter(model)
+      handleResetParameter(model, binding)
     }
 
     if (model.currentValue.hasBoolean()) {
-      handleBooleanParameter(model)
+      handleBooleanParameter(model, binding)
     } else {
-      handleTextInputParameter(model, editText)
+      handleTextInputParameter(model, binding)
     }
 
     val newWatcher = object : TextWatcher {
@@ -227,7 +228,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.platformParameterId, s.toString()
         )
       }
-
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
     }
@@ -237,7 +237,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun handleResetParameter(
-    model: PlatformParameterItemViewModel
+    model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
   ) {
     val restoredParameterValue = model.afterResetValue
     resetParameters[model.platformParameterId] = restoredParameterValue
@@ -259,14 +260,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     }
     model.isResetButtonActive.set(false)
+    setPlatformParameterBackgroundColor(model, binding)
   }
 
   private fun handleTextInputParameter(
     model: PlatformParameterItemViewModel,
-    editText: TextInputEditText
+    binding: PlatformParameterItemBinding
   ) {
     val paramState = platformParameterStates.value?.get(model.platformParameterId)
-
+    val editText = binding.platformParameterInputEditText
     when {
       model.currentValue.hasInteger() -> {
         editText.inputType = InputType.TYPE_CLASS_NUMBER
@@ -315,9 +317,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
               }
             }
           }
-
           model.currentValue.hasString() -> {
-
             if (text == model.currentValue.string && !resetParameters.containsKey(id)) {
               platformParameterStates.value = platformParameterStates.value?.apply {
                 remove(id)
@@ -337,10 +337,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             }
           }
         }
+        setPlatformParameterBackgroundColor(model, binding)
       }
   }
 
-  private fun handleBooleanParameter(model: PlatformParameterItemViewModel) {
+  private fun handleBooleanParameter(
+    model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
+  ) {
     if (platformParameterStates.value?.containsKey(model.platformParameterId) == true) {
       model.isChecked.set(platformParameterStates.value?.get(model.platformParameterId)?.boolean)
     }
@@ -357,8 +361,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             .build()
         }
       }
+      setPlatformParameterBackgroundColor(model, binding)
     }
   }
+
   private fun getSyncDetails(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNCED_FROM_SERVER -> {
@@ -368,5 +374,30 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       else ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
     }
+  }
+
+  private fun setPlatformParameterBackgroundColor(
+    model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
+  ) {
+    val isModified = platformParameterStates.value?.containsKey(model.platformParameterId) ?: false
+
+    binding.platformParameterConstraintLayout.setBackgroundColor(
+      if (isModified) {
+        ContextCompat.getColor(fragment.requireContext(), R.color.color_def_sky_blue)
+      } else {
+        if (model.syncStatus == SyncStatus.LOCAL_OVERRIDE) {
+          ContextCompat.getColor(
+            fragment.requireContext(),
+            R.color.component_color_platform_parameter_overridden_background_color
+          )
+        } else {
+          ContextCompat.getColor(
+            fragment.requireContext(),
+            R.color.component_color_shared_item_background_solid_color
+          )
+        }
+      }
+    )
   }
 }
