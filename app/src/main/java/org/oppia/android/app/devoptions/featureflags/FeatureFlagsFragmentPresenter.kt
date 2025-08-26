@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -40,7 +42,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   var resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
 
   /** List of feature flag switch states to be used in the fragment. */
-  var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+  var featureFlagStates = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
 
   /** Called when [FeatureFlagsFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -57,6 +59,9 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.featureFlagsToolbar.setNavigationOnClickListener {
       onBackNavigation()
     }
+    binding.saveButton.setOnClickListener {
+      onBackNavigation()
+    }
 
     activity.onBackPressedDispatcher.addCallback(
       fragment,
@@ -68,11 +73,16 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     )
 
     if (featureFlagStates.isNotEmpty()) {
-      this.featureFlagStates = featureFlagStates.toMutableMap()
+      this.featureFlagStates = MutableLiveData(featureFlagStates.toMutableMap())
     }
     if (resetFlags.isNotEmpty()) {
       this.resetFlags = resetFlags.toMutableMap()
     }
+
+    this.featureFlagStates.observe(fragment) { states ->
+      binding.viewModel?.isSaveButtonActive?.set(states.isNotEmpty())
+    }
+
     binding.apply {
       this.lifecycleOwner = fragment
       this.viewModel = featureFlagsViewModelFactory.create(resetFlags.keys.toList())
@@ -100,7 +110,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private fun onBackNavigation() {
     val overriddenFeatureFlags: MutableList<OverriddenFeatureFlag> = mutableListOf()
 
-    featureFlagStates.map { (id, value) ->
+    featureFlagStates.value?.map { (id, value) ->
       if (resetFlags[id] != value) {
         overriddenFeatureFlags.add(
           OverriddenFeatureFlag.newBuilder()
@@ -114,7 +124,9 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     platformParameterControllerDebugImpl
       .updateOverriddenFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
         when (it) {
-          is AsyncResult.Success -> (activity as FeatureFlagsActivity).finish()
+          is AsyncResult.Success -> {
+            resetFeatureFlags(resetFlags.keys.toList())
+          }
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "FeatureFlagsFragmentPresenter",
@@ -122,10 +134,27 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
               it.error
             )
           }
-
           is AsyncResult.Pending -> {} // Wait for a result.
         }
       }
+  }
+
+  private fun resetFeatureFlags(flagIds: List<FeatureFlagId>) {
+    platformParameterControllerDebugImpl.resetFeatureFlags(flagIds).toLiveData().observe(fragment) {
+      when (it) {
+        is AsyncResult.Success -> {
+          (activity as FeatureFlagsActivity).finish()
+        }
+        is AsyncResult.Failure -> {
+          oppiaLogger.e(
+            "FeatureFlagsFragmentPresenter",
+            "Failed to reset feature flags: ",
+            it.error
+          )
+        }
+        is AsyncResult.Pending -> {} // Wait for a result.
+      }
+    }
   }
 
   private fun bindFeatureFlagItem(
@@ -140,46 +169,45 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     if (resetFlags.containsKey(model.featureFlagId)) {
       model.isFlagOverridden.set(true)
       model.isResetButtonActive.set(false)
+      model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
     }
 
-    if (featureFlagStates.containsKey(model.featureFlagId)) {
-      model.isChecked.set(featureFlagStates[model.featureFlagId])
+    featureFlagStates.value?.let { states ->
+      if (states.containsKey(model.featureFlagId)) {
+        model.isChecked.set(states[model.featureFlagId])
+      }
     }
     model.onFeatureFlagToggleCallback = { id, value ->
+      val currentMap = featureFlagStates.value ?: mutableMapOf()
       if (model.currentValue == value && !resetFlags.containsKey(id)) {
-        featureFlagStates.remove(id)
+        currentMap.remove(id)
       } else {
-        featureFlagStates[id] = value
+        currentMap[id] = value
       }
+      featureFlagStates.value = currentMap
     }
   }
 
-  private fun handleResetFeatureFlag(
-    model: FeatureFlagItemViewModel
-  ) {
-    platformParameterControllerDebugImpl
-      .resetFeatureFlag(model.featureFlagId)
-      .toLiveData()
-      .observe(fragment) { restoredFlagValue ->
-        when (restoredFlagValue) {
-          is AsyncResult.Success -> {
-            resetFlags[model.featureFlagId] = restoredFlagValue.value
-            featureFlagStates[model.featureFlagId] = restoredFlagValue.value
-            model.isChecked.set(restoredFlagValue.value)
-            model.isResetButtonActive.set(false)
-            // TODO(#5345): Remove this filler message once the server sync logic is implemented.
-            model.syncDetails.set(
-              resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
-            )
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "FeatureFlagsFragmentPresenter",
-              "Failed to reset feature flag: ${model.featureFlagId}", restoredFlagValue.error
-            )
-          }
-          is AsyncResult.Pending -> {} // No action required
-        }
+  private fun handleResetFeatureFlag(model: FeatureFlagItemViewModel) {
+    val restoredFlagValue = model.afterResetValue
+    resetFlags[model.featureFlagId] = restoredFlagValue
+
+    val currentMap = featureFlagStates.value ?: mutableMapOf()
+    currentMap[model.featureFlagId] = restoredFlagValue
+    featureFlagStates.value = currentMap
+    model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
+    model.isChecked.set(restoredFlagValue)
+    model.isResetButtonActive.set(false)
+  }
+
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.SYNCED_FROM_SERVER -> {
+        // TODO(#5345): Remove this filler message once the server sync logic is implemented.
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
       }
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    }
   }
 }

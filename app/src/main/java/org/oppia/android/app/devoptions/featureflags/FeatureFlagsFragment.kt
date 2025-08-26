@@ -62,7 +62,7 @@ class FeatureFlagsFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsFragmentPresenter.featureFlagStates.map {
+      featureFlagsFragmentPresenter.featureFlagStates.value?.map {
         OverriddenFeatureFlag.newBuilder()
           .setId(it.key)
           .setOverriddenValue(it.value)

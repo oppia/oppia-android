@@ -19,6 +19,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -129,6 +130,28 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .build()
   }
 
+  private fun overridePlatformParameters(
+    overriddenPlatformParameters: List<OverriddenPlatformParameter>
+  ) {
+    platformParameterControllerDebugImpl
+      .updateOverriddenPlatformParameters(overriddenPlatformParameters).toLiveData()
+      .observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> {
+            (activity as PlatformParametersActivity).finish()
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "PlatformParametersFragmentPresenter",
+              "Failed to reset platform parameters: ",
+              it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for a result.
+        }
+      }
+  }
+
   private fun onBackNavigation() {
     val hasInvalidInput = platformParameterStates.value?.containsValue(null) ?: false
 
@@ -145,15 +168,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
       }
 
-      platformParameterControllerDebugImpl
-        .updateOverriddenPlatformParameters(overriddenPlatformParameters)
+      platformParameterControllerDebugImpl.resetPlatformParameters(resetParameters.keys.toList())
         .toLiveData().observe(fragment) {
           when (it) {
-            is AsyncResult.Success -> (activity as PlatformParametersActivity).finish()
+            is AsyncResult.Success -> {
+              overridePlatformParameters(overriddenPlatformParameters)
+            }
             is AsyncResult.Failure -> {
               oppiaLogger.e(
                 "PlatformParametersFragmentPresenter",
-                "Failed to override platform parameters: ",
+                "Failed to reset platform parameters: ",
                 it.error
               )
             }
@@ -184,6 +208,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     if (resetParameters.containsKey(model.platformParameterId)) {
       model.isParamOverridden.set(true)
       model.isResetButtonActive.set(false)
+      model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
     }
 
     binding.resetButton.setOnClickListener {
@@ -202,6 +227,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           model.platformParameterId, s.toString()
         )
       }
+
       override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
       override fun afterTextChanged(s: Editable?) {}
     }
@@ -213,45 +239,26 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private fun handleResetParameter(
     model: PlatformParameterItemViewModel
   ) {
-    platformParameterControllerDebugImpl
-      .resetPlatformParameter(model.platformParameterId)
-      .toLiveData()
-      .observe(fragment) { restoredParameterValue ->
-        when (restoredParameterValue) {
-          is AsyncResult.Success -> {
-            resetParameters[model.platformParameterId] = restoredParameterValue.value
-              ?: PlatformParameterValue.getDefaultInstance()
-            // TODO(#5345): Remove this filler message once the server sync logic is implemented.
-            model.syncDetails.set(
-              resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
-            )
-            if (model.currentValue.hasBoolean()) {
-              platformParameterStates.value = platformParameterStates.value?.apply {
-                this[model.platformParameterId] = restoredParameterValue.value
-              }
-              model.isChecked.set(restoredParameterValue.value?.boolean)
-            } else {
-              when {
-                model.currentValue.hasInteger() -> {
-                  model.inputValue.set(restoredParameterValue.value?.integer.toString())
-                }
-                model.currentValue.hasString() -> {
-                  model.inputValue.set(restoredParameterValue.value?.string)
-                }
-              }
-            }
-            model.isResetButtonActive.set(false)
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
-              "Failed to reset parameter: ${model.platformParameterId}",
-              restoredParameterValue.error
-            )
-          }
-          is AsyncResult.Pending -> {} // No action required
+    val restoredParameterValue = model.afterResetValue
+    resetParameters[model.platformParameterId] = restoredParameterValue
+    model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
+    if (model.currentValue.hasBoolean()) {
+      platformParameterStates.value = platformParameterStates.value?.apply {
+        this[model.platformParameterId] = restoredParameterValue
+      }
+      model.isChecked.set(restoredParameterValue.boolean)
+    } else {
+      when {
+        model.currentValue.hasInteger() -> {
+          model.inputValue.set(restoredParameterValue.integer.toString())
+        }
+
+        model.currentValue.hasString() -> {
+          model.inputValue.set(restoredParameterValue.string)
         }
       }
+    }
+    model.isResetButtonActive.set(false)
   }
 
   private fun handleTextInputParameter(
@@ -350,6 +357,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
             .build()
         }
       }
+    }
+  }
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.SYNCED_FROM_SERVER -> {
+        // TODO(#5345): Remove this filler message once the server sync logic is implemented.
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
+      }
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
     }
   }
 }

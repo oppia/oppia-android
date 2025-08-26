@@ -42,6 +42,7 @@ class FeatureFlagsViewModel private constructor(
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }
 
+  /** Tracks whether the Save button is currently enabled (clickable). */
   var isSaveButtonActive = ObservableField(false)
   private fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
@@ -65,6 +66,8 @@ class FeatureFlagsViewModel private constructor(
           featureFlagId = ephemeralFeatureFlag.id,
           currentValue = ephemeralFeatureFlag.currentValue,
           syncStatus = ephemeralFeatureFlag.syncStatus,
+          afterResetValue = ephemeralFeatureFlag.afterResetValue,
+          afterResetSyncStatus = ephemeralFeatureFlag.afterResetSyncStatus,
           machineLocale = machineLocale,
           resourceHandler = resourceHandler
         )

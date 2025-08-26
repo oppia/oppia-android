@@ -67,6 +67,8 @@ class PlatformParametersViewModel private constructor(
         platformParameterId = ephemeralPlatformParameter.id,
         currentValue = ephemeralPlatformParameter.currentValue,
         syncStatus = ephemeralPlatformParameter.syncStatus,
+        afterResetValue = ephemeralPlatformParameter.afterResetValue,
+        afterResetSyncStatus = ephemeralPlatformParameter.afterResetSyncStatus,
         machineLocale = machineLocale,
         resourceHandler = resourceHandler
       )

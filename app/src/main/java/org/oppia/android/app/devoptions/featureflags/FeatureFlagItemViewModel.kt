@@ -13,6 +13,8 @@ class FeatureFlagItemViewModel(
   val featureFlagId: FeatureFlagId,
   val currentValue: Boolean,
   val syncStatus: SyncStatus,
+  val afterResetValue: Boolean,
+  val afterResetSyncStatus: SyncStatus,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {

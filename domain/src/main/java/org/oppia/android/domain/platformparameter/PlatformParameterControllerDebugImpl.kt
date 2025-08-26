@@ -12,7 +12,6 @@ import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
-import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -116,6 +115,12 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteFlag?.remoteIsEnabled
           ?: flagDefinition.defaultIsEnabled
 
+        val afterResetValue = remoteFlag?.remoteIsEnabled
+          ?: flagDefinition.defaultIsEnabled
+
+        val afterResetSyncStatus = remoteFlag?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
+
         val syncStatus = localFlag?.let { SyncStatus.LOCAL_OVERRIDE }
           ?: remoteFlag?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
@@ -123,6 +128,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         EphemeralFeatureFlag.newBuilder().apply {
           this.id = flagDefinition.id
           this.currentValue = currentValue
+          this.afterResetValue = afterResetValue
+          this.afterResetSyncStatus = afterResetSyncStatus
           this.syncStatus = syncStatus
         }.build()
       }
@@ -157,6 +164,12 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteParam?.remoteValue
           ?: paramDefinition.defaultValue
 
+        val afterResetValue = remoteParam?.remoteValue
+          ?: paramDefinition.defaultValue
+
+        val afterResetSyncStatus = remoteParam?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
+
         val syncStatus = localParam?.let { SyncStatus.LOCAL_OVERRIDE }
           ?: remoteParam?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
@@ -164,6 +177,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         EphemeralPlatformParameter.newBuilder().apply {
           this.id = paramDefinition.id
           this.currentValue = currentValue
+          this.afterResetValue = afterResetValue
+          this.afterResetSyncStatus = afterResetSyncStatus
           this.syncStatus = syncStatus
         }.build()
       }
@@ -288,22 +303,21 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   /**
-   * Resets the locally overridden feature flag corresponding to the specified [id].
+   * Resets the locally overridden feature flags corresponding to the specified [ids].
    *
-   * This removes any locally overridden value for the specified feature flag from the local
-   * override database and returns the currently active value from either the server or the default.
+   * This removes any locally overridden value for the specified feature flags from the local
+   * override database.
    *
-   * @param id the ID of the feature flag to reset
-   * @return a [DataProvider] that returns the current boolean value for the given [id],
-   * or the default value if no such flag is found
+   * @param ids the IDs of the feature flags to reset
+   * @return a [DataProvider] that completes when the overrides are removed.
    */
-  fun resetFeatureFlag(id: FeatureFlagId): DataProvider<Boolean> {
+  fun resetFeatureFlags(ids: List<FeatureFlagId>): DataProvider<Any?> {
     return dataProviders.createInMemoryDataProviderAsync(
       RESET_OVERRIDDEN_FEATURE_FLAG_PROVIDER_ID
     ) {
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val updatedOverrides = oldDatabase.overriddenFeatureFlagList
-          .filterNot { it.id == id }
+          .filterNot { it.id in ids }
 
         oldDatabase.toBuilder()
           .clearOverriddenFeatureFlag()
@@ -311,38 +325,26 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           .build()
       }.await()
 
-      return@createInMemoryDataProviderAsync when (
-        val result = loadEphemeralFeatureFlags().retrieveData()
-      ) {
-        is AsyncResult.Success -> {
-          val restoredValue = result.value
-            .firstOrNull { it.id == id }
-            ?.currentValue == true
-          AsyncResult.Success(restoredValue)
-        }
-        is AsyncResult.Failure -> { AsyncResult.Failure(result.error) }
-        is AsyncResult.Pending -> { AsyncResult.Pending() }
-      }
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
   /**
-   * Resets the locally overridden platform parameter corresponding to the specified [id].
+   * Resets the locally overridden platform parameters corresponding to the specified [ids].
    *
-   * This removes any locally overridden value for the specified platform parameter from the local
-   * override database and returns the currently active value from either the server or the default.
+   * This removes any locally overridden value for the specified platform parameters from the local
+   * override database.
    *
-   * @param id the [PlatformParameterId] of the platform parameter to reset
-   * @return a [DataProvider] that returns the current [PlatformParameterValue] for the given [id],
-   * or the default instance if no such parameter is found
+   * @param ids the IDs of the platform parameters to reset
+   * @return a [DataProvider] that completes when the overrides are removed.
    */
-  fun resetPlatformParameter(id: PlatformParameterId): DataProvider<PlatformParameterValue?> {
+  fun resetPlatformParameters(ids: List<PlatformParameterId>): DataProvider<Any?> {
     return dataProviders.createInMemoryDataProviderAsync(
       RESET_OVERRIDDEN_PLATFORM_PARAMETER_PROVIDER_ID
     ) {
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val updatedOverrides = oldDatabase.overriddenPlatformParameterList
-          .filterNot { it.id == id }
+          .filterNot { it.id in ids }
 
         oldDatabase.toBuilder()
           .clearOverriddenPlatformParameter()
@@ -350,16 +352,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           .build()
       }.await()
 
-      return@createInMemoryDataProviderAsync when (
-        val result = loadEphemeralPlatformParameters().retrieveData()
-      ) {
-        is AsyncResult.Success -> {
-          val restoredValue = result.value.first { it.id == id }.currentValue
-          AsyncResult.Success(restoredValue)
-        }
-        is AsyncResult.Failure -> { AsyncResult.Failure(result.error) }
-        is AsyncResult.Pending -> { AsyncResult.Pending() }
-      }
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 

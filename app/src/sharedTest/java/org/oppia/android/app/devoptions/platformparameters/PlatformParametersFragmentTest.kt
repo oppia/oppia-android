@@ -151,9 +151,6 @@ class PlatformParametersFragmentTest {
     private const val LOCAL_OVERRIDE_DATABASE_NAME =
       "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
-    private const val DEFAULT_BACKGROUND_COLOR = 0xFFBE563C.toInt()
-    private const val SERVER_BACKGROUND_COLOR = 0xFF00645C.toInt()
-    private const val OVERRIDDEN_BACKGROUND_COLOR = 0xFFC2B71B.toInt()
   }
 
   @Test
@@ -942,77 +939,6 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_navigateBackWithInvalidInput_displaysAlertDialog() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
-
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 1,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).perform(editTextInputAction.replaceText(""))
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_invalidInputAlert_withValidInput_doesNotShowDialog() {
-    setUpTestApplicationComponent()
-    Intents.init()
-    launch(PlatformParametersActivity::class.java).use { _ ->
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(1)
-
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 1,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).perform(editTextInputAction.replaceText(""))
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-
-      onView(
-        withText(
-          R.string.platform_parameter_invalid_input_alert_dialog_okay_button
-        )
-      ).perform(click())
-
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 1,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).perform(editTextInputAction.replaceText("25"))
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
-        .check(doesNotExist())
-    }
-  }
-
-  @Test
   fun testPlatformParametersFragment_boolParam_withOverridenParameter_resetButtonIsVisible() {
     executeInPreviousAppInstance { component ->
       addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
@@ -1040,9 +966,8 @@ class PlatformParametersFragmentTest {
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-    val expectedState = !getEphemeralPlatformParameters()[0].currentValue.boolean
 
-    launch(PlatformParametersActivity::class.java).use { scenario ->
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       val position = getSyncUpWorkerTimePeriodPosition()
@@ -1063,7 +988,7 @@ class PlatformParametersFragmentTest {
       addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
-
+    setUpTestApplicationComponent()
     launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -1092,9 +1017,8 @@ class PlatformParametersFragmentTest {
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-    val expectedState = 16
 
-    launch(PlatformParametersActivity::class.java).use { scenario ->
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)

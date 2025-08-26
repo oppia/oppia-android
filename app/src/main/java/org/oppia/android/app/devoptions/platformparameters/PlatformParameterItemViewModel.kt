@@ -17,6 +17,8 @@ class PlatformParameterItemViewModel(
   val platformParameterId: PlatformParameterId,
   val currentValue: PlatformParameterValue,
   val syncStatus: SyncStatus,
+  val afterResetValue: PlatformParameterValue,
+  val afterResetSyncStatus: SyncStatus,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
