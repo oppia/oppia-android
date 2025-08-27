@@ -137,6 +137,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
         .setView(dialogBinding.root)
         .create()
+      dialog.setCanceledOnTouchOutside(false)
       dialogBinding.discardButton.setOnClickListener {
         dialog.dismiss()
       }

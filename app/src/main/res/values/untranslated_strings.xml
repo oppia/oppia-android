@@ -50,8 +50,8 @@
   <string name="platform_parameter_alert_icon_content_description" translatable="false">Overridden platform parameter indicator</string>
   <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">OK</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
-  <string name="platform_parameter_restart_dialog_title" translatable="false">App Behaviours Overridden.</string>
-  <string name="platform_parameter_restart_dialog_message" translatable="false">Restart required to apply new configurations.</string>
+  <string name="platform_parameter_restart_dialog_title" translatable="false">App Behavior Overridden</string>
+  <string name="platform_parameter_restart_dialog_message" translatable="false">Restart app to apply new configuration.</string>
   <string name="platform_parameter_restart_dialog_button_text" translatable="false">Restart</string>
   <string name="save_discard_dialog_save_button_text" translatable="false">Save</string>
   <string name="save_discard_dialog_discard_button_text" translatable="false">Discard</string>

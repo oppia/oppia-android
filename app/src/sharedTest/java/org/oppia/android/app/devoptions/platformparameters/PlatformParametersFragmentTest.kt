@@ -325,7 +325,7 @@ class PlatformParametersFragmentTest {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      println(getEphemeralPlatformParameters()[0].syncStatus)
+
       verifyPlatformParameterBackgroundColor(
         position = 0,
         expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
@@ -811,46 +811,10 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleBoolParameter_navigateBackAndReopen_persistsValue() {
+  fun testPlatformParametersFragment_modifyIntParameter_navigateBack_showsSaveDiscardDialog() {
     setUpTestApplicationComponent()
-    val expectedState = !getEphemeralPlatformParameters()[0].currentValue.boolean
-
-    launch(PlatformParametersActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
 
     launch(PlatformParametersActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyPlatformParameterValue(
-        position = 0,
-        expectedValue = PlatformParameterValue.newBuilder()
-          .setBoolean(expectedState)
-          .build()
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_modifyIntParameter_navigateBackAndReopen_persistsValue() {
-    setUpTestApplicationComponent()
-    val expectedState = 16
-
-    launch(PlatformParametersActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       val position = getSyncUpWorkerTimePeriodPosition()
       scrollToPosition(position)
@@ -864,18 +828,10 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
 
-    launch(PlatformParametersActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyPlatformParameterValue(
-        position = 0,
-        expectedValue = PlatformParameterValue.newBuilder()
-          .setInteger(expectedState)
-          .build()
-      )
+      onView(withText(R.string.save_discard_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -1070,45 +1026,6 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
-
-    launch(PlatformParametersActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
   fun testPlatformParametersFragment_navigateBackWithInvalidInput_displaysAlertDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
@@ -1251,38 +1168,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyParameter_clickSave_reopenDashboard_valuePersits() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
-
-      onView(withId(R.id.save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      launch(PlatformParametersActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.platform_parameters_recycler_view,
-            position = 0,
-            targetViewId = R.id.platform_parameter_switch
-          )
-        ).check(matches(not(isChecked())))
-      }
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_modifyParameter_navigateBack_displaysResetAlertDialog() {
+  fun testPlatformParametersFragment_navigateBackWithParamModified_displaySaveDiscardAlertDialog() {
     Intents.init()
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
@@ -1300,14 +1186,14 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.platform_parameter_restart_dialog_title))
+      onView(withText(R.string.save_discard_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testPlatformParametersFragment_navigateBack_doesNotShowResetAlertDialog() {
+  fun testPlatformParametersFragment_navigateBackWithNoParamModified_skipsRestartAlertDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersActivity::class.java).use { _ ->
       testCoroutineDispatchers.runCurrent()
@@ -1316,6 +1202,37 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withText(R.string.platform_parameter_restart_dialog_title))
         .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_clickReset_navigateBack_displaysSaveDiscardAlertDialog() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.save_discard_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
