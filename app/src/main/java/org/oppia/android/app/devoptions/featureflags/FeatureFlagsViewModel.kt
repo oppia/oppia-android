@@ -1,11 +1,10 @@
 package org.oppia.android.app.devoptions.featureflags
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import org.oppia.android.app.devoptions.platformparameters.PlatformParametersViewModel
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
-import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -20,11 +19,10 @@ import javax.inject.Inject
  * [FeatureFlagItemViewModel] which in turn display the available feature flags.
  */
 @FragmentScope
-class FeatureFlagsViewModel private constructor(
+class FeatureFlagsViewModel @Inject constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val resetFlagsList: List<FeatureFlagId>
 ) : ObservableViewModel() {
   private val ephemeralFlagsLiveData: LiveData<List<EphemeralFeatureFlag>> by lazy {
     Transformations.map(
@@ -41,6 +39,8 @@ class FeatureFlagsViewModel private constructor(
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }
 
+  /** Tracks whether the Save button is currently enabled (clickable). */
+  var isSaveButtonActive = ObservableField(false)
   private fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
   ): List<EphemeralFeatureFlag> {
@@ -48,7 +48,7 @@ class FeatureFlagsViewModel private constructor(
       is AsyncResult.Success -> {
         result.value.sortedWith(
           compareByDescending<EphemeralFeatureFlag> {
-            it.syncStatus == SyncStatus.LOCAL_OVERRIDE || resetFlagsList.contains(it.id)
+            it.syncStatus == SyncStatus.LOCAL_OVERRIDE
           }.thenBy { it.id.name }
         )
       }
@@ -63,26 +63,11 @@ class FeatureFlagsViewModel private constructor(
           featureFlagId = ephemeralFeatureFlag.id,
           currentValue = ephemeralFeatureFlag.currentValue,
           syncStatus = ephemeralFeatureFlag.syncStatus,
+          afterResetValue = ephemeralFeatureFlag.afterResetValue,
+          afterResetSyncStatus = ephemeralFeatureFlag.afterResetSyncStatus,
           machineLocale = machineLocale,
           resourceHandler = resourceHandler
         )
       }
     }
-
-  /** Factory for creating instances of [FeatureFlagsViewModel]. */
-  class Factory @Inject constructor(
-    private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
-    private val machineLocale: OppiaLocale.MachineLocale,
-    private val resourceHandler: AppLanguageResourceHandler
-  ) {
-    /** Creates a new [PlatformParametersViewModel]. */
-    fun create(resetFlagsList: List<FeatureFlagId>): FeatureFlagsViewModel {
-      return FeatureFlagsViewModel(
-        platformParameterControllerDebugImpl,
-        machineLocale,
-        resourceHandler,
-        resetFlagsList
-      )
-    }
-  }
 }

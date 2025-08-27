@@ -1,10 +1,10 @@
 package org.oppia.android.app.devoptions.platformparameters
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralPlatformParameter
-import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -19,11 +19,10 @@ import javax.inject.Inject
  * [PlatformParameterItemViewModel] which in turn display the available Platform Parameters.
  */
 @FragmentScope
-class PlatformParametersViewModel private constructor(
+class PlatformParametersViewModel @Inject constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler,
-  private val resetParamList: List<PlatformParameterId>
 ) : ObservableViewModel() {
   private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
     Transformations.map(
@@ -40,6 +39,9 @@ class PlatformParametersViewModel private constructor(
     Transformations.map(ephemeralParametersLiveData, ::processPlatformParameterList)
   }
 
+  /** Tracks whether the Save button is currently enabled (clickable). */
+  var isSaveButtonActive = ObservableField(false)
+
   private fun processEphemeralParameterResult(
     result: AsyncResult<List<EphemeralPlatformParameter>>
   ): List<EphemeralPlatformParameter> {
@@ -47,7 +49,7 @@ class PlatformParametersViewModel private constructor(
       is AsyncResult.Success -> {
         result.value.sortedWith(
           compareByDescending<EphemeralPlatformParameter> {
-            it.syncStatus == SyncStatus.LOCAL_OVERRIDE || resetParamList.contains(it.id)
+            it.syncStatus == SyncStatus.LOCAL_OVERRIDE
           }.thenBy { it.id.name }
         )
       }
@@ -63,25 +65,10 @@ class PlatformParametersViewModel private constructor(
         platformParameterId = ephemeralPlatformParameter.id,
         currentValue = ephemeralPlatformParameter.currentValue,
         syncStatus = ephemeralPlatformParameter.syncStatus,
+        afterResetValue = ephemeralPlatformParameter.afterResetValue,
+        afterResetSyncStatus = ephemeralPlatformParameter.afterResetSyncStatus,
         machineLocale = machineLocale,
         resourceHandler = resourceHandler
-      )
-    }
-  }
-
-  /** Factory for creating instances of [PlatformParametersViewModel]. */
-  class Factory @Inject constructor(
-    private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
-    private val machineLocale: OppiaLocale.MachineLocale,
-    private val resourceHandler: AppLanguageResourceHandler
-  ) {
-    /** Creates a new [PlatformParametersViewModel]. */
-    fun create(resetParamList: List<PlatformParameterId>): PlatformParametersViewModel {
-      return PlatformParametersViewModel(
-        platformParameterControllerDebugImpl,
-        machineLocale,
-        resourceHandler,
-        resetParamList
       )
     }
   }

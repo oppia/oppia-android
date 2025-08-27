@@ -44,16 +44,18 @@ class FeatureFlagsFragment : InjectableFragment() {
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
         FeatureFlagsFragmentStateBundle.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList
-        ?.associate { it.id to it.overriddenValue }
-        ?.toMutableMap() ?: mutableMapOf()
-      resetFlags = args?.resetFeatureFlagsList
-        ?.associate { it.id to it.overriddenValue }
-        ?.toMutableMap() ?: mutableMapOf()
+      args?.featureFlagStatesList?.forEach {
+        featureFlagStates[it.id] = it.overriddenValue
+      }
+      args?.resetFeatureFlagsList?.forEach {
+        resetFlags[it.id] = it.overriddenValue
+      }
     }
 
     return featureFlagsFragmentPresenter.handleCreateView(
-      inflater, container, featureFlagStates,
+      inflater,
+      container,
+      featureFlagStates,
       resetFlags
     )
   }
@@ -62,7 +64,7 @@ class FeatureFlagsFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsFragmentPresenter.featureFlagStates.map {
+      featureFlagsFragmentPresenter.featureFlagStates.value?.map {
         OverriddenFeatureFlag.newBuilder()
           .setId(it.key)
           .setOverriddenValue(it.value)

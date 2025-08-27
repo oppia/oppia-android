@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
@@ -13,6 +15,7 @@ import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
+import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
@@ -30,8 +33,8 @@ const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 class FeatureFlagsFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
-  private val featureFlagsViewModelFactory: FeatureFlagsViewModel.Factory,
   private val oppiaLogger: OppiaLogger,
+  private val featureFlagsViewModel: FeatureFlagsViewModel,
   private val resourceHandler: AppLanguageResourceHandler,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
@@ -40,11 +43,11 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
 
-  /** List of feature flags that have been reset.. */
+  /** List of feature flags that have been reset. */
   var resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
 
   /** List of feature flag switch states to be used in the fragment. */
-  var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+  var featureFlagStates = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
 
   /** Called when [FeatureFlagsFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -61,6 +64,9 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.featureFlagsToolbar.setNavigationOnClickListener {
       onBackNavigation()
     }
+    binding.saveButton.setOnClickListener {
+      onBackNavigation()
+    }
 
     activity.onBackPressedDispatcher.addCallback(
       fragment,
@@ -72,14 +78,19 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     )
 
     if (featureFlagStates.isNotEmpty()) {
-      this.featureFlagStates = featureFlagStates.toMutableMap()
+      this.featureFlagStates = MutableLiveData(featureFlagStates.toMutableMap())
     }
     if (resetFlags.isNotEmpty()) {
       this.resetFlags = resetFlags.toMutableMap()
     }
+
+    this.featureFlagStates.observe(fragment) { states ->
+      binding.viewModel?.isSaveButtonActive?.set(states.isNotEmpty())
+    }
+
     binding.apply {
       this.lifecycleOwner = fragment
-      this.viewModel = featureFlagsViewModelFactory.create(resetFlags.keys.toList())
+      this.viewModel = featureFlagsViewModel
     }
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
 
@@ -103,36 +114,50 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
 
   private fun onBackNavigation() {
     if (featureFlagStates.isNotEmpty()) {
-      val overriddenFeatureFlags: MutableList<OverriddenFeatureFlag> = mutableListOf()
-      featureFlagStates.map { (id, value) ->
-        if (resetFlags[id] != value) {
-          overriddenFeatureFlags.add(
-            OverriddenFeatureFlag.newBuilder()
-              .setId(id)
-              .setOverriddenValue(value)
-              .build()
-          )
+    val overriddenFeatureFlags = featureFlagStates.value
+      ?.filter { (id, value) -> resetFlags[id] != value }
+      ?.map { (id, value) ->
+        OverriddenFeatureFlag.newBuilder()
+          .setId(id)
+          .setOverriddenValue(value)
+          .build()
+      }
+      .orEmpty()
+
+    platformParameterControllerDebugImpl.resetFeatureFlags(resetFlags.keys.toList())
+      .toLiveData().observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> {
+            overrideFeatureFlags(overriddenFeatureFlags)
+          }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "FeatureFlagsFragmentPresenter",
+              "Failed to reset platform parameters: ",
+              it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for a result.
         }
       }
+  }
 
-      platformParameterControllerDebugImpl
-        .updateOverriddenFeatureFlags(overriddenFeatureFlags).toLiveData().observe(fragment) {
-          when (it) {
-            is AsyncResult.Success -> {
-              val dialog = PlatformParameterRestartDialogFragment.newInstance()
+  private fun overrideFeatureFlags(overriddenFeatureFlags: List<OverriddenFeatureFlag>) {
+    platformParameterControllerDebugImpl.updateOverriddenFeatureFlags(overriddenFeatureFlags)
+      .toLiveData().observe(fragment) {
+        when (it) {
+          is AsyncResult.Success -> {
+             val dialog = PlatformParameterRestartDialogFragment.newInstance()
               dialog.showNow(activity.supportFragmentManager, TAG_FEATURE_FLAG_RESTART_DIALOG)
-            }
-
-            is AsyncResult.Failure -> {
-              oppiaLogger.e(
-                "FeatureFlagsFragmentPresenter",
-                "Failed to override feature flags: ",
-                it.error
-              )
-            }
-
-            is AsyncResult.Pending -> {} // Wait for a result.
           }
+          is AsyncResult.Failure -> {
+            oppiaLogger.e(
+              "FeatureFlagsFragmentPresenter",
+              "Failed to override feature flags: ",
+              it.error
+            )
+          }
+          is AsyncResult.Pending -> {} // Wait for a result.
         }
     } else {
       (activity as FeatureFlagsActivity).finish()
@@ -146,51 +171,83 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.viewModel = model
 
     binding.resetButton.setOnClickListener {
-      handleResetFeatureFlag(model)
+      handleResetFeatureFlag(model, binding)
     }
+    setFeatureFlagBackgroundColor(model, binding)
+
     if (resetFlags.containsKey(model.featureFlagId)) {
       model.isFlagOverridden.set(true)
       model.isResetButtonActive.set(false)
+      model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
     }
 
-    if (featureFlagStates.containsKey(model.featureFlagId)) {
-      model.isChecked.set(featureFlagStates[model.featureFlagId])
-    }
-    model.onFeatureFlagToggleCallback = { id, value ->
-      if (model.currentValue == value && !resetFlags.containsKey(id)) {
-        featureFlagStates.remove(id)
-      } else {
-        featureFlagStates[id] = value
+    featureFlagStates.value?.let { states ->
+      if (states.containsKey(model.featureFlagId)) {
+        model.isChecked.set(states[model.featureFlagId])
       }
+    }
+
+    model.onFeatureFlagToggleCallback = { id, value ->
+      val currentMap = featureFlagStates.value ?: mutableMapOf()
+      if (model.currentValue == value && id !in resetFlags) {
+        currentMap.remove(id)
+      } else {
+        currentMap[id] = value
+      }
+      featureFlagStates.value = currentMap
+      setFeatureFlagBackgroundColor(model, binding)
     }
   }
 
   private fun handleResetFeatureFlag(
-    model: FeatureFlagItemViewModel
+    model: FeatureFlagItemViewModel,
+    binding: FeatureFlagsItemBinding
   ) {
-    platformParameterControllerDebugImpl
-      .resetFeatureFlag(model.featureFlagId)
-      .toLiveData()
-      .observe(fragment) { restoredFlagValue ->
-        when (restoredFlagValue) {
-          is AsyncResult.Success -> {
-            resetFlags[model.featureFlagId] = restoredFlagValue.value
-            featureFlagStates[model.featureFlagId] = restoredFlagValue.value
-            model.isChecked.set(restoredFlagValue.value)
-            model.isResetButtonActive.set(false)
-            // TODO(#5345): Remove this filler message once the server sync logic is implemented.
-            model.syncDetails.set(
-              resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
-            )
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "FeatureFlagsFragmentPresenter",
-              "Failed to reset feature flag: ${model.featureFlagId}", restoredFlagValue.error
-            )
-          }
-          is AsyncResult.Pending -> {} // No action required
+    val restoredFlagValue = model.afterResetValue
+    resetFlags[model.featureFlagId] = restoredFlagValue
+
+    val currentMap = featureFlagStates.value ?: mutableMapOf()
+    currentMap[model.featureFlagId] = restoredFlagValue
+    featureFlagStates.value = currentMap
+    model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
+    model.isChecked.set(restoredFlagValue)
+    model.isResetButtonActive.set(false)
+    setFeatureFlagBackgroundColor(model, binding)
+  }
+
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.SYNCED_FROM_SERVER -> {
+        // TODO(#5345): Replace this placeholder message with the actual server last-synced timestamp when available.
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
+      }
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    }
+  }
+
+  private fun setFeatureFlagBackgroundColor(
+    model: FeatureFlagItemViewModel,
+    binding: FeatureFlagsItemBinding
+  ) {
+    val isModified = featureFlagStates.value?.containsKey(model.featureFlagId) ?: false
+
+    binding.featureFlagConstraintLayout.setBackgroundColor(
+      if (isModified) {
+        ContextCompat.getColor(fragment.requireContext(), R.color.color_def_sky_blue)
+      } else {
+        if (model.syncStatus == SyncStatus.LOCAL_OVERRIDE) {
+          ContextCompat.getColor(
+            fragment.requireContext(),
+            R.color.component_color_platform_parameter_overridden_background_color
+          )
+        } else {
+          ContextCompat.getColor(
+            fragment.requireContext(),
+            R.color.component_color_shared_item_background_solid_color
+          )
         }
       }
+    )
   }
 }

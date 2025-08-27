@@ -600,6 +600,7 @@ class PlatformParametersFragmentTest {
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
+
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -928,12 +929,182 @@ class PlatformParametersFragmentTest {
         .build()
 
       scrollToPosition(8)
-
       scrollToPosition(0)
+
       verifyPlatformParameterValue(
         position = 0,
         expectedValue = expectedValue
       )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withOverridenParameter_resetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_intParam_withOverridenParameter_resetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(component, 24)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_resetsParameterToDefaultValue() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(false)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_disablesResetButton() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_returnsNeverSyncedMessage() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.platform_parameter_never_synced_message)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      scenario.close()
+    }
+
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
@@ -1008,169 +1179,103 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withOverridenParameter_resetButtonIsVisible() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
+  fun testPlatformParametersFragment_noChanges_saveButtonIsDisabled() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
+      scrollToPosition(5)
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
 
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_saveButtonIsEnabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_intParam_withOverridenParameter_resetButtonIsVisible() {
-    executeInPreviousAppInstance { component ->
-      addTestIntegerOverriddenPlatformParameterToDatabase(component, 24)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      val position = getSyncUpWorkerTimePeriodPosition()
-      scrollToPosition(position)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = position,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_withOverride_clickResetButton_resetsParameterToDefaultValue() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
+          targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_backgroundHasSkyBlueColor() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      verifyPlatformParameterValue(
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedValue = PlatformParameterValue.newBuilder()
-          .setBoolean(false)
-          .build()
+        expectedColor = context.getColor(R.color.color_def_sky_blue)
       )
     }
   }
 
   @Test
-  fun testPlatformParametersFragment_withOverride_clickResetButton_disablesResetButton() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
+  fun testPlatformParametersFragment_modifyAnyParameter_configChange_skyBlueColorPersists() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
       scrollToPosition(0)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 0,
-          targetViewId = R.id.reset_button
+          targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
-      testCoroutineDispatchers.runCurrent()
 
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isEnabled())))
-    }
-  }
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-  @Test
-  fun testPlatformParametersFragment_withOverride_clickResetButton_returnsNeverSyncedMessage() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyPlatformParameterSyncDetails(
+      verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedSyncStatus = context.getString(R.string.platform_parameter_never_synced_message)
+        expectedColor = context.getColor(R.color.color_def_sky_blue)
       )
     }
   }
 
-  fun testPlatformParametersFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
+  @Test
+  fun testPlatformParametersFragment_modifyParameter_clickSave_reopenDashboard_valuePersits() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenario ->
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-
       scrollToPosition(0)
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 0,
-          targetViewId = R.id.reset_button
+          targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
+
+      onView(withId(R.id.save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
-
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isDisplayed())))
+      launch(PlatformParametersActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).check(matches(not(isChecked())))
+      }
     }
   }
 
