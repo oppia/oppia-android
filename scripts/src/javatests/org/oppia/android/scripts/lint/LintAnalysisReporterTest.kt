@@ -570,7 +570,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(warningIssue, informationIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
     }
     val output = outputStream.toString()
 
@@ -599,7 +601,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(warningIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -624,7 +628,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(errorIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -639,7 +645,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(warningIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -655,7 +663,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_onlyInformation_passesLintCheck() {
     val issues = listOf(informationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    lintAnalysisReporter.printLintReport(
+      issues, reportUnusedEnum = false, groupByIssueSeverity = false
+    )
 
     val output = outputStream.toString()
 
@@ -671,7 +681,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(multiLocationIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
     }
     val output = outputStream.toString()
 
@@ -696,7 +708,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(multiLocationIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -720,7 +734,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(errorIssue)
 
     assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
     }
     val output = outputStream.toString()
 
@@ -737,7 +753,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(errorIssue)
 
     assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -753,7 +771,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_issueWithoutErrorLines_groupBySeverity_skipsErrorLines() {
     val issues = listOf(informationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    lintAnalysisReporter.printLintReport(
+      issues, reportUnusedEnum = false, groupByIssueSeverity = true
+    )
     val output = outputStream.toString()
 
     assertThat(output).doesNotContain("Error Line:")
@@ -769,7 +789,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_issueWithoutErrorLines_groupByFile_skipsErrorLines() {
     val issues = listOf(informationIssue)
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    lintAnalysisReporter.printLintReport(
+      issues, reportUnusedEnum = false, groupByIssueSeverity = false
+    )
     val output = outputStream.toString()
 
     assertThat(output).doesNotContain("Error Line:")
@@ -802,7 +824,9 @@ class LintAnalysisReporterTest {
       )
     )
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -829,7 +853,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_emptyIssuesList_groupBySeverity_printsZeroSummary() {
     val issues = emptyList<LintIssue>()
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+    lintAnalysisReporter.printLintReport(
+      issues, reportUnusedEnum = false, groupByIssueSeverity = true
+    )
     val output = outputStream.toString()
 
     assertThat(output).contains("${BOLD}Total Issues: 0$RESET")
@@ -845,7 +871,9 @@ class LintAnalysisReporterTest {
   fun testPrintLintReport_emptyIssuesList_groupByFile_printsZeroSummary() {
     val issues = emptyList<LintIssue>()
 
-    lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    lintAnalysisReporter.printLintReport(
+      issues, reportUnusedEnum = false, groupByIssueSeverity = false
+    )
     val output = outputStream.toString()
 
     assertThat(output).contains("${BOLD}Total Issues: 0$RESET")
@@ -866,7 +894,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(informationIssue, warningIssue, errorIssue, fatalIssue)
 
     assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
     }
     val output = outputStream.toString()
 
@@ -894,7 +924,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(issue1, issue2)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -920,7 +952,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(issue1, issue2)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -953,12 +987,11 @@ class LintAnalysisReporterTest {
     val issues = listOf(issue1, issue2, issue3)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
     }
     val output = outputStream.toString()
-
-//    val issueIdCount = output.split("Issue ID: SameIssueId").size - 1
-//    assertThat(issueIdCount).isEqualTo(3)
 
     assertThat(output).contains("First issue message")
     assertThat(output).contains("Second issue message")
@@ -977,7 +1010,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(warningIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = true)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
     }
     val output = outputStream.toString()
 
@@ -994,7 +1029,9 @@ class LintAnalysisReporterTest {
     val issues = listOf(warningIssue)
 
     val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = false
+      )
     }
     val output = outputStream.toString()
 
@@ -1252,278 +1289,6 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains("Please remove them from $customPath")
-  }
-
-  @Test
-  fun testLogUnknownIssueIds_emptySet_printsNothing() {
-    val unknownIssueIds = emptySet<String>()
-
-    lintAnalysisReporter.logUnknownIssueIds(unknownIssueIds)
-    val output = outputStream.toString()
-
-    assertThat(output).isEmpty()
-  }
-
-  @Test
-  fun testLogUnknownIssueIds_singleUnknownId_printsCorrectFormat() {
-    val unknownIssueIds = setOf("CustomLintRule")
-
-    lintAnalysisReporter.logUnknownIssueIds(unknownIssueIds)
-    val output = outputStream.toString()
-
-    assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
-    assertThat(output).contains(
-      "Please add these issue IDs to the LintIssueId enum in the proto definition"
-    )
-    assertThat(output).contains("and update the issueIdMapping in LintAnalysisReporter.")
-    assertThat(output).contains("  - CUSTOM_LINT_RULE")
-  }
-
-  @Test
-  fun testCollectUnknownIssueIds_mixedKnownAndUnknownIds_returnsOnlyUnknown() {
-    val knownIssue = warningIssue.copy(id = "UnusedResources")
-    val unknownIssue1 = warningIssue.copy(id = "CustomRule1")
-    val unknownIssue2 = warningIssue.copy(id = "CustomRule2")
-    val anotherKnownIssue = errorIssue.copy(id = "NewApi")
-
-    val issues = listOf(knownIssue, unknownIssue1, unknownIssue2, anotherKnownIssue)
-
-    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
-
-    assertThat(unknownIds).containsExactly("CustomRule1", "CustomRule2")
-    assertThat(unknownIds).doesNotContain("UnusedResources")
-    assertThat(unknownIds).doesNotContain("NewApi")
-  }
-
-  @Test
-  fun testCollectUnknownIssueIds_allKnownIds_returnsEmptySet() {
-    val issues = listOf(warningIssue, errorIssue)
-
-    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
-
-    assertThat(unknownIds).isEmpty()
-  }
-
-  @Test
-  fun testCollectUnknownIssueIds_allUnknownIds_returnsAllIds() {
-    val unknownIssue1 = warningIssue.copy(id = "UnknownRule1")
-    val unknownIssue2 = errorIssue.copy(id = "UnknownRule2")
-    val issues = listOf(unknownIssue1, unknownIssue2)
-
-    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
-
-    assertThat(unknownIds).containsExactly("UnknownRule1", "UnknownRule2")
-  }
-
-  @Test
-  fun testCollectUnknownIssueIds_duplicateUnknownIds_returnsUniqueSet() {
-    val unknownIssue1 = warningIssue.copy(id = "DuplicateUnknown")
-    val unknownIssue2 = errorIssue.copy(id = "DuplicateUnknown")
-    val unknownIssue3 = informationIssue.copy(id = "AnotherUnknown")
-    val issues = listOf(unknownIssue1, unknownIssue2, unknownIssue3)
-
-    val unknownIds = lintAnalysisReporter.collectUnknownIssueIds(issues)
-
-    assertThat(unknownIds).containsExactly("DuplicateUnknown", "AnotherUnknown")
-    assertThat(unknownIds).hasSize(2)
-  }
-
-  @Test
-  fun testPrintLintReport_withRedundantExemptionsAndUnknownIds_includesInSummary() {
-    val unknownIssue = warningIssue.copy(id = "UnknownCustomRule")
-    val issues = listOf(warningIssue, unknownIssue)
-    val redundantExemptions = mapOf(
-      "file1.xml" to listOf("RedundantRule1", "RedundantRule2")
-    )
-    val unknownIssueIds = setOf("UnknownCustomRule", "AnotherUnknownRule")
-
-    val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(
-        issues,
-        groupByIssueSeverity = true,
-        redundantExemptions = redundantExemptions,
-        unknownIssueIds = unknownIssueIds
-      )
-    }
-    val output = outputStream.toString()
-
-    assertThat(output).contains("${YELLOW}Warning: 2$RESET")
-    assertThat(output).contains("${YELLOW}Redundant Exemptions: 2$RESET")
-    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 2$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 6$RESET")
-
-    assertThat(output).contains("Redundant exemptions (no corresponding lint issues found)")
-    assertThat(output).contains("File: file1.xml")
-    assertThat(output).contains("  - REDUNDANT_RULE1")
-    assertThat(output).contains("  - REDUNDANT_RULE2")
-
-    assertThat(output).contains("Unknown Issue IDs found")
-    assertThat(output).contains("  - ANOTHER_UNKNOWN_RULE")
-    assertThat(output).contains("  - UNKNOWN_CUSTOM_RULE")
-
-    assertThat(exception.message)
-      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
-  }
-
-  @Test
-  fun testPrintLintReport_onlyRedundantExemptions_stillFailsCheck() {
-    val issues = emptyList<LintIssue>()
-    val redundantExemptions = mapOf(
-      "file1.xml" to listOf("RedundantRule1")
-    )
-
-    val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(
-        issues,
-        groupByIssueSeverity = false,
-        redundantExemptions = redundantExemptions
-      )
-    }
-    val output = outputStream.toString()
-
-    assertThat(output).contains("${YELLOW}Redundant Exemptions: 1$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 1$RESET")
-
-    assertThat(exception.message)
-      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
-  }
-
-  @Test
-  fun testPrintLintReport_onlyUnknownIssueIds_stillFailsCheck() {
-    val issues = emptyList<LintIssue>()
-    val unknownIssueIds = setOf("UnknownRule1", "UnknownRule2")
-
-    val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(
-        issues,
-        groupByIssueSeverity = false,
-        unknownIssueIds = unknownIssueIds
-      )
-    }
-    val output = outputStream.toString()
-
-    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 2$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 2$RESET")
-
-    assertThat(exception.message)
-      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
-  }
-
-  @Test
-  fun testPrintLintReport_issueWithUnknownId_groupByFile_includesFullIssueDetails() {
-    val unknownIdIssue = LintIssue(
-      id = "AnotherCustomRule",
-      severity = LintSeverity.WARNING,
-      message = "Another unknown custom rule violation",
-      category = "Performance",
-      explanation = "This rule identifies performance issues in custom implementations.",
-      errorLine1 = "for (i in 0..largeList.size) {",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation("${repoRoot.absolutePath}/app/src/main/java/PerformanceFile.kt", "42")
-      )
-    )
-
-    val issues = listOf(unknownIdIssue, errorIssue)
-    val unknownIssueIds = setOf("AnotherCustomRule")
-
-    val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(
-        issues,
-        groupByIssueSeverity = false,
-        unknownIssueIds = unknownIssueIds
-      )
-    }
-    val output = outputStream.toString()
-
-    assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
-    assertThat(output).contains("  - ANOTHER_CUSTOM_RULE")
-
-    assertThat(output).contains("${BOLD}FILE: ${unknownIdIssue.locations[0].file} (1 issue)$RESET")
-    assertThat(output).contains(
-      "$BOLD Issue 1 of 1: ANOTHER_CUSTOM_RULE (Category: Performance)$RESET"
-    )
-
-    assertThat(output).contains("${YELLOW}Severity: Warning$RESET")
-    assertThat(output).contains("  Line: 42")
-    assertThat(output).contains("  Error Line: for (i in 0..largeList.size) {")
-    assertThat(output).contains("  Message: Another unknown custom rule violation")
-    assertThat(output).contains("  Explanation:")
-    assertThat(output).contains("This rule identifies performance issues")
-
-    assertThat(output).contains("${YELLOW}Warning: 1$RESET")
-    assertThat(output).contains("${RED}Error: 1$RESET")
-    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 1$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 3$RESET")
-
-    assertThat(exception.message)
-      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
-  }
-
-  @Test
-  fun testPrintLintReport_multipleIssuesWithSameUnknownId_showsAllInstancesWithDetails() {
-    val unknownIdIssue1 = LintIssue(
-      id = "DuplicateUnknownRule",
-      severity = LintSeverity.WARNING,
-      message = "First instance of unknown rule violation",
-      category = "Correctness",
-      explanation = "This unknown rule checks for correctness issues.",
-      errorLine1 = "val result1 = processData(input1)",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation("${repoRoot.absolutePath}/app/src/main/java/File1.kt", "10")
-      )
-    )
-
-    val unknownIdIssue2 = LintIssue(
-      id = "DuplicateUnknownRule",
-      severity = LintSeverity.WARNING,
-      message = "Second instance of unknown rule violation",
-      category = "Correctness",
-      explanation = "This unknown rule checks for correctness issues.",
-      errorLine1 = "val result2 = processData(input2)",
-      errorLine2 = "",
-      locations = listOf(
-        LintLocation("${repoRoot.absolutePath}/app/src/main/java/File2.kt", "15")
-      )
-    )
-
-    val issues = listOf(unknownIdIssue1, unknownIdIssue2)
-    val unknownIssueIds = setOf("DuplicateUnknownRule")
-
-    val exception = assertThrows<IllegalStateException> {
-      lintAnalysisReporter.printLintReport(
-        issues,
-        groupByIssueSeverity = true,
-        unknownIssueIds = unknownIssueIds
-      )
-    }
-    val output = outputStream.toString()
-
-    assertThat(output).contains("${YELLOW}Unknown Issue IDs found:$RESET")
-    assertThat(output).contains("  - DUPLICATE_UNKNOWN_RULE")
-    val unknownIdMatches = "- DUPLICATE_UNKNOWN_RULE".toRegex().findAll(output).count()
-    assertThat(unknownIdMatches).isEqualTo(1)
-
-    assertThat(output).contains("${BOLD}$YELLOW SEVERITY: WARNING (2 issues)$RESET")
-    assertThat(output).contains("Issue 1 of 2: DUPLICATE_UNKNOWN_RULE")
-    assertThat(output).contains("Issue 2 of 2: DUPLICATE_UNKNOWN_RULE")
-
-    assertThat(output).contains("First instance of unknown rule violation")
-    assertThat(output).contains("Second instance of unknown rule violation")
-    assertThat(output).contains("val result1 = processData(input1)")
-    assertThat(output).contains("val result2 = processData(input2)")
-    assertThat(output).contains("File: ${unknownIdIssue1.locations[0].file}")
-    assertThat(output).contains("File: ${unknownIdIssue2.locations[0].file}")
-    assertThat(output).contains("Line: 10")
-    assertThat(output).contains("Line: 15")
-
-    assertThat(output).contains("${YELLOW}Warning: 2$RESET")
-    assertThat(output).contains("${YELLOW}Unknown Issue Ids: 1$RESET")
-    assertThat(output).contains("${BOLD}Total Issues: 3$RESET")
-
-    assertThat(exception.message)
-      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
   }
 
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {

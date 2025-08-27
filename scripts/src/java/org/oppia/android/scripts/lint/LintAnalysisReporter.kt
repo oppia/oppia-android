@@ -342,18 +342,6 @@ class LintAnalysisReporter {
   }
 
   /**
-   * Collects all unknown issue IDs from the provided list of issues.
-   *
-   * @param issues List of all lint issues
-   * @return Set of unknown issue ID strings
-   */
-  fun collectUnknownIssueIds(issues: List<LintIssue>): Set<String> {
-    return issues.mapNotNull { issue ->
-      if (getLintIssueIdFromString(issue.id) == null) issue.id else null
-    }.toSet()
-  }
-
-  /**
    * Finds redundant exemptions that don't correspond to any actual issues.
    *
    * @param issues List of all lint issues
@@ -393,25 +381,6 @@ class LintAnalysisReporter {
     }
 
     return redundantMap.mapValues { (_, issueIds) -> issueIds.sorted() }
-  }
-
-  /**
-   * Logs unknown issue IDs that need to be added to the enum mapping.
-   *
-   * @param unknownIssueIds Set of unknown issue ID strings
-   */
-  fun logUnknownIssueIds(unknownIssueIds: Set<String>) {
-    if (unknownIssueIds.isNotEmpty()) {
-      println("${YELLOW}Unknown Issue IDs found:$RESET")
-      println("Please add these issue IDs to the LintIssueId enum in the proto definition")
-      println("and update the issueIdMapping in LintAnalysisReporter.")
-      println()
-
-      unknownIssueIds.sorted().forEach { issueId ->
-        println("  - ${toUpperSnakeCase(issueId)}")
-      }
-      println()
-    }
   }
 
   /**
@@ -460,12 +429,10 @@ class LintAnalysisReporter {
    *
    * @param issues List of issues to summarize
    * @param redundantExemptionsCount Number of redundant exemptions
-   * @param unknownIssueIdsCount Number of unknown issue IDs
    */
   private fun printSeveritySummary(
     issues: List<LintIssue>,
-    redundantExemptionsCount: Int = 0,
-    unknownIssueIdsCount: Int = 0
+    redundantExemptionsCount: Int = 0
   ) {
     val severityCounts = issues.groupBy { it.severity }.mapValues { it.value.size }
 
@@ -473,13 +440,15 @@ class LintAnalysisReporter {
       severity != LintSeverity.INFORMATION && count > 0
     }
 
-    val hasFailureConditions = hasNonInformationalIssues ||
-      redundantExemptionsCount > 0 ||
-      unknownIssueIdsCount > 0
+    val hasFailureConditions = hasNonInformationalIssues || redundantExemptionsCount > 0
 
     if (hasFailureConditions) {
-      println("${RED}LINT CHECKS FAILED. Please fix the Issues below.$RESET")
+      println("${RED}LINT CHECKS FAILED. Please fix the issues below.$RESET")
       println()
+    }
+
+    if (redundantExemptionsCount > 0) {
+      println("${YELLOW}Redundant Exemptions: $redundantExemptionsCount$RESET")
     }
 
     LintSeverity.orderedSeverities().forEach { severity ->
@@ -490,15 +459,7 @@ class LintAnalysisReporter {
       }
     }
 
-    if (redundantExemptionsCount > 0) {
-      println("${YELLOW}Redundant Exemptions: $redundantExemptionsCount$RESET")
-    }
-
-    if (unknownIssueIdsCount > 0) {
-      println("${YELLOW}Unknown Issue Ids: $unknownIssueIdsCount$RESET")
-    }
-
-    val totalIssues = issues.size + redundantExemptionsCount + unknownIssueIdsCount
+    val totalIssues = issues.size + redundantExemptionsCount
     println("${BOLD}Total Issues: $totalIssues$RESET")
   }
 
@@ -508,26 +469,20 @@ class LintAnalysisReporter {
    * @param issues List of LintIssue objects to print
    * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
    * @param redundantExemptions Map of redundant exemptions
-   * @param unknownIssueIds Set of unknown issue IDs
    */
   fun printLintReport(
     issues: List<LintIssue>,
     groupByIssueSeverity: Boolean,
     redundantExemptions: Map<String, List<String>> = emptyMap(),
-    unknownIssueIds: Set<String> = emptySet()
+    reportUnusedEnum: Boolean = true
   ) {
     val redundantExemptionsCount = redundantExemptions.values.sumOf { it.size }
-    val unknownIssueIdsCount = unknownIssueIds.size
 
-    printSeveritySummary(issues, redundantExemptionsCount, unknownIssueIdsCount)
+    printSeveritySummary(issues, redundantExemptionsCount)
     println()
 
     if (redundantExemptions.isNotEmpty()) {
       logRedundantExemptions(redundantExemptions)
-    }
-
-    if (unknownIssueIds.isNotEmpty()) {
-      logUnknownIssueIds(unknownIssueIds)
     }
 
     println(
@@ -542,7 +497,7 @@ class LintAnalysisReporter {
       printGroupedByFilePath(issues)
     }
 
-    printFinalResult(issues, redundantExemptionsCount, unknownIssueIdsCount)
+    printFinalResult(issues, redundantExemptionsCount, reportUnusedEnum)
   }
 
   /**
@@ -764,19 +719,32 @@ class LintAnalysisReporter {
   private fun printFinalResult(
     issues: List<LintIssue>,
     redundantExemptionsCount: Int = 0,
-    unknownIssueIdsCount: Int = 0
+    reportUnusedEnum: Boolean = true
   ) {
     val nonInformationalIssues = issues.filter { it.severity != LintSeverity.INFORMATION }
+    val unusedMappings = getUnusedEnumMappings(issues)
 
     val hasInternalLintIssues = nonInformationalIssues.any {
       it.id == issueIdToString[LintIssueId.LINT_ERROR]
     }
 
-    val hasFailureConditions = nonInformationalIssues.isNotEmpty() ||
-      redundantExemptionsCount > 0 ||
-      unknownIssueIdsCount > 0
+    val hasFailureConditions = nonInformationalIssues.isNotEmpty() || redundantExemptionsCount > 0
 
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
+    if (unusedMappings.isNotEmpty() && reportUnusedEnum) {
+      println("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
+      println(
+        "The following issue IDs are defined in issueIdMapping " +
+          "but no corresponding lint issues were found."
+      )
+      println("Please remove them from the LintIssueId enum and issueIdMapping:")
+      println()
+      unusedMappings.sorted().forEach { issueId ->
+        println("  - $issueId -> ${toUpperSnakeCase(issueId)}")
+      }
+      println()
+      error("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    }
     when {
       !hasFailureConditions -> {
         println("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
@@ -788,6 +756,11 @@ class LintAnalysisReporter {
         error("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
       }
     }
+  }
+
+  private fun getUnusedEnumMappings(issues: List<LintIssue>): List<String> {
+    val usedIssueIds = issues.map { it.id }.toSet()
+    return issueIdMapping.keys.filter { it !in usedIssueIds }
   }
 
   /** Extracts all locations from the issue's location elements. */

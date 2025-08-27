@@ -73,6 +73,7 @@ class AndroidLintRunnerTest {
       workingDirectory = workingDirectory,
       exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
       repoRoot = tempFolder.root,
+      reportUnusedEnum = false
     )
     projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
   }
@@ -397,7 +398,8 @@ class AndroidLintRunnerTest {
       reportFile,
       projectDescriptionFile,
       tempFolder.root,
-      "${tempFolder.root}/$pathToProtoBinary"
+      "${tempFolder.root}/$pathToProtoBinary",
+      reportUnusedEnum = false
     )
 
     val exception = assertThrows<IllegalStateException> {
@@ -1372,7 +1374,8 @@ class AndroidLintRunnerTest {
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile,
       repoRoot = tempFolder.root,
-      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary"
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      reportUnusedEnum = false
     )
   }
 
