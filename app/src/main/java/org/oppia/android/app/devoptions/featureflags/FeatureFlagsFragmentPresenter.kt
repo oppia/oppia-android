@@ -1,5 +1,7 @@
 package org.oppia.android.app.devoptions.featureflags
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +13,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
+import org.oppia.android.app.databinding.databinding.SaveDiscardDialogFragmentBinding
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -23,6 +28,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import kotlin.system.exitProcess
+
+/** Tag for displaying [PlatformParameterRestartDialogFragment]. */
+const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 
 /** The presenter for [FeatureFlagsFragment]. */
 @FragmentScope
@@ -38,6 +47,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var binding: FeatureFlagsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
+  private var isRestartInitiated: Boolean = false
+  private var isSaveButtonClicked: Boolean = false
 
   /** List of feature flags that have been reset. */
   var resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
@@ -61,6 +72,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       onBackNavigation()
     }
     binding.saveButton.setOnClickListener {
+      isSaveButtonClicked = true
       onBackNavigation()
     }
 
@@ -110,6 +122,32 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
 
   private fun onBackNavigation() {
 
+    if (featureFlagStates.value.isNullOrEmpty()) {
+      (activity as FeatureFlagsActivity).finish()
+      return
+    }
+
+    if (!isSaveButtonClicked) {
+      val dialogBinding = SaveDiscardDialogFragmentBinding.inflate(
+        LayoutInflater.from(activity),
+        /* parent= */ null,
+        /* attachToRoot= */ false
+      )
+
+      val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+        .setView(dialogBinding.root)
+        .create()
+      dialogBinding.discardButton.setOnClickListener {
+        dialog.dismiss()
+      }
+      dialogBinding.saveButton.setOnClickListener {
+        isSaveButtonClicked = true
+        dialog.dismiss()
+        onBackNavigation()
+      }
+      dialog.show()
+      return
+    }
     val overriddenFeatureFlags = featureFlagStates.value
       ?.filter { (id, value) -> resetFlags[id] != value }
       ?.map { (id, value) ->
@@ -143,7 +181,9 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       .toLiveData().observe(fragment) {
         when (it) {
           is AsyncResult.Success -> {
-            (activity as FeatureFlagsActivity).finish()
+            isRestartInitiated = true
+            val dialog = PlatformParameterRestartDialogFragment.newInstance()
+            dialog.showNow(activity.supportFragmentManager, TAG_FEATURE_FLAG_RESTART_DIALOG)
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(
@@ -245,5 +285,20 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  /**
+   * Called when [FeatureFlagsFragment] is destroyed. Handles app exit if restart is
+   * initiated.
+   */
+  fun handleOnDestroy() {
+    if (isRestartInitiated) {
+      val intent = Intent(activity, SplashActivity::class.java).also {
+        it.action = Intent.ACTION_MAIN
+        it.addCategory(Intent.CATEGORY_LAUNCHER)
+      }
+      activity.startActivity(intent)
+      exitProcess(0)
+    }
   }
 }

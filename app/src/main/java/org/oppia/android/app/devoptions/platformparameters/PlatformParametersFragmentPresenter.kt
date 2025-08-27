@@ -1,5 +1,6 @@
 package org.oppia.android.app.devoptions.platformparameters
 
+import android.content.Intent
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -15,12 +16,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
+import org.oppia.android.app.databinding.databinding.SaveDiscardDialogFragmentBinding
+import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.recyclerview.BindableAdapter
+import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.view.models.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -28,6 +32,10 @@ import org.oppia.android.domain.platformparameter.PlatformParameterControllerDeb
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
+import kotlin.system.exitProcess
+
+/** Tag for displaying [PlatformParameterRestartDialogFragment]. */
+const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
 
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
@@ -46,6 +54,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
+  private var isRestartInitiated = false
+  private var isSaveButtonClicked = false
 
   /** List of platform parameters that have been reset. */
   var resetParameters: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
@@ -74,6 +84,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     binding.saveButton.setOnClickListener {
+      isSaveButtonClicked = true
       onBackNavigation()
     }
     activity.onBackPressedDispatcher.addCallback(
@@ -131,9 +142,35 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
-    val hasInvalidInput = platformParameterStates.value?.containsValue(null) ?: false
 
+    if (platformParameterStates.value?.isEmpty() == true) {
+      (activity as PlatformParametersActivity).finish()
+      return
+    }
+    val hasInvalidInput = platformParameterStates.value?.containsValue(null) ?: false
     if (!hasInvalidInput) {
+      if (!isSaveButtonClicked) {
+        val dialogBinding = SaveDiscardDialogFragmentBinding.inflate(
+          LayoutInflater.from(activity),
+          /* parent= */ null,
+          /* attachToRoot= */ false
+        )
+
+        val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+          .setView(dialogBinding.root)
+          .create()
+        dialogBinding.discardButton.setOnClickListener {
+          dialog.dismiss()
+        }
+        dialogBinding.saveButton.setOnClickListener {
+          isSaveButtonClicked = true
+          dialog.dismiss()
+          onBackNavigation()
+        }
+        dialog.show()
+        return
+      }
+
       val overriddenPlatformParameters = platformParameterStates.value
         ?.filter { (id, value) -> resetParameters[id] != value }
         ?.map { (id, value) ->
@@ -179,7 +216,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .observe(fragment) {
         when (it) {
           is AsyncResult.Success -> {
-            (activity as PlatformParametersActivity).finish()
+            isRestartInitiated = true
+            val dialog = PlatformParameterRestartDialogFragment.newInstance()
+            dialog.showNow(activity.supportFragmentManager, TAG_PLATFORM_PARAMETER_RESTART_DIALOG)
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(
@@ -314,7 +353,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           if (!hasFocus) {
             val currentText = editText.text?.toString().orEmpty()
             if (currentText.isBlank()) {
-              model.inputValue.set(originalValue)
+              editText.setText(originalValue)
               model.inputErrorMsg.set("")
             }
           }
@@ -427,5 +466,20 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
       }
     )
+  }
+
+  /**
+   * Called when [PlatformParametersFragment] is destroyed. Handles app exit if restart is
+   * initiated.
+   */
+  fun handleOnDestroy() {
+    if (isRestartInitiated) {
+      val intent = Intent(activity, SplashActivity::class.java).also {
+        it.action = Intent.ACTION_MAIN
+        it.addCategory(Intent.CATEGORY_LAUNCHER)
+      }
+      activity.startActivity(intent)
+      exitProcess(0)
+    }
   }
 }

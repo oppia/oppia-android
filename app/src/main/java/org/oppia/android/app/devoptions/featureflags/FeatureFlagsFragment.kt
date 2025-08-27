@@ -84,4 +84,9 @@ class FeatureFlagsFragment : InjectableFragment() {
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    featureFlagsFragmentPresenter.handleOnDestroy()
+  }
 }

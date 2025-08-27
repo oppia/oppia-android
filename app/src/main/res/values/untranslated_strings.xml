@@ -53,6 +53,10 @@
   <string name="platform_parameter_restart_dialog_title" translatable="false">App Behaviours Overridden.</string>
   <string name="platform_parameter_restart_dialog_message" translatable="false">Restart required to apply new configurations.</string>
   <string name="platform_parameter_restart_dialog_button_text" translatable="false">Restart</string>
+  <string name="save_discard_dialog_save_button_text" translatable="false">Save</string>
+  <string name="save_discard_dialog_discard_button_text" translatable="false">Discard</string>
+  <string name="save_discard_dialog_title_text" translatable="false">Pending Changes</string>
+  <string name="save_discard_dialog_message_text" translatable="false">Do you want to save the changes?</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
   <string name="math_expression_parse_result_label" translatable="false">Parse result: %s</string>
