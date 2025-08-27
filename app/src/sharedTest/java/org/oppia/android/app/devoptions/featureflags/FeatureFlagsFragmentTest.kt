@@ -724,6 +724,108 @@ class FeatureFlagsFragmentTest {
     }
   }
 
+  @Test
+  fun testFeatureFlagsFragment_noChanges_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyAnyFlag_saveButtonIsEnabled() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyAnyFlag_backgroundHasSkyBlueColor() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.color_def_sky_blue)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyAnyFlag_configChange_skyBlueColorPersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.color_def_sky_blue)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlag_clickSave_reopenDashboard_valuePersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      launch(FeatureFlagsActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).check(matches(isChecked()))
+      }
+    }
+  }
+
   private fun verifyFeatureFlagDisplayName(
     position: Int,
     expectedDisplayName: String
