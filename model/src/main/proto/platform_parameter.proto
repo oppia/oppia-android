@@ -140,11 +140,15 @@ enum FeatureFlagId {
   // mathematics and science).
   MULTIPLE_CLASSROOMS = 15;
 
+  // Corresponds to a feature that enables a UI for quick revision when a learner answers a specific
+  // question incorrectly.
+  FLASHBACK_SUPPORT = 16;
+
   // Corresponds to a topic activity feature that enables the info tab.
-  TOPIC_INFO_TAB = 16;
+  TOPIC_INFO_TAB = 17;
 
   // Corresponds to a topic activity feature that enables the practice tab.
-  TOPIC_PRACTICE_TAB = 17;
+  TOPIC_PRACTICE_TAB = 18;
 }
 
 // Corresponds to a compile-time definition of a platform parameter which is a mechanism by which to
@@ -227,6 +231,9 @@ enum SyncStatus {
 
   // Indicates the parameter/flag's value has been successfully synced with the remote server.
   SYNCED_FROM_SERVER = 2;
+
+  // Indicates the parameter/flag's value have been overridden locally by the developer.
+  LOCAL_OVERRIDE = 3;
 }
 
 // Defines the list of supported platform parameters in the app.
@@ -255,4 +262,56 @@ message RemotePlatformParameterAndFeatureFlagDatabase {
 
   // The remotely synced feature flags.
   repeated RemoteFeatureFlag remote_feature_flag = 2;
+}
+
+// Corresponds to the current in-app state of the platform parameter.
+message EphemeralPlatformParameter {
+  // The unique ID of this platform parameter which corresponds to a PlatformParameterDefinition.
+  PlatformParameterId id = 1;
+
+  // The current value of this platform parameter, determined from the latest synced or default value.
+  PlatformParameterValue current_value = 2;
+
+  // Indicates the sync status of the platform parameter.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to the current in-app state of the feature flag.
+message EphemeralFeatureFlag {
+  // The unique ID of this feature flag which corresponds to a FeatureFlagDefinition.
+  FeatureFlagId id = 1;
+
+  // Whether or not the feature is currently enabled, based on the latest synced or default value.
+  bool current_value = 2;
+
+  // Indicates the sync status of the feature flag.
+  SyncStatus sync_status = 3;
+}
+
+// Corresponds to a developer override of a feature flag.
+message OverriddenFeatureFlag {
+  // The unique ID of the overridden feature flag.
+  FeatureFlagId id = 1;
+
+  // The local value which is set by the developer.
+  bool overridden_value = 2;
+}
+
+// Corresponds to a developer override of a platform parameter.
+message OverriddenPlatformParameter {
+  //  The unique ID of the overridden platform parameter which corresponds to a
+  //  PlatformParameterDefintion
+  PlatformParameterId id = 1;
+
+  // The overridden value of the platform parameter.
+  PlatformParameterValue overridden_value = 2;
+}
+
+// The database for storing local developer overridden platform parameters and feature flags.
+message LocalOverridePlatformParameterDatabase {
+  // A list to store locally overridden platform parameters.
+  repeated OverriddenPlatformParameter overridden_platform_parameter = 1;
+
+  // A list to store locally overridden feature flags.
+  repeated OverriddenFeatureFlag overridden_feature_flag = 2;
 }

@@ -6,6 +6,7 @@ import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
 import org.oppia.android.app.model.FeatureFlagId.FAST_LANGUAGE_SWITCHING_IN_LESSON
+import org.oppia.android.app.model.FeatureFlagId.FLASHBACK_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.LEARNER_STUDY_ANALYTICS
 import org.oppia.android.app.model.FeatureFlagId.LOGGING_LEARNER_STUDY_IDS
 import org.oppia.android.app.model.FeatureFlagId.MULTIPLE_CLASSROOMS
@@ -36,6 +37,13 @@ import javax.inject.Singleton
 )
 class TestPlatformParameterModule {
   private val processState by lazy { PlatformParameterProcessState() }
+
+  @Provides
+  @Singleton
+  fun providePlatformParameterControllerProdImpl(
+    platformParameterProcessState: PlatformParameterProcessState,
+    factory: PlatformParameterControllerProdImpl.Factory
+  ) = factory.create(platformParameterProcessState)
 
   @Provides
   @Singleton
@@ -104,6 +112,10 @@ class TestPlatformParameterModule {
 
     fun forceEnableAppAndOsDeprecation(value: Boolean) {
       TestPlatformParameterConfigRetriever.setFlagOverride(APP_AND_OS_DEPRECATION, value)
+    }
+
+    fun forceEnableFlashbackSupport(value: Boolean) {
+      TestPlatformParameterConfigRetriever.setFlagOverride(FLASHBACK_SUPPORT, value)
     }
 
     fun forceEnableTopicInfoTab(value: Boolean) {

@@ -7,6 +7,7 @@ import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -86,6 +87,11 @@ class FeatureFlagBindingModule {
     processState.retrieveFeatureFlag(FeatureFlagId.MULTIPLE_CLASSROOMS)
 
   @Provides
+  @EnableFlashbackSupport
+  fun provideEnableFlashbackSupport(processState: PlatformParameterProcessState) =
+    processState.retrieveFeatureFlag(FeatureFlagId.FLASHBACK_SUPPORT)
+
+  @Provides
   @EnableTopicInfoTab
   fun provideEnableTopicInfoTab(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_INFO_TAB)
@@ -94,6 +100,7 @@ class FeatureFlagBindingModule {
   @EnableTopicPracticeTab
   fun provideEnableTopicPracticeTab(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_PRACTICE_TAB)
+
 
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(

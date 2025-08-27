@@ -270,6 +270,9 @@ message EphemeralState {
 
   // The timestamp at which continue buttons (both interaction & navigation) should start animating.
   int64 continue_button_animation_timestamp_ms = 11;
+
+  // Indicates whether this state is a flashback state.
+  bool flashback_state = 12;
 }
 
 // Corresponds to an exploration state that hasn't yet had a correct answer filled in.
@@ -331,6 +334,13 @@ message AnswerAndResponse {
 
   // Whether the answer was labelled by the creator as correct.
   bool is_correct_answer = 3;
+
+  // The name of the state the learner can revisit to review a concept. It's presence indicates that
+  // a flashback button should be shown.
+  string state_name_to_revisit = 4;
+
+  // Whether the flashback associated with this answer has been viewed by the learner.
+  bool flashback_viewed = 5;
 }
 
 message AnswerOutcome {

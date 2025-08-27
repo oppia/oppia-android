@@ -165,8 +165,9 @@ class FeatureFlagsLoggerTest {
   @Iteration("nps_survey", "index=9", "flagId=NPS_SURVEY")
   @Iteration("onboarding_flow_v2", "index=10", "flagId=ONBOARDING_FLOW_V2")
   @Iteration("multiple_classrooms", "index=11", "flagId=MULTIPLE_CLASSROOMS")
-  @Iteration("topic_info_tab", "index=12", "flagId=TOPIC_INFO_TAB")
-  @Iteration("topic_practice_tab", "index=13", "flagId=TOPIC_PRACTICE_TAB")
+  @Iteration("flashback_support", "index=12", "flagId=FLASHBACK_SUPPORT")
+  @Iteration("topic_info_tab", "index=13", "flagId=TOPIC_INFO_TAB")
+  @Iteration("topic_practice_tab", "index=14", "flagId=TOPIC_PRACTICE_TAB")
   fun testLogFeatureFlags_allFeatureFlagIdsAreLogged() {
     featureFlagsLogger.logAllFeatureFlags(TEST_SESSION_ID)
 

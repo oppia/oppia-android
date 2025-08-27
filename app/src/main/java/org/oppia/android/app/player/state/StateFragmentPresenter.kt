@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.databinding.databinding.StateFragmentBinding
+import org.oppia.android.app.flashback.FlashbackConfirmationDialogFragment
+import org.oppia.android.app.flashback.TAG_FLASHBACK_CONFIRMATION_DIALOG
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
@@ -35,6 +37,7 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
@@ -202,12 +205,29 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun showOrHideFlashbackToolbar(ephemeralState: EphemeralState) {
+    if (ephemeralState.flashbackState) {
+      (activity as FlashbackToolbarListener).showFlashbackToolbar()
+    } else {
+      (activity as FlashbackToolbarListener).hideFlashbackToolbar()
+    }
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
     val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
     if (answer != null) {
       handleSubmitAnswer(answer)
     }
+  }
+
+  fun onFlashbackButtonClicked(stateName: String) {
+    val dialogFragment = FlashbackConfirmationDialogFragment.newInstance(stateName)
+    dialogFragment.showNow(fragment.childFragmentManager, TAG_FLASHBACK_CONFIRMATION_DIALOG)
+  }
+
+  fun onReturnToQuestionButtonClicked() {
+    explorationProgressController.moveBackToLatest()
   }
 
   fun onResponsesHeaderClicked() {
@@ -248,6 +268,7 @@ class StateFragmentPresenter @Inject constructor(
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
+      .addRedirectionSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
@@ -264,6 +285,7 @@ class StateFragmentPresenter @Inject constructor(
         this::getAudioUiManager
       )
       .addConceptCardSupport()
+      .addFlashbackSolutionSupport()
       .build()
   }
 
@@ -332,6 +354,7 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
+    showOrHideFlashbackToolbar(ephemeralState)
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,

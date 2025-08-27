@@ -251,4 +251,72 @@ class StateDeck constructor(
   private fun isTopOfDeckTerminal(): Boolean {
     return isTopOfDeckTerminalChecker(pendingTopState)
   }
+
+  /**
+   * Updates the `state_name_to_revisit` field of the last [AnswerAndResponse] in the
+   * [currentDialogInteractions] list with the given [stateName].
+   */
+  fun addFlashbackState(stateName: String) {
+    if (currentDialogInteractions.isNotEmpty()) {
+      val lastIndex = currentDialogInteractions.lastIndex
+      val lastAnswerAndResponse = currentDialogInteractions[lastIndex]
+      val updatedAnswerAndResponse = lastAnswerAndResponse.toBuilder()
+        .setStateNameToRevisit(stateName)
+        .build()
+
+      currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
+    }
+  }
+
+  /**
+   * Returns the previously visited [EphemeralState] with the given [stateName], or a default
+   * instance if not found.
+   */
+  fun getFlashbackEphemeralState(stateName: String): EphemeralState {
+    return previousStates.find { it.state.name == stateName }
+      ?: EphemeralState.getDefaultInstance()
+  }
+
+  /**
+   *  Sets the `flashback_viewed` field of [AnswerAndResponse] to true for the last
+   *  [AnswerAndResponse] in the [currentDialogInteractions] list.
+   */
+  fun setFlashbackIsViewed() {
+    if (currentDialogInteractions.isNotEmpty()) {
+      val lastIndex = currentDialogInteractions.lastIndex
+      val lastAnswerAndResponse = currentDialogInteractions[lastIndex]
+      val updatedAnswerAndResponse = lastAnswerAndResponse.toBuilder()
+        .setFlashbackViewed(true)
+        .build()
+
+      currentDialogInteractions[lastIndex] = updatedAnswerAndResponse
+    }
+  }
+
+  /**
+   *  Returns true if any [AnswerAndResponse] in [currentDialogInteractions] has `flashback_viewed`
+   *  set to true.
+   */
+  fun isFlashbackViewed(): Boolean {
+    return currentDialogInteractions.any { it.flashbackViewed }
+  }
+
+  /** Returns whether flashback state exists for the given [linkedSkillId]. */
+  fun hasFlashbackState(linkedSkillId: String): Boolean {
+    return linkedSkillId.isNotEmpty() &&
+      previousStates.any { it.state.linkedSkillId == linkedSkillId }
+  }
+
+  /** Returns the most recent previously visited [State] name with this given [linkedSkillId]. */
+  fun getFlashbackStateName(linkedSkillId: String): String {
+    return previousStates.last { it.state.linkedSkillId == linkedSkillId }.state.name
+  }
+
+  /**
+   *  Returns true if any [AnswerAndResponse] in [currentDialogInteractions] has
+   *  valid `state_name_to_revisit`.
+   */
+  fun wasFlashbackPreviouslyOffered(): Boolean {
+    return currentDialogInteractions.any { !it.stateNameToRevisit.isNullOrBlank() }
+  }
 }

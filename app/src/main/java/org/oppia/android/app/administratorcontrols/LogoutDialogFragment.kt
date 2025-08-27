@@ -35,7 +35,7 @@ class LogoutDialogFragment : InjectableDialogFragment() {
         dialog.dismiss()
       }
       .setPositiveButton(R.string.log_out_dialog_okay_button) { _, _ ->
-        val intent = ProfileChooserActivity.createProfileChooserActivity(activity!!)
+        val intent = ProfileChooserActivity.createProfileChooserActivity(requireActivity())
         startActivity(intent)
       }.create()
   }

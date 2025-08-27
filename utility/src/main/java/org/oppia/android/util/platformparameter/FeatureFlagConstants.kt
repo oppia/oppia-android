@@ -168,6 +168,16 @@ const val ENABLE_MULTIPLE_CLASSROOMS = "enable_multiple_classrooms"
 /** Default value of the feature flag corresponding to [EnableMultipleClassrooms]. */
 const val ENABLE_MULTIPLE_CLASSROOMS_DEFAULT_VALUE = true
 
+/** Qualifier for the feature flag that toggles the new flashback support. */
+@Qualifier
+annotation class EnableFlashbackSupport
+
+/** Name of the feature flag that toggles the new flashback support. */
+const val ENABLE_FLASHBACK_SUPPORT = "android_enable_flashback_support"
+
+/** Default value of the feature flag corresponding to [EnableFlashbackSupport]. */
+const val ENABLE_FLASHBACK_SUPPORT_DEFAULT_VALUE = false
+
 /**
  * Qualifier for the feature flag corresponding to enabling the topic info tab.
  */

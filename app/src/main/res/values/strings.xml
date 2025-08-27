@@ -64,6 +64,8 @@
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
   <string name="submit_button_text">Submit</string>
+  <string name="state_flashback_button">See example</string>
+  <string name="state_return_to_question_button">Return to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
@@ -193,6 +195,10 @@
   <string name="welcome_profile_name">%1$s %2$s!</string>
   <string name="selected_image_region_selection_content_description">Image showing %1$s.</string>
   <string name="unselected_image_region_selection_content_description">Select %1$s image.</string>
+  <string name="flashback_toolbar_title_text">Revisit Previous Question</string>
+  <string name="flashback_state_feedback_text">Need help? No problem. Let\'s review the solution to the previous question.</string>
+  <string name="flashback_viewed_feedback_text">Now that you\’ve seen an example, let\’s try again.</string>
+  <string name="flashback_feedback_prompt">That answer isn\'t correct. Let\'s look at an example.</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
@@ -700,5 +706,11 @@
 
   <!-- AudioLanguageFragment -->
   <string name="arabic_language_display_name_content_description">Arabic</string>
+
+  <!--  FlashbackConfirmationDialogFragment -->
+  <string name="flashback_confirmation_dialog_continue_button_text">Continue</string>
+  <string name="flashback_confirmation_dialog_not_now_text">Not now</string>
+  <string name="flashback_confirmation_dialog_title_text">Need help? No problem.</string>
+  <string name="flashback_confirmation_dialog_message_text">Review the previous question\'s solution</string>
 
 </resources>

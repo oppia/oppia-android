@@ -59,6 +59,11 @@ feature_flag_definition {
   default_is_enabled: false
 }
 feature_flag_definition {
+  id: FLASHBACK_SUPPORT
+  remote_server_name: "android_enable_flashback_support"
+  default_is_enabled: false
+}
+feature_flag_definition {
   id: TOPIC_INFO_TAB
   remote_server_name: "enable_topic_info_tab"
   default_is_enabled: false

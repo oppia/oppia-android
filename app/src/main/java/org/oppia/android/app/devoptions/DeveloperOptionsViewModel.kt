@@ -31,6 +31,8 @@ class DeveloperOptionsViewModel @Inject constructor(
   private val routeToForceNetworkTypeListener = activity as RouteToForceNetworkTypeListener
   private val routeToMathExpressionParserTestListener =
     activity as RouteToMathExpressionParserTestListener
+  private val routeToFeatureFlagsListener = activity as RouteToFeatureFlagsListener
+  private val routeToPlatformParametersListener = activity as RouteToPlatformParametersListener
 
   /**
    * List of [DeveloperOptionsItemViewModel] used to populate recyclerview of
@@ -51,7 +53,9 @@ class DeveloperOptionsViewModel @Inject constructor(
       DeveloperOptionsOverrideAppBehaviorsViewModel(
         forceCrashButtonClickListener,
         routeToForceNetworkTypeListener,
-        showAllHintsAndSolutionController
+        showAllHintsAndSolutionController,
+        routeToFeatureFlagsListener,
+        routeToPlatformParametersListener
       ),
       DeveloperOptionsTestParsersViewModel(routeToMathExpressionParserTestListener)
     )

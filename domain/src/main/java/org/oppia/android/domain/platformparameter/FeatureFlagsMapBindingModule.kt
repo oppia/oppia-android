@@ -8,6 +8,7 @@ import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableDownloadsSupport
 import org.oppia.android.util.platformparameter.EnableEditAccountsOptionsUi
 import org.oppia.android.util.platformparameter.EnableFastLanguageSwitchingInLesson
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
 import org.oppia.android.util.platformparameter.EnableInteractionConfigChangeStateRetention
 import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
 import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
@@ -118,6 +119,14 @@ interface FeatureFlagsMapBindingModule {
   @FeatureFlagIdKey(FeatureFlagId.MULTIPLE_CLASSROOMS)
   fun bindMultipleClassrooms(
     @EnableMultipleClassrooms param: PlatformParameterValue<Boolean>
+  ): PlatformParameterValue<Boolean>
+
+  @Binds
+  @IntoMap
+  @FeatureFlags
+  @FeatureFlagIdKey(FeatureFlagId.FLASHBACK_SUPPORT)
+  fun bindFlashbackSupport(
+    @EnableFlashbackSupport param: PlatformParameterValue<Boolean>
   ): PlatformParameterValue<Boolean>
 
   @Binds
