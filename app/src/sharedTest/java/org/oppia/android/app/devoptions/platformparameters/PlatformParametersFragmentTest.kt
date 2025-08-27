@@ -1169,7 +1169,6 @@ class PlatformParametersFragmentTest {
 
   @Test
   fun testPlatformParametersFragment_navigateBackWithParamModified_displaySaveDiscardAlertDialog() {
-    Intents.init()
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1233,6 +1232,39 @@ class PlatformParametersFragmentTest {
       onView(withText(R.string.save_discard_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParamRevertback_naviagteback_skipsRestartDialog() {
+    Intents.init()
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.platform_parameter_restart_dialog_title))
+        .check(doesNotExist())
     }
   }
 
