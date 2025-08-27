@@ -1006,6 +1006,57 @@ class LintAnalysisReporterTest {
   }
 
   @Test
+  fun testPrintLintReport_unknownIssueId_printsIssueInfo() {
+    val issues = listOf(warningIssue.copy(
+      id = "UnknownIssueId",
+      message = "First issue message",
+      category = "Unknown",
+      explanation= "This is an explanation for the unknown issue.",
+      locations = listOf(LintLocation("test_file.kt", "10"))
+    ))
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = false, groupByIssueSeverity = true
+      )
+    }
+    val output = outputStream.toString()
+    assertThat(output).contains("First issue message")
+    assertThat(output).contains("This is an explanation for the unknown issue.")
+    assertThat(output).contains("Issue 1 of 1: UNKNOWN_ISSUE_ID (Category: Unknown)")
+    assertThat(output).contains("test_file.kt")
+    assertThat(output).contains("Line: 10")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
+  fun testPrintLintReport_withUnusedEnum_listsUnusedEnums() {
+    val issues = listOf(warningIssue.copy(
+      id = "UnknownIssueId",
+      message = "First issue message",
+      category = "Unknown",
+      explanation= "This is an explanation for the unknown issue.",
+      locations = listOf(LintLocation("test_file.kt", "10"))
+    ))
+
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(
+        issues, reportUnusedEnum = true, groupByIssueSeverity = true
+      )
+    }
+    val output = outputStream.toString()
+    assertThat(output).contains("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
+    assertThat(output).contains("The following issue IDs are defined in issueIdMapping " +
+      "but no corresponding lint issues were found.")
+    assertThat(output).doesNotContain("LintError -> ${toUpperSnakeCase("LintError")}")
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
   fun testPrintLintReport_singleLocationIssue_groupBySeverity_printsFileAndLine() {
     val issues = listOf(warningIssue)
 
