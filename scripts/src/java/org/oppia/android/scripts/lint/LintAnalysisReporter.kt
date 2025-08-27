@@ -760,7 +760,7 @@ class LintAnalysisReporter {
 
   private fun getUnusedEnumMappings(issues: List<LintIssue>): List<String> {
     val usedIssueIds = issues.map { it.id }.toSet()
-    return issueIdMapping.keys.filter { it !in usedIssueIds && it!= "LintError" }
+    return issueIdMapping.keys.filter { it !in usedIssueIds && it != "LintError" }
   }
 
   /** Extracts all locations from the issue's location elements. */

@@ -1007,13 +1007,15 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testPrintLintReport_unknownIssueId_printsIssueInfo() {
-    val issues = listOf(warningIssue.copy(
-      id = "UnknownIssueId",
-      message = "First issue message",
-      category = "Unknown",
-      explanation= "This is an explanation for the unknown issue.",
-      locations = listOf(LintLocation("test_file.kt", "10"))
-    ))
+    val issues = listOf(
+      warningIssue.copy(
+        id = "UnknownIssueId",
+        message = "First issue message",
+        category = "Unknown",
+        explanation = "This is an explanation for the unknown issue.",
+        locations = listOf(LintLocation("test_file.kt", "10"))
+      )
+    )
 
     val exception = assertThrows<IllegalStateException> {
       lintAnalysisReporter.printLintReport(
@@ -1033,13 +1035,15 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testPrintLintReport_withUnusedEnum_listsUnusedEnums() {
-    val issues = listOf(warningIssue.copy(
-      id = "UnknownIssueId",
-      message = "First issue message",
-      category = "Unknown",
-      explanation= "This is an explanation for the unknown issue.",
-      locations = listOf(LintLocation("test_file.kt", "10"))
-    ))
+    val issues = listOf(
+      warningIssue.copy(
+        id = "UnknownIssueId",
+        message = "First issue message",
+        category = "Unknown",
+        explanation = "This is an explanation for the unknown issue.",
+        locations = listOf(LintLocation("test_file.kt", "10"))
+      )
+    )
 
     val exception = assertThrows<IllegalStateException> {
       lintAnalysisReporter.printLintReport(
@@ -1048,8 +1052,10 @@ class LintAnalysisReporterTest {
     }
     val output = outputStream.toString()
     assertThat(output).contains("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
-    assertThat(output).contains("The following issue IDs are defined in issueIdMapping " +
-      "but no corresponding lint issues were found.")
+    assertThat(output).contains(
+      "The following issue IDs are defined in issueIdMapping " +
+        "but no corresponding lint issues were found."
+    )
     assertThat(output).doesNotContain("LintError -> ${toUpperSnakeCase("LintError")}")
 
     assertThat(exception.message)
