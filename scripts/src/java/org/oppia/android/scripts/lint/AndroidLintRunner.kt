@@ -261,7 +261,8 @@ class AndroidLintRunner(
       issues = filteredIssues,
       groupByIssueSeverity = groupByIssueSeverity,
       redundantExemptions = redundantExemptions,
-      reportUnusedEnum = reportUnusedEnum
+      reportUnusedEnum = reportUnusedEnum,
+      allIssues = allIssues
     )
   }
 

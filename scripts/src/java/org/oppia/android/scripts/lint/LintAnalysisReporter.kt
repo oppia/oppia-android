@@ -474,7 +474,8 @@ class LintAnalysisReporter {
     issues: List<LintIssue>,
     groupByIssueSeverity: Boolean,
     redundantExemptions: Map<String, List<String>> = emptyMap(),
-    reportUnusedEnum: Boolean = true
+    reportUnusedEnum: Boolean = true,
+    allIssues: List<LintIssue> = emptyList()
   ) {
     val redundantExemptionsCount = redundantExemptions.values.sumOf { it.size }
 
@@ -497,7 +498,7 @@ class LintAnalysisReporter {
       printGroupedByFilePath(issues)
     }
 
-    printFinalResult(issues, redundantExemptionsCount, reportUnusedEnum)
+    printFinalResult(issues, redundantExemptionsCount, reportUnusedEnum,allIssues)
   }
 
   /**
@@ -719,10 +720,11 @@ class LintAnalysisReporter {
   private fun printFinalResult(
     issues: List<LintIssue>,
     redundantExemptionsCount: Int = 0,
-    reportUnusedEnum: Boolean = true
+    reportUnusedEnum: Boolean = true,
+    allIssues: List<LintIssue> = emptyList()
   ) {
     val nonInformationalIssues = issues.filter { it.severity != LintSeverity.INFORMATION }
-    val unusedMappings = getUnusedEnumMappings(issues)
+    val unusedMappings = getUnusedEnumMappings(allIssues)
 
     val hasInternalLintIssues = nonInformationalIssues.any {
       it.id == issueIdToString[LintIssueId.LINT_ERROR]
