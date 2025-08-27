@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
@@ -34,7 +35,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val platformParameterViewModel: PlatformParametersViewModel,
-  resourceHandler: AppLanguageResourceHandler,
+  private val resourceHandler: AppLanguageResourceHandler,
   private val oppiaLogger: OppiaLogger,
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory
@@ -45,6 +46,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
+
+  /** List of platform parameters that have been reset. */
+  var resetParameters: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+
+  /** List of platform parameter states to be used in the fragment. */
+  var platformParameterStates =
+    MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue?>>(
+      mutableMapOf()
+    )
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -85,11 +95,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     )
 
     if (platformParameterStates.isNotEmpty()) {
-      platformParameterViewModel.platformParameterStates.value =
-        platformParameterStates.toMutableMap()
+      this.platformParameterStates =
+        MutableLiveData(platformParameterStates.toMutableMap())
     }
     if (resetParameters.isNotEmpty()) {
-      platformParameterViewModel.resetParameters.value = resetParameters.toMutableMap()
+      this.resetParameters = resetParameters.toMutableMap()
+    }
+
+    this.platformParameterStates.observe(fragment) { states ->
+      binding.viewModel?.isSaveButtonActive?.set(states.isNotEmpty())
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -117,90 +131,66 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun onBackNavigation() {
-    val hasInvalidInput = platformParameterViewModel
-      .platformParameterStates.value?.containsValue(null) ?: false
+    val hasInvalidInput = platformParameterStates.value?.containsValue(null) ?: false
 
-    if (hasInvalidInput) {
-      showInvalidInputDialog()
-      return
-    }
+    if (!hasInvalidInput) {
+      val overriddenPlatformParameters = platformParameterStates.value
+        ?.filter { (id, value) -> resetParameters[id] != value }
+        ?.map { (id, value) ->
+          OverriddenPlatformParameter.newBuilder()
+            .setId(id)
+            .setOverriddenValue(value)
+            .build()
+        }.orEmpty()
 
-    val overriddenParameters = computeOverriddenParameters()
-    val resetParameters = getResetParameters().keys.toList()
-
-    when {
-      resetParameters.isNotEmpty() -> applyResetsThenOverrides(overriddenParameters)
-      overriddenParameters.isNotEmpty() -> overridePlatformParameters(overriddenParameters)
-      else -> activity.finish()
+      platformParameterControllerDebugImpl.resetPlatformParameters(resetParameters.keys.toList())
+        .toLiveData().observe(fragment) {
+          when (it) {
+            is AsyncResult.Success -> {
+              overridePlatformParameters(overriddenPlatformParameters)
+            }
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "PlatformParametersFragmentPresenter",
+                "Failed to reset platform parameters: ",
+                it.error
+              )
+            }
+            is AsyncResult.Pending -> {} // Wait for a result.
+          }
+        }
+    } else {
+      AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
+        .setTitle(R.string.platform_parameter_invalid_input_alert_dialog_title)
+        .setMessage(R.string.platform_parameter_invalid_input_alert_dialog_message)
+        .setPositiveButton(
+          R.string.platform_parameter_invalid_input_alert_dialog_okay_button
+        ) { dialog, _ -> dialog.dismiss() }
+        .setCancelable(false)
+        .show()
     }
   }
 
-  private fun computeOverriddenParameters(): List<OverriddenPlatformParameter> {
-    val resetParamsValue = getResetParameters()
-
-    return platformParameterViewModel.platformParameterStates.value
-      ?.filter { (id, value) -> resetParamsValue[id] != value }
-      ?.map { (id, value) ->
-        OverriddenPlatformParameter.newBuilder()
-          .setId(id)
-          .setOverriddenValue(value)
-          .build()
-      }
-      .orEmpty()
-  }
-
-  private fun applyResetsThenOverrides(overriddenParameters: List<OverriddenPlatformParameter>) {
-    val resetParameters = getResetParameters().keys.toList()
+  private fun overridePlatformParameters(
+    overriddenPlatformParameters: List<OverriddenPlatformParameter>
+  ) {
     platformParameterControllerDebugImpl
-      .resetPlatformParameters(resetParameters)
-      .toLiveData()
-      .observe(fragment) { result ->
-        when (result) {
+      .updateOverriddenPlatformParameters(overriddenPlatformParameters).toLiveData()
+      .observe(fragment) {
+        when (it) {
           is AsyncResult.Success -> {
-            overridePlatformParameters(overriddenParameters)
+            (activity as PlatformParametersActivity).finish()
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "PlatformParametersFragmentPresenter",
               "Failed to reset platform parameters: ",
-              result.error
+              it.error
             )
           }
           is AsyncResult.Pending -> {} // Wait for a result.
         }
       }
-  }
-
-  private fun overridePlatformParameters(overriddenParameters: List<OverriddenPlatformParameter>) {
-    platformParameterControllerDebugImpl
-      .updateOverriddenPlatformParameters(overriddenParameters)
-      .toLiveData()
-      .observe(fragment) { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            activity.finish()
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "PlatformParametersFragmentPresenter",
-              "Failed to override platform parameters: ",
-              result.error
-            )
-          }
-          is AsyncResult.Pending -> {} // Wait for a result.
-        }
-      }
-  }
-
-  private fun showInvalidInputDialog() {
-    AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setTitle(R.string.platform_parameter_invalid_input_alert_dialog_title)
-      .setMessage(R.string.platform_parameter_invalid_input_alert_dialog_message)
-      .setPositiveButton(
-        R.string.platform_parameter_invalid_input_alert_dialog_okay_button
-      ) { dialog, _ -> dialog.dismiss() }
-      .setCancelable(false)
-      .show()
   }
 
   private fun bindPlatformParameterItem(
@@ -208,30 +198,24 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel
   ) {
     binding.viewModel = model
+    setPlatformParameterBackgroundColor(model, binding)
+
     val editText = binding.platformParameterInputEditText
     val previousWatcher = editText.getTag(R.id.platform_parameter_text_watcher) as? TextWatcher
     previousWatcher?.let { editText.removeTextChangedListener(it) }
 
-    platformParameterViewModel.platformParameterStates.observe(fragment) {
-      binding.platformParameterConstraintLayout.setBackgroundColor(
-        setPlatformParameterBackgroundColor(
-          it.containsKey(model.platformParameterId),
-          model
-        )
-      )
-    }
-
-    val resetParamsValue = getResetParameters()
-    if (resetParamsValue.containsKey(model.platformParameterId)) {
+    if (resetParameters.containsKey(model.platformParameterId)) {
       model.isParamOverridden.set(true)
+      model.isResetButtonActive.set(false)
+      model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
     }
 
     binding.resetButton.setOnClickListener {
-      handleResetParameter(model)
+      handleResetParameter(model, binding)
     }
 
     if (model.currentValue.hasBoolean()) {
-      handleBooleanParameter(model)
+      handleBooleanParameter(model, binding)
     } else {
       handleTextInputParameter(model, binding)
     }
@@ -252,16 +236,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
   private fun handleResetParameter(
     model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
   ) {
     val restoredParameterValue = model.afterResetValue
-    val currentResetParams = getResetParameters()
-    currentResetParams[model.platformParameterId] = restoredParameterValue
-    platformParameterViewModel.resetParameters.value = currentResetParams
+    resetParameters[model.platformParameterId] = restoredParameterValue
+    model.syncDetails.set(getSyncDetails(model.afterResetSyncStatus))
 
     if (model.currentValue.hasBoolean()) {
-      val currentStates = getPlatformParameterStates()
-      currentStates[model.platformParameterId] = restoredParameterValue
-      platformParameterViewModel.platformParameterStates.value = currentStates
+      platformParameterStates.value = platformParameterStates.value?.apply {
+        this[model.platformParameterId] = restoredParameterValue
+      }
       model.isChecked.set(restoredParameterValue.boolean)
     } else {
       when {
@@ -274,19 +258,21 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         }
       }
     }
+
+    model.isResetButtonActive.set(false)
+    setPlatformParameterBackgroundColor(model, binding)
   }
 
   private fun handleTextInputParameter(
     model: PlatformParameterItemViewModel,
     binding: PlatformParameterItemBinding
   ) {
-    val paramState =
-      platformParameterViewModel.platformParameterStates.value?.get(model.platformParameterId)
+    val paramState = platformParameterStates.value?.get(model.platformParameterId)
     val editText = binding.platformParameterInputEditText
     when {
       model.currentValue.hasInteger() -> {
         editText.inputType = InputType.TYPE_CLASS_NUMBER
-        if (getPlatformParameterStates().containsKey(model.platformParameterId) &&
+        if (platformParameterStates.value?.containsKey(model.platformParameterId) == true &&
           paramState != null
         ) {
           model.inputErrorMsg.set("")
@@ -310,13 +296,25 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         if (boundParamIds.contains(id).not()) {
           return@onPlatformParameterTextChangedCallback
         }
-        val resetParamsValue = getResetParameters()
-        val lastValidValue = getLastValidValue(model)
+        val originalValue = if (resetParameters.containsKey(model.platformParameterId)) {
+          when {
+            model.afterResetValue.hasInteger() -> model.afterResetValue.integer.toString()
+            model.afterResetValue.hasString() -> model.afterResetValue.string
+            else -> ""
+          }
+        } else {
+          when {
+            model.currentValue.hasInteger() -> model.currentValue.integer.toString()
+            model.currentValue.hasString() -> model.currentValue.string
+            else -> ""
+          }
+        }
+
         editText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
           if (!hasFocus) {
             val currentText = editText.text?.toString().orEmpty()
             if (currentText.isBlank()) {
-              editText.setText(lastValidValue)
+              model.inputValue.set(originalValue)
               model.inputErrorMsg.set("")
             }
           }
@@ -324,32 +322,31 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
         when {
           model.currentValue.hasInteger() -> {
-            if (text == model.currentValue.integer.toString() && id !in resetParamsValue) {
-              val currentStates =
-                getPlatformParameterStates()
-              currentStates.remove(id)
-              platformParameterViewModel.platformParameterStates.value = currentStates
+            if (text == model.currentValue.integer.toString() && id !in resetParameters) {
+              platformParameterStates.value = platformParameterStates.value?.apply {
+                remove(id)
+              }
               model.inputErrorMsg.set("")
             } else {
               val parsed = text.toIntOrNull()
               if (parsed == null) {
                 model.inputErrorMsg.set(invalidInputErrorText)
-                val currentStates = getPlatformParameterStates()
-                currentStates[id] = null
-                platformParameterViewModel.platformParameterStates.value = currentStates
+                platformParameterStates.value = platformParameterStates.value?.apply {
+                  this[id] = null
+                }
               } else {
                 model.inputErrorMsg.set("")
-                val currentStates = getPlatformParameterStates()
-                currentStates[id] = PlatformParameterValue.newBuilder().setInteger(parsed).build()
-                platformParameterViewModel.platformParameterStates.value = currentStates
+                platformParameterStates.value = platformParameterStates.value?.apply {
+                  this[id] = PlatformParameterValue.newBuilder().setInteger(parsed).build()
+                }
               }
             }
           }
           model.currentValue.hasString() -> {
-            if (text == model.currentValue.string && id !in resetParamsValue) {
-              val currentStates = getPlatformParameterStates()
-              currentStates.remove(id)
-              platformParameterViewModel.platformParameterStates.value = currentStates
+            if (text == model.currentValue.string && id !in resetParameters) {
+              platformParameterStates.value = platformParameterStates.value?.apply {
+                remove(id)
+              }
               model.inputErrorMsg.set("")
             } else {
               if (text.isBlank()) {
@@ -357,82 +354,78 @@ class PlatformParametersFragmentPresenter @Inject constructor(
               } else {
                 model.inputErrorMsg.set("")
               }
-              val currentStates = getPlatformParameterStates()
-              currentStates[id] = PlatformParameterValue.newBuilder()
-                .setString(text)
-                .build()
-              platformParameterViewModel.platformParameterStates.value = currentStates
+              platformParameterStates.value = platformParameterStates.value?.apply {
+                this[id] = PlatformParameterValue.newBuilder()
+                  .setString(text)
+                  .build()
+              }
             }
           }
         }
+        setPlatformParameterBackgroundColor(model, binding)
       }
   }
 
   private fun handleBooleanParameter(
-    model: PlatformParameterItemViewModel
+    model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
   ) {
-    if (getPlatformParameterStates().containsKey(model.platformParameterId)) {
-      model.isChecked.set(getPlatformParameterStates()[model.platformParameterId]?.boolean)
+    if (platformParameterStates.value?.containsKey(model.platformParameterId) == true) {
+      model.isChecked.set(platformParameterStates.value?.get(model.platformParameterId)?.boolean)
     }
 
     model.onPlatformParameterToggledCallback = { id, value ->
-      val resetParamsValue = getResetParameters()
-      if (value == model.currentValue.boolean && !resetParamsValue.containsKey(id)) {
-        val currentStates = getPlatformParameterStates()
-        currentStates.remove(id)
-        platformParameterViewModel.platformParameterStates.value = currentStates
+      if (value == model.currentValue.boolean && !resetParameters.containsKey(id)) {
+        platformParameterStates.value = platformParameterStates.value?.apply {
+          remove(id)
+        }
       } else {
-        val currentStates = getPlatformParameterStates()
-        currentStates[id] = PlatformParameterValue.newBuilder()
-          .setBoolean(value)
-          .build()
-        platformParameterViewModel.platformParameterStates.value = currentStates
+        platformParameterStates.value = platformParameterStates.value?.apply {
+          this[id] = PlatformParameterValue.newBuilder()
+            .setBoolean(value)
+            .build()
+        }
       }
+      setPlatformParameterBackgroundColor(model, binding)
     }
   }
 
-  private fun getLastValidValue(model: PlatformParameterItemViewModel): String {
-    val resetParamsValue = getResetParameters()
-    val value = if (resetParamsValue.containsKey(model.platformParameterId)) {
-      model.afterResetValue
-    } else {
-      model.currentValue
-    }
-    return when {
-      value.hasInteger() -> value.integer.toString()
-      value.hasString() -> value.string
-      else -> ""
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.SYNCED_FROM_SERVER -> {
+        // TODO(#5345): Replace this placeholder message with the actual server last-synced timestamp when available..
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
+      }
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
     }
   }
 
   private fun setPlatformParameterBackgroundColor(
-    isModified: Boolean,
-    model: PlatformParameterItemViewModel
-  ): Int {
-    return when {
-      isModified ->
+    model: PlatformParameterItemViewModel,
+    binding: PlatformParameterItemBinding
+  ) {
+    val isModified = platformParameterStates.value?.containsKey(model.platformParameterId) ?: false
+
+    binding.platformParameterConstraintLayout.setBackgroundColor(
+      if (isModified) {
         ContextCompat.getColor(
           fragment.requireContext(),
           R.color.component_color_platform_parameter_modified_background_color
         )
-      model.syncStatus == SyncStatus.LOCAL_OVERRIDE ->
-        ContextCompat.getColor(
-          fragment.requireContext(),
-          R.color.component_color_platform_parameter_overridden_background_color
-        )
-      else ->
-        ContextCompat.getColor(
-          fragment.requireContext(),
-          R.color.component_color_shared_item_background_solid_color
-        )
-    }
-  }
-
-  private fun getPlatformParameterStates():
-    MutableMap<PlatformParameterId, PlatformParameterValue?> {
-      return platformParameterViewModel.platformParameterStates.value ?: mutableMapOf()
-    }
-  private fun getResetParameters(): MutableMap<PlatformParameterId, PlatformParameterValue> {
-    return platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+      } else {
+        if (model.syncStatus == SyncStatus.LOCAL_OVERRIDE) {
+          ContextCompat.getColor(
+            fragment.requireContext(),
+            R.color.component_color_platform_parameter_overridden_background_color
+          )
+        } else {
+          ContextCompat.getColor(
+            fragment.requireContext(),
+            R.color.component_color_shared_item_background_solid_color
+          )
+        }
+      }
+    )
   }
 }

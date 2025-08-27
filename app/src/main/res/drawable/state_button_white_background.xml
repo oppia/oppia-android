@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:shape="rectangle">
+  <corners android:radius="4dp"/>
+  <solid android:color="@color/component_color_shared_item_background_solid_color"/>
+  <stroke
+    android:width="2dp"
+    android:color="@color/component_color_shared_screen_tertiary_background_color" />
+</shape>
