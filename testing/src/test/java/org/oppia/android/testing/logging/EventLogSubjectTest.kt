@@ -4936,7 +4936,7 @@ class EventLogSubjectTest {
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
       }
   }
-  
+
   @Test
   fun testEventLogSubject_hasOpenFlashbackContext_hasFlashbackContext() {
     val flashbackContext = FlashbackContext.newBuilder()

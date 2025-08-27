@@ -85,6 +85,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Co
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FlashbackContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ForegroundAppTimeContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
@@ -98,7 +99,6 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Re
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SensitiveStringContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.StoryContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SubmitAnswerContext
-import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FlashbackContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SurveyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.SwitchInLessonLanguageContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.TopicContext
@@ -122,6 +122,7 @@ import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEve
 import org.oppia.android.app.model.EventLog.ConsoleLoggerContext as ConsoleLoggerEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext as FeatureFlagListEventContext
+import org.oppia.android.app.model.EventLog.FlashbackContext as FlashbackEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
@@ -133,7 +134,6 @@ import org.oppia.android.app.model.EventLog.RetrofitCallFailedContext as Retrofi
 import org.oppia.android.app.model.EventLog.RevisionCardContext as RevisionCardEventContext
 import org.oppia.android.app.model.EventLog.StoryContext as StoryEventContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext as SubmitAnswerEventContext
-import org.oppia.android.app.model.EventLog.FlashbackContext as FlashbackEventContext
 import org.oppia.android.app.model.EventLog.SurveyContext as SurveyEventContext
 import org.oppia.android.app.model.EventLog.TopicContext as TopicEventContext
 import org.oppia.android.app.model.EventLog.VoiceoverActionContext as VoiceoverActionEventContext
