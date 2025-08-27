@@ -230,7 +230,7 @@ class AndroidLintAnalyzer(
       "DuplicateStrings",
       // TextViews are kept non-selectable to avoid conflicts with user interactions.
       "SelectableText",
-
+      // TODO(#5887): Re-enable below checks once the AAR/JAR files issue is fixed.
       "UnusedResources",
       "UnusedAttribute",
       "UnknownNullness",
