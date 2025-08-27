@@ -40,7 +40,8 @@ class FeatureFlagsViewModel @Inject constructor(
   }
 
   /** Tracks whether the Save button is currently enabled (clickable). */
-  var isSaveButtonActive = ObservableField(false)
+  var isSaveButtonActive: ObservableField<Boolean> = ObservableField(false)
+
   private fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
   ): List<EphemeralFeatureFlag> {

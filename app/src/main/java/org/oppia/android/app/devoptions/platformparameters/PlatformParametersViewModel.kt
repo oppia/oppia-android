@@ -40,7 +40,7 @@ class PlatformParametersViewModel @Inject constructor(
   }
 
   /** Tracks whether the Save button is currently enabled (clickable). */
-  var isSaveButtonActive = ObservableField(false)
+  var isSaveButtonActive: ObservableField<Boolean> = ObservableField(false)
 
   private fun processEphemeralParameterResult(
     result: AsyncResult<List<EphemeralPlatformParameter>>

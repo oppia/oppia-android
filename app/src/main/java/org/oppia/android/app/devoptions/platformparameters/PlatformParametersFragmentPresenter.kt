@@ -314,7 +314,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           if (!hasFocus) {
             val currentText = editText.text?.toString().orEmpty()
             if (currentText.isBlank()) {
-              model.inputValue.set(originalValue)
+              editText.setText(originalValue)
               model.inputErrorMsg.set("")
             }
           }
