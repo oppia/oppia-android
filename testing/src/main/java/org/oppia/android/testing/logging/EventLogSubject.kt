@@ -19,6 +19,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.ABANDON_
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_BACKGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.DELETE_PROFILE_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD_CONTEXT
@@ -31,6 +32,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_S
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
@@ -71,8 +73,6 @@ import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.model.UserTypeAnswer
 import org.oppia.android.app.model.WrittenTranslationLanguageSelection
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 
 /**
  * Truth subject for verifying properties of [EventLog]s.

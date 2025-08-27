@@ -13,6 +13,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_B
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
@@ -28,6 +29,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_S
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
@@ -141,8 +143,6 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsa
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -291,7 +291,7 @@ class EventBundleCreator @Inject constructor(
         ProfileOnboardingContext(activityName, startProfileOnboardingEvent)
       END_PROFILE_ONBOARDING_EVENT ->
         ProfileOnboardingContext(activityName, endProfileOnboardingEvent)
-      OPEN_FLASHBACK_EVENT-> FlashbackContext(activityName, openFlashbackEvent)
+      OPEN_FLASHBACK_EVENT -> FlashbackContext(activityName, openFlashbackEvent)
       CLOSE_FLASHBACK_EVENT -> CardContext(activityName, closeFlashbackEvent)
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
     }
