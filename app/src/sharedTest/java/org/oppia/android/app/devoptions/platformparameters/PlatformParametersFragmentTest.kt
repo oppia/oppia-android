@@ -1069,13 +1069,14 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
   fun testPlatformParametersFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
     executeInPreviousAppInstance { component ->
       addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenario ->
+    launch(PlatformParametersActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -1093,7 +1094,7 @@ class PlatformParametersFragmentTest {
       scenario.close()
     }
 
-    launch(PlatformParametersTestActivity::class.java).use {
+    launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -1175,6 +1176,107 @@ class PlatformParametersFragmentTest {
 
       onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
         .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_noChanges_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(5)
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_saveButtonIsEnabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_backgroundHasSkyBlueColor() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.color_def_sky_blue)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_configChange_skyBlueColorPersists() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.color_def_sky_blue)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParameter_clickSave_reopenDashboard_valuePersits() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      launch(PlatformParametersActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).check(matches(not(isChecked())))
+      }
     }
   }
 
