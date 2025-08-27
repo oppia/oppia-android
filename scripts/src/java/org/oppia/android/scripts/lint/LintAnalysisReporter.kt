@@ -498,7 +498,7 @@ class LintAnalysisReporter {
       printGroupedByFilePath(issues)
     }
 
-    printFinalResult(issues, redundantExemptionsCount, reportUnusedEnum,allIssues)
+    printFinalResult(issues, redundantExemptionsCount, reportUnusedEnum, allIssues)
   }
 
   /**
