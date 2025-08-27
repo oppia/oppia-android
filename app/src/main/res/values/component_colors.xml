@@ -337,6 +337,8 @@
   <color name="component_color_classroom_promoted_list_card_background_color">@color/color_palette_classroom_promoted_list_card_background_color</color>
   <!-- Platform Parameters Activity -->
   <color name="component_color_platform_parameter_overridden_background_color">@color/color_palette_overridden_background_color</color>
+  <color name="component_color_platform_parameter_modified_background_color">@color/color_palette_modified_background_color</color>
   <!-- Feature Flags Activity -->
   <color name="component_color_feature_flag_overridden_background_color">@color/color_palette_overridden_background_color</color>
+  <color name="component_color_feature_flag_modified_background_color">@color/color_palette_modified_background_color</color>
 </resources>

@@ -300,4 +300,5 @@
   <color name="color_palette_flashback_toolbar_color">@color/color_def_oppia_brown_dark</color>
   <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
   <color name="color_palette_overridden_background_color">@color/color_def_pale_yellow</color>
+  <color name="color_palette_modified_background_color">@color/color_def_sky_blue</color>
 </resources>

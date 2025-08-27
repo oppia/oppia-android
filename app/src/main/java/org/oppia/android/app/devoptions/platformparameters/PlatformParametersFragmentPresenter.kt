@@ -409,7 +409,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     binding.platformParameterConstraintLayout.setBackgroundColor(
       if (isModified) {
-        ContextCompat.getColor(fragment.requireContext(), R.color.color_def_sky_blue)
+        ContextCompat.getColor(
+          fragment.requireContext(),
+          R.color.component_color_platform_parameter_modified_background_color
+        )
       } else {
         if (model.syncStatus == SyncStatus.LOCAL_OVERRIDE) {
           ContextCompat.getColor(

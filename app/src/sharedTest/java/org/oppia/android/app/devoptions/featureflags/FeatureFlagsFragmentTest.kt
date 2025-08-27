@@ -767,7 +767,8 @@ class FeatureFlagsFragmentTest {
 
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = context.getColor(R.color.color_def_sky_blue)
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_modified_background_color)
       )
     }
   }
@@ -790,7 +791,8 @@ class FeatureFlagsFragmentTest {
 
       verifyFeatureFlagBackgroundColor(
         position = 0,
-        expectedColor = context.getColor(R.color.color_def_sky_blue)
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_modified_background_color)
       )
     }
   }

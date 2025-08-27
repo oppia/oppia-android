@@ -1221,7 +1221,8 @@ class PlatformParametersFragmentTest {
       ).perform(click())
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = context.getColor(R.color.color_def_sky_blue)
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
       )
     }
   }
@@ -1244,7 +1245,8 @@ class PlatformParametersFragmentTest {
 
       verifyPlatformParameterBackgroundColor(
         position = 0,
-        expectedColor = context.getColor(R.color.color_def_sky_blue)
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
       )
     }
   }
