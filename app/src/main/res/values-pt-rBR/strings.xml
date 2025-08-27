@@ -612,7 +612,7 @@
   <string name="lock_icon_content_description">Ícone de cadeado</string>
   <string name="download_status_image_content_description">Estado de download</string>
   <string name="font_scale_html_content_text">Conteúdo HTML</string>
-  <string name="onboarding_language_activity_title">Bem vindo a %s!</string>
+  <string name="onboarding_language_activity_title">Bem-vindo a %s!</string>
   <string name="onboarding_language_activity_subtitle">Aprenda matemática gratuitamente, a qualquer hora!</string>
   <string name="onboarding_language_activity_text">Feito para estudantes de 7 a 14 anos</string>
   <string name="onboarding_language_activity_select_label">Selecione um idioma para começar</string>
@@ -643,7 +643,7 @@
   <string name="onboarding_navigation_back">Voltar</string>
   <string name="onboarding_navigation_continue">Continuar</string>
   <string name="audio_language_fragment_text">Em %s, você pode ouvir as lições!</string>
-  <string name="audio_language_fragment_subtitle">Selecione a lingua do áudio para ouvir às lições</string>
+  <string name="audio_language_fragment_subtitle">Selecione a língua do áudio para ouvir às lições</string>
   <string name="onboarding_step_count_five">Passo 5 de 5</string>
   <string name="arabic_language_display_name_content_description">Árabe</string>
 </resources>
