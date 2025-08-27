@@ -901,9 +901,8 @@ class ExplorationProgressController @Inject constructor(
       }
 
       hintHandler.navigateToPreviousState()
-      //subha
-      stateAnalyticsLogger?.logOpenFlashback(stateName)
       recomputeCurrentFlashbackStateAndNotifySync(stateName)
+      stateAnalyticsLogger?.logOpenFlashback(stateName)
     }
   }
 
@@ -921,11 +920,10 @@ class ExplorationProgressController @Inject constructor(
         "Cannot navigate to a next state if an answer submission is pending."
       }
 
-      stateAnalyticsLogger?.logCloseFlashback()
       if (!explorationProgress.stateDeck.isFlashbackViewed()) {
         explorationProgress.stateDeck.setFlashbackIsViewed()
       }
-
+      stateAnalyticsLogger?.logCloseFlashback()
       if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
         hintHandler.navigateBackToLatestPendingState()
 

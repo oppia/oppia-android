@@ -1254,24 +1254,6 @@ class EventLogSubjectTest {
       .isEqualTo(cardContext)
   }
 
-  //subha
-  @Test
-  fun testEventLogSubject_hasEndCardContext_hasFlashbackContext() {
-    val flashbackContext = FlashbackContext.newBuilder()
-      .setSkillId("SkillId")
-      .build()
-    val eventLog = EventLog.newBuilder()
-      .setContext(
-        EventLog.Context.newBuilder()
-          .setEndCardContext(flashbackContext)
-      )
-      .build()
-
-    assertThat(eventLog)
-      .hasEndCardContextThat()
-      .isEqualTo(cardContext)
-  }
-
   @Test
   fun testEventLogSubject_hasEndCardContext_failsWithDifferentCardContext() {
     val cardContext = CardContext.newBuilder()
@@ -4953,5 +4935,40 @@ class EventLogSubjectTest {
         hasFeatureFlagEnabledStateThat().isTrue()
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
       }
+  }
+  
+  @Test
+  fun testEventLogSubject_hasOpenFlashbackContext_hasFlashbackContext() {
+    val flashbackContext = FlashbackContext.newBuilder()
+      .setSkillId("SkillId")
+      .setStateNameToRevisit("Fractions")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenFlashbackEvent(flashbackContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasOpenFlashbackContextThat()
+      .isEqualTo(flashbackContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseFlashbackContext_hasCardContext() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseFlashbackEvent(cardContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasCloseFlashbackContextThat()
+      .isEqualTo(cardContext)
   }
 }

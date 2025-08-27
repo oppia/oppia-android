@@ -236,10 +236,10 @@ message EventLog {
       // first time.
       ProfileOnboardingContext end_profile_onboarding_event = 58;
 
-      //subha
-      FlashbackContext open_flashback = 59;
-      //subha
-      CardContext close_flashback = 60;
+      // The event being logged is related to opening flashback card.
+      FlashbackContext open_flashback_event = 59;
+      // The event being logged is related to closing flashback card.
+      CardContext close_flashback_event = 60;
     }
   }
 
@@ -324,7 +324,7 @@ message EventLog {
     bool is_answer_correct = 3;
   }
 
-  //subha
+  // Represents the event context for flashback within an exploration.
   message FlashbackContext {
     // Defined attributes that are common among other exploration related event log contexts.
     ExplorationContext exploration_details = 1;
@@ -332,7 +332,7 @@ message EventLog {
     // The ID of skill to which this exploration card is associated.
     string skill_id = 2;
 
-    //state name
+    // The name of the state the learner can revisit to review a concept.
     string state_name_to_revisit = 3;
   }
 

@@ -141,8 +141,8 @@ import org.oppia.android.app.model.OppiaMetricLog.MemoryUsageMetric as MemoryUsa
 import org.oppia.android.app.model.OppiaMetricLog.NetworkUsageMetric as NetworkUsagePerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StartupLatencyMetric as StartupLatencyPerformanceLoggableMetric
 import org.oppia.android.app.model.OppiaMetricLog.StorageUsageMetric as StorageUsagePerformanceLoggableMetric
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 
 // See https://firebase.google.com/docs/reference/cpp/group/parameter-names for context.
 private const val MAX_CHARACTERS_IN_PARAMETER_NAME = 40
@@ -247,8 +247,6 @@ class EventBundleCreator @Inject constructor(
       SOLUTION_UNLOCKED_CONTEXT -> ExplorationContext(activityName, solutionUnlockedContext)
       REVEAL_SOLUTION_CONTEXT -> ExplorationContext(activityName, revealSolutionContext)
       SUBMIT_ANSWER_CONTEXT -> SubmitAnswerContext(activityName, submitAnswerContext)
-      OPEN_FLASHBACK -> FlashbackContext(activityName, openFlashback)//subha
-      CLOSE_FLASHBACK -> CardContext(activityName, closeFlashback)//subha
       PLAY_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, playVoiceOverContext)
       PAUSE_VOICE_OVER_CONTEXT -> VoiceoverActionContext(activityName, pauseVoiceOverContext)
       APP_IN_BACKGROUND_CONTEXT -> LearnerDetailsContext(activityName, appInBackgroundContext)
@@ -293,6 +291,8 @@ class EventBundleCreator @Inject constructor(
         ProfileOnboardingContext(activityName, startProfileOnboardingEvent)
       END_PROFILE_ONBOARDING_EVENT ->
         ProfileOnboardingContext(activityName, endProfileOnboardingEvent)
+      OPEN_FLASHBACK_EVENT-> FlashbackContext(activityName, openFlashbackEvent)
+      CLOSE_FLASHBACK_EVENT -> CardContext(activityName, closeFlashbackEvent)
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
     }
   }
@@ -551,8 +551,8 @@ class EventBundleCreator @Inject constructor(
         store.putNonSensitiveValue("is_answer_correct", isAnswerCorrect.toString())
       }
     }
-    //subha
 
+    /** The [EventActivityContext] corresponding to [FlashbackEventContext]s. */
     class FlashbackContext(
       activityName: String,
       value: FlashbackEventContext

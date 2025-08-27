@@ -121,6 +121,9 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
+
 
 // For context:
 // https://github.com/oppia/oppia/blob/37285a/extensions/interactions/Continue/directives/oppia-interactive-continue.directive.ts.
@@ -3494,6 +3497,59 @@ class ExplorationProgressControllerTest {
     // Verify returned ephemeral state has latest pending state.
     assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
+  }
+
+  @Test
+  fun testFlashback_openedFlashback_logsOpenFlashbackEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+
+    val event = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == OPEN_FLASHBACK_EVENT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback open event was correctly logged.
+    assertThat(event!!).hasOpenFlashbackContextThat() {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("RatioInput")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testFlashback_closeFlashback_logsCloseFlashbackEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    moveBackToLatest()
+
+    val closeEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == CLOSE_FLASHBACK_EVENT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback close event was correctly logged.
+    assertThat(closeEvent!!).hasCloseFlashbackContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
   }
 
   private fun navigateToFlashbackState() {

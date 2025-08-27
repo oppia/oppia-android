@@ -376,10 +376,6 @@ class LearnerAnalyticsLogger @Inject constructor(
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setStartCardContext)
     }
 
-//    fun logEndFlashback() {
-//      logStateEvent(linkedSkillId, ::createFlashbackContext, EventBuilder::setOpenFlashbackContext)
-//    }
-
     /** Logs that this card has been completed. */
     fun logEndCard() {
       logStateEvent(linkedSkillId, ::createCardContext, EventBuilder::setEndCardContext)
@@ -482,21 +478,29 @@ class LearnerAnalyticsLogger @Inject constructor(
       )
     }
 
-    //subha
+    /**
+     * Logs that the learner opened a flashback. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
+     * specifies the state the learner can revisit to review the concept.
+     */
     fun logOpenFlashback(stateNameToRevisit: String) {
       logStateEvent(
         linkedSkillId,
         stateNameToRevisit,
         ::createFlashbackContext,
-        EventBuilder::setOpenFlashback
+        EventBuilder::setOpenFlashbackEvent
       )
     }
 
+    /**
+     * Logs that the learner closed a flashback. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state.
+     */
     fun logCloseFlashback() {
       logStateEvent(
         linkedSkillId,
         ::createCardContext,
-        EventBuilder::setCloseFlashback
+        EventBuilder::setCloseFlashbackEvent
       )
     }
 
@@ -683,7 +687,6 @@ class LearnerAnalyticsLogger @Inject constructor(
       this.explorationDetails = explorationDetails
     }.build()
 
-    //subha
     private fun createFlashbackContext(
       skillId: String,
       stateNameToRevisit: String,
