@@ -48,6 +48,7 @@
       android:layout_marginTop="@dimen/phone_shared_margin_small"
       android:layout_marginEnd="@dimen/phone_shared_margin_xl"
       android:text="@string/audio_language_fragment_subtitle"
+      android:labelFor="@id/audio_language_dropdown_list"
       android:textColor="@color/component_color_onboarding_shared_white_color"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
