@@ -7,6 +7,7 @@
     <item name="colorAccent">@color/color_palette_primary_color</item>
     <item name="actionBarTheme">@style/OppiaActionBarTheme</item>
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -18,10 +19,12 @@
     <item name="android:editTextStyle">@style/InputInteractionEditText</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
   </style>
 
   <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
     <item name="colorPrimaryDark">@color/component_color_revision_card_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -32,6 +35,7 @@
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
   </style>
 
   <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">

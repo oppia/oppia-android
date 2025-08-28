@@ -6,7 +6,6 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
-import android.graphics.Rect
 import android.graphics.RectF
 import android.text.Layout
 import android.text.Spannable
@@ -227,7 +226,8 @@ class MathBitmapModelLoader private constructor(
 
       override fun drawPath(path: Path, paint: Paint) {
         // TODO(#3616): Migrate to the proper SDK 35+ APIs.
-        @Suppress("DEPRECATION") // The replacement call is added in sdk 36. Current targetSdk is 35.
+        @Suppress("DEPRECATION") // The replacement call is added in sdk 36.
+        // Current targetSdk is 35.
         val pathBounds = RectF().also { path.computeBounds(it, /* unusedExact= */ true) }
         currentBounds.union(pathBounds.intersection(currentClip))
       }
