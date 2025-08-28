@@ -471,15 +471,15 @@ class LintAnalysisReporter {
     printSeveritySummary(issues, redundantExemptionsCount)
     println()
 
-    if (redundantExemptions.isNotEmpty()) {
-      logRedundantExemptions(redundantExemptions)
-    }
-
     println(
       "If you need additional help to resolve an issue," +
         " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
     )
     println()
+
+    if (redundantExemptions.isNotEmpty()) {
+      logRedundantExemptions(redundantExemptions)
+    }
 
     if (groupByIssueSeverity) {
       printGroupedByIssueSeverity(issues)
@@ -520,17 +520,34 @@ class LintAnalysisReporter {
     redundantExemptions: Map<String, List<String>>,
     exemptionFilePath: String = EXEMPTIONS_FILE_PATH
   ) {
-    if (redundantExemptions.isNotEmpty()) {
-      println("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
-      println("Please remove them from $exemptionFilePath")
-      println()
+    val totalCount = redundantExemptions.values.sumOf { it.size }
+    if (totalCount == 0) return
+    println("\n${"=".repeat(GROUP_SEPARATOR_LENGTH)}")
+    println(
+      "${BOLD}FILE: $exemptionFilePath" +
+        " ($totalCount ${if (totalCount == 1) "issue" else "issues"})$RESET"
+    )
+    println("=".repeat(GROUP_SEPARATOR_LENGTH))
 
-      redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
-        println("${BOLD}File: $filePath$RESET")
-        issueIds.forEach { issueId ->
-          println("  - ${toUpperSnakeCase(issueId)}")
+    var issueCounter = 0
+    redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
+      issueIds.forEach { issueId ->
+        issueCounter++
+        println(
+          "\n${BOLD}Issue $issueCounter of $totalCount:" +
+            " REDUNDANT_EXEMPTION$RESET"
+        )
+        println("  ${YELLOW}Severity: Warning$RESET")
+        println("  Message: Redundant exemption found. Please remove it from the file.")
+        println("  Explanation:")
+        println(
+          "    In $filePath the ${toUpperSnakeCase(issueId)} exemption is redundant and can be"
+        )
+        println("    removed since there are no corresponding lint issues.")
+
+        if (issueCounter < totalCount) {
+          println("-".repeat(ISSUE_SEPARATOR_LENGTH))
         }
-        println()
       }
     }
   }

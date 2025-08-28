@@ -1221,15 +1221,19 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
     val output = outputStream.toString()
 
-    assertThat(output).contains("Redundant exemptions")
+    assertThat(output).contains("REDUNDANT_EXEMPTION")
     assertThat(output).contains(
-      "Please remove them from scripts/assets/android_lint_exemptions.textproto"
+      "scripts/assets/android_lint_exemptions.textproto (3 issues)"
     )
-    assertThat(output).contains("File: file1.xml")
-    assertThat(output).contains("  - ISSUE_A")
-    assertThat(output).contains("  - ISSUE_B")
-    assertThat(output).contains("File: file2.kt")
-    assertThat(output).contains("  - ISSUE_C")
+    assertThat(output).contains(
+      "Message: Redundant exemption found." +
+        " Please remove it from the file."
+    )
+    assertThat(output).contains("file1.xml")
+    assertThat(output).contains("ISSUE_A")
+    assertThat(output).contains("ISSUE_B")
+    assertThat(output).contains("file2.kt")
+    assertThat(output).contains("ISSUE_C")
   }
 
   @Test
@@ -1297,15 +1301,15 @@ class LintAnalysisReporterTest {
     val output = outputStream.toString()
 
     assertThat(output).contains(
-      "${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET"
+      "REDUNDANT_EXEMPTION"
     )
     assertThat(output).contains(
-      "Please remove them from scripts/assets/android_lint_exemptions.textproto"
+      "FILE: scripts/assets/android_lint_exemptions.textproto (3 issues)"
     )
     assertThat(output).contains("${BOLD}File: app/src/main/java/TestFile.kt$RESET")
-    assertThat(output).contains("  - UNUSED_RESOURCES")
-    assertThat(output).contains("  - NEW_API")
-    assertThat(output).contains("  - TYPOS")
+    assertThat(output).contains("UNUSED_RESOURCES")
+    assertThat(output).contains("NEW_API")
+    assertThat(output).contains("TYPOS")
   }
 
   @Test
@@ -1319,9 +1323,9 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
     val output = outputStream.toString()
 
-    val aFilePos = output.indexOf("File: a_file.kt")
-    val mFilePos = output.indexOf("File: m_file.java")
-    val zFilePos = output.indexOf("File: z_file.xml")
+    val aFilePos = output.indexOf("a_file.kt")
+    val mFilePos = output.indexOf("m_file.java")
+    val zFilePos = output.indexOf("z_file.xml")
 
     assertThat(aFilePos).isLessThan(mFilePos)
     assertThat(mFilePos).isLessThan(zFilePos)
@@ -1337,7 +1341,7 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter.logRedundantExemptions(redundantExemptions, customPath)
     val output = outputStream.toString()
 
-    assertThat(output).contains("Please remove them from $customPath")
+    assertThat(output).contains("FILE: $customPath (1 issue)")
   }
 
   private fun createXmlFile(content: String, fileName: String = "lint-report.xml"): File {
