@@ -811,7 +811,6 @@ class AndroidLintRunnerTest {
     val output = outputStream.toString()
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
     assertThat(output).doesNotContain("UnusedAttribute")
-
   }
 
   @Test
