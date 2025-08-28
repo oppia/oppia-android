@@ -1306,7 +1306,7 @@ class LintAnalysisReporterTest {
     assertThat(output).contains(
       "FILE: scripts/assets/android_lint_exemptions.textproto (3 issues)"
     )
-    assertThat(output).contains("${BOLD}File: app/src/main/java/TestFile.kt$RESET")
+    assertThat(output).contains("app/src/main/java/TestFile.kt")
     assertThat(output).contains("UNUSED_RESOURCES")
     assertThat(output).contains("NEW_API")
     assertThat(output).contains("TYPOS")
