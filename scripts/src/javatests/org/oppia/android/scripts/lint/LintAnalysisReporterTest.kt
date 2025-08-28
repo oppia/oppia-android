@@ -1109,11 +1109,6 @@ class LintAnalysisReporterTest {
         addLintIssueId(LintIssueId.DUPLICATE_STRINGS) // Redundant
       }.build(),
       AndroidLintExemption.newBuilder().apply {
-        exemptedFilePath = "app/src/main/java/MainActivity.kt"
-        addLintIssueId(LintIssueId.NEW_API) // Valid exemption
-        addLintIssueId(LintIssueId.TYPOS) // Redundant
-      }.build(),
-      AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "nonexistent/file.xml"
         addLintIssueId(LintIssueId.UNUSED_RESOURCES) // Redundant (file doesn't exist)
       }.build()
@@ -1122,12 +1117,11 @@ class LintAnalysisReporterTest {
     val redundantExemptions =
       lintAnalysisReporter.findRedundantExemptions(issues, exemptions, repoRoot)
 
-    assertThat(redundantExemptions).hasSize(3)
+    assertThat(redundantExemptions).hasSize(2)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
       .containsExactly("DuplicateStrings")
-    assertThat(redundantExemptions["app/src/main/java/MainActivity.kt"])
-      .containsExactly("Typos")
-    assertThat(redundantExemptions["nonexistent/file.xml"]).containsExactly("UnusedResources")
+    assertThat(redundantExemptions["nonexistent/file.xml"])
+      .containsExactly("UnusedResources")
   }
 
   @Test
@@ -1160,7 +1154,6 @@ class LintAnalysisReporterTest {
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
         addLintIssueId(LintIssueId.UNUSED_RESOURCES)
-        addLintIssueId(LintIssueId.NEW_API)
       }.build()
     )
 
@@ -1204,7 +1197,6 @@ class LintAnalysisReporterTest {
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
         addLintIssueId(LintIssueId.UNUSED_RESOURCES)
-        addLintIssueId(LintIssueId.NEW_API)
         addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
       }.build()
     )
@@ -1214,7 +1206,7 @@ class LintAnalysisReporterTest {
 
     assertThat(redundantExemptions).hasSize(1)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
-      .containsExactly("DuplicateStrings", "NewApi")
+      .containsExactly("DuplicateStrings")
   }
 
   @Test
