@@ -11,6 +11,14 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
+      <TextView
+        android:id="@+id/test_input_label"
+        style="@style/AudioLanguageSubtitleStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/audio_language_fragment_subtitle"
+        android:labelFor="@id/test_autocomplete_view" />
+
       <AutoCompleteTextView
         android:id="@+id/test_autocomplete_view"
         android:layout_width="match_parent"
