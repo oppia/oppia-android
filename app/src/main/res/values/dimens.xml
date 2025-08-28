@@ -655,9 +655,6 @@
   <dimen name="profile_selection_fragment_profile_settings_size">14sp</dimen>
   <dimen name="profile_selection_fragment_recyclerview_padding">32dp</dimen>
   <dimen name="profile_selection_fragment_recyclerview_margin">8dp</dimen>
-  <dimen name="profile_selection_fragment_recyclerview_margin_single_item">120dp</dimen>
-  <dimen name="profile_selection_fragment_recyclerview_margin_few_items">72dp</dimen>
-  <dimen name="profile_selection_fragment_recyclerview_margin_many_items">16dp</dimen>
   <dimen name="profile_selection_fragment_icon_size">48dp</dimen>
   <dimen name="profile_selection_fragment_view_min_size">48dp</dimen>
   <dimen name="profile_selection_fragment_prompt_width">48dp</dimen>
@@ -669,16 +666,9 @@
   <dimen name="profile_selection_fragment_prompt_margin_bottom">12dp</dimen>
   <dimen name="profile_selection_fragment_scrollview_margin">72dp</dimen>
   <dimen name="profile_selection_fragment_header_margin">64dp</dimen>
-  <dimen name="profile_selection_fragment_scroll_arrow_vertical_margin">32dp</dimen>
-  <dimen name="profile_selection_fragment_scroll_arrow_horizontal_margin">20dp</dimen>
-  <dimen name="profile_selection_fragment_scroll_arrow_padding">8dp</dimen>
-  <dimen name="profile_selection_activity_profile_icon_size">70dp</dimen>
 
   <dimen name="profile_item_profile_icon_size">72dp</dimen>
   <dimen name="profile_item_profile_picture_stroke_width">2dp</dimen>
-  <dimen name="profile_item_horizontal_margin">16dp</dimen>
-  <dimen name="profile_item_vertical_margin">20dp</dimen>
-  <dimen name="profile_item_profile_name_text_margin">8dp</dimen>
 
   <!-- SectionTitleFragment -->
   <dimen name="section_title_divider_view_layout_margin_top">32dp</dimen>
