@@ -311,12 +311,23 @@ When redundant exemptions are detected, the script logs detailed information abo
 ## Example Redundant Exemption Output
 
 ```
-Redundant exemptions (no corresponding lint issues found):
-Please remove them from scripts/assets/android_lint_exemptions.textproto
+================================================================================
+FILE: scripts/assets/android_lint_exemptions.textproto (2 issues)
+================================================================================
 
-File: app/src/main/java/com/example/MainActivity.kt
-  - DUPLICATE_STRINGS
-  - BACK_BUTTON
+Issue 1 of 2: REDUNDANT_EXEMPTION
+  Severity: Warning
+  Message: Redundant exemption found. Please remove it from the file.
+  Explanation:
+    In app/src/main/java/com/example/MainActivity.kt the DUPLICATE_STRINGS exemption is redundant and can be
+    removed since there are no corresponding lint issues.
+------------------------------------------------------------
+Issue 2 of 2: REDUNDANT_EXEMPTION
+  Severity: Warning
+  Message: Redundant exemption found. Please remove it from the file.
+  Explanation:
+    In app/src/main/java/com/example/MainActivity.kt the BACK_BUTTON exemption is redundant and can be
+    removed since there are no corresponding lint issues.
 ```
 
 ## Recommended Action
