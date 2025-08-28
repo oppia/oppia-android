@@ -803,29 +803,15 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withUnusedAttribute_detectsIssue() {
+  fun testAndroidLintAnalyzer_withUnusedAttribute_issueIsSuppressed() {
     setupProjectWithUnusedAttribute()
 
-    val exception = assertThrows<IllegalStateException> {
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
-    }
-    assertThat(exception.message)
-      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
-    assertThat(output).contains("UnusedAttribute")
-    assertThat(output)
-      .contains("android:theme=\"@android:style/Theme.Holo\" />")
-    assertThat(output).contains("Line: 11")
-    assertThat(output)
-      .contains(
-        "Attribute `android:theme` is only used by `<include>` tags "
-      )
-    val projectDescriptionContent = projectDescriptionFile.readText()
-    assertThat(projectDescriptionContent)
-      .contains("app/src/main/res")
-    assertThat(projectDescriptionContent)
-      .contains("app/src/main/AndroidManifest.xml")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(output).doesNotContain("UnusedAttribute")
+
   }
 
   @Test
