@@ -1447,13 +1447,11 @@ class StatePlayerRecyclerViewAssembler private constructor(
           val userAnswer = submittedAnswerViewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              if (enableFlashbackSupport.value &&
-                submittedAnswerViewModel.isSelectionAnswerType()
-              ) {
+              if (submittedAnswerViewModel.isSelectionAnswerType()) {
                 showSelectionSubmittedAnswer(binding)
                 binding.selectionSubmittedAnswerRecyclerView.adapter =
-                  createSelectionSubmittedListAnswerAdapter(viewModel.getSelectionItemInputType())
-                binding.selectionSubmittedListAnswer = viewModel.choiceItems
+                  createSelectionSubmittedAnswerListAdapter(viewModel.getSelectionItemInputType())
+                binding.selectionSubmittedAnswerList = viewModel.choiceItems
               } else {
                 showSingleAnswer(binding)
                 val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
@@ -1619,7 +1617,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         .build()
     }
 
-    private fun createSelectionSubmittedListAnswerAdapter(
+    private fun createSelectionSubmittedAnswerListAdapter(
       selectionItemInputType: SelectionItemInputType
     ): BindableAdapter<SelectionSubmittedItemViewModel> {
       return when (selectionItemInputType) {

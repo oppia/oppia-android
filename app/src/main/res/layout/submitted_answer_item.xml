@@ -10,7 +10,7 @@
 
 
     <variable
-      name="SelectionSubmittedListAnswer"
+      name="SelectionSubmittedAnswerList"
       type="java.util.List&lt;org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel&gt;" />
 
     <variable
@@ -97,7 +97,7 @@
         android:paddingEnd="@dimen/selection_interaction_item_padding_end"
         android:paddingBottom="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:list="@{SelectionSubmittedListAnswer}" />
+        app:list="@{SelectionSubmittedAnswerList}" />
     </LinearLayout>
 
     <ImageView
