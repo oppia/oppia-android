@@ -2728,7 +2728,12 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("Eagle")))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2769,15 +2774,19 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("النسر"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "النسر",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
+  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2789,9 +2798,12 @@ class StateFragmentTest {
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
-      // The answer should stay in Arabic despite switching back to English.
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("النسر"))))
+      // The answer should switch to English.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2835,9 +2847,12 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("Green"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2883,16 +2898,19 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "أخضر")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("أخضر"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "أخضر",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
+  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2907,10 +2925,12 @@ class StateFragmentTest {
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      // The answer should stay in the language it was submitted in even if the language changes.
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("أخضر"))))
+      // The answer should switch to English.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -6859,6 +6879,10 @@ class StateFragmentTest {
 
   private fun setUpTestWithFlashbackFeatureOn() {
     TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    setUpTest()
+  }
+  private fun setUpTestWithFlashbackFeatureOff() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     setUpTest()
   }
 
