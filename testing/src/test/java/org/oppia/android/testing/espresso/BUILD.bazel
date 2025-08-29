@@ -1,0 +1,41 @@
+load("//:oppia_android_test.bzl", "oppia_android_test")
+
+oppia_android_test(
+    name = "TextInputActionTest",
+    srcs = ["TextInputActionTest.kt"],
+    custom_package = "org.oppia.android.testing.espresso",
+    test_class = "org.oppia.android.testing.espresso.TextInputActionTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/espresso:text_input_action",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_android_material_material",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
+
+oppia_android_test(
+    name = "EditTextInputActionTest",
+    srcs = ["EditTextInputActionTest.kt"],
+    custom_package = "org.oppia.android.testing.espresso",
+    test_class = "org.oppia.android.testing.espresso.EditTextInputActionTest",
+    test_manifest = "//testing:test_manifest",
+    deps = [
+        "//:dagger",
+        "//testing",
+        "//testing/src/main/java/org/oppia/android/testing/espresso:edit_text_input_action",
+        "//testing/src/main/java/org/oppia/android/testing/robolectric:test_module",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_coroutine_dispatchers",
+        "//testing/src/main/java/org/oppia/android/testing/threading:test_module",
+        "//third_party:androidx_test_ext_junit",
+        "//third_party:com_google_truth_truth",
+        "//third_party:junit_junit",
+        "//third_party:org_robolectric_robolectric",
+        "//third_party:robolectric_android-all",
+    ],
+)
