@@ -7,7 +7,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
@@ -66,11 +65,10 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     )
 
     if (featureFlagStates.isNotEmpty()) {
-      featureFlagsViewModel.featureFlagStates =
-        MutableLiveData(featureFlagStates.toMutableMap())
+      featureFlagsViewModel.featureFlagStates.value = featureFlagStates.toMutableMap()
     }
     if (resetFlags.isNotEmpty()) {
-      featureFlagsViewModel.resetFlags = MutableLiveData(resetFlags.toMutableMap())
+      featureFlagsViewModel.resetFlags.value = resetFlags.toMutableMap()
     }
 
     binding.apply {

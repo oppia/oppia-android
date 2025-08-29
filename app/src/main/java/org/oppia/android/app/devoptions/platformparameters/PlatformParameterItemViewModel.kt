@@ -1,6 +1,9 @@
 package org.oppia.android.app.devoptions.platformparameters
 
 import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SyncStatus
@@ -19,6 +22,7 @@ class PlatformParameterItemViewModel(
   val syncStatus: SyncStatus,
   val afterResetValue: PlatformParameterValue,
   val afterResetSyncStatus: SyncStatus,
+  val resetParameters: MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue>>,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
@@ -63,12 +67,25 @@ class PlatformParameterItemViewModel(
     ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
-  val isResetButtonActive: ObservableField<Boolean> = ObservableField(true)
+  val isResetButtonActive: LiveData<Boolean> by lazy {
+    Transformations.map(resetParameters) {
+      platformParameterId !in it
+    }
+  }
 
   /** Represents the platform parameter’s server-sync or override state. */
-  var syncDetails = ObservableField(processSyncDetails())
+  var syncDetails: LiveData<String> = Transformations.map(resetParameters, ::processSyncDetails)
 
-  private fun processSyncDetails(): String {
+  private fun processSyncDetails(
+    resetParameters: MutableMap<PlatformParameterId, PlatformParameterValue>
+  ): String {
+    return when {
+      resetParameters.containsKey(platformParameterId) -> getSyncDetails(afterResetSyncStatus)
+      else -> getSyncDetails(syncStatus)
+    }
+  }
+
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.LOCAL_OVERRIDE ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)

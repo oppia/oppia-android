@@ -17,7 +17,6 @@ class FeatureFlagItemViewModel(
   val syncStatus: SyncStatus,
   val afterResetValue: Boolean,
   val afterResetSyncStatus: SyncStatus,
-  val featureFlagStates: LiveData<MutableMap<FeatureFlagId, Boolean>>,
   val resetFlags: LiveData<MutableMap<FeatureFlagId, Boolean>>,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler

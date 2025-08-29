@@ -20,6 +20,9 @@ class PlatformParametersFragment : InjectableFragment() {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
+  @Inject
+  lateinit var platformParametersViewModel: PlatformParametersViewModel
+
   companion object {
     /** Returns a new instance of [PlatformParametersFragment]. */
     fun newInstance(): PlatformParametersFragment = PlatformParametersFragment()
@@ -69,7 +72,7 @@ class PlatformParametersFragment : InjectableFragment() {
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val validParameterOverrides =
-      platformParametersFragmentPresenter.platformParameterStates
+      platformParametersViewModel.platformParameterStates
         .value?.mapNotNull { (key, value) ->
         value?.let {
           OverriddenPlatformParameter.newBuilder()
@@ -80,7 +83,7 @@ class PlatformParametersFragment : InjectableFragment() {
       }
 
     val resetParamList =
-      platformParametersFragmentPresenter.resetParameters.mapNotNull { (id, value) ->
+      platformParametersViewModel.resetParameters.value?.mapNotNull { (id, value) ->
         OverriddenPlatformParameter.newBuilder()
           .setId(id)
           .setOverriddenValue(value)

@@ -1,10 +1,12 @@
 package org.oppia.android.app.devoptions.platformparameters
 
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.PlatformParameterId
+import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -24,6 +26,16 @@ class PlatformParametersViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
+
+  /** List of platform parameters that have been reset. */
+  val resetParameters: MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue>> =
+    MutableLiveData(mutableMapOf())
+
+  /** List of platform parameter states to be used in the fragment. */
+  val platformParameterStates:
+    MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue?>> =
+      MutableLiveData(mutableMapOf())
+
   private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
     Transformations.map(
       platformParameterControllerDebugImpl.loadEphemeralPlatformParameters().toLiveData(),
@@ -40,7 +52,11 @@ class PlatformParametersViewModel @Inject constructor(
   }
 
   /** Tracks whether the Save button is currently enabled (clickable). */
-  var isSaveButtonActive: ObservableField<Boolean> = ObservableField(false)
+  val isSaveButtonActive: LiveData<Boolean> by lazy {
+    Transformations.map(platformParameterStates) { states ->
+      states.isNotEmpty()
+    }
+  }
 
   private fun processEphemeralParameterResult(
     result: AsyncResult<List<EphemeralPlatformParameter>>
@@ -67,6 +83,7 @@ class PlatformParametersViewModel @Inject constructor(
         syncStatus = ephemeralPlatformParameter.syncStatus,
         afterResetValue = ephemeralPlatformParameter.afterResetValue,
         afterResetSyncStatus = ephemeralPlatformParameter.afterResetSyncStatus,
+        resetParameters = resetParameters,
         machineLocale = machineLocale,
         resourceHandler = resourceHandler
       )

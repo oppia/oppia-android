@@ -77,7 +77,6 @@ class FeatureFlagsViewModel @Inject constructor(
           syncStatus = ephemeralFeatureFlag.syncStatus,
           afterResetValue = ephemeralFeatureFlag.afterResetValue,
           afterResetSyncStatus = ephemeralFeatureFlag.afterResetSyncStatus,
-          featureFlagStates = featureFlagStates,
           resetFlags = resetFlags,
           machineLocale = machineLocale,
           resourceHandler = resourceHandler
