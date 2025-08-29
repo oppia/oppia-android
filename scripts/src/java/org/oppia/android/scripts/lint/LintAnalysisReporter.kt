@@ -121,6 +121,13 @@ private data class CacheEntry(
   val issues: List<LintIssue>
 )
 
+private data class ExemptionLocation(
+  val filePath: String,
+  val issueId: String,
+  val lineNumber: Int,
+  val errorLine: String
+)
+
 /** Reporter class for analyzing XML lint reports and extracting issues. */
 class LintAnalysisReporter(private val repoRoot: File) {
 
@@ -517,6 +524,9 @@ class LintAnalysisReporter(private val repoRoot: File) {
   ) {
     val totalCount = redundantExemptions.values.sumOf { it.size }
     if (totalCount == 0) return
+
+    val exemptionLocations = parseExemptionLocations(exemptionFilePath)
+
     println("\n${"=".repeat(GROUP_SEPARATOR_LENGTH)}")
     println(
       "${BOLD}FILE: $exemptionFilePath" +
@@ -533,6 +543,15 @@ class LintAnalysisReporter(private val repoRoot: File) {
             " REDUNDANT_EXEMPTION$RESET"
         )
         println("  ${YELLOW}Severity: Warning$RESET")
+
+        val locationKey = "$filePath:$issueId"
+        val location = exemptionLocations[locationKey]
+
+        if (location != null) {
+          println("  Line: ${location.lineNumber}")
+          println("  Error Line: ${location.errorLine}")
+        }
+
         println("  Message: Redundant exemption found. Please remove it from the file.")
         println("  Explanation:")
         println(
@@ -837,5 +856,65 @@ class LintAnalysisReporter(private val repoRoot: File) {
       errorLine2 = issueElement.getAttribute("errorLine2"),
       locations = locations
     )
+  }
+
+  /**
+   * Parses the exemption text proto file to extract line numbers and error lines for exemptions.
+   *
+   * @param exemptionFilePath Path to the exemption text proto file
+   * @return Map of file path + issue ID to ExemptionLocation
+   */
+  private fun parseExemptionLocations(exemptionFilePath: String): Map<String, ExemptionLocation> {
+    val exemptionFile = File(repoRoot, exemptionFilePath)
+    if (!exemptionFile.exists()) {
+      return emptyMap()
+    }
+
+    val locations = mutableMapOf<String, ExemptionLocation>()
+
+    try {
+      val lines = exemptionFile.readLines()
+      var currentFilePath = ""
+      var currentLineNumber: Int
+
+      lines.forEachIndexed { index, line ->
+        currentLineNumber = index + 1
+        val trimmedLine = line.trim()
+
+        // Check for exempted_file_path
+        if (trimmedLine.contains("exempted_file_path:")) {
+          val pathMatch = Regex("""exempted_file_path:\s*"([^"]+)"""").find(trimmedLine)
+          if (pathMatch != null) {
+            currentFilePath = pathMatch.groupValues[1]
+          }
+        }
+
+        // Check for lint_issue_id
+        if (trimmedLine.contains("lint_issue_id:")) {
+          val issueMatch = Regex("""lint_issue_id:\s*(\w+)""").find(trimmedLine)
+          if (issueMatch != null && currentFilePath.isNotEmpty()) {
+            val issueId = issueMatch.groupValues[1]
+            val issueIdEnum = try {
+              LintIssueId.valueOf(issueId)
+            } catch (e: IllegalArgumentException) {
+              null
+            }
+            val issueIdString = issueIdEnum?.let { issueIdToString[it] } ?: issueId
+            val key = "$currentFilePath:$issueIdString"
+
+            locations[key] = ExemptionLocation(
+              filePath = currentFilePath,
+              issueId = issueIdString,
+              lineNumber = currentLineNumber,
+              errorLine = trimmedLine
+            )
+          }
+        }
+      }
+    } catch (e: Exception) {
+      return emptyMap()
+    }
+
+    return locations
   }
 }

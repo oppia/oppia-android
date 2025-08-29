@@ -1298,6 +1298,21 @@ class LintAnalysisReporterTest {
 
   @Test
   fun testLogRedundantExemptions_singleFileMultipleIssues_printsCorrectFormat() {
+    // Create mock exemption file with the redundant exemptions
+    val exemptionFile = File(repoRoot, "scripts/assets/android_lint_exemptions.textproto")
+    exemptionFile.writeText("""
+    android_lint_exemption: {
+      exempted_file_path: "app/src/main/java/TestFile.kt"
+      lint_issue_id: UNUSED_RESOURCES
+      lint_issue_id: NEW_API
+      lint_issue_id: TYPOS
+    }
+    android_lint_exemption: {
+      exempted_file_path: "app/src/main/java/OtherFile.kt"
+      lint_issue_id: MISSING_TRANSLATION
+    }
+  """.trimIndent())
+
     val redundantExemptions = mapOf(
       "app/src/main/java/TestFile.kt" to listOf("UnusedResources", "NewApi", "Typos")
     )
@@ -1315,6 +1330,9 @@ class LintAnalysisReporterTest {
     assertThat(output).contains("UNUSED_RESOURCES")
     assertThat(output).contains("NEW_API")
     assertThat(output).contains("TYPOS")
+
+    assertThat(output).contains("Line: 3")
+    assertThat(output).contains("Error Line: lint_issue_id: UNUSED_RESOURCES")
   }
 
   @Test
