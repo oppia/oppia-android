@@ -131,7 +131,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     when {
       resetParameters.isNotEmpty() -> applyResetsThenOverrides(overriddenParameters)
       overriddenParameters.isNotEmpty() -> overridePlatformParameters(overriddenParameters)
-      else -> (activity as PlatformParametersActivity).finish()
+      else -> activity.finish()
     }
   }
 
@@ -178,7 +178,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            (activity as PlatformParametersActivity).finish()
+            activity.finish()
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(
