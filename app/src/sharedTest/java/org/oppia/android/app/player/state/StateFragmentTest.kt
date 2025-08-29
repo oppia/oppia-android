@@ -6196,6 +6196,20 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.selection_submitted_answer_recycler_view,
         position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.unselected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
         targetViewId = R.id.multiple_choice_content_text_view
       )
     ).check(matches(withText(containsString(expectedOptionText))))
@@ -6222,6 +6236,20 @@ class StateFragmentTest {
         targetViewId = R.id.item_selection_checkbox_icon
       )
     ).check(matches(withDrawable(R.drawable.rect_radio_unchecked)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.unselected_option_icon_content_description)
+        )
+      )
+    )
 
     onView(
       atPositionOnView(
@@ -6259,6 +6287,20 @@ class StateFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.selection_submitted_answer_recycler_view,
         position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.selected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
         targetViewId = R.id.multiple_choice_content_text_view
       )
     ).check(matches(withText(containsString(expectedOptionText))))
@@ -6286,6 +6328,20 @@ class StateFragmentTest {
         targetViewId = R.id.item_selection_checkbox_icon
       )
     ).check(matches(withDrawable(R.drawable.rect_radio_checked)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.selected_option_icon_content_description)
+        )
+      )
+    )
 
     onView(
       atPositionOnView(

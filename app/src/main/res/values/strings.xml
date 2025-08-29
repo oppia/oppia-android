@@ -201,6 +201,8 @@
   <string name="flashback_feedback_prompt">That answer isn\'t correct. Let\'s look at an example.</string>
   <string name="submitted_answer_label_text">(Your submitted answer)</string>
   <string name="submitted_answer_label_text_content_description">Your submitted answer</string>
+  <string name="selected_option_icon_content_description">Selected answer</string>
+  <string name="unselected_option_icon_content_description">Unselected answer</string>
   <string name="flashback_submitted_answer_label_text">(This is the correct answer)</string>
   <string name="flashback_submitted_answer_label_text_content_description">This is the correct answer</string>
   <plurals name="chapter_count">
