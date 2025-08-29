@@ -542,7 +542,7 @@ class LintAnalysisReporter(private val repoRoot: File) {
           "\n${BOLD}Issue $issueCounter of $totalCount:" +
             " REDUNDANT_EXEMPTION$RESET"
         )
-        println("  ${YELLOW}Severity: Warning$RESET")
+        println("  ${YELLOW}Severity: Redundant Exemption$RESET")
 
         val locationKey = "$filePath:$issueId"
         val location = exemptionLocations[locationKey]
