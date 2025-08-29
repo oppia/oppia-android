@@ -387,7 +387,8 @@ class LintAnalysisReporter {
     val paragraphs = text.split("\n\n")
 
     return paragraphs.joinToString("\n\n") { paragraph ->
-      val words = paragraph.replace("\n", " ").split(" ").filter { it.isNotEmpty() }
+      val words = paragraph.replace("\n", " ")
+        .split(" ").filter { it.isNotEmpty() }
       val lines = mutableListOf<String>()
       var currentLine = StringBuilder()
 
@@ -541,9 +542,11 @@ class LintAnalysisReporter {
         println("  Message: Redundant exemption found. Please remove it from the file.")
         println("  Explanation:")
         println(
-          "    In $filePath the ${toUpperSnakeCase(issueId)} exemption is redundant and can be"
+          wrapText(
+            "In $filePath the ${toUpperSnakeCase(issueId)} exemption is redundant" +
+              " and can be removed since there are no corresponding lint issues."
+          )
         )
-        println("    removed since there are no corresponding lint issues.")
 
         if (issueCounter < totalCount) {
           println("-".repeat(ISSUE_SEPARATOR_LENGTH))
@@ -691,11 +694,13 @@ class LintAnalysisReporter {
       }
     }
 
-    listOf(
-      "Message" to falsePositive.message,
-      "Workaround" to falsePositive.workaroundMessage
-    ).forEach { (label, value) ->
-      if (value.isNotBlank()) println("$indent$label: $value")
+    if (falsePositive.message.isNotBlank()) {
+      println("${indent}Message: ${falsePositive.message}")
+    }
+
+    if (falsePositive.workaroundMessage.isNotBlank()) {
+      println("${indent}Workaround:")
+      println(wrapText(falsePositive.workaroundMessage, indent = "$indent    "))
     }
   }
 
