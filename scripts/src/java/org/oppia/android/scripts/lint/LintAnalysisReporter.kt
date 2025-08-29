@@ -122,7 +122,7 @@ private data class CacheEntry(
 )
 
 /** Reporter class for analyzing XML lint reports and extracting issues. */
-class LintAnalysisReporter {
+class LintAnalysisReporter(private val repoRoot: File) {
 
   companion object {
     private val cache = mutableMapOf<String, CacheEntry>()
@@ -246,18 +246,16 @@ class LintAnalysisReporter {
    *
    * @param issues List of all lint issues
    * @param exemptions List of exemptions to apply
-   * @param repoRoot Root directory of the repository for relative path calculation
    * @return List of issues after filtering out exemptions
    */
   fun filterExemptedIssues(
     issues: List<LintIssue>,
-    exemptions: List<AndroidLintExemption>,
-    repoRoot: File
+    exemptions: List<AndroidLintExemption>
   ): List<LintIssue> {
     val exemptionMap = buildExemptionMap(exemptions)
 
     return issues.filter { issue ->
-      !isIssueExempted(issue, exemptionMap, repoRoot)
+      !isIssueExempted(issue, exemptionMap)
     }
   }
 
@@ -288,13 +286,11 @@ class LintAnalysisReporter {
    *
    * @param issue The lint issue to check
    * @param exemptionMap Map of file paths to exempted issue IDs
-   * @param repoRoot Root directory of the repository
    * @return true if the issue is exempted, false otherwise
    */
   private fun isIssueExempted(
     issue: LintIssue,
-    exemptionMap: Map<String, Set<LintIssueId>>,
-    repoRoot: File
+    exemptionMap: Map<String, Set<LintIssueId>>
   ): Boolean {
     // Unknown issues cannot be exempted, so they should appear in the report
     val issueIdEnum = getLintIssueIdFromString(issue.id) ?: return false
@@ -335,13 +331,11 @@ class LintAnalysisReporter {
    *
    * @param issues List of all lint issues
    * @param exemptions List of exemptions
-   * @param repoRoot Root directory of the repository
    * @return Map of file paths to list of redundant issue IDs for that file
    */
   fun findRedundantExemptions(
     issues: List<LintIssue>,
-    exemptions: List<AndroidLintExemption>,
-    repoRoot: File
+    exemptions: List<AndroidLintExemption>
   ): Map<String, List<String>> {
     val actualIssuesMap = mutableMapOf<String, MutableSet<LintIssueId>>()
 

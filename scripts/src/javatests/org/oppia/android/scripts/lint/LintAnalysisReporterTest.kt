@@ -34,10 +34,10 @@ class LintAnalysisReporterTest {
 
   @Before
   fun setUp() {
-    lintAnalysisReporter = LintAnalysisReporter()
     tempFolder.newFolder("scripts", "assets")
     tempFolder.newFile(pathToProtoBinary)
     repoRoot = tempFolder.root
+    lintAnalysisReporter = LintAnalysisReporter(repoRoot)
 
     warningIssue = LintIssue(
       id = "UnusedResources",
@@ -842,8 +842,13 @@ class LintAnalysisReporterTest {
         "(current min is 21): `java.lang.Iterable#forEach`"
     )
     assertThat(output).contains(
-      "Workaround: Use safeForEach from IterableExtensions.kt" +
-        " instead of directly calling forEach to avoid known lint false positives on API < 24."
+      "Workaround:\n"
+    )
+    assertThat(output).contains(
+      "Use safeForEach from IterableExtensions.kt instead of directly"
+    )
+    assertThat(output).contains(
+      "calling forEach to avoid known lint false positives on API < 24."
     )
     assertThat(exception.message)
       .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
@@ -1115,7 +1120,7 @@ class LintAnalysisReporterTest {
     )
 
     val redundantExemptions =
-      lintAnalysisReporter.findRedundantExemptions(issues, exemptions, repoRoot)
+      lintAnalysisReporter.findRedundantExemptions(issues, exemptions)
 
     assertThat(redundantExemptions).hasSize(2)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
@@ -1157,7 +1162,7 @@ class LintAnalysisReporterTest {
       }.build()
     )
 
-    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions)
 
     assertThat(filteredIssues).hasSize(1)
     assertThat(filteredIssues[0]).isEqualTo(errorIssue)
@@ -1173,7 +1178,7 @@ class LintAnalysisReporterTest {
       }.build()
     )
 
-    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions)
 
     assertThat(filteredIssues).hasSize(1)
     assertThat(filteredIssues[0]).isEqualTo(multiLocationIssue)
@@ -1184,7 +1189,7 @@ class LintAnalysisReporterTest {
     val issues = listOf(warningIssue, errorIssue)
     val exemptions = emptyList<AndroidLintExemption>()
 
-    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions)
 
     assertThat(filteredIssues).hasSize(2)
     assertThat(filteredIssues).containsExactly(warningIssue, errorIssue)
@@ -1202,7 +1207,7 @@ class LintAnalysisReporterTest {
     )
 
     val redundantExemptions = lintAnalysisReporter
-      .findRedundantExemptions(issues, exemptions, repoRoot)
+      .findRedundantExemptions(issues, exemptions)
 
     assertThat(redundantExemptions).hasSize(1)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
@@ -1275,7 +1280,7 @@ class LintAnalysisReporterTest {
       }.build()
     )
 
-    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions, repoRoot)
+    val filteredIssues = lintAnalysisReporter.filterExemptedIssues(issues, exemptions)
 
     assertThat(filteredIssues).hasSize(1)
     assertThat(filteredIssues[0]).isEqualTo(issue2)

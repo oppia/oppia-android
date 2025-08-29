@@ -11,6 +11,7 @@ import java.lang.Module
 import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
+import com.android.tools.lint.Main as LintCli
 
 /** The default timeout duration for executing external processes. */
 private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
@@ -105,7 +106,7 @@ class AndroidLintAnalyzer(
 
   /** Runs the complete lint analysis process. */
   fun runAnalysis() {
-    val projectDescriptionFile = File("")
+    val projectDescriptionFile = generateProjectDescription()
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile,
@@ -190,15 +191,15 @@ class AndroidLintRunner(
    * @param cliArgs the command-line arguments to pass to the Lint CLI
    */
   fun runLint(cliArgs: Array<String>) {
-//    val exitCode = LintCli().run(cliArgs)
-//
-//    // Allow exit code 1(ISSUES_FOUND) since it indicates issues with
-//    // severity Error which is being handled by LintAnalysisReporter.
-//    if (exitCode != SUCCESS && exitCode != ISSUES_FOUND) {
-//      val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
-//      error("Lint analysis failed with exit code $exitCode: $reason")
-//    }
-    println(cliArgs)
+    val exitCode = LintCli().run(cliArgs)
+
+    // Allow exit code 1(ISSUES_FOUND) since it indicates issues with
+    // severity Error which is being handled by LintAnalysisReporter.
+    if (exitCode != SUCCESS && exitCode != ISSUES_FOUND) {
+      val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
+      error("Lint analysis failed with exit code $exitCode: $reason")
+    }
+
     reportLintIssues()
   }
 
@@ -235,7 +236,7 @@ class AndroidLintRunner(
   }
 
   private fun reportLintIssues() {
-    val reporter = LintAnalysisReporter()
+    val reporter = LintAnalysisReporter(repoRoot)
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
 
     require(File(exemptionProtoPath).exists()) {
@@ -246,14 +247,12 @@ class AndroidLintRunner(
 
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList,
-      repoRoot = repoRoot
+      exemptions = exemptions.androidLintExemptionList
     )
 
     val redundantExemptions = reporter.findRedundantExemptions(
       issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList,
-      repoRoot = repoRoot
+      exemptions = exemptions.androidLintExemptionList
     )
 
     reporter.printLintReport(
