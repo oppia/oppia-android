@@ -115,10 +115,10 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteFlag?.remoteIsEnabled
           ?: flagDefinition.defaultIsEnabled
 
-        val afterResetValue = remoteFlag?.remoteIsEnabled
+        val nonOverriddenValue = remoteFlag?.remoteIsEnabled
           ?: flagDefinition.defaultIsEnabled
 
-        val afterResetSyncStatus = remoteFlag?.syncStatus
+        val nonOverriddenSyncStatus = remoteFlag?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         val syncStatus = localFlag?.let { SyncStatus.LOCAL_OVERRIDE }
@@ -128,8 +128,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         EphemeralFeatureFlag.newBuilder().apply {
           this.id = flagDefinition.id
           this.currentValue = currentValue
-          this.afterResetValue = afterResetValue
-          this.afterResetSyncStatus = afterResetSyncStatus
+          this.nonOverriddenValue = nonOverriddenValue
+          this.nonOverriddenSyncStatus = nonOverriddenSyncStatus
           this.syncStatus = syncStatus
         }.build()
       }
@@ -164,10 +164,10 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteParam?.remoteValue
           ?: paramDefinition.defaultValue
 
-        val afterResetValue = remoteParam?.remoteValue
+        val nonOverriddenValue = remoteParam?.remoteValue
           ?: paramDefinition.defaultValue
 
-        val afterResetSyncStatus = remoteParam?.syncStatus
+        val nonOverriddenSyncStatus = remoteParam?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
 
         val syncStatus = localParam?.let { SyncStatus.LOCAL_OVERRIDE }
@@ -177,8 +177,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         EphemeralPlatformParameter.newBuilder().apply {
           this.id = paramDefinition.id
           this.currentValue = currentValue
-          this.afterResetValue = afterResetValue
-          this.afterResetSyncStatus = afterResetSyncStatus
+          this.nonOverriddenValue = nonOverriddenValue
+          this.nonOverriddenSyncStatus = nonOverriddenSyncStatus
           this.syncStatus = syncStatus
         }.build()
       }
@@ -338,13 +338,13 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
    * @param ids the IDs of the platform parameters to reset
    * @return a [DataProvider] that completes when the overrides are removed.
    */
-  fun resetPlatformParameters(ids: List<PlatformParameterId>): DataProvider<Any?> {
+  fun resetPlatformParameters(resetIds: List<PlatformParameterId>): DataProvider<Any?> {
     return dataProviders.createInMemoryDataProviderAsync(
       RESET_OVERRIDDEN_PLATFORM_PARAMETER_PROVIDER_ID
     ) {
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val updatedOverrides = oldDatabase.overriddenPlatformParameterList
-          .filterNot { it.id in ids }
+          .filterNot { it.id in resetIds }
 
         oldDatabase.toBuilder()
           .clearOverriddenPlatformParameter()

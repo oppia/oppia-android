@@ -102,7 +102,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     when {
       resetFlags.isNotEmpty() -> applyResetsThenOverrides(overriddenFlags)
       overriddenFlags.isNotEmpty() -> overrideFeatureFlags(overriddenFlags)
-      else -> (activity as FeatureFlagsActivity).finish()
+      else -> activity.finish()
     }
   }
 
@@ -150,7 +150,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            (activity as FeatureFlagsActivity).finish()
+            activity.finish()
           }
           is AsyncResult.Failure -> {
             oppiaLogger.e(

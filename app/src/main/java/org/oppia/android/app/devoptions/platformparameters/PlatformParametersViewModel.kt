@@ -81,8 +81,8 @@ class PlatformParametersViewModel @Inject constructor(
         platformParameterId = ephemeralPlatformParameter.id,
         currentValue = ephemeralPlatformParameter.currentValue,
         syncStatus = ephemeralPlatformParameter.syncStatus,
-        afterResetValue = ephemeralPlatformParameter.afterResetValue,
-        afterResetSyncStatus = ephemeralPlatformParameter.afterResetSyncStatus,
+        afterResetValue = ephemeralPlatformParameter.nonOverriddenValue,
+        afterResetSyncStatus = ephemeralPlatformParameter.nonOverriddenSyncStatus,
         resetParameters = resetParameters,
         machineLocale = machineLocale,
         resourceHandler = resourceHandler
