@@ -74,14 +74,6 @@ android_lint_exemption: {
   lint_issue_id: UNKNOWN_NULLNESS
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParameterItemViewModel.kt"
-  lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsAndSolutionDialogFragmentPresenter.kt"
-  lint_issue_id: SUSPICIOUS_INDENTATION
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/HomeViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
 }
@@ -192,10 +184,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/surveyitemviewmodel/UserTypeItemsViewModel.kt"
   lint_issue_id: UNKNOWN_NULLNESS
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/BindableAdapterTestFragmentPresenter.kt"
-  lint_issue_id: SUPPORT_ANNOTATION_USAGE
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/CircularProgressIndicatorAdaptersTestViewModel.kt"
@@ -1914,7 +1902,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-land/dimens.xml"
-  lint_issue_id: MISSING_DEFAULT_RESOURCE
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -1936,7 +1923,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-pt-rBR/strings.xml"
-  lint_issue_id: IMPLIED_QUANTITY
   lint_issue_id: TYPOGRAPHY_QUOTES
   lint_issue_id: UNUSED_RESOURCES
 }
@@ -1948,7 +1934,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-sw600dp-land/dimens.xml"
-  lint_issue_id: MISSING_DEFAULT_RESOURCE
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
