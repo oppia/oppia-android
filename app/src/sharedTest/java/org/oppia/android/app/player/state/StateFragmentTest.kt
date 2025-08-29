@@ -6862,11 +6862,6 @@ class StateFragmentTest {
     setUpTest()
   }
 
-  private fun setUpTestWithFlashbackFeatureOff() {
-    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
-    setUpTest()
-  }
-
   private fun setUpTest() {
     Intents.init()
     setUpTestApplicationComponent()
