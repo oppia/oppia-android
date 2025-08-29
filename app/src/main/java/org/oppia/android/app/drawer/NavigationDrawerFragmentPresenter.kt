@@ -107,7 +107,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         }
         uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
         drawerLayout.closeDrawers()
-        //footerViewModel.isDeveloperOptionsSelected.set(true)
+        // footerViewModel.isDeveloperOptionsSelected.set(true)
         val intent = starter.createIntent(activity, profileId)
         fragment.requireActivity().startActivity(intent)
         if (previousMenuItemId == 0) fragment.requireActivity().finish()
@@ -142,7 +142,7 @@ class NavigationDrawerFragmentPresenter @Inject constructor(
         uncheckAllMenuItemsWhenAdministratorControlsOrDeveloperOptionsIsSelected()
 
         drawerLayout.closeDrawers()
-        //footerViewModel.isAdministratorControlsSelected.set(true)
+        // footerViewModel.isAdministratorControlsSelected.set(true)
         val intent =
           AdministratorControlsActivity.createAdministratorControlsActivityIntent(
             activity,

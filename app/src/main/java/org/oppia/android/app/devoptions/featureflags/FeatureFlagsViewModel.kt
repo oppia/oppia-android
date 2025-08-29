@@ -1,10 +1,11 @@
 package org.oppia.android.app.devoptions.featureflags
 
-import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.EphemeralFeatureFlag
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.viewmodel.ObservableViewModel
@@ -40,7 +41,17 @@ class FeatureFlagsViewModel @Inject constructor(
   }
 
   /** Tracks whether the Save button is currently enabled (clickable). */
-  var isSaveButtonActive: ObservableField<Boolean> = ObservableField(false)
+  val isSaveButtonActive: LiveData<Boolean> by lazy {
+    Transformations.map(featureFlagStates) { states ->
+      states.isNotEmpty()
+    }
+  }
+
+  /** List of feature flag switch states to be used in the fragment. */
+  var featureFlagStates = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
+
+  /** List of feature flags that have been reset. */
+  var resetFlags = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
 
   private fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
@@ -66,6 +77,8 @@ class FeatureFlagsViewModel @Inject constructor(
           syncStatus = ephemeralFeatureFlag.syncStatus,
           afterResetValue = ephemeralFeatureFlag.afterResetValue,
           afterResetSyncStatus = ephemeralFeatureFlag.afterResetSyncStatus,
+          featureFlagStates = featureFlagStates,
+          resetFlags = resetFlags,
           machineLocale = machineLocale,
           resourceHandler = resourceHandler
         )

@@ -103,6 +103,7 @@
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
   <color name="color_def_pale_yellow">#FFFFB8</color>
+  <color name="color_def_dark_yellow">#989830</color>
   <color name="color_def_dark_golden">#856B03</color>
   <color name="color_def_dark_purple">#441530</color>
   <color name="color_def_blue_sapphire">#205D86</color>
@@ -157,6 +158,7 @@
   <color name="color_def_dark_jade">#64817E</color>
   <color name="color_def_light_orange">#F8BF74</color>
   <color name="color_def_sky_blue">#B3D8F1</color>
+  <color name="color_def_deep_blue">#4F8AB3</color>
   <color name="color_def_white_1">#B8FFFFFF</color>
   <color name="color_def_ivory">#FEFFF0</color>
   <color name="color_def_charcoal">#2B2B2B</color>

@@ -1,6 +1,8 @@
 package org.oppia.android.app.devoptions.featureflags
 
 import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -15,6 +17,8 @@ class FeatureFlagItemViewModel(
   val syncStatus: SyncStatus,
   val afterResetValue: Boolean,
   val afterResetSyncStatus: SyncStatus,
+  val featureFlagStates: LiveData<MutableMap<FeatureFlagId, Boolean>>,
+  val resetFlags: LiveData<MutableMap<FeatureFlagId, Boolean>>,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
@@ -36,12 +40,23 @@ class FeatureFlagItemViewModel(
     ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
-  val isResetButtonActive: ObservableField<Boolean> = ObservableField(true)
+  val isResetButtonActive: LiveData<Boolean> by lazy {
+    Transformations.map(resetFlags) {
+      featureFlagId !in it
+    }
+  }
 
   /** Represents the feature flag’s server-sync or override state. */
-  var syncDetails: ObservableField<String> = ObservableField(processSyncDetails())
+  var syncDetails: LiveData<String> = Transformations.map(resetFlags, ::processSyncDetails)
 
-  private fun processSyncDetails(): String {
+  private fun processSyncDetails(resetFlags: MutableMap<FeatureFlagId, Boolean>): String {
+    return when {
+      resetFlags.containsKey(featureFlagId) -> getSyncDetails(afterResetSyncStatus)
+      else -> getSyncDetails(syncStatus)
+    }
+  }
+
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.LOCAL_OVERRIDE ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)
