@@ -257,4 +257,5 @@
   <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
   <color name="color_palette_overridden_background_color">@color/color_def_dark_yellow</color>
   <color name="color_palette_modified_background_color">@color/color_def_deep_blue</color>
+  <color name="color_palette_save_button_active_color">@color/color_def_radio_green</color>
 </resources>

@@ -33,8 +33,8 @@
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
-  <string name="platform_parameters_activity_title" translatable="false">Platform Parameters</string>
   <string name="feature_flag_reset" translatable="false">Reset</string>
+  <string name="feature_flag_save" translatable="false">Save</string>
   <string name="feature_flag_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
   <string name="feature_flag_currently_overridden_message" translatable="false">Currently Overridden.</string>
   <string name="feature_flag_synced_from_server_message" translatable="false">Synced with the Server.</string>

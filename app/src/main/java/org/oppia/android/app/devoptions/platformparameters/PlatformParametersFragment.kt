@@ -44,7 +44,6 @@ class PlatformParametersFragment : InjectableFragment() {
   ): View {
     val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
-
     val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
 
     if (savedInstanceState != null) {
