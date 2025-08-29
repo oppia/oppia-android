@@ -79,6 +79,7 @@
       android:id="@+id/onboarding_language_label"
       style="@style/OnboardingLanguageLabelStyle"
       android:text="@string/onboarding_language_activity_select_label"
+      android:labelFor="@id/onboarding_language_dropdown"
       app:layout_constraintBottom_toTopOf="@id/onboarding_language_dropdown_background"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

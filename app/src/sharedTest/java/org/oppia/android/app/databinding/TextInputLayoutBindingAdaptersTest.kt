@@ -3,6 +3,7 @@ package org.oppia.android.app.databinding
 import android.app.Application
 import android.content.Context
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -156,6 +157,17 @@ class TextInputLayoutBindingAdaptersTest {
         assertThat(testView.text.toString()).isEqualTo(
           context.getString(R.string.arabic_localized_language_name)
         )
+      }
+    }
+  }
+
+  @Test
+  fun testAccessibility_labelForRelationship_isSetCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val labelView: TextView = activity.findViewById(R.id.test_input_label)
+
+        assertThat(labelView.labelFor).isEqualTo(R.id.test_autocomplete_view)
       }
     }
   }
