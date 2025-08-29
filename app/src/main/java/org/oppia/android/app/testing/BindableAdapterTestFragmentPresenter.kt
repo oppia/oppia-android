@@ -15,7 +15,7 @@ class BindableAdapterTestFragmentPresenter @Inject constructor(
   private val singleTypeBuilderFactory: BindableAdapter.SingleTypeBuilder.Factory,
   private val multiTypeBuilderFactory: BindableAdapter.MultiTypeBuilder.Factory,
   private val testBindableAdapterFactory: BindableAdapterFactory,
-  @VisibleForTesting val viewModel: BindableAdapterTestViewModel
+  @get:VisibleForTesting val viewModel: BindableAdapterTestViewModel
 ) {
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
     val binding = TestFragmentBinding.inflate(
