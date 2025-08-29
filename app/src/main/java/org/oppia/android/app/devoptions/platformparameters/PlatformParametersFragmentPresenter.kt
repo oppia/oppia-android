@@ -126,7 +126,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     val overriddenParameters = computeOverriddenParameters()
-    val resetParameters = platformParameterViewModel.resetParameters.value?.keys?.toList().orEmpty()
+    val resetParameters = getResetParameters().keys.toList()
 
     when {
       resetParameters.isNotEmpty() -> applyResetsThenOverrides(overriddenParameters)
@@ -136,7 +136,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun computeOverriddenParameters(): List<OverriddenPlatformParameter> {
-    val resetParamsValue = platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+    val resetParamsValue = getResetParameters()
 
     return platformParameterViewModel.platformParameterStates.value
       ?.filter { (id, value) -> resetParamsValue[id] != value }
@@ -150,7 +150,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun applyResetsThenOverrides(overriddenParameters: List<OverriddenPlatformParameter>) {
-    val resetParameters = platformParameterViewModel.resetParameters.value?.keys?.toList().orEmpty()
+    val resetParameters = getResetParameters().keys.toList()
     platformParameterControllerDebugImpl
       .resetPlatformParameters(resetParameters)
       .toLiveData()
@@ -221,7 +221,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       )
     }
 
-    val resetParamsValue = platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+    val resetParamsValue = getResetParameters()
     if (resetParamsValue.containsKey(model.platformParameterId)) {
       model.isParamOverridden.set(true)
     }
@@ -254,7 +254,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel,
   ) {
     val restoredParameterValue = model.afterResetValue
-    val currentResetParams = platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+    val currentResetParams = getResetParameters()
     currentResetParams[model.platformParameterId] = restoredParameterValue
     platformParameterViewModel.resetParameters.value = currentResetParams
 
@@ -310,7 +310,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         if (boundParamIds.contains(id).not()) {
           return@onPlatformParameterTextChangedCallback
         }
-        val resetParamsValue = platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+        val resetParamsValue = getResetParameters()
         val lastValidValue = getLastValidValue(model)
         editText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
           if (!hasFocus) {
@@ -376,7 +376,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
 
     model.onPlatformParameterToggledCallback = { id, value ->
-      val resetParamsValue = platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+      val resetParamsValue = getResetParameters()
       if (value == model.currentValue.boolean && !resetParamsValue.containsKey(id)) {
         val currentStates = getPlatformParameterStates()
         currentStates.remove(id)
@@ -392,7 +392,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun getLastValidValue(model: PlatformParameterItemViewModel): String {
-    val resetParamsValue = platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+    val resetParamsValue = getResetParameters()
     val value = if (resetParamsValue.containsKey(model.platformParameterId)) {
       model.afterResetValue
     } else {
@@ -432,4 +432,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     MutableMap<PlatformParameterId, PlatformParameterValue?> {
       return platformParameterViewModel.platformParameterStates.value ?: mutableMapOf()
     }
+  private fun getResetParameters(): MutableMap<PlatformParameterId, PlatformParameterValue> {
+    return platformParameterViewModel.resetParameters.value ?: mutableMapOf()
+  }
 }
