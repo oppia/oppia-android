@@ -119,7 +119,7 @@ class SubmittedAnswerViewModel(
     computeChoiceItems(
       choiceSubtitledHtmls,
       hasConversationView,
-      submittedUserAnswer.itemSelection.selectedIndexesList,
+      submittedUserAnswer.itemSelectionAnswer.selectedIndexesList,
       writtenTranslationContext,
       translationController,
       customTagHandlers,

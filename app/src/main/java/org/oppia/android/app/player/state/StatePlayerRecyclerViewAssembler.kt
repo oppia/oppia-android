@@ -1446,34 +1446,33 @@ class StatePlayerRecyclerViewAssembler private constructor(
           binding.viewModel = submittedAnswerViewModel
           val userAnswer = submittedAnswerViewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER -> {
+              showSelectionSubmittedAnswer(binding)
+              binding.selectionSubmittedAnswerRecyclerView.adapter =
+                createSelectionSubmittedAnswerListAdapter(viewModel.getSelectionItemInputType())
+              binding.selectionSubmittedAnswerList = viewModel.choiceItems
+            }
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              if (submittedAnswerViewModel.isSelectionAnswerType()) {
-                showSelectionSubmittedAnswer(binding)
-                binding.selectionSubmittedAnswerRecyclerView.adapter =
-                  createSelectionSubmittedAnswerListAdapter(viewModel.getSelectionItemInputType())
-                binding.selectionSubmittedAnswerList = viewModel.choiceItems
-              } else {
-                showSingleAnswer(binding)
-                val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
-                  userAnswer.contentDescription
-                } else null
-                val htmlParser = htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  submittedAnswerViewModel.gcsEntityId,
-                  imageCenterAlign = false,
-                  customOppiaTagActionListener = customTagListener,
-                  displayLocale = resourceHandler.getDisplayLocale()
-                )
-                submittedAnswerViewModel.setSubmittedAnswer(
-                  htmlParser.parseOppiaHtml(
-                    userAnswer.htmlAnswer,
-                    binding.submittedAnswerTextView,
-                    supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
-                  ),
-                  accessibleAnswer
-                )
-              }
+              showSingleAnswer(binding)
+              val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
+                userAnswer.contentDescription
+              } else null
+              val htmlParser = htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                submittedAnswerViewModel.gcsEntityId,
+                imageCenterAlign = false,
+                customOppiaTagActionListener = customTagListener,
+                displayLocale = resourceHandler.getDisplayLocale()
+              )
+              submittedAnswerViewModel.setSubmittedAnswer(
+                htmlParser.parseOppiaHtml(
+                  userAnswer.htmlAnswer,
+                  binding.submittedAnswerTextView,
+                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
+                ),
+                accessibleAnswer
+              )
             }
             UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
               showListOfAnswers(binding)
@@ -2030,6 +2029,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         UserAnswer.TextualAnswerCase.PLAIN_ANSWER -> plainAnswer.isNotEmpty()
         UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS ->
           listOfHtmlAnswers.setOfHtmlStringsOrBuilderList.isNotEmpty()
+        UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER ->
+          itemSelectionAnswer.selectedIndexesList.isNotEmpty()
         UserAnswer.TextualAnswerCase.TEXTUALANSWER_NOT_SET, null -> false
       }
     }
