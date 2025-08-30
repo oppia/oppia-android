@@ -25,7 +25,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="4dp"
-      android:layout_marginTop="4dp"
+      android:layout_marginTop="1dp"
       android:layout_marginEnd="8dp"
       android:contentDescription="@{viewModel.isEnabled ? @string/selected_option_icon_content_description: @string/unselected_option_icon_content_description}"
       app:srcCompat="@{viewModel.isEnabled ? @drawable/radio_checked_grey : @drawable/radio_unchecked_grey}" />
@@ -36,7 +36,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
-      android:layout_marginTop="2dp"
       android:layout_marginEnd="8dp"
       android:layout_toEndOf="@+id/multiple_choice_radio_icon"
       android:text="@{htmlContent}"
