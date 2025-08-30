@@ -3522,7 +3522,8 @@ class ExplorationProgressControllerTest {
       .isEqualTo(UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER)
 
     // Verify the selected choice index is 2 (Eagle).
-    assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList).containsExactly(2)
+    assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList)
+      .containsExactly(2)
   }
 
   @Test
