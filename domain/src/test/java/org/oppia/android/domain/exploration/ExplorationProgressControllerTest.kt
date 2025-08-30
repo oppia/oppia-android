@@ -4039,7 +4039,7 @@ class ExplorationProgressControllerTest {
   private fun convertToUserAnswerForMultipleChoice(answer: InteractionObject): UserAnswer {
     return UserAnswer.newBuilder()
       .setAnswer(answer)
-      .setSelectionAnswer(
+      .setItemSelectionAnswer(
         ItemSelectionAnswerState.newBuilder()
           .addAllSelectedIndexes(listOf(answer.nonNegativeInt))
           .build()
@@ -4053,7 +4053,7 @@ class ExplorationProgressControllerTest {
   ): UserAnswer {
     return UserAnswer.newBuilder()
       .setAnswer(answer)
-      .setSelectionAnswer(
+      .setItemSelectionAnswer(
         ItemSelectionAnswerState.newBuilder()
           .addAllSelectedIndexes(positions)
           .build()
