@@ -40,14 +40,14 @@
         <Button
           android:id="@+id/save_button"
           style="@style/StateButtonActive"
-          android:background="@{viewModel.isSaveButtonActive ? @drawable/save_button_active_background : @drawable/save_button_inactive_background}"
-          android:enabled="@{viewModel.isSaveButtonActive}"
-          android:textColor="@{viewModel.isSaveButtonActive ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color}"
+          android:background="@{viewModel.isSaveButtonEnabled ? @drawable/save_button_active_background : @drawable/save_button_inactive_background}"
+          android:enabled="@{viewModel.isSaveButtonEnabled}"
+          android:textColor="@{viewModel.isSaveButtonEnabled ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_stroke_color}"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginEnd="16dp"
           android:layout_gravity="end"
-          android:padding="0dp"
+          android:minHeight="0dp"
           android:textAlignment="center"
           android:text="@string/feature_flag_save"/>
       </androidx.appcompat.widget.Toolbar>

@@ -981,7 +981,7 @@ message FeatureFlagsFragmentStateBundle {
   repeated OverriddenFeatureFlag feature_flag_states = 1;
 
   // List of feature flags that have been reset.
-  repeated OverriddenFeatureFlag reset_feature_flags = 3;
+  repeated OverriddenFeatureFlag reset_feature_flags = 2;
 }
 
 // The bundle of properties that are saved on configuration change in PlatformParametersFragment.

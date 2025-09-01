@@ -607,7 +607,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteAndwithOverride_clickResetButton_resetsFlagToDefault() {
+  fun testFeatureFlagsFragment_withOverrideAndNoRemote_clickResetButton_resetsFlagToDefault() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
@@ -637,7 +637,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteAndwithOverride_onResetshowsNeverSyncedMessage() {
+  fun testFeatureFlagsFragment_withOverrideAndNoRemote_onReset_showsNeverSyncedMessage() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
@@ -664,7 +664,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndwithOverride_clickResetButton_resetsFlagToRemote() {
+  fun testFeatureFlagsFragment_withRemoteAndOverride_clickResetButton_resetsFlagToRemote() {
     executeInPreviousAppInstance { component ->
       addTestRemoteFeatureFlagToDatabase(component, false)
       addTestOverriddenFeatureFlagToDatabase(component, true)
@@ -695,7 +695,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndwithOverride_onResetshowsSyncedWithServerMessage() {
+  fun testFeatureFlagsFragment_withRemoteOverride_onReset_showsSyncedWithServerMessage() {
     executeInPreviousAppInstance { component ->
       addTestRemoteFeatureFlagToDatabase(component, false)
       addTestOverriddenFeatureFlagToDatabase(component, true)

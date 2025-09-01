@@ -19,7 +19,6 @@ import javax.inject.Inject
 class PlatformParametersFragment : InjectableFragment() {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
-
   @Inject
   lateinit var platformParametersViewModel: PlatformParametersViewModel
 

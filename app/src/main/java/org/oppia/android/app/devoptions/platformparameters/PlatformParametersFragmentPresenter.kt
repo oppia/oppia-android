@@ -254,14 +254,12 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel,
   ) {
     val restoredParameterValue = model.afterResetValue
-    val currentResetParams = getResetParameters()
-    currentResetParams[model.platformParameterId] = restoredParameterValue
-    platformParameterViewModel.resetParameters.value = currentResetParams
+    platformParameterViewModel
+      .updateResetParameter(model.platformParameterId, restoredParameterValue)
 
     if (model.currentValue.hasBoolean()) {
-      val currentStates = getPlatformParameterStates()
-      currentStates[model.platformParameterId] = restoredParameterValue
-      platformParameterViewModel.platformParameterStates.value = currentStates
+      platformParameterViewModel
+        .updatePlatformParameterState(model.platformParameterId, restoredParameterValue)
       model.isChecked.set(restoredParameterValue.boolean)
     } else {
       when {
@@ -280,8 +278,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model: PlatformParameterItemViewModel,
     binding: PlatformParameterItemBinding
   ) {
-    val paramState =
-      platformParameterViewModel.platformParameterStates.value?.get(model.platformParameterId)
+    val paramState = getPlatformParameterStates()[model.platformParameterId]
     val editText = binding.platformParameterInputEditText
     when {
       model.currentValue.hasInteger() -> {
@@ -325,31 +322,23 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         when {
           model.currentValue.hasInteger() -> {
             if (text == model.currentValue.integer.toString() && id !in resetParamsValue) {
-              val currentStates =
-                getPlatformParameterStates()
-              currentStates.remove(id)
-              platformParameterViewModel.platformParameterStates.value = currentStates
+              platformParameterViewModel.removeParameterState(id)
               model.inputErrorMsg.set("")
             } else {
               val parsed = text.toIntOrNull()
               if (parsed == null) {
                 model.inputErrorMsg.set(invalidInputErrorText)
-                val currentStates = getPlatformParameterStates()
-                currentStates[id] = null
-                platformParameterViewModel.platformParameterStates.value = currentStates
+                platformParameterViewModel.updatePlatformParameterState(id, null)
               } else {
                 model.inputErrorMsg.set("")
-                val currentStates = getPlatformParameterStates()
-                currentStates[id] = PlatformParameterValue.newBuilder().setInteger(parsed).build()
-                platformParameterViewModel.platformParameterStates.value = currentStates
+                val parameter = PlatformParameterValue.newBuilder().setInteger(parsed).build()
+                platformParameterViewModel.updatePlatformParameterState(id, parameter)
               }
             }
           }
           model.currentValue.hasString() -> {
             if (text == model.currentValue.string && id !in resetParamsValue) {
-              val currentStates = getPlatformParameterStates()
-              currentStates.remove(id)
-              platformParameterViewModel.platformParameterStates.value = currentStates
+              platformParameterViewModel.removeParameterState(id)
               model.inputErrorMsg.set("")
             } else {
               if (text.isBlank()) {
@@ -357,11 +346,10 @@ class PlatformParametersFragmentPresenter @Inject constructor(
               } else {
                 model.inputErrorMsg.set("")
               }
-              val currentStates = getPlatformParameterStates()
-              currentStates[id] = PlatformParameterValue.newBuilder()
+              val parameter = PlatformParameterValue.newBuilder()
                 .setString(text)
                 .build()
-              platformParameterViewModel.platformParameterStates.value = currentStates
+              platformParameterViewModel.updatePlatformParameterState(id, parameter)
             }
           }
         }
@@ -378,15 +366,12 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     model.onPlatformParameterToggledCallback = { id, value ->
       val resetParamsValue = getResetParameters()
       if (value == model.currentValue.boolean && !resetParamsValue.containsKey(id)) {
-        val currentStates = getPlatformParameterStates()
-        currentStates.remove(id)
-        platformParameterViewModel.platformParameterStates.value = currentStates
+        platformParameterViewModel.removeParameterState(id)
       } else {
-        val currentStates = getPlatformParameterStates()
-        currentStates[id] = PlatformParameterValue.newBuilder()
+        val parameter = PlatformParameterValue.newBuilder()
           .setBoolean(value)
           .build()
-        platformParameterViewModel.platformParameterStates.value = currentStates
+        platformParameterViewModel.updatePlatformParameterState(id, parameter)
       }
     }
   }
@@ -432,6 +417,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     MutableMap<PlatformParameterId, PlatformParameterValue?> {
       return platformParameterViewModel.platformParameterStates.value ?: mutableMapOf()
     }
+
   private fun getResetParameters(): MutableMap<PlatformParameterId, PlatformParameterValue> {
     return platformParameterViewModel.resetParameters.value ?: mutableMapOf()
   }

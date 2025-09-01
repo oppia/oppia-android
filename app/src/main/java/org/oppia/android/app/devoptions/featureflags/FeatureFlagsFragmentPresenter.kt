@@ -97,7 +97,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
 
   private fun onBackNavigation() {
     val overriddenFlags = computeOverriddenFlags()
-    val resetFlags = featureFlagsViewModel.resetFlags.value?.keys?.toList().orEmpty()
+    val resetFlags = getResetFeatureFlags().toList()
 
     when {
       resetFlags.isNotEmpty() -> applyResetsThenOverrides(overriddenFlags)
@@ -108,16 +108,13 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
 
   private fun computeOverriddenFlags(): List<OverriddenFeatureFlag> {
     return featureFlagsViewModel.featureFlagStates.value
-      ?.filter { (id, value) ->
-        featureFlagsViewModel.resetFlags.value?.get(id) != value
-      }
+      ?.filter { (id, value) -> featureFlagsViewModel.resetFlags.value?.get(id) != value }
       ?.map { (id, value) ->
         OverriddenFeatureFlag.newBuilder()
           .setId(id)
           .setOverriddenValue(value)
           .build()
-      }
-      .orEmpty()
+      }.orEmpty()
   }
 
   private fun applyResetsThenOverrides(overriddenFlags: List<OverriddenFeatureFlag>) {
@@ -134,7 +131,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "FeatureFlagsFragmentPresenter",
-              "Failed to reset platform parameters: ",
+              "Failed to reset feature flag: ",
               result.error
             )
           }
@@ -173,55 +170,49 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     binding.resetButton.setOnClickListener {
       handleResetFeatureFlag(model)
     }
+
     featureFlagsViewModel.featureFlagStates.observe(fragment) {
       binding.featureFlagConstraintLayout.setBackgroundColor(
         setFeatureFlagBackgroundColor(it.containsKey(model.featureFlagId), model)
       )
     }
 
-    if (featureFlagsViewModel.resetFlags.value?.containsKey(model.featureFlagId) == true) {
+    if (getResetFeatureFlags().containsKey(model.featureFlagId)) {
       model.isFlagOverridden.set(true)
     }
 
     featureFlagsViewModel.featureFlagStates.value?.let { states ->
-      if (states.containsKey(model.featureFlagId)) {
-        model.isChecked.set(states[model.featureFlagId])
+      states[model.featureFlagId]?.let { state ->
+        model.isFlagOverridden.set(state)
       }
     }
 
     model.onFeatureFlagToggleCallback = { id, value ->
-      val currentMap = featureFlagsViewModel.featureFlagStates.value ?: mutableMapOf()
       if (model.currentValue == value &&
-        id !in (featureFlagsViewModel.resetFlags.value ?: emptyMap())
+        id !in getResetFeatureFlags()
       ) {
-        currentMap.remove(id)
+        featureFlagsViewModel.removeFlagState(id)
       } else {
-        currentMap[id] = value
+        featureFlagsViewModel.updateFeatureFlagState(id, value)
       }
-      featureFlagsViewModel.featureFlagStates.value = currentMap
     }
   }
 
   private fun handleResetFeatureFlag(
     model: FeatureFlagItemViewModel
   ) {
-    val restoredFlagValue = model.afterResetValue
-    val resetMap = featureFlagsViewModel.resetFlags.value ?: mutableMapOf()
-    resetMap[model.featureFlagId] = restoredFlagValue
-    featureFlagsViewModel.resetFlags.value = resetMap
-
-    val currentMap = featureFlagsViewModel.featureFlagStates.value ?: mutableMapOf()
-    currentMap[model.featureFlagId] = restoredFlagValue
-    featureFlagsViewModel.featureFlagStates.value = currentMap
+    val restoredFlagValue = model.nonOverriddenValue
+    featureFlagsViewModel.updateResetFlag(model.featureFlagId, model.nonOverriddenValue)
+    featureFlagsViewModel.updateFeatureFlagState(model.featureFlagId, restoredFlagValue)
     model.isChecked.set(restoredFlagValue)
   }
 
   private fun setFeatureFlagBackgroundColor(
-    isModified: Boolean,
+    isFlagModified: Boolean,
     model: FeatureFlagItemViewModel
   ): Int {
     return when {
-      isModified ->
+      isFlagModified ->
         ContextCompat.getColor(
           fragment.requireContext(),
           R.color.component_color_feature_flag_modified_background_color
@@ -237,5 +228,9 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           R.color.component_color_shared_item_background_solid_color
         )
     }
+  }
+
+  private fun getResetFeatureFlags(): MutableMap<FeatureFlagId, Boolean> {
+    return featureFlagsViewModel.resetFlags.value?.toMutableMap() ?: mutableMapOf()
   }
 }
