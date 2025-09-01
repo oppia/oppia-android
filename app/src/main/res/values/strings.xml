@@ -196,6 +196,7 @@
   <string name="unselected_image_region_selection_content_description">Select %1$s image.</string>
   <string name="flashback_toolbar_title_text">Revisit Previous Question</string>
   <string name="flashback_state_feedback_text">Need help? No problem. Let\'s review the solution to the previous question.</string>
+  <string name="flashback_viewed_feedback_text">Now that you\’ve seen an example, let\’s try again.</string>
   <string name="flashback_feedback_prompt">That answer isn\'t correct. Let\'s look at an example.</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>

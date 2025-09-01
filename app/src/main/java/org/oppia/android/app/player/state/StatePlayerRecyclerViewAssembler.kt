@@ -254,10 +254,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
     }
     val interaction = ephemeralState.state.interaction
     var flashbackStateName: String? = null
+    var flashbackViewed = false
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
       val latestAnswer = ephemeralState.pendingState.wrongAnswerList.lastOrNull()
       flashbackStateName = latestAnswer?.stateNameToRevisit
+      flashbackViewed = latestAnswer?.flashbackViewed == true
 
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         (fragment as ShowHintAvailabilityListener).onHintAvailable(
@@ -384,7 +386,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         isTerminalState,
         shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
         continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
-        flashbackStateName
+        flashbackStateName,
+        flashbackViewed
       )
     }
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
@@ -447,10 +450,23 @@ class StatePlayerRecyclerViewAssembler private constructor(
     gcsEntityId: String,
     writtenTranslationContext: WrittenTranslationContext
   ) {
-    if (answersAndResponses.size > 1) {
+    // 'flashbackRecentlyViewed' determines whether the flashback was recently viewed by the
+    // learner.
+    // True if flashback navigation is supported and the latest AnswerAndResponse has a
+    // valid stateNameToRevisit with flashbackViewed set to true.
+    var flashbackRecentlyViewed = false
+    answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      flashbackRecentlyViewed = playerFeatureSet.flashbackNavigationSupport &&
+        !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+        answerAndResponse.flashbackViewed
+    }
+    val previousAnswerCount = if (flashbackRecentlyViewed)
+      answersAndResponses.size else answersAndResponses.size - 1
+
+    if (answersAndResponses.size > 1 || flashbackRecentlyViewed) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
-          answersAndResponses.size - 1,
+          previousAnswerCount,
           hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
@@ -498,9 +514,97 @@ class StatePlayerRecyclerViewAssembler private constructor(
             previousAnswerViewModels += viewModel
           }
         }
+
+        if (
+          playerFeatureSet.flashbackNavigationSupport &&
+          !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+          answerAndResponse.flashbackViewed
+        ) {
+          addFlashbackButton(
+            answerAndResponse.stateNameToRevisit
+          ).let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+
+          if (playerFeatureSet.feedbackSupport) {
+            createFeedbackItem(
+              SubtitledHtml.newBuilder()
+                .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
+                .build(),
+              gcsEntityId,
+              writtenTranslationContext
+            )?.let { viewModel ->
+              if (showPreviousAnswers) {
+                pendingItemList += viewModel
+              }
+              previousAnswerViewModels += viewModel
+            }
+          }
+        }
       }
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      if (flashbackRecentlyViewed) {
+        // Only add previous answers if current responses are expanded, or if collapsing is disabled.
+        val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing ||
+          hasPreviousResponsesExpanded
+
+        if (playerFeatureSet.pastAnswerSupport) {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            /* isAnswerCorrect= */ false
+          )?.let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+        }
+
+        if (playerFeatureSet.feedbackSupport) {
+          createFeedbackItem(
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+              answerAndResponse.feedback
+            else
+              SubtitledHtml.newBuilder()
+                .setHtml(
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+                )
+                .build(),
+            gcsEntityId,
+            writtenTranslationContext
+          )?.let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+        }
+
+        addFlashbackButton(
+          answerAndResponse.stateNameToRevisit
+        ).let { viewModel ->
+          if (showPreviousAnswers) {
+            pendingItemList += viewModel
+          }
+          previousAnswerViewModels += viewModel
+        }
+
+        if (playerFeatureSet.feedbackSupport) {
+          createFeedbackItem(
+            SubtitledHtml.newBuilder()
+              .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
+              .build(),
+            gcsEntityId, writtenTranslationContext
+          )?.let(pendingItemList::add)
+        }
+        return
+      }
+
       if (playerFeatureSet.pastAnswerSupport) {
         if (isLastAnswerCorrect && isSplitView.get()!!) {
           createSubmittedAnswer(
@@ -710,7 +814,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     stateIsTerminal: Boolean,
     shouldAnimateContinueButton: Boolean,
     continueButtonAnimationTimestampMs: Long,
-    flashbackStateName: String?
+    flashbackStateName: String?,
+    flashbackViewed: Boolean
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
@@ -758,12 +863,17 @@ class StatePlayerRecyclerViewAssembler private constructor(
       // Otherwise, there's no navigation button that should be shown since the current interaction
       // handles this or navigation in this context is disabled.
     }
-    if (!flashbackStateName.isNullOrBlank() && playerFeatureSet.flashbackNavigationSupport) {
-      addFlashbackButton(
-        conversationPendingItemList,
-        extraInteractionPendingItemList,
-        flashbackStateName
-      )
+    if (!flashbackStateName.isNullOrBlank() &&
+      !flashbackViewed &&
+      playerFeatureSet.flashbackNavigationSupport
+    ) {
+      addFlashbackButton(flashbackStateName).let { viewModel ->
+        if (isSplitView.get() == true) {
+          extraInteractionPendingItemList += viewModel
+        } else {
+          conversationPendingItemList += viewModel
+        }
+      }
     }
   }
 
@@ -888,14 +998,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
   }
 
   private fun addFlashbackButton(
-    conversationPendingItemList: MutableList<StateItemViewModel>,
-    extraInteractionPendingItemList: MutableList<StateItemViewModel>,
     flashbackStateName: String
-  ) {
-    val targetList =
-      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
-
-    targetList += FlashbackButtonViewModel(
+  ): FlashbackButtonViewModel {
+    return FlashbackButtonViewModel(
       hasConversationView,
       isSplitView.get()!!,
       fragment as FlashbackButtonListener,
