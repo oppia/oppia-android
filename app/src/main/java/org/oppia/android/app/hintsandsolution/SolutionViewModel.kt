@@ -1,5 +1,6 @@
 package org.oppia.android.app.hintsandsolution
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableBoolean
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -60,7 +61,8 @@ class SolutionViewModel private constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
   val explorationId: String,
-  val isFlashback: Boolean
+  val isFlashback: Boolean,
+  private val activity: AppCompatActivity
 ) {
   /**
    * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
@@ -72,6 +74,14 @@ class SolutionViewModel private constructor(
       imageRetriever = null,
       customTagHandlers = mapOf()
     ).toString()
+  }
+
+  /** Stroke width for the solution box border. */
+  val solutionBoxStrokeWidth by lazy {
+    activity.resources.getDimensionPixelSize(
+      if (isFlashback) R.dimen.flashback_explanation_box_stroke_width
+      else R.dimen.state_solution_box_stroke_width
+    )
   }
 
   /** A displayable HTML representation of the correct answer presented by this model's solution. */
@@ -238,7 +248,8 @@ class SolutionViewModel private constructor(
   /** Application-injectable factory to create [SolutionViewModel]s (see [create]). */
   class Factory @Inject constructor(
     private val appLanguageResourceHandler: AppLanguageResourceHandler,
-    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
+    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
+    private val activity: AppCompatActivity
   ) {
     /**
      * Returns a new [SolutionViewModel] with the specified summary HTML text, correct answer,
@@ -266,7 +277,8 @@ class SolutionViewModel private constructor(
         appLanguageResourceHandler,
         mathExpressionAccessibilityUtil,
         explorationId,
-        isFlashback
+        isFlashback,
+        activity
       )
     }
 

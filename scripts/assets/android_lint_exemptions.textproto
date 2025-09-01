@@ -31,10 +31,6 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/AbstractOppiaApplication.kt"
-  lint_issue_id: NEW_API
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/application/alpha/AlphaOppiaApplication.kt"
   lint_issue_id: REGISTERED
 }
@@ -99,24 +95,12 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/MarkChaptersCompletedViewModel.kt"
-  lint_issue_id: NEW_API
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedFragmentPresenter.kt"
   lint_issue_id: NOTIFY_DATA_SET_CHANGED
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markstoriescompleted/MarkStoriesCompletedViewModel.kt"
-  lint_issue_id: NEW_API
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedFragmentPresenter.kt"
   lint_issue_id: NOTIFY_DATA_SET_CHANGED
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/marktopicscompleted/MarkTopicsCompletedViewModel.kt"
-  lint_issue_id: NEW_API
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/mathexpressionparser/MathExpressionParserViewModel.kt"
@@ -392,10 +376,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/topic/revisioncard/RevisionCardViewModel.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/utility/ClickableAreasImage.kt"
-  lint_issue_id: NEW_API
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/walkthrough/WalkthroughViewModel.kt"
@@ -979,6 +959,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/flashback_submitted_answer_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/survey_edit_text_background_border.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
@@ -1490,7 +1474,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/downloads_tab_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: USELESS_LEAF
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drag_drop_interaction_item.xml"
@@ -1510,7 +1493,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/drawer_fragment.xml"
-  lint_issue_id: USELESS_LEAF
   lint_issue_id: USE_COMPOUND_DRAWABLES
 }
 android_lint_exemption: {
@@ -1610,6 +1592,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/item_selection_submitted_answer_items.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/learner_intro_fragment.xml"
   lint_issue_id: BACK_BUTTON
   lint_issue_id: UNUSED_RESOURCES
@@ -1688,6 +1674,10 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/multiple_choice_interaction_items.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/multiple_choice_submitted_answer_items.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -2136,7 +2126,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/updates_tab_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: USELESS_LEAF
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/view_event_logs_event_log_item_view.xml"
@@ -2242,18 +2231,6 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21"
-  lint_issue_id: OBSOLETE_SDK_INT
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21/styles.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/values-v21/themes.xml"
-  lint_issue_id: UNUSED_RESOURCES
-}
-android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-xhdpi/dimens.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
@@ -2291,7 +2268,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values/styles.xml"
-  lint_issue_id: NEW_API
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -2353,10 +2329,6 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/classroom/ClassroomController.kt"
-  lint_issue_id: NEW_API
-}
-android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/clipboard/ClipboardController.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
@@ -2390,7 +2362,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/oppialogger/loguploader/LogUploadWorker.kt"
-  lint_issue_id: NEW_API
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -2398,11 +2369,11 @@ android_lint_exemption: {
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerDebugImpl.kt"
-  lint_issue_id: NEW_API
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
+  lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersFragmentPresenter.kt"
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {
@@ -2423,7 +2394,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/TopicController.kt"
-  lint_issue_id: NEW_API
   lint_issue_id: SYNTHETIC_ACCESSOR
 }
 android_lint_exemption: {

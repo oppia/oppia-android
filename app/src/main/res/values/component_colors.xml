@@ -119,7 +119,7 @@
   <color name="component_color_general_item_secondary_background_stroke_color">@color/color_palette_stroke_color</color>
   <color name="component_color_shared_hint_dialog_status_bar_color">@color/color_palette_hint_dialog_status_bar_color</color>
   <color name="component_color_shared_radio_button_unchecked_color">@color/color_palette_shared_radio_button_unchecked_color</color>
-  <color name="component_color_shared_submitted_radio_button_unchecked_color">@color/color_def_stroke_silver</color>
+  <color name="component_color_shared_submitted_radio_button_unchecked_color">@color/color_palette_shared_submitted_radio_button_unchecked_color</color>
   <color name="component_color_shared_radio_button_checked_color">@color/color_palette_shared_radio_button_checked_color</color>
   <!-- Add Profile Activity -->
   <color name="component_color_add_profile_activity_info_icon_color">@color/color_palette_info_icon_color</color>

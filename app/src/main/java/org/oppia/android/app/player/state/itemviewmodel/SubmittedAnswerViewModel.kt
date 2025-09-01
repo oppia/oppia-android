@@ -25,7 +25,7 @@ class SubmittedAnswerViewModel(
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,
   val consoleLogger: ConsoleLogger,
-  isFlashback: Boolean
+  val isFlashback: Boolean
 ) : StateItemViewModel(ViewType.SUBMITTED_ANSWER) {
   val isCorrectAnswer = ObservableField(DEFAULT_IS_CORRECT_ANSWER)
   val submittedAnswer: ObservableField<CharSequence> = ObservableField(DEFAULT_SUBMITTED_ANSWER)

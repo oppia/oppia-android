@@ -314,14 +314,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           ephemeralState.writtenTranslationContext
         )
         addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
-        if (playerFeatureSet.flashbackSolutionSummarySupport) {
-          addFlashbackSolutionItem(
-            conversationPendingItemList,
-            gcsEntityId,
-            ephemeralState.state.interaction,
-            ephemeralState.writtenTranslationContext
-          )
-        }
         addFlashbackSubmittedAnswerItem(
           conversationPendingItemList,
           extraInteractionPendingItemList,
@@ -330,6 +322,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
           ephemeralState.state.interaction,
           ephemeralState.writtenTranslationContext
         )
+        if (playerFeatureSet.flashbackSolutionSummarySupport) {
+          addFlashbackSolutionItem(
+            conversationPendingItemList,
+            gcsEntityId,
+            ephemeralState.state.interaction,
+            ephemeralState.writtenTranslationContext
+          )
+        }
         if (playerFeatureSet.flashbackNavigationSupport) {
           addReturnToQuestionButton(
             conversationPendingItemList,
@@ -509,7 +509,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            answerAndResponse.feedback,
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+              answerAndResponse.feedback
+            else
+              SubtitledHtml.newBuilder()
+                .setHtml(
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+                )
+                .build(),
             gcsEntityId,
             writtenTranslationContext
           )?.let { viewModel ->
@@ -574,7 +581,14 @@ class StatePlayerRecyclerViewAssembler private constructor(
 
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            answerAndResponse.feedback,
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+              answerAndResponse.feedback
+            else
+              SubtitledHtml.newBuilder()
+                .setHtml(
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+                )
+                .build(),
             gcsEntityId,
             writtenTranslationContext
           )?.let { viewModel ->
@@ -625,9 +639,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback, gcsEntityId, writtenTranslationContext)?.let(
-          pendingItemList::add
-        )
+        createFeedbackItem(
+          if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+            answerAndResponse.feedback
+          else
+            SubtitledHtml.newBuilder()
+              .setHtml(
+                resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+              )
+              .build(),
+          gcsEntityId,
+          writtenTranslationContext
+        )?.let(pendingItemList::add)
       }
     }
   }
@@ -1514,18 +1537,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
       val coreViewModel = solutionViewModel.coreViewModel
       binding.viewModel = coreViewModel
 
-      binding.solutionCorrectAnswer.text =
-        htmlParserFactory.create(
-          resourceBucketName,
-          entityType,
-          coreViewModel.explorationId,
-          imageCenterAlign = true,
-          displayLocale = resourceHandler.getDisplayLocale()
-        ).parseOppiaHtml(
-          coreViewModel.correctAnswerHtml,
-          binding.solutionCorrectAnswer
-        )
-
+      binding.solutionSummaryLabel.setTypeface(null, Typeface.BOLD)
       binding.solutionSummary.text =
         htmlParserFactory.create(
           resourceBucketName,
@@ -1540,7 +1552,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
           supportsLinks = true,
           supportsConceptCards = true
         )
-
       binding.isListExpanded = true
     }
 

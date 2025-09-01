@@ -37,7 +37,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:strokeColor="@color/component_color_hints_and_solution_summary_card_border_color"
-      app:strokeWidth="2dp">
+      app:strokeWidth="@{viewModel.solutionBoxStrokeWidth}">
 
       <LinearLayout
         android:layout_width="match_parent"
@@ -47,7 +47,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
           android:id="@+id/expandable_solution_header"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="wrap_content"
+          android:visibility="@{viewModel.isFlashback ? View.GONE : View.VISIBLE}">
 
           <TextView
             android:id="@+id/solution_title"
@@ -58,7 +59,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="@{viewModel.isFlashback ? @string/flashback_explanation_box_title:  @string/hint_list_solution_title}"
+            android:text="@string/hint_list_solution_title"
             android:textColor="@color/component_color_hints_and_solutions_fragment_text_color"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -81,7 +82,7 @@
             android:textColor="@color/component_color_hints_and_solution_summary_button_text_color"
             android:textSize="14sp"
             android:textAllCaps="false"
-            android:visibility="@{viewModel.isSolutionRevealed() || viewModel.isFlashback ? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.isSolutionRevealed() ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
@@ -101,7 +102,7 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="8dp"
-            android:visibility="@{viewModel.isSolutionRevealed() &amp;&amp; !viewModel.isFlashback ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.isSolutionRevealed() ? View.VISIBLE : View.GONE}"
             app:isRotationAnimationClockwise="@{isListExpanded}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -118,7 +119,7 @@
           android:layout_width="match_parent"
           android:layout_height="1dp"
           android:background="@color/component_color_hints_and_solution_summary_divider_color"
-          android:visibility="@{isListExpanded? View.VISIBLE : View.GONE, default=gone}" />
+          android:visibility="@{isListExpanded &amp;&amp; !viewModel.isFlashback ? View.VISIBLE : View.GONE, default=gone}" />
 
         <LinearLayout
           android:id="@+id/solution_container"
@@ -154,12 +155,12 @@
               style="@style/TextViewStart"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/solution_summary_margin_top_solution_summary_label"
+              app:layoutMarginTop="@{viewModel.isFlashback ? @dimen/space_0dp : @dimen/solution_summary_margin_top_solution_summary_label}"
+              app:layoutMarginBottom="@{viewModel.isFlashback ? @dimen/flashback_solution_summary_label_margin_bottom : @dimen/state_solution_summary_label_margin_bottom}"
               android:fontFamily="sans-serif-color_def_black"
               android:text="@string/explanation"
               android:textColor="@color/component_color_hints_and_solutions_fragment_description_color"
-              android:textSize="16sp"
-              android:visibility="@{viewModel.isFlashback ? View.GONE : View.VISIBLE}" />
+              android:textSize="16sp"/>
 
             <TextView
               android:id="@+id/solution_summary"

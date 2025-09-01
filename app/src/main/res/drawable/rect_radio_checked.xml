@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
   <item>
     <shape android:shape="rectangle">
-      <corners android:radius="1dp"/>
+      <corners android:radius="2dp"/>
       <solid
         android:color="@color/component_color_shared_submitted_radio_button_unchecked_color" />
       <size

@@ -778,6 +778,52 @@ class LintAnalysisReporterTest {
   }
 
   @Test
+  fun testPrintLintReport_falsePositiveIssue_printsWorkaround() {
+    val issues = listOf(
+      LintIssue(
+        id = "NewApi",
+        severity = LintSeverity.ERROR,
+        message = "Call requires API level 24 (current min is 21): `java.lang.Iterable#forEach`",
+        category = "Correctness",
+        priority = "6",
+        summary = "Calling new methods on older versions",
+        explanation = "This check scans through all the Android API " +
+          "calls in the application and warns about any calls that are not available",
+        errorLine1 = "          component.getAnalyticsStartupListenerStartupListeners().forEach {",
+        errorLine2 = "                                                                  ~~~~~~~",
+        locations = listOf(
+          LintLocation(
+            file = "${repoRoot.absolutePath}/app/src/main/java/MainActivity.kt",
+            lineNumber = "42"
+          )
+        )
+      )
+    )
+    val exception = assertThrows<IllegalStateException> {
+      lintAnalysisReporter.printLintReport(issues, groupByIssueSeverity = false)
+    }
+    val output = outputStream.toString()
+
+    assertThat(output).contains("$BOLD Issue #1: NewApi$RESET")
+    assertThat(output).contains("${RED}Severity: Error$RESET (FALSE POSITIVE)")
+    assertThat(output).contains("Line: 42")
+    assertThat(output).contains(
+      "Error Line:           " +
+        "component.getAnalyticsStartupListenerStartupListeners().forEach {"
+    )
+    assertThat(output).contains(
+      "Message: Call requires API level 24 " +
+        "(current min is 21): `java.lang.Iterable#forEach`"
+    )
+    assertThat(output).contains(
+      "Workaround: Use safeForEach from IterableExtensions.kt" +
+        " instead of directly calling forEach to avoid known lint false positives on API < 24."
+    )
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+  }
+
+  @Test
   fun testPrintLintReport_emptyIssuesList_groupBySeverity_printsZeroSummary() {
     val issues = emptyList<LintIssue>()
 
