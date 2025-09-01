@@ -71,7 +71,8 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 
-/** Test tag for the pin input field's container.
+/**
+ * Test tag for the pin input field's container.
  *
  * It is generally a bad practice to customize something that affects the real production behavior
  * of a component for test-specific reasons, but in this case, TEST_TAG has been chosen as a last
@@ -80,7 +81,8 @@ import javax.inject.Inject
  */
 const val PIN_INPUT_TEST_TAG = "TEST_TAG.input"
 
-/** Test tag for the forgot pin button.
+/**
+ * Test tag for the forgot pin button.
  *
  * Similar to [PIN_INPUT_TEST_TAG], we are adding a TEST_TAG modifier to the PIN boxes which are
  * dynamically generated and do not contain text when created that can be used to match them in
