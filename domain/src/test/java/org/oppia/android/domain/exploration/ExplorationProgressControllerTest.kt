@@ -2260,7 +2260,7 @@ class ExplorationProgressControllerTest {
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -2305,7 +2305,7 @@ class ExplorationProgressControllerTest {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -2326,7 +2326,7 @@ class ExplorationProgressControllerTest {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -3309,12 +3309,9 @@ class ExplorationProgressControllerTest {
     // Verify that the answer submission was successful.
     val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
 
-    val expectedFeedback = "<p>This doesn't seem right. Let's go back and look at the previous" +
-      " question and answer to understand better.</p>"
-
     assertThat(answerOutcome.labelledAsCorrectAnswer).isEqualTo(false)
-    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.STATE_NAME)
-    assertThat(answerOutcome.feedback.html).contains(expectedFeedback)
+    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
+    assertThat(answerOutcome.feedback.contentId).contains("default_outcome")
   }
 
   @Test
@@ -3337,6 +3334,9 @@ class ExplorationProgressControllerTest {
     // appended.
     assertThat(ephemeralState.stateTypeCase).isEqualTo(EphemeralState.StateTypeCase.PENDING_STATE)
     assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Verify linked Skill Id of this state.
+    assertThat(ephemeralState.state.linkedSkillId).isEqualTo("test_skill_id_0")
   }
 
   @Test
@@ -3362,6 +3362,8 @@ class ExplorationProgressControllerTest {
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
       .isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to false.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(false)
   }
 
   @Test
@@ -3408,22 +3410,25 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeRatioInputState()
 
     // Submit a wrong answer.
-    val ephemeralState = submitRatioInputAnswer(
+    val ephemeralState1 = submitRatioInputAnswer(
       RatioExpression.newBuilder().apply {
         addAllRatioComponent(listOf(4, 7))
       }.build()
     )
     // Access the first answer and response in the list.
-    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+    val answerAndResponse = ephemeralState1.pendingState.wrongAnswerList[0]
 
     // Trigger flashback dialog and click Continue button.
-    val expectedEphemeralState =
+    val ephemeralState2 =
       moveToFlashbackState(answerAndResponse.stateNameToRevisit)
 
     // Verify returned EphemeralState is a completed state.
-    assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    assertThat(ephemeralState2.stateTypeCase).isEqualTo(COMPLETED_STATE)
     // Verify flashback state is true in the returned EphemeralState.
-    assertThat(expectedEphemeralState.flashbackState).isEqualTo(true)
+    assertThat(ephemeralState2.flashbackState).isEqualTo(true)
+
+    // Verify linked Skill Id of this state.
+    assertThat(ephemeralState2.state.linkedSkillId).isEqualTo("test_skill_id_0")
   }
 
   @Test
@@ -3436,12 +3441,12 @@ class ExplorationProgressControllerTest {
     navigateToFlashbackState()
 
     // Click on 'Return to Question' button.
-    val expectedEphemeralState = moveBackToLatest()
+    val ephemeralState = moveBackToLatest()
 
     // Verify returned EphemeralState is a pending state.
-    assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     // Verify flashback state is false in the returned EphemeralState.
-    assertThat(expectedEphemeralState.flashbackState).isEqualTo(false)
+    assertThat(ephemeralState.flashbackState).isEqualTo(false)
   }
 
   @Test
@@ -3454,14 +3459,22 @@ class ExplorationProgressControllerTest {
     navigateToFlashbackState()
 
     // Click on 'Return to Question' button.
-    val expectedEphemeralState = moveBackToLatest()
+    val ephemeralState = moveBackToLatest()
 
     // Verify returned EphemeralState has correct pending state.
-    assertThat(expectedEphemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
-    assertThat(expectedEphemeralState.state.name).isEqualTo("RatioInput")
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
 
     // Verify that there is exactly one wrong answer.
-    assertThat(expectedEphemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit).isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to true.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(true)
   }
 
   @Test

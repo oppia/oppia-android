@@ -75,6 +75,7 @@
       android:layout_marginEnd="@dimen/phone_shared_margin_large"
       android:layout_marginBottom="@dimen/phone_shared_margin_small"
       android:text="@string/onboarding_language_activity_select_label"
+      android:labelFor="@id/onboarding_language_dropdown"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/onboarding_app_language_image" />
