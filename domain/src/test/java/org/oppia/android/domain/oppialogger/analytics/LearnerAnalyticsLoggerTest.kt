@@ -1068,7 +1068,38 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_logOpenFlashback_logsStateEventWithSkillIdAndStateNameToRevisit() {
+  fun testStateAnalyticsLogger_logFlashbackOffered_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logFlashbackOffered("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasFlashbackOfferedContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logOpenFlashback_logsStateEvent() {
     val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
     val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
@@ -1099,7 +1130,7 @@ class LearnerAnalyticsLoggerTest {
   }
 
   @Test
-  fun testStateAnalyticsLogger_closeFlashback_logsStateEventWithSkillId() {
+  fun testStateAnalyticsLogger_closeFlashback_logsStateEvent() {
     val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
     val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
     val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))

@@ -26,6 +26,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FLASHBACK_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
@@ -1378,6 +1379,30 @@ class EventLogSubject private constructor(
     block: ProfileOnboardingContextSubject.() -> Unit
   ) {
     hasEndProfileOnboardingContextThat().block()
+  }
+
+  /**
+   * Verifies that the [EventLog] under test has a context corresponding to
+   * [FLASHBACK_OFFERED_CONTEXT] (per [EventLog.Context.getActivityContextCase]).
+   */
+  fun hasFlashbackOfferedContext() {
+    assertThat(actual.context.activityContextCase).isEqualTo(FLASHBACK_OFFERED_CONTEXT)
+  }
+
+  /**
+   * Verifies the [EventLog]'s context per [hasFlashbackOfferedContext] and returns a
+   * [FlashbackContextSubject] to test the corresponding context.
+   */
+  fun hasFlashbackOfferedContextThat(): FlashbackContextSubject {
+    hasFlashbackOfferedContext()
+    return FlashbackContextSubject.assertThat(actual.context.flashbackOfferedContext)
+  }
+
+  /** Verifies the [EventLog]'s context and executes [block]. */
+  fun hasFlashbackOfferedContextThat(
+    block: FlashbackContextSubject.() -> Unit
+  ) {
+    hasFlashbackOfferedContextThat().block()
   }
 
   /**

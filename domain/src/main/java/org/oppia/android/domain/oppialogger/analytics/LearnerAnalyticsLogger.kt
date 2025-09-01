@@ -479,6 +479,20 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     /**
+     * Logs that flashback is offered to learner. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
+     * specifies the state the learner can revisit to review the concept.
+     */
+    fun logFlashbackOffered(stateNameToRevisit: String) {
+      logStateEvent(
+        linkedSkillId,
+        stateNameToRevisit,
+        ::createFlashbackContext,
+        EventBuilder::setFlashbackOfferedContext
+      )
+    }
+
+    /**
      * Logs that the learner opened a flashback. The [linkedSkillId] indicates the global skill ID
      * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
      * specifies the state the learner can revisit to review the concept.

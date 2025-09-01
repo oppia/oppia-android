@@ -23,6 +23,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROF
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FLASHBACK_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
@@ -291,6 +292,7 @@ class EventBundleCreator @Inject constructor(
         ProfileOnboardingContext(activityName, startProfileOnboardingEvent)
       END_PROFILE_ONBOARDING_EVENT ->
         ProfileOnboardingContext(activityName, endProfileOnboardingEvent)
+      FLASHBACK_OFFERED_CONTEXT -> FlashbackContext(activityName, flashbackOfferedContext)
       OPEN_FLASHBACK_EVENT -> FlashbackContext(activityName, openFlashbackEvent)
       CLOSE_FLASHBACK_EVENT -> CardContext(activityName, closeFlashbackEvent)
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.

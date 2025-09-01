@@ -84,6 +84,7 @@ class EventTypeToHumanReadableNameConverter @Inject constructor() {
       ActivityContextCase.APP_IN_FOREGROUND_TIME -> "app_in_foreground_time"
       ActivityContextCase.START_PROFILE_ONBOARDING_EVENT -> "start_profile_onboarding_event"
       ActivityContextCase.END_PROFILE_ONBOARDING_EVENT -> "end_profile_onboarding_event"
+      ActivityContextCase.FLASHBACK_OFFERED_CONTEXT -> "flashback_offered"
       ActivityContextCase.OPEN_FLASHBACK_EVENT -> "open_flashback_event"
       ActivityContextCase.CLOSE_FLASHBACK_EVENT -> "close_flashback_event"
     }

@@ -4938,6 +4938,24 @@ class EventLogSubjectTest {
   }
 
   @Test
+  fun testEventLogSubject_hasFlashbackOfferedContext_hasFlashbackContext() {
+    val flashbackContext = FlashbackContext.newBuilder()
+      .setSkillId("SkillId")
+      .setStateNameToRevisit("Fractions")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setFlashbackOfferedContext(flashbackContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasFlashbackOfferedContextThat()
+      .isEqualTo(flashbackContext)
+  }
+
+  @Test
   fun testEventLogSubject_hasOpenFlashbackContext_hasFlashbackContext() {
     val flashbackContext = FlashbackContext.newBuilder()
       .setSkillId("SkillId")

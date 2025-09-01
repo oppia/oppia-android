@@ -747,6 +747,7 @@ class ExplorationProgressController @Inject constructor(
               !answerOutcome.labelledAsCorrectAnswer && wasVisitedBefore
             ) {
               explorationProgress.stateDeck.addFlashbackState(answerOutcome.stateName)
+              stateAnalyticsLogger?.logFlashbackOffered(answerOutcome.stateName)
             } else {
               endState()
               val newState = explorationProgress.stateGraph.getState(answerOutcome.stateName)

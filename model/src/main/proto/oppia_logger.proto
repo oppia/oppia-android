@@ -236,10 +236,14 @@ message EventLog {
       // first time.
       ProfileOnboardingContext end_profile_onboarding_event = 58;
 
+      // The event being logged is related to offering See Example button.
+      FlashbackContext flashback_offered_context = 59;
+
       // The event being logged is related to opening flashback card.
-      FlashbackContext open_flashback_event = 59;
+      FlashbackContext open_flashback_event = 60;
+
       // The event being logged is related to closing flashback card.
-      CardContext close_flashback_event = 60;
+      CardContext close_flashback_event = 61;
     }
   }
 
