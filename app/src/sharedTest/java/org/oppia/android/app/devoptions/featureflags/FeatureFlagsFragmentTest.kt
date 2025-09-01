@@ -10,8 +10,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
@@ -572,11 +574,9 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleFlag_navigateBackAndReopen_persistsValue() {
+  fun testFeatureFlagsFragment_toggleFlag_navigateBack_saveDiscardDialogIsDisplayed() {
     setUpTestApplicationComponent()
-    val expectedState = !getEphemeralFeatureFlags()[0].currentValue
-
-    launch(FeatureFlagsActivity::class.java).use { scenario ->
+    launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -590,17 +590,10 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
 
-    launch(FeatureFlagsActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = expectedState
-      )
+      onView(withText(R.string.save_discard_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -686,13 +679,13 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
+  fun testFeatureFlagsFragment_clickReset_navigateBack_displaysSaveDiscardAlertDialog() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-    launch(FeatureFlagsActivity::class.java).use { scenario ->
+    launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -707,20 +700,10 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
 
-    launch(FeatureFlagsActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isDisplayed())))
+      onView(withText(R.string.save_discard_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -798,7 +781,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_modifyFlag_clickSave_reopenDashboard_valuePersists() {
+  fun testFeatureFlagsFragment_navigateBackWithFlagModified_displaysSaveDiscardAlertDialog() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -811,20 +794,44 @@ class FeatureFlagsFragmentTest {
         )
       ).perform(click())
 
-      onView(withId(R.id.save_button)).perform(click())
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.save_discard_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagRevertback_naviagteback_skipsRestartDialog() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      launch(FeatureFlagsActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.feature_flags_recycler_view,
-            position = 0,
-            targetViewId = R.id.feature_flag_switch
-          )
-        ).check(matches(isChecked()))
-      }
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.platform_parameter_restart_dialog_title))
+        .check(doesNotExist())
     }
   }
 

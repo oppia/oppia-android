@@ -5,6 +5,10 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+<<<<<<< HEAD
+=======
+    android:background="@color/component_color_shared_item_background_solid_color"
+>>>>>>> upstream/restart-dialog
     android:layout_marginStart="20dp"
     android:layout_marginEnd="20dp"
     android:paddingStart="24dp"
