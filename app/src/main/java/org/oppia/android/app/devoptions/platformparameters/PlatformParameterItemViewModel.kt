@@ -68,9 +68,7 @@ class PlatformParameterItemViewModel(
 
   /** Tracks whether the reset button is currently enabled (clickable). */
   val isResetButtonEnabled: LiveData<Boolean> by lazy {
-    Transformations.map(resetParameters) {
-      platformParameterId !in it
-    }
+    Transformations.map(resetParameters) { platformParameterId !in it }
   }
 
   /** Represents the platform parameter’s server-sync or override state. */

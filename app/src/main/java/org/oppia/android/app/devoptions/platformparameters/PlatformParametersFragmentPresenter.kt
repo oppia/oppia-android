@@ -266,7 +266,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
         model.currentValue.hasInteger() -> {
           model.inputValue.set(restoredParameterValue.integer.toString())
         }
-
         model.currentValue.hasString() -> {
           model.inputValue.set(restoredParameterValue.string)
         }
@@ -392,11 +391,11 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun setPlatformParameterBackgroundColor(
-    isModified: Boolean,
+    isParameterModified: Boolean,
     model: PlatformParameterItemViewModel
   ): Int {
     return when {
-      isModified ->
+      isParameterModified ->
         ContextCompat.getColor(
           fragment.requireContext(),
           R.color.component_color_platform_parameter_modified_background_color
