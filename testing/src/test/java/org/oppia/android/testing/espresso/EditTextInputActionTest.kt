@@ -128,7 +128,8 @@ class EditTextInputActionTest {
   }
 
   @Test
-  fun testReplaceText_withExistingText_replacesTextCorrectly() {    editText.setText("123")
+  fun testReplaceText_withExistingText_replacesTextCorrectly() {
+    editText.setText("123")
 
     editTextInputAction.replaceText("45").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
@@ -149,7 +150,8 @@ class EditTextInputActionTest {
   }
 
   @Test
-  fun testReplaceText_afterAppendText_replacesEntireText() {    editText.setText("Base")
+  fun testReplaceText_afterAppendText_replacesEntireText() {
+    editText.setText("Base")
 
     editTextInputAction.appendText("Added").perform(null, editText)
     testCoroutineDispatchers.runCurrent()
@@ -158,8 +160,6 @@ class EditTextInputActionTest {
 
     assertThat(editText.text.toString()).isEqualTo("Replaced")
   }
-
-
 
   @Test
   fun testReplaceText_withEmptyString_clearsText() {
@@ -170,7 +170,6 @@ class EditTextInputActionTest {
 
     assertThat(editText.text.toString()).isEqualTo("")
   }
-
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
