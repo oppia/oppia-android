@@ -846,7 +846,7 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-land/onboarding_app_language_selection_fragment.xml"
+  exempted_file_path: "app/src/main/res/layout-land/app_language_selection_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -950,7 +950,7 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-land/onboarding_app_language_selection_fragment.xml"
+  exempted_file_path: "app/src/main/res/layout-sw600dp-land/app_language_selection_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -1011,7 +1011,7 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout-sw600dp-port/onboarding_app_language_selection_fragment.xml"
+  exempted_file_path: "app/src/main/res/layout-sw600dp-port/app_language_selection_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
@@ -1453,7 +1453,7 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
-  exempted_file_path: "app/src/main/res/layout/onboarding_app_language_selection_fragment.xml"
+  exempted_file_path: "app/src/main/res/layout/app_language_selection_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
