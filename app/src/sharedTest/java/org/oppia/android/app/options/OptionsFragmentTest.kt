@@ -24,7 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -525,6 +525,7 @@ class OptionsFragmentTest {
 
       val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        parentScreen = AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
       }.build()
       intended(
         allOf(
@@ -554,6 +555,7 @@ class OptionsFragmentTest {
 
       val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
         audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        parentScreen = AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
       }.build()
       intended(
         allOf(

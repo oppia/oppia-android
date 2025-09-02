@@ -13,12 +13,16 @@ import com.google.android.material.appbar.AppBarLayout
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.AudioLanguageSelectionFragmentBinding
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams.ParentScreen
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.options.AudioLanguageActivity
 import org.oppia.android.app.options.AudioLanguageFragment.Companion.FRAGMENT_SAVED_STATE_KEY
 import org.oppia.android.app.options.AudioLanguageSelectionViewModel
+import org.oppia.android.app.options.OptionsActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -46,6 +50,7 @@ class AudioLanguageFragmentPresenter @Inject constructor(
   private lateinit var binding: AudioLanguageSelectionFragmentBinding
   private lateinit var selectedLanguage: OppiaLanguage
   private lateinit var supportedLanguages: List<OppiaLanguage>
+  private lateinit var parentScreen: ParentScreen
 
   /**
    * Returns a newly inflated view to render the fragment with an evaluated audio language as the
@@ -55,17 +60,24 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
-    outState: Bundle?
+    outState: Bundle?,
+    parentScreen: ParentScreen
   ): View {
-    // Hide toolbar as it's not needed in this layout. The toolbar is created by a shared activity
-    // and is required in OptionsFragment.
-    activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
+    this.parentScreen = parentScreen
+
+    // Hide toolbar as it's not needed in the onboarding layout. The toolbar is created by a shared
+    // activity and is required in OptionsFragment.
+    if (parentScreen == ParentScreen.LEARNER_INTRO_SCREEN) {
+      activity.findViewById<AppBarLayout>(R.id.reading_list_app_bar_layout).visibility = View.GONE
+    }
 
     binding = AudioLanguageSelectionFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
+
+    hideNavigationViews(parentScreen)
 
     val savedSelectedLanguage = outState?.getProto(
       FRAGMENT_SAVED_STATE_KEY,
@@ -100,8 +112,8 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         supportedLanguages = languages
         val adapter = ArrayAdapter(
           fragment.requireContext(),
-          R.layout.onboarding_language_dropdown_item,
-          R.id.onboarding_language_text_view,
+          R.layout.language_dropdown_item,
+          R.id.language_text_view,
           languages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
         )
         binding.audioLanguageDropdownList.setAdapter(adapter)
@@ -119,14 +131,12 @@ class AudioLanguageFragmentPresenter @Inject constructor(
               appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
             }[it] ?: OppiaLanguage.ENGLISH
           }
+          setSelectedLanguage(selectedLanguage)
+          updateSelectedAudioLanguage(selectedLanguage, profileId)
         }
     }
 
-    binding.onboardingNavigationContinue.setOnClickListener {
-      updateSelectedAudioLanguage(selectedLanguage, profileId).also {
-        logInToProfile(profileId)
-      }
-    }
+    binding.onboardingNavigationContinue.setOnClickListener { logInToProfile(profileId) }
 
     return binding.root
   }
@@ -147,17 +157,52 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     val audioLanguageSelection =
       AudioTranslationLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
     translationController.updateAudioTranslationContentLanguage(profileId, audioLanguageSelection)
-      .toLiveData().observe(fragment) {
-        when (it) {
+      .toLiveData().observe(fragment) { result ->
+        when (result) {
+          is AsyncResult.Success -> {
+            if (parentScreen == ParentScreen.OPTIONS_SCREEN) {
+              updateAudioLanguage(getAudioLanguageFromOppiaLanguage(selectedLanguage))
+            }
+          }
           is AsyncResult.Failure ->
             oppiaLogger.e(
               "AudioLanguageFragment",
               "Failed to set the selected language.",
-              it.error
+              result.error
             )
-          else -> {} // Do nothing.
+          is AsyncResult.Pending -> {} // Do nothing.
         }
       }
+  }
+
+  private fun updateAudioLanguage(audioLanguage: AudioLanguage) {
+    // The first branch of (when) will be used in the case of multipane
+    when (val parentActivity = fragment.activity) {
+      is OptionsActivity ->
+        parentActivity.optionActivityPresenter.updateAudioLanguage(audioLanguage)
+      is AudioLanguageActivity ->
+        parentActivity.audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
+    }
+  }
+
+  private fun getAudioLanguageFromOppiaLanguage(oppiaLanguage: OppiaLanguage): AudioLanguage {
+    return when (oppiaLanguage) {
+      OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
+      OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+      OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
+      OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+      OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+      OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+    }
+  }
+
+  private fun hideNavigationViews(parentScreen: ParentScreen) {
+    if (parentScreen == ParentScreen.OPTIONS_SCREEN) {
+      binding.onboardingStepsCount?.visibility = View.GONE
+      binding.onboardingNavigationBack.visibility = View.GONE
+      binding.onboardingNavigationContinue.visibility = View.GONE
+    }
   }
 
   private fun logInToProfile(profileId: ProfileId) {
