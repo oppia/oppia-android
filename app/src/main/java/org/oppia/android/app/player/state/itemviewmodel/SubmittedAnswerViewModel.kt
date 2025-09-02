@@ -119,7 +119,7 @@ class SubmittedAnswerViewModel(
     computeChoiceItems(
       choiceSubtitledHtmls,
       hasConversationView,
-      submittedUserAnswer.itemSelection.selectedIndexesList,
+      submittedUserAnswer.itemSelectionAnswer.selectedIndexesList,
       writtenTranslationContext,
       translationController,
       customTagHandlers,
@@ -148,7 +148,7 @@ class SubmittedAnswerViewModel(
         SelectionSubmittedItemViewModel(
           htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
-          isEnabled = enabledItemsList.contains(index),
+          isSelected = enabledItemsList.contains(index),
           customTagHandlers = customTagHandlers,
           writtenTranslationContext = writtenTranslationContext,
           translationController = translationController,

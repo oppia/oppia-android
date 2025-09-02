@@ -82,9 +82,8 @@ class ProfileChooserViewModel @Inject constructor(
     adminProfileId = adminProfileViewModel.profile.id
     sortedProfileList.add(0, adminProfileViewModel)
 
-    if (sortedProfileList.size == 10) {
-      canAddProfile.set(false)
-    }
+    canAddProfile.set(sortedProfileList.size < 10)
+
     return sortedProfileList
   }
 

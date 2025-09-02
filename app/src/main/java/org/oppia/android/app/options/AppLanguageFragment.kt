@@ -13,16 +13,23 @@ import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** The fragment to change the language of the app. */
 class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener {
+  @Inject lateinit var appLanguageFragmentPresenterV1: AppLanguageFragmentPresenterV1
+
+  @Inject lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
 
   @Inject
-  lateinit var appLanguageFragmentPresenter: AppLanguageFragmentPresenter
-  private var profileId: Int? = -1
+  @field:EnableOnboardingFlowV2
+  lateinit var enableOnboardingFlowV2: PlatformParameterValue<Boolean>
+
+  private var profileId: ProfileId = ProfileId.getDefaultInstance()
 
   companion object {
     private const val FRAGMENT_ARGUMENTS_KEY = "AppLanguageFragment.arguments"
@@ -70,26 +77,43 @@ class AppLanguageFragment : InjectableFragment(), AppLanguageRadioButtonListener
       checkNotNull(
         savedInstanceState?.retrieveLanguageFromSavedState()
           ?: arguments?.retrieveLanguageFromArguments()
-      ) { "Expected arguments to be passed to AppLanguageFragment" }
-    profileId = arguments?.extractCurrentUserProfileId()?.internalId ?: -1
+      ) { "Expected an oppiaLanguage argument to be passed to AppLanguageFragment" }
 
-    return appLanguageFragmentPresenter.handleOnCreateView(
-      inflater,
-      container,
-      oppiaLanguage,
-      profileId!!
-    )
+    profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
+      "Expected a profileId argument to be passed to AppLanguageFragment"
+    }
+
+    return if (enableOnboardingFlowV2.value) {
+      appLanguageFragmentPresenter.handleCreateView(
+        inflater,
+        container,
+        savedInstanceState,
+        oppiaLanguage,
+        profileId
+      )
+    } else {
+      appLanguageFragmentPresenterV1.handleOnCreateView(
+        inflater,
+        container,
+        oppiaLanguage,
+        profileId.internalId
+      )
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val state = AppLanguageFragmentStateBundle.newBuilder().apply {
-      oppiaLanguage = appLanguageFragmentPresenter.getLanguageSelected()
-    }.build()
-    outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    if (enableOnboardingFlowV2.value) {
+      appLanguageFragmentPresenter.saveToSavedInstanceState(outState)
+    } else {
+      val state = AppLanguageFragmentStateBundle.newBuilder().apply {
+        oppiaLanguage = appLanguageFragmentPresenterV1.getLanguageSelected()
+      }.build()
+      outState.putProto(FRAGMENT_SAVED_STATE_KEY, state)
+    }
   }
 
   override fun onLanguageSelected(appLanguage: OppiaLanguage) {
-    appLanguageFragmentPresenter.onLanguageSelected(appLanguage)
+    appLanguageFragmentPresenterV1.onLanguageSelected(appLanguage)
   }
 }

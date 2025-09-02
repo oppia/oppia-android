@@ -55,6 +55,7 @@
       android:elevation="@dimen/onboarding_shared_elevation"
       android:paddingStart="@dimen/onboarding_shared_padding_medium"
       android:paddingTop="@dimen/onboarding_shared_padding_medium"
+      android:paddingEnd="@dimen/onboarding_shared_padding_medium"
       app:layout_constraintBottom_toBottomOf="@id/create_profile_user_image_view"
       app:layout_constraintEnd_toEndOf="@id/create_profile_user_image_view"
       app:srcCompat="@drawable/create_profile_picture_icon" />

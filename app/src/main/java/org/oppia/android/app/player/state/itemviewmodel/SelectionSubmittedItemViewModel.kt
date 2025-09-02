@@ -11,7 +11,7 @@ import org.oppia.android.util.parser.html.CustomHtmlContentHandler
 class SelectionSubmittedItemViewModel(
   val htmlContent: SubtitledHtml,
   val hasConversationView: Boolean,
-  val isEnabled: Boolean,
+  val isSelected: Boolean,
   val customTagHandlers: Map<String, CustomHtmlContentHandler.CustomTagHandler>,
   val writtenTranslationContext: WrittenTranslationContext,
   private val translationController: TranslationController,

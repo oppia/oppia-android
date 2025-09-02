@@ -1446,36 +1446,33 @@ class StatePlayerRecyclerViewAssembler private constructor(
           binding.viewModel = submittedAnswerViewModel
           val userAnswer = submittedAnswerViewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER -> {
+              showSelectionSubmittedAnswer(binding)
+              binding.selectionSubmittedAnswerRecyclerView.adapter =
+                createSelectionSubmittedAnswerListAdapter(viewModel.getSelectionItemInputType())
+              binding.selectionSubmittedAnswerList = viewModel.choiceItems
+            }
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
-              if (enableFlashbackSupport.value &&
-                submittedAnswerViewModel.isSelectionAnswerType()
-              ) {
-                showSelectionSubmittedAnswer(binding)
-                binding.selectionSubmittedAnswerRecyclerView.adapter =
-                  createSelectionSubmittedListAnswerAdapter(viewModel.getSelectionItemInputType())
-                binding.selectionSubmittedListAnswer = viewModel.choiceItems
-              } else {
-                showSingleAnswer(binding)
-                val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
-                  userAnswer.contentDescription
-                } else null
-                val htmlParser = htmlParserFactory.create(
-                  resourceBucketName,
-                  entityType,
-                  submittedAnswerViewModel.gcsEntityId,
-                  imageCenterAlign = false,
-                  customOppiaTagActionListener = customTagListener,
-                  displayLocale = resourceHandler.getDisplayLocale()
-                )
-                submittedAnswerViewModel.setSubmittedAnswer(
-                  htmlParser.parseOppiaHtml(
-                    userAnswer.htmlAnswer,
-                    binding.submittedAnswerTextView,
-                    supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
-                  ),
-                  accessibleAnswer
-                )
-              }
+              showSingleAnswer(binding)
+              val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
+                userAnswer.contentDescription
+              } else null
+              val htmlParser = htmlParserFactory.create(
+                resourceBucketName,
+                entityType,
+                submittedAnswerViewModel.gcsEntityId,
+                imageCenterAlign = false,
+                customOppiaTagActionListener = customTagListener,
+                displayLocale = resourceHandler.getDisplayLocale()
+              )
+              submittedAnswerViewModel.setSubmittedAnswer(
+                htmlParser.parseOppiaHtml(
+                  userAnswer.htmlAnswer,
+                  binding.submittedAnswerTextView,
+                  supportsConceptCards = submittedAnswerViewModel.supportsConceptCards
+                ),
+                accessibleAnswer
+              )
             }
             UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS -> {
               showListOfAnswers(binding)
@@ -1607,7 +1604,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
         .build()
     }
 
-    private fun createSelectionSubmittedListAnswerAdapter(
+    private fun createSelectionSubmittedAnswerListAdapter(
       selectionItemInputType: SelectionItemInputType
     ): BindableAdapter<SelectionSubmittedItemViewModel> {
       return when (selectionItemInputType) {
@@ -1636,7 +1633,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
                     ),
                     binding.itemSelectionContentTextView
                   )
-                if (viewModel.isEnabled) {
+                if (viewModel.isSelected) {
                   binding.itemSelectionContentTextView.setTypeface(null, Typeface.BOLD)
                   binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
                 }
@@ -1671,7 +1668,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
                     ),
                     binding.multipleChoiceContentTextView
                   )
-                if (viewModel.isEnabled) {
+                if (viewModel.isSelected) {
                   binding.multipleChoiceContentTextView.setTypeface(null, Typeface.BOLD)
                   binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
                 }
@@ -2020,6 +2017,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         UserAnswer.TextualAnswerCase.PLAIN_ANSWER -> plainAnswer.isNotEmpty()
         UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS ->
           listOfHtmlAnswers.setOfHtmlStringsOrBuilderList.isNotEmpty()
+        UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER ->
+          itemSelectionAnswer.selectedIndexesList.isNotEmpty()
         UserAnswer.TextualAnswerCase.TEXTUALANSWER_NOT_SET, null -> false
       }
     }

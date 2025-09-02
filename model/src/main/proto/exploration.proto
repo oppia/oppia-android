@@ -311,6 +311,8 @@ message UserAnswer {
     string plain_answer = 3;
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
+    // A representation of the selection choice answer.
+    ItemSelectionAnswerState item_selection_answer = 7;
   }
 
   // An accessible version of the corresponding plain answer. It will be used to read out the
@@ -323,9 +325,6 @@ message UserAnswer {
   // instead of whatever is currently being used in the active progress controller since that one
   // may have changed, but the user's answer is fixed.
   WrittenTranslationContext written_translation_context = 6;
-
-  // User's selection for selection input interactions.
-  ItemSelectionAnswerState item_selection = 7;
 }
 
 message AnswerAndResponse {
