@@ -555,9 +555,9 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleFlag_navigateBack_saveDiscardDialogIsDisplayed() {
+  fun testFeatureFlagsFragment_toggleFlag_navigateBack_pendingChangesDialogIsDisplayed() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use { scenario ->
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -572,7 +572,7 @@ class FeatureFlagsFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.save_discard_dialog_title_text))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -746,13 +746,13 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_clickReset_navigateBack_displaysSaveDiscardAlertDialog() {
+  fun testFeatureFlagsFragment_clickReset_navigateBack_displaysPendingChangesAlertDialog() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use { scenario ->
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -767,7 +767,7 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.save_discard_dialog_title_text))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -894,7 +894,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_navigateBackWithFlagModified_displaysSaveDiscardAlertDialog() {
+  fun testFeatureFlagsFragment_navigateBackWithFlagModified_displaysPendingChangesAlertDialog() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -909,7 +909,7 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.save_discard_dialog_title_text))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -943,7 +943,7 @@ class FeatureFlagsFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.platform_parameter_restart_dialog_title))
+      onView(withText(R.string.app_restart_dialog_title))
         .check(doesNotExist())
     }
   }
@@ -1075,6 +1075,44 @@ class FeatureFlagsFragmentTest {
           targetViewId = R.id.currently_overridden_alert_icon
         )
       ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_navigateBackWithFlagModified_clickDiscard_discardsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralFeatureFlags()[0].currentValue
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_discard_button_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = initialValue
+      )
     }
   }
 

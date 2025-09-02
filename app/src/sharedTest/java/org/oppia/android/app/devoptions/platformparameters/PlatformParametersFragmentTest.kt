@@ -811,9 +811,9 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyIntParameter_navigateBack_showsSaveDiscardDialog() {
+  fun testPlatformParametersFragment_modifyIntParameter_navigateBack_showsPendingChangesDialog() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenario ->
+    launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -828,7 +828,7 @@ class PlatformParametersFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.save_discard_dialog_title_text))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1214,7 +1214,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_navigateBackWithParamModified_displaySaveDiscardAlertDialog() {
+  fun testPlatformParametersFragment_navigateBackWithParamModified_displayPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1231,7 +1231,7 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.save_discard_dialog_title_text))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1245,13 +1245,13 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      onView(withText(R.string.platform_parameter_restart_dialog_title))
+      onView(withText(R.string.app_restart_dialog_title))
         .check(doesNotExist())
     }
   }
 
   @Test
-  fun testPlatformParametersFragment_clickReset_navigateBack_displaysSaveDiscardAlertDialog() {
+  fun testPlatformParametersFragment_clickReset_navigateBack_displaysPendingChangesAlertDialog() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerOverriddenPlatformParameterToDatabase(
         testComponent,
@@ -1274,7 +1274,7 @@ class PlatformParametersFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.save_discard_dialog_title_text))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
     }
@@ -1308,7 +1308,7 @@ class PlatformParametersFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.platform_parameter_restart_dialog_title))
+      onView(withText(R.string.app_restart_dialog_title))
         .check(doesNotExist())
     }
   }
@@ -1531,6 +1531,44 @@ class PlatformParametersFragmentTest {
         position = position,
         expectedColor =
           context.getColor(R.color.component_color_platform_parameter_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBackWithParamModified_clickDiscard_discardsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralPlatformParameters()[0].currentValue
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_discard_button_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = initialValue
       )
     }
   }

@@ -14,35 +14,50 @@
     android:paddingBottom="16dp">
 
     <TextView
-      android:id="@+id/restart_header_text"
+      android:id="@+id/pending_changes_title_text"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       style="@style/Heading2ViewStart"
-      android:text="@string/platform_parameter_restart_dialog_title"
-      android:textStyle="bold"
+      android:text="@string/pending_changes_dialog_title_text"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-      android:id="@+id/restart_message_text"
+      android:id="@+id/pending_changes_message_text"
       style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="8dp"
-      android:text="@string/platform_parameter_restart_dialog_message"
-      app:layout_constraintTop_toBottomOf="@+id/restart_header_text"
+      android:text="@string/pending_changes_dialog_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/pending_changes_title_text"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-      android:id="@+id/restart_button"
+      android:id="@+id/discard_button"
+      style="@style/StateButtonOutline"
+      android:background="@drawable/state_button_white_background"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minWidth="90dp"
+      android:layout_marginTop="24dp"
+      android:layout_marginEnd="16dp"
+      android:textColor="@color/component_color_shared_primary_dark_text_color"
+      android:text="@string/pending_changes_dialog_discard_button_text"
+      app:layout_constraintTop_toBottomOf="@+id/pending_changes_message_text"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/save_button"/>
+
+    <Button
+      android:id="@+id/save_button"
       style="@style/StateButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"
-      android:text="@string/platform_parameter_restart_dialog_button_text"
-      app:layout_constraintTop_toBottomOf="@+id/restart_message_text"
+      android:minWidth="90dp"
+      android:text="@string/pending_changes_dialog_save_button_text"
+      app:layout_constraintTop_toBottomOf="@+id/pending_changes_message_text"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"/>
   </androidx.constraintlayout.widget.ConstraintLayout>

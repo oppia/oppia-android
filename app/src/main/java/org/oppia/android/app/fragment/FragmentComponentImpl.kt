@@ -9,8 +9,8 @@ import org.oppia.android.app.administratorcontrols.appversion.AppVersionFragment
 import org.oppia.android.app.administratorcontrols.learneranalytics.ProfileAndDeviceIdFragment
 import org.oppia.android.app.classroom.ClassroomListFragment
 import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
+import org.oppia.android.app.devoptions.AppRestartDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
-import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
 import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
@@ -122,6 +122,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(administratorControlsFragment: AdministratorControlsFragment)
   fun inject(adminSettingsDialogFragment: AdminSettingsDialogFragment)
   fun inject(appLanguageFragment: AppLanguageFragment)
+  fun inject(appRestartDialogFragment: AppRestartDialogFragment)
   fun inject(appVersionFragment: AppVersionFragment)
   fun inject(audioFragment: AudioFragment)
   fun inject(audioLanguageFragment: AudioLanguageFragment)
@@ -143,7 +144,6 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(explorationTestActivityTestFragment: ExplorationTestActivityPresenter.TestFragment)
   fun inject(faqListFragment: FAQListFragment)
   fun inject(featureFlagsFragment: FeatureFlagsFragment)
-  fun inject(platformParametersFragment: PlatformParametersFragment)
   fun inject(forceNetworkTypeFragment: ForceNetworkTypeFragment)
   fun inject(forcedAppDeprecationNoticeDialogFragment: ForcedAppDeprecationNoticeDialogFragment)
   fun inject(fragment: GeneralAvailabilityUpgradeNoticeDialogFragment)
@@ -168,6 +168,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(optionalAppDeprecationNoticeDialogFragment: OptionalAppDeprecationNoticeDialogFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(osDeprecationNoticeDialogFragment: OsDeprecationNoticeDialogFragment)
+  fun inject(platformParametersFragment: PlatformParametersFragment)
   fun inject(policiesFragment: PoliciesFragment)
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)
   fun inject(profileChooserFragment: ProfileChooserFragment)
@@ -183,7 +184,6 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(readingTextSizeFragment: ReadingTextSizeFragment)
   fun inject(recentlyPlayedFragment: RecentlyPlayedFragment)
   fun inject(resetPinDialogFragment: ResetPinDialogFragment)
-  fun inject(platformParameterRestartDialogFragment: PlatformParameterRestartDialogFragment)
   fun inject(resumeLessonFragment: ResumeLessonFragment)
   fun inject(revealSolutionDialogFragment: RevealSolutionDialogFragment)
   fun inject(revisionCardFragment: RevisionCardFragment)

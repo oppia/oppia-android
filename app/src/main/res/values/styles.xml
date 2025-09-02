@@ -79,6 +79,20 @@
     <item name="android:textSize">14sp</item>
   </style>
 
+  <!-- STATE BUTTON OUTLINE STYLE -->
+  <style name="StateButtonOutline" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:background">@android:color/transparent</item>
+    <item name="android:textColor">@color/component_color_shared_primary_dark_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
     <item name="android:windowBackground">@drawable/splash_image</item>
     <item name="android:adjustViewBounds">true</item>

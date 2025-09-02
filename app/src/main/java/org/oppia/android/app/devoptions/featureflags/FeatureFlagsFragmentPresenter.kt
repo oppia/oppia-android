@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
-import org.oppia.android.app.databinding.databinding.SaveDiscardDialogFragmentBinding
-import org.oppia.android.app.devoptions.PlatformParameterRestartDialogFragment
+import org.oppia.android.app.databinding.databinding.PendingChangesDialogFragmentBinding
+import org.oppia.android.app.devoptions.AppRestartDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
@@ -28,7 +28,7 @@ import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-/** Tag for displaying [PlatformParameterRestartDialogFragment]. */
+/** Tag for displaying [AppRestartDialogFragment]. */
 const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 
 /** The presenter for [FeatureFlagsFragment]. */
@@ -111,14 +111,14 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     val resetFlags = getResetFeatureFlags()
 
     if (overriddenFlags.isNotEmpty() || resetFlags.isNotEmpty()) {
-      showSaveDiscardDialog(overriddenFlags)
+      showPendingChangesDialog(overriddenFlags)
     } else {
       activity.finish()
     }
   }
 
-  private fun showSaveDiscardDialog(overriddenFlags: List<OverriddenFeatureFlag>) {
-    val dialogBinding = SaveDiscardDialogFragmentBinding.inflate(
+  private fun showPendingChangesDialog(overriddenFlags: List<OverriddenFeatureFlag>) {
+    val dialogBinding = PendingChangesDialogFragmentBinding.inflate(
       LayoutInflater.from(activity),
       /* root= */ null,
       /* attachToRoot= */ false
@@ -191,7 +191,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         when (result) {
           is AsyncResult.Success -> {
             isRestartInitiated = true
-            val dialog = PlatformParameterRestartDialogFragment.newInstance()
+            val dialog = AppRestartDialogFragment.newInstance()
             dialog.showNow(fragment.childFragmentManager, TAG_FEATURE_FLAG_RESTART_DIALOG)
           }
           is AsyncResult.Failure -> {
@@ -290,7 +290,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         it.addCategory(Intent.CATEGORY_LAUNCHER)
       }
       activity.startActivity(intent)
-      exitProcess(0)
+      exitProcess(0) // App is terminated to ensure a fresh restart.
     }
   }
 }
