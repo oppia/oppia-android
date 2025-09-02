@@ -8,9 +8,9 @@ import dagger.Provides
 class CachingModule {
   @Provides
   @LoadLessonProtosFromAssets
-  fun provideLoadLessonProtosFromAssets(): Boolean = false
+  fun provideLoadLessonProtosFromAssets(): Boolean = true
 
   @Provides
   @LoadImagesFromAssets
-  fun provideLoadImagesFromAssets(): Boolean = false
+  fun provideLoadImagesFromAssets(): Boolean = true
 }

@@ -109,12 +109,13 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     audioLanguageSelectionViewModel.supportedOppiaLanguagesLiveData.observe(
       fragment,
       { languages ->
-        supportedLanguages = languages
+        val supportedAudioLanguages = languages.filterUnsupportedAudioLanguages()
+        supportedLanguages = supportedAudioLanguages
         val adapter = ArrayAdapter(
           fragment.requireContext(),
           R.layout.language_dropdown_item,
           R.id.language_text_view,
-          languages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+          supportedAudioLanguages.map { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
         )
         binding.audioLanguageDropdownList.setAdapter(adapter)
       }
@@ -139,6 +140,19 @@ class AudioLanguageFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener { logInToProfile(profileId) }
 
     return binding.root
+  }
+
+  private fun List<OppiaLanguage>.filterUnsupportedAudioLanguages(): List<OppiaLanguage> {
+    return this.filter { language ->
+      when (language) {
+        OppiaLanguage.UNRECOGNIZED,
+        OppiaLanguage.LANGUAGE_UNSPECIFIED,
+        OppiaLanguage.HINGLISH,
+        OppiaLanguage.PORTUGUESE,
+        OppiaLanguage.SWAHILI -> false
+        else -> true
+      }
+    }
   }
 
   private fun observePreselectedLanguage() {

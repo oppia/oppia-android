@@ -389,6 +389,50 @@ class OptionsFragmentTest {
   }
 
   @Test
+  @Config(qualifiers = "sw600dp")
+  fun testOptionsFragment_tabletConfig_defaultAppLanguageIsDisplayed() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 1,
+          targetViewId = R.id.app_language_text_view
+        )
+      ).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
+  @Config(qualifiers = "sw600dp")
+  fun testOptionsFragment_tabletConfig_defaultAudioLanguageIsDisplayed() {
+    launch<OptionsActivity>(
+      createOptionActivityIntent(
+        internalProfileId = 0,
+        isFromNavigationDrawer = true
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.options_recyclerview,
+          position = 1,
+          targetViewId = R.id.app_language_text_view
+        )
+      ).check(
+        matches(withText("English"))
+      )
+    }
+  }
+
+  @Test
   fun openOptionsActivity_clickReadingTextSize_opensReadingTextSizeActivity() {
     launch<OptionsActivity>(
       createOptionActivityIntent(
