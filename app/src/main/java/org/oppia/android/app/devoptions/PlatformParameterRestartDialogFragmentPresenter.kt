@@ -2,17 +2,9 @@ package org.oppia.android.app.devoptions
 
 import android.app.AlertDialog
 import android.app.Dialog
-<<<<<<< HEAD
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.RestartDialogFragmentBinding
-import org.oppia.android.app.splash.SplashActivity
-=======
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import org.oppia.android.app.databinding.databinding.RestartDialogFragmentBinding
->>>>>>> upstream/restart-dialog
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
@@ -37,24 +29,11 @@ class PlatformParameterRestartDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()
-<<<<<<< HEAD
-    dialog.setCanceledOnTouchOutside(true)
-
-    binding.restartButton.setOnClickListener {
-      val intent = Intent(activity, SplashActivity::class.java).also {
-        it.action = Intent.ACTION_MAIN
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      dialog.dismiss()
-      activity.finishAffinity()
-      activity.startActivity(intent)
-=======
     dialog.setCanceledOnTouchOutside(false)
 
     binding.restartButton.setOnClickListener {
       dialog.dismiss()
       activity.finishAffinity()
->>>>>>> upstream/restart-dialog
     }
     return dialog
   }

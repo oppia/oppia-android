@@ -557,13 +557,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_toggleFlag_navigateBack_saveDiscardDialogIsDisplayed() {
     setUpTestApplicationComponent()
-<<<<<<<<< Temporary merge branch 1
-    launch(FeatureFlagsActivity::class.java).use {
-=========
-    val expectedState = !getEphemeralFeatureFlags()[0].currentValue
-
     launch(FeatureFlagsTestActivity::class.java).use { scenario ->
->>>>>>>>> Temporary merge branch 2
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -578,20 +572,9 @@ class FeatureFlagsFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-<<<<<<<<< Temporary merge branch 1
       onView(withText(R.string.save_discard_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-=========
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = expectedState
-      )
->>>>>>>>> Temporary merge branch 2
     }
   }
 
@@ -769,11 +752,7 @@ class FeatureFlagsFragmentTest {
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-<<<<<<<<< Temporary merge branch 1
-    launch(FeatureFlagsActivity::class.java).use {
-=========
     launch(FeatureFlagsTestActivity::class.java).use { scenario ->
->>>>>>>>> Temporary merge branch 2
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -788,24 +767,9 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-
-<<<<<<<<< Temporary merge branch 1
       onView(withText(R.string.save_discard_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-=========
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isDisplayed())))
->>>>>>>>> Temporary merge branch 2
     }
   }
 
@@ -957,7 +921,6 @@ class FeatureFlagsFragmentTest {
     launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-<<<<<<<<< Temporary merge branch 1
       scrollToPosition(0)
       onView(
         atPositionOnView(
@@ -982,19 +945,6 @@ class FeatureFlagsFragmentTest {
 
       onView(withText(R.string.platform_parameter_restart_dialog_title))
         .check(doesNotExist())
-=========
-      launch(FeatureFlagsTestActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.feature_flags_recycler_view,
-            position = 0,
-            targetViewId = R.id.feature_flag_switch
-          )
-        ).check(matches(isChecked()))
-      }
->>>>>>>>> Temporary merge branch 2
     }
   }
 

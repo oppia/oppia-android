@@ -813,10 +813,6 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyIntParameter_navigateBack_showsSaveDiscardDialog() {
     setUpTestApplicationComponent()
-<<<<<<<<< Temporary merge branch 1
-=========
-    val expectedState = !getEphemeralPlatformParameters()[0].currentValue.boolean
-
     launch(PlatformParametersTestActivity::class.java).use { scenario ->
       testCoroutineDispatchers.runCurrent()
 
@@ -831,61 +827,10 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
->>>>>>>>> Temporary merge branch 2
 
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-<<<<<<<<< Temporary merge branch 1
-=========
-
-      scrollToPosition(0)
-      verifyPlatformParameterValue(
-        position = 0,
-        expectedValue = PlatformParameterValue.newBuilder()
-          .setBoolean(expectedState)
-          .build()
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_modifyIntParameter_navigateBackAndReopen_persistsValue() {
-    setUpTestApplicationComponent()
-    val expectedState = 16
-
-    launch(PlatformParametersTestActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
->>>>>>>>> Temporary merge branch 2
-      val position = getSyncUpWorkerTimePeriodPosition()
-      scrollToPosition(position)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = position,
-          targetViewId = R.id.platform_parameter_input_edit_text
-        )
-      ).perform(editTextInputAction.replaceText("16"))
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-<<<<<<<<< Temporary merge branch 1
       onView(withText(R.string.save_discard_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-=========
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      scrollToPosition(0)
-      verifyPlatformParameterValue(
-        position = 0,
-        expectedValue = PlatformParameterValue.newBuilder()
-          .setInteger(expectedState)
-          .build()
-      )
->>>>>>>>> Temporary merge branch 2
     }
   }
 
@@ -1080,48 +1025,6 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-<<<<<<<<< Temporary merge branch 1
-=========
-  fun testPlatformParametersFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
-    executeInPreviousAppInstance { component ->
-      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
-
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isDisplayed())))
-    }
-  }
-
-  @Test
->>>>>>>>> Temporary merge branch 2
   fun testPlatformParametersFragment_navigateBackWithInvalidInput_displaysAlertDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
@@ -1149,12 +1052,7 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_invalidInputAlert_withValidInput_doesNotShowDialog() {
     setUpTestApplicationComponent()
-<<<<<<<<< Temporary merge branch 1
-    launch(PlatformParametersActivity::class.java).use { _ ->
-=========
-    Intents.init()
     launch(PlatformParametersTestActivity::class.java).use { _ ->
->>>>>>>>> Temporary merge branch 2
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(1)
@@ -1362,12 +1260,7 @@ class PlatformParametersFragmentTest {
       testComponent.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-<<<<<<<<< Temporary merge branch 1
-    launch(PlatformParametersActivity::class.java).use {
-
-=========
     launch(PlatformParametersTestActivity::class.java).use {
->>>>>>>>> Temporary merge branch 2
       testCoroutineDispatchers.runCurrent()
       scrollToPosition(0)
       onView(
@@ -1415,22 +1308,8 @@ class PlatformParametersFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-<<<<<<<<< Temporary merge branch 1
       onView(withText(R.string.platform_parameter_restart_dialog_title))
         .check(doesNotExist())
-=========
-      launch(PlatformParametersTestActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.platform_parameters_recycler_view,
-            position = 0,
-            targetViewId = R.id.platform_parameter_switch
-          )
-        ).check(matches(not(isChecked())))
-      }
->>>>>>>>> Temporary merge branch 2
     }
   }
 

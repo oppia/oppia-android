@@ -35,6 +35,7 @@
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
   <string name="platform_parameters_activity_title" translatable="false">Platform Parameters</string>
   <string name="feature_flag_reset" translatable="false">Reset</string>
+  <string name="feature_flag_save" translatable="false">Save</string>
   <string name="feature_flag_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
   <string name="feature_flag_currently_overridden_message" translatable="false">Currently Overridden.</string>
   <string name="feature_flag_synced_from_server_message" translatable="false">Synced with the Server.</string>
@@ -49,6 +50,13 @@
   <string name="feature_flag_alert_icon_content_description" translatable="false">Overridden feature flag indicator</string>
   <string name="platform_parameter_alert_icon_content_description" translatable="false">Overridden platform parameter indicator</string>
   <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">OK</string>
+  <string name="platform_parameter_restart_dialog_title" translatable="false">App Behavior Overridden</string>
+  <string name="platform_parameter_restart_dialog_message" translatable="false">Restart app to apply new configuration.</string>
+  <string name="platform_parameter_restart_dialog_button_text" translatable="false">Restart</string>
+  <string name="save_discard_dialog_save_button_text" translatable="false">Save</string>
+  <string name="save_discard_dialog_discard_button_text" translatable="false">Discard</string>
+  <string name="save_discard_dialog_title_text" translatable="false">Pending Changes</string>
+  <string name="save_discard_dialog_message_text" translatable="false">Do you want to save the changes?</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>
