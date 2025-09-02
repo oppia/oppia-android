@@ -36,8 +36,11 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN
+import org.oppia.android.app.model.IntroActivityParams.ParentScreen.PIN_PASSWORD_SCREEN
 import org.oppia.android.app.model.IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
@@ -45,6 +48,7 @@ import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionMo
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -92,7 +96,6 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -103,7 +106,6 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -184,6 +186,14 @@ class IntroFragmentTest {
   }
 
   @Test
+  fun testFragment_parentScreenIsPinActivity_stepCountTextIsNotDisplayed() {
+    launchOnboardingLearnerIntroActivity(PIN_PASSWORD_SCREEN).use {
+      onView(withId(R.id.onboarding_steps_count))
+        .check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
   fun testFragment_portraitMode_backButtonPressed_currentScreenIsDestroyed() {
     launchOnboardingLearnerIntroActivity().use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
@@ -213,8 +223,14 @@ class IntroFragmentTest {
       onView(withId(R.id.onboarding_navigation_continue)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
+      val expectedParams = AudioLanguageActivityParams.newBuilder().apply {
+        this.audioLanguage = AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        this.parentScreen = AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
+      }.build()
+
       intended(hasComponent(AudioLanguageActivity::class.java.name))
       intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
+      intended(hasProtoExtra("AudioLanguageActivity.params", expectedParams))
     }
   }
 
@@ -250,10 +266,7 @@ class IntroFragmentTest {
       .build()
 
     val scenario = ActivityScenario.launch<IntroActivity>(
-      IntroActivity.createIntroActivity(context).apply {
-        putProtoExtra(IntroActivity.PARAMS_KEY, params)
-        decorateWithUserProfileId(testProfileId)
-      }
+      IntroActivity.createIntroActivity(context, params, testProfileId)
     )
     testCoroutineDispatchers.runCurrent()
     return scenario

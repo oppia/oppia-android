@@ -154,9 +154,6 @@ class SelectionInteractionViewModel private constructor(
   override fun getPendingAnswer(): UserAnswer = UserAnswer.newBuilder().apply {
     val translationContext = this@SelectionInteractionViewModel.writtenTranslationContext
     val selectedItemSubtitledHtmls = selectedItems.map(choiceItems::get).map { it.htmlContent }
-    val itemHtmls = selectedItemSubtitledHtmls.map { subtitledHtml ->
-      translationController.extractString(subtitledHtml, translationContext)
-    }
     if (interactionId == "ItemSelectionInput") {
       answer = InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
@@ -169,17 +166,18 @@ class SelectionInteractionViewModel private constructor(
           )
         }.build()
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+      itemSelectionAnswer = ItemSelectionAnswerState.newBuilder()
+        .addAllSelectedIndexes(selectedItems)
+        .build()
     } else if (selectedItems.size == 1) {
       answer = InteractionObject.newBuilder().apply {
         nonNegativeInt = selectedItems.first()
       }.build()
-      htmlAnswer = convertSelectedItemsToHtmlString(itemHtmls)
+      itemSelectionAnswer = ItemSelectionAnswerState.newBuilder()
+        .addAllSelectedIndexes(selectedItems)
+        .build()
     }
     writtenTranslationContext = translationContext
-    itemSelection = ItemSelectionAnswerState.newBuilder()
-      .addAllSelectedIndexes(selectedItems)
-      .build()
   }.build()
 
   /**
@@ -198,17 +196,6 @@ class SelectionInteractionViewModel private constructor(
     }
     errorMessage.set(pendingAnswerError)
     return pendingAnswerError
-  }
-
-  /** Returns an HTML list containing all of the HTML string elements as items in the list. */
-  private fun convertSelectedItemsToHtmlString(itemHtmls: Collection<String>): String {
-    return when (itemHtmls.size) {
-      0 -> ""
-      1 -> itemHtmls.first()
-      else -> {
-        "<ul><li>${itemHtmls.joinToString(separator = "</li><li>")}</li></ul>"
-      }
-    }
   }
 
   /** Returns the [SelectionItemInputType] that should be used to render items of this view model. */

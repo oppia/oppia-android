@@ -6,7 +6,7 @@
       <solid android:color="@color/component_color_shared_progress_bar_background_color" />
       </shape>
   </item>
-  <item android:id="@+id/progress">
+  <item>
     <scale android:scaleWidth="100%">
       <shape>
         <corners android:radius="0dp" />
