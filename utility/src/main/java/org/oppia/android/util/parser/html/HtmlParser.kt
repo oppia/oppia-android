@@ -157,6 +157,7 @@ class HtmlParser private constructor(
     htmlContentTextView: TextView
   ): Map<String, CustomHtmlContentHandler.CustomTagHandler> {
     val handlersMap = mutableMapOf<String, CustomHtmlContentHandler.CustomTagHandler>()
+    bulletTagHandler.setTextView(htmlContentTextView)
     handlersMap[CUSTOM_LIST_LI_TAG] = bulletTagHandler
     handlersMap[CUSTOM_LIST_UL_TAG] = bulletTagHandler
     handlersMap[CUSTOM_LIST_OL_TAG] = bulletTagHandler
