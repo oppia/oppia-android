@@ -26,7 +26,6 @@ class PlatformParametersViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
-
   /**
    * LiveData that contains a list of [PlatformParameterItemViewModel] which is used to populate the
    * recycler view in [PlatformParametersFragment].

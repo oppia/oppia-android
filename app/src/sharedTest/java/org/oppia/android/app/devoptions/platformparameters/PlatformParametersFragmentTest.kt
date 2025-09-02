@@ -238,7 +238,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_returnsDefaultBackground() {
+  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_hasNoBackgroundColor() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -314,7 +314,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsServerBackgroundColor() {
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_hasNoBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,
@@ -445,7 +445,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatfromParametersFragment_boolParam_onlyOverriddenValue_returnsOverriddenBgColor() {
+  fun testPlatfromParametersFragment_boolParam_onlyOverriddenValue_hasYellowBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanOverriddenPlatformParameterToDatabase(
         testComponent,
@@ -562,7 +562,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnOverriddenBgColor() {
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_hasYellowBackgroundColor() {
     executeInPreviousAppInstance { testComponent ->
       addTestBooleanRemotePlatformParameterToDatabase(
         testComponent,

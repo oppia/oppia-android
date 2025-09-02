@@ -104,19 +104,20 @@ class FeatureFlagsViewModel @Inject constructor(
     }
   }
 
-  private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
-    List<FeatureFlagItemViewModel> {
-      return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
-        FeatureFlagItemViewModel(
-          featureFlagId = ephemeralFeatureFlag.id,
-          currentValue = ephemeralFeatureFlag.currentValue,
-          syncStatus = ephemeralFeatureFlag.syncStatus,
-          nonOverriddenValue = ephemeralFeatureFlag.nonOverriddenValue,
-          nonOverriddenSyncStatus = ephemeralFeatureFlag.nonOverriddenSyncStatus,
-          resetFlags = resetFlags,
-          machineLocale = machineLocale,
-          resourceHandler = resourceHandler
-        )
-      }
+  private fun processFeatureFlagList(
+    ephemeralFeatureFlags: List<EphemeralFeatureFlag>
+  ): List<FeatureFlagItemViewModel> {
+    return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
+      FeatureFlagItemViewModel(
+        featureFlagId = ephemeralFeatureFlag.id,
+        currentValue = ephemeralFeatureFlag.currentValue,
+        syncStatus = ephemeralFeatureFlag.syncStatus,
+        nonOverriddenValue = ephemeralFeatureFlag.nonOverriddenValue,
+        nonOverriddenSyncStatus = ephemeralFeatureFlag.nonOverriddenSyncStatus,
+        resetFlags = resetFlags,
+        machineLocale = machineLocale,
+        resourceHandler = resourceHandler
+      )
     }
+  }
 }

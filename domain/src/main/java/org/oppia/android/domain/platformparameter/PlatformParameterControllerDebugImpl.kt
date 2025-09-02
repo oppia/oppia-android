@@ -303,21 +303,21 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   /**
-   * Resets the locally overridden feature flags corresponding to the specified [ids].
+   * Resets the locally overridden feature flags corresponding to the specified [resetIds].
    *
    * This removes any locally overridden value for the specified feature flags from the local
    * override database.
    *
-   * @param ids the IDs of the feature flags to reset
+   * @param resetIds the IDs of the feature flags to reset
    * @return a [DataProvider] that completes when the overrides are removed.
    */
-  fun resetFeatureFlags(ids: List<FeatureFlagId>): DataProvider<Any?> {
+  fun resetFeatureFlags(resetIds: List<FeatureFlagId>): DataProvider<Any?> {
     return dataProviders.createInMemoryDataProviderAsync(
       RESET_OVERRIDDEN_FEATURE_FLAG_PROVIDER_ID
     ) {
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val updatedOverrides = oldDatabase.overriddenFeatureFlagList
-          .filterNot { it.id in ids }
+          .filterNot { it.id in resetIds }
 
         oldDatabase.toBuilder()
           .clearOverriddenFeatureFlag()
@@ -330,12 +330,12 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   /**
-   * Resets the locally overridden platform parameters corresponding to the specified [ids].
+   * Resets the locally overridden platform parameters corresponding to the specified [resetIds].
    *
    * This removes any locally overridden value for the specified platform parameters from the local
    * override database.
    *
-   * @param ids the IDs of the platform parameters to reset
+   * @param resetIds the IDs of the platform parameters to reset
    * @return a [DataProvider] that completes when the overrides are removed.
    */
   fun resetPlatformParameters(resetIds: List<PlatformParameterId>): DataProvider<Any?> {

@@ -406,7 +406,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndNoRemote_returnsDefaultAfterResetValue() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndNoRemote_returnDefaultNonOverriddenValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -426,7 +426,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndNoRemote_hasDefaultAfterResetSyncStatus() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndNoRemote_hasDefaultNonOverriddenStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -490,7 +490,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_returnsRemoteAfterResetValue() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemote_returnsRemoteNonOverriddenValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
@@ -512,7 +512,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemoteFlag_hasServerAfterResetSyncStatus() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemote_hasServerNonOverriddenSyncStatus() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
@@ -923,6 +923,37 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
+  fun testResetPlatformParameters_withLocalOverrideAndNoRemote_resets_returnsDefaultValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    val resetProvider = platformParameterControllerDebugImpl.resetPlatformParameters(
+      listOf(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+    )
+    monitorFactory.waitForNextSuccessfulResult(resetProvider)
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+    val ephemeralSyncUpWorkerTimePeriodValue = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    val defaultSyncUpWorkerTimePeriodValue = platformParameterConfigRetriever
+      .loadSupportedPlatformParameters()
+      .platformParameterDefinitionList
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+      ?.defaultValue?.integer
+
+    assertThat(ephemeralSyncUpWorkerTimePeriodValue?.currentValue?.integer)
+      .isEqualTo(defaultSyncUpWorkerTimePeriodValue)
+  }
+
+  @Test
   fun testResetPlatformParameters_withRemoteAndLocalOverride_resetsParameter_returnsServerStatus() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerRemotePlatformParameterToDatabase(
@@ -949,6 +980,35 @@ class PlatformParameterControllerDebugImplTest {
 
     assertThat(ephemeralSyncUpWorkerTimePeriodValue?.syncStatus)
       .isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
+  }
+
+  @Test
+  fun testResetPlatformParameters_withRemoteAndLocalOverride_resetsParameter_returnsServerValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    val resetProvider = platformParameterControllerDebugImpl.resetPlatformParameters(
+      listOf(PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS)
+    )
+    monitorFactory.waitForNextSuccessfulResult(resetProvider)
+    val ephemeralPlatformParametersProvider =
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
+    val ephemeralPlatformParameters =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralPlatformParametersProvider)
+    val ephemeralSyncUpWorkerTimePeriodValue = ephemeralPlatformParameters
+      .find { it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS }
+
+    assertThat(ephemeralSyncUpWorkerTimePeriodValue?.currentValue?.integer)
+      .isEqualTo(TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS)
   }
 
   @Test
@@ -1041,6 +1101,36 @@ class PlatformParameterControllerDebugImplTest {
       .isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
   }
 
+  @Test
+  fun testResetFeatureFlags_withRemoteAndLocalOverride_resetsFlag_returnsServerValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestRemoteFeatureFlagToDatabase(
+        testComponent,
+        TEST_REMOTE_MULTIPLE_CLASSROOMS
+      )
+      addTestOverriddenFeatureFlagToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_MULTIPLE_CLASSROOMS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+
+    val resetProvider = platformParameterControllerDebugImpl.resetFeatureFlags(
+      listOf(FeatureFlagId.MULTIPLE_CLASSROOMS)
+    )
+    monitorFactory.waitForNextSuccessfulResult(resetProvider)
+
+    val ephemeralFeatureFlagsProvider =
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags()
+    val ephemeralFeatureFlags =
+      monitorFactory.waitForNextSuccessfulResult(ephemeralFeatureFlagsProvider)
+    val ephemeralNewUiFlag = ephemeralFeatureFlags
+      .find { it.id == FeatureFlagId.MULTIPLE_CLASSROOMS }
+
+    assertThat(ephemeralNewUiFlag?.currentValue)
+      .isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
+  }
   // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOMS.
   private fun addTestRemoteFeatureFlagToDatabase(
     component: TestApplicationComponent,
