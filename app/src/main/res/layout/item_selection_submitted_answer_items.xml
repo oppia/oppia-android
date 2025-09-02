@@ -27,8 +27,8 @@
       android:layout_marginStart="4dp"
       android:layout_marginTop="1dp"
       android:layout_marginEnd="8dp"
-      android:contentDescription="@{viewModel.isEnabled ? @string/selected_option_icon_content_description: @string/unselected_option_icon_content_description}"
-      app:srcCompat="@{viewModel.isEnabled ? @drawable/rect_radio_checked : @drawable/rect_radio_unchecked}" />
+      android:contentDescription="@{viewModel.isSelected ? @string/selected_option_icon_content_description: @string/unselected_option_icon_content_description}"
+      app:srcCompat="@{viewModel.isSelected ? @drawable/rect_checkbox_checked : @drawable/rect_checkbox_unchecked}" />
 
     <TextView
       android:id="@+id/item_selection_content_text_view"

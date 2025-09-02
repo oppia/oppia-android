@@ -148,7 +148,7 @@ class SubmittedAnswerViewModel(
         SelectionSubmittedItemViewModel(
           htmlContent = subtitledHtml,
           hasConversationView = hasConversationView,
-          isEnabled = enabledItemsList.contains(index),
+          isSelected = enabledItemsList.contains(index),
           customTagHandlers = customTagHandlers,
           writtenTranslationContext = writtenTranslationContext,
           translationController = translationController,

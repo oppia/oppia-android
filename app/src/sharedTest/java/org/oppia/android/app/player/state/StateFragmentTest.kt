@@ -6235,7 +6235,7 @@ class StateFragmentTest {
         position = optionPosition,
         targetViewId = R.id.item_selection_checkbox_icon
       )
-    ).check(matches(withDrawable(R.drawable.rect_radio_unchecked)))
+    ).check(matches(withDrawable(R.drawable.rect_checkbox_unchecked)))
 
     onView(
       atPositionOnView(
@@ -6327,7 +6327,7 @@ class StateFragmentTest {
         position = optionPosition,
         targetViewId = R.id.item_selection_checkbox_icon
       )
-    ).check(matches(withDrawable(R.drawable.rect_radio_checked)))
+    ).check(matches(withDrawable(R.drawable.rect_checkbox_checked)))
 
     onView(
       atPositionOnView(

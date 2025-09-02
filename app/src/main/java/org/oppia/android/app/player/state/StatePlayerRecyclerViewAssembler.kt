@@ -1645,7 +1645,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
                     ),
                     binding.itemSelectionContentTextView
                   )
-                if (viewModel.isEnabled) {
+                if (viewModel.isSelected) {
                   binding.itemSelectionContentTextView.setTypeface(null, Typeface.BOLD)
                   binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
                 }
@@ -1680,7 +1680,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
                     ),
                     binding.multipleChoiceContentTextView
                   )
-                if (viewModel.isEnabled) {
+                if (viewModel.isSelected) {
                   binding.multipleChoiceContentTextView.setTypeface(null, Typeface.BOLD)
                   binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
                 }
