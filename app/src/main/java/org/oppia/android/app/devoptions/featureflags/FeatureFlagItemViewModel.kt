@@ -15,8 +15,8 @@ class FeatureFlagItemViewModel(
   val featureFlagId: FeatureFlagId,
   val currentValue: Boolean,
   val syncStatus: SyncStatus,
-  val afterResetValue: Boolean,
-  val afterResetSyncStatus: SyncStatus,
+  val nonOverriddenValue: Boolean,
+  val nonOverriddenSyncStatus: SyncStatus,
   val resetFlags: LiveData<MutableMap<FeatureFlagId, Boolean>>,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
@@ -39,18 +39,16 @@ class FeatureFlagItemViewModel(
     ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
-  val isResetButtonActive: LiveData<Boolean> by lazy {
-    Transformations.map(resetFlags) {
-      featureFlagId !in it
-    }
+  val isResetButtonEnabled: LiveData<Boolean> by lazy {
+    Transformations.map(resetFlags) { featureFlagId !in it }
   }
 
   /** Represents the feature flag’s server-sync or override state. */
-  var syncDetails: LiveData<String> = Transformations.map(resetFlags, ::processSyncDetails)
+  val syncDetails: LiveData<String> = Transformations.map(resetFlags, ::processSyncDetails)
 
   private fun processSyncDetails(resetFlags: MutableMap<FeatureFlagId, Boolean>): String {
     return when {
-      resetFlags.containsKey(featureFlagId) -> getSyncDetails(afterResetSyncStatus)
+      resetFlags.containsKey(featureFlagId) -> getSyncDetails(nonOverriddenSyncStatus)
       else -> getSyncDetails(syncStatus)
     }
   }

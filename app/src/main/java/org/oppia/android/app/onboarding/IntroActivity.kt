@@ -6,9 +6,12 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.INTRO_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
@@ -36,11 +39,17 @@ class IntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     const val PARAMS_KEY = "OnboardingIntroActivity.params"
 
     /**
-     * A convenience function for creating a new [OnboardingLearnerIntroActivity] intent by prefilling
+     * A convenience function for creating a new [IntroActivity] intent by prefilling
      * common params needed by the activity.
      */
-    fun createIntroActivity(context: Context): Intent {
+    fun createIntroActivity(
+      context: Context,
+      introActivityParams: IntroActivityParams,
+      profileId: ProfileId
+    ): Intent {
       return Intent(context, IntroActivity::class.java).apply {
+        putProtoExtra(PARAMS_KEY, introActivityParams)
+        decorateWithUserProfileId(profileId)
         decorateWithScreenName(INTRO_ACTIVITY)
       }
     }

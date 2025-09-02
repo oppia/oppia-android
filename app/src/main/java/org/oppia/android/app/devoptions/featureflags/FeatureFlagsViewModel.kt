@@ -40,18 +40,54 @@ class FeatureFlagsViewModel @Inject constructor(
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }
 
+  /** List of feature flag switch states to be used in the fragment. */
+  val featureFlagStates = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
+
+  /** List of feature flags that have been reset. */
+  val resetFlags = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
   /** Tracks whether the Save button is currently enabled (clickable). */
-  val isSaveButtonActive: LiveData<Boolean> by lazy {
-    Transformations.map(featureFlagStates) { states ->
-      states.isNotEmpty()
+
+  /** Tracks whether the Save button is currently enabled (clickable). */
+  val isSaveButtonEnabled: LiveData<Boolean> by lazy {
+    Transformations.map(featureFlagStates) {
+      it.isNotEmpty()
     }
   }
 
-  /** List of feature flag switch states to be used in the fragment. */
-  var featureFlagStates = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
+  /**
+   * Updates the state of a given feature flag with a new value.
+   *
+   * @param id the [FeatureFlagId] of the feature flag being updated.
+   * @param newValue the new value for the feature flag.
+   */
+  fun updateFeatureFlagState(id: FeatureFlagId, newValue: Boolean) {
+    val currentStates = featureFlagStates.value ?: mutableMapOf()
+    currentStates[id] = newValue
+    featureFlagStates.value = currentStates
+  }
 
-  /** List of feature flags that have been reset. */
-  var resetFlags = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
+  /**
+   * Removes a feature flag from the tracked [featureFlagStates].
+   *
+   * @param id the [FeatureFlagId] of the feature flag to remove.
+   */
+  fun removeFlagState(id: FeatureFlagId) {
+    val currentStates = featureFlagStates.value ?: mutableMapOf()
+    currentStates.remove(id)
+    featureFlagStates.value = currentStates
+  }
+
+  /**
+   * Updates the list of feature flags that are being reset to their non-overridden values.
+   *
+   * @param id the [FeatureFlagId] of the feature flag being reset.
+   * @param newValue the value to restore after reset .
+   */
+  fun updateResetFlag(id: FeatureFlagId, restoredValue: Boolean) {
+    val currentResetFlags = resetFlags.value ?: mutableMapOf()
+    currentResetFlags[id] = restoredValue
+    resetFlags.value = currentResetFlags
+  }
 
   private fun processEphemeralFlagResult(
     result: AsyncResult<List<EphemeralFeatureFlag>>
@@ -68,19 +104,20 @@ class FeatureFlagsViewModel @Inject constructor(
     }
   }
 
-  private fun processFeatureFlagList(ephemeralFeatureFlags: List<EphemeralFeatureFlag>):
-    List<FeatureFlagItemViewModel> {
-      return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
-        FeatureFlagItemViewModel(
-          featureFlagId = ephemeralFeatureFlag.id,
-          currentValue = ephemeralFeatureFlag.currentValue,
-          syncStatus = ephemeralFeatureFlag.syncStatus,
-          afterResetValue = ephemeralFeatureFlag.nonOverriddenValue,
-          afterResetSyncStatus = ephemeralFeatureFlag.nonOverriddenSyncStatus,
-          resetFlags = resetFlags,
-          machineLocale = machineLocale,
-          resourceHandler = resourceHandler
-        )
-      }
+  private fun processFeatureFlagList(
+    ephemeralFeatureFlags: List<EphemeralFeatureFlag>
+  ): List<FeatureFlagItemViewModel> {
+    return ephemeralFeatureFlags.map { ephemeralFeatureFlag ->
+      FeatureFlagItemViewModel(
+        featureFlagId = ephemeralFeatureFlag.id,
+        currentValue = ephemeralFeatureFlag.currentValue,
+        syncStatus = ephemeralFeatureFlag.syncStatus,
+        nonOverriddenValue = ephemeralFeatureFlag.nonOverriddenValue,
+        nonOverriddenSyncStatus = ephemeralFeatureFlag.nonOverriddenSyncStatus,
+        resetFlags = resetFlags,
+        machineLocale = machineLocale,
+        resourceHandler = resourceHandler
+      )
     }
+  }
 }

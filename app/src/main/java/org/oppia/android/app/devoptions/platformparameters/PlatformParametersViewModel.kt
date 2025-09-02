@@ -26,6 +26,20 @@ class PlatformParametersViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
+  /**
+   * LiveData that contains a list of [PlatformParameterItemViewModel] which is used to populate the
+   * recycler view in [PlatformParametersFragment].
+   */
+  val platformParameterList: LiveData<List<PlatformParameterItemViewModel>> by lazy {
+    Transformations.map(ephemeralParametersLiveData, ::processPlatformParameterList)
+  }
+
+  private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
+    Transformations.map(
+      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters().toLiveData(),
+      ::processEphemeralParameterResult
+    )
+  }
 
   /** List of platform parameters that have been reset. */
   val resetParameters: MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue>> =
@@ -36,26 +50,44 @@ class PlatformParametersViewModel @Inject constructor(
     MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue?>> =
       MutableLiveData(mutableMapOf())
 
-  private val ephemeralParametersLiveData: LiveData<List<EphemeralPlatformParameter>> by lazy {
-    Transformations.map(
-      platformParameterControllerDebugImpl.loadEphemeralPlatformParameters().toLiveData(),
-      ::processEphemeralParameterResult
-    )
+  /** Tracks whether the Save button is currently enabled (clickable). */
+  val isSaveButtonEnabled: LiveData<Boolean> by lazy {
+    Transformations.map(platformParameterStates) { it.isNotEmpty() }
   }
 
   /**
-   * LiveData that contains a list of [PlatformParameterItemViewModel] which is used to populate the
-   * recycler view in [PlatformParametersFragment].
+   * Updates the state of a given platform parameter with a new value.
+   *
+   * @param id the [PlatformParameterId] of the parameter to be updated
+   * @param newValue the new [PlatformParameterValue] to assign to this parameter.
    */
-  val platformParameterList: LiveData<List<PlatformParameterItemViewModel>> by lazy {
-    Transformations.map(ephemeralParametersLiveData, ::processPlatformParameterList)
+  fun updatePlatformParameterState(id: PlatformParameterId, newValue: PlatformParameterValue?) {
+    val currentStates = platformParameterStates.value ?: mutableMapOf()
+    currentStates[id] = newValue
+    platformParameterStates.value = currentStates
   }
 
-  /** Tracks whether the Save button is currently enabled (clickable). */
-  val isSaveButtonActive: LiveData<Boolean> by lazy {
-    Transformations.map(platformParameterStates) { states ->
-      states.isNotEmpty()
-    }
+  /**
+   * Removes a parameter from the tracked [platformParameterStates].
+   *
+   * @param id the [PlatformParameterId] of the parameter to remove.
+   */
+  fun removeParameterState(id: PlatformParameterId) {
+    val currentStates = platformParameterStates.value ?: mutableMapOf()
+    currentStates.remove(id)
+    platformParameterStates.value = currentStates
+  }
+
+  /**
+   * Updates the list of parameters that are being reset to their non-overridden values.
+   *
+   * @param id the [PlatformParameterId] of the parameter being reset.
+   * @param newValue the [PlatformParameterValue] to restore after reset.
+   */
+  fun updateResetParameter(id: PlatformParameterId, newValue: PlatformParameterValue) {
+    val currentResets = resetParameters.value ?: mutableMapOf()
+    currentResets[id] = newValue
+    resetParameters.value = currentResets
   }
 
   private fun processEphemeralParameterResult(

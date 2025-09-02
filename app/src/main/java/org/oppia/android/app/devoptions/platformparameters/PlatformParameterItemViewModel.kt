@@ -67,14 +67,12 @@ class PlatformParameterItemViewModel(
     ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
 
   /** Tracks whether the reset button is currently enabled (clickable). */
-  val isResetButtonActive: LiveData<Boolean> by lazy {
-    Transformations.map(resetParameters) {
-      platformParameterId !in it
-    }
+  val isResetButtonEnabled: LiveData<Boolean> by lazy {
+    Transformations.map(resetParameters) { platformParameterId !in it }
   }
 
   /** Represents the platform parameter’s server-sync or override state. */
-  var syncDetails: LiveData<String> = Transformations.map(resetParameters, ::processSyncDetails)
+  val syncDetails: LiveData<String> = Transformations.map(resetParameters, ::processSyncDetails)
 
   private fun processSyncDetails(
     resetParameters: MutableMap<PlatformParameterId, PlatformParameterValue>
