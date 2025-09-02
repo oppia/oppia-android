@@ -318,6 +318,10 @@ gradle.properties @oppia/android-app-infrastructure-reviewers
 /config/**/alllanguages/*.textproto @oppia/owners
 /config/**/productionlanguages/*.textproto @oppia/owners
 
+# Configurations for the lists of feature flags and platform parameters supported by the app.
+/config/**/platform/*.textproto @oppia/owners
+/config/**/platform/featureoverrides/**/*.textproto @oppia/owners
+
 # Primary app manifest. Eventually, this will be split up so that only the
 # sensitive portions require owners approval.
 /app/src/main/AndroidManifest.xml @oppia/owners

@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ReadingTextSize
@@ -137,7 +138,11 @@ class OptionsActivityPresenter @Inject constructor(
    * @param audioLanguage the initially selected audio language
    */
   fun loadAudioLanguageFragment(audioLanguage: AudioLanguage, profileId: ProfileId) {
-    val audioLanguageFragment = AudioLanguageFragment.newInstance(audioLanguage, profileId)
+    val audioLanguageFragment = AudioLanguageFragment.newInstance(
+      audioLanguage,
+      profileId,
+      AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+    )
     activity.supportFragmentManager
       .beginTransaction()
       .replace(R.id.multipane_options_container, audioLanguageFragment)

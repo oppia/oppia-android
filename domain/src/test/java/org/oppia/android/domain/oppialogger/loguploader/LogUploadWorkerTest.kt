@@ -19,6 +19,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
@@ -136,6 +137,11 @@ class LogUploadWorkerTest {
     ).build()
 
   private val exception = Exception("TEST")
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
+  }
 
   @Test
   fun testWorker_logEvent_withoutNetwork_enqueueRequest_verifyFailed() {

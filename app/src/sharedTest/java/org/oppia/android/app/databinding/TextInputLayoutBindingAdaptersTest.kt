@@ -3,6 +3,7 @@ package org.oppia.android.app.databinding
 import android.app.Application
 import android.content.Context
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -60,7 +61,6 @@ import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
-import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
@@ -68,6 +68,7 @@ import org.oppia.android.testing.TestImageLoaderModule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -160,6 +161,17 @@ class TextInputLayoutBindingAdaptersTest {
     }
   }
 
+  @Test
+  fun testAccessibility_labelForRelationship_isSetCorrectly() {
+    launchActivity().use { scenario ->
+      scenario?.onActivity { activity ->
+        val labelView: TextView = activity.findViewById(R.id.test_input_label)
+
+        assertThat(labelView.labelFor).isEqualTo(R.id.test_autocomplete_view)
+      }
+    }
+  }
+
   private fun launchActivity():
     ActivityScenario<TextInputLayoutBindingAdaptersTestActivity>? {
       val scenario = ActivityScenario.launch<TextInputLayoutBindingAdaptersTestActivity>(
@@ -219,7 +231,6 @@ class TextInputLayoutBindingAdaptersTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
-      PlatformParameterModule::class,
       PlatformParameterSingletonModule::class,
       QuestionModule::class,
       RatioInputModule::class,
@@ -232,6 +243,7 @@ class TextInputLayoutBindingAdaptersTest {
       TestDispatcherModule::class,
       TestImageLoaderModule::class,
       TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,

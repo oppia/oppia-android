@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageFragmentArguments
 import org.oppia.android.app.model.AudioLanguageFragmentStateBundle
 import org.oppia.android.app.model.ProfileId
@@ -50,11 +51,15 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
       val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
         "Expected a profileId argument to be passed to AudioLanguageFragment."
       }
+      val parentScreen = checkNotNull(arguments?.retrieveParentScreenFromArguments()) {
+        "Expected a parent screen argument to be passed to AudioLanguageFragment."
+      }
       audioLanguageFragmentPresenter.handleCreateView(
         inflater,
         container,
         profileId,
-        savedInstanceState
+        savedInstanceState,
+        parentScreen
       )
     } else {
       audioLanguageFragmentPresenterV1.handleOnCreateView(inflater, container, audioLanguage)
@@ -89,16 +94,28 @@ class AudioLanguageFragment : InjectableFragment(), AudioLanguageRadioButtonList
      * Returns a new [AudioLanguageFragment] corresponding to the specified [AudioLanguage] (as the
      * initial selection).
      */
-    fun newInstance(audioLanguage: AudioLanguage, profileId: ProfileId): AudioLanguageFragment {
+    fun newInstance(
+      audioLanguage: AudioLanguage,
+      profileId: ProfileId,
+      parentScreen: AudioLanguageActivityParams.ParentScreen
+    ): AudioLanguageFragment {
       return AudioLanguageFragment().apply {
         arguments = Bundle().apply {
           val args = AudioLanguageFragmentArguments.newBuilder().apply {
             this.audioLanguage = audioLanguage
+            this.parentScreen = parentScreen
           }.build()
           putProto(FRAGMENT_ARGUMENTS_KEY, args)
           decorateWithUserProfileId(profileId)
         }
       }
+    }
+
+    /** Returns the [AudioLanguageFragmentArguments.ParentScreen] stored in the arguments. */
+    fun Bundle.retrieveParentScreenFromArguments(): AudioLanguageActivityParams.ParentScreen {
+      return getProto(
+        FRAGMENT_ARGUMENTS_KEY, AudioLanguageFragmentArguments.getDefaultInstance()
+      ).parentScreen
     }
 
     /** Returns the [AudioLanguage] stored in the fragment's arguments. */

@@ -152,6 +152,7 @@ class OnboardingFragmentTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -798,7 +799,7 @@ class OnboardingFragmentTest {
   }
 
   @Test
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_englishLocale_englishIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
 
@@ -835,7 +836,7 @@ class OnboardingFragmentTest {
     appStringIetfTag = "ar",
     appStringAndroidLanguageId = "ar"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_arabicLocale_arabicIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(EGYPT_ARABIC_LOCALE)
@@ -880,7 +881,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "pt",
     appStringAndroidRegionId = "BR"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_portugueseLocale_portugueseIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
@@ -926,7 +927,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "pcm",
     appStringAndroidRegionId = "NG"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_nigeriaLocale_naijaIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(NIGERIA_NAIJA_LOCALE)
@@ -972,7 +973,7 @@ class OnboardingFragmentTest {
     appStringAndroidLanguageId = "fr-CA",
     appStringAndroidRegionId = "CA"
   )
-  @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
+  @RunOn(TestPlatform.ROBOLECTRIC)
   fun testOnboardingFragment_onboardingV2Enabled_unsupportedLocale_englishIsPreselected() {
     setUpTestWithOnboardingV2Enabled()
     forceDefaultLocale(CANADA_FRENCH_LOCALE)

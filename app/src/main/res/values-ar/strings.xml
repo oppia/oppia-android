@@ -122,7 +122,7 @@
   <string name="math_expression_error_multiple_redundant_parentheses">الرجاء إزالة الأقواس الزائدة حول \"( %1$s )\" ، على سبيل المثال: \" %1$s \".</string>
   <string name="math_expression_error_redundant_parentheses_individual_term">الرجاء إزالة الأقواس الزائدة حول \'( %1$s )\' ، على سبيل المثال: \' %1$s \'.</string>
   <string name="math_expression_error_unnecessary_symbols">يوجد \' %s \' غير صالح في الإجابة. يرجى إزالته.</string>
-  <string name="math_expression_error_number_after_var_term">الرجاء إعادة ترتيب ترتيب %1$s و %2$s . على سبيل المثال: %2$s% 1 $ s.</string>
+  <string name="math_expression_error_number_after_var_term">الرجاء إعادة ترتيب ترتيب %1$s و %2$s . على سبيل المثال: %2$s%1$s.</string>
   <string name="math_expression_error_consecutive_binary_operators">يجب فصل %1$s و %2$s برقم أو متغير.</string>
   <string name="math_expression_error_consecutive_unary_operators">الرجاء إزالة الرموز الإضافية في إجابتك.</string>
   <string name="math_expression_error_missing_lhs_for_addition_operator">هل هناك رقم أو متغير مفقود قبل أو بعد رمز الإضافة \' %1$s \'؟ إذا لم يكن كذلك ، يرجى إزالة \' %1$s \' الإضافي.</string>

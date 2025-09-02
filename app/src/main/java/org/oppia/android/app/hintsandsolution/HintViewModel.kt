@@ -29,7 +29,6 @@ class HintViewModel(
   val hintContentDescription: String by lazy {
     CustomHtmlContentHandler.getContentDescription(
       hintSummary,
-      imageRetriever = null,
       customTagHandlers = mapOf(
         CUSTOM_CONCEPT_CARD_TAG to ConceptCardTagHandler(
           conceptCardLinkClickListener,

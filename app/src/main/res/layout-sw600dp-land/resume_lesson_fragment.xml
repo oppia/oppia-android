@@ -24,7 +24,7 @@
       android:background="@color/component_color_shared_topic_thumbnail_background_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="@+id/guideline6"
+      app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent">
 
       <org.oppia.android.app.customview.LessonThumbnailImageView
