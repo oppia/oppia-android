@@ -341,4 +341,5 @@
   <!-- Feature Flags Activity -->
   <color name="component_color_feature_flag_overridden_background_color">@color/color_palette_overridden_background_color</color>
   <color name="component_color_feature_flag_modified_background_color">@color/color_palette_modified_background_color</color>
+  <color name="component_color_save_button_active_color">@color/color_palette_save_button_active_color</color>
 </resources>

@@ -1371,6 +1371,183 @@ class TranslationControllerTest {
     assertThat(selection.selectedLanguage).isEqualTo(ENGLISH)
   }
 
+  @Test
+  fun testGetAudioLanguagePreselection_noPreviousSelections_returnsSystemLanguageAsPreselection() {
+    forceDefaultLocale(Locale.ENGLISH)
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+
+    // English is returned since it is the configured system language.
+    val language = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+    assertThat(language).isEqualTo(ENGLISH)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_indiaDefaultLocale_returnsHindiLanguageAsPreselection() {
+    forceDefaultLocale(INDIA_HINDI_LOCALE)
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+
+    // Hindi is returned since it is the configured system language for India.
+    val language = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+    assertThat(language).isEqualTo(HINDI)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_setAppLangToPortuguese_returnsPortugueseAsPreselection() {
+    forceDefaultLocale(Locale.ENGLISH)
+
+    val updateProvider = translationController.updateAppLanguage(
+      PROFILE_ID_0,
+      createAppLanguageSelection(BRAZILIAN_PORTUGUESE)
+    )
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val appLanguageProvider = translationController.getAppLanguageSelection(PROFILE_ID_0)
+    val appLanguage =
+      monitorFactory.waitForNextSuccessfulResult(appLanguageProvider).selectedLanguage
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+    val preselection = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+
+    assertThat(appLanguage).isEqualTo(BRAZILIAN_PORTUGUESE)
+    assertThat(preselection).isEqualTo(appLanguage)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_setAppLangToSwahili_returnsSwahiliAsPreselection() {
+    forceDefaultLocale(Locale.ENGLISH)
+
+    val updateProvider =
+      translationController.updateAppLanguage(PROFILE_ID_0, createAppLanguageSelection(SWAHILI))
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val appLanguageProvider = translationController.getAppLanguageSelection(PROFILE_ID_0)
+    val appLanguage =
+      monitorFactory.waitForNextSuccessfulResult(appLanguageProvider).selectedLanguage
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+    val preselection = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+
+    assertThat(appLanguage).isEqualTo(SWAHILI)
+    assertThat(preselection).isEqualTo(appLanguage)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_setAppLangSameAsSystemLang_returnsAppLangAsPreselection() {
+    forceDefaultLocale(INDIA_HINDI_LOCALE)
+
+    val updateProvider =
+      translationController.updateAppLanguage(PROFILE_ID_0, createAppLanguageSelection(HINDI))
+    monitorFactory.waitForNextSuccessfulResult(updateProvider)
+
+    val appLanguageProvider = translationController.getAppLanguageSelection(PROFILE_ID_0)
+    val appLanguage =
+      monitorFactory.waitForNextSuccessfulResult(appLanguageProvider).selectedLanguage
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+    val preselection = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+
+    assertThat(appLanguage).isEqualTo(HINDI)
+    assertThat(preselection).isEqualTo(appLanguage)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_setSwahiliAudioLang_returnsAudioLanguageAsPreselection() {
+    forceDefaultLocale(Locale.ENGLISH)
+
+    val updateAppLanguageProvider =
+      translationController.updateAppLanguage(PROFILE_ID_0, createAppLanguageSelection(HINDI))
+    monitorFactory.waitForNextSuccessfulResult(updateAppLanguageProvider)
+
+    val appLanguageProvider = translationController.getAppLanguageSelection(PROFILE_ID_0)
+    val appLanguage =
+      monitorFactory.waitForNextSuccessfulResult(appLanguageProvider).selectedLanguage
+
+    val updateAudioLanguageProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        createAudioTranslationLanguageSelection(SWAHILI)
+      )
+    monitorFactory.waitForNextSuccessfulResult(updateAudioLanguageProvider)
+
+    val audioLanguageProvider =
+      translationController.getAudioTranslationContentLanguageSelection(PROFILE_ID_0)
+    val audioLanguage =
+      monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider).selectedLanguage
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+    val preselection = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+
+    assertThat(appLanguage).isEqualTo(HINDI)
+    assertThat(audioLanguage).isEqualTo(SWAHILI)
+    assertThat(preselection).isEqualTo(audioLanguage)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_setHindiAudioLang_returnsAudioLanguageAsPreselection() {
+    forceDefaultLocale(BRAZIL_PORTUGUESE_LOCALE)
+
+    val updateAppLanguageProvider =
+      translationController.updateAppLanguage(PROFILE_ID_0, createAppLanguageSelection(ENGLISH))
+    monitorFactory.waitForNextSuccessfulResult(updateAppLanguageProvider)
+
+    val appLanguageProvider = translationController.getAppLanguageSelection(PROFILE_ID_0)
+    val appLanguage =
+      monitorFactory.waitForNextSuccessfulResult(appLanguageProvider).selectedLanguage
+
+    val updateAudioLanguageProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        createAudioTranslationLanguageSelection(HINDI)
+      )
+    monitorFactory.waitForNextSuccessfulResult(updateAudioLanguageProvider)
+
+    val audioLanguageProvider =
+      translationController.getAudioTranslationContentLanguageSelection(PROFILE_ID_0)
+    val audioLanguage =
+      monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider).selectedLanguage
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+    val preselection = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+
+    assertThat(appLanguage).isEqualTo(ENGLISH)
+    assertThat(audioLanguage).isEqualTo(HINDI)
+    assertThat(preselection).isEqualTo(audioLanguage)
+  }
+
+  @Test
+  fun testGetAudioLanguagePreselection_setAllSelectionsToEnglish_returnsEnglishAsPreselection() {
+    forceDefaultLocale(Locale.ENGLISH)
+
+    val updateAppLanguageProvider =
+      translationController.updateAppLanguage(PROFILE_ID_0, createAppLanguageSelection(ENGLISH))
+    monitorFactory.waitForNextSuccessfulResult(updateAppLanguageProvider)
+
+    val appLanguageProvider = translationController.getAppLanguageSelection(PROFILE_ID_0)
+    val appLanguage =
+      monitorFactory.waitForNextSuccessfulResult(appLanguageProvider).selectedLanguage
+
+    val updateAudioLanguageProvider =
+      translationController.updateAudioTranslationContentLanguage(
+        PROFILE_ID_0,
+        createAudioTranslationLanguageSelection(ENGLISH)
+      )
+    monitorFactory.waitForNextSuccessfulResult(updateAudioLanguageProvider)
+
+    val audioLanguageProvider =
+      translationController.getAudioTranslationContentLanguageSelection(PROFILE_ID_0)
+    val audioLanguage =
+      monitorFactory.waitForNextSuccessfulResult(audioLanguageProvider).selectedLanguage
+
+    val preselectionProvider = translationController.getAudioLanguagePreselection(PROFILE_ID_0)
+    val preselection = monitorFactory.waitForNextSuccessfulResult(preselectionProvider)
+
+    assertThat(appLanguage).isEqualTo(ENGLISH)
+    assertThat(audioLanguage).isEqualTo(ENGLISH)
+    assertThat(preselection).isEqualTo(audioLanguage)
+  }
+
   /* Tests for string extraction functions */
 
   @Test

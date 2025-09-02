@@ -1285,6 +1285,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/AppLanguageViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileActivity.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -1393,10 +1397,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingAppLanguageViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt"
   test_file_not_required: true
 }
@@ -1446,6 +1446,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenterV1.kt"
   test_file_not_required: true
 }
 test_file_exemption {

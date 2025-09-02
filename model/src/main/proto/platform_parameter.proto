@@ -269,11 +269,11 @@ message EphemeralPlatformParameter {
   // Indicates the sync status of the platform parameter.
   SyncStatus sync_status = 3;
 
-  // The value of this platform parameter that will be restored if a local override is reset.
-  PlatformParameterValue after_reset_value = 4;
+  // The platform parameter value in its non-overridden state (reflecting server or default values).
+  PlatformParameterValue non_overridden_value = 4;
 
-  // The sync status of the parameter after it has been reset (i.e., reflects server/default state).
-  SyncStatus after_reset_sync_status = 5;
+  // The sync status of the parameter in its non-overridden state (reflecting server or default values).
+  SyncStatus non_overridden_sync_status = 5;
 }
 
 // Corresponds to the current in-app state of the feature flag.
@@ -288,10 +288,10 @@ message EphemeralFeatureFlag {
   SyncStatus sync_status = 3;
 
   // The value of this feature flag that will be restored if a local override is reset.
-  bool after_reset_value = 4;
+  bool non_overridden_value = 4;
 
   // The sync status of the feature flag after it has been reset (i.e., reflects server/default state).
-  SyncStatus after_reset_sync_status = 5;
+  SyncStatus non_overridden_sync_status = 5;
 }
 
 // Corresponds to a developer override of a feature flag.

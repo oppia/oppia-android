@@ -255,6 +255,7 @@
   <!-- FLASHBACK -->
   <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
   <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
-  <color name="color_palette_overridden_background_color">@color/color_def_dark_golden</color>
-  <color name="color_palette_modified_background_color">@color/color_def_sky_blue</color>
+  <color name="color_palette_overridden_background_color">@color/color_def_dark_yellow</color>
+  <color name="color_palette_modified_background_color">@color/color_def_deep_blue</color>
+  <color name="color_palette_save_button_active_color">@color/color_def_bright_cyan</color>
 </resources>

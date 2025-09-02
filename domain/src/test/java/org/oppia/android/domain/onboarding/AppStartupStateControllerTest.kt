@@ -112,17 +112,15 @@ class AppStartupStateControllerTest {
   }
 
   @Test
-  fun testControllerObserver_observedAfterSettingAppOnboarded_providesState_userDidNotOnboardApp() {
+  fun testControllerObserver_observedAfterSettingAppOnboarded_providesState_userIsOnboarded() {
     setUpDefaultTestApplicationComponent()
     val appStartupState = appStartupStateController.getAppStartupState()
 
     appStartupStateController.markOnboardingFlowCompleted()
     testCoroutineDispatchers.runCurrent()
 
-    // The result should not indicate that the user onboarded the app because markUserOnboardedApp
-    // does not notify observers of the change.
     val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
-    assertThat(mode.startupMode).isEqualTo(USER_NOT_YET_ONBOARDED)
+    assertThat(mode.startupMode).isEqualTo(USER_IS_ONBOARDED)
   }
 
   @Test
