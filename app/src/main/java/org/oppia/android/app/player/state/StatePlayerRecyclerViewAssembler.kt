@@ -509,7 +509,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank() ||
+              !playerFeatureSet.flashbackNavigationSupport
+            )
               answerAndResponse.feedback
             else
               SubtitledHtml.newBuilder()
@@ -640,7 +642,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
       if (playerFeatureSet.feedbackSupport) {
         createFeedbackItem(
-          if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+          if (answerAndResponse.stateNameToRevisit.isNullOrBlank() ||
+            !playerFeatureSet.flashbackNavigationSupport
+          )
             answerAndResponse.feedback
           else
             SubtitledHtml.newBuilder()
