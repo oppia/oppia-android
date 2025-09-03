@@ -892,7 +892,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleFlagOnAndOff_navigateback_skipsRestartDialog() {
+  fun testFeatureFlagsFragment_toggleFlagOnAndOff_navigateback_skipsPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -919,7 +919,7 @@ class FeatureFlagsFragmentTest {
       pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.app_restart_dialog_title))
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .check(doesNotExist())
     }
   }

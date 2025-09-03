@@ -16,7 +16,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -1284,8 +1283,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleParameterOnAndOff_naviagteback_skipsRestartDialog() {
-    Intents.init()
+  fun testPlatformParametersFragment_toggleParamOnAndOff_naviagteback_skipsPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1312,6 +1310,20 @@ class PlatformParametersFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       onView(withText(R.string.app_restart_dialog_title))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_naviagteback_skipsPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
         .check(doesNotExist())
     }
   }
@@ -1575,7 +1587,7 @@ class PlatformParametersFragmentTest {
       )
     }
   }
-  
+
   @Test
   fun testPlatformParametersFragment_removeTextFromParameterAndFocusChange_retainsOriginalValue() {
     setUpTestApplicationComponent()
