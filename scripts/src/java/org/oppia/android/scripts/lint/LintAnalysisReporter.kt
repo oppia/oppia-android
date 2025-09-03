@@ -128,7 +128,8 @@ private data class ExemptionLocation(
   val errorLine: String
 )
 
-/** Reporter class for analyzing XML lint reports and extracting issues.
+/**
+ * Reporter class for analyzing XML lint reports and extracting issues.
  *
  * @param repoRoot the root directory of the repository
  */
