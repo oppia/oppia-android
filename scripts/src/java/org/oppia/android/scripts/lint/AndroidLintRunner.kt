@@ -113,7 +113,7 @@ class AndroidLintAnalyzer(
       repoRoot = repoRoot,
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
-      reportUnusedEnum
+      reportUnusedEnum = reportUnusedEnum
     )
     val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
@@ -256,7 +256,7 @@ class AndroidLintRunner(
     )
 
     reporter.printLintReport(
-      issues = filteredIssues,
+      filteredIssues = filteredIssues,
       groupByIssueSeverity = groupByIssueSeverity,
       redundantExemptions = redundantExemptions,
       reportUnusedEnum = reportUnusedEnum,

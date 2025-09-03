@@ -128,7 +128,10 @@ private data class ExemptionLocation(
   val errorLine: String
 )
 
-/** Reporter class for analyzing XML lint reports and extracting issues. */
+/** Reporter class for analyzing XML lint reports and extracting issues.
+ *
+ * @param repoRoot the root directory of the repository
+ */
 class LintAnalysisReporter(private val repoRoot: File) {
 
   companion object {
@@ -369,45 +372,41 @@ class LintAnalysisReporter(private val repoRoot: File) {
     return redundantMap.mapValues { (_, issueIds) -> issueIds.sorted() }
   }
 
-  /**
-   * Wraps text to specified width without breaking words.
-   *
-   * @param text The text to wrap
-   * @param width Maximum line width
-   * @param indent Indentation to apply to each line
-   * @return Formatted text with proper indentation and line wrapping
-   */
+  /** Wraps a single paragraph into lines without breaking words. */
+  private fun wrapParagraph(paragraph: String, width: Int): List<String> {
+    val words = paragraph.replace("\n", " ")
+      .split(" ").filter { it.isNotEmpty() }
+    val lines = mutableListOf<String>()
+    var currentLine = StringBuilder()
+
+    for (word in words) {
+      val lineWithWord = if (currentLine.isEmpty()) word else "$currentLine $word"
+      if (lineWithWord.length <= width) {
+        currentLine = StringBuilder(lineWithWord)
+      } else {
+        if (currentLine.isNotEmpty()) {
+          lines.add(currentLine.toString())
+          currentLine = StringBuilder(word)
+        } else {
+          lines.add(word)
+        }
+      }
+    }
+
+    if (currentLine.isNotEmpty()) {
+      lines.add(currentLine.toString())
+    }
+
+    return lines
+  }
+
+  /** Wraps text to specified width with indentation. */
   private fun wrapText(text: String, width: Int = 70, indent: String = "    "): String {
     if (text.isBlank()) return text
 
-    // Split by double newlines to preserve paragraph breaks
-    val paragraphs = text.split("\n\n")
-
-    return paragraphs.joinToString("\n\n") { paragraph ->
-      val words = paragraph.replace("\n", " ")
-        .split(" ").filter { it.isNotEmpty() }
-      val lines = mutableListOf<String>()
-      var currentLine = StringBuilder()
-
-      for (word in words) {
-        val lineWithWord = if (currentLine.isEmpty()) word else "$currentLine $word"
-        if (lineWithWord.length <= width - indent.length) {
-          currentLine = StringBuilder(lineWithWord)
-        } else {
-          if (currentLine.isNotEmpty()) {
-            lines.add("$indent$currentLine")
-            currentLine = StringBuilder(word)
-          } else {
-            lines.add("$indent$word")
-          }
-        }
-      }
-
-      if (currentLine.isNotEmpty()) {
-        lines.add("$indent$currentLine")
-      }
-
-      lines.joinToString("\n")
+    return text.split("\n\n").joinToString("\n\n") { paragraph ->
+      wrapParagraph(paragraph, width - indent.length)
+        .joinToString("\n") { "$indent$it" }
     }
   }
 
@@ -453,12 +452,12 @@ class LintAnalysisReporter(private val repoRoot: File) {
   /**
    * Prints the lint issues based on the specified grouping strategy.
    *
-   * @param issues List of LintIssue objects to print
+   * @param filteredIssues List of LintIssue objects to print
    * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
    * @param redundantExemptions Map of redundant exemptions
    */
   fun printLintReport(
-    issues: List<LintIssue>,
+    filteredIssues: List<LintIssue>,
     groupByIssueSeverity: Boolean,
     redundantExemptions: Map<String, List<String>> = emptyMap(),
     reportUnusedEnum: Boolean = true,
@@ -466,7 +465,7 @@ class LintAnalysisReporter(private val repoRoot: File) {
   ) {
     val redundantExemptionsCount = redundantExemptions.values.sumOf { it.size }
 
-    printSeveritySummary(issues, redundantExemptionsCount)
+    printSeveritySummary(filteredIssues, redundantExemptionsCount)
     println()
 
     println(
@@ -480,12 +479,12 @@ class LintAnalysisReporter(private val repoRoot: File) {
     }
 
     if (groupByIssueSeverity) {
-      printGroupedByIssueSeverity(issues)
+      printGroupedByIssueSeverity(filteredIssues)
     } else {
-      printGroupedByFilePath(issues)
+      printGroupedByFilePath(filteredIssues)
     }
 
-    printFinalResult(issues, redundantExemptionsCount, reportUnusedEnum, allIssues)
+    printFinalResult(filteredIssues, redundantExemptionsCount, reportUnusedEnum, allIssues)
   }
 
   /**
