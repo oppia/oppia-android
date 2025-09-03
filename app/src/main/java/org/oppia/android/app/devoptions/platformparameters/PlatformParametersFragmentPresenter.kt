@@ -53,7 +53,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
-  private var isRestartInitiated: Boolean = false
+  private var restartRequired: Boolean = false
+
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
@@ -222,7 +223,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            isRestartInitiated = true
+            restartRequired = true
             val dialog = AppRestartDialogFragment.newInstance()
             dialog.showNow(fragment.childFragmentManager, TAG_PLATFORM_PARAMETER_RESTART_DIALOG)
           }
@@ -473,13 +474,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun handleOnDestroy() {
-    if (isRestartInitiated) {
+    if (restartRequired) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
       }
       activity.startActivity(intent)
-      exitProcess(0) // App is terminated to ensure a fresh restart.
+      // App is terminated to ensure a fresh restart and kill all the current process
+      // so that ProcessState can be reinitialised on the fresh restart.
+      exitProcess(0)
     }
   }
 }

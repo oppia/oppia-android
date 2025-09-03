@@ -555,30 +555,6 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleFlag_navigateBack_pendingChangesDialogIsDisplayed() {
-    setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
-        )
-      ).perform(click())
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.pending_changes_dialog_title_text))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
   fun testFeatureFlagsFragment_withOverriddenFlag_resetButtonIsVisible() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
@@ -916,7 +892,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_modifyFlagRevertback_naviagteback_skipsRestartDialog() {
+  fun testFeatureFlagsFragment_toggleFlagOnAndOff_navigateback_skipsRestartDialog() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -949,7 +925,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_modifyFlagAndRevert_hasNoBackgroundColor() {
+  fun testFeatureFlagsFragment_toggleFlagOnAndOff_hasNoBackgroundColor() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()

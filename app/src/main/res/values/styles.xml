@@ -78,9 +78,24 @@
     <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
+  <!-- DIALOG BUTTON ACTIVE STYLE -->
+  <style name="DialogButtonActive" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
 
-  <!-- STATE BUTTON OUTLINE STYLE -->
-  <style name="StateButtonOutline" parent="TextAppearance.AppCompat.Widget.Button">
+  <!-- DISCARD BUTTON OUTLINE STYLE -->
+  <style name="DiscardButtonOutline" parent="TextAppearance.AppCompat.Widget.Button">
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:padding">8dp</item>
@@ -88,7 +103,7 @@
     <item name="android:layout_marginEnd">4dp</item>
     <item name="android:layout_marginTop">4dp</item>
     <item name="android:textAllCaps">false</item>
-    <item name="android:background">@android:color/transparent</item>
+    <item name="android:background">@drawable/state_button_outline</item>
     <item name="android:textColor">@color/component_color_shared_primary_dark_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>

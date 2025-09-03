@@ -36,7 +36,7 @@
 
     <Button
       android:id="@+id/restart_button"
-      style="@style/StateButtonActive"
+      style="@style/DialogButtonActive"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"

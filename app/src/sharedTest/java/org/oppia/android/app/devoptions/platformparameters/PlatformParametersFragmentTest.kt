@@ -1281,7 +1281,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyParamRevertback_naviagteback_skipsRestartDialog() {
+  fun testPlatformParametersFragment_toggleParameterOnAndOff_naviagteback_skipsRestartDialog() {
     Intents.init()
     setUpTestApplicationComponent()
     launch(PlatformParametersActivity::class.java).use {
