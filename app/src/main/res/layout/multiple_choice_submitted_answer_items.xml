@@ -1,0 +1,60 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
+    <variable
+      name="viewModel"
+      type="org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel" />
+  </data>
+
+  <RelativeLayout
+    android:id="@+id/checkbox_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:importantForAccessibility="yes"
+    android:minHeight="48dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
+
+    <ImageView
+      android:id="@+id/multiple_choice_radio_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="4dp"
+      android:layout_marginTop="1dp"
+      android:layout_marginEnd="8dp"
+      android:contentDescription="@{viewModel.isSelected ? @string/selected_option_icon_content_description: @string/unselected_option_icon_content_description}"
+      app:srcCompat="@{viewModel.isSelected ? @drawable/radio_checked_grey : @drawable/radio_unchecked_grey}" />
+
+    <TextView
+      android:id="@+id/multiple_choice_content_text_view"
+      style="@style/SubmittedAnswerTextStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_toEndOf="@+id/multiple_choice_radio_icon"
+      android:text="@{htmlContent}"
+      android:contentDescription="@{viewModel.getContentDescription()}"
+      android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
+
+    <TextView
+      android:id="@+id/submitted_answer_label_text_view"
+      style="@style/TextFieldLabel"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_toEndOf="@+id/multiple_choice_radio_icon"
+      android:layout_below="@id/multiple_choice_content_text_view"
+      android:visibility="gone"
+      android:text="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text : @string/submitted_answer_label_text}"
+      android:contentDescription="@{viewModel.isFlashback ? @string/flashback_submitted_answer_label_text_content_description : @string/submitted_answer_label_text_content_description}"
+      android:textColor="@color/component_color_shared_selection_interaction_unselected_text_color" />
+  </RelativeLayout>
+</layout>
