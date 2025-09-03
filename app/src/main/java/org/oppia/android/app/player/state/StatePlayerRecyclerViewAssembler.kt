@@ -330,14 +330,6 @@ class StatePlayerRecyclerViewAssembler private constructor(
             ephemeralState.writtenTranslationContext
           )
         }
-        addFlashbackSubmittedAnswerItem(
-          conversationPendingItemList,
-          extraInteractionPendingItemList,
-          ephemeralState.completedState.answerList,
-          gcsEntityId,
-          ephemeralState.state.interaction,
-          ephemeralState.writtenTranslationContext
-        )
         if (playerFeatureSet.flashbackNavigationSupport) {
           addReturnToQuestionButton(
             conversationPendingItemList,
