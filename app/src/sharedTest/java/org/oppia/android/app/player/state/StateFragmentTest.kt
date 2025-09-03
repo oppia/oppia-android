@@ -8,6 +8,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -112,6 +113,7 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.app.utility.clickPoint
@@ -2726,7 +2728,12 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("Eagle")))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2767,15 +2774,19 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("النسر"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "النسر",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
+  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2787,9 +2798,12 @@ class StateFragmentTest {
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
-      // The answer should stay in Arabic despite switching back to English.
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("النسر"))))
+      // The answer should switch to English.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2833,9 +2847,12 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("Green"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2881,16 +2898,19 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "أخضر")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("أخضر"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "أخضر",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC, buildEnvironments = [BuildEnvironment.BAZEL])
-  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
+  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2905,10 +2925,12 @@ class StateFragmentTest {
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      // The answer should stay in the language it was submitted in even if the language changes.
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("أخضر"))))
+      // The answer should switch to English.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -5858,6 +5880,182 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_submitItemSelectionAnswer_verifyItemSelectionSubmittedAnswer() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      clickSubmitAnswerButton()
+
+      // Verify selected options in Item selection submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 0,
+        expectedOptionText = "Red",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 3,
+        expectedOptionText = "Blue",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+
+      // Verify unselected options in Item selection submitted answer.
+      verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+        optionPosition = 1,
+        expectedOptionText = "Yellow"
+      )
+      verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+        optionPosition = 4,
+        expectedOptionText = "Orange"
+      )
+      verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+        optionPosition = 5,
+        expectedOptionText = "Purple"
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitMultipleChoiceAnswer_verifyMultipleChoiceSubmittedAnswer() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Submit Multiple choice answer.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+
+      // Verify unselected options in Multiple choice submitted answer.
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 0,
+        expectedOptionText = "Penguin"
+      )
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 1,
+        expectedOptionText = "Chicken"
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_moveToFlashbackState_verifyMutipleChoiceSubmittedAnswerOnFlashabackScreen() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      // Submit incorrect multiple-choice answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Red")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Click continue button on flashback confirmation dialog.
+      onView(withId(R.id.continue_confirmation_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Continue")))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.flashback_submitted_answer_label_text
+      )
+
+      // Verify unselected options in Multiple choice submitted answer.
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 0,
+        expectedOptionText = "Penguin"
+      )
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 1,
+        expectedOptionText = "Chicken"
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_moveToFlashbackState_verifyExplainationBoxIsNotVisibleOnFlashbackScreen() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      // Submit incorrect multiple-choice answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Red")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Click continue button on flashback confirmation dialog.
+      onView(withId(R.id.continue_confirmation_button))
+        .inRoot(isDialog())
+        .check(matches(withText("Continue")))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify Explaination box is not visible.
+      onView(withId(R.id.solution_summary_container)).check(doesNotExist())
+    }
+  }
+
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
@@ -5979,6 +6177,188 @@ class StateFragmentTest {
       )
     ).perform(click())
     clickSubmitAnswerButton()
+  }
+
+  private fun verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(matches(withDrawable(R.drawable.radio_unchecked_grey)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.unselected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withEffectiveVisibility(GONE)))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(matches(withDrawable(R.drawable.rect_checkbox_unchecked)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.unselected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withEffectiveVisibility(GONE)))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyMultipleChoiceSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String,
+    @StringRes labelTextId: Int
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(matches(withDrawable(R.drawable.radio_checked_grey)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.selected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withText(context.getString(labelTextId))))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyItemSelectionSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String,
+    @StringRes labelTextId: Int
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(matches(withDrawable(R.drawable.rect_checkbox_checked)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.selected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withText(context.getString(labelTextId))))
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
@@ -6557,7 +6937,6 @@ class StateFragmentTest {
     TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     setUpTest()
   }
-
   private fun setUpTestWithFlashbackFeatureOff() {
     TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     setUpTest()
