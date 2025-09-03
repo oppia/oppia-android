@@ -22,7 +22,7 @@ class PlatformParametersActivity : InjectableAutoLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
     PlatformParametersActivityPresenter.handleOnCreate()
-    title = resourceHandler.getStringInLocale(R.string.developer_options_platform_parameters)
+    title = resourceHandler.getStringInLocale(R.string.platform_parameters_activity_title)
   }
 
   companion object {

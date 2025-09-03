@@ -174,7 +174,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
           is AsyncResult.Failure -> {
             oppiaLogger.e(
               "FeatureFlagsFragmentPresenter",
-              "Failed to reset feature flag: ",
+              "Failed to reset feature flags: ",
               result.error
             )
           }
@@ -228,18 +228,12 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
 
     featureFlagsViewModel.featureFlagStates.value?.let { states ->
       states[model.featureFlagId]?.let { state ->
-        model.isFlagOverridden.set(state)
+        model.isChecked.set(state)
       }
     }
 
-    model.onFeatureFlagToggleCallback = { id, value ->
-      if (model.currentValue == value &&
-        id !in getResetFeatureFlags()
-      ) {
-        featureFlagsViewModel.removeFlagState(id)
-      } else {
-        featureFlagsViewModel.updateFeatureFlagState(id, value)
-      }
+    model.onFeatureFlagToggleCallback = { id, newValue ->
+      featureFlagsViewModel.updateFeatureFlagState(id, newValue, model.currentValue)
     }
   }
 
@@ -248,7 +242,11 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   ) {
     val restoredFlagValue = model.nonOverriddenValue
     featureFlagsViewModel.updateResetFlag(model.featureFlagId, model.nonOverriddenValue)
-    featureFlagsViewModel.updateFeatureFlagState(model.featureFlagId, restoredFlagValue)
+    featureFlagsViewModel.updateFeatureFlagState(
+      model.featureFlagId,
+      restoredFlagValue,
+      model.currentValue
+    )
     model.isChecked.set(restoredFlagValue)
   }
 
