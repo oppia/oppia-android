@@ -20,8 +20,8 @@ class PlatformParameterItemViewModel(
   val platformParameterId: PlatformParameterId,
   val currentValue: PlatformParameterValue,
   val syncStatus: SyncStatus,
-  val afterResetValue: PlatformParameterValue,
-  val afterResetSyncStatus: SyncStatus,
+  val nonOverriddenValue: PlatformParameterValue,
+  val nonOverriddenSyncStatus: SyncStatus,
   val resetParameters: MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue>>,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
@@ -78,7 +78,7 @@ class PlatformParameterItemViewModel(
     resetParameters: MutableMap<PlatformParameterId, PlatformParameterValue>
   ): String {
     return when {
-      resetParameters.containsKey(platformParameterId) -> getSyncDetails(afterResetSyncStatus)
+      resetParameters.containsKey(platformParameterId) -> getSyncDetails(nonOverriddenSyncStatus)
       else -> getSyncDetails(syncStatus)
     }
   }

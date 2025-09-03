@@ -57,24 +57,28 @@ class PlatformParametersViewModel @Inject constructor(
 
   /**
    * Updates the state of a given platform parameter with a new value.
+   * This method handles the logic for determining whether to add, update, or remove
+   * the parameter from the tracked states based on the original value and reset status.
    *
    * @param id the [PlatformParameterId] of the parameter to be updated
    * @param newValue the new [PlatformParameterValue] to assign to this parameter.
+   * @param originalValue the original (non-overridden) value of the platform parameter.
    */
-  fun updatePlatformParameterState(id: PlatformParameterId, newValue: PlatformParameterValue?) {
-    val currentStates = platformParameterStates.value ?: mutableMapOf()
-    currentStates[id] = newValue
-    platformParameterStates.value = currentStates
-  }
+  fun updatePlatformParameterState(
+    id: PlatformParameterId,
+    newValue: PlatformParameterValue?,
+    currentValue: PlatformParameterValue
+  ) {
+    val currentStates = platformParameterStates.value?.toMutableMap() ?: mutableMapOf()
+    val resetParams = resetParameters.value ?: emptyMap()
+    val isSameAsOriginal = newValue == currentValue
 
-  /**
-   * Removes a parameter from the tracked [platformParameterStates].
-   *
-   * @param id the [PlatformParameterId] of the parameter to remove.
-   */
-  fun removeParameterState(id: PlatformParameterId) {
-    val currentStates = platformParameterStates.value ?: mutableMapOf()
-    currentStates.remove(id)
+    if (isSameAsOriginal && id !in resetParams) {
+      currentStates.remove(id)
+    } else {
+      currentStates[id] = newValue
+    }
+
     platformParameterStates.value = currentStates
   }
 
@@ -113,8 +117,8 @@ class PlatformParametersViewModel @Inject constructor(
         platformParameterId = ephemeralPlatformParameter.id,
         currentValue = ephemeralPlatformParameter.currentValue,
         syncStatus = ephemeralPlatformParameter.syncStatus,
-        afterResetValue = ephemeralPlatformParameter.nonOverriddenValue,
-        afterResetSyncStatus = ephemeralPlatformParameter.nonOverriddenSyncStatus,
+        nonOverriddenValue = ephemeralPlatformParameter.nonOverriddenValue,
+        nonOverriddenSyncStatus = ephemeralPlatformParameter.nonOverriddenSyncStatus,
         resetParameters = resetParameters,
         machineLocale = machineLocale,
         resourceHandler = resourceHandler

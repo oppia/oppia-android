@@ -38,6 +38,7 @@
   <string name="feature_flag_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
   <string name="feature_flag_currently_overridden_message" translatable="false">Currently Overridden.</string>
   <string name="feature_flag_synced_from_server_message" translatable="false">Synced with the Server.</string>
+  <string name="platform_parameters_activity_title" translatable="false">Platform Parameters</string>
   <string name="platform_parameter_invalid_input_error_msg" translatable="false">Invalid Value</string>
   <string name="platform_parameter_invalid_input_alert_dialog_title" translatable="false">Invalid Inputs</string>
   <string name="platform_parameter_invalid_input_alert_dialog_message" translatable="false">Please ensure all fields have valid values to continue.</string>

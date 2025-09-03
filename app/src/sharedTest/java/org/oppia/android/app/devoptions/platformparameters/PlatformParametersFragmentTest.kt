@@ -1180,7 +1180,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_noChanges_saveButtonIsDisabled() {
+  fun testPlatformParametersFragment_noParameterModified_saveButtonIsDisabled() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1472,7 +1472,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_withRemoteAndOverride_onResetShowsSyncedWithServerMessage() {
+  fun testPlatformParametersFragment_withRemoteAndOverride_onReset_showsSyncedWithServerMessage() {
     executeInPreviousAppInstance { component ->
       addTestBooleanRemotePlatformParameterToDatabase(component, false)
       addTestBooleanOverriddenPlatformParameterToDatabase(component, true)

@@ -25,13 +25,6 @@ class FeatureFlagsViewModel @Inject constructor(
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler,
 ) : ObservableViewModel() {
-  private val ephemeralFlagsLiveData: LiveData<List<EphemeralFeatureFlag>> by lazy {
-    Transformations.map(
-      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags().toLiveData(),
-      ::processEphemeralFlagResult
-    )
-  }
-
   /**
    * LiveData that contains a list of [FeatureFlagItemViewModel] which is used to populate the
    * recycler view in [FeatureFlagsFragment].
@@ -40,40 +33,45 @@ class FeatureFlagsViewModel @Inject constructor(
     Transformations.map(ephemeralFlagsLiveData, ::processFeatureFlagList)
   }
 
+  private val ephemeralFlagsLiveData: LiveData<List<EphemeralFeatureFlag>> by lazy {
+    Transformations.map(
+      platformParameterControllerDebugImpl.loadEphemeralFeatureFlags().toLiveData(),
+      ::processEphemeralFlagResult
+    )
+  }
+
   /** List of feature flag switch states to be used in the fragment. */
   val featureFlagStates = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
 
   /** List of feature flags that have been reset. */
   val resetFlags = MutableLiveData<MutableMap<FeatureFlagId, Boolean>>(mutableMapOf())
-  /** Tracks whether the Save button is currently enabled (clickable). */
 
   /** Tracks whether the Save button is currently enabled (clickable). */
   val isSaveButtonEnabled: LiveData<Boolean> by lazy {
-    Transformations.map(featureFlagStates) {
-      it.isNotEmpty()
-    }
+    Transformations.map(featureFlagStates) { it.isNotEmpty() }
   }
 
   /**
    * Updates the state of a given feature flag with a new value.
+   * This method handles the logic for determining whether to add, update, or remove
+   * the flag from the tracked states based on the original value and reset status.
    *
    * @param id the [FeatureFlagId] of the feature flag being updated.
    * @param newValue the new value for the feature flag.
+   * @param originalValue the original (non-overridden) value of the feature flag.
    */
-  fun updateFeatureFlagState(id: FeatureFlagId, newValue: Boolean) {
-    val currentStates = featureFlagStates.value ?: mutableMapOf()
-    currentStates[id] = newValue
-    featureFlagStates.value = currentStates
-  }
-
-  /**
-   * Removes a feature flag from the tracked [featureFlagStates].
-   *
-   * @param id the [FeatureFlagId] of the feature flag to remove.
-   */
-  fun removeFlagState(id: FeatureFlagId) {
-    val currentStates = featureFlagStates.value ?: mutableMapOf()
-    currentStates.remove(id)
+  fun updateFeatureFlagState(
+    id: FeatureFlagId,
+    newValue: Boolean,
+    originalValue: Boolean
+  ) {
+    val currentStates = featureFlagStates.value?.toMutableMap() ?: mutableMapOf()
+    val currentResetFlags = resetFlags.value ?: mutableMapOf()
+    if (originalValue == newValue && !currentResetFlags.containsKey(id)) {
+      currentStates.remove(id)
+    } else {
+      currentStates[id] = newValue
+    }
     featureFlagStates.value = currentStates
   }
 
@@ -81,10 +79,10 @@ class FeatureFlagsViewModel @Inject constructor(
    * Updates the list of feature flags that are being reset to their non-overridden values.
    *
    * @param id the [FeatureFlagId] of the feature flag being reset.
-   * @param newValue the value to restore after reset .
+   * @param restoredValue the value to restore after reset.
    */
   fun updateResetFlag(id: FeatureFlagId, restoredValue: Boolean) {
-    val currentResetFlags = resetFlags.value ?: mutableMapOf()
+    val currentResetFlags = resetFlags.value?.toMutableMap() ?: mutableMapOf()
     currentResetFlags[id] = restoredValue
     resetFlags.value = currentResetFlags
   }
