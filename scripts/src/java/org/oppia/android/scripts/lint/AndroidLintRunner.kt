@@ -55,17 +55,12 @@ class ElapsedTimeDisplayer(
     }
   }
 
-  /**
-   * Clears the timer line if it's currently displayed, preparing console for new output.
-   * This method ensures proper synchronization with the timer display.
-   */
+  /** Clears the timer line if it's currently displayed, preparing console for new output. */
   fun clearLine() {
-    synchronized(System.out) {
-      if (needsLineClear) {
-        print("\r\u001B[K")
-        System.out.flush()
-        needsLineClear = false
-      }
+    if (needsLineClear) {
+      print("\r\u001B[K")
+      System.out.flush()
+      needsLineClear = false
     }
   }
 
@@ -85,11 +80,9 @@ class ElapsedTimeDisplayer(
     val elapsed = timeProvider() - startTime
     val formattedTime = formatDuration(elapsed)
 
-    synchronized(System.out) {
-      print("\rElapsed time: $formattedTime")
-      System.out.flush()
-      needsLineClear = true
-    }
+    print("\rElapsed time: $formattedTime")
+    System.out.flush()
+    needsLineClear = true
   }
 
   /** Formats duration in milliseconds to HH:MM:SS format. */
@@ -167,11 +160,8 @@ fun main(vararg args: String) {
     timer?.start()
 
     try {
-
-      synchronized(System.out) {
-        timer?.clearLine()
-        println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
-      }
+      timer?.clearLine()
+      println("Using ${workingDirectory.absolutePath} as an intermediary working directory")
 
       val commandExecutor = CommandExecutorImpl(
         scriptBgDispatcher,
