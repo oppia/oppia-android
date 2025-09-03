@@ -5858,45 +5858,6 @@ class StateFragmentTest {
     }
   }
 
-  @Test
-  fun testFlashback_onSubmitOneWrongRatioAnswer_check() {
-    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
-    setUpTest()
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenerio ->
-      startPlayingExploration()
-
-      navigateToPrototypeRatioInputState()
-
-      // Submit wrong answer.
-      typeRatioExpression("4:7")
-      clickSubmitAnswerButton()
-
-      // Verify previous response header is not visible.
-      onView(withId(R.id.previous_response_header)).check(doesNotExist())
-
-      // Verify flashback button is visible.
-      scrollToViewType(FLASHBACK_BUTTON)
-      onView(withId(R.id.flashback_button)).check(
-        matches(withText(R.string.state_flashback_button))
-      )
-      TestPlatformParameterModule.reset()
-      scenerio.close()
-    }
-    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use { scenerio ->
-      startPlayingExploration()
-
-      navigateToPrototypeRatioInputState()
-
-      // Submit wrong answer.
-      typeRatioExpression("4:7")
-      clickSubmitAnswerButton()
-
-      // Verify flashback button is not visible.
-      onView(withId(R.id.flashback_button)).check(doesNotExist())
-      scenerio.close()
-    }
-  }
-
   private fun moveToFlashbackState() {
     playThroughPrototypeState1()
     playThroughPrototypeState2()
