@@ -23,7 +23,7 @@ import javax.inject.Inject
 class FeatureFlagsViewModel @Inject constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val resourceHandler: AppLanguageResourceHandler,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   /**
    * LiveData that contains a list of [FeatureFlagItemViewModel] which is used to populate the
@@ -63,11 +63,11 @@ class FeatureFlagsViewModel @Inject constructor(
   fun updateFeatureFlagState(
     id: FeatureFlagId,
     newValue: Boolean,
-    originalValue: Boolean
+    currentValue: Boolean
   ) {
     val currentStates = featureFlagStates.value?.toMutableMap() ?: mutableMapOf()
-    val currentResetFlags = resetFlags.value ?: mutableMapOf()
-    if (originalValue == newValue && !currentResetFlags.containsKey(id)) {
+    val resetFlags = resetFlags.value ?: mutableMapOf()
+    if (newValue == currentValue && id !in resetFlags) {
       currentStates.remove(id)
     } else {
       currentStates[id] = newValue

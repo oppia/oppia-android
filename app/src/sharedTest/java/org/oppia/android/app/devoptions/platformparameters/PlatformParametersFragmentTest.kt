@@ -3,6 +3,9 @@ package org.oppia.android.app.devoptions.platformparameters
 import android.app.Application
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
@@ -1548,6 +1551,44 @@ class PlatformParametersFragmentTest {
         expectedColor =
           context.getColor(R.color.component_color_platform_parameter_modified_background_color)
       )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_removeTextFromParameterAndFocusChange_retainsOriginalValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      it.onActivity { activity ->
+        val initialValue = getEphemeralPlatformParameters()[1].currentValue
+
+        testCoroutineDispatchers.runCurrent()
+        val recyclerView =
+          activity.findViewById<RecyclerView>(R.id.platform_parameters_recycler_view)
+        val viewHolder1 = recyclerView.findViewHolderForAdapterPosition(1)
+        val editText1 =
+          viewHolder1?.itemView?.findViewById<EditText>(R.id.platform_parameter_input_edit_text)
+
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 1,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).perform(editTextInputAction.replaceText(""))
+        testCoroutineDispatchers.runCurrent()
+
+        val viewHolder2 = recyclerView.findViewHolderForAdapterPosition(2)
+        val editText2 =
+          viewHolder2?.itemView?.findViewById<EditText>(R.id.platform_parameter_input_edit_text)
+
+        editText1?.performAccessibilityAction(AccessibilityNodeInfo.ACTION_FOCUS, Bundle())
+        editText2?.performAccessibilityAction(AccessibilityNodeInfo.ACTION_FOCUS, Bundle())
+        scrollToPosition(1)
+        verifyPlatformParameterValue(
+          position = 1,
+          expectedValue = initialValue
+        )
+      }
     }
   }
 

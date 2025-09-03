@@ -24,7 +24,7 @@ import javax.inject.Inject
 class PlatformParametersViewModel @Inject constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl,
   private val machineLocale: OppiaLocale.MachineLocale,
-  private val resourceHandler: AppLanguageResourceHandler,
+  private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
   /**
    * LiveData that contains a list of [PlatformParameterItemViewModel] which is used to populate the
@@ -41,14 +41,14 @@ class PlatformParametersViewModel @Inject constructor(
     )
   }
 
-  /** List of platform parameters that have been reset. */
-  val resetParameters: MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue>> =
-    MutableLiveData(mutableMapOf())
-
   /** List of platform parameter states to be used in the fragment. */
   val platformParameterStates:
     MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue?>> =
       MutableLiveData(mutableMapOf())
+
+  /** List of platform parameters that have been reset. */
+  val resetParameters: MutableLiveData<MutableMap<PlatformParameterId, PlatformParameterValue>> =
+    MutableLiveData(mutableMapOf())
 
   /** Tracks whether the Save button is currently enabled (clickable). */
   val isSaveButtonEnabled: LiveData<Boolean> by lazy {
@@ -71,9 +71,8 @@ class PlatformParametersViewModel @Inject constructor(
   ) {
     val currentStates = platformParameterStates.value?.toMutableMap() ?: mutableMapOf()
     val resetParams = resetParameters.value ?: emptyMap()
-    val isSameAsOriginal = newValue == currentValue
 
-    if (isSameAsOriginal && id !in resetParams) {
+    if (newValue == currentValue && id !in resetParams) {
       currentStates.remove(id)
     } else {
       currentStates[id] = newValue
