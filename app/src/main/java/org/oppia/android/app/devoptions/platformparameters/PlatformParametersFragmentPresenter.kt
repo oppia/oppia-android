@@ -358,7 +358,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private fun handleBooleanParameter(
     model: PlatformParameterItemViewModel
   ) {
-
     getPlatformParameterStates()[model.platformParameterId]?.let { state ->
       model.isChecked.set(state.boolean)
     }
