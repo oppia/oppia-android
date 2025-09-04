@@ -992,9 +992,3 @@ message PlatformParametersFragmentStateBundle {
   // List of platform parameters that have been reset.
   repeated OverriddenPlatformParameter reset_platform_parameters = 2;
 }
-
-// Arguments required when creating an FlashbackConfirmationDialogFragment.
-message FlashbackConfirmationDialogFragmentArguments {
-  // The name of the state that will be shown as a flashback.
-  string state_name = 1;
-}
