@@ -14,6 +14,9 @@ import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTI
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
+import org.oppia.android.domain.profile.ProfileManagementController
+import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import javax.inject.Inject
 
@@ -23,7 +26,8 @@ class AdminAuthActivityPresenter @Inject constructor(
   private val context: Context,
   private val activity: AppCompatActivity,
   private val authViewModel: AdminAuthViewModel,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val profileManagementController: ProfileManagementController,
 ) {
   private lateinit var binding: AdminAuthActivityBinding
   private val args by lazy {
@@ -86,11 +90,19 @@ class AdminAuthActivityPresenter @Inject constructor(
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             val internalId = args?.internalProfileId ?: -1
             val profileId = ProfileId.newBuilder().setInternalId(internalId).build()
-            activity.startActivity(
-              AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                context, profileId
-              )
-            )
+            profileManagementController
+              .loginToProfile(profileId).toLiveData().observe(
+                activity
+              ) {
+                if (it is AsyncResult.Success) {
+                  activity.startActivity(
+                    AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                      context, profileId
+                    )
+                  )
+                }
+              }
+
 
             activity.finish()
           }
