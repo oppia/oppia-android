@@ -518,6 +518,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/ic_alert_icon_yellow_24dp.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/ic_arrow_back_oppia_dark_blue_24dp.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
@@ -906,6 +910,10 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/save_button_active_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/save_button_inactive_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
