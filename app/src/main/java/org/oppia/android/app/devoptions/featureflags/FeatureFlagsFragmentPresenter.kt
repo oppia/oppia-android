@@ -272,12 +272,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         )
     }
   }
-
-  private fun getResetFeatureFlags(): MutableMap<FeatureFlagId, Boolean> {
-    return featureFlagsViewModel.resetFlags.value?.toMutableMap() ?: mutableMapOf()
-  }
-
-  /**
+  
+   /**
    * Called when [FeatureFlagsFragment] is destroyed.
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
@@ -292,5 +288,22 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       // so that ProcessState can be reinitialised on the fresh restart.
       exitProcess(0)
     }
+
+  /** Returns the feature flags which have been reset.
+   *
+   * @return a [MutableMap] mapping each [FeatureFlagId] to its boolean reset state,
+   *  or an empty map if no reset flags are recorded.
+   */
+  fun getResetFeatureFlags(): MutableMap<FeatureFlagId, Boolean> {
+    return featureFlagsViewModel.resetFlags.value?.toMutableMap() ?: mutableMapOf()
+  }
+
+  /** Returns the current states of all feature flags.
+   *
+   * @return a [Map] mapping each [FeatureFlagId] to its current boolean state,
+   *   or an empty map if no feature flag states are recorded.
+   */
+  fun getFeatureFlagStates(): Map<FeatureFlagId, Boolean> {
+    return featureFlagsViewModel.featureFlagStates.value ?: mapOf()
   }
 }
