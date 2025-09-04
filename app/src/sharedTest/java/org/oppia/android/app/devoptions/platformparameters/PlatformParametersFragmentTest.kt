@@ -1592,6 +1592,54 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
+  fun testPlatformParametersFragment_removeTextFromParameterAndFocusChange_doesNotShowErrorMsg() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      it.onActivity { activity ->
+        testCoroutineDispatchers.runCurrent()
+        val recyclerView =
+          activity.findViewById<RecyclerView>(R.id.platform_parameters_recycler_view)
+        val viewHolder1 = recyclerView.findViewHolderForAdapterPosition(1)
+        val editText1 =
+          viewHolder1?.itemView?.findViewById<EditText>(R.id.platform_parameter_input_edit_text)
+
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 1,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).perform(editTextInputAction.replaceText(""))
+        testCoroutineDispatchers.runCurrent()
+
+        val viewHolder2 = recyclerView.findViewHolderForAdapterPosition(2)
+        val editText2 =
+          viewHolder2?.itemView?.findViewById<EditText>(R.id.platform_parameter_input_edit_text)
+
+        editText1?.performAccessibilityAction(AccessibilityNodeInfo.ACTION_FOCUS, Bundle())
+        editText2?.performAccessibilityAction(AccessibilityNodeInfo.ACTION_FOCUS, Bundle())
+
+        scrollToPosition(1)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 1,
+            targetViewId = R.id.platform_parameter_input_layout
+          )
+        ).check(
+          matches(
+            not(
+              hasErrorText(
+                context.getString(R.string.platform_parameter_invalid_input_error_msg)
+              )
+            )
+          )
+        )
+      }
+    }
+  }
+
   private fun verifyPlatformParameterDisplayName(
     position: Int,
     expectedDisplayName: String
