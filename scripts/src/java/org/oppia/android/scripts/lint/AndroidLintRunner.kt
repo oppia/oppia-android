@@ -374,6 +374,7 @@ class AndroidLintRunner(
 
   private fun reportLintIssues() {
     timer?.clearLine()
+
     val reporter = LintAnalysisReporter(repoRoot)
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
 
