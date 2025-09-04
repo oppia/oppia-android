@@ -1319,6 +1319,10 @@ class AndroidLintRunnerTest {
       </resources>
       """
     )
+    exemptRedundantIssue(
+      LintIssueId.UNUSED_RESOURCES,
+      "app/src/main/res/values/strings.xml"
+    )
   }
 
   private fun createProjectDescriptionFile(): File {
@@ -1434,10 +1438,6 @@ class AndroidLintRunnerTest {
     </application>
     </manifest>
       """.trimIndent()
-    )
-    exemptRedundantIssue(
-      LintIssueId.GRADLE_OVERRIDES,
-      "$moduleName/src/main/AndroidManifest.xml"
     )
   }
 
