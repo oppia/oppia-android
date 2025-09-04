@@ -73,6 +73,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
+    oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
       // TODO(#5345): Finish implementing forcing remote parameter downloads.
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)

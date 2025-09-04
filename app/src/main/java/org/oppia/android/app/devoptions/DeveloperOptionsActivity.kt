@@ -26,6 +26,7 @@ import javax.inject.Inject
 class DeveloperOptionsActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   ForceCrashButtonClickListener,
+  ForceDownloadsButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
@@ -111,5 +112,13 @@ class DeveloperOptionsActivity :
 
   override fun forceCrash() {
     developerOptionsActivityPresenter.forceCrash()
+  }
+
+  override fun forceDownload() {
+    developerOptionsActivityPresenter.forceDownload()
+  }
+  override fun onDestroy() {
+    super.onDestroy()
+    developerOptionsActivityPresenter.handleOnDestroy()
   }
 }

@@ -1,10 +1,14 @@
 package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 
 import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
+import org.oppia.android.app.devoptions.ForceDownloadsButtonClickListener
 import org.oppia.android.app.devoptions.RouteToFeatureFlagsListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
 import org.oppia.android.app.devoptions.RouteToPlatformParametersListener
+import org.oppia.android.domain.devoptions.ForceDownloadParametersController
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 
 /**
@@ -13,8 +17,10 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
  */
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
+  private val forceDownloadsButtonClickListener: ForceDownloadsButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
   private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
+  private val forceDownloadParametersController: ForceDownloadParametersController,
   private val featureFlagsListener: RouteToFeatureFlagsListener,
   private val platformParametersListener: RouteToPlatformParametersListener
 ) : DeveloperOptionsItemViewModel() {
@@ -23,6 +29,9 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
 
+  val isDownloadButtonEnabled: LiveData<Boolean> by lazy {
+    Transformations.map(forceDownloadParametersController.getForceDownloadEnabled()) { it }
+  }
   /** Called when the 'force crash' button is clicked by the user. */
   fun onForceCrashClicked() {
     forceCrashButtonClickListener.forceCrash()
@@ -41,6 +50,10 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   /** Routes the user to [PlatformParametersActivity] for viewing and modifying platform parameters. */
   fun onPlatformParametersClicked() {
     platformParametersListener.routeToPlatformParameters()
+  }
+
+  fun onForceDownloadsButtonClicked() {
+    forceDownloadsButtonClickListener.forceDownload()
   }
 
   /**

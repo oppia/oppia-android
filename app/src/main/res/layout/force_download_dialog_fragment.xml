@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/component_color_shared_item_background_solid_color"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+      android:id="@+id/force_download_title_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      style="@style/Heading2ViewStart"
+      android:text="@string/force_download_dialog_title_text"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+      android:id="@+id/force_download_message_text"
+      style="@style/Subtitle1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:text="@string/force_download_dialog_downloading_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_title_text"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+      android:id="@+id/cancel_button"
+      style="@style/DialogButtonActive"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minWidth="80dp"
+      android:layout_marginTop="24dp"
+      android:layout_marginEnd="16dp"
+      android:text="@string/force_download_dialog_cancel_button_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_message_text"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/restart_button"/>
+
+    <Button
+      android:id="@+id/restart_button"
+      style="@style/DialogButtonActive"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:minWidth="80dp"
+      android:text="@string/force_download_dialog_restart_button_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_message_text"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"/>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
