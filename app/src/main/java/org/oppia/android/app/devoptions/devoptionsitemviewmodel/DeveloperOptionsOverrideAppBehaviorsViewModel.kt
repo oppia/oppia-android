@@ -29,9 +29,11 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
 
+  /** Tracks whether the force download button is currently enabled. */
   val isDownloadButtonEnabled: LiveData<Boolean> by lazy {
     Transformations.map(forceDownloadParametersController.getForceDownloadEnabled()) { it }
   }
+
   /** Called when the 'force crash' button is clicked by the user. */
   fun onForceCrashClicked() {
     forceCrashButtonClickListener.forceCrash()
@@ -52,6 +54,7 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
     platformParametersListener.routeToPlatformParameters()
   }
 
+  /** Handles clicks on the force downloads button by initiating a download. */
   fun onForceDownloadsButtonClicked() {
     forceDownloadsButtonClickListener.forceDownload()
   }

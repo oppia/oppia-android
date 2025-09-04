@@ -8,7 +8,7 @@ import org.oppia.android.app.fragment.InjectableDialogFragment
 import org.oppia.android.domain.devoptions.ForceDownloadParametersController
 import javax.inject.Inject
 
-/** Dialog fragment shown to prompt a full app restart. */
+/** Dialog fragment shown for force downloading remote parameters. */
 class ForceDownloadDialogFragment : InjectableDialogFragment() {
   @Inject
   lateinit var forceDownloadDialogFragmentPresenter:
