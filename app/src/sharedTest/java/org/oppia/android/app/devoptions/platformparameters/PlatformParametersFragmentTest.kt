@@ -98,6 +98,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
@@ -1624,6 +1625,67 @@ class PlatformParametersFragmentTest {
         )
       }
     }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParam_navigateBack_clickSave_showRestartDialogExitApp() {
+    setUpTestApplicationComponent()
+    val exception = assertThrows<SecurityException>() {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParam_clickToolbarSaveButton_showRestartDialogExitApp() {
+    setUpTestApplicationComponent()
+    val exception = assertThrows<SecurityException>() {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
   }
 
   private fun verifyPlatformParameterDisplayName(
