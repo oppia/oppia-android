@@ -102,8 +102,6 @@ class AdminAuthActivityPresenter @Inject constructor(
                   )
                 }
               }
-
-
             activity.finish()
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
