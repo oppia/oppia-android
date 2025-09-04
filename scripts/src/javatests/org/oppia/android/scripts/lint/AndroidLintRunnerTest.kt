@@ -10,9 +10,6 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
-import org.oppia.android.scripts.proto.AndroidLintExemption
-import org.oppia.android.scripts.proto.AndroidLintExemptions
-import org.oppia.android.scripts.proto.LintIssueId
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
