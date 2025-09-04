@@ -905,6 +905,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/save_button_active_background.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/secondary_button_background.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
@@ -1349,6 +1353,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/app_restart_dialog_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/app_version_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
@@ -1708,6 +1716,10 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/options_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/pending_changes_dialog_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
