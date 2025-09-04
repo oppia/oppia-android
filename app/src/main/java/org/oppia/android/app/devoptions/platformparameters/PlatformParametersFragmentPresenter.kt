@@ -407,7 +407,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
   }
 
-  /** Returns the current states of all platform parameters.
+  /**
+   * Returns the current states of all platform parameters.
    *
    * @return a [MutableMap] mapping each [PlatformParameterId] to its current [PlatformParameterValue],
    *   or an empty map if no platform parameter states are recorded.
@@ -417,7 +418,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       return platformParameterViewModel.platformParameterStates.value ?: mutableMapOf()
     }
 
-  /** Returns the platform parameters which have been reset.
+  /**
+   * Returns the platform parameters which have been reset.
    *
    * @return a [MutableMap] mapping each [PlatformParameterId] to its reset [PlatformParameterValue],
    *   or an empty map if no reset parameters are recorded.

@@ -228,7 +228,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     }
   }
 
-  /** Returns the feature flags which have been reset.
+  /**
+   * Returns the feature flags which have been reset.
    *
    * @return a [MutableMap] mapping each [FeatureFlagId] to its boolean reset state,
    *  or an empty map if no reset flags are recorded.
@@ -237,7 +238,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     return featureFlagsViewModel.resetFlags.value?.toMutableMap() ?: mutableMapOf()
   }
 
-  /** Returns the current states of all feature flags.
+  /**
+   * Returns the current states of all feature flags.
    *
    * @return a [Map] mapping each [FeatureFlagId] to its current boolean state,
    *   or an empty map if no feature flag states are recorded.
