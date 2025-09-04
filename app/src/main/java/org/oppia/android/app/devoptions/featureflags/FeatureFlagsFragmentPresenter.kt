@@ -272,8 +272,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
         )
     }
   }
-  
-   /**
+
+  /**
    * Called when [FeatureFlagsFragment] is destroyed.
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
@@ -288,6 +288,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       // so that ProcessState can be reinitialised on the fresh restart.
       exitProcess(0)
     }
+  }
 
   /** Returns the feature flags which have been reset.
    *
