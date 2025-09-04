@@ -454,6 +454,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/drawable/dialog_button_outline.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/drawable/divider.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
