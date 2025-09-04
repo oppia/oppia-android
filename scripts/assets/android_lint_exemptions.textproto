@@ -1883,7 +1883,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/solution_summary.xml"
   lint_issue_id: SELECTABLE_TEXT
-  lint_issue_id: UNKNOWN_ID_IN_LAYOUT
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {

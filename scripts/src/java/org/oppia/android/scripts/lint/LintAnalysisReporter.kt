@@ -166,7 +166,6 @@ class LintAnalysisReporter(private val repoRoot: File) {
       "SyntheticAccessor" to LintIssueId.SYNTHETIC_ACCESSOR,
       "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
       "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
-      "UnknownIdInLayout" to LintIssueId.UNKNOWN_ID_IN_LAYOUT,
       "UnknownNullness" to LintIssueId.UNKNOWN_NULLNESS,
       "UnusedAttribute" to LintIssueId.UNUSED_ATTRIBUTE,
       "UnusedResources" to LintIssueId.UNUSED_RESOURCES,
