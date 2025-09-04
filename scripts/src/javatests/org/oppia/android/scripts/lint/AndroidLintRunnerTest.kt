@@ -789,6 +789,70 @@ class AndroidLintRunnerTest {
       .contains("app/src/main/res")
   }
 
+  @Test
+  fun testAndroidLintAnalyzer_withMissingClass_detectsIssue() {
+    setupProjectWithMissingClass()
+
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    val output = outputStream.toString()
+    assertThat(output).contains("MISSING_CLASS")
+    assertThat(output)
+      .contains("<foo.bar.Baz />")
+    assertThat(output).contains("Line: 5")
+    assertThat(output)
+      .contains(
+        "Class referenced in the layout file, `foo.bar.Baz`," +
+          " was not found in the project or the libraries"
+      )
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+  }
+
+  private fun setupProjectWithMissingClass() {
+    setupProjectStructure()
+
+    createFileWithContent(
+      "app/src/main/res/layout/customview.xml",
+      """
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/newlinear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <foo.bar.Baz />
+        <test.pkg.MyView />
+        <test.pkg.NotView />
+    </LinearLayout>
+    """
+    )
+
+    createFileWithContent(
+      "app/src/test/java/test/pkg/MyView.kt",
+      """
+    package test.pkg
+
+    abstract class MyView : I, android.view.View(null)
+
+    interface I
+    """
+    )
+
+    createFileWithContent(
+      "app/src/test/java/test/pkg/NotView.kt",
+      """
+    package test.pkg
+
+    abstract class NotView : android.app.Fragment()
+    """
+    )
+  }
+
   private fun setupProjectWithUseCompoundDrawables() {
     setupProjectStructure()
     createFileWithContent(
