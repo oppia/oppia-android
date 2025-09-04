@@ -60,9 +60,6 @@ enum class LintSeverity(val displayName: String) {
     fun orderedSeverities(): List<LintSeverity> = values().toList()
   }
 
-  /** Returns true if this severity represents a critical issue. */
-  fun isCritical(): Boolean = this == FATAL || this == ERROR || this == WARNING
-
   /** Returns the ANSI color code for this severity level. */
   fun getColor(): String = when (this) {
     FATAL, ERROR -> RED
@@ -88,8 +85,6 @@ data class LintLocation(
  * @property severity the severity level of the issue
  * @property message the short description of the issue
  * @property category the category to which the issue belongs
- * @property priority the importance level assigned to the issue
- * @property summary the brief summary title of the issue
  * @property explanation the detailed explanation of the issue
  * @property errorLine1 the first line of code that caused the issue
  * @property errorLine2 the second line of code showing context
@@ -100,8 +95,6 @@ data class LintIssue(
   val severity: LintSeverity,
   val message: String,
   val category: String,
-  val priority: String,
-  val summary: String,
   val explanation: String,
   val errorLine1: String,
   val errorLine2: String,
@@ -128,8 +121,19 @@ private data class CacheEntry(
   val issues: List<LintIssue>
 )
 
-/** Reporter class for analyzing XML lint reports and extracting issues. */
-class LintAnalysisReporter {
+private data class ExemptionLocation(
+  val filePath: String,
+  val issueId: String,
+  val lineNumber: Int,
+  val errorLine: String
+)
+
+/**
+ * Reporter class for analyzing XML lint reports and extracting issues.
+ *
+ * @param repoRoot the root directory of the repository
+ */
+class LintAnalysisReporter(private val repoRoot: File) {
 
   companion object {
     private val cache = mutableMapOf<String, CacheEntry>()
@@ -146,42 +150,26 @@ class LintAnalysisReporter {
       "CustomSplashScreen" to LintIssueId.CUSTOM_SPLASH_SCREEN,
       "DuplicateStrings" to LintIssueId.DUPLICATE_STRINGS,
       "GradleOverrides" to LintIssueId.GRADLE_OVERRIDES,
-      "ImpliedQuantity" to LintIssueId.IMPLIED_QUANTITY,
       "InconsistentLayout" to LintIssueId.INCONSISTENT_LAYOUT,
       "KeyboardInaccessibleWidget" to LintIssueId.KEYBOARD_INACCESSIBLE_WIDGET,
-      "LabelFor" to LintIssueId.LABEL_FOR,
       "LockedOrientationActivity" to LintIssueId.LOCKED_ORIENTATION_ACTIVITY,
-      "MergeRootFrame" to LintIssueId.MERGE_ROOT_FRAME,
-      "MissingDefaultResource" to LintIssueId.MISSING_DEFAULT_RESOURCE,
       "MissingTranslation" to LintIssueId.MISSING_TRANSLATION,
       "MissingVersion" to LintIssueId.MISSING_VERSION,
-      "NewApi" to LintIssueId.NEW_API,
       "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
-      "ObsoleteSdkInt" to LintIssueId.OBSOLETE_SDK_INT,
       "OldTargetApi" to LintIssueId.OLD_TARGET_API,
       "Overdraw" to LintIssueId.OVERDRAW,
       "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
       "Registered" to LintIssueId.REGISTERED,
-      "RtlSymmetry" to LintIssueId.RTL_SYMMETRY,
       "SelectableText" to LintIssueId.SELECTABLE_TEXT,
       "StringFormatCount" to LintIssueId.STRING_FORMAT_COUNT,
-      "SupportAnnotationUsage" to LintIssueId.SUPPORT_ANNOTATION_USAGE,
-      "SuspiciousIndentation" to LintIssueId.SUSPICIOUS_INDENTATION,
       "SwitchIntDef" to LintIssueId.SWITCH_INT_DEF,
       "SyntheticAccessor" to LintIssueId.SYNTHETIC_ACCESSOR,
       "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
       "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
-      "Typos" to LintIssueId.TYPOS,
-      "UnknownIdInLayout" to LintIssueId.UNKNOWN_ID_IN_LAYOUT,
       "UnknownNullness" to LintIssueId.UNKNOWN_NULLNESS,
       "UnusedAttribute" to LintIssueId.UNUSED_ATTRIBUTE,
-      "UnusedIds" to LintIssueId.UNUSED_IDS,
       "UnusedResources" to LintIssueId.UNUSED_RESOURCES,
-      "UseAppTint" to LintIssueId.USE_APP_TINT,
       "UseCompoundDrawables" to LintIssueId.USE_COMPOUND_DRAWABLES,
-      "UseRequireInsteadOfGet" to LintIssueId.USE_REQUIRE_INSTEAD_OF_GET,
-      "UselessLeaf" to LintIssueId.USELESS_LEAF,
-      "UselessParent" to LintIssueId.USELESS_PARENT,
       "VectorPath" to LintIssueId.VECTOR_PATH,
       "VectorRaster" to LintIssueId.VECTOR_RASTER
     )
@@ -264,18 +252,16 @@ class LintAnalysisReporter {
    *
    * @param issues List of all lint issues
    * @param exemptions List of exemptions to apply
-   * @param repoRoot Root directory of the repository for relative path calculation
    * @return List of issues after filtering out exemptions
    */
   fun filterExemptedIssues(
     issues: List<LintIssue>,
-    exemptions: List<AndroidLintExemption>,
-    repoRoot: File
+    exemptions: List<AndroidLintExemption>
   ): List<LintIssue> {
     val exemptionMap = buildExemptionMap(exemptions)
 
     return issues.filter { issue ->
-      !isIssueExempted(issue, exemptionMap, repoRoot)
+      !isIssueExempted(issue, exemptionMap)
     }
   }
 
@@ -306,15 +292,14 @@ class LintAnalysisReporter {
    *
    * @param issue The lint issue to check
    * @param exemptionMap Map of file paths to exempted issue IDs
-   * @param repoRoot Root directory of the repository
    * @return true if the issue is exempted, false otherwise
    */
   private fun isIssueExempted(
     issue: LintIssue,
-    exemptionMap: Map<String, Set<LintIssueId>>,
-    repoRoot: File
+    exemptionMap: Map<String, Set<LintIssueId>>
   ): Boolean {
-    val issueIdEnum = getLintIssueIdFromString(issue.id)
+    // Unknown issues cannot be exempted, so they should appear in the report
+    val issueIdEnum = getLintIssueIdFromString(issue.id) ?: return false
 
     return issue.locations.any { location ->
       val relativePath = File(location.file).toRelativeString(repoRoot)
@@ -341,17 +326,10 @@ class LintAnalysisReporter {
    * Maps lint issue ID string to LintIssueId enum.
    *
    * @param issueId The string ID of the lint issue
-   * @return The corresponding LintIssueId enum
-   * @throws IllegalArgumentException if the issue ID is not found in the enum mapping
+   * @return The corresponding LintIssueId enum, or null if not found
    */
-  private fun getLintIssueIdFromString(issueId: String): LintIssueId {
+  private fun getLintIssueIdFromString(issueId: String): LintIssueId? {
     return issueIdMapping[issueId]
-      ?: throw IllegalArgumentException(
-        "Unknown lint issue ID '$issueId' found during analysis. " +
-          "Please add this issue ID to the LintIssueId enum in the proto definition " +
-          "and update the issueIdMapping in LintAnalysisReporter. " +
-          "Available issue IDs: ${issueIdMapping.keys.sorted().joinToString(", ")}"
-      )
   }
 
   /**
@@ -359,21 +337,21 @@ class LintAnalysisReporter {
    *
    * @param issues List of all lint issues
    * @param exemptions List of exemptions
-   * @param repoRoot Root directory of the repository
    * @return Map of file paths to list of redundant issue IDs for that file
    */
   fun findRedundantExemptions(
     issues: List<LintIssue>,
-    exemptions: List<AndroidLintExemption>,
-    repoRoot: File
+    exemptions: List<AndroidLintExemption>
   ): Map<String, List<String>> {
     val actualIssuesMap = mutableMapOf<String, MutableSet<LintIssueId>>()
 
     issues.forEach { issue ->
       val issueIdEnum = getLintIssueIdFromString(issue.id)
-      issue.locations.forEach { location ->
-        val relativePath = File(location.file).toRelativeString(repoRoot)
-        actualIssuesMap.getOrPut(relativePath) { mutableSetOf() }.add(issueIdEnum)
+      if (issueIdEnum != null) {
+        issue.locations.forEach { location ->
+          val relativePath = File(location.file).toRelativeString(repoRoot)
+          actualIssuesMap.getOrPut(relativePath) { mutableSetOf() }.add(issueIdEnum)
+        }
       }
     }
 
@@ -394,23 +372,119 @@ class LintAnalysisReporter {
     return redundantMap.mapValues { (_, issueIds) -> issueIds.sorted() }
   }
 
+  /** Wraps a single paragraph into lines without breaking words. */
+  private fun wrapParagraph(paragraph: String, width: Int): List<String> {
+    val words = paragraph.replace("\n", " ")
+      .split(" ").filter { it.isNotEmpty() }
+    val lines = mutableListOf<String>()
+    var currentLine = StringBuilder()
+
+    for (word in words) {
+      val lineWithWord = if (currentLine.isEmpty()) word else "$currentLine $word"
+      if (lineWithWord.length <= width) {
+        currentLine = StringBuilder(lineWithWord)
+      } else {
+        if (currentLine.isNotEmpty()) {
+          lines.add(currentLine.toString())
+          currentLine = StringBuilder(word)
+        } else {
+          lines.add(word)
+        }
+      }
+    }
+
+    if (currentLine.isNotEmpty()) {
+      lines.add(currentLine.toString())
+    }
+
+    return lines
+  }
+
+  /** Wraps text to specified width with indentation. */
+  private fun wrapText(text: String, width: Int = 70, indent: String = "    "): String {
+    if (text.isBlank()) return text
+
+    return text.split("\n\n").joinToString("\n\n") { paragraph ->
+      wrapParagraph(paragraph, width - indent.length)
+        .joinToString("\n") { "$indent$it" }
+    }
+  }
+
+  /**
+   * Prints a summary of issues grouped by severity.
+   *
+   * @param issues List of issues to summarize
+   * @param redundantExemptionsCount Number of redundant exemptions
+   */
+  private fun printSeveritySummary(
+    issues: List<LintIssue>,
+    redundantExemptionsCount: Int = 0
+  ) {
+    val severityCounts = issues.groupBy { it.severity }.mapValues { it.value.size }
+
+    val hasNonInformationalIssues = severityCounts.any { (severity, count) ->
+      severity != LintSeverity.INFORMATION && count > 0
+    }
+
+    val hasFailureConditions = hasNonInformationalIssues || redundantExemptionsCount > 0
+
+    if (hasFailureConditions) {
+      println("${RED}LINT CHECKS FAILED. Please fix the issues below.$RESET")
+      println()
+    }
+
+    if (redundantExemptionsCount > 0) {
+      println("${YELLOW}Redundant Exemptions: $redundantExemptionsCount$RESET")
+    }
+
+    LintSeverity.orderedSeverities().forEach { severity ->
+      val count = severityCounts[severity] ?: 0
+      if (count > 0) {
+        val color = severity.getColor()
+        println("$color${severity.displayName}: $count$RESET")
+      }
+    }
+
+    val totalIssues = issues.size + redundantExemptionsCount
+    println("${BOLD}Total Issues: $totalIssues$RESET")
+  }
+
   /**
    * Prints the lint issues based on the specified grouping strategy.
    *
-   * @param issues List of LintIssue objects to print
+   * @param filteredIssues List of LintIssue objects to print
    * @param groupByIssueSeverity true to group by issue Severity, false to group by file path
+   * @param redundantExemptions Map of redundant exemptions
    */
-  fun printLintReport(issues: List<LintIssue>, groupByIssueSeverity: Boolean) {
-    printSeveritySummary(issues)
+  fun printLintReport(
+    filteredIssues: List<LintIssue>,
+    groupByIssueSeverity: Boolean,
+    redundantExemptions: Map<String, List<String>> = emptyMap(),
+    reportUnusedEnum: Boolean = true,
+    allIssues: List<LintIssue> = emptyList()
+  ) {
+    val redundantExemptionsCount = redundantExemptions.values.sumOf { it.size }
+
+    printSeveritySummary(filteredIssues, redundantExemptionsCount)
     println()
 
-    if (groupByIssueSeverity) {
-      printGroupedByIssueSeverity(issues)
-    } else {
-      printGroupedByFilePath(issues)
+    println(
+      "If you need additional help to resolve an issue," +
+        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
+    )
+    println()
+
+    if (redundantExemptions.isNotEmpty()) {
+      logRedundantExemptions(redundantExemptions)
     }
 
-    printFinalResult(issues)
+    if (groupByIssueSeverity) {
+      printGroupedByIssueSeverity(filteredIssues)
+    } else {
+      printGroupedByFilePath(filteredIssues)
+    }
+
+    printFinalResult(filteredIssues, redundantExemptionsCount, reportUnusedEnum, allIssues)
   }
 
   /**
@@ -443,35 +517,50 @@ class LintAnalysisReporter {
     redundantExemptions: Map<String, List<String>>,
     exemptionFilePath: String = EXEMPTIONS_FILE_PATH
   ) {
-    if (redundantExemptions.isNotEmpty()) {
-      println("${YELLOW}Redundant exemptions (no corresponding lint issues found):$RESET")
-      println("Please remove them from $exemptionFilePath")
-      println()
+    val totalCount = redundantExemptions.values.sumOf { it.size }
+    if (totalCount == 0) return
 
-      redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
-        println("${BOLD}File: $filePath$RESET")
-        issueIds.forEach { issueId ->
-          println("  - $issueId")
+    val exemptionLocations = parseExemptionLocations(exemptionFilePath)
+
+    println("\n${"=".repeat(GROUP_SEPARATOR_LENGTH)}")
+    println(
+      "${BOLD}FILE: $exemptionFilePath" +
+        " ($totalCount ${if (totalCount == 1) "issue" else "issues"})$RESET"
+    )
+    println("=".repeat(GROUP_SEPARATOR_LENGTH))
+
+    var issueCounter = 0
+    redundantExemptions.toSortedMap().forEach { (filePath, issueIds) ->
+      issueIds.forEach { issueId ->
+        issueCounter++
+        println(
+          "\n${BOLD}Issue $issueCounter of $totalCount:" +
+            " REDUNDANT_EXEMPTION$RESET"
+        )
+        println("  ${YELLOW}Severity: Redundant Exemption$RESET")
+
+        val locationKey = "$filePath:$issueId"
+        val location = exemptionLocations[locationKey]
+
+        if (location != null) {
+          println("  Line: ${location.lineNumber}")
+          println("  Error Line: ${location.errorLine}")
         }
-        println()
+
+        println("  Message: Redundant exemption found. Please remove it from the file.")
+        println("  Explanation:")
+        println(
+          wrapText(
+            "In $filePath the ${toUpperSnakeCase(issueId)} exemption is redundant" +
+              " and can be removed since there are no corresponding lint issues."
+          )
+        )
+
+        if (issueCounter < totalCount) {
+          println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+        }
       }
     }
-  }
-
-  /** Prints a summary of issues grouped by severity. */
-  private fun printSeveritySummary(issues: List<LintIssue>) {
-    val severityCounts = issues.groupBy { it.severity }.mapValues { it.value.size }
-
-    LintSeverity.orderedSeverities().forEach { severity ->
-      val count = severityCounts[severity] ?: 0
-      if (count > 0) {
-        val color = severity.getColor()
-        println("$color${severity.displayName}: $count$RESET")
-      }
-    }
-
-    val totalIssues = issues.size
-    println("${BOLD}Total Issues: $totalIssues$RESET")
   }
 
   /** Prints issues grouped by severity level. */
@@ -504,10 +593,13 @@ class LintAnalysisReporter {
       )
     )
 
-    sortedIssues.forEach { issue ->
+    sortedIssues.forEachIndexed { index, issue ->
       val falsePositive = findMatchingFalsePositive(issue)
 
-      println("\n$BOLD Issue ID: $issueId$RESET")
+      println(
+        "\n$BOLD Issue ${index + 1} of ${sortedIssues.size}:" +
+          " ${toUpperSnakeCase(issueId)} (Category: ${issue.category})$RESET"
+      )
       println("  ${colorizeSeverity(issue.severity)}")
 
       if (issue.locations.size == 1) {
@@ -521,8 +613,8 @@ class LintAnalysisReporter {
         val sortedLocations = issue.locations.sortedWith(
           compareBy({ it.file }, { it.lineNumber.toIntOrNull() ?: 0 })
         )
-        sortedLocations.forEachIndexed { index, location ->
-          println("    ${index + 1}. File: ${location.file}")
+        sortedLocations.forEachIndexed { locationIndex, location ->
+          println("    ${locationIndex + 1}. File: ${location.file}")
           if (location.lineNumber.isNotBlank()) {
             println("       Line: ${location.lineNumber}")
           }
@@ -534,7 +626,9 @@ class LintAnalysisReporter {
       } else {
         printIssueBasicInfo(issue)
       }
-      println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+      if (index != sortedIssues.lastIndex) {
+        println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+      }
     }
   }
 
@@ -555,7 +649,10 @@ class LintAnalysisReporter {
       val issueLocationPairs = fileToIssueLocationMap[filePath] ?: emptyList()
 
       println("\n${"=".repeat(GROUP_SEPARATOR_LENGTH)}")
-      println("${BOLD}FILE: $filePath (${issueLocationPairs.size} issues)$RESET")
+      println(
+        "${BOLD}FILE: $filePath (${issueLocationPairs.size}" +
+          " ${if (issueLocationPairs.size == 1) "issue" else "issues"})$RESET"
+      )
       println("=".repeat(GROUP_SEPARATOR_LENGTH))
 
       val sortedByLine = issueLocationPairs.sortedWith(
@@ -565,9 +662,12 @@ class LintAnalysisReporter {
       )
 
       sortedByLine.forEachIndexed { index, (issue, location) ->
-        val falsePositive = findMatchingFalsePositive(issue)
 
-        println("\n$BOLD Issue #${index + 1}: ${issue.id}$RESET")
+        val falsePositive = findMatchingFalsePositive(issue)
+        println(
+          "\n$BOLD Issue ${index + 1} of ${sortedByLine.size}:" +
+            " ${toUpperSnakeCase(issue.id)} (Category: ${issue.category})$RESET"
+        )
         if (falsePositive != null) {
           println("  ${colorizeSeverity(issue.severity)} (FALSE POSITIVE)")
         } else {
@@ -582,7 +682,9 @@ class LintAnalysisReporter {
         } else {
           printIssueBasicInfo(issue, indent = "  ")
         }
-        println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+        if (index != sortedByLine.lastIndex) {
+          println("-".repeat(ISSUE_SEPARATOR_LENGTH))
+        }
       }
     }
   }
@@ -600,11 +702,13 @@ class LintAnalysisReporter {
       }
     }
 
-    listOf(
-      "Message" to falsePositive.message,
-      "Workaround" to falsePositive.workaroundMessage
-    ).forEach { (label, value) ->
-      if (value.isNotBlank()) println("$indent$label: $value")
+    if (falsePositive.message.isNotBlank()) {
+      println("${indent}Message: ${falsePositive.message}")
+    }
+
+    if (falsePositive.workaroundMessage.isNotBlank()) {
+      println("${indent}Workaround:")
+      println(wrapText(falsePositive.workaroundMessage, indent = "$indent    "))
     }
   }
 
@@ -617,14 +721,11 @@ class LintAnalysisReporter {
         println("${indent.padEnd(indent.length + "Error Line: ".length)}${issue.errorLine2}")
       }
     }
-    listOf(
-      "Category" to issue.category,
-      "Priority" to issue.priority,
-      "Summary" to issue.summary,
-      "Message" to issue.message,
-      "Explanation" to issue.explanation
-    ).forEach { (label, value) ->
-      if (value.isNotBlank()) println("$indent$label: $value")
+    println("${indent}Message: ${issue.message}")
+
+    if (issue.explanation.isNotBlank()) {
+      println("${indent}Explanation:")
+      println(wrapText(issue.explanation, indent = "$indent    "))
     }
   }
 
@@ -635,16 +736,38 @@ class LintAnalysisReporter {
   }
 
   /** Prints the final result summary. */
-  private fun printFinalResult(issues: List<LintIssue>) {
-    val criticalIssues = issues.filter { it.severity.isCritical() }
+  private fun printFinalResult(
+    issues: List<LintIssue>,
+    redundantExemptionsCount: Int = 0,
+    reportUnusedEnum: Boolean = true,
+    allIssues: List<LintIssue> = emptyList()
+  ) {
+    val nonInformationalIssues = issues.filter { it.severity != LintSeverity.INFORMATION }
+    val unusedMappings = getUnusedEnumMappings(allIssues)
 
-    val hasInternalLintIssues = criticalIssues.any {
+    val hasInternalLintIssues = nonInformationalIssues.any {
       it.id == issueIdToString[LintIssueId.LINT_ERROR]
     }
 
+    val hasFailureConditions = nonInformationalIssues.isNotEmpty() || redundantExemptionsCount > 0
+
     println("\n" + "=".repeat(ISSUE_SEPARATOR_LENGTH))
+    if (unusedMappings.isNotEmpty() && reportUnusedEnum) {
+      println("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
+      println(
+        "The following issue IDs are defined in issueIdMapping " +
+          "but no corresponding lint issues were found."
+      )
+      println("Please remove them from the LintIssueId enum and issueIdMapping:")
+      println()
+      unusedMappings.sorted().forEach { issueId ->
+        println("  - $issueId -> ${toUpperSnakeCase(issueId)}")
+      }
+      println()
+      error("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    }
     when {
-      criticalIssues.isEmpty() -> {
+      !hasFailureConditions -> {
         println("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
       }
       hasInternalLintIssues -> {
@@ -654,6 +777,11 @@ class LintAnalysisReporter {
         error("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
       }
     }
+  }
+
+  private fun getUnusedEnumMappings(issues: List<LintIssue>): List<String> {
+    val usedIssueIds = issues.map { it.id }.toSet()
+    return issueIdMapping.keys.filter { it !in usedIssueIds && it != "LintError" }
   }
 
   /** Extracts all locations from the issue's location elements. */
@@ -676,6 +804,18 @@ class LintAnalysisReporter {
     val digest = MessageDigest.getInstance("SHA-1")
     val hashBytes = digest.digest(fileBytes)
     return hashBytes.joinToString("") { "%02x".format(it) }
+  }
+
+  /**
+   * Converts PascalCase string to UPPER_SNAKE_CASE.
+   *
+   * @param input the input string to convert
+   * @return the converted UPPER_SNAKE_CASE string
+   */
+  private fun toUpperSnakeCase(input: String): String {
+    return input
+      .replace(Regex("([a-z])([A-Z])"), "$1_$2")
+      .uppercase()
   }
 
   /**
@@ -706,12 +846,70 @@ class LintAnalysisReporter {
       severity = severity,
       message = issueElement.getAttribute("message"),
       category = issueElement.getAttribute("category"),
-      priority = issueElement.getAttribute("priority"),
-      summary = issueElement.getAttribute("summary"),
       explanation = issueElement.getAttribute("explanation"),
       errorLine1 = issueElement.getAttribute("errorLine1"),
       errorLine2 = issueElement.getAttribute("errorLine2"),
       locations = locations
     )
+  }
+
+  /**
+   * Parses the exemption text proto file to extract line numbers and error lines for exemptions.
+   *
+   * @param exemptionFilePath Path to the exemption text proto file
+   * @return Map of file path + issue ID to ExemptionLocation
+   */
+  private fun parseExemptionLocations(exemptionFilePath: String): Map<String, ExemptionLocation> {
+    val exemptionFile = File(repoRoot, exemptionFilePath)
+    if (!exemptionFile.exists()) {
+      return emptyMap()
+    }
+
+    val locations = mutableMapOf<String, ExemptionLocation>()
+
+    try {
+      val lines = exemptionFile.readLines()
+      var currentFilePath = ""
+      var currentLineNumber: Int
+
+      lines.forEachIndexed { index, line ->
+        currentLineNumber = index + 1
+        val trimmedLine = line.trim()
+
+        // Check for exempted_file_path
+        if (trimmedLine.contains("exempted_file_path:")) {
+          val pathMatch = Regex("""exempted_file_path:\s*"([^"]+)"""").find(trimmedLine)
+          if (pathMatch != null) {
+            currentFilePath = pathMatch.groupValues[1]
+          }
+        }
+
+        // Check for lint_issue_id
+        if (trimmedLine.contains("lint_issue_id:")) {
+          val issueMatch = Regex("""lint_issue_id:\s*(\w+)""").find(trimmedLine)
+          if (issueMatch != null && currentFilePath.isNotEmpty()) {
+            val issueId = issueMatch.groupValues[1]
+            val issueIdEnum = try {
+              LintIssueId.valueOf(issueId)
+            } catch (e: IllegalArgumentException) {
+              null
+            }
+            val issueIdString = issueIdEnum?.let { issueIdToString[it] } ?: issueId
+            val key = "$currentFilePath:$issueIdString"
+
+            locations[key] = ExemptionLocation(
+              filePath = currentFilePath,
+              issueId = issueIdString,
+              lineNumber = currentLineNumber,
+              errorLine = trimmedLine
+            )
+          }
+        }
+      }
+    } catch (e: Exception) {
+      return emptyMap()
+    }
+
+    return locations
   }
 }
