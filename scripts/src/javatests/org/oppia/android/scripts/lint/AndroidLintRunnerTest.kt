@@ -1,12 +1,14 @@
 package org.oppia.android.scripts.lint
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.CoroutineScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
+import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
 import org.oppia.android.scripts.proto.AndroidLintExemption
 import org.oppia.android.scripts.proto.AndroidLintExemptions
@@ -41,6 +43,10 @@ class AndroidLintRunnerTest {
   private lateinit var bazelBinFolder: File
   private lateinit var projectDescriptionFile: File
   private lateinit var kotlinVersion: String
+  private var fakeTime = 0L
+  private val fakeTimeProvider = { fakeTime }
+  private val scriptBgDispatcher by lazy { ScriptBackgroundCoroutineDispatcher() }
+  private lateinit var elapsedTimeDisplayer: ElapsedTimeDisplayer
 
   companion object {
     private const val JAVA_VERSION = "11.0.6"
@@ -76,11 +82,17 @@ class AndroidLintRunnerTest {
       reportUnusedEnum = false
     )
     projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
+    fakeTime = 0L
+    elapsedTimeDisplayer = ElapsedTimeDisplayer(
+      CoroutineScope(scriptBgDispatcher),
+      fakeTimeProvider
+    )
   }
 
   @After
   fun tearDown() {
     System.setOut(originalOut)
+    scriptBgDispatcher.close()
   }
 
   @Test
@@ -103,6 +115,58 @@ class AndroidLintRunnerTest {
     }
 
     assertThat(exception).hasMessageThat().contains("Repository root path does not exist")
+  }
+
+  @Test
+  fun testStopTimer_afterRunning_returnsCorrectElapsedTime() {
+    elapsedTimeDisplayer.start()
+    fakeTime += 2000L // Simulate 2 seconds passing
+
+    val elapsedTime = elapsedTimeDisplayer.stop()
+
+    assertThat(elapsedTime).isEqualTo(2000L)
+  }
+
+  @Test
+  fun testStopTimer_withNoTimeAdvance_returnsZero() {
+    elapsedTimeDisplayer.start()
+
+    val elapsedTime = elapsedTimeDisplayer.stop()
+
+    assertThat(elapsedTime).isEqualTo(0L)
+  }
+
+  @Test
+  fun testStartTimer_calledMultipleTimes_onlyStartsOnce() {
+    elapsedTimeDisplayer.start()
+    elapsedTimeDisplayer.start() // Should be ignored
+
+    fakeTime += 1000L
+    val elapsedTime = elapsedTimeDisplayer.stop()
+
+    assertThat(elapsedTime).isEqualTo(1000L)
+  }
+
+  @Test
+  fun testStopTimer_withVariousElapsedTimes_returnsCorrectDuration() {
+    elapsedTimeDisplayer.start()
+
+    // Test 1 second
+    fakeTime += 1000L
+    var elapsed = elapsedTimeDisplayer.stop()
+    assertThat(elapsed).isEqualTo(1000L)
+
+    // Test 1 minute 1 second
+    elapsedTimeDisplayer.start()
+    fakeTime += 61000L
+    elapsed = elapsedTimeDisplayer.stop()
+    assertThat(elapsed).isEqualTo(61000L)
+
+    // Test 1 hour 1 minute 1 second
+    elapsedTimeDisplayer.start()
+    fakeTime += 3661000L
+    elapsed = elapsedTimeDisplayer.stop()
+    assertThat(elapsed).isEqualTo(3661000L)
   }
 
   @Test
@@ -172,11 +236,19 @@ class AndroidLintRunnerTest {
       "${tempFolder.root}/$pathToProtoBinary"
     )
 
+    val suppressLintIssues = setOf(
+      "MissingTranslation",
+      "GradleOverrides",
+      "SyntheticAccessor",
+      "DuplicateStrings",
+    )
+
     val result = lintRunner.prepareLintArguments(
       jdkHome,
       JAVA_VERSION,
       buildSdkVersion,
-      kotlinVersion
+      kotlinVersion,
+      suppressLintIssues
     )
 
     val expectedArguments = listOf(
@@ -192,6 +264,7 @@ class AndroidLintRunnerTest {
       "--compile-sdk-version", buildSdkVersion,
       "--kotlin-language-level", kotlinVersion,
       "--java-language-level", JAVA_VERSION,
+      "--disable", suppressLintIssues.joinToString(","),
       "--project", projectFile.absolutePath,
       "--xml", reportFile.absolutePath
     )
@@ -215,7 +288,8 @@ class AndroidLintRunnerTest {
       jdkHome,
       JAVA_VERSION,
       customBuildSdk,
-      kotlinVersion
+      kotlinVersion,
+      emptySet()
     )
 
     assertThat(result).asList().contains("--compile-sdk-version")
@@ -241,7 +315,13 @@ class AndroidLintRunnerTest {
       "${tempFolder.root}/$pathToProtoBinary"
     )
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+    lintRunner.prepareLintArguments(
+      tempJdkDir,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion,
+      emptySet()
+    )
 
     assertThat(releaseFile.readText()).isEqualTo(originalContent)
   }
@@ -261,7 +341,13 @@ class AndroidLintRunnerTest {
       "${tempFolder.root}/$pathToProtoBinary"
     )
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+    lintRunner.prepareLintArguments(
+      tempJdkDir,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion,
+      emptySet()
+    )
 
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isTrue()
@@ -278,7 +364,13 @@ class AndroidLintRunnerTest {
     removeAllExemptions()
     val lintRunner = createLintRunner()
     lintRunner.runLint(
-      lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+      lintRunner.prepareLintArguments(
+        jdkHome,
+        JAVA_VERSION,
+        buildSdkVersion,
+        kotlinVersion,
+        emptySet()
+      )
     )
 
     val output = outputStream.toString()
@@ -291,7 +383,13 @@ class AndroidLintRunnerTest {
     val lintRunner = createLintRunner()
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+        lintRunner.prepareLintArguments(
+          jdkHome,
+          JAVA_VERSION,
+          buildSdkVersion,
+          kotlinVersion,
+          emptySet()
+        )
       )
     }
     val reportFile = File(workingDirectory, "lint-report.xml")
@@ -339,7 +437,13 @@ class AndroidLintRunnerTest {
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+        lintRunner.prepareLintArguments(
+          jdkHome,
+          JAVA_VERSION,
+          buildSdkVersion,
+          kotlinVersion,
+          emptySet()
+        )
       )
     }
 
@@ -381,7 +485,13 @@ class AndroidLintRunnerTest {
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+        lintRunner.prepareLintArguments(
+          jdkHome,
+          JAVA_VERSION,
+          buildSdkVersion,
+          kotlinVersion,
+          emptySet()
+        )
       )
     }
     assertThat(exception.message).contains("Lint analysis failed with exit code 5")
@@ -404,7 +514,13 @@ class AndroidLintRunnerTest {
 
     val exception = assertThrows<IllegalStateException> {
       lintRunner.runLint(
-        lintRunner.prepareLintArguments(jdkHome, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+        lintRunner.prepareLintArguments(
+          jdkHome,
+          JAVA_VERSION,
+          buildSdkVersion,
+          kotlinVersion,
+          emptySet()
+        )
       )
     }
 
@@ -454,7 +570,13 @@ class AndroidLintRunnerTest {
     val releaseFile = File(tempJdkDir, "release")
     assertThat(releaseFile.exists()).isFalse()
 
-    lintRunner.prepareLintArguments(tempJdkDir, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+    lintRunner.prepareLintArguments(
+      tempJdkDir,
+      JAVA_VERSION,
+      buildSdkVersion,
+      kotlinVersion,
+      emptySet()
+    )
 
     // Verify release file was created
     assertThat(releaseFile.exists()).isTrue()
@@ -475,30 +597,27 @@ class AndroidLintRunnerTest {
     )
 
     val exception = assertThrows<IllegalArgumentException> {
-      lintRunner.prepareLintArguments(nonExistentJdk, JAVA_VERSION, buildSdkVersion, kotlinVersion)
+      lintRunner.prepareLintArguments(
+        nonExistentJdk,
+        JAVA_VERSION,
+        buildSdkVersion,
+        kotlinVersion,
+        emptySet()
+      )
     }
 
     assertThat(exception.message).contains("JDK home path does not exist or is not a directory")
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withDuplicateStringResources_detectsIssue() {
+  fun testAndroidLintAnalyzer_withDuplicateStringResources_issueIsSuppressed() {
     setupProjectWithDuplicateStringIssue()
 
-    val exception = assertThrows<IllegalStateException> {
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
-    }
-    assertThat(exception.message)
-      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
-    assertThat(output).contains("DUPLICATE_STRINGS")
-    assertThat(output)
-      .contains("<string name=\"duplicate_value\">Same text</string>")
-    assertThat(output).contains("Line: 5")
-    val projectDescriptionContent = projectDescriptionFile.readText()
-    assertThat(projectDescriptionContent)
-      .contains("app/src/main/res")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(output).doesNotContain("DUPLICATE_STRINGS")
   }
 
   @Test
@@ -658,35 +777,15 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withSyntheticAccessor_detectsIssue() {
+  fun testAndroidLintAnalyzer_withSyntheticAccessor_issueIsSuppressed() {
     setupProjectWithSyntheticAccessor()
 
-    val exception = assertThrows<IllegalStateException> {
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
-    }
-    assertThat(exception.message)
-      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
-    assertThat(output).contains("SYNTHETIC_ACCESSOR")
-    assertThat(output)
-      .contains("hiddenMethod()")
-    assertThat(output)
-      .contains("AccessTest2()")
-    assertThat(output).contains("Line: 9")
-    assertThat(output).contains("Line: 11")
-    assertThat(output)
-      .contains(
-        "Access to `private` method `hiddenMethod` of class " +
-          "`AccessTest2` requires synthetic accessor"
-      )
-    assertThat(output)
-      .contains(
-        "Access to `private` constructor of class `AccessTest2` requires synthetic accessor"
-      )
-    val projectDescriptionContent = projectDescriptionFile.readText()
-    assertThat(projectDescriptionContent)
-      .contains("app/src/main/java/org/oppia/android/app/AccessTest.kt")
+
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(output).doesNotContain("SYNTHETIC_ACCESSOR")
   }
 
   @Test
@@ -1220,6 +1319,10 @@ class AndroidLintRunnerTest {
       </resources>
       """
     )
+    exemptRedundantIssue(
+      LintIssueId.UNUSED_RESOURCES,
+      "app/src/main/res/values/strings.xml"
+    )
   }
 
   private fun createProjectDescriptionFile(): File {
@@ -1335,10 +1438,6 @@ class AndroidLintRunnerTest {
     </application>
     </manifest>
       """.trimIndent()
-    )
-    exemptRedundantIssue(
-      LintIssueId.GRADLE_OVERRIDES,
-      "$moduleName/src/main/AndroidManifest.xml"
     )
   }
 
