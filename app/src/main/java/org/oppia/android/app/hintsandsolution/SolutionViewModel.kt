@@ -1,6 +1,5 @@
 package org.oppia.android.app.hintsandsolution
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ObservableBoolean
 import org.oppia.android.app.model.Interaction
 import org.oppia.android.app.model.InteractionObject
@@ -240,8 +239,7 @@ class SolutionViewModel private constructor(
   /** Application-injectable factory to create [SolutionViewModel]s (see [create]). */
   class Factory @Inject constructor(
     private val appLanguageResourceHandler: AppLanguageResourceHandler,
-    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
-    private val activity: AppCompatActivity
+    private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil
   ) {
     /**
      * Returns a new [SolutionViewModel] with the specified summary HTML text, correct answer,
