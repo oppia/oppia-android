@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.AdminAuthActivityParams
 import org.oppia.android.app.model.ScreenName.ADMIN_AUTH_ACTIVITY
 import org.oppia.android.util.extensions.putProtoExtra
@@ -12,7 +12,7 @@ import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decora
 import javax.inject.Inject
 
 /** Activity that authenticates by checking for admin's PIN. */
-class AdminAuthActivity : InjectableAutoLocalizedAppCompatActivity() {
+class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
   @Inject
   lateinit var adminAuthFragmentPresenter: AdminAuthActivityPresenter
 
