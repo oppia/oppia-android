@@ -888,6 +888,7 @@ class ExplorationProgressController @Inject constructor(
       check(explorationProgress.playStage != SUBMITTING_ANSWER) {
         "Cannot navigate to a previous state if an answer submission is pending."
       }
+
       hintHandler.navigateToPreviousState()
       recomputeCurrentFlashbackStateAndNotifySync(stateName)
     }
@@ -905,6 +906,10 @@ class ExplorationProgressController @Inject constructor(
       }
       check(explorationProgress.playStage != SUBMITTING_ANSWER) {
         "Cannot navigate to a next state if an answer submission is pending."
+      }
+
+      if (!explorationProgress.stateDeck.isFlashbackViewed()) {
+        explorationProgress.stateDeck.setFlashbackIsViewed()
       }
 
       if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {

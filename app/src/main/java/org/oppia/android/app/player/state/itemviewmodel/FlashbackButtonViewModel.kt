@@ -6,8 +6,8 @@ import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 class FlashbackButtonViewModel(
   val hasConversationView: Boolean,
   val isSplitView: Boolean,
-  val flashbackButtonListener: FlashbackButtonListener,
-  val flashbackStateName: String
+  private val flashbackButtonListener: FlashbackButtonListener,
+  private val flashbackStateName: String
 ) : StateItemViewModel(ViewType.FLASHBACK_BUTTON) {
 
   /** Called when the 'See example' button is clicked. */

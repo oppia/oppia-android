@@ -37,6 +37,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Point2d
@@ -3362,6 +3363,8 @@ class ExplorationProgressControllerTest {
     // Verify answer and response contains the flashback state name.
     assertThat(answerAndResponse.stateNameToRevisit)
       .isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to false.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(false)
   }
 
   @Test
@@ -3408,13 +3411,13 @@ class ExplorationProgressControllerTest {
     navigateToPrototypeRatioInputState()
 
     // Submit a wrong answer.
-    val ephemeralState = submitRatioInputAnswer(
+    val ephemeralState1 = submitRatioInputAnswer(
       RatioExpression.newBuilder().apply {
         addAllRatioComponent(listOf(4, 7))
       }.build()
     )
     // Access the first answer and response in the list.
-    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+    val answerAndResponse = ephemeralState1.pendingState.wrongAnswerList[0]
 
     // Trigger flashback dialog and click Continue button.
     val ephemeralState2 =
@@ -3424,6 +3427,7 @@ class ExplorationProgressControllerTest {
     assertThat(ephemeralState2.stateTypeCase).isEqualTo(COMPLETED_STATE)
     // Verify flashback state is true in the returned EphemeralState.
     assertThat(ephemeralState2.flashbackState).isEqualTo(true)
+
     // Verify linked Skill Id of this state.
     assertThat(ephemeralState2.state.linkedSkillId).isEqualTo("test_skill_id_0")
   }
@@ -3464,6 +3468,14 @@ class ExplorationProgressControllerTest {
 
     // Verify that there is exactly one wrong answer.
     assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit).isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to true.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(true)
   }
 
   @Test
@@ -3487,6 +3499,58 @@ class ExplorationProgressControllerTest {
     // Verify returned ephemeral state has latest pending state.
     assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
     assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
+  }
+
+  @Test
+  fun testSubmitAnswer_forMultipleChoiceInteraction_verifyUserAnswer() {
+    restartExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // Third state: Multiple choice. Correct answer: Eagle (second third choice).
+    submitMultipleChoiceAnswer(choiceIndex = 2)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates. The submitted answer should have a textual version
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    val answerAndFeedback = ephemeralState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase)
+      .isEqualTo(UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER)
+
+    // Verify the selected choice index is 2 (Eagle).
+    assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList)
+      .containsExactly(2)
+  }
+
+  @Test
+  fun testSubmitAnswer_forItemSelectionInteraction_verifyUserAnswer() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+
+    // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+    submitItemSelectionAnswer(0, 3, 2)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates.
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    val answerAndFeedback = ephemeralState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase)
+      .isEqualTo(UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER)
+
+    // Verify the selected choice indices are 0, 1, 2.
+    assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList)
+      .containsExactly(0, 3, 2)
   }
 
   private fun navigateToFlashbackState() {
@@ -3637,8 +3701,8 @@ class ExplorationProgressControllerTest {
     return submitAnswer(createMultipleChoiceAnswer(choiceIndex))
   }
 
-  private fun submitItemSelectionAnswer(vararg contentIds: String): EphemeralState {
-    return submitAnswer(createItemSelectionAnswer(contentIds.toList()))
+  private fun submitItemSelectionAnswer(vararg positions: Int): EphemeralState {
+    return submitAnswer(createItemSelectionAnswer(positions.toList()))
   }
 
   private fun submitNumericInputAnswer(numericAnswer: Double): EphemeralState {
@@ -3755,12 +3819,12 @@ class ExplorationProgressControllerTest {
 
   private fun submitPrototypeState4Answer(): EphemeralState {
     // Fourth state: Item selection (radio buttons). Correct answer: Green (first choice).
-    return submitItemSelectionAnswer("ca_choices_0")
+    return submitItemSelectionAnswer(0)
   }
 
   private fun submitPrototypeState5Answer(): EphemeralState {
     // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
-    return submitItemSelectionAnswer("ca_choices_0", "ca_choices_3", "ca_choices_2")
+    return submitItemSelectionAnswer(0, 3, 2)
   }
 
   private fun submitPrototypeState6Answer(): EphemeralState {
@@ -3882,15 +3946,16 @@ class ExplorationProgressControllerTest {
   }
 
   private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
-    return convertToUserAnswer(
+    return convertToUserAnswerForMultipleChoice(
       InteractionObject.newBuilder().apply {
         nonNegativeInt = choiceIndex
       }.build()
     )
   }
 
-  private fun createItemSelectionAnswer(contentIds: List<String>): UserAnswer {
-    return convertToUserAnswer(
+  private fun createItemSelectionAnswer(positions: List<Int>): UserAnswer {
+    val contentIds = positions.map { pos -> "ca_choices_$pos" }
+    return convertToUserAnswerForItemSelection(
       InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
           addAllContentIds(
@@ -3899,7 +3964,8 @@ class ExplorationProgressControllerTest {
             }
           )
         }.build()
-      }.build()
+      }.build(),
+      positions
     )
   }
 
@@ -3968,6 +4034,31 @@ class ExplorationProgressControllerTest {
 
   private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
+  }
+
+  private fun convertToUserAnswerForMultipleChoice(answer: InteractionObject): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(answer)
+      .setItemSelectionAnswer(
+        ItemSelectionAnswerState.newBuilder()
+          .addAllSelectedIndexes(listOf(answer.nonNegativeInt))
+          .build()
+      )
+      .build()
+  }
+
+  private fun convertToUserAnswerForItemSelection(
+    answer: InteractionObject,
+    positions: List<Int>
+  ): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(answer)
+      .setItemSelectionAnswer(
+        ItemSelectionAnswerState.newBuilder()
+          .addAllSelectedIndexes(positions)
+          .build()
+      )
+      .build()
   }
 
   private fun forceDefaultLocale(locale: Locale) {

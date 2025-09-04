@@ -25,6 +25,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.IntroActivityParams
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -98,17 +100,17 @@ import javax.inject.Singleton
 )
 
 class IntroActivityTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
+  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
-  @Inject
-  lateinit var context: Context
-
-  @Inject
-  lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
+  private val params = IntroActivityParams.newBuilder()
+    .setProfileNickname("John")
+    .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+    .build()
 
   @Before
   fun setUp() {
@@ -124,7 +126,7 @@ class IntroActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      IntroActivity.createIntroActivity(context)
+      IntroActivity.createIntroActivity(context, params, testProfileId)
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.INTRO_ACTIVITY)
@@ -132,7 +134,7 @@ class IntroActivityTest {
 
   @Test
   fun testLearnerIntroActivity_hasCorrectActivityLabel() {
-    launchOnboardingLearnerIntroActivity().use { scenario ->
+    launchOnboardingLearnerIntroActivity(params, testProfileId).use { scenario ->
       lateinit var title: CharSequence
       scenario?.onActivity { activity -> title = activity.title }
 
@@ -143,10 +145,13 @@ class IntroActivityTest {
     }
   }
 
-  private fun launchOnboardingLearnerIntroActivity():
+  private fun launchOnboardingLearnerIntroActivity(
+    params: IntroActivityParams,
+    profileId: ProfileId
+  ):
     ActivityScenario<IntroActivity>? {
       val scenario = ActivityScenario.launch<IntroActivity>(
-        IntroActivity.createIntroActivity(context)
+        IntroActivity.createIntroActivity(context, params, profileId)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario

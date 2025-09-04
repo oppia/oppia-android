@@ -79,6 +79,7 @@ class AndroidLintRunnerTest {
       workingDirectory = workingDirectory,
       exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
       repoRoot = tempFolder.root,
+      reportUnusedEnum = false
     )
     projectDescriptionFile = File(workingDirectory, "lint-project-description.xml")
     fakeTime = 0L
@@ -360,6 +361,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupProjectStructure()
+    removeAllExemptions()
     val lintRunner = createLintRunner()
     lintRunner.runLint(
       lintRunner.prepareLintArguments(
@@ -390,11 +392,14 @@ class AndroidLintRunnerTest {
         )
       )
     }
-
     val reportFile = File(workingDirectory, "lint-report.xml")
     assertThat(reportFile.exists()).isTrue()
     assertThat(exception.message).contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
     val output = outputStream.toString()
+    assertThat(output).contains(
+      "If you need additional help to resolve an issue," +
+        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
+    )
     assertThat(output).contains("MissingTranslation")
   }
 
@@ -503,7 +508,8 @@ class AndroidLintRunnerTest {
       reportFile,
       projectDescriptionFile,
       tempFolder.root,
-      "${tempFolder.root}/$pathToProtoBinary"
+      "${tempFolder.root}/$pathToProtoBinary",
+      reportUnusedEnum = false
     )
 
     val exception = assertThrows<IllegalStateException> {
@@ -611,7 +617,7 @@ class AndroidLintRunnerTest {
 
     val output = outputStream.toString()
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
-    assertThat(output).doesNotContain("DuplicateStrings")
+    assertThat(output).doesNotContain("DUPLICATE_STRINGS")
   }
 
   @Test
@@ -625,7 +631,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("UselessParent")
+    assertThat(output).contains("USELESS_PARENT")
     assertThat(output)
       .contains("<RelativeLayout")
     assertThat(output).contains("Line: 5")
@@ -647,7 +653,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("UselessLeaf")
+    assertThat(output).contains("USELESS_LEAF")
     assertThat(output)
       .contains("<FrameLayout")
     assertThat(output).contains("Line: 5")
@@ -665,19 +671,22 @@ class AndroidLintRunnerTest {
   fun testAndroidLintAnalyzer_withRtlHardCoded_detectsIssue() {
     setupProjectWithRtlHardCoded()
 
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
-    val output = reportfile.readText()
-    assertThat(output).contains("RtlHardcoded")
+    val output = outputStream.toString()
+    assertThat(output).contains("RTL_HARDCODED")
     assertThat(output)
-      .contains("android:layout_alignParentRight=&quot;true&quot; />")
-    assertThat(output).contains("line=\"8\"")
+      .contains("<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"")
+    assertThat(output).contains("Line: 8")
     assertThat(output)
-      .contains("Using left/right instead of start/end attributes")
+      .contains(
+        "Consider replacing `android:layout_alignParentRight`" +
+          " with `android:layout_alignParentEnd=\"true\"` to better support right-to-left layouts"
+      )
 
     assertThat(exception.message)
-      .contains("Unknown lint issue ID 'RtlHardcoded' found during analysis.")
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val projectDescriptionContent = projectDescriptionFile.readText()
     assertThat(projectDescriptionContent)
@@ -692,7 +701,7 @@ class AndroidLintRunnerTest {
     }
 
     val output = outputStream.toString()
-    assertThat(output).contains("RtlSymmetry")
+    assertThat(output).contains("RTL_SYMMETRY")
     assertThat(output)
       .contains("android:paddingEnd=\"120dip\"")
     assertThat(output).contains("Line: 29")
@@ -742,7 +751,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testAndroidLintAnalyzer_withInlinedApi_detectsIssue() {
     setupProjectWithInlinedApi()
-    val exception = assertThrows<IllegalArgumentException> {
+    val exception = assertThrows<IllegalStateException> {
       androidLintAnalyzerWithFakeExecutor.runAnalysis()
     }
 
@@ -758,7 +767,7 @@ class AndroidLintRunnerTest {
       )
 
     assertThat(exception.message)
-      .contains("Unknown lint issue ID 'InlinedApi' found during analysis.")
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val projectDescriptionContent = projectDescriptionFile.readText()
     assertThat(projectDescriptionContent)
@@ -774,8 +783,9 @@ class AndroidLintRunnerTest {
     androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
+
     assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
-    assertThat(output).doesNotContain("SyntheticAccessor")
+    assertThat(output).doesNotContain("SYNTHETIC_ACCESSOR")
   }
 
   @Test
@@ -789,7 +799,7 @@ class AndroidLintRunnerTest {
       .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("LabelFor")
+    assertThat(output).contains("LABEL_FOR")
     assertThat(output)
       .contains("android:hint=\"\"")
     assertThat(output).contains("Line: 11")
@@ -803,14 +813,29 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withUnusedAttribute_issueIsSuppressed() {
+  fun testAndroidLintAnalyzer_withUnusedAttribute_detectsIssue() {
     setupProjectWithUnusedAttribute()
 
-    androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    assertThat(exception.message)
+      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
 
     val output = outputStream.toString()
-    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
-    assertThat(output).doesNotContain("UnusedAttribute")
+    assertThat(output).contains("UNUSED_ATTRIBUTE")
+    assertThat(output)
+      .contains("android:theme=\"@android:style/Theme.Holo\" />")
+    assertThat(output).contains("Line: 11")
+    assertThat(output)
+      .contains(
+        "Attribute `android:theme` is only used by `<include>` tags "
+      )
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/AndroidManifest.xml")
   }
 
   @Test
@@ -861,6 +886,70 @@ class AndroidLintRunnerTest {
     val projectDescriptionContent = projectDescriptionFile.readText()
     assertThat(projectDescriptionContent)
       .contains("app/src/main/res")
+  }
+
+  @Test
+  fun testAndroidLintAnalyzer_withMissingClass_detectsIssue() {
+    setupProjectWithMissingClass()
+
+    val exception = assertThrows<IllegalStateException> {
+      androidLintAnalyzerWithFakeExecutor.runAnalysis()
+    }
+    val output = outputStream.toString()
+    assertThat(output).contains("MISSING_CLASS")
+    assertThat(output)
+      .contains("<foo.bar.Baz />")
+    assertThat(output).contains("Line: 5")
+    assertThat(output)
+      .contains(
+        "Class referenced in the layout file, `foo.bar.Baz`," +
+          " was not found in the project or the libraries"
+      )
+
+    assertThat(exception.message)
+      .isEqualTo("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+
+    val projectDescriptionContent = projectDescriptionFile.readText()
+    assertThat(projectDescriptionContent)
+      .contains("app/src/main/res")
+  }
+
+  private fun setupProjectWithMissingClass() {
+    setupProjectStructure()
+
+    createFileWithContent(
+      "app/src/main/res/layout/customview.xml",
+      """
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/newlinear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <foo.bar.Baz />
+        <test.pkg.MyView />
+        <test.pkg.NotView />
+    </LinearLayout>
+    """
+    )
+
+    createFileWithContent(
+      "app/src/test/java/test/pkg/MyView.kt",
+      """
+    package test.pkg
+
+    abstract class MyView : I, android.view.View(null)
+
+    interface I
+    """
+    )
+
+    createFileWithContent(
+      "app/src/test/java/test/pkg/NotView.kt",
+      """
+    package test.pkg
+
+    abstract class NotView : android.app.Fragment()
+    """
+    )
   }
 
   private fun setupProjectWithUseCompoundDrawables() {
@@ -1230,6 +1319,10 @@ class AndroidLintRunnerTest {
       </resources>
       """
     )
+    exemptRedundantIssue(
+      LintIssueId.UNUSED_RESOURCES,
+      "app/src/main/res/values/strings.xml"
+    )
   }
 
   private fun createProjectDescriptionFile(): File {
@@ -1346,10 +1439,6 @@ class AndroidLintRunnerTest {
     </manifest>
       """.trimIndent()
     )
-    exemptRedundantIssue(
-      LintIssueId.GRADLE_OVERRIDES,
-      "$moduleName/src/main/AndroidManifest.xml"
-    )
   }
 
   private fun createTestManifestFile(moduleName: String) {
@@ -1416,10 +1505,12 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
-    exemptRedundantIssue(
-      LintIssueId.UNUSED_RESOURCES,
-      "$moduleName/src/main/res/values/strings.xml"
-    )
+    if (moduleName != "app") {
+      exemptRedundantIssue(
+        LintIssueId.UNUSED_RESOURCES,
+        "$moduleName/src/main/res/values/strings.xml"
+      )
+    }
   }
 
   private fun createFileWithContent(relativePath: String, content: String): File {
@@ -1446,7 +1537,8 @@ class AndroidLintRunnerTest {
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile,
       repoRoot = tempFolder.root,
-      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary"
+      exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
+      reportUnusedEnum = false
     )
   }
 
@@ -1543,6 +1635,17 @@ class AndroidLintRunnerTest {
     }
 
     return aarFile
+  }
+
+  /** Remove exemptions related to test setup. */
+  private fun removeAllExemptions() {
+    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
+
+    val emptyExemptions = AndroidLintExemptions.newBuilder().build()
+
+    exemptionFile.outputStream().use { outputStream ->
+      emptyExemptions.writeTo(outputStream)
+    }
   }
 
   private fun createTestJarFile(libraryName: String, version: String): File {
