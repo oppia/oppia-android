@@ -1111,7 +1111,7 @@ class LintAnalysisReporterTest {
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
         addLintIssueId(LintIssueId.UNUSED_RESOURCES) // Valid exemption
-        addLintIssueId(LintIssueId.DUPLICATE_STRINGS) // Redundant
+        addLintIssueId(LintIssueId.AUTOFILL) // Redundant
       }.build(),
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "nonexistent/file.xml"
@@ -1124,7 +1124,7 @@ class LintAnalysisReporterTest {
 
     assertThat(redundantExemptions).hasSize(2)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
-      .containsExactly("DuplicateStrings")
+      .containsExactly("Autofill")
     assertThat(redundantExemptions["nonexistent/file.xml"])
       .containsExactly("UnusedResources")
   }
@@ -1202,7 +1202,7 @@ class LintAnalysisReporterTest {
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
         addLintIssueId(LintIssueId.UNUSED_RESOURCES)
-        addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
+        addLintIssueId(LintIssueId.AUTOFILL)
       }.build()
     )
 
@@ -1211,7 +1211,7 @@ class LintAnalysisReporterTest {
 
     assertThat(redundantExemptions).hasSize(1)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
-      .containsExactly("DuplicateStrings")
+      .containsExactly("Autofill")
   }
 
   @Test
@@ -1258,6 +1258,7 @@ class LintAnalysisReporterTest {
       )
     )
     val issue3 = multiLocationIssue.copy(
+      id = "Registered",
       locations = listOf(
         LintLocation(
           "${repoRoot.absolutePath}/app/src/main/res/values/strings.xml", "10"
@@ -1276,7 +1277,7 @@ class LintAnalysisReporterTest {
       }.build(),
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values-es/strings.xml"
-        addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
+        addLintIssueId(LintIssueId.REGISTERED)
       }.build()
     )
 
