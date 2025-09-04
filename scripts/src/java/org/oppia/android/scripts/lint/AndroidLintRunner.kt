@@ -204,6 +204,7 @@ class AndroidLintAnalyzer(
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
   private val timer: ElapsedTimeDisplayer? = null
+  private val reportUnusedEnum: Boolean = true
 ) {
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
   companion object {
@@ -235,6 +236,7 @@ class AndroidLintAnalyzer(
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
       timer = timer
+      reportUnusedEnum = reportUnusedEnum
     )
     val sdkProperties = AndroidBuildSdkProperties()
     val bazelInfo = bazelClient.retrieveBazelInfo()
@@ -279,6 +281,7 @@ class AndroidLintAnalyzer(
  * @param projectDescriptionFile the XML file containing project configuration
  * @param groupByIssueSeverity whether to group issues by severity in the output
  * @param timer optional elapsed time displayer for clearing display lines
+ * @param reportUnusedEnum whether to report unused exemptions in the output
  */
 class AndroidLintRunner(
   private val reportFile: File,
@@ -287,6 +290,7 @@ class AndroidLintRunner(
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
   private val timer: ElapsedTimeDisplayer? = null
+  private val reportUnusedEnum: Boolean = true
 ) {
   companion object {
     private const val LINT_CLIENT_ID = "cli"
@@ -365,26 +369,33 @@ class AndroidLintRunner(
 
   private fun reportLintIssues() {
     timer?.clearLine()
-    val reporter = LintAnalysisReporter()
+    
+    val reporter = LintAnalysisReporter(repoRoot)
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
+
     require(File(exemptionProtoPath).exists()) {
       "Exemption file does not exist: $exemptionProtoPath"
     }
+
     val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
+
     val filteredIssues = reporter.filterExemptedIssues(
       issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList,
-      repoRoot = repoRoot
+      exemptions = exemptions.androidLintExemptionList
     )
+
     val redundantExemptions = reporter.findRedundantExemptions(
       issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList,
-      repoRoot = repoRoot
+      exemptions = exemptions.androidLintExemptionList
     )
-    if (redundantExemptions.isNotEmpty()) {
-      reporter.logRedundantExemptions(redundantExemptions)
-    }
-    reporter.printLintReport(filteredIssues, groupByIssueSeverity)
+
+    reporter.printLintReport(
+      filteredIssues = filteredIssues,
+      groupByIssueSeverity = groupByIssueSeverity,
+      redundantExemptions = redundantExemptions,
+      reportUnusedEnum = reportUnusedEnum,
+      allIssues = allIssues
+    )
   }
 
   /**
