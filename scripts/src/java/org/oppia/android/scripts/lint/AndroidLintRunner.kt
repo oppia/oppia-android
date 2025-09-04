@@ -250,7 +250,7 @@ class AndroidLintAnalyzer(
       repoRoot = repoRoot,
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
-      timer = timer
+      timer = timer,
       reportUnusedEnum = reportUnusedEnum
     )
     val sdkProperties = AndroidBuildSdkProperties()
