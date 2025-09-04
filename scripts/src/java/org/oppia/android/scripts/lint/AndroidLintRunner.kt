@@ -203,7 +203,7 @@ class AndroidLintAnalyzer(
   private val commandExecutor: CommandExecutor,
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
-  private val timer: ElapsedTimeDisplayer? = null
+  private val timer: ElapsedTimeDisplayer? = null,
   private val reportUnusedEnum: Boolean = true
 ) {
   private val bazelClient = BazelClient(repoRoot, commandExecutor)
@@ -235,7 +235,7 @@ class AndroidLintAnalyzer(
       repoRoot = repoRoot,
       exemptionProtoPath = exemptionProtoPath,
       groupByIssueSeverity = groupByIssueSeverity,
-      timer = timer
+      timer = timer,
       reportUnusedEnum = reportUnusedEnum
     )
     val sdkProperties = AndroidBuildSdkProperties()
@@ -289,7 +289,7 @@ class AndroidLintRunner(
   private val repoRoot: File,
   private val exemptionProtoPath: String = DEFAULT_PROTO_BINARY_PATH,
   private val groupByIssueSeverity: Boolean = false,
-  private val timer: ElapsedTimeDisplayer? = null
+  private val timer: ElapsedTimeDisplayer? = null,
   private val reportUnusedEnum: Boolean = true
 ) {
   companion object {
@@ -369,7 +369,7 @@ class AndroidLintRunner(
 
   private fun reportLintIssues() {
     timer?.clearLine()
-    
+
     val reporter = LintAnalysisReporter(repoRoot)
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
 
