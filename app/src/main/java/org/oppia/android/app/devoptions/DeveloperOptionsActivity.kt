@@ -44,6 +44,9 @@ class DeveloperOptionsActivity :
 
   private var internalProfileId = -1
 
+  /** Tracks whether a restart is required after closing this activity. */
+  var restartRequired: Boolean = false
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
@@ -119,6 +122,6 @@ class DeveloperOptionsActivity :
   }
   override fun onDestroy() {
     super.onDestroy()
-    developerOptionsActivityPresenter.handleOnDestroy()
+    developerOptionsActivityPresenter.handleOnDestroy(restartRequired)
   }
 }

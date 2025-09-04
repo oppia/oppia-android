@@ -22,7 +22,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
-  private var restartRequired: Boolean = false
 
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
@@ -68,7 +67,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   }
 
   fun forceDownload() {
-    restartRequired = true
     val dialog = ForceDownloadDialogFragment.newInstance()
     dialog.showNow(activity.supportFragmentManager, TAG_FORCE_DOWNLOAD_DIALOG)
   }
@@ -77,7 +75,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
    * Called when [FeatureFlagsFragment] is destroyed.
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
-  fun handleOnDestroy() {
+  fun handleOnDestroy(restartRequired: Boolean) {
     if (restartRequired) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN

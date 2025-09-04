@@ -48,6 +48,7 @@ class ForceDownloadDialogFragmentPresenter @Inject constructor(
     dialog.setCanceledOnTouchOutside(false)
 
     binding.restartButton.setOnClickListener {
+      (activity as DeveloperOptionsActivity).restartRequired = true
       dialog.dismiss()
       activity.finishAffinity()
     }
