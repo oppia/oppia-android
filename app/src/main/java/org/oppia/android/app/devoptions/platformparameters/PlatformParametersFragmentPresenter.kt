@@ -407,12 +407,22 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun getPlatformParameterStates():
+  /** Returns the current states of all platform parameters.
+   *
+   * @return a [MutableMap] mapping each [PlatformParameterId] to its current [PlatformParameterValue],
+   *   or an empty map if no platform parameter states are recorded.
+   */
+  fun getPlatformParameterStates():
     MutableMap<PlatformParameterId, PlatformParameterValue?> {
       return platformParameterViewModel.platformParameterStates.value ?: mutableMapOf()
     }
 
-  private fun getResetParameters(): MutableMap<PlatformParameterId, PlatformParameterValue> {
+  /** Returns the platform parameters which have been reset.
+   *
+   * @return a [MutableMap] mapping each [PlatformParameterId] to its reset [PlatformParameterValue],
+   *   or an empty map if no reset parameters are recorded.
+   */
+  fun getResetParameters(): MutableMap<PlatformParameterId, PlatformParameterValue> {
     return platformParameterViewModel.resetParameters.value ?: mutableMapOf()
   }
 }
