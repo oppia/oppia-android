@@ -76,7 +76,8 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:scaleType="center"
-            android:contentDescription="@string/options_menu_content_description" />
+            android:contentDescription="@string/options_menu_content_description"
+            android:visibility="@{viewModel.showFlashbackToolbar ? View.GONE : View.VISIBLE}" />
         </LinearLayout>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
