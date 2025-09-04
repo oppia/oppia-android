@@ -1284,7 +1284,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleParamOnAndOff_naviagteback_skipsPendingChangesDialog() {
+  fun testPlatformParametersFragment_revertParamChange_navigateBack_skipsPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1316,7 +1316,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_naviagteback_skipsPendingChangesDialog() {
+  fun testPlatformParametersFragment_navigateBackWithNoParamsModified_skipsPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1655,6 +1655,7 @@ class PlatformParametersFragmentTest {
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
+          .perform(click())
       }
     }
     assertThat(exception.message).contains("System.exit()")
@@ -1683,6 +1684,7 @@ class PlatformParametersFragmentTest {
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
+          .perform(click())
       }
     }
     assertThat(exception.message).contains("System.exit()")
@@ -1752,6 +1754,7 @@ class PlatformParametersFragmentTest {
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
+          .perform(click())
       }
     }
     assertThat(exception.message).contains("System.exit()")

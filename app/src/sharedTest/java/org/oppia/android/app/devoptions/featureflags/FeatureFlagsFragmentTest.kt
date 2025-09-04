@@ -250,7 +250,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_returnsDefaultBackgroundColor() {
+  fun testFeatureFlagsFragment_withNoRemoteOrOverriddenValues_hasNoBackgroundColor() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -283,7 +283,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyRemoteValue_returnsServerBackgroundColor() {
+  fun testFeatureFlagsFragment_withOnlyRemoteValue_hasNoBackgroundColor() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
@@ -356,7 +356,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsOverriddenBackgroundColor() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsYellowBackgroundColor() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -453,7 +453,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_returnsOverriddenBackgroundColor() {
+  fun testFeatureFlagsFragment_withRemoteAndOverriddenValues_hasYellowBackgroundColor() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, false)
@@ -893,7 +893,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleFlagOnAndOff_navigateback_skipsPendingChangesDialog() {
+  fun testFeatureFlagsFragment_toggleFlagOnAndOff_navigateBack_skipsPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -915,6 +915,20 @@ class FeatureFlagsFragmentTest {
           targetViewId = R.id.feature_flag_switch
         )
       ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_noChanges_navigateBack_skipsPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
@@ -1094,7 +1108,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyParam_navigateBack_clickSave_showRestartDialogExitApp() {
+  fun testFeatureFlagsFragment_saveChangesOnBackNavigation_showRestartDialogExitApp() {
     setUpTestApplicationComponent()
     val exception = assertThrows<SecurityException>() {
       launch(FeatureFlagsTestActivity::class.java).use {
@@ -1121,13 +1135,14 @@ class FeatureFlagsFragmentTest {
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
+          .perform(click())
       }
     }
     assertThat(exception.message).contains("System.exit()")
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyParam_clickToolbarSaveButton_showRestartDialogExitApp() {
+  fun testFeatureFlagsFragment_saveChangesOnClickingSaveButton_showRestartDialogExitApp() {
     setUpTestApplicationComponent()
     val exception = assertThrows<SecurityException>() {
       launch(FeatureFlagsTestActivity::class.java).use {
@@ -1149,6 +1164,7 @@ class FeatureFlagsFragmentTest {
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
+          .perform(click())
       }
     }
     assertThat(exception.message).contains("System.exit()")
@@ -1218,6 +1234,7 @@ class FeatureFlagsFragmentTest {
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
+          .perform(click())
       }
     }
     assertThat(exception.message).contains("System.exit()")
