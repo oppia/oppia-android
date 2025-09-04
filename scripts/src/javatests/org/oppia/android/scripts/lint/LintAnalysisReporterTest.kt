@@ -40,7 +40,7 @@ class LintAnalysisReporterTest {
     lintAnalysisReporter = LintAnalysisReporter(repoRoot)
 
     warningIssue = LintIssue(
-      id = "UnusedResources",
+      id = "Autofill",
       severity = LintSeverity.WARNING,
       message = "The resource appears to be unused",
       category = "Performance",
@@ -55,7 +55,7 @@ class LintAnalysisReporterTest {
     )
 
     errorIssue = LintIssue(
-      id = "NewApi",
+      id = "OldTargetApi",
       severity = LintSeverity.ERROR,
       message = "Call requires API level 23",
       category = "Correctness",
@@ -542,7 +542,7 @@ class LintAnalysisReporterTest {
     assertThat(issues1).hasSize(1)
     assertThat(issues2).hasSize(1)
     assertThat(issues1[0].id).isEqualTo(warningIssue.id)
-    assertThat(issues2[0].id).isEqualTo("NewApi")
+    assertThat(issues2[0].id).isEqualTo("OldTargetApi")
   }
 
   @Test
@@ -1110,12 +1110,12 @@ class LintAnalysisReporterTest {
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
-        addLintIssueId(LintIssueId.UNUSED_RESOURCES) // Valid exemption
-        addLintIssueId(LintIssueId.AUTOFILL) // Redundant
+        addLintIssueId(LintIssueId.AUTOFILL) // Valid exemption
+        addLintIssueId(LintIssueId.REGISTERED) // Redundant
       }.build(),
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "nonexistent/file.xml"
-        addLintIssueId(LintIssueId.UNUSED_RESOURCES) // Redundant (file doesn't exist)
+        addLintIssueId(LintIssueId.AUTOFILL) // Redundant (file doesn't exist)
       }.build()
     )
 
@@ -1124,9 +1124,9 @@ class LintAnalysisReporterTest {
 
     assertThat(redundantExemptions).hasSize(2)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
-      .containsExactly("Autofill")
+      .containsExactly("Registered")
     assertThat(redundantExemptions["nonexistent/file.xml"])
-      .containsExactly("UnusedResources")
+      .containsExactly("Autofill")
   }
 
   @Test
@@ -1158,7 +1158,7 @@ class LintAnalysisReporterTest {
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
-        addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+        addLintIssueId(LintIssueId.AUTOFILL)
       }.build()
     )
 
@@ -1201,7 +1201,7 @@ class LintAnalysisReporterTest {
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
-        addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+        addLintIssueId(LintIssueId.REGISTERED)
         addLintIssueId(LintIssueId.AUTOFILL)
       }.build()
     )
@@ -1211,7 +1211,7 @@ class LintAnalysisReporterTest {
 
     assertThat(redundantExemptions).hasSize(1)
     assertThat(redundantExemptions["app/src/main/res/values/colors.xml"])
-      .containsExactly("Autofill")
+      .containsExactly("Registered")
   }
 
   @Test
@@ -1273,7 +1273,7 @@ class LintAnalysisReporterTest {
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/colors.xml"
-        addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+        addLintIssueId(LintIssueId.AUTOFILL)
       }.build(),
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values-es/strings.xml"
@@ -1305,8 +1305,8 @@ class LintAnalysisReporterTest {
       """
     android_lint_exemption: {
       exempted_file_path: "app/src/main/java/TestFile.kt"
-      lint_issue_id: UNUSED_RESOURCES
-      lint_issue_id: NEW_API
+      lint_issue_id: AUTOFILL
+      lint_issue_id: OLD_TARGET_API
       lint_issue_id: TYPOS
     }
     android_lint_exemption: {
@@ -1317,7 +1317,7 @@ class LintAnalysisReporterTest {
     )
 
     val redundantExemptions = mapOf(
-      "app/src/main/java/TestFile.kt" to listOf("UnusedResources", "NewApi", "Typos")
+      "app/src/main/java/TestFile.kt" to listOf("Autofill", "OLD_TARGET_API", "Typos")
     )
 
     lintAnalysisReporter.logRedundantExemptions(redundantExemptions)
@@ -1330,12 +1330,12 @@ class LintAnalysisReporterTest {
       "FILE: scripts/assets/android_lint_exemptions.textproto (3 issues)"
     )
     assertThat(output).contains("app/src/main/java/TestFile.kt")
-    assertThat(output).contains("UNUSED_RESOURCES")
-    assertThat(output).contains("NEW_API")
+    assertThat(output).contains("AUTOFILL")
+    assertThat(output).contains("OLD_TARGET_API")
     assertThat(output).contains("TYPOS")
 
     assertThat(output).contains("Line: 3")
-    assertThat(output).contains("Error Line: lint_issue_id: UNUSED_RESOURCES")
+    assertThat(output).contains("Error Line: lint_issue_id: AUTOFILL")
   }
 
   @Test
