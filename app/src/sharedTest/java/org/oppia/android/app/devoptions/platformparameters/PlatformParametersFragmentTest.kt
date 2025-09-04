@@ -1688,6 +1688,89 @@ class PlatformParametersFragmentTest {
     assertThat(exception.message).contains("System.exit()")
   }
 
+  @Test
+  fun testPlatformParametersFragment_modifyParamAndSaveOnBackNavigation_persistsChanges() {
+    setUpTestApplicationComponent()
+    val exception = assertThrows<SecurityException>() {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!getEphemeralPlatformParameters()[0].currentValue.boolean)
+        .build()
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParamAndSaveViaToolbar_persistsChanges() {
+    setUpTestApplicationComponent()
+    val exception = assertThrows<SecurityException>() {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!getEphemeralPlatformParameters()[0].currentValue.boolean)
+        .build()
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
   private fun verifyPlatformParameterDisplayName(
     position: Int,
     expectedDisplayName: String

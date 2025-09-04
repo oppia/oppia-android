@@ -1154,6 +1154,85 @@ class FeatureFlagsFragmentTest {
     assertThat(exception.message).contains("System.exit()")
   }
 
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagAndSaveOnBackNavigation_persistsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralFeatureFlags()[0].currentValue
+    val exception = assertThrows<SecurityException>() {
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !initialValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagAndSaveViaToolbar_persistsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralFeatureFlags()[0].currentValue
+    val exception = assertThrows<SecurityException>() {
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !initialValue
+      )
+    }
+  }
+
   private fun verifyFeatureFlagDisplayName(
     position: Int,
     expectedDisplayName: String
