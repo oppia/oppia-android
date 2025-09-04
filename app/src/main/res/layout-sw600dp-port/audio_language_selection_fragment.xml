@@ -64,6 +64,7 @@
       style="@style/AudioLanguageSubtitleStyle"
       android:layout_marginTop="@dimen/tablet_shared_margin_medium"
       android:text="@string/audio_language_fragment_subtitle"
+      android:labelFor="@id/audio_language_dropdown_list"
       app:layout_constraintBottom_toTopOf="@id/audio_language_dropdown_background"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
