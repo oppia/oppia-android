@@ -157,11 +157,9 @@ class LintAnalysisReporter(private val repoRoot: File) {
       "Overdraw" to LintIssueId.OVERDRAW,
       "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
       "Registered" to LintIssueId.REGISTERED,
-      "StringFormatCount" to LintIssueId.STRING_FORMAT_COUNT,
       "SwitchIntDef" to LintIssueId.SWITCH_INT_DEF,
       "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
       "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
-      "UnknownIdInLayout" to LintIssueId.UNKNOWN_ID_IN_LAYOUT,
       "UseCompoundDrawables" to LintIssueId.USE_COMPOUND_DRAWABLES,
       "VectorPath" to LintIssueId.VECTOR_PATH,
       "VectorRaster" to LintIssueId.VECTOR_RASTER
