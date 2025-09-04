@@ -62,7 +62,7 @@ class SolutionViewModel private constructor(
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
   val explorationId: String,
   val isFlashback: Boolean,
-  private val activity: AppCompatActivity
+  val solutionBoxStrokeWidth: Int
 ) {
   /**
    * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
@@ -74,14 +74,6 @@ class SolutionViewModel private constructor(
       imageRetriever = null,
       customTagHandlers = mapOf()
     ).toString()
-  }
-
-  /** Stroke width for the solution box border. */
-  val solutionBoxStrokeWidth by lazy {
-    activity.resources.getDimensionPixelSize(
-      if (isFlashback) R.dimen.flashback_explanation_box_stroke_width
-      else R.dimen.state_solution_box_stroke_width
-    )
   }
 
   /** A displayable HTML representation of the correct answer presented by this model's solution. */
@@ -265,7 +257,8 @@ class SolutionViewModel private constructor(
       interaction: Interaction,
       writtenTranslationContext: WrittenTranslationContext,
       explorationId: String,
-      isFlashback: Boolean
+      isFlashback: Boolean,
+      solutionBoxStrokeWidth: Int
     ): SolutionViewModel {
       return SolutionViewModel(
         solutionSummary,
@@ -278,7 +271,7 @@ class SolutionViewModel private constructor(
         mathExpressionAccessibilityUtil,
         explorationId,
         isFlashback,
-        activity
+        solutionBoxStrokeWidth
       )
     }
 

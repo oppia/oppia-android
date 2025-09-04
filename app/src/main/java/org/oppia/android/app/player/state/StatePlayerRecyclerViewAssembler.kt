@@ -1078,6 +1078,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
       .takeIf { it.hasExplanation() && it.hasCorrectAnswer() }
       ?.let { solution ->
 
+        // Stroke width for the solution box border.
+        val solutionBoxStrokeWidth =
+          context.resources.getDimensionPixelSize(R.dimen.flashback_explanation_box_stroke_width)
+
         val coreViewModel = solutionViewModelFactory.create(
           solutionSummary = translationController.extractString(
             solution.explanation,
@@ -1089,7 +1093,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
           interaction = interaction,
           writtenTranslationContext = writtenTranslationContext,
           explorationId = gcsEntityId,
-          isFlashback = true
+          isFlashback = true,
+          solutionBoxStrokeWidth = solutionBoxStrokeWidth
         )
         pendingItemList += solutionViewModelFactory.createStateSolutionViewModel(coreViewModel)
       }
