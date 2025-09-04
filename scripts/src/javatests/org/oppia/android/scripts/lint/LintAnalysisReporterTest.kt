@@ -84,7 +84,7 @@ class LintAnalysisReporterTest {
     )
 
     multiLocationIssue = LintIssue(
-      id = "DuplicateStrings",
+      id = "Registered",
       severity = LintSeverity.WARNING,
       message = "Duplicate string value",
       category = "Correctness",
@@ -1136,7 +1136,7 @@ class LintAnalysisReporterTest {
       addAndroidLintExemption(
         AndroidLintExemption.newBuilder().apply {
           exemptedFilePath = "test/file.xml"
-          addLintIssueId(LintIssueId.UNUSED_RESOURCES)
+          addLintIssueId(LintIssueId.AUTOFILL)
         }.build()
       )
     }.build()
@@ -1149,7 +1149,7 @@ class LintAnalysisReporterTest {
     assertThat(loadedExemptions.androidLintExemptionList[0].exemptedFilePath)
       .isEqualTo("test/file.xml")
     assertThat(loadedExemptions.androidLintExemptionList[0].lintIssueIdList)
-      .containsExactly(LintIssueId.UNUSED_RESOURCES)
+      .containsExactly(LintIssueId.AUTOFILL)
   }
 
   @Test
@@ -1174,7 +1174,7 @@ class LintAnalysisReporterTest {
     val exemptions = listOf(
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values/other.xml"
-        addLintIssueId(LintIssueId.DUPLICATE_STRINGS)
+        addLintIssueId(LintIssueId.REGISTERED)
       }.build()
     )
 
