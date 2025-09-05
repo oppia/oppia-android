@@ -1352,6 +1352,10 @@ android_lint_exemption: {
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
+  exempted_file_path: "app/src/main/res/layout/force_download_dialog_fragment.xml"
+  lint_issue_id: UNUSED_RESOURCES
+}
+android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/force_network_type_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
 }
