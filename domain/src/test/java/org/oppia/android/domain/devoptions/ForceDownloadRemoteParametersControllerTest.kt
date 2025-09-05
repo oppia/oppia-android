@@ -20,11 +20,15 @@ import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModu
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.robolectric.RobolectricModule
+import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.AsyncResult
+import org.oppia.android.util.data.DataProvidersInjector
+import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.robolectric.annotation.Config
@@ -40,6 +44,7 @@ class ForceDownloadRemoteParametersControllerTest {
   @Inject
   lateinit var forceDownloadRemoteParametersController: ForceDownloadRemoteParametersController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
   @Before
   fun setUp() {
@@ -53,6 +58,13 @@ class ForceDownloadRemoteParametersControllerTest {
     val downloadMonitor = monitorFactory.createMonitor(downloadProvider)
     val downloadResult = downloadMonitor.waitForNextResult()
     assertThat(downloadResult).isInstanceOf(AsyncResult.Success::class.java)
+  }
+
+  @Test
+  fun testCancelRemoteParameterDownloads_returnstrue() {
+    setUpTestApplicationComponent()
+    val result = forceDownloadRemoteParametersController.cancelRemoteParameterDownloadDownload()
+    assertThat(result).isEqualTo(true)
   }
 
   private fun setUpTestApplicationComponent() {
@@ -82,10 +94,11 @@ class ForceDownloadRemoteParametersControllerTest {
       SyncStatusModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestModule::class
+      TestModule::class,
+      LoggerModule::class,
     ]
   )
-  interface TestApplicationComponent {
+  interface TestApplicationComponent : DataProvidersInjector {
     @Component.Builder
     interface Builder {
       @BindsInstance
@@ -99,11 +112,11 @@ class ForceDownloadRemoteParametersControllerTest {
     )
   }
 
-  class TestApplication : Application() {
+  class TestApplication : Application(), DataProvidersInjectorProvider {
     private val component: TestApplicationComponent by lazy {
       DaggerForceDownloadRemoteParametersControllerTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponent
+        .build()
     }
 
     fun inject(
@@ -111,5 +124,7 @@ class ForceDownloadRemoteParametersControllerTest {
     ) {
       component.inject(forceDownloadRemoteParametersControllerTest)
     }
+
+    override fun getDataProvidersInjector(): DataProvidersInjector = component
   }
 }

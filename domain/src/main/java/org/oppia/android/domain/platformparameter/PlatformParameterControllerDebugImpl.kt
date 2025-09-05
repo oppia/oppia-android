@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
@@ -80,22 +79,22 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       ongoingDownloadTask?.cancel()
       ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
 
-        // TODO(#5345): Replace with actual logic to force-download remote parameters.
-        delay(3000)
+        // TODO(#5950): Replace with actual logic to force-download remote parameters.
         oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
       }
       ongoingDownloadTask?.await()
 
-      // TODO(#5345): Finish implementing forcing remote parameter downloads.
+      // TODO(#5950): Finish implementing forcing remote parameter downloads.
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 
   /** Cancels any ongoing remote parameter download. */
-  fun cancelRemoteParameters() {
+  fun cancelRemoteParameterDownloads(): Boolean {
     ongoingDownloadTask?.cancel()
     ongoingDownloadTask = null
     oppiaLogger.d("PlatformParameterController", "Cancelled ongoing remote parameter download")
+    return true
   }
 
   /** Loads the locally overridden feature flags from the database. */

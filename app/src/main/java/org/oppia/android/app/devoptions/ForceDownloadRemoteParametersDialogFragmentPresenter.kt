@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.ForceDownloadRemoteParametersDialogFragmentBinding
+import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.devoptions.ForceDownloadRemoteParametersController
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
-  private val oppiaLogger: OppiaLogger
+  private val oppiaLogger: OppiaLogger,
+  private val resourceHandler: AppLanguageResourceHandler
 ) {
   /** Creates a dialog to display the status of the ongoing remote download and then restart. */
   fun handleOnCreateDialog(
@@ -58,7 +60,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       activity.finishAffinity()
     }
     binding.cancelButton.setOnClickListener {
-      forceDownloadRemoteParametersParametersController.cancelDownload()
+      forceDownloadRemoteParametersParametersController.cancelRemoteParameterDownloadDownload()
       dialog.dismiss()
     }
     return dialog
@@ -66,8 +68,8 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
 
   private fun onDownloadCompleter(binding: ForceDownloadRemoteParametersDialogFragmentBinding) {
     binding.cancelButton.visibility = View.GONE
-    binding.forceDownloadMessage.text =
-      fragment.getString(R.string.force_download_dialog_successfully_downloaded_message_text)
+    binding.forceDownloadMessage.text = resourceHandler
+      .getStringInLocale(R.string.force_download_dialog_successfully_downloaded_message_text)
     binding.forceDownloadRestartMessage.visibility = View.VISIBLE
     binding.restartButton.isEnabled = true
     binding.isEnabled = true
