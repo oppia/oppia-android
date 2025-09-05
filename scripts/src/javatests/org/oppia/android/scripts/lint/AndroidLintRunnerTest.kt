@@ -10,9 +10,6 @@ import org.junit.rules.TemporaryFolder
 import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.ScriptBackgroundCoroutineDispatcher
 import org.oppia.android.scripts.common.testing.FakeCommandExecutor
-import org.oppia.android.scripts.proto.AndroidLintExemption
-import org.oppia.android.scripts.proto.AndroidLintExemptions
-import org.oppia.android.scripts.proto.LintIssueId
 import org.oppia.android.scripts.testing.TestBazelWorkspace
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
@@ -361,7 +358,7 @@ class AndroidLintRunnerTest {
   @Test
   fun testRunLint_whenExitCodeIs0_shouldPassSuccessfully() {
     setupProjectStructure()
-    removeAllExemptions()
+
     val lintRunner = createLintRunner()
     lintRunner.runLint(
       lintRunner.prepareLintArguments(
@@ -676,8 +673,9 @@ class AndroidLintRunnerTest {
     }
     val output = outputStream.toString()
     assertThat(output).contains("RTL_HARDCODED")
+    assertThat(output).contains("Category: Internationalization")
     assertThat(output)
-      .contains("<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"")
+      .contains("Error Line:         android:layout_alignParentRight=\"true\" />")
     assertThat(output).contains("Line: 8")
     assertThat(output)
       .contains(
@@ -813,29 +811,13 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testAndroidLintAnalyzer_withUnusedAttribute_detectsIssue() {
+  fun testAndroidLintAnalyzer_withUnusedAttribute_issueIsSuppressed() {
     setupProjectWithUnusedAttribute()
-
-    val exception = assertThrows<IllegalStateException> {
-      androidLintAnalyzerWithFakeExecutor.runAnalysis()
-    }
-    assertThat(exception.message)
-      .contains("${RED}ANDROID LINT CHECK ${BOLD}FAILED$RESET")
+    androidLintAnalyzerWithFakeExecutor.runAnalysis()
 
     val output = outputStream.toString()
-    assertThat(output).contains("UNUSED_ATTRIBUTE")
-    assertThat(output)
-      .contains("android:theme=\"@android:style/Theme.Holo\" />")
-    assertThat(output).contains("Line: 11")
-    assertThat(output)
-      .contains(
-        "Attribute `android:theme` is only used by `<include>` tags "
-      )
-    val projectDescriptionContent = projectDescriptionFile.readText()
-    assertThat(projectDescriptionContent)
-      .contains("app/src/main/res")
-    assertThat(projectDescriptionContent)
-      .contains("app/src/main/AndroidManifest.xml")
+    assertThat(output).contains("${GREEN}ANDROID LINT CHECK ${BOLD}PASSED$RESET")
+    assertThat(output).doesNotContain("UNUSED_ATTRIBUTE")
   }
 
   @Test
@@ -1319,10 +1301,6 @@ class AndroidLintRunnerTest {
       </resources>
       """
     )
-    exemptRedundantIssue(
-      LintIssueId.UNUSED_RESOURCES,
-      "app/src/main/res/values/strings.xml"
-    )
   }
 
   private fun createProjectDescriptionFile(): File {
@@ -1505,12 +1483,6 @@ class AndroidLintRunnerTest {
       </resources>
       """.trimIndent()
     )
-    if (moduleName != "app") {
-      exemptRedundantIssue(
-        LintIssueId.UNUSED_RESOURCES,
-        "$moduleName/src/main/res/values/strings.xml"
-      )
-    }
   }
 
   private fun createFileWithContent(relativePath: String, content: String): File {
@@ -1540,29 +1512,6 @@ class AndroidLintRunnerTest {
       exemptionProtoPath = "${tempFolder.root}/$pathToProtoBinary",
       reportUnusedEnum = false
     )
-  }
-
-  /** Exempt redundant issues related to test setup. */
-  private fun exemptRedundantIssue(
-    issueId: LintIssueId,
-    exemptedPath: String
-  ) {
-    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-
-    val builder = if (exemptionFile.exists()) {
-      AndroidLintExemptions.parseFrom(exemptionFile.inputStream()).toBuilder()
-    } else {
-      AndroidLintExemptions.newBuilder()
-    }
-
-    builder.addAndroidLintExemption(
-      AndroidLintExemption.newBuilder().apply {
-        exemptedFilePath = exemptedPath
-        addLintIssueId(issueId)
-      }.build()
-    )
-
-    builder.build().writeTo(exemptionFile.outputStream())
   }
 
   private fun setupFakeCommandExecutor() {
@@ -1635,17 +1584,6 @@ class AndroidLintRunnerTest {
     }
 
     return aarFile
-  }
-
-  /** Remove exemptions related to test setup. */
-  private fun removeAllExemptions() {
-    val exemptionFile = File("${tempFolder.root}/$pathToProtoBinary")
-
-    val emptyExemptions = AndroidLintExemptions.newBuilder().build()
-
-    exemptionFile.outputStream().use { outputStream ->
-      emptyExemptions.writeTo(outputStream)
-    }
   }
 
   private fun createTestJarFile(libraryName: String, version: String): File {

@@ -736,6 +736,7 @@ class ExplorationProgressController @Inject constructor(
           showFlashback -> {
             val stateName = explorationProgress.stateDeck.getFlashbackStateName(linkedSkillId)
             explorationProgress.stateDeck.addFlashbackState(stateName)
+            stateAnalyticsLogger?.logFlashbackOffered(stateName)
           }
           answerOutcome.destinationCase == AnswerOutcome.DestinationCase.STATE_NAME -> {
             endState()
@@ -891,6 +892,7 @@ class ExplorationProgressController @Inject constructor(
 
       hintHandler.navigateToPreviousState()
       recomputeCurrentFlashbackStateAndNotifySync(stateName)
+      stateAnalyticsLogger?.logOpenFlashback(stateName)
     }
   }
 
@@ -911,7 +913,7 @@ class ExplorationProgressController @Inject constructor(
       if (!explorationProgress.stateDeck.isFlashbackViewed()) {
         explorationProgress.stateDeck.setFlashbackIsViewed()
       }
-
+      stateAnalyticsLogger?.logCloseFlashback()
       if (explorationProgress.stateDeck.isCurrentStateTopOfDeck()) {
         hintHandler.navigateBackToLatestPendingState()
 
