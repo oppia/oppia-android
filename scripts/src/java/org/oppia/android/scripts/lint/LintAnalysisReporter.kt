@@ -161,9 +161,6 @@ class LintAnalysisReporter(private val repoRoot: File) {
       "SwitchIntDef" to LintIssueId.SWITCH_INT_DEF,
       "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
       "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
-      "UnknownNullness" to LintIssueId.UNKNOWN_NULLNESS,
-      "UnusedAttribute" to LintIssueId.UNUSED_ATTRIBUTE,
-      "UnusedResources" to LintIssueId.UNUSED_RESOURCES,
       "UseCompoundDrawables" to LintIssueId.USE_COMPOUND_DRAWABLES,
       "VectorPath" to LintIssueId.VECTOR_PATH,
       "VectorRaster" to LintIssueId.VECTOR_RASTER
