@@ -19,7 +19,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -619,22 +618,6 @@ class DeveloperOptionsFragmentTest {
 
       onView(withText(R.string.force_download_dialog_title_text))
         .check(doesNotExist())
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_navigateToForceDownload_clickDownload_disablesDownloadbutton() {
-    launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(position = 2)
-      onView(withId(R.id.force_download_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.force_download_button))
-        .check(matches(not(isEnabled())))
     }
   }
 

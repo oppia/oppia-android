@@ -1,8 +1,6 @@
 package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 
 import androidx.databinding.ObservableField
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
 import org.oppia.android.app.devoptions.ForceDownloadsButtonClickListener
 import org.oppia.android.app.devoptions.RouteToFeatureFlagsListener
@@ -28,11 +26,6 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
-
-  /** Tracks whether the force download button is currently enabled. */
-  val isDownloadButtonEnabled: LiveData<Boolean> by lazy {
-    Transformations.map(forceDownloadParametersController.getForceDownloadEnabled()) { it }
-  }
 
   /** Called when the 'force crash' button is clicked by the user. */
   fun onForceCrashClicked() {

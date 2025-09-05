@@ -53,7 +53,6 @@ class ForceDownloadDialogFragmentPresenter @Inject constructor(
       activity.finishAffinity()
     }
     binding.cancelButton.setOnClickListener {
-      forceDownloadParametersController.setForceDownloadEnabled(true)
       dialog.dismiss()
     }
     return dialog
