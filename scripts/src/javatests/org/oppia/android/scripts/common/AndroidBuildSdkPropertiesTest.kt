@@ -19,14 +19,14 @@ class AndroidBuildSdkPropertiesTest {
   fun testBuildSdkVersion_isTheCorrectSdkVersion() {
     val properties = AndroidBuildSdkProperties()
 
-    assertThat(properties.buildSdkVersion).isEqualTo(34)
+    assertThat(properties.buildSdkVersion).isEqualTo(35)
   }
 
   @Test
   fun testBuildToolsVersion_isTheCorrectVersion() {
     val properties = AndroidBuildSdkProperties()
 
-    assertThat(properties.buildToolsVersion).isEqualTo("32.0.0")
+    assertThat(properties.buildToolsVersion).isEqualTo("34.0.0")
   }
 
   @Test

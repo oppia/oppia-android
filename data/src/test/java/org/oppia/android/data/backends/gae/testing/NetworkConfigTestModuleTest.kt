@@ -20,7 +20,6 @@ import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.data.backends.gae.BaseUrl
 import org.oppia.android.data.backends.gae.NetworkApiKey
 import org.oppia.android.data.backends.gae.XssiPrefix
-import org.oppia.android.testing.assertThrows
 import org.oppia.android.util.extensions.getVersionCode
 import org.oppia.android.util.extensions.getVersionName
 import org.robolectric.annotation.Config
@@ -64,9 +63,9 @@ class NetworkConfigTestModuleTest {
 
   @Test
   fun testModule_withoutInjectingMockWebServer_doesNotSetAppTestVersionName() {
-    // NPE is thrown because versionName is unexpectedly null (which it never is in practice) due to
-    // it not being initialized. The module will initialize it if MockWebServer is injected.
-    assertThrows<NullPointerException> { context.getVersionName() }
+    val versionName = context.getVersionName()
+
+    assertThat(versionName).isEqualTo("Missing version name")
   }
 
   @Test
