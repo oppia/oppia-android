@@ -18,8 +18,6 @@ import javax.inject.Inject
 class FeatureFlagsFragment : InjectableFragment() {
   @Inject
   lateinit var featureFlagsFragmentPresenter: FeatureFlagsFragmentPresenter
-  @Inject
-  lateinit var featureFlagsViewModel: FeatureFlagsViewModel
 
   companion object {
     /** State key for [FeatureFlagsFragment]. */
@@ -66,13 +64,13 @@ class FeatureFlagsFragment : InjectableFragment() {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsViewModel.featureFlagStates.value?.map {
+      featureFlagsFragmentPresenter.getFeatureFlagStates().map {
         OverriddenFeatureFlag.newBuilder()
           .setId(it.key)
           .setOverriddenValue(it.value)
           .build()
       }
-    val resetFlags = featureFlagsViewModel.resetFlags.value?.map {
+    val resetFlags = featureFlagsFragmentPresenter.getResetFeatureFlags().map {
       OverriddenFeatureFlag.newBuilder()
         .setId(it.key)
         .setOverriddenValue(it.value)

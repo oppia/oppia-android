@@ -60,7 +60,7 @@
   <string name="app_restart_dialog_title" translatable="false">App Behavior Overridden</string>
   <string name="app_restart_dialog_message" translatable="false">Restart app to apply new configuration.</string>
   <string name="app_restart_dialog_button_text" translatable="false">Restart</string>
-  <string name="pending_changes_dialog_save_button_text" translatable="false">Saved</string>
+  <string name="pending_changes_dialog_save_button_text" translatable="false">Save</string>
   <string name="pending_changes_dialog_discard_button_text" translatable="false">Discard</string>
   <string name="pending_changes_dialog_title_text" translatable="false">Pending Changes</string>
   <string name="pending_changes_dialog_message_text" translatable="false">Do you want to save the changes?</string>

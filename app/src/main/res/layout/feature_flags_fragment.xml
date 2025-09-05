@@ -49,6 +49,7 @@
           android:layout_gravity="end"
           android:minHeight="0dp"
           android:textAlignment="center"
+          android:gravity="center"
           android:text="@string/feature_flag_save"/>
       </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
