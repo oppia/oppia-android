@@ -55,14 +55,14 @@ runs:
         $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platform-tools"
       shell: bash
 
-    - name: Install SDK 34
+    - name: Install SDK 35
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-34"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-35"
       shell: bash
 
-    - name: Install build tools 32.0.0
+    - name: Install build tools 34.0.0
       run: |
-        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;32.0.0"
+        $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "build-tools;34.0.0"
       shell: bash
 
     - name: Configure Bazel to use specific sandbox tmpfs
