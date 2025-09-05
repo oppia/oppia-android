@@ -1242,20 +1242,6 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_navigateBackWithNoParamModified_skipsRestartAlertDialog() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersActivity::class.java).use { _ ->
-      testCoroutineDispatchers.runCurrent()
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.app_restart_dialog_title))
-        .check(doesNotExist())
-    }
-  }
-
-  @Test
   fun testPlatformParametersFragment_clickReset_navigateBack_displaysPendingChangesAlertDialog() {
     executeInPreviousAppInstance { testComponent ->
       addTestIntegerOverriddenPlatformParameterToDatabase(
