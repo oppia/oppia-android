@@ -22,7 +22,10 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FLASHBACK_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
@@ -3551,6 +3554,90 @@ class ExplorationProgressControllerTest {
     // Verify the selected choice indices are 0, 1, 2.
     assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList)
       .containsExactly(0, 3, 2)
+  }
+
+  @Test
+  fun testFlashback_offeredFlashback_logsFlashbackOfferedContext() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+
+    val event = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == FLASHBACK_OFFERED_CONTEXT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback offered event was correctly logged.
+    assertThat(event!!).hasFlashbackOfferedContextThat() {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("RatioInput")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testFlashback_openedFlashback_logsOpenFlashbackEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+
+    val event = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == OPEN_FLASHBACK_EVENT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback open event was correctly logged.
+    assertThat(event!!).hasOpenFlashbackContextThat() {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("RatioInput")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testFlashback_closeFlashback_logsCloseFlashbackEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    moveBackToLatest()
+
+    val closeEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == CLOSE_FLASHBACK_EVENT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback close event was correctly logged.
+    assertThat(closeEvent!!).hasCloseFlashbackContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
   }
 
   private fun navigateToFlashbackState() {
