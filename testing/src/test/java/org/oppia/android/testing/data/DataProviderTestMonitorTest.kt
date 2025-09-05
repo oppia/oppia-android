@@ -1086,7 +1086,7 @@ class DataProviderTestMonitorTest {
     vararg results: AsyncResult<T>
   ): DataProvider<T> {
     val resultsQueue = createResultQueue(*results)
-    return dataProviders.createInMemoryDataProviderAsync(id) { resultsQueue.removeFirst() }
+    return dataProviders.createInMemoryDataProviderAsync(id) { resultsQueue.removeAt(0) }
   }
 
   private fun autoNotifyDataProvider(id: Any, count: Int) {

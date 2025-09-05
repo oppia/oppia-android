@@ -41,7 +41,7 @@ class LintModelCreator(
     // Build configurations for Android module configuration
     private const val PACKAGE_PREFIX = "org.oppia.android"
     private const val MIN_SDK_VERSION = "21"
-    private const val TARGET_SDK_VERSION = "34"
+    private const val TARGET_SDK_VERSION = "35"
 
     // Model directories are stable and won't change frequently therefore a longer TTL
     private const val MODEL_CACHE_TTL_HOURS = 24L // 24 hours

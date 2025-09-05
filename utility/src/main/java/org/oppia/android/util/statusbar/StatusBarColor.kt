@@ -20,6 +20,8 @@ class StatusBarColor {
         @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
         activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
       }
+      // TODO(#5924): Migrate to the proper SDK 30+ APIs.
+      @Suppress("DEPRECATION") // The code is correct for targeted versions of Android.
       activity.window.statusBarColor = ContextCompat.getColor(activity, colorId)
     }
   }
