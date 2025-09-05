@@ -14,7 +14,7 @@
     android:paddingBottom="16dp">
 
     <TextView
-      android:id="@+id/force_download_title_text"
+      android:id="@+id/force_download_title"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       style="@style/Heading2ViewStart"

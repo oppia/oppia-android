@@ -10,13 +10,16 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -577,6 +580,85 @@ class DeveloperOptionsFragmentTest {
 
       intended(hasComponent(MathExpressionParserActivity::class.java.name))
     }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_navigateToForceDownload_clickDownload_showsDownloadingDialog() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_download_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.force_download_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickCancel_dismissesDialog() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_download_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.force_download_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.cancel_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.force_download_dialog_title_text))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_navigateToForceDownload_clickDownload_disablesDownloadbutton() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_download_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.force_download_button))
+        .check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickRestart_exitsApp() {
+    val exception = assertThrows<SecurityException>() {
+      launch<DeveloperOptionsTestActivity>(
+        createDeveloperOptionsTestActivityIntent(internalProfileId)
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(position = 2)
+        onView(withId(R.id.force_download_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.force_download_dialog_title_text))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+
+        onView(withId(R.id.restart_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
   }
 
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
