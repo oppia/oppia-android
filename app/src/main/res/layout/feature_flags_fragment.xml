@@ -39,7 +39,7 @@
 
         <Button
           android:id="@+id/save_button"
-          style="@style/StateButtonActive"
+          style="@style/SaveButtonActive"
           android:background="@{viewModel.isSaveButtonEnabled ? @drawable/save_button_active_background : @drawable/save_button_inactive_background}"
           android:enabled="@{viewModel.isSaveButtonEnabled}"
           android:textColor="@{viewModel.isSaveButtonEnabled ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_stroke_color}"

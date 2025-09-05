@@ -15,6 +15,7 @@ class ForceDownloadRemoteParametersController @Inject constructor(
     return platformParameterControllerDebugImpl.downloadRemoteParameters()
   }
 
+  /** Cancels an ongoing force download of remote platform parameters. */
   fun cancelDownload() {
     platformParameterControllerDebugImpl.cancelRemoteParameters()
   }

@@ -30,6 +30,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     binding.lifecycleOwner = fragment
+    binding.isEnabled = false
 
     forceDownloadRemoteParametersParametersController
       .downloadRemoteParameters().toLiveData().observe(fragment) {
@@ -41,7 +42,6 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
             )
             onDownloadCompleter(binding)
           }
-
           is AsyncResult.Failure -> {}
           is AsyncResult.Pending -> {}
         }
@@ -70,5 +70,6 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       fragment.getString(R.string.force_download_dialog_successfully_downloaded_message_text)
     binding.forceDownloadRestartMessage.visibility = View.VISIBLE
     binding.restartButton.isEnabled = true
+    binding.isEnabled = true
   }
 }
