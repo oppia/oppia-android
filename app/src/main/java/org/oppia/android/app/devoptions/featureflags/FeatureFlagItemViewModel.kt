@@ -58,7 +58,6 @@ class FeatureFlagItemViewModel(
       SyncStatus.LOCAL_OVERRIDE ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)
       SyncStatus.SYNCED_FROM_SERVER ->
-        // TODO(#5345): Replace this placeholder message with the actual server last-synced timestamp when available.
         resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
       else ->
         resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)

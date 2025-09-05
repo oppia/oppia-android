@@ -37,8 +37,9 @@ class FeatureFlagsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
-    var resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    val featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    val resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,

@@ -356,7 +356,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsYellowBackgroundColor() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_hasYellowBackgroundColor() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -929,7 +929,7 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_noChanges_navigateBack_skipsPendingChangesDialog() {
     setUpTestApplicationComponent()
-    launch(FeatureFlagsActivity::class.java).use {
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       pressBack()
@@ -1243,6 +1243,493 @@ class FeatureFlagsFragmentTest {
         position = 0,
         expectedState = !initialValue
       )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverriddenFlag_resetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverrideAndNoRemote_clickResetButton_resetsFlagToDefault() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 1,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverrideAndNoRemote_onReset_showsNeverSyncedMessage() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verifyFeatureFlagSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.feature_flag_never_synced_message)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withRemoteAndOverride_clickResetButton_resetsFlagToRemote() {
+    executeInPreviousAppInstance { component ->
+      addTestRemoteFeatureFlagToDatabase(component, false)
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).check(matches(not(isChecked())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withRemoteOverride_onReset_showsSyncedWithServerMessage() {
+    executeInPreviousAppInstance { component ->
+      addTestRemoteFeatureFlagToDatabase(component, false)
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      verifyFeatureFlagSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.feature_flag_synced_from_server_message)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOverride_clickResetButton_disablesResetButton() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+      scenario.close()
+    }
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_whenNoFlagsModified_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyAnyFlag_saveButtonIsEnabled() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagAndRevert_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_clickResetButton_saveButtonIsEnabled() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyAnyFlag_hasSkyBlueBackgroundColor() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyAnyFlag_configChange_skyBlueColorPersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlag_clickSave_reopenDashboard_valuePersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).check(matches(isChecked()))
+      }
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagAndRevert_hasNoBackgroundColor() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyOverriddenFlag_hasSkyBlueBackgroundColor() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_clickResetButton_hasSkyBlueBackgroundColor() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      verifyFeatureFlagBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_alertIconIsVisible() {
+    TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    executeInPreviousAppInstance { testComponent ->
+      addTestOverriddenFeatureFlagToDatabase(testComponent, true)
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyOverriddenAlertIconIsVisible(0)
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withNoOverride_alertIconIsNotVisible() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.currently_overridden_alert_icon
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_withRemoteValue_alertIconIsNotVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestRemoteFeatureFlagToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.currently_overridden_alert_icon
+        )
+      ).check(matches(not(isDisplayed())))
     }
   }
 
