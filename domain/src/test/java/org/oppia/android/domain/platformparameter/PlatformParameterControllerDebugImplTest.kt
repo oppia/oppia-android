@@ -805,7 +805,7 @@ class PlatformParameterControllerDebugImplTest {
   @Test
   fun testCancelRemoteParameterDownloads_returnstrue() {
     setUpTestApplicationComponent()
-    val result = platformParameterControllerDebugImpl.cancelRemoteParameterDownloadDownload()
+    val result = platformParameterControllerDebugImpl.cancelRemoteParameterDownloads()
     assertThat(result).isEqualTo(true)
   }
 

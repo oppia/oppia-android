@@ -22,6 +22,8 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val platformParametersListener: RouteToPlatformParametersListener
 ) : DeveloperOptionsItemViewModel() {
 
+  // TODO(#5951): Add the functionality to display the last synced timestamps. .
+
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
