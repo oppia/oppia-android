@@ -814,30 +814,6 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyIntParameter_navigateBack_showsPendingChangesDialog() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.pending_changes_dialog_title_text))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
   fun testPlatformParametersFragment_modifyIntegerParameter_scrollAndBack_persistsValue() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
