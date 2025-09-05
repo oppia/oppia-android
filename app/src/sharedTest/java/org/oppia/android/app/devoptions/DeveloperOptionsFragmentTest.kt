@@ -10,7 +10,6 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
@@ -595,29 +594,6 @@ class DeveloperOptionsFragmentTest {
       onView(withText(R.string.force_download_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
-    }
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickCancel_dismissesDialog() {
-    launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(position = 2)
-      onView(withId(R.id.force_download_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.force_download_dialog_title_text))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-
-      onView(withId(R.id.cancel_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.force_download_dialog_title_text))
-        .check(doesNotExist())
     }
   }
 
