@@ -41,6 +41,8 @@ class PlatformParametersFragment : InjectableFragment() {
   ): View {
     val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
+    val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -49,32 +51,43 @@ class PlatformParametersFragment : InjectableFragment() {
       args?.platformParameterStatesList?.forEach {
         platformParameterStates[it.id] = it.overriddenValue
       }
-      args?.invalidInputPlatformParametersList?.forEach {
-        platformParameterStates[it] = null
+      args?.resetPlatformParametersList?.forEach {
+        resetParamList[it.id] = it.overriddenValue
       }
     }
 
     return platformParametersFragmentPresenter
-      .handleCreateView(inflater, container, platformParameterStates)
+      .handleCreateView(
+        inflater,
+        container,
+        platformParameterStates,
+        resetParamList
+      )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     val validParameterOverrides =
-      platformParametersFragmentPresenter.platformParameterStates.mapNotNull { (key, value) ->
-        value?.let {
-          OverriddenPlatformParameter.newBuilder()
-            .setId(key)
-            .setOverriddenValue(it)
-            .build()
+      platformParametersFragmentPresenter.getPlatformParameterStates()
+        .mapNotNull { (key, value) ->
+          value?.let {
+            OverriddenPlatformParameter.newBuilder()
+              .setId(key)
+              .setOverriddenValue(it)
+              .build()
+          }
         }
+
+    val resetParamList =
+      platformParametersFragmentPresenter.getResetParameters().mapNotNull { (id, value) ->
+        OverriddenPlatformParameter.newBuilder()
+          .setId(id)
+          .setOverriddenValue(value)
+          .build()
       }
-    val invalidInputParameterIds = platformParametersFragmentPresenter.platformParameterStates
-      .filterValues { it == null }
-      .keys
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
-      .addAllInvalidInputPlatformParameters(invalidInputParameterIds)
+      .addAllResetPlatformParameters(resetParamList)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto
