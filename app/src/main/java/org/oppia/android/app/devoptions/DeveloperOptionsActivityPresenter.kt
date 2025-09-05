@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.databinding.databinding.DeveloperOptionsActivityBinding
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.drawer.NavigationDrawerFragment
 import org.oppia.android.app.splash.SplashActivity
 import org.oppia.android.app.ui.R
@@ -72,7 +71,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   }
 
   /**
-   * Called when [FeatureFlagsFragment] is destroyed.
+   * Called when [DeveloperOptionsActivity] is destroyed.
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun handleOnDestroy(restartRequired: Boolean) {

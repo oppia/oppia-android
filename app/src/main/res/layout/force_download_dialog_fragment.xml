@@ -24,13 +24,24 @@
       app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-      android:id="@+id/force_download_message_text"
+      android:id="@+id/force_download_message"
       style="@style/Subtitle1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="8dp"
-      android:text="@string/force_download_dialog_downloading_message_text"
-      app:layout_constraintTop_toBottomOf="@+id/force_download_title_text"
+      android:text="@string/force_download_dialog_successfully_downloaded_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_title"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+      android:id="@+id/force_download_restart_message"
+      style="@style/SubtitleLight1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:text="@string/force_download_restart_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_message"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent" />
 
@@ -43,7 +54,7 @@
       android:layout_marginTop="24dp"
       android:layout_marginEnd="16dp"
       android:text="@string/force_download_dialog_cancel_button_text"
-      app:layout_constraintTop_toBottomOf="@+id/force_download_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_restart_message"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@id/restart_button"/>
 
@@ -55,7 +66,7 @@
       android:layout_marginTop="24dp"
       android:minWidth="80dp"
       android:text="@string/force_download_dialog_restart_button_text"
-      app:layout_constraintTop_toBottomOf="@+id/force_download_message_text"
+      app:layout_constraintTop_toBottomOf="@+id/force_download_restart_message"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"/>
   </androidx.constraintlayout.widget.ConstraintLayout>

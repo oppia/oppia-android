@@ -120,6 +120,7 @@ class DeveloperOptionsActivity :
   override fun forceDownload() {
     developerOptionsActivityPresenter.forceDownload()
   }
+
   override fun onDestroy() {
     super.onDestroy()
     developerOptionsActivityPresenter.handleOnDestroy(restartRequired)
