@@ -220,7 +220,12 @@ class AndroidLintAnalyzer(
       // Allowed since context-specific translations may differ; false positive in lint.
       "DuplicateStrings",
       // TextViews are kept non-selectable to avoid conflicts with user interactions.
-      "SelectableText"
+      "SelectableText",
+      // TODO(#5887): Re-enable below checks once the AAR/JAR files issue is fixed.
+      "UnusedResources",
+      "UnusedAttribute",
+      "UnknownNullness",
+      "MergeRootFrame"
     )
   }
 

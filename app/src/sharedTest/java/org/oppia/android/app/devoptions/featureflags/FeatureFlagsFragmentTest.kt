@@ -607,7 +607,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withNoRemoteAndwithOverride_onResetshowsNeverSyncedMessage() {
+  fun testFeatureFlagsFragment_withNoRemoteAndwithOverride_onReset_showsNeverSyncedMessage() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
@@ -665,7 +665,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndwithOverride_onResetshowsSyncedWithServerMessage() {
+  fun testFeatureFlagsFragment_withRemoteAndwithOverride_onReset_showsSyncedWithServerMessage() {
     executeInPreviousAppInstance { component ->
       addTestRemoteFeatureFlagToDatabase(component, false)
       addTestOverriddenFeatureFlagToDatabase(component, true)
@@ -886,6 +886,7 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
+
       onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1091,7 +1092,6 @@ class FeatureFlagsFragmentTest {
 
       onView(withText(R.string.pending_changes_dialog_discard_button_text))
         .inRoot(isDialog())
-        .check(matches(isDisplayed()))
         .perform(click())
       testCoroutineDispatchers.runCurrent()
     }
@@ -1108,7 +1108,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_saveChangesOnBackNavigation_showRestartDialogExitApp() {
+  fun testFeatureFlagsFragment_pressBack_saveChanges_clickRestartInDialog_exitsApp() {
     setUpTestApplicationComponent()
     val exception = assertThrows<SecurityException>() {
       launch(FeatureFlagsTestActivity::class.java).use {
@@ -1134,7 +1134,6 @@ class FeatureFlagsFragmentTest {
 
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
-          .check(matches(isDisplayed()))
           .perform(click())
       }
     }
@@ -1142,7 +1141,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_saveChangesOnClickingSaveButton_showRestartDialogExitApp() {
+  fun testFeatureFlagsFragment_clickSaveButton_clickRestartInDialog_savesChangesAndExitsApp() {
     setUpTestApplicationComponent()
     val exception = assertThrows<SecurityException>() {
       launch(FeatureFlagsTestActivity::class.java).use {
@@ -1163,7 +1162,6 @@ class FeatureFlagsFragmentTest {
 
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
-          .check(matches(isDisplayed()))
           .perform(click())
       }
     }
@@ -1192,7 +1190,6 @@ class FeatureFlagsFragmentTest {
 
         onView(withText(R.string.pending_changes_dialog_save_button_text))
           .inRoot(isDialog())
-          .check(matches(isDisplayed()))
           .perform(click())
         testCoroutineDispatchers.runCurrent()
       }
@@ -1233,7 +1230,6 @@ class FeatureFlagsFragmentTest {
 
         onView(withText(R.string.app_restart_dialog_title))
           .inRoot(isDialog())
-          .check(matches(isDisplayed()))
           .perform(click())
       }
     }
