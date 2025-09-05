@@ -10,6 +10,7 @@ import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ConceptCardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext
@@ -4934,5 +4935,58 @@ class EventLogSubjectTest {
         hasFeatureFlagEnabledStateThat().isTrue()
         hasFeatureFlagSyncStateThat().isEqualTo(SyncStatus.SYNCED_FROM_SERVER)
       }
+  }
+
+  @Test
+  fun testEventLogSubject_hasFlashbackOfferedContext_hasFlashbackContext() {
+    val flashbackContext = FlashbackContext.newBuilder()
+      .setSkillId("SkillId")
+      .setStateNameToRevisit("Fractions")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setFlashbackOfferedContext(flashbackContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasFlashbackOfferedContextThat()
+      .isEqualTo(flashbackContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasOpenFlashbackContext_hasFlashbackContext() {
+    val flashbackContext = FlashbackContext.newBuilder()
+      .setSkillId("SkillId")
+      .setStateNameToRevisit("Fractions")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setOpenFlashbackEvent(flashbackContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasOpenFlashbackContextThat()
+      .isEqualTo(flashbackContext)
+  }
+
+  @Test
+  fun testEventLogSubject_hasCloseFlashbackContext_hasCardContext() {
+    val cardContext = CardContext.newBuilder()
+      .setSkillId("SkillId")
+      .build()
+    val eventLog = EventLog.newBuilder()
+      .setContext(
+        EventLog.Context.newBuilder()
+          .setCloseFlashbackEvent(cardContext)
+      )
+      .build()
+
+    assertThat(eventLog)
+      .hasCloseFlashbackContextThat()
+      .isEqualTo(cardContext)
   }
 }
