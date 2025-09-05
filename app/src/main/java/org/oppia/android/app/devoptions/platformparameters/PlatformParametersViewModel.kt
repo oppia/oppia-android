@@ -28,7 +28,7 @@ class PlatformParametersViewModel @Inject constructor(
 ) : ObservableViewModel() {
   /**
    * LiveData that contains a list of [PlatformParameterItemViewModel] which is used to populate the
-   * recycler view in [PlatformParametersFragment].
+   * recyclerview in [PlatformParametersFragment].
    */
   val platformParameterList: LiveData<List<PlatformParameterItemViewModel>> by lazy {
     Transformations.map(ephemeralParametersLiveData, ::processPlatformParameterList)
