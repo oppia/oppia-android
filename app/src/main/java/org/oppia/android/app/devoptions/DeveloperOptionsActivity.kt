@@ -26,7 +26,7 @@ import javax.inject.Inject
 class DeveloperOptionsActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   ForceCrashButtonClickListener,
-  ForceDownloadsButtonClickListener,
+  ForceDownloadRemoteParametersButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
@@ -43,9 +43,6 @@ class DeveloperOptionsActivity :
   lateinit var resourceHandler: AppLanguageResourceHandler
 
   private var internalProfileId = -1
-
-  /** Tracks whether a restart is required after closing this activity. */
-  var restartRequired: Boolean = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -117,12 +114,12 @@ class DeveloperOptionsActivity :
     developerOptionsActivityPresenter.forceCrash()
   }
 
-  override fun forceDownload() {
-    developerOptionsActivityPresenter.forceDownload()
+  override fun forceDownloadRemoteParameters() {
+    developerOptionsActivityPresenter.forceDownloadRemoteParameters()
   }
 
   override fun onDestroy() {
     super.onDestroy()
-    developerOptionsActivityPresenter.handleOnDestroy(restartRequired)
+    developerOptionsActivityPresenter.handleOnDestroy()
   }
 }

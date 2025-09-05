@@ -192,7 +192,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingStart="16dp"
-      android:paddingTop="10dp"
+      android:paddingTop="20dp"
       android:paddingEnd="16dp"
       android:paddingBottom="10dp"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -206,23 +206,9 @@
         android:layout_width="0dp"
         android:text="@string/developer_options_force_download"
         android:textColor="@color/component_color_shared_primary_dark_text_color"
-        app:layout_constraintBottom_toTopOf="@id/sync_details_text_view"
         app:layout_constraintEnd_toStartOf="@id/force_download_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-      <TextView
-        android:id="@+id/sync_details_text_view"
-        style="@style/SubtitleLight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:visibility="gone"
-        android:textColor="@color/component_color_shared_primary_dark_text_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/force_download_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/force_download_text_view" />
 
       <Button
         android:id="@+id/force_download_button"
@@ -231,7 +217,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:gravity="center"
-        android:onClick="@{(v) -> viewModel.onForceDownloadsButtonClicked()}"
+        android:onClick="@{(v) -> viewModel.onForceDownloadRemoteParametersButtonClicked()}"
         android:background="@drawable/state_button_primary_background"
         android:textColor="@color/component_color_shared_secondary_4_text_color"
         android:text="@string/force_download_button_text"

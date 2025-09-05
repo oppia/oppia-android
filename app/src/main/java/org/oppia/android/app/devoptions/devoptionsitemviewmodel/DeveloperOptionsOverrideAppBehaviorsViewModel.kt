@@ -2,11 +2,10 @@ package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 
 import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
-import org.oppia.android.app.devoptions.ForceDownloadsButtonClickListener
+import org.oppia.android.app.devoptions.ForceDownloadRemoteParametersButtonClickListener
 import org.oppia.android.app.devoptions.RouteToFeatureFlagsListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
 import org.oppia.android.app.devoptions.RouteToPlatformParametersListener
-import org.oppia.android.domain.devoptions.ForceDownloadParametersController
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 
 /**
@@ -15,10 +14,10 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
  */
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
-  private val forceDownloadsButtonClickListener: ForceDownloadsButtonClickListener,
+  private val forceDownloadRemoteParametersButtonClickListener:
+    ForceDownloadRemoteParametersButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
   private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
-  private val forceDownloadParametersController: ForceDownloadParametersController,
   private val featureFlagsListener: RouteToFeatureFlagsListener,
   private val platformParametersListener: RouteToPlatformParametersListener
 ) : DeveloperOptionsItemViewModel() {
@@ -48,8 +47,8 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   }
 
   /** Handles clicks on the force downloads button by initiating a download. */
-  fun onForceDownloadsButtonClicked() {
-    forceDownloadsButtonClickListener.forceDownload()
+  fun onForceDownloadRemoteParametersButtonClicked() {
+    forceDownloadRemoteParametersButtonClickListener.forceDownloadRemoteParameters()
   }
 
   /**

@@ -11,7 +11,7 @@ import org.oppia.android.app.ui.R
 import javax.inject.Inject
 import kotlin.system.exitProcess
 
-/** Tag for displaying [AppRestartDialogFragment]. */
+/** Tag for displaying [ForceDownloadRemoteParametersDialogFragment]. */
 const val TAG_FORCE_DOWNLOAD_DIALOG = "FORCE_DOWNLOAD_DIALOG_TAG"
 
 /** The presenter for [DeveloperOptionsActivity]. */
@@ -22,6 +22,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
 
+  private var restartRequired: Boolean = false
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
       activity,
@@ -65,16 +66,13 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     throw RuntimeException("Force crash occurred")
   }
 
-  fun forceDownload() {
-    val dialog = ForceDownloadDialogFragment.newInstance()
+  fun forceDownloadRemoteParameters() {
+    val dialog = ForceDownloadRemoteParametersDialogFragment.newInstance()
     dialog.showNow(activity.supportFragmentManager, TAG_FORCE_DOWNLOAD_DIALOG)
   }
 
-  /**
-   * Called when [DeveloperOptionsActivity] is destroyed.
-   * Performs a fresh restart of the app to load any updated feature flag states, if required.
-   */
-  fun handleOnDestroy(restartRequired: Boolean) {
+  /** Called when [DeveloperOptionsActivity] is destroyed. */
+  fun handleOnDestroy() {
     if (restartRequired) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
@@ -85,5 +83,9 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
       // so that ProcessState can be reinitialised on the fresh restart.
       exitProcess(0)
     }
+  }
+
+  fun markRestartRequired() {
+    restartRequired = true
   }
 }

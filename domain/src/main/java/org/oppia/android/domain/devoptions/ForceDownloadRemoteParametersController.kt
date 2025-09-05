@@ -7,11 +7,15 @@ import javax.inject.Singleton
 
 /** Controller for force-downloading platform parameters. */
 @Singleton
-class ForceDownloadParametersController @Inject constructor(
+class ForceDownloadRemoteParametersController @Inject constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
 ) {
   /** Initiates a force download of remote platform parameters. */
   fun downloadRemoteParameters(): DataProvider<Unit> {
     return platformParameterControllerDebugImpl.downloadRemoteParameters()
+  }
+
+  fun cancelDownload() {
+    platformParameterControllerDebugImpl.cancelRemoteParameters()
   }
 }

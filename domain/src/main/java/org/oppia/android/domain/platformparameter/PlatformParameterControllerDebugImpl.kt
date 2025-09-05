@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
@@ -44,6 +45,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
   private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
+  private var ongoingDownloadTask: Deferred<Unit>? = null
 
   init {
     // Ensure that parameters and flags are fully loaded ahead of a call to retrieveData() since
@@ -75,9 +77,25 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   override fun downloadRemoteParameters(): DataProvider<Unit> {
     oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
+      ongoingDownloadTask?.cancel()
+      ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
+
+        // TODO(#5345): Replace with actual logic to force-download remote parameters.
+        delay(3000)
+        oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
+      }
+      ongoingDownloadTask?.await()
+
       // TODO(#5345): Finish implementing forcing remote parameter downloads.
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
+  }
+
+  /** Cancels any ongoing remote parameter download. */
+  fun cancelRemoteParameters() {
+    ongoingDownloadTask?.cancel()
+    ongoingDownloadTask = null
+    oppiaLogger.d("PlatformParameterController", "Cancelled ongoing remote parameter download")
   }
 
   /** Loads the locally overridden feature flags from the database. */

@@ -8,7 +8,6 @@ import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptions
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsTestParsersViewModel
 import org.oppia.android.app.devoptions.devoptionsitemviewmodel.DeveloperOptionsViewLogsViewModel
 import org.oppia.android.app.fragment.FragmentScope
-import org.oppia.android.domain.devoptions.ForceDownloadParametersController
 import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
 import javax.inject.Inject
 
@@ -20,10 +19,10 @@ import javax.inject.Inject
 class DeveloperOptionsViewModel @Inject constructor(
   activity: AppCompatActivity,
   private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
-  private val forceDownloadParametersController: ForceDownloadParametersController
 ) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
-  private val forceDownloadsButtonClickListener = activity as ForceDownloadsButtonClickListener
+  private val forceDownloadRemoteParametersButtonClickListener =
+    activity as ForceDownloadRemoteParametersButtonClickListener
   private val routeToMarkChaptersCompletedListener =
     activity as RouteToMarkChaptersCompletedListener
   private val routeToMarkStoriesCompletedListener =
@@ -55,10 +54,9 @@ class DeveloperOptionsViewModel @Inject constructor(
       DeveloperOptionsViewLogsViewModel(routeToViewEventLogsListener),
       DeveloperOptionsOverrideAppBehaviorsViewModel(
         forceCrashButtonClickListener,
-        forceDownloadsButtonClickListener,
+        forceDownloadRemoteParametersButtonClickListener,
         routeToForceNetworkTypeListener,
         showAllHintsAndSolutionController,
-        forceDownloadParametersController,
         routeToFeatureFlagsListener,
         routeToPlatformParametersListener
       ),
