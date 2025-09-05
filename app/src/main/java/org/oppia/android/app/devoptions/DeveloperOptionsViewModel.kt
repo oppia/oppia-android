@@ -18,7 +18,7 @@ import javax.inject.Inject
 @FragmentScope
 class DeveloperOptionsViewModel @Inject constructor(
   activity: AppCompatActivity,
-  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
+  private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController
 ) {
   private val forceCrashButtonClickListener = activity as ForceCrashButtonClickListener
   private val forceDownloadRemoteParametersButtonClickListener =

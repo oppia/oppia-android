@@ -192,7 +192,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingStart="16dp"
-      android:paddingTop="20dp"
+      android:paddingTop="8dp"
       android:paddingEnd="16dp"
       android:paddingBottom="10dp"
       app:layout_constraintBottom_toBottomOf="parent"
@@ -208,7 +208,8 @@
         android:textColor="@color/component_color_shared_primary_dark_text_color"
         app:layout_constraintEnd_toStartOf="@id/force_download_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
       <Button
         android:id="@+id/force_download_button"

@@ -37,10 +37,10 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = ForceDownloadRemoteParametersControllerTest.TestApplication::class)
 class ForceDownloadRemoteParametersControllerTest {
-
   @Inject
   lateinit var forceDownloadRemoteParametersController: ForceDownloadRemoteParametersController
   @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
+
   @Before
   fun setUp() {
     setUpTestApplicationComponent()

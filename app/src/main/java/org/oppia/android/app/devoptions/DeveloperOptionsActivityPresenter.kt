@@ -21,8 +21,8 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
-
   private var restartRequired: Boolean = false
+
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
       activity,
@@ -66,6 +66,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     throw RuntimeException("Force crash occurred")
   }
 
+  /** Opens a dialog to force download remote parameters. */
   fun forceDownloadRemoteParameters() {
     val dialog = ForceDownloadRemoteParametersDialogFragment.newInstance()
     dialog.showNow(activity.supportFragmentManager, TAG_FORCE_DOWNLOAD_DIALOG)
@@ -85,6 +86,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     }
   }
 
+  /** Marks that a restart is required when the activity is destroyed. */
   fun markRestartRequired() {
     restartRequired = true
   }
