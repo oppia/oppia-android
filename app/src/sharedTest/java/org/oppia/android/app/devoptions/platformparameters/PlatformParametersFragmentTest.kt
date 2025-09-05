@@ -1217,7 +1217,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_navigateBackWithParamModified_displayPendingChangesDialog() {
+  fun testPlatformParametersFragment_navigateBackWithParamModified_displaysPendingChangesDialog() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1234,6 +1234,7 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
+
       onView(withText(R.string.pending_changes_dialog_title_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
@@ -1248,6 +1249,7 @@ class PlatformParametersFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
+
       onView(withText(R.string.app_restart_dialog_title))
         .check(doesNotExist())
     }
@@ -1662,7 +1664,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_modifyParam_clickToolbarSaveButton_showRestartDialogExitApp() {
+  fun testPlatformParametersFragment_modifyParam_clickToolbarSave_showsRestartDialogExitApp() {
     setUpTestApplicationComponent()
     val exception = assertThrows<SecurityException>() {
       launch(PlatformParametersTestActivity::class.java).use {
