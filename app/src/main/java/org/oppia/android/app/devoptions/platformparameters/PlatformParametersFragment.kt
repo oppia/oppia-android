@@ -93,4 +93,9 @@ class PlatformParametersFragment : InjectableFragment() {
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto
     )
   }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    platformParametersFragmentPresenter.handleOnDestroy()
+  }
 }

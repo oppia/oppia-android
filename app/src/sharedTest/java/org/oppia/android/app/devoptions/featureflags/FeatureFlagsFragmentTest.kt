@@ -10,8 +10,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
@@ -94,6 +96,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -353,7 +356,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOnlyOverriddenValue_hasYellowBackgroundColor() {
+  fun testFeatureFlagsFragment_withOnlyOverriddenValue_returnsYellowBackgroundColor() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -553,39 +556,6 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_toggleFlag_navigateBackAndReopen_persistsValue() {
-    setUpTestApplicationComponent()
-    val expectedState = !getEphemeralFeatureFlags()[0].currentValue
-
-    launch(FeatureFlagsTestActivity::class.java).use { scenario ->
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.feature_flag_switch
-        )
-      ).perform(click())
-
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
-
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyFeatureFlagSwitchState(
-        position = 0,
-        expectedState = expectedState
-      )
-    }
-  }
-
-  @Test
   fun testFeatureFlagsFragment_withOverriddenFlag_resetButtonIsVisible() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
@@ -607,7 +577,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOverrideAndNoRemote_clickResetButton_resetsFlagToDefault() {
+  fun testFeatureFlagsFragment_withNoRemoteAndwithOverride_clickResetButton_resetsFlagToDefault() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
@@ -637,7 +607,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withOverrideAndNoRemote_onReset_showsNeverSyncedMessage() {
+  fun testFeatureFlagsFragment_withNoRemoteAndwithOverride_onReset_showsNeverSyncedMessage() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
@@ -664,7 +634,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteAndOverride_clickResetButton_resetsFlagToRemote() {
+  fun testFeatureFlagsFragment_withRemoteAndwithOverride_clickResetButton_resetsFlagToRemote() {
     executeInPreviousAppInstance { component ->
       addTestRemoteFeatureFlagToDatabase(component, false)
       addTestOverriddenFeatureFlagToDatabase(component, true)
@@ -695,7 +665,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_withRemoteOverride_onReset_showsSyncedWithServerMessage() {
+  fun testFeatureFlagsFragment_withRemoteAndwithOverride_onReset_showsSyncedWithServerMessage() {
     executeInPreviousAppInstance { component ->
       addTestRemoteFeatureFlagToDatabase(component, false)
       addTestOverriddenFeatureFlagToDatabase(component, true)
@@ -753,13 +723,13 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_clickReset_navigateBackAndReopen_noResetButtonIsVisible() {
+  fun testFeatureFlagsFragment_clickReset_navigateBack_displaysPendingChangesAlertDialog() {
     executeInPreviousAppInstance { component ->
       addTestOverriddenFeatureFlagToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestApplicationComponent()
-    launch(FeatureFlagsTestActivity::class.java).use { scenario ->
+    launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(0)
@@ -774,20 +744,9 @@ class FeatureFlagsFragmentTest {
 
       pressBack()
       testCoroutineDispatchers.runCurrent()
-      scenario.close()
-    }
-
-    launch(FeatureFlagsTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.feature_flags_recycler_view,
-          position = 0,
-          targetViewId = R.id.reset_button
-        )
-      ).check(matches(not(isDisplayed())))
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -912,7 +871,7 @@ class FeatureFlagsFragmentTest {
   }
 
   @Test
-  fun testFeatureFlagsFragment_modifyFlag_clickSave_reopenDashboard_valuePersists() {
+  fun testFeatureFlagsFragment_navigateBackWithFlagModified_displaysPendingChangesAlertDialog() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -925,25 +884,64 @@ class FeatureFlagsFragmentTest {
         )
       ).perform(click())
 
-      onView(withId(R.id.save_button)).perform(click())
+      pressBack()
       testCoroutineDispatchers.runCurrent()
 
-      launch(FeatureFlagsTestActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.feature_flags_recycler_view,
-            position = 0,
-            targetViewId = R.id.feature_flag_switch
-          )
-        ).check(matches(isChecked()))
-      }
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
   @Test
-  fun testFeatureFlagsFragment_modifyFlagAndRevert_hasNoBackgroundColor() {
+  fun testFeatureFlagsFragment_toggleFlagOnAndOff_navigateBack_skipsPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_noChanges_navigateBack_skipsPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_toggleFlagOnAndOff_hasNoBackgroundColor() {
     setUpTestApplicationComponent()
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1069,6 +1067,182 @@ class FeatureFlagsFragmentTest {
           targetViewId = R.id.currently_overridden_alert_icon
         )
       ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_navigateBackWithFlagModified_clickDiscard_discardsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralFeatureFlags()[0].currentValue
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_discard_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = initialValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_pressBack_saveChanges_clickRestartInDialog_exitsApp() {
+    setUpTestApplicationComponent()
+    val exception = assertThrows<SecurityException>() {
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .perform(click())
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_clickSaveButton_clickRestartInDialog_savesChangesAndExitsApp() {
+    setUpTestApplicationComponent()
+    val exception = assertThrows<SecurityException>() {
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .perform(click())
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagAndSaveOnBackNavigation_persistsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralFeatureFlags()[0].currentValue
+    val exception = assertThrows<SecurityException>() {
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !initialValue
+      )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_modifyFlagAndSaveViaToolbar_persistsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralFeatureFlags()[0].currentValue
+    val exception = assertThrows<SecurityException>() {
+      launch(FeatureFlagsTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.feature_flags_recycler_view,
+            position = 0,
+            targetViewId = R.id.feature_flag_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_title))
+          .inRoot(isDialog())
+          .perform(click())
+      }
+    }
+    assertThat(exception.message).contains("System.exit()")
+
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyFeatureFlagSwitchState(
+        position = 0,
+        expectedState = !initialValue
+      )
     }
   }
 

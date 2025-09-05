@@ -39,6 +39,7 @@ class FeatureFlagsFragment : InjectableFragment() {
   ): View {
     val featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     val resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
@@ -83,5 +84,10 @@ class FeatureFlagsFragment : InjectableFragment() {
       .build()
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    featureFlagsFragmentPresenter.handleOnDestroy()
   }
 }
