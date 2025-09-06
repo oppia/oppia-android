@@ -46,7 +46,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
             "Remote parameters downloaded successfully."
           )
           handleDownloadComplete(binding)
-        }
+        } else {} // Do nothing.
       }
 
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
@@ -58,6 +58,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       appRestartInterface.restartApp()
       dialog.dismiss()
     }
+
     binding.cancelButton.setOnClickListener {
       forceDownloadRemoteParametersParametersController.cancelRemoteParameterDownload()
       dialog.dismiss()
@@ -70,7 +71,6 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
     binding.forceDownloadMessage.text = resourceHandler
       .getStringInLocale(R.string.force_download_dialog_successfully_downloaded_message_text)
     binding.forceDownloadRestartMessage.visibility = View.VISIBLE
-
     binding.restartButton.apply {
       isEnabled = true
       setTextColor(
