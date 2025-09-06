@@ -46,7 +46,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
             "Remote parameters downloaded successfully."
           )
           handleDownloadComplete(binding)
-        } else {} // Do nothing.
+        }
       }
 
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
