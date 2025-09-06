@@ -48,7 +48,9 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
@@ -1412,6 +1414,50 @@ class PinPasswordActivityTest {
         .perform(editTextInputAction.appendText("3"), closeSoftKeyboard())
       testCoroutineDispatchers.runCurrent()
       intended(hasComponent(ClassroomListActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2Enabled_nonAdminUser_onboardingIncomplete_opensIntroActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    val profileId = ProfileId.newBuilder().setInternalId(userId).build()
+    profileTestHelper.markProfileOnboardingStarted(profileId)
+    launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(IntroActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2Enabled_nonAdminUser_onboardingComplete_opensHomeActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponent()
+    profileTestHelper.markProfileOnboardingEnded(
+      ProfileId.newBuilder().setInternalId(userId).build()
+    )
+    launch<PinPasswordActivity>(
+      PinPasswordActivity.createPinPasswordActivityIntent(
+        context = context,
+        adminPin = adminPin,
+        profileId = userId
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.pin_password_input_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 

@@ -7,9 +7,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.oppia.android.app.model.EphemeralFeatureFlag
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
 import org.oppia.android.app.model.OverriddenFeatureFlag
 import org.oppia.android.app.model.OverriddenPlatformParameter
+import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.data.persistence.PersistentCacheStore
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -113,6 +115,12 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteFlag?.remoteIsEnabled
           ?: flagDefinition.defaultIsEnabled
 
+        val nonOverriddenValue = remoteFlag?.remoteIsEnabled
+          ?: flagDefinition.defaultIsEnabled
+
+        val nonOverriddenSyncStatus = remoteFlag?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
+
         val syncStatus = localFlag?.let { SyncStatus.LOCAL_OVERRIDE }
           ?: remoteFlag?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
@@ -120,6 +128,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         EphemeralFeatureFlag.newBuilder().apply {
           this.id = flagDefinition.id
           this.currentValue = currentValue
+          this.nonOverriddenValue = nonOverriddenValue
+          this.nonOverriddenSyncStatus = nonOverriddenSyncStatus
           this.syncStatus = syncStatus
         }.build()
       }
@@ -154,6 +164,12 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
           ?: remoteParam?.remoteValue
           ?: paramDefinition.defaultValue
 
+        val nonOverriddenValue = remoteParam?.remoteValue
+          ?: paramDefinition.defaultValue
+
+        val nonOverriddenSyncStatus = remoteParam?.syncStatus
+          ?: SyncStatus.NOT_SYNCED_FROM_SERVER
+
         val syncStatus = localParam?.let { SyncStatus.LOCAL_OVERRIDE }
           ?: remoteParam?.syncStatus
           ?: SyncStatus.NOT_SYNCED_FROM_SERVER
@@ -161,6 +177,8 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         EphemeralPlatformParameter.newBuilder().apply {
           this.id = paramDefinition.id
           this.currentValue = currentValue
+          this.nonOverriddenValue = nonOverriddenValue
+          this.nonOverriddenSyncStatus = nonOverriddenSyncStatus
           this.syncStatus = syncStatus
         }.build()
       }
@@ -269,6 +287,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
         val existingOverrides = oldDatabase.overriddenPlatformParameterList.associateBy { it.id }
         val latestValues = existingOverrides.toMutableMap().apply {
+
           overriddenParams.safeForEach { override ->
             this[override.id] = override
           }
@@ -276,6 +295,60 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
         oldDatabase.toBuilder()
           .clearOverriddenPlatformParameter()
           .addAllOverriddenPlatformParameter(latestValues.values)
+          .build()
+      }.await()
+
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+    }
+  }
+
+  /**
+   * Resets the locally overridden feature flags corresponding to the specified [resetIds].
+   *
+   * This removes any locally overridden value for the specified feature flags from the local
+   * override database.
+   *
+   * @param resetIds the IDs of the feature flags to reset
+   * @return a [DataProvider] that completes when the overrides are removed.
+   */
+  fun resetFeatureFlags(resetIds: List<FeatureFlagId>): DataProvider<Any?> {
+    return dataProviders.createInMemoryDataProviderAsync(
+      RESET_OVERRIDDEN_FEATURE_FLAG_PROVIDER_ID
+    ) {
+      databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
+        val updatedOverrides = oldDatabase.overriddenFeatureFlagList
+          .filterNot { it.id in resetIds }
+
+        oldDatabase.toBuilder()
+          .clearOverriddenFeatureFlag()
+          .addAllOverriddenFeatureFlag(updatedOverrides)
+          .build()
+      }.await()
+
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
+    }
+  }
+
+  /**
+   * Resets the locally overridden platform parameters corresponding to the specified [resetIds].
+   *
+   * This removes any locally overridden value for the specified platform parameters from the local
+   * override database.
+   *
+   * @param resetIds the IDs of the platform parameters to reset
+   * @return a [DataProvider] that completes when the overrides are removed.
+   */
+  fun resetPlatformParameters(resetIds: List<PlatformParameterId>): DataProvider<Any?> {
+    return dataProviders.createInMemoryDataProviderAsync(
+      RESET_OVERRIDDEN_PLATFORM_PARAMETER_PROVIDER_ID
+    ) {
+      databaseStore.storeDataAsync(updateInMemoryCache = true) { oldDatabase ->
+        val updatedOverrides = oldDatabase.overriddenPlatformParameterList
+          .filterNot { it.id in resetIds }
+
+        oldDatabase.toBuilder()
+          .clearOverriddenPlatformParameter()
+          .addAllOverriddenPlatformParameter(updatedOverrides)
           .build()
       }.await()
 
@@ -292,6 +365,10 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
       "update_overridden_feature_flags"
     private const val UPDATE_OVERRIDDEN_PLATFORM_PARAMETERS_PROVIDER_ID =
       "update_overridden_platform_parameters"
+    private const val RESET_OVERRIDDEN_PLATFORM_PARAMETER_PROVIDER_ID =
+      "reset_overridden_platform_parameter"
+    private const val RESET_OVERRIDDEN_FEATURE_FLAG_PROVIDER_ID =
+      "reset_overridden_feature_flag"
     private const val GET_PARAMETER_INITIALIZATION_STATUS_PROVIDER_ID =
       "get_parameter_initialization_status"
     private const val DATABASE_NAME =

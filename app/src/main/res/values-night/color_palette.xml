@@ -141,6 +141,7 @@
   <color name="color_palette_hint_dialog_status_bar_color">@color/color_def_catalina_blue</color>
   <color name="color_palette_shared_radio_button_unchecked_color">@color/color_def_stroke_silver</color>
   <color name="color_palette_shared_radio_button_checked_color">@color/color_def_radio_green</color>
+  <color name="color_palette_shared_submitted_radio_button_color">@color/color_def_accessible_light_grey_2</color>
   <color name="color_palette_shared_dialogs_radio_button_unchecked_color">@color/color_def_white</color>
   <color name="color_palette_shared_dialogs_radio_button_checked_color">@color/color_def_oppia_turquoise</color>
   <color name="color_palette_topic_revision_background_color">@color/color_def_oppia_light_black</color>
@@ -252,6 +253,8 @@
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_black_3</color>
   <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_2</color>
   <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_greenish_black_2</color>
-  <!-- FLASHBACK -->
-  <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
+  <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
+  <color name="color_palette_overridden_background_color">@color/color_def_dark_yellow</color>
+  <color name="color_palette_modified_background_color">@color/color_def_deep_blue</color>
+  <color name="color_palette_save_button_active_color">@color/color_def_bright_cyan</color>
 </resources>
