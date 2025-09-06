@@ -5,7 +5,7 @@ import org.oppia.android.util.data.DataProvider
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/** Controller for force-downloading platform parameters. */
+/** Controller for force-downloading remote platform parameters and feature flags. */
 @Singleton
 class ForceDownloadRemoteParametersController @Inject constructor(
   private val platformParameterControllerDebugImpl: PlatformParameterControllerDebugImpl
@@ -16,7 +16,7 @@ class ForceDownloadRemoteParametersController @Inject constructor(
   }
 
   /** Cancels an ongoing force download of remote platform parameters. */
-  fun cancelRemoteParameterDownloadDownload(): Boolean {
-    return platformParameterControllerDebugImpl.cancelRemoteParameterDownloads()
+  fun cancelRemoteParameterDownload(): Boolean {
+    return platformParameterControllerDebugImpl.cancelRemoteParameterDownload()
   }
 }

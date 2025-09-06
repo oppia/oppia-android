@@ -19,20 +19,22 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val activity: AppCompatActivity,
   private val oppiaLogger: OppiaLogger,
-  private val resourceHandler: AppLanguageResourceHandler
+  private val resourceHandler: AppLanguageResourceHandler,
+  private val forceDownloadRemoteParametersParametersController:
+    ForceDownloadRemoteParametersController
 ) {
-  /** Creates a dialog to display the status of the ongoing remote download and then restart. */
-  fun handleOnCreateDialog(
-    forceDownloadRemoteParametersParametersController:
-      ForceDownloadRemoteParametersController
-  ): Dialog {
+  /**
+   *  Creates a dialog to display the status of the ongoing remote parameters download and then
+   *  restart.
+   */
+  fun handleOnCreateDialog(): Dialog {
     val binding = ForceDownloadRemoteParametersDialogFragmentBinding.inflate(
       activity.layoutInflater,
       /* parent= */ null,
       /* attachToRoot= */ false
     )
     binding.lifecycleOwner = fragment
-    binding.isEnabled = false
+    binding.isRestartEnabled = false
 
     forceDownloadRemoteParametersParametersController
       .downloadRemoteParameters().toLiveData().observe(fragment) {
@@ -42,7 +44,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
               "ForceDownloadRemoteParametersDialog",
               "Remote parameters downloaded successfully."
             )
-            onDownloadCompleter(binding)
+            handleDownloadComplete(binding)
           }
           is AsyncResult.Failure -> {}
           is AsyncResult.Pending -> {}
@@ -60,18 +62,17 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       activity.finishAffinity()
     }
     binding.cancelButton.setOnClickListener {
-      forceDownloadRemoteParametersParametersController.cancelRemoteParameterDownloadDownload()
+      forceDownloadRemoteParametersParametersController.cancelRemoteParameterDownload()
       dialog.dismiss()
     }
     return dialog
   }
 
-  private fun onDownloadCompleter(binding: ForceDownloadRemoteParametersDialogFragmentBinding) {
+  private fun handleDownloadComplete(binding: ForceDownloadRemoteParametersDialogFragmentBinding) {
     binding.cancelButton.visibility = View.GONE
     binding.forceDownloadMessage.text = resourceHandler
       .getStringInLocale(R.string.force_download_dialog_successfully_downloaded_message_text)
     binding.forceDownloadRestartMessage.visibility = View.VISIBLE
-    binding.restartButton.isEnabled = true
-    binding.isEnabled = true
+    binding.isRestartEnabled = true
   }
 }

@@ -22,8 +22,6 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val platformParametersListener: RouteToPlatformParametersListener
 ) : DeveloperOptionsItemViewModel() {
 
-  // TODO(#5951): Add the functionality to display the last synced timestamps. .
-
   /** Identifies whether the feature to show all hints and solution is enabled or disabled. */
   val isShowAllHintsAndSolutionEnabled =
     ObservableField<Boolean>(showAllHintsAndSolutionController.getShowAllHintsAndSolution())
@@ -48,7 +46,10 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
     platformParametersListener.routeToPlatformParameters()
   }
 
-  /** Handles clicks on the force downloads button by initiating a download. */
+  /**
+   * Initiates a request to download the remote parameters from the web server when the download
+   * button is clicked.
+   */
   fun onForceDownloadRemoteParametersButtonClicked() {
     forceDownloadRemoteParametersButtonClickListener.forceDownloadRemoteParameters()
   }

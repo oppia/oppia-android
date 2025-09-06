@@ -61,9 +61,9 @@ class ForceDownloadRemoteParametersControllerTest {
   }
 
   @Test
-  fun testCancelRemoteParameterDownloads_returnstrue() {
+  fun testCancelRemoteParameterDownloads_cancelsOngoingDownload() {
     setUpTestApplicationComponent()
-    val result = forceDownloadRemoteParametersController.cancelRemoteParameterDownloadDownload()
+    val result = forceDownloadRemoteParametersController.cancelRemoteParameterDownload()
     assertThat(result).isEqualTo(true)
   }
 

@@ -5,7 +5,7 @@
   <data>
 
     <variable
-      name="isEnabled"
+      name="isRestartEnabled"
       type="boolean" />
   </data>
 
@@ -72,9 +72,9 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"
-      android:textColor="@{isEnabled ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color}"
-      android:background="@{isEnabled ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
-      android:enabled="false"
+      android:textColor="@{isRestartEnabled ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color}"
+      android:background="@{isRestartEnabled ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
+      android:enabled="@{isRestartEnabled}"
       android:minWidth="80dp"
       android:text="@string/force_download_dialog_restart_button_text"
       app:layout_constraintBottom_toBottomOf="parent"

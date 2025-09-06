@@ -194,7 +194,7 @@
       android:paddingStart="16dp"
       android:paddingTop="8dp"
       android:paddingEnd="16dp"
-      android:paddingBottom="10dp"
+      android:paddingBottom="8dp"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -211,7 +211,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-<!-- TODO(#5951): Add a textView to display last sync timestamp. -->
+<!-- TODO(#5950): Add a TextView for displaying the actual server last-synced timestamp. -->
 
       <Button
         android:id="@+id/force_download_button"
