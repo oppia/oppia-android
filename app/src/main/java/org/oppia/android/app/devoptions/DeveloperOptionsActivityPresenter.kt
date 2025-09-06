@@ -71,7 +71,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     dialog.showNow(activity.supportFragmentManager, TAG_FORCE_DOWNLOAD_DIALOG)
   }
 
-  /** Called when restart is triggered by [ForceDownloadRemoteParametersDialogFragment] */
+  /** Called when restart is triggered by [ForceDownloadRemoteParametersDialogFragment]. */
   fun restartApp() {
     val intent = Intent(activity, SplashActivity::class.java).also {
       it.action = Intent.ACTION_MAIN
