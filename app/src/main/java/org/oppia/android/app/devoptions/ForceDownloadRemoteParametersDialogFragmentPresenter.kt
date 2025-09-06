@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import app.src.main.java.org.oppia.android.app.devoptions.AppRestartListener
 import org.oppia.android.app.databinding.databinding.ForceDownloadRemoteParametersDialogFragmentBinding
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -46,7 +45,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
             "Remote parameters downloaded successfully."
           )
           handleDownloadComplete(binding)
-        } else {} // Do nothing.
+        }
       }
 
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)

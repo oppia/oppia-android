@@ -3,7 +3,6 @@ package org.oppia.android.app.devoptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import app.src.main.java.org.oppia.android.app.devoptions.AppRestartListener
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.devoptions.featureflags.FeatureFlagsActivity
