@@ -211,7 +211,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-<!-- TODO(#5950): Add a TextView for displaying the actual server last-synced timestamp. -->
+      <!-- TODO(#5950): Add a TextView for displaying the actual server last-synced timestamp. -->
 
       <Button
         android:id="@+id/force_download_button"
