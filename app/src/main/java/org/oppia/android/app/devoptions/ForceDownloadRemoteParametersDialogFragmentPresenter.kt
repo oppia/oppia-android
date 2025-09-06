@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import app.src.main.java.org.oppia.android.app.devoptions.AppRestartListener
 import org.oppia.android.app.databinding.databinding.ForceDownloadRemoteParametersDialogFragmentBinding
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -34,21 +36,17 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
       /* attachToRoot= */ false
     )
     binding.lifecycleOwner = fragment
-    binding.isRestartEnabled = false
+    val appRestartInterface = activity as AppRestartListener
 
     forceDownloadRemoteParametersParametersController
       .downloadRemoteParameters().toLiveData().observe(fragment) {
-        when (it) {
-          is AsyncResult.Success -> {
-            oppiaLogger.d(
-              "ForceDownloadRemoteParametersDialog",
-              "Remote parameters downloaded successfully."
-            )
-            handleDownloadComplete(binding)
-          }
-          is AsyncResult.Failure -> {}
-          is AsyncResult.Pending -> {}
-        }
+        if (it is AsyncResult.Success) {
+          oppiaLogger.d(
+            "ForceDownloadRemoteParametersDialog",
+            "Remote parameters downloaded successfully."
+          )
+          handleDownloadComplete(binding)
+        } else {} // Do nothing.
       }
 
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
@@ -57,10 +55,10 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
     dialog.setCanceledOnTouchOutside(false)
 
     binding.restartButton.setOnClickListener {
-      (activity as DeveloperOptionsActivity).developerOptionsActivityPresenter.markRestartRequired()
+      appRestartInterface.restartApp()
       dialog.dismiss()
-      activity.finishAffinity()
     }
+
     binding.cancelButton.setOnClickListener {
       forceDownloadRemoteParametersParametersController.cancelRemoteParameterDownload()
       dialog.dismiss()
@@ -73,6 +71,15 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
     binding.forceDownloadMessage.text = resourceHandler
       .getStringInLocale(R.string.force_download_dialog_successfully_downloaded_message_text)
     binding.forceDownloadRestartMessage.visibility = View.VISIBLE
-    binding.isRestartEnabled = true
+    binding.restartButton.apply {
+      isEnabled = true
+      setTextColor(
+        ContextCompat.getColor(
+          fragment.requireContext(),
+          R.color.component_color_shared_secondary_4_text_color
+        )
+      )
+      setBackgroundResource(R.drawable.state_button_primary_background)
+    }
   }
 }
