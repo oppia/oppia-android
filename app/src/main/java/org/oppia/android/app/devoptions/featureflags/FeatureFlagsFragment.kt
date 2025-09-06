@@ -39,6 +39,7 @@ class FeatureFlagsFragment : InjectableFragment() {
   ): View {
     val featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     val resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    var isPendingDialogOpen = false
 
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
@@ -51,13 +52,15 @@ class FeatureFlagsFragment : InjectableFragment() {
       args?.resetFeatureFlagsList?.forEach {
         resetFlags[it.id] = it.overriddenValue
       }
+      isPendingDialogOpen = args?.isPendingDialogOpen ?: false
     }
 
     return featureFlagsFragmentPresenter.handleCreateView(
       inflater,
       container,
       featureFlagStates,
-      resetFlags
+      resetFlags,
+      isPendingDialogOpen
     )
   }
 
@@ -77,10 +80,12 @@ class FeatureFlagsFragment : InjectableFragment() {
         .setOverriddenValue(it.value)
         .build()
     }
+    val isPendingDialogOpen = featureFlagsFragmentPresenter.isPendingDialogOpen
 
     val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
       .addAllResetFeatureFlags(resetFlags)
+      .setIsPendingDialogOpen(isPendingDialogOpen)
       .build()
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)

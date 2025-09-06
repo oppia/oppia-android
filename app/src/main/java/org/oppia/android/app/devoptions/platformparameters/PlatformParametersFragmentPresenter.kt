@@ -55,12 +55,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
   private var restartRequired: Boolean = false
 
+  /** Indicates whether the pending changes dialog is open. */
+  var isPendingDialogOpen: Boolean = false
+
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
-    resetParameters: Map<PlatformParameterId, PlatformParameterValue>
+    resetParameters: Map<PlatformParameterId, PlatformParameterValue>,
+    isPendingDialogOpen: Boolean
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
@@ -86,21 +90,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       }
     )
 
-    activity.onBackPressedDispatcher.addCallback(
-      fragment,
-      object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          onBackNavigation()
-        }
-      }
-    )
-
     if (platformParameterStates.isNotEmpty()) {
       platformParameterViewModel.platformParameterStates.value =
         platformParameterStates.toMutableMap()
     }
     if (resetParameters.isNotEmpty()) {
       platformParameterViewModel.resetParameters.value = resetParameters.toMutableMap()
+    }
+
+    if (isPendingDialogOpen) {
+      onBackNavigation()
     }
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
@@ -147,6 +146,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   private fun showPendingChangesDialog(overriddenParameters: List<OverriddenPlatformParameter>) {
+    isPendingDialogOpen = true
     val dialogBinding = PendingChangesDialogFragmentBinding.inflate(
       LayoutInflater.from(activity),
       /* root= */ null,
@@ -158,6 +158,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .create()
 
     dialogBinding.saveButton.setOnClickListener {
+      isPendingDialogOpen = false
       dialog.dismiss()
       savePendingPlatformParameters(overriddenParameters)
     }
@@ -480,7 +481,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun handleOnDestroy() {
-    if (restartRequired) {
+    if (restartRequired && activity.isChangingConfigurations) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)

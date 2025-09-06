@@ -42,7 +42,7 @@ class PlatformParametersFragment : InjectableFragment() {
     val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
     val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-
+    var isPendingDialogOpen = false
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -54,6 +54,7 @@ class PlatformParametersFragment : InjectableFragment() {
       args?.resetPlatformParametersList?.forEach {
         resetParamList[it.id] = it.overriddenValue
       }
+      isPendingDialogOpen = args?.isPendingDialogOpen ?: false
     }
 
     return platformParametersFragmentPresenter
@@ -61,7 +62,8 @@ class PlatformParametersFragment : InjectableFragment() {
         inflater,
         container,
         platformParameterStates,
-        resetParamList
+        resetParamList,
+        isPendingDialogOpen
       )
   }
 
@@ -85,9 +87,13 @@ class PlatformParametersFragment : InjectableFragment() {
           .setOverriddenValue(value)
           .build()
       }
+
+    val isPendingDialogOpen = platformParametersFragmentPresenter.isPendingDialogOpen
+
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
       .addAllResetPlatformParameters(resetParamList)
+      .setIsPendingDialogOpen(isPendingDialogOpen)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto

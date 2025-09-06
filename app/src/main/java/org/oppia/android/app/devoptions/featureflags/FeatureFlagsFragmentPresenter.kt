@@ -46,12 +46,16 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
   private var restartRequired: Boolean = false
 
+  /** Indicates whether the pending changes dialog is open. */
+  var isPendingDialogOpen: Boolean = false
+
   /** Called when [FeatureFlagsFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     featureFlagStates: Map<FeatureFlagId, Boolean>,
-    resetFlags: Map<FeatureFlagId, Boolean>
+    resetFlags: Map<FeatureFlagId, Boolean>,
+    isPendingDialogOpen: Boolean
   ): View {
     binding = FeatureFlagsFragmentBinding.inflate(
       inflater,
@@ -80,6 +84,10 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     }
     if (resetFlags.isNotEmpty()) {
       featureFlagsViewModel.resetFlags.value = resetFlags.toMutableMap()
+    }
+
+    if (isPendingDialogOpen) {
+      onBackNavigation()
     }
 
     binding.apply {
@@ -118,6 +126,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   private fun showPendingChangesDialog(overriddenFlags: List<OverriddenFeatureFlag>) {
+    isPendingDialogOpen = true
     val dialogBinding = PendingChangesDialogFragmentBinding.inflate(
       LayoutInflater.from(activity),
       /* root= */ null,
@@ -128,6 +137,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       .create()
 
     dialogBinding.saveButton.setOnClickListener {
+      isPendingDialogOpen = false
       dialog.dismiss()
       savePendingFeatureFlags(overriddenFlags)
     }
@@ -278,7 +288,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun handleOnDestroy() {
-    if (restartRequired) {
+    if (restartRequired && !activity.isChangingConfigurations) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
