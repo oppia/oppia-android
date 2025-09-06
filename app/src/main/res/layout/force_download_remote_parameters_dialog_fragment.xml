@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data>
-
-    <variable
-      name="isRestartEnabled"
-      type="boolean" />
-  </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -72,11 +65,11 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="24dp"
-      android:textColor="@{isRestartEnabled ? @color/component_color_shared_secondary_4_text_color : @color/component_color_shared_button_inactive_text_color}"
-      android:background="@{isRestartEnabled ? @drawable/state_button_primary_background : @drawable/start_button_transparent_background}"
-      android:enabled="@{isRestartEnabled}"
+      android:background="@drawable/start_button_transparent_background"
+      android:enabled="false"
       android:minWidth="80dp"
       android:text="@string/force_download_dialog_restart_button_text"
+      android:textColor="@color/component_color_shared_button_inactive_text_color"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/force_download_restart_message" />

@@ -21,7 +21,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
-  private var isRestartRequired: Boolean = false
 
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
@@ -72,22 +71,16 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
     dialog.showNow(activity.supportFragmentManager, TAG_FORCE_DOWNLOAD_DIALOG)
   }
 
-  /** Called when [DeveloperOptionsActivity] is destroyed. */
-  fun handleOnDestroy() {
-    if (isRestartRequired) {
-      val intent = Intent(activity, SplashActivity::class.java).also {
-        it.action = Intent.ACTION_MAIN
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      activity.startActivity(intent)
-      // App is terminated to ensure a fresh restart and kill all the current process
-      // so that ProcessState can be reinitialised on the fresh restart.
-      exitProcess(0)
+  /** Called when restart is triggered by [ForceDownloadRemoteParametersDialogFragment] */
+  fun restartApp() {
+    val intent = Intent(activity, SplashActivity::class.java).also {
+      it.action = Intent.ACTION_MAIN
+      it.addCategory(Intent.CATEGORY_LAUNCHER)
     }
-  }
-
-  /** Marks that a restart is required when the activity is destroyed. */
-  fun markRestartRequired() {
-    isRestartRequired = true
+    activity.finishAffinity()
+    activity.startActivity(intent)
+    // App is terminated to ensure a fresh restart and kill all the current process
+    // so that ProcessState can be reinitialised on the fresh restart.
+    exitProcess(0)
   }
 }
