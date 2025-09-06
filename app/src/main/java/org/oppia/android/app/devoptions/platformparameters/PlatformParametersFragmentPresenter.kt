@@ -481,7 +481,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun handleOnDestroy() {
-    if (restartRequired && activity.isChangingConfigurations) {
+    if (restartRequired && !activity.isChangingConfigurations) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
