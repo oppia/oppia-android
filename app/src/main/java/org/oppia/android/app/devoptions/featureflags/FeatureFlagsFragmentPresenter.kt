@@ -146,8 +146,9 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       dialog.dismiss()
       activity.finish()
     }
-
-    dialog.show()
+    if (!activity.isFinishing && !activity.isDestroyed) {
+      dialog.show()
+    }
   }
 
   private fun savePendingFeatureFlags(overriddenFlags: List<OverriddenFeatureFlag>) {
@@ -200,7 +201,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            restartRequired = true
             val dialog = AppRestartDialogFragment.newInstance()
             dialog.showNow(fragment.childFragmentManager, TAG_FEATURE_FLAG_RESTART_DIALOG)
           }
@@ -284,23 +284,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Called when [FeatureFlagsFragment] is destroyed.
-   * Performs a fresh restart of the app to load any updated feature flag states, if required.
-   */
-  fun handleOnDestroy() {
-    if (restartRequired && !activity.isChangingConfigurations) {
-      val intent = Intent(activity, SplashActivity::class.java).also {
-        it.action = Intent.ACTION_MAIN
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      activity.startActivity(intent)
-      // App is terminated to ensure a fresh restart and kill all the current process
-      // so that ProcessState can be reinitialised on the fresh restart.
-      exitProcess(0)
-    }
-  }
-
-  /**
    * Returns the feature flags which have been reset.
    *
    * @return a [MutableMap] mapping each [FeatureFlagId] to its boolean reset state,
@@ -318,5 +301,27 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
    */
   fun getFeatureFlagStates(): Map<FeatureFlagId, Boolean> {
     return featureFlagsViewModel.featureFlagStates.value ?: mapOf()
+  }
+
+  /** Marks that a restart is required when the fragment is destroyed. */
+  fun markRestartRequired() {
+    restartRequired = true
+  }
+
+  /**
+   * Called when [FeatureFlagsFragment] is destroyed.
+   * Performs a fresh restart of the app to load any updated feature flag states, if required.
+   */
+  fun handleOnDestroy() {
+    if (restartRequired) {
+      val intent = Intent(activity, SplashActivity::class.java).also {
+        it.action = Intent.ACTION_MAIN
+        it.addCategory(Intent.CATEGORY_LAUNCHER)
+      }
+      activity.startActivity(intent)
+      // App is terminated to ensure a fresh restart and kill all the current process
+      // so that ProcessState can be reinitialised on the fresh restart.
+      exitProcess(0)
+    }
   }
 }

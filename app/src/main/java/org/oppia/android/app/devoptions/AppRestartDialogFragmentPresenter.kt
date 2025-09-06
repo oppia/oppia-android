@@ -5,6 +5,8 @@ import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AppRestartDialogFragmentBinding
+import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
+import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 
@@ -28,6 +30,12 @@ class AppRestartDialogFragmentPresenter @Inject constructor(
     dialog.setCanceledOnTouchOutside(false)
 
     binding.restartButton.setOnClickListener {
+      val parentFragment = fragment.parentFragment
+      if (parentFragment is FeatureFlagsFragment) {
+        parentFragment.featureFlagsFragmentPresenter.markRestartRequired()
+      } else if (parentFragment is PlatformParametersFragment) {
+        parentFragment.platformParametersFragmentPresenter.markRestartRequired()
+      }
       dialog.dismiss()
       activity.finishAffinity()
     }

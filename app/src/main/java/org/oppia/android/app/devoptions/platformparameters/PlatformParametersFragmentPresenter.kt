@@ -167,7 +167,9 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       dialog.dismiss()
       activity.finish()
     }
-    dialog.show()
+    if (!activity.isFinishing && !activity.isDestroyed) {
+      dialog.show()
+    }
   }
 
   private fun savePendingPlatformParameters(
@@ -224,7 +226,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            restartRequired = true
             val dialog = AppRestartDialogFragment.newInstance()
             dialog.showNow(fragment.childFragmentManager, TAG_PLATFORM_PARAMETER_RESTART_DIALOG)
           }
@@ -476,12 +477,17 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     return platformParameterViewModel.resetParameters.value ?: mutableMapOf()
   }
 
+  /** Marks that a restart is required when the fragment is destroyed. */
+  fun markRestartRequired() {
+    restartRequired = true
+  }
+
   /**
    * Called when [PlatformParametersFragment] is destroyed.
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun handleOnDestroy() {
-    if (restartRequired && !activity.isChangingConfigurations) {
+    if (restartRequired) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
