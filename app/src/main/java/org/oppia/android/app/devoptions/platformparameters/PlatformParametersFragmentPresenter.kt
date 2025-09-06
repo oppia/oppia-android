@@ -53,7 +53,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
-  private var restartRequired: Boolean = false
 
   /** Indicates whether the pending changes dialog is open. */
   var isPendingDialogOpen: Boolean = false
@@ -477,25 +476,19 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     return platformParameterViewModel.resetParameters.value ?: mutableMapOf()
   }
 
-  /** Marks that a restart is required when the fragment is destroyed. */
-  fun markRestartRequired() {
-    restartRequired = true
-  }
-
   /**
-   * Called when [PlatformParametersFragment] is destroyed.
+   * Called when restart is triggered by [AppRestartDialogFragment].
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
-  fun handleOnDestroy() {
-    if (restartRequired) {
+  fun appRestart() {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
       }
+      activity.finishAffinity()
       activity.startActivity(intent)
       // App is terminated to ensure a fresh restart and kill all the current process
       // so that ProcessState can be reinitialised on the fresh restart.
       exitProcess(0)
-    }
   }
 }

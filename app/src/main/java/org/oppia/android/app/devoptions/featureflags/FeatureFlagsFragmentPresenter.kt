@@ -44,7 +44,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var binding: FeatureFlagsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
-  private var restartRequired: Boolean = false
 
   /** Indicates whether the pending changes dialog is open. */
   var isPendingDialogOpen: Boolean = false
@@ -303,25 +302,19 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     return featureFlagsViewModel.featureFlagStates.value ?: mapOf()
   }
 
-  /** Marks that a restart is required when the fragment is destroyed. */
-  fun markRestartRequired() {
-    restartRequired = true
-  }
-
   /**
-   * Called when [FeatureFlagsFragment] is destroyed.
+   * Called when restart is triggered by [AppRestartDialogFragment].
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
-  fun handleOnDestroy() {
-    if (restartRequired) {
+  fun restartApp() {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
       }
+      activity.finishAffinity()
       activity.startActivity(intent)
       // App is terminated to ensure a fresh restart and kill all the current process
       // so that ProcessState can be reinitialised on the fresh restart.
       exitProcess(0)
-    }
   }
 }

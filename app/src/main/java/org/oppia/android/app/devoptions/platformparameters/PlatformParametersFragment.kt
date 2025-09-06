@@ -5,18 +5,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import app.src.main.java.org.oppia.android.app.devoptions.AppRestartListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
-import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParametersFragmentStateBundle
 import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify platform parameters of the app. */
-class PlatformParametersFragment : InjectableFragment() {
+class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
@@ -100,8 +101,7 @@ class PlatformParametersFragment : InjectableFragment() {
     )
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    platformParametersFragmentPresenter.handleOnDestroy()
+  override fun restartApp() {
+    platformParametersFragmentPresenter.appRestart()
   }
 }

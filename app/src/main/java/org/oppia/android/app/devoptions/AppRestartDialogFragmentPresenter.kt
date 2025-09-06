@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import app.src.main.java.org.oppia.android.app.devoptions.AppRestartListener
 import org.oppia.android.app.databinding.databinding.AppRestartDialogFragmentBinding
 import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
@@ -24,20 +25,15 @@ class AppRestartDialogFragmentPresenter @Inject constructor(
     )
     binding.lifecycleOwner = fragment
 
+    val appRestartInterface = fragment.parentFragment as AppRestartListener
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()
     dialog.setCanceledOnTouchOutside(false)
 
     binding.restartButton.setOnClickListener {
-      val parentFragment = fragment.parentFragment
-      if (parentFragment is FeatureFlagsFragment) {
-        parentFragment.featureFlagsFragmentPresenter.markRestartRequired()
-      } else if (parentFragment is PlatformParametersFragment) {
-        parentFragment.platformParametersFragmentPresenter.markRestartRequired()
-      }
+      appRestartInterface.restartApp()
       dialog.dismiss()
-      activity.finishAffinity()
     }
     return dialog
   }
