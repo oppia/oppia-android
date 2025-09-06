@@ -4,10 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import app.src.main.java.org.oppia.android.app.devoptions.AppRestartListener
 import org.oppia.android.app.databinding.databinding.AppRestartDialogFragmentBinding
-import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
-import org.oppia.android.app.devoptions.platformparameters.PlatformParametersFragment
 import org.oppia.android.app.ui.R
 import javax.inject.Inject
 

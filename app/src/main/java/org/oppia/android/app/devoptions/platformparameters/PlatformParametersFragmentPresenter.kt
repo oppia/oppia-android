@@ -481,14 +481,14 @@ class PlatformParametersFragmentPresenter @Inject constructor(
    * Performs a fresh restart of the app to load any updated feature flag states, if required.
    */
   fun appRestart() {
-      val intent = Intent(activity, SplashActivity::class.java).also {
-        it.action = Intent.ACTION_MAIN
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      activity.finishAffinity()
-      activity.startActivity(intent)
-      // App is terminated to ensure a fresh restart and kill all the current process
-      // so that ProcessState can be reinitialised on the fresh restart.
-      exitProcess(0)
+    val intent = Intent(activity, SplashActivity::class.java).also {
+      it.action = Intent.ACTION_MAIN
+      it.addCategory(Intent.CATEGORY_LAUNCHER)
+    }
+    activity.finishAffinity()
+    activity.startActivity(intent)
+    // App is terminated to ensure a fresh restart and kill all the current process
+    // so that ProcessState can be reinitialised on the fresh restart.
+    exitProcess(0)
   }
 }
