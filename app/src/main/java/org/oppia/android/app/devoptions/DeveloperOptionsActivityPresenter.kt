@@ -21,7 +21,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 ) {
   private lateinit var navigationDrawerFragment: NavigationDrawerFragment
   private lateinit var binding: DeveloperOptionsActivityBinding
-  private var restartRequired: Boolean = false
+  private var isRestartRequired: Boolean = false
 
   fun handleOnCreate() {
     binding = DataBindingUtil.setContentView(
@@ -74,7 +74,7 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 
   /** Called when [DeveloperOptionsActivity] is destroyed. */
   fun handleOnDestroy() {
-    if (restartRequired) {
+    if (isRestartRequired) {
       val intent = Intent(activity, SplashActivity::class.java).also {
         it.action = Intent.ACTION_MAIN
         it.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -88,6 +88,6 @@ class DeveloperOptionsActivityPresenter @Inject constructor(
 
   /** Marks that a restart is required when the activity is destroyed. */
   fun markRestartRequired() {
-    restartRequired = true
+    isRestartRequired = true
   }
 }

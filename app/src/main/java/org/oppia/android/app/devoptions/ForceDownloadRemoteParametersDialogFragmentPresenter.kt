@@ -48,6 +48,7 @@ class ForceDownloadRemoteParametersDialogFragmentPresenter @Inject constructor(
           }
           is AsyncResult.Failure -> {}
           is AsyncResult.Pending -> {}
+          else -> {} // do nothing
         }
       }
 
