@@ -623,6 +623,7 @@ class DeveloperOptionsFragmentTest {
     assertThat(cause).isInstanceOf(SecurityException::class.java)
     assertThat(cause?.message).contains("System.exit()")
   }
+
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
     return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
   }

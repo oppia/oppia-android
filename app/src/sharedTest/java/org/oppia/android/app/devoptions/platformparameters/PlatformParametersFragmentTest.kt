@@ -1622,6 +1622,7 @@ class PlatformParametersFragmentTest {
         testCoroutineDispatchers.runCurrent()
       }
     }
+
     val cause = performException.cause
     assertThat(cause).isInstanceOf(SecurityException::class.java)
     assertThat(cause?.message).contains("System.exit()")
@@ -1764,6 +1765,7 @@ class PlatformParametersFragmentTest {
           targetViewId = R.id.platform_parameter_switch
         )
       ).perform(click())
+
       onView(withId(R.id.save_button)).perform(click())
       testCoroutineDispatchers.runCurrent()
 
