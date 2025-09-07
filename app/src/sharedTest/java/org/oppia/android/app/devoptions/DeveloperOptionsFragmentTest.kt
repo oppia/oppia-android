@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -597,6 +598,31 @@ class DeveloperOptionsFragmentTest {
     }
   }
 
+  @Test
+  fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickRestart_exitsApp() {
+    val performException = assertThrows<PerformException>() {
+      launch<DeveloperOptionsTestActivity>(
+        createDeveloperOptionsTestActivityIntent(internalProfileId)
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(position = 2)
+        onView(withId(R.id.force_download_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.force_download_dialog_title_text))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+
+        onView(withId(R.id.restart_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
+  }
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
     return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
   }

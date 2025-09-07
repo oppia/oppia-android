@@ -37,7 +37,8 @@ import kotlin.system.exitProcess
 const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
 
 /** Tag for displaying [PendingChangesDialogFragment]. */
-const val TAG_PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG = "FEATURE_FLAG_PENDING_CHANGES_DIALOG_TAG"
+const val TAG_PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG =
+  "PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG_TAG"
 
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
@@ -459,8 +460,8 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Called when restart is triggered by [AppRestartDialogFragment].
-   * Performs a fresh restart of the app to load any updated feature flag states, if required.
+   * Performs a fresh restart of the app to reload platform parameters states and reinitialize
+   * the app processState.
    */
   fun appRestart() {
     val intent = Intent(activity, SplashActivity::class.java).also {

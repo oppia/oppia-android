@@ -12,6 +12,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -98,6 +99,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
@@ -1593,90 +1595,104 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParam_navigateBack_clickSave_showRestartDialogExitApp() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenerio ->
-      testCoroutineDispatchers.runCurrent()
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
 
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.pending_changes_dialog_save_button_text))
-        .inRoot(isDialog())
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
 
-      onView(withId(R.id.restart_button))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      testCoroutineDispatchers.runCurrent()
-      scenerio.close()
+        onView(withId(R.id.restart_button))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
     }
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
   }
 
   @Test
   fun testPlatformParametersFragment_modifyParam_clickToolbarSave_showsRestartDialogExitApp() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenerio ->
-      testCoroutineDispatchers.runCurrent()
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
 
-      onView(withId(R.id.save_button)).perform(click())
+        onView(withId(R.id.save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
 
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withText(R.string.app_restart_dialog_title))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      testCoroutineDispatchers.runCurrent()
-      scenerio.close()
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
     }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
   }
 
   @Test
   fun testPlatformParametersFragment_modifyParamAndSaveOnBackNavigation_persistsChanges() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use { scenerio ->
-      testCoroutineDispatchers.runCurrent()
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
 
-      pressBack()
-      testCoroutineDispatchers.runCurrent()
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.pending_changes_dialog_save_button_text))
-        .inRoot(isDialog())
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.app_restart_dialog_title))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-      testCoroutineDispatchers.runCurrent()
-      scenerio.close()
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
     }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
+
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
@@ -1694,26 +1710,31 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParamAndSaveViaToolbar_persistsChanges() {
     setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(0)
-      onView(
-        atPositionOnView(
-          recyclerViewId = R.id.platform_parameters_recycler_view,
-          position = 0,
-          targetViewId = R.id.platform_parameter_switch
-        )
-      ).perform(click())
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
 
-      onView(withId(R.id.save_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
+        onView(withId(R.id.save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
 
-      onView(withText(R.string.app_restart_dialog_title))
-        .inRoot(isDialog())
-        .check(matches(isDisplayed()))
-        .perform(click())
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+      }
     }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
 
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1796,7 +1817,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_showsPendingChangesDialog_configChange_dialogPersists() {
+  fun testPlatformParametersFragment_pendingChangesDialog_configChange_dialogPersist() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()

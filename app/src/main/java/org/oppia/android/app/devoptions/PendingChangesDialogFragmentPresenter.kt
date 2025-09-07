@@ -26,7 +26,7 @@ class PendingChangesDialogFragmentPresenter @Inject constructor(
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()
-    dialog.setCanceledOnTouchOutside(false)
+    dialog.setCanceledOnTouchOutside(true)
 
     binding.saveButton.setOnClickListener {
       pendingChangesInterface.savePendingChanges()

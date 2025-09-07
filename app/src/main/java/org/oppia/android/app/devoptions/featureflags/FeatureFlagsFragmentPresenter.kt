@@ -287,8 +287,8 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Called when restart is triggered by [AppRestartDialogFragment].
-   * Performs a fresh restart of the app to load any updated feature flag states, if required.
+   * Performs a fresh restart of the app to reload feature flag states and reinitialize
+   * the app processState.
    */
   fun restartApp() {
     val intent = Intent(activity, SplashActivity::class.java).also {
