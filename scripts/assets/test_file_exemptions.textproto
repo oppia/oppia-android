@@ -383,6 +383,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivity.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -420,6 +424,26 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceCrashButtonClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceDownloadRemoteParametersDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceDownloadRemoteParametersDialogFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceDownloadRemoteParametersButtonClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartDialogFragmentPresenter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1277,6 +1301,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/AppLanguageViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileActivity.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -1385,10 +1413,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingAppLanguageViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt"
   test_file_not_required: true
 }
@@ -1438,6 +1462,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenterV1.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1810,6 +1838,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionSubmittedItemViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3609,6 +3641,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/devoptions/ForceDownloadRemoteParametersController.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/devoptions/ModifyLessonProgressController.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -4786,14 +4822,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/FlashbackButtonViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/flashback/FlashbackConfirmationDialogFragment.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/flashback/FlashbackConfirmationDialogFragmentPresenter.kt"
   test_file_not_required: true
 }
 test_file_exemption {

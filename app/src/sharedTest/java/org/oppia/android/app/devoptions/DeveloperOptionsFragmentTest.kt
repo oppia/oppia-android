@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -576,6 +577,23 @@ class DeveloperOptionsFragmentTest {
       onView(withId(R.id.math_expressions_text_view)).perform(click())
 
       intended(hasComponent(MathExpressionParserActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_navigateToForceDownload_clickDownload_showsDownloadingDialog() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_download_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.force_download_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 

@@ -97,7 +97,7 @@
       app:layout_constraintBottom_toTopOf="@id/view_divider2"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/show_all_hints_solution_constraint_layout" />
+      app:layout_constraintTop_toBottomOf="@id/view_divider1" />
 
     <View
       android:id="@+id/view_divider2"
@@ -172,9 +172,61 @@
       android:paddingBottom="20dp"
       android:text="@string/developer_options_platform_parameters"
       android:textColor="@color/component_color_shared_primary_dark_text_color"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/view_divider5"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/view_divider4" />
+
+    <View
+      android:id="@+id/view_divider5"
+      android:layout_width="match_parent"
+      android:layout_height="2dp"
+      android:background="@color/component_color_shared_divider_color"
+      app:layout_constraintBottom_toTopOf="@id/force_download_constraint_layout"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/platform_parameters_text_view" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/force_download_constraint_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingStart="16dp"
+      android:paddingTop="8dp"
+      android:paddingEnd="16dp"
+      android:paddingBottom="8dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/view_divider5">
+
+      <TextView
+        android:id="@+id/force_download_text_view"
+        style="@style/Subtitle1ViewStart"
+        android:layout_width="0dp"
+        android:text="@string/developer_options_force_download"
+        android:textColor="@color/component_color_shared_primary_dark_text_color"
+        app:layout_constraintEnd_toStartOf="@id/force_download_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+      <!-- TODO(#5950): Add a TextView for displaying the actual server last-synced timestamp. -->
+
+      <Button
+        android:id="@+id/force_download_button"
+        style="@style/SaveButtonActive"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:onClick="@{(v) -> viewModel.onForceDownloadRemoteParametersButtonClicked()}"
+        android:background="@drawable/state_button_primary_background"
+        android:textColor="@color/component_color_shared_secondary_4_text_color"
+        android:text="@string/force_download_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

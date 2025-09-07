@@ -37,35 +37,57 @@ class FeatureFlagsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    val featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    val resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
         FeatureFlagsFragmentStateBundle.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList
-        ?.associate { it.id to it.overriddenValue }
-        ?.toMutableMap() ?: mutableMapOf()
+      args?.featureFlagStatesList?.forEach {
+        featureFlagStates[it.id] = it.overriddenValue
+      }
+      args?.resetFeatureFlagsList?.forEach {
+        resetFlags[it.id] = it.overriddenValue
+      }
     }
 
-    return featureFlagsFragmentPresenter.handleCreateView(inflater, container, featureFlagStates)
+    return featureFlagsFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      featureFlagStates,
+      resetFlags
+    )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsFragmentPresenter.featureFlagStates.map {
+      featureFlagsFragmentPresenter.getFeatureFlagStates().map {
         OverriddenFeatureFlag.newBuilder()
           .setId(it.key)
           .setOverriddenValue(it.value)
           .build()
       }
+    val resetFlags = featureFlagsFragmentPresenter.getResetFeatureFlags().map {
+      OverriddenFeatureFlag.newBuilder()
+        .setId(it.key)
+        .setOverriddenValue(it.value)
+        .build()
+    }
 
     val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
+      .addAllResetFeatureFlags(resetFlags)
       .build()
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    featureFlagsFragmentPresenter.handleOnDestroy()
   }
 }
