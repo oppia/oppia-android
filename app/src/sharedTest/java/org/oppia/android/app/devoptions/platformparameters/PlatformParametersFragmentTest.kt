@@ -1613,13 +1613,13 @@ class PlatformParametersFragmentTest {
         onView(withText(R.string.pending_changes_dialog_save_button_text))
           .inRoot(isDialog())
           .perform(click())
-
         testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
+        onView(withId(R.id.restart_button))
           .inRoot(isDialog())
           .check(matches(isDisplayed()))
           .perform(click())
+        testCoroutineDispatchers.runCurrent()
       }
     }
     assertThat(exception.message).contains("System.exit()")
@@ -1645,9 +1645,8 @@ class PlatformParametersFragmentTest {
 
         testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
+        onView(withId(R.id.restart_button))
           .inRoot(isDialog())
-          .check(matches(isDisplayed()))
           .perform(click())
       }
     }
@@ -1675,7 +1674,11 @@ class PlatformParametersFragmentTest {
 
         onView(withText(R.string.pending_changes_dialog_save_button_text))
           .inRoot(isDialog())
-          .check(matches(isDisplayed()))
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.restart_button))
+          .inRoot(isDialog())
           .perform(click())
         testCoroutineDispatchers.runCurrent()
       }
@@ -1699,29 +1702,26 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParamAndSaveViaToolbar_persistsChanges() {
     setUpTestApplicationComponent()
-    val exception = assertThrows<SecurityException>() {
-      launch(PlatformParametersTestActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
 
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.platform_parameters_recycler_view,
-            position = 0,
-            targetViewId = R.id.platform_parameter_switch
-          )
-        ).perform(click())
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
 
-        onView(withId(R.id.save_button)).perform(click())
-        testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
-          .inRoot(isDialog())
-          .check(matches(isDisplayed()))
-          .perform(click())
-      }
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
     }
-    assertThat(exception.message).contains("System.exit()")
 
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1741,72 +1741,66 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_clickSave_showsRestartDialog_configChange_dialogPersists() {
     setUpTestApplicationComponent()
-    val exception = assertThrows<SecurityException> {
-      launch(PlatformParametersTestActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.platform_parameters_recycler_view,
-            position = 0,
-            targetViewId = R.id.platform_parameter_switch
-          )
-        ).perform(click())
-        onView(withId(R.id.save_button)).perform(click())
-        testCoroutineDispatchers.runCurrent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
-          .inRoot(isDialog())
-          .check(matches(isDisplayed()))
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
 
-        onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
-        testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
-          .inRoot(isDialog())
-          .check(matches(isDisplayed()))
-      }
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
-    assertThat(exception.message).contains("System.exit()")
   }
 
   @Test
   fun testPlatformParametersFragment_navigateBack_showsRestartDialog_configChange_dialogPersists() {
     setUpTestApplicationComponent()
-    val exception = assertThrows<SecurityException> {
-      launch(PlatformParametersTestActivity::class.java).use {
-        testCoroutineDispatchers.runCurrent()
-        scrollToPosition(0)
-        onView(
-          atPositionOnView(
-            recyclerViewId = R.id.platform_parameters_recycler_view,
-            position = 0,
-            targetViewId = R.id.platform_parameter_switch
-          )
-        ).perform(click())
-        testCoroutineDispatchers.runCurrent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-        pressBack()
-        testCoroutineDispatchers.runCurrent()
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.pending_changes_dialog_save_button_text))
-          .inRoot(isDialog())
-          .perform(click())
-        testCoroutineDispatchers.runCurrent()
+      onView(withText(R.string.pending_changes_dialog_save_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
-          .inRoot(isDialog())
-          .check(matches(isDisplayed()))
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
 
-        onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
-        testCoroutineDispatchers.runCurrent()
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
-          .inRoot(isDialog())
-          .check(matches(isDisplayed()))
-      }
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
-    assertThat(exception.message).contains("System.exit()")
   }
 
   @Test

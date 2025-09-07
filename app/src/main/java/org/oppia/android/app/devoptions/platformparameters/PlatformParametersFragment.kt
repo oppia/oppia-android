@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.devoptions.AppRestartListener
+import org.oppia.android.app.devoptions.PendingChangesListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
@@ -17,7 +18,10 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify platform parameters of the app. */
-class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
+class PlatformParametersFragment :
+  InjectableFragment(),
+  AppRestartListener,
+  PendingChangesListener {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
@@ -43,7 +47,6 @@ class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
     val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
     val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-    var isPendingDialogOpen = false
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -55,7 +58,6 @@ class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
       args?.resetPlatformParametersList?.forEach {
         resetParamList[it.id] = it.overriddenValue
       }
-      isPendingDialogOpen = args?.isPendingDialogOpen ?: false
     }
 
     return platformParametersFragmentPresenter
@@ -63,8 +65,7 @@ class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
         inflater,
         container,
         platformParameterStates,
-        resetParamList,
-        isPendingDialogOpen
+        resetParamList
       )
   }
 
@@ -89,12 +90,9 @@ class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
           .build()
       }
 
-    val isPendingDialogOpen = platformParametersFragmentPresenter.isPendingDialogOpen
-
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
       .addAllResetPlatformParameters(resetParamList)
-      .setIsPendingDialogOpen(isPendingDialogOpen)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto
@@ -103,5 +101,13 @@ class PlatformParametersFragment : InjectableFragment(), AppRestartListener {
 
   override fun restartApp() {
     platformParametersFragmentPresenter.appRestart()
+  }
+
+  override fun savePendingChanges() {
+    platformParametersFragmentPresenter.savePendingChanges()
+  }
+
+  override fun discardPendingChanges() {
+    platformParametersFragmentPresenter.discardPendingChanges()
   }
 }

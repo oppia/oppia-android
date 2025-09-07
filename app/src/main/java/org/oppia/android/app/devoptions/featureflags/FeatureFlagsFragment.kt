@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.devoptions.AppRestartListener
+import org.oppia.android.app.devoptions.PendingChangesListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.FeatureFlagId
@@ -16,7 +17,7 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify feature flags of the app. */
-class FeatureFlagsFragment : InjectableFragment(), AppRestartListener {
+class FeatureFlagsFragment : InjectableFragment(), AppRestartListener, PendingChangesListener {
   @Inject
   lateinit var featureFlagsFragmentPresenter: FeatureFlagsFragmentPresenter
 
@@ -40,7 +41,6 @@ class FeatureFlagsFragment : InjectableFragment(), AppRestartListener {
   ): View {
     val featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
     val resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
-    var isPendingDialogOpen = false
 
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
@@ -53,15 +53,13 @@ class FeatureFlagsFragment : InjectableFragment(), AppRestartListener {
       args?.resetFeatureFlagsList?.forEach {
         resetFlags[it.id] = it.overriddenValue
       }
-      isPendingDialogOpen = args?.isPendingDialogOpen ?: false
     }
 
     return featureFlagsFragmentPresenter.handleCreateView(
       inflater,
       container,
       featureFlagStates,
-      resetFlags,
-      isPendingDialogOpen
+      resetFlags
     )
   }
 
@@ -81,12 +79,10 @@ class FeatureFlagsFragment : InjectableFragment(), AppRestartListener {
         .setOverriddenValue(it.value)
         .build()
     }
-    val isPendingDialogOpen = featureFlagsFragmentPresenter.isPendingDialogOpen
 
     val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
       .addAllResetFeatureFlags(resetFlags)
-      .setIsPendingDialogOpen(isPendingDialogOpen)
       .build()
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
@@ -94,5 +90,13 @@ class FeatureFlagsFragment : InjectableFragment(), AppRestartListener {
 
   override fun restartApp() {
     featureFlagsFragmentPresenter.restartApp()
+  }
+
+  override fun savePendingChanges() {
+    featureFlagsFragmentPresenter.savePendingChanges()
+  }
+
+  override fun discardPendingChanges() {
+    featureFlagsFragmentPresenter.discardPendingChanges()
   }
 }

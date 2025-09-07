@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.android.app.databinding.databinding.PendingChangesDialogFragmentBinding
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.devoptions.AppRestartDialogFragment
+import org.oppia.android.app.devoptions.PendingChangesDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
@@ -36,6 +36,9 @@ import kotlin.system.exitProcess
 /** Tag for displaying [AppRestartDialogFragment]. */
 const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
 
+/** Tag for displaying [PendingChangesDialogFragment]. */
+const val TAG_PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG = "FEATURE_FLAG_PENDING_CHANGES_DIALOG_TAG"
+
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
 class PlatformParametersFragmentPresenter @Inject constructor(
@@ -54,31 +57,18 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
 
-  /** Indicates whether the pending changes dialog is open. */
-  var isPendingDialogOpen: Boolean = false
-
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
     resetParameters: Map<PlatformParameterId, PlatformParameterValue>,
-    isPendingDialogOpen: Boolean
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,
       container,
       /* attachToRoot= */ false
     )
-
-    binding.platformParametersToolbar.setNavigationOnClickListener {
-      onBackNavigation()
-    }
-
-    binding.saveButton.setOnClickListener {
-      val overriddenParameters = computeOverriddenParameters()
-      savePendingPlatformParameters(overriddenParameters)
-    }
 
     activity.onBackPressedDispatcher.addCallback(
       fragment,
@@ -97,20 +87,23 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       platformParameterViewModel.resetParameters.value = resetParameters.toMutableMap()
     }
 
-    if (isPendingDialogOpen) {
-      onBackNavigation()
-    }
-
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
-    binding.platformParametersRecyclerView.apply {
-      layoutManager = linearLayoutManager
-      adapter = bindingAdapter
-    }
 
     binding.apply {
       this.lifecycleOwner = fragment
       this.viewModel = platformParameterViewModel
+      this.saveButton.setOnClickListener {
+        val overriddenParameters = computeOverriddenParameters()
+        savePendingPlatformParameters(overriddenParameters)
+      }
+      this.platformParametersToolbar.setNavigationOnClickListener {
+        onBackNavigation()
+      }
+      this.platformParametersRecyclerView.apply {
+        layoutManager = linearLayoutManager
+        adapter = bindingAdapter
+      }
     }
 
     return binding.root
@@ -138,37 +131,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val resetParameters = getResetParameters().keys.toList()
 
     if (overriddenParameters.isNotEmpty() || resetParameters.isNotEmpty()) {
-      showPendingChangesDialog(overriddenParameters)
+      showPendingChangesDialog()
     } else {
       activity.finish()
     }
   }
 
-  private fun showPendingChangesDialog(overriddenParameters: List<OverriddenPlatformParameter>) {
-    isPendingDialogOpen = true
-    val dialogBinding = PendingChangesDialogFragmentBinding.inflate(
-      LayoutInflater.from(activity),
-      /* root= */ null,
-      /* attachToRoot= */ false
-    )
-
-    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setView(dialogBinding.root)
-      .create()
-
-    dialogBinding.saveButton.setOnClickListener {
-      isPendingDialogOpen = false
-      dialog.dismiss()
-      savePendingPlatformParameters(overriddenParameters)
-    }
-
-    dialogBinding.discardButton.setOnClickListener {
-      dialog.dismiss()
-      activity.finish()
-    }
-    if (!activity.isFinishing && !activity.isDestroyed) {
-      dialog.show()
-    }
+  private fun showPendingChangesDialog() {
+    val dialog = PendingChangesDialogFragment.newInstance()
+    dialog.showNow(fragment.childFragmentManager, TAG_PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG)
   }
 
   private fun savePendingPlatformParameters(
@@ -453,6 +424,17 @@ class PlatformParametersFragmentPresenter @Inject constructor(
           R.color.component_color_shared_item_background_solid_color
         )
     }
+  }
+
+  /** Called when user opts to save changes in [PendingChangesDialogFragment]. */
+  fun savePendingChanges() {
+    val overriddenParameters = computeOverriddenParameters()
+    savePendingPlatformParameters(overriddenParameters)
+  }
+
+  /** Called when user opts to discard changes in [PendingChangesDialogFragment]. */
+  fun discardPendingChanges() {
+    activity.finish()
   }
 
   /**
