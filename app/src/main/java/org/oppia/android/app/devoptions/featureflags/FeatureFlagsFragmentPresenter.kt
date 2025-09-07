@@ -80,16 +80,16 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     bindingAdapter = createRecyclerViewAdapter()
 
     binding.apply {
-      this.lifecycleOwner = fragment
-      this.viewModel = featureFlagsViewModel
-      this.saveButton.setOnClickListener {
+      lifecycleOwner = fragment
+      viewModel = featureFlagsViewModel
+      saveButton.setOnClickListener {
         val overriddenFlags = computeOverriddenFlags()
         savePendingFeatureFlags(overriddenFlags)
       }
-      this.featureFlagsToolbar.setNavigationOnClickListener {
+      featureFlagsToolbar.setNavigationOnClickListener {
         onBackNavigation()
       }
-      this.featureFlagsRecyclerView.apply {
+      featureFlagsRecyclerView.apply {
         layoutManager = linearLayoutManager
         adapter = bindingAdapter
       }

@@ -1111,6 +1111,10 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_pressBack_saveChanges_clickRestartInDialog_exitsApp() {
     setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
@@ -1148,6 +1152,10 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_clickSaveButton_clickRestartInDialog_savesChangesAndExitsApp() {
     setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
@@ -1180,6 +1188,10 @@ class FeatureFlagsFragmentTest {
   fun testFeatureFlagsFragment_modifyFlagAndSaveOnBackNavigation_persistsChanges() {
     setUpTestApplicationComponent()
     val initialValue = getEphemeralFeatureFlags()[0].currentValue
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
@@ -1227,6 +1239,10 @@ class FeatureFlagsFragmentTest {
   fun testFeatureFlagsFragment_modifyFlagAndSaveViaToolbar_persistsChanges() {
     setUpTestApplicationComponent()
     val initialValue = getEphemeralFeatureFlags()[0].currentValue
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()

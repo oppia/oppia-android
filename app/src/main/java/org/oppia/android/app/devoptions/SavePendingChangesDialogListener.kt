@@ -1,7 +1,7 @@
 package org.oppia.android.app.devoptions
 
 /** Interface to be implemented by classes that need to handle pending changes. */
-interface PendingChangesListener {
+interface SavePendingChangesDialogListener {
 
   /** Saves the pending changes. */
   fun savePendingChanges()

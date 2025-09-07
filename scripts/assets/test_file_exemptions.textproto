@@ -455,7 +455,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/PendingChangesListener.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/SavePendingChangesDialogListener.kt"
   test_file_not_required: true
 }
 test_file_exemption {

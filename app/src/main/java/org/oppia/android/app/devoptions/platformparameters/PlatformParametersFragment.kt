@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.devoptions.AppRestartListener
-import org.oppia.android.app.devoptions.PendingChangesListener
+import org.oppia.android.app.devoptions.SavePendingChangesDialogListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
@@ -21,7 +21,7 @@ import javax.inject.Inject
 class PlatformParametersFragment :
   InjectableFragment(),
   AppRestartListener,
-  PendingChangesListener {
+  SavePendingChangesDialogListener {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 

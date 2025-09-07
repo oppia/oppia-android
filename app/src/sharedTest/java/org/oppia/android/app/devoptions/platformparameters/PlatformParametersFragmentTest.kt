@@ -1595,6 +1595,10 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParam_navigateBack_clickSave_showRestartDialogExitApp() {
     setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(PlatformParametersTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
@@ -1631,6 +1635,10 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParam_clickToolbarSave_showsRestartDialogExitApp() {
     setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(PlatformParametersTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
@@ -1662,6 +1670,10 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParamAndSaveOnBackNavigation_persistsChanges() {
     setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked. 
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(PlatformParametersTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
@@ -1711,6 +1723,10 @@ class PlatformParametersFragmentTest {
   @Test
   fun testPlatformParametersFragment_modifyParamAndSaveViaToolbar_persistsChanges() {
     setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException> {
       launch(PlatformParametersTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()

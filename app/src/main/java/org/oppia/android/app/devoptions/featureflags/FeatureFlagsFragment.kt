@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import org.oppia.android.app.devoptions.AppRestartListener
-import org.oppia.android.app.devoptions.PendingChangesListener
+import org.oppia.android.app.devoptions.SavePendingChangesDialogListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.FeatureFlagId
@@ -17,7 +17,10 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify feature flags of the app. */
-class FeatureFlagsFragment : InjectableFragment(), AppRestartListener, PendingChangesListener {
+class FeatureFlagsFragment :
+  InjectableFragment(),
+  AppRestartListener,
+  SavePendingChangesDialogListener {
   @Inject
   lateinit var featureFlagsFragmentPresenter: FeatureFlagsFragmentPresenter
 

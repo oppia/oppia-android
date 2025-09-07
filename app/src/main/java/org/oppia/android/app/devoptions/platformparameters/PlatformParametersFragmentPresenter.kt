@@ -92,16 +92,16 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     bindingAdapter = createRecyclerViewAdapter()
 
     binding.apply {
-      this.lifecycleOwner = fragment
-      this.viewModel = platformParameterViewModel
-      this.saveButton.setOnClickListener {
+      lifecycleOwner = fragment
+      viewModel = platformParameterViewModel
+      saveButton.setOnClickListener {
         val overriddenParameters = computeOverriddenParameters()
         savePendingPlatformParameters(overriddenParameters)
       }
-      this.platformParametersToolbar.setNavigationOnClickListener {
+      platformParametersToolbar.setNavigationOnClickListener {
         onBackNavigation()
       }
-      this.platformParametersRecyclerView.apply {
+      platformParametersRecyclerView.apply {
         layoutManager = linearLayoutManager
         adapter = bindingAdapter
       }

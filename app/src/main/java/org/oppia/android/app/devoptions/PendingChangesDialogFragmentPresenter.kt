@@ -22,7 +22,7 @@ class PendingChangesDialogFragmentPresenter @Inject constructor(
     )
     binding.lifecycleOwner = fragment
 
-    val pendingChangesInterface = fragment.parentFragment as PendingChangesListener
+    val pendingChangesInterface = fragment.parentFragment as SavePendingChangesDialogListener
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()

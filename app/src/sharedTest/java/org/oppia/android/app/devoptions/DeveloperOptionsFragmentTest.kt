@@ -600,6 +600,9 @@ class DeveloperOptionsFragmentTest {
 
   @Test
   fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickRestart_exitsApp() {
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
     val performException = assertThrows<PerformException>() {
       launch<DeveloperOptionsTestActivity>(
         createDeveloperOptionsTestActivityIntent(internalProfileId)
