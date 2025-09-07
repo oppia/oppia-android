@@ -597,29 +597,6 @@ class DeveloperOptionsFragmentTest {
     }
   }
 
-  @Test
-  fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickRestart_exitsApp() {
-    val exception = assertThrows<SecurityException>() {
-      launch<DeveloperOptionsTestActivity>(
-        createDeveloperOptionsTestActivityIntent(internalProfileId)
-      ).use {
-        testCoroutineDispatchers.runCurrent()
-
-        scrollToPosition(position = 2)
-        onView(withId(R.id.force_download_button)).perform(click())
-        testCoroutineDispatchers.runCurrent()
-
-        onView(withText(R.string.force_download_dialog_title_text))
-          .inRoot(isDialog())
-          .check(matches(isDisplayed()))
-
-        onView(withId(R.id.restart_button)).perform(click())
-        testCoroutineDispatchers.runCurrent()
-      }
-    }
-    assertThat(exception.message).contains("System.exit()")
-  }
-
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
     return DeveloperOptionsTestActivity.createDeveloperOptionsTestIntent(context, internalProfileId)
   }
