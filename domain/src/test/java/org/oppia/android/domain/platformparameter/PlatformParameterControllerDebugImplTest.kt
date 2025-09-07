@@ -803,6 +803,13 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
+  fun testCancelRemoteParameterDownloads_cancelsOngoingDownload() {
+    setUpTestApplicationComponent()
+    val result = platformParameterControllerDebugImpl.cancelRemoteParameterDownload()
+    assertThat(result).isEqualTo(true)
+  }
+
+  @Test
   fun testUpdateOverriddenFeatureFlags_withLocalOverride_updatesValue() {
     setUpTestApplicationComponent()
     val testFlag = OverriddenFeatureFlag.newBuilder()

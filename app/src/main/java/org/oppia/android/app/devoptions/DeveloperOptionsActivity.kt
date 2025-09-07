@@ -26,6 +26,7 @@ import javax.inject.Inject
 class DeveloperOptionsActivity :
   InjectableAutoLocalizedAppCompatActivity(),
   ForceCrashButtonClickListener,
+  ForceDownloadRemoteParametersButtonClickListener,
   RouteToMarkChaptersCompletedListener,
   RouteToMarkStoriesCompletedListener,
   RouteToMarkTopicsCompletedListener,
@@ -33,7 +34,8 @@ class DeveloperOptionsActivity :
   RouteToForceNetworkTypeListener,
   RouteToMathExpressionParserTestListener,
   RouteToFeatureFlagsListener,
-  RouteToPlatformParametersListener {
+  RouteToPlatformParametersListener,
+  AppRestartListener {
 
   @Inject
   lateinit var developerOptionsActivityPresenter: DeveloperOptionsActivityPresenter
@@ -111,5 +113,13 @@ class DeveloperOptionsActivity :
 
   override fun forceCrash() {
     developerOptionsActivityPresenter.forceCrash()
+  }
+
+  override fun forceDownloadRemoteParameters() {
+    developerOptionsActivityPresenter.forceDownloadRemoteParameters()
+  }
+
+  override fun restartApp() {
+    developerOptionsActivityPresenter.restartApp()
   }
 }

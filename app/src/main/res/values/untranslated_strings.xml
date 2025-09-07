@@ -15,6 +15,7 @@
   <string name="developer_options_force_crash" translatable="false">Force crash</string>
   <string name="developer_options_feature_flags" translatable="false">Feature Flags</string>
   <string name="developer_options_platform_parameters" translatable="false">Platform Parameters</string>
+  <string name="developer_options_force_download" translatable="false">Force Download Remote Parameters</string>
   <string name="developer_options_test_parsers_label" translatable="false">Test Parsers</string>
   <string name="developer_options_math_expressions" translatable="false">Math Expressions/Equations</string>
   <string name="modify_lesson_progress_all" translatable="false">All</string>
@@ -32,6 +33,13 @@
   <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
+  <string name="force_download_button_text" translatable="false">Download</string>
+  <string name="force_download_dialog_title_text" translatable="false">Remote Platform Parameters</string>
+  <string name="force_download_dialog_restart_button_text" translatable="false">Restart</string>
+  <string name="force_download_dialog_cancel_button_text" translatable="false">Cancel</string>
+  <string name="force_download_dialog_downloading_message_text" translatable="false">Downloading</string>
+  <string name="force_download_dialog_successfully_downloaded_message_text" translatable="false">Successfully Downloaded</string>
+  <string name="force_download_restart_message_text" translatable="false">Restart app to apply new configuration.</string>
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
   <string name="feature_flag_alert_icon_content_description" translatable="false">Overridden feature flag indicator</string>
   <string name="feature_flag_reset" translatable="false">Reset</string>
