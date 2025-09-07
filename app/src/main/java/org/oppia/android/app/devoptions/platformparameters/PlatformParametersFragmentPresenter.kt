@@ -62,7 +62,7 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     platformParameterStates: Map<PlatformParameterId, PlatformParameterValue?>,
-    resetParameters: Map<PlatformParameterId, PlatformParameterValue>,
+    resetParameters: Map<PlatformParameterId, PlatformParameterValue>
   ): View {
     binding = PlatformParametersFragmentBinding.inflate(
       inflater,

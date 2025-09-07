@@ -52,7 +52,7 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     featureFlagStates: Map<FeatureFlagId, Boolean>,
-    resetFlags: Map<FeatureFlagId, Boolean>,
+    resetFlags: Map<FeatureFlagId, Boolean>
   ): View {
     binding = FeatureFlagsFragmentBinding.inflate(
       inflater,

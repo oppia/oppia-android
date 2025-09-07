@@ -10,7 +10,7 @@ import javax.inject.Inject
 /** Dialog fragment shown to prompt the user to save/discard the changes. */
 class PendingChangesDialogFragment : InjectableDialogFragment() {
   @Inject
-  lateinit var appRestartDialogFragmentPresenter:
+  lateinit var pendingChangesDialogFragmentPresenter:
     PendingChangesDialogFragmentPresenter
 
   companion object {
@@ -25,6 +25,6 @@ class PendingChangesDialogFragment : InjectableDialogFragment() {
   }
 
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    return appRestartDialogFragmentPresenter.handleOnCreateDialog()
+    return pendingChangesDialogFragmentPresenter.handleOnCreateDialog()
   }
 }

@@ -982,9 +982,6 @@ message FeatureFlagsFragmentStateBundle {
 
   // List of feature flags that have been reset.
   repeated OverriddenFeatureFlag reset_feature_flags = 2;
-
-  // Indicates whether the pending changes dialog is open.
-  bool is_pending_dialog_open = 3;
 }
 
 // The bundle of properties that are saved on configuration change in PlatformParametersFragment.
@@ -994,7 +991,4 @@ message PlatformParametersFragmentStateBundle {
 
   // List of platform parameters that have been reset.
   repeated OverriddenPlatformParameter reset_platform_parameters = 2;
-
-  // Indicates whether the pending changes dialog is open.
-  bool is_pending_dialog_open = 3;
 }
