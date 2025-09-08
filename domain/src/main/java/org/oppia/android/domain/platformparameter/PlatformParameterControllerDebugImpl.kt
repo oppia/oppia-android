@@ -74,14 +74,16 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   }
 
   override fun downloadRemoteParameters(): DataProvider<Unit> {
-    oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
     return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
-      ongoingDownloadTask?.cancel()
-      ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
-        // TODO(#5950): Replace with actual logic to force-download remote parameters.
+      if (ongoingDownloadTask == null || ongoingDownloadTask?.isCancelled == true) {
+        oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
+        ongoingDownloadTask?.cancel()
+        ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
+          // TODO(#5950): Replace with actual logic to force-download remote parameters.
+          oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
+        }
       }
       ongoingDownloadTask?.await()
-      oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
       return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
