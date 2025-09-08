@@ -2197,13 +2197,6 @@ class ExplorationActivityTest {
 
     // Click on flashback button.
     clickFlashbackButton()
-
-    // Click continue button on flashback confirmation dialog.
-    onView(withId(R.id.continue_confirmation_button))
-      .inRoot(isDialog())
-      .check(matches(withText("Continue")))
-      .perform(click())
-    testCoroutineDispatchers.runCurrent()
   }
 
   private fun playThroughPrototypeState1() {

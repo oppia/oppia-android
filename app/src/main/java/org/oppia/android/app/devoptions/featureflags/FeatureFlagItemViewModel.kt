@@ -1,7 +1,8 @@
 package org.oppia.android.app.devoptions.featureflags
 
-import androidx.annotation.ColorInt
 import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.SyncStatus
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -14,6 +15,9 @@ class FeatureFlagItemViewModel(
   val featureFlagId: FeatureFlagId,
   val currentValue: Boolean,
   val syncStatus: SyncStatus,
+  val nonOverriddenValue: Boolean,
+  val nonOverriddenSyncStatus: SyncStatus,
+  val resetFlags: LiveData<MutableMap<FeatureFlagId, Boolean>>,
   private val machineLocale: OppiaLocale.MachineLocale,
   private val resourceHandler: AppLanguageResourceHandler
 ) : ObservableViewModel() {
@@ -24,19 +28,42 @@ class FeatureFlagItemViewModel(
   val featureFlagDisplayName: ObservableField<String> =
     ObservableField(getFeatureFlagDisplayName(featureFlagId))
 
-  /** The text representing the sync status of the feature flag. */
-  val syncStatusDisplayText: ObservableField<String> =
-    ObservableField(getSyncStatusText())
-
   /**
    * Callback to be invoked when the feature flag toggle is changed by the user.
    * Passes the [FeatureFlagId] and the new boolean value.
    */
   var onFeatureFlagToggleCallback: ((FeatureFlagId, Boolean) -> Unit)? = null
 
-  /** The background color associated with the current sync status of the feature flag. */
-  @ColorInt
-  val backgroundColor: Int = retrieveBackgroundColor().toInt()
+  /** Indicates whether this feature flag has been overridden locally. */
+  val isFlagOverridden: ObservableField<Boolean> =
+    ObservableField(syncStatus == SyncStatus.LOCAL_OVERRIDE)
+
+  /** Tracks whether the reset button is currently enabled (clickable). */
+  val isResetButtonEnabled: LiveData<Boolean> by lazy {
+    Transformations.map(resetFlags) { featureFlagId !in it }
+  }
+
+  /** Represents the feature flag’s server-sync or override state. */
+  val syncDetails: LiveData<String> = Transformations.map(resetFlags, ::processSyncDetails)
+
+  private fun processSyncDetails(resetFlags: MutableMap<FeatureFlagId, Boolean>): String {
+    return when {
+      resetFlags.containsKey(featureFlagId) -> getSyncDetails(nonOverriddenSyncStatus)
+      else -> getSyncDetails(syncStatus)
+    }
+  }
+
+  private fun getSyncDetails(syncStatus: SyncStatus): String {
+    return when (syncStatus) {
+      SyncStatus.LOCAL_OVERRIDE ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_currently_overridden_message)
+      SyncStatus.SYNCED_FROM_SERVER ->
+        // TODO(#5951): Replace this placeholder message with the actual server last-synced timestamps.
+        resourceHandler.getStringInLocale(R.string.platform_parameter_synced_from_server_message)
+      else ->
+        resourceHandler.getStringInLocale(R.string.platform_parameter_never_synced_message)
+    }
+  }
 
   /** Called when the feature flag switch is toggled in the UI. */
   fun onToggleFeatureFlagSwitch() {
@@ -55,32 +82,6 @@ class FeatureFlagItemViewModel(
             .split("_")
             .joinToString(" ") { it.capitalizeForMachines() }
       }
-    }
-  }
-
-  private fun getSyncStatusText(): String {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
-      SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_default_sync_status)
-      SyncStatus.SYNCED_FROM_SERVER ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_server_sync_status)
-      SyncStatus.LOCAL_OVERRIDE ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_overridden_sync_status)
-      else ->
-        resourceHandler.getStringInLocale(R.string.feature_flag_unknown_sync_status)
-    }
-  }
-
-  @ColorInt
-  private fun retrieveBackgroundColor(): Long {
-    return when (syncStatus) {
-      SyncStatus.SYNC_STATUS_UNSPECIFIED -> 0xFF4F4F4F
-      SyncStatus.NOT_SYNCED_FROM_SERVER -> 0xFFBE563C
-      SyncStatus.SYNCED_FROM_SERVER -> 0xFF00645C
-      SyncStatus.LOCAL_OVERRIDE -> 0xFFC2B71B
-      else -> 0xFF00645C
     }
   }
 }

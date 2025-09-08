@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.devoptions.AppRestartListener
+import org.oppia.android.app.devoptions.SavePendingChangesDialogListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.FeatureFlagId
@@ -15,7 +17,10 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify feature flags of the app. */
-class FeatureFlagsFragment : InjectableFragment() {
+class FeatureFlagsFragment :
+  InjectableFragment(),
+  AppRestartListener,
+  SavePendingChangesDialogListener {
   @Inject
   lateinit var featureFlagsFragmentPresenter: FeatureFlagsFragmentPresenter
 
@@ -37,35 +42,64 @@ class FeatureFlagsFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    var featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    val featureFlagStates: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+    val resetFlags: MutableMap<FeatureFlagId, Boolean> = mutableMapOf()
+
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY,
         FeatureFlagsFragmentStateBundle.getDefaultInstance()
       )
-      featureFlagStates = args?.featureFlagStatesList
-        ?.associate { it.id to it.overriddenValue }
-        ?.toMutableMap() ?: mutableMapOf()
+      args?.featureFlagStatesList?.forEach {
+        featureFlagStates[it.id] = it.overriddenValue
+      }
+      args?.resetFeatureFlagsList?.forEach {
+        resetFlags[it.id] = it.overriddenValue
+      }
     }
 
-    return featureFlagsFragmentPresenter.handleCreateView(inflater, container, featureFlagStates)
+    return featureFlagsFragmentPresenter.handleCreateView(
+      inflater,
+      container,
+      featureFlagStates,
+      resetFlags
+    )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
 
     val featureFlagStates =
-      featureFlagsFragmentPresenter.featureFlagStates.map {
+      featureFlagsFragmentPresenter.getFeatureFlagStates().map {
         OverriddenFeatureFlag.newBuilder()
           .setId(it.key)
           .setOverriddenValue(it.value)
           .build()
       }
+    val resetFlags = featureFlagsFragmentPresenter.getResetFeatureFlags().map {
+      OverriddenFeatureFlag.newBuilder()
+        .setId(it.key)
+        .setOverriddenValue(it.value)
+        .build()
+    }
 
     val proto = FeatureFlagsFragmentStateBundle.newBuilder()
       .addAllFeatureFlagStates(featureFlagStates)
+      .addAllResetFeatureFlags(resetFlags)
       .build()
 
     outState.putProto(FEATURE_FLAGS_FRAGMENT_SAVED_STATE_KEY, proto)
+  }
+
+  override fun restartApp() {
+    featureFlagsFragmentPresenter.restartApp()
+  }
+
+  override fun savePendingChanges() {
+    featureFlagsFragmentPresenter.savePendingChanges()
+  }
+
+  override fun discardPendingChanges() {
+    featureFlagsFragmentPresenter.discardPendingChanges()
   }
 }

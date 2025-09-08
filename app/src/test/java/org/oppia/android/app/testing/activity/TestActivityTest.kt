@@ -225,8 +225,8 @@ class TestActivityTest {
 
   private fun fetchAllActivities(): Map<String, ActivityInfo> {
     val packageManager = context.packageManager
-    val activities = packageManager.getPackageInfo(context.packageName, GET_ACTIVITIES).activities
-    return activities.associateBy { it.name }
+    val activities = packageManager.getPackageInfo(context.packageName, GET_ACTIVITIES)?.activities
+    return activities?.associateBy { it.name } ?: emptyMap()
   }
 
   private class CustomTestActivity : TestActivity()

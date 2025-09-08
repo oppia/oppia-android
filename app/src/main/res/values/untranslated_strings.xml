@@ -15,6 +15,7 @@
   <string name="developer_options_force_crash" translatable="false">Force crash</string>
   <string name="developer_options_feature_flags" translatable="false">Feature Flags</string>
   <string name="developer_options_platform_parameters" translatable="false">Platform Parameters</string>
+  <string name="developer_options_force_download" translatable="false">Force Download Remote Parameters</string>
   <string name="developer_options_test_parsers_label" translatable="false">Test Parsers</string>
   <string name="developer_options_math_expressions" translatable="false">Math Expressions/Equations</string>
   <string name="modify_lesson_progress_all" translatable="false">All</string>
@@ -32,22 +33,38 @@
   <string name="mark_stories_completed_activity_title" translatable="false">Mark Stories Completed</string>
   <string name="mark_topics_completed_activity_title" translatable="false">Mark Topics Completed</string>
   <string name="force_network_type_activity_title" translatable="false">Force Network Type</string>
+  <string name="force_download_button_text" translatable="false">Download</string>
+  <string name="force_download_dialog_title_text" translatable="false">Remote Platform Parameters</string>
+  <string name="force_download_dialog_restart_button_text" translatable="false">Restart</string>
+  <string name="force_download_dialog_cancel_button_text" translatable="false">Cancel</string>
+  <string name="force_download_dialog_downloading_message_text" translatable="false">Downloading</string>
+  <string name="force_download_dialog_successfully_downloaded_message_text" translatable="false">Successfully Downloaded</string>
+  <string name="force_download_restart_message_text" translatable="false">Restart app to apply new configuration.</string>
   <string name="feature_flags_activity_title" translatable="false">Feature Flags</string>
-  <string name="feature_flag_sync_status" translatable="false">Sync Status</string>
-  <string name="feature_flag_default_sync_status" translatable="false">Default</string>
-  <string name="feature_flag_server_sync_status" translatable="false">Server</string>
-  <string name="feature_flag_overridden_sync_status" translatable="false">Overridden</string>
-  <string name="feature_flag_unknown_sync_status" translatable="false">Unknown</string>
-  <string name="platform_parameters_activity_title" translatable="false">Platform Parmeters</string>
-  <string name="platform_parameter_sync_status" translatable="false">Sync Status</string>
-  <string name="platform_parameter_default_sync_status" translatable="false">Default</string>
-  <string name="platform_parameter_server_sync_status" translatable="false">Server</string>
-  <string name="platform_parameter_overridden_sync_status" translatable="false">Overridden</string>
-  <string name="platform_parameter_unknown_sync_status" translatable="false">Unknown</string>
+  <string name="feature_flag_alert_icon_content_description" translatable="false">Overridden feature flag indicator</string>
+  <string name="feature_flag_reset" translatable="false">Reset</string>
+  <string name="feature_flag_save" translatable="false">Save</string>
+  <string name="feature_flag_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
+  <string name="feature_flag_currently_overridden_message" translatable="false">Currently Overridden.</string>
+  <string name="feature_flag_synced_from_server_message" translatable="false">Synced with the Server.</string>
+  <string name="platform_parameters_activity_title" translatable="false">Platform Parameters</string>
   <string name="platform_parameter_invalid_input_error_msg" translatable="false">Invalid Value</string>
   <string name="platform_parameter_invalid_input_alert_dialog_title" translatable="false">Invalid Inputs</string>
   <string name="platform_parameter_invalid_input_alert_dialog_message" translatable="false">Please ensure all fields have valid values to continue.</string>
+  <string name="platform_parameter_reset" translatable="false">Reset</string>
+  <string name="platform_parameters_save" translatable="false">Save</string>
+  <string name="platform_parameter_never_synced_message" translatable="false">Never synced remotely. Using codebase default value.</string>
+  <string name="platform_parameter_currently_overridden_message" translatable="false">Currently Overridden.</string>
+  <string name="platform_parameter_synced_from_server_message" translatable="false">Synced with the Server.</string>
+  <string name="platform_parameter_alert_icon_content_description" translatable="false">Overridden platform parameter indicator</string>
   <string name="platform_parameter_invalid_input_alert_dialog_okay_button" translatable="false">OK</string>
+  <string name="app_restart_dialog_title" translatable="false">App Behavior Overridden</string>
+  <string name="app_restart_dialog_message" translatable="false">Restart app to apply new configuration.</string>
+  <string name="app_restart_dialog_button_text" translatable="false">Restart</string>
+  <string name="pending_changes_dialog_save_button_text" translatable="false">Save</string>
+  <string name="pending_changes_dialog_discard_button_text" translatable="false">Discard</string>
+  <string name="pending_changes_dialog_title_text" translatable="false">Pending Changes</string>
+  <string name="pending_changes_dialog_message_text" translatable="false">Do you want to save the changes?</string>
   <string name="view_event_logs_activity_title" translatable="false">View Event Logs</string>
   <!-- MathExpressionParserActivity -->
   <string name="math_expression_parser_activity_title" translatable="false">Test Math Expressions and Equations</string>

@@ -221,6 +221,7 @@
   <color name="color_palette_profile_chooser_activity_gradient_start_color">@color/color_def_dark_green_50</color>
   <color name="color_palette_shared_state_button_background_color">@color/color_def_oppia_dark_blue</color>
   <color name="color_palette_hints_and_solution_reveal_solution_button_background_color">@color/color_def_oppia_brown</color>
+  <color name="color_palette_shared_submitted_radio_button_color">@color/color_def_accessible_light_grey_2</color>
   <!-- AVATAR BACKGROUND COLORS -->
   <color name="color_palette_avatar_background_1_color">@color/color_def_avatar_background_1</color>
   <color name="color_palette_avatar_background_2_color">@color/color_def_avatar_background_2</color>
@@ -296,6 +297,9 @@
   <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_1</color>
   <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_white</color>
   <!-- FLASHBACK -->
-  <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
   <color name="color_palette_flashback_toolbar_color">@color/color_def_oppia_brown_dark</color>
+  <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
+  <color name="color_palette_overridden_background_color">@color/color_def_pale_yellow</color>
+  <color name="color_palette_modified_background_color">@color/color_def_sky_blue</color>
+  <color name="color_palette_save_button_active_color">@color/color_def_bright_cyan</color>
 </resources>

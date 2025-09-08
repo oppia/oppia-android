@@ -32,7 +32,8 @@ class HintsAndSolutionViewModel private constructor(
   private val solutionViewModelFactory: SolutionViewModel.Factory,
   private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
   private val consoleLogger: ConsoleLogger,
-  private val explorationId: String
+  private val explorationId: String,
+  private val solutionBoxStrokeWidth: Int
 ) : ObservableViewModel() {
   private val hintList by lazy { helpIndex.dropLastUnavailable(state.interaction.hintList) }
   private val solution by lazy {
@@ -102,7 +103,8 @@ class HintsAndSolutionViewModel private constructor(
       interaction = state.interaction,
       writtenTranslationContext = writtenTranslationContext,
       explorationId = explorationId,
-      isFlashback = false
+      isFlashback = false,
+      solutionBoxStrokeWidth = solutionBoxStrokeWidth
     )
     return solutionViewModelFactory.createHintsDialogSolutionViewModel(coreViewModel)
   }
@@ -124,7 +126,8 @@ class HintsAndSolutionViewModel private constructor(
       state: State,
       helpIndex: HelpIndex,
       writtenTranslationContext: WrittenTranslationContext,
-      explorationId: String
+      explorationId: String,
+      solutionBoxStrokeWidth: Int
     ): HintsAndSolutionViewModel {
       return HintsAndSolutionViewModel(
         state,
@@ -135,7 +138,8 @@ class HintsAndSolutionViewModel private constructor(
         solutionViewModelFactory,
         conceptCardTagHandlerFactory,
         consoleLogger,
-        explorationId
+        explorationId,
+        solutionBoxStrokeWidth
       )
     }
   }

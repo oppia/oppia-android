@@ -2,6 +2,7 @@ package org.oppia.android.app.devoptions.devoptionsitemviewmodel
 
 import androidx.databinding.ObservableField
 import org.oppia.android.app.devoptions.ForceCrashButtonClickListener
+import org.oppia.android.app.devoptions.ForceDownloadRemoteParametersButtonClickListener
 import org.oppia.android.app.devoptions.RouteToFeatureFlagsListener
 import org.oppia.android.app.devoptions.RouteToForceNetworkTypeListener
 import org.oppia.android.app.devoptions.RouteToPlatformParametersListener
@@ -13,6 +14,8 @@ import org.oppia.android.domain.devoptions.ShowAllHintsAndSolutionController
  */
 class DeveloperOptionsOverrideAppBehaviorsViewModel(
   private val forceCrashButtonClickListener: ForceCrashButtonClickListener,
+  private val forceDownloadRemoteParametersButtonClickListener:
+    ForceDownloadRemoteParametersButtonClickListener,
   private val forceNetworkTypeListener: RouteToForceNetworkTypeListener,
   private val showAllHintsAndSolutionController: ShowAllHintsAndSolutionController,
   private val featureFlagsListener: RouteToFeatureFlagsListener,
@@ -41,6 +44,14 @@ class DeveloperOptionsOverrideAppBehaviorsViewModel(
   /** Routes the user to [PlatformParametersActivity] for viewing and modifying platform parameters. */
   fun onPlatformParametersClicked() {
     platformParametersListener.routeToPlatformParameters()
+  }
+
+  /**
+   * Initiates a request to download the remote parameters from the web server when the download
+   * button is clicked.
+   */
+  fun onForceDownloadRemoteParametersButtonClicked() {
+    forceDownloadRemoteParametersButtonClickListener.forceDownloadRemoteParameters()
   }
 
   /**

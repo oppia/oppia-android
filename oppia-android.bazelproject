@@ -20,7 +20,7 @@ additional_languages:
   java
   kotlin
 
-android_sdk_platform: android-34
+android_sdk_platform: android-35
 
 shard_sync: true
 
