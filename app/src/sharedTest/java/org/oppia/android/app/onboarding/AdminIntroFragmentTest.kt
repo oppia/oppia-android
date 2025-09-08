@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
@@ -148,16 +148,18 @@ class AdminIntroFragmentTest {
     composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_three))
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(OTTER_TEST_TAG)
+    composeRule.onNodeWithContentDescription(
+      context.getString(R.string.onboarding_otter_content_description)
+    )
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(BACK_BUTTON_TEST_TAG)
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
       .assertIsDisplayed()
   }
 
@@ -175,13 +177,15 @@ class AdminIntroFragmentTest {
     composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(OTTER_TEST_TAG)
+    composeRule.onNodeWithContentDescription(
+      context.getString(R.string.onboarding_otter_content_description)
+    )
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(BACK_BUTTON_TEST_TAG)
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
       .assertIsDisplayed()
 
-    composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
       .assertIsDisplayed()
   }
 
@@ -189,8 +193,7 @@ class AdminIntroFragmentTest {
   fun testIntroFragment_onBackButtonClicked_currentScreenIsDestroyed() {
     scenario = launch(AdminIntroActivity::class.java)
 
-    composeRule.onNodeWithTag(BACK_BUTTON_TEST_TAG)
-      .assertIsDisplayed()
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
       .performClick()
 
     testCoroutineDispatchers.runCurrent()
@@ -200,12 +203,12 @@ class AdminIntroFragmentTest {
     }
   }
 
+  // This is a placeholder test that should fail when the PIN creation screen has been implemented.
   @Test
   fun testIntroFragment_continueButtonClicked_launchesProfileChooserActivity() {
     scenario = launch(AdminIntroActivity::class.java)
 
-    composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
-      .assertIsDisplayed()
+    composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
       .performClick()
 
     testCoroutineDispatchers.runCurrent()

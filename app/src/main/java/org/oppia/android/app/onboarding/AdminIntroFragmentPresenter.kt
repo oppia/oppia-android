@@ -35,11 +35,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,15 +58,6 @@ import javax.inject.Inject
 /** Argument key for [ProfileChooserActivity] intent parameters. */
 const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 
-/** Test tag for the otter image. */
-const val OTTER_TEST_TAG = "TEST_TAG.otter"
-
-/** Test tag for the otter image. */
-const val BACK_BUTTON_TEST_TAG = "TEST_TAG.back_button"
-
-/** Test tag for the otter image. */
-const val CONTINUE_BUTTON_TEST_TAG = "TEST_TAG.continue_button"
-
 /** The presenter for [AdminIntroFragment]. */
 class AdminIntroFragmentPresenter @Inject constructor(
   private val activity: AppCompatActivity,
@@ -76,7 +65,8 @@ class AdminIntroFragmentPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val profileManagementController: ProfileManagementController
 ) {
-
+  private lateinit var profileType: ProfileType
+  private lateinit var profileId: ProfileId
   private lateinit var binding: AdminIntroFragmentBinding
 
   /** Creates and returns the view for the [AdminIntroFragment]. */
@@ -88,26 +78,27 @@ class AdminIntroFragmentPresenter @Inject constructor(
   ): View? {
     binding = AdminIntroFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
-    createComposeView(profileId, profileType)
+    this.profileType = profileType
+    this.profileId = profileId
+
+    createComposeView()
 
     profileManagementController.markProfileOnboardingStarted(profileId)
 
     return binding.root
   }
 
-  private fun createComposeView(profileId: ProfileId, profileType: ProfileType) {
+  private fun createComposeView() {
     binding.adminIntroComposeView.setViewCompositionStrategy(
       ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
     )
     binding.adminIntroComposeView.setContent {
-      MaterialTheme {
-        AdminInformationScreen(profileId, profileType)
-      }
+      MaterialTheme { AdminInformationScreen() }
     }
   }
 
   @Composable
-  private fun AdminInformationScreen(profileId: ProfileId, profileType: ProfileType) {
+  private fun AdminInformationScreen() {
     val backgroundColor = colorResource(R.color.component_color_onboarding_intro_background_color)
     val tealColor = colorResource(R.color.component_color_onboarding_shared_green_color)
     val orientation = LocalConfiguration.current.orientation
@@ -147,7 +138,6 @@ class AdminIntroFragmentPresenter @Inject constructor(
             .size(120.dp)
             .align(Alignment.TopCenter)
             .offset(y = (-32).dp)
-            .testTag(OTTER_TEST_TAG)
         )
       }
 
@@ -162,7 +152,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
       ) {
         if (stepCountIsVisible) {
           Text(
-            text = stringResource(R.string.onboarding_step_count_three),
+            text = resourceHandler.getStringInLocaleWithWrapping(
+              R.string.onboarding_step_count_four
+            ),
             color = tealColor,
             fontSize = 16.sp,
             modifier = Modifier.padding(bottom = 16.dp)
@@ -255,11 +247,10 @@ class AdminIntroFragmentPresenter @Inject constructor(
       horizontalArrangement = Arrangement.SpaceBetween
     ) {
       TextButton(
-        modifier = Modifier.testTag(BACK_BUTTON_TEST_TAG),
         onClick = { activity.finish() }
       ) {
         Text(
-          text = stringResource(R.string.onboarding_navigation_back),
+          text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_back),
           color = colorResource(R.color.component_color_onboarding_shared_green_color),
           fontWeight = FontWeight.Bold
         )
@@ -267,6 +258,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
       Button(
         onClick = {
+          // TODO(#4938): Refactor to: create admin pin screen when the UI is ready.
           navigateToProfileChooserActivity(profileId, profileType)
         },
         colors = ButtonDefaults.buttonColors(
@@ -278,10 +270,11 @@ class AdminIntroFragmentPresenter @Inject constructor(
           .height(48.dp)
           .width(160.dp)
           .padding(top = 12.dp)
-          .testTag(CONTINUE_BUTTON_TEST_TAG)
       ) {
         Text(
-          text = stringResource(R.string.onboarding_navigation_continue),
+          text = resourceHandler.getStringInLocaleWithWrapping(
+            R.string.onboarding_navigation_continue
+          ),
           color = colorResource(R.color.component_color_onboarding_shared_white_color),
           fontWeight = FontWeight.Bold
         )
@@ -289,7 +282,6 @@ class AdminIntroFragmentPresenter @Inject constructor(
     }
   }
 
-  // TODO(#4938): Refactor to: create profile nickname screen, the next onboarding step.
   private fun navigateToProfileChooserActivity(profileId: ProfileId, profileType: ProfileType) {
     val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
     intent.apply {

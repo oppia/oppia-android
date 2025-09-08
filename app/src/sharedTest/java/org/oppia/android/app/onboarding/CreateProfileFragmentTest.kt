@@ -206,7 +206,7 @@ class CreateProfileFragmentTest {
   }
 
   @Test
-  fun testFragment_continueButtonClicked_filledNickname_launchesLearnerIntroScreen() {
+  fun testFragment_learner_clickContinueButton_filledNickname_launchesLearnerIntroScreen() {
     launchNewLearnerProfileActivity().use {
       onView(withId(R.id.create_profile_nickname_edittext))
         .perform(
@@ -228,6 +228,29 @@ class CreateProfileFragmentTest {
         allOf(
           hasComponent(IntroActivity::class.java.name),
           hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_supervisor_clickContinueButton_filledNickname_launchesAdminIntroScreen() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.SUPERVISOR).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(
+        allOf(
+          hasComponent(AdminIntroActivity::class.java.name),
           hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
@@ -296,6 +319,36 @@ class CreateProfileFragmentTest {
         allOf(
           hasComponent(IntroActivity::class.java.name),
           hasProtoExtra(IntroActivity.PARAMS_KEY, expectedParams),
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_supervisor_clickContinue_filledNickname_afterError_launchesAdminIntroScreen() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.SUPERVISOR).use {
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.create_profile_activity_nickname_error))
+        .check(matches(isDisplayed()))
+
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(
+          editTextInputAction.appendText("John"),
+          closeSoftKeyboard()
+        )
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.onboarding_navigation_continue))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(
+        allOf(
+          hasComponent(AdminIntroActivity::class.java.name),
           hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )
@@ -683,14 +736,14 @@ class CreateProfileFragmentTest {
     return Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent)
   }
 
-  private fun launchNewLearnerProfileActivity():
+  private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
     ActivityScenario<CreateProfileActivity>? {
       val intent = CreateProfileActivity.createProfileActivityIntent(context)
       intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
       intent.putProtoExtra(
         CREATE_PROFILE_PARAMS_KEY,
         CreateProfileActivityParams.newBuilder()
-          .setProfileType(ProfileType.SOLE_LEARNER)
+          .setProfileType(profileType)
           .build()
       )
       val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)

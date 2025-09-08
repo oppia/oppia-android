@@ -164,14 +164,19 @@ class CreateProfileFragmentPresenter @Inject constructor(
       when (result) {
         is AsyncResult.Success -> {
           createProfileViewModel.hasErrorMessage.set(false)
-          // TODO(#4938): Add navigation to the PIN creation screen for ProfileType.SUPERVISOR
-          // once the screen has been created.
           val params = IntroActivityParams.newBuilder()
             .setProfileNickname(profileName)
             .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
             .build()
 
-          val intent = IntroActivity.createIntroActivity(activity, params, profileId)
+          val learnerIntroIntent = IntroActivity.createIntroActivity(activity, params, profileId)
+          val adminIntroIntent =
+            AdminIntroActivity.createAdminIntroActivityIntent(activity)
+          val intent = if (profileType == ProfileType.SUPERVISOR) {
+            adminIntroIntent
+          } else {
+            learnerIntroIntent
+          }
           fragment.startActivity(intent)
         }
 
