@@ -319,12 +319,10 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-sw/strings.xml"
-  lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_QUOTES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values/strings.xml"
-  lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_QUOTES
 }
 android_lint_exemption: {
