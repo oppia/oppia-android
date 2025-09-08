@@ -171,27 +171,30 @@ class CreateProfileFragmentPresenter @Inject constructor(
             .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
             .build()
 
-            val intent = IntroActivity.createIntroActivity(activity, params, profileId)
-            fragment.startActivity(intent)
-          }
-          is AsyncResult.Failure -> {
-            createProfileViewModel.hasErrorMessage.set(true)
+          val intent = IntroActivity.createIntroActivity(activity, params, profileId)
+          fragment.startActivity(intent)
+        }
 
-            val errorMessage = when (result.error) {
-              is ProfileManagementController.ProfileNameOnlyLettersException ->
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_error_name_only_letters
-                )
-              is ProfileManagementController.UnknownProfileTypeException ->
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_error_missing_profile_type
-                )
-              else -> {
-                appLanguageResourceHandler.getStringInLocale(
-                  R.string.add_profile_default_error_message
-                )
-              }
+        is AsyncResult.Failure -> {
+          createProfileViewModel.hasErrorMessage.set(true)
+
+          val errorMessage = when (result.error) {
+            is ProfileManagementController.ProfileNameOnlyLettersException ->
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_name_only_letters
+              )
+
+            is ProfileManagementController.UnknownProfileTypeException ->
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_missing_profile_type
+              )
+
+            else -> {
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_default_error_message
+              )
             }
+          }
 
           createProfileViewModel.errorMessage.set(errorMessage)
 
@@ -201,6 +204,7 @@ class CreateProfileFragmentPresenter @Inject constructor(
             result.error
           )
         }
+
         is AsyncResult.Pending -> {}
       }
     }
