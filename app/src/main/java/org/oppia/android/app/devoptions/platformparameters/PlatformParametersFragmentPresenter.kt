@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.oppia.android.app.databinding.databinding.PendingChangesDialogFragmentBinding
 import org.oppia.android.app.databinding.databinding.PlatformParameterItemBinding
 import org.oppia.android.app.databinding.databinding.PlatformParametersFragmentBinding
 import org.oppia.android.app.devoptions.AppRestartDialogFragment
+import org.oppia.android.app.devoptions.PendingChangesDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
@@ -36,6 +36,10 @@ import kotlin.system.exitProcess
 /** Tag for displaying [AppRestartDialogFragment]. */
 const val TAG_PLATFORM_PARAMETER_RESTART_DIALOG = "PLATFORM_PARAMETER_RESTART_DIALOG_TAG"
 
+/** Tag for displaying [PendingChangesDialogFragment]. */
+const val TAG_PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG =
+  "PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG_TAG"
+
 /** The presenter for [PlatformParametersFragment]. */
 @FragmentScope
 class PlatformParametersFragmentPresenter @Inject constructor(
@@ -53,7 +57,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   private val invalidInputErrorText =
     resourceHandler.getStringInLocale(R.string.platform_parameter_invalid_input_error_msg)
   private val boundParamIds = mutableSetOf<PlatformParameterId>()
-  private var restartRequired: Boolean = false
 
   /** Called when [PlatformParametersFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -66,24 +69,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       inflater,
       container,
       /* attachToRoot= */ false
-    )
-
-    binding.platformParametersToolbar.setNavigationOnClickListener {
-      onBackNavigation()
-    }
-
-    binding.saveButton.setOnClickListener {
-      val overriddenParameters = computeOverriddenParameters()
-      savePendingPlatformParameters(overriddenParameters)
-    }
-
-    activity.onBackPressedDispatcher.addCallback(
-      fragment,
-      object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-          onBackNavigation()
-        }
-      }
     )
 
     activity.onBackPressedDispatcher.addCallback(
@@ -105,14 +90,21 @@ class PlatformParametersFragmentPresenter @Inject constructor(
 
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
-    binding.platformParametersRecyclerView.apply {
-      layoutManager = linearLayoutManager
-      adapter = bindingAdapter
-    }
 
     binding.apply {
-      this.lifecycleOwner = fragment
-      this.viewModel = platformParameterViewModel
+      lifecycleOwner = fragment
+      viewModel = platformParameterViewModel
+      saveButton.setOnClickListener {
+        val overriddenParameters = computeOverriddenParameters()
+        savePendingPlatformParameters(overriddenParameters)
+      }
+      platformParametersToolbar.setNavigationOnClickListener {
+        onBackNavigation()
+      }
+      platformParametersRecyclerView.apply {
+        layoutManager = linearLayoutManager
+        adapter = bindingAdapter
+      }
     }
 
     return binding.root
@@ -140,33 +132,15 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     val resetParameters = getResetParameters().keys.toList()
 
     if (overriddenParameters.isNotEmpty() || resetParameters.isNotEmpty()) {
-      showPendingChangesDialog(overriddenParameters)
+      showPendingChangesDialog()
     } else {
       activity.finish()
     }
   }
 
-  private fun showPendingChangesDialog(overriddenParameters: List<OverriddenPlatformParameter>) {
-    val dialogBinding = PendingChangesDialogFragmentBinding.inflate(
-      LayoutInflater.from(activity),
-      /* root= */ null,
-      /* attachToRoot= */ false
-    )
-
-    val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
-      .setView(dialogBinding.root)
-      .create()
-
-    dialogBinding.saveButton.setOnClickListener {
-      dialog.dismiss()
-      savePendingPlatformParameters(overriddenParameters)
-    }
-
-    dialogBinding.discardButton.setOnClickListener {
-      dialog.dismiss()
-      activity.finish()
-    }
-    dialog.show()
+  private fun showPendingChangesDialog() {
+    val dialog = PendingChangesDialogFragment.newInstance()
+    dialog.showNow(fragment.childFragmentManager, TAG_PLATFORM_PARAMETER_PENDING_CHANGES_DIALOG)
   }
 
   private fun savePendingPlatformParameters(
@@ -223,7 +197,6 @@ class PlatformParametersFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            restartRequired = true
             val dialog = AppRestartDialogFragment.newInstance()
             dialog.showNow(fragment.childFragmentManager, TAG_PLATFORM_PARAMETER_RESTART_DIALOG)
           }
@@ -454,6 +427,17 @@ class PlatformParametersFragmentPresenter @Inject constructor(
     }
   }
 
+  /** Called when user opts to save changes in [PendingChangesDialogFragment]. */
+  fun savePendingChanges() {
+    val overriddenParameters = computeOverriddenParameters()
+    savePendingPlatformParameters(overriddenParameters)
+  }
+
+  /** Called when user opts to discard changes in [PendingChangesDialogFragment]. */
+  fun discardPendingChanges() {
+    activity.finish()
+  }
+
   /**
    * Returns the current states of all platform parameters.
    *
@@ -476,19 +460,18 @@ class PlatformParametersFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Called when [PlatformParametersFragment] is destroyed.
-   * Performs a fresh restart of the app to load any updated feature flag states, if required.
+   * Performs a fresh restart of the app to reload platform parameters states and reinitialize
+   * the app processState.
    */
-  fun handleOnDestroy() {
-    if (restartRequired) {
-      val intent = Intent(activity, SplashActivity::class.java).also {
-        it.action = Intent.ACTION_MAIN
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      activity.startActivity(intent)
-      // App is terminated to ensure a fresh restart and kill all the current process
-      // so that ProcessState can be reinitialised on the fresh restart.
-      exitProcess(0)
+  fun appRestart() {
+    val intent = Intent(activity, SplashActivity::class.java).also {
+      it.action = Intent.ACTION_MAIN
+      it.addCategory(Intent.CATEGORY_LAUNCHER)
     }
+    activity.finishAffinity()
+    activity.startActivity(intent)
+    // App is terminated to ensure a fresh restart and kill all the current process
+    // so that ProcessState can be reinitialised on the fresh restart.
+    exitProcess(0)
   }
 }

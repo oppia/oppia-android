@@ -12,6 +12,7 @@ import org.oppia.android.app.completedstorylist.CompletedStoryListFragment
 import org.oppia.android.app.devoptions.AppRestartDialogFragment
 import org.oppia.android.app.devoptions.DeveloperOptionsFragment
 import org.oppia.android.app.devoptions.ForceDownloadRemoteParametersDialogFragment
+import org.oppia.android.app.devoptions.PendingChangesDialogFragment
 import org.oppia.android.app.devoptions.featureflags.FeatureFlagsFragment
 import org.oppia.android.app.devoptions.forcenetworktype.ForceNetworkTypeFragment
 import org.oppia.android.app.devoptions.markchapterscompleted.MarkChaptersCompletedFragment
@@ -171,6 +172,7 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(optionalAppDeprecationNoticeDialogFragment: OptionalAppDeprecationNoticeDialogFragment)
   fun inject(optionFragment: OptionsFragment)
   fun inject(osDeprecationNoticeDialogFragment: OsDeprecationNoticeDialogFragment)
+  fun inject(pendingChangesDialogFragment: PendingChangesDialogFragment)
   fun inject(platformParametersFragment: PlatformParametersFragment)
   fun inject(policiesFragment: PoliciesFragment)
   fun inject(profileAndDeviceIdFragment: ProfileAndDeviceIdFragment)

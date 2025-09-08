@@ -1,6 +1,5 @@
 package org.oppia.android.app.devoptions.featureflags
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.oppia.android.app.databinding.databinding.FeatureFlagsFragmentBinding
 import org.oppia.android.app.databinding.databinding.FeatureFlagsItemBinding
-import org.oppia.android.app.databinding.databinding.PendingChangesDialogFragmentBinding
 import org.oppia.android.app.devoptions.AppRestartDialogFragment
+import org.oppia.android.app.devoptions.PendingChangesDialogFragment
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.FeatureFlagId
 import org.oppia.android.app.model.OverriddenFeatureFlag
@@ -31,6 +30,9 @@ import kotlin.system.exitProcess
 /** Tag for displaying [AppRestartDialogFragment]. */
 const val TAG_FEATURE_FLAG_RESTART_DIALOG = "FEATURE_FLAG_RESTART_DIALOG_TAG"
 
+/** Tag for displaying [PendingChangesDialogFragment]. */
+const val TAG_FEATURE_FLAG_PENDING_CHANGES_DIALOG = "FEATURE_FLAG_PENDING_CHANGES_DIALOG_TAG"
+
 /** The presenter for [FeatureFlagsFragment]. */
 @FragmentScope
 class FeatureFlagsFragmentPresenter @Inject constructor(
@@ -44,7 +46,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
   private lateinit var binding: FeatureFlagsFragmentBinding
   private lateinit var linearLayoutManager: LinearLayoutManager
   private lateinit var bindingAdapter: BindableAdapter<FeatureFlagItemViewModel>
-  private var restartRequired: Boolean = false
 
   /** Called when [FeatureFlagsFragment] is created. Handles UI for the fragment. */
   fun handleCreateView(
@@ -58,13 +59,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       container,
       /* attachToRoot= */ false
     )
-    binding.featureFlagsToolbar.setNavigationOnClickListener {
-      onBackNavigation()
-    }
-    binding.saveButton.setOnClickListener {
-      val overriddenFlags = computeOverriddenFlags()
-      savePendingFeatureFlags(overriddenFlags)
-    }
 
     activity.onBackPressedDispatcher.addCallback(
       fragment,
@@ -82,16 +76,23 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       featureFlagsViewModel.resetFlags.value = resetFlags.toMutableMap()
     }
 
-    binding.apply {
-      this.lifecycleOwner = fragment
-      this.viewModel = featureFlagsViewModel
-    }
-
     linearLayoutManager = LinearLayoutManager(activity.applicationContext)
     bindingAdapter = createRecyclerViewAdapter()
-    binding.featureFlagsRecyclerView.apply {
-      layoutManager = linearLayoutManager
-      adapter = bindingAdapter
+
+    binding.apply {
+      lifecycleOwner = fragment
+      viewModel = featureFlagsViewModel
+      saveButton.setOnClickListener {
+        val overriddenFlags = computeOverriddenFlags()
+        savePendingFeatureFlags(overriddenFlags)
+      }
+      featureFlagsToolbar.setNavigationOnClickListener {
+        onBackNavigation()
+      }
+      featureFlagsRecyclerView.apply {
+        layoutManager = linearLayoutManager
+        adapter = bindingAdapter
+      }
     }
 
     return binding.root
@@ -111,33 +112,15 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     val resetFlags = getResetFeatureFlags()
 
     if (overriddenFlags.isNotEmpty() || resetFlags.isNotEmpty()) {
-      showPendingChangesDialog(overriddenFlags)
+      showPendingChangesDialog()
     } else {
       activity.finish()
     }
   }
 
-  private fun showPendingChangesDialog(overriddenFlags: List<OverriddenFeatureFlag>) {
-    val dialogBinding = PendingChangesDialogFragmentBinding.inflate(
-      LayoutInflater.from(activity),
-      /* root= */ null,
-      /* attachToRoot= */ false
-    )
-    val dialog = AlertDialog.Builder(activity)
-      .setView(dialogBinding.root)
-      .create()
-
-    dialogBinding.saveButton.setOnClickListener {
-      dialog.dismiss()
-      savePendingFeatureFlags(overriddenFlags)
-    }
-
-    dialogBinding.discardButton.setOnClickListener {
-      dialog.dismiss()
-      activity.finish()
-    }
-
-    dialog.show()
+  private fun showPendingChangesDialog() {
+    val dialog = PendingChangesDialogFragment.newInstance()
+    dialog.showNow(fragment.childFragmentManager, TAG_FEATURE_FLAG_PENDING_CHANGES_DIALOG)
   }
 
   private fun savePendingFeatureFlags(overriddenFlags: List<OverriddenFeatureFlag>) {
@@ -190,7 +173,6 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
       .observe(fragment) { result ->
         when (result) {
           is AsyncResult.Success -> {
-            restartRequired = true
             val dialog = AppRestartDialogFragment.newInstance()
             dialog.showNow(fragment.childFragmentManager, TAG_FEATURE_FLAG_RESTART_DIALOG)
           }
@@ -273,21 +255,15 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
     }
   }
 
-  /**
-   * Called when [FeatureFlagsFragment] is destroyed.
-   * Performs a fresh restart of the app to load any updated feature flag states, if required.
-   */
-  fun handleOnDestroy() {
-    if (restartRequired) {
-      val intent = Intent(activity, SplashActivity::class.java).also {
-        it.action = Intent.ACTION_MAIN
-        it.addCategory(Intent.CATEGORY_LAUNCHER)
-      }
-      activity.startActivity(intent)
-      // App is terminated to ensure a fresh restart and kill all the current process
-      // so that ProcessState can be reinitialised on the fresh restart.
-      exitProcess(0)
-    }
+  /** Called when user opts to save changes in [PendingChangesDialogFragment]. */
+  fun savePendingChanges() {
+    val overriddenFlags = computeOverriddenFlags()
+    savePendingFeatureFlags(overriddenFlags)
+  }
+
+  /** Called when user opts to discard changes in [PendingChangesDialogFragment]. */
+  fun discardPendingChanges() {
+    activity.finish()
   }
 
   /**
@@ -308,5 +284,21 @@ class FeatureFlagsFragmentPresenter @Inject constructor(
    */
   fun getFeatureFlagStates(): Map<FeatureFlagId, Boolean> {
     return featureFlagsViewModel.featureFlagStates.value ?: mapOf()
+  }
+
+  /**
+   * Performs a fresh restart of the app to reload feature flag states and reinitialize
+   * the app processState.
+   */
+  fun restartApp() {
+    val intent = Intent(activity, SplashActivity::class.java).also {
+      it.action = Intent.ACTION_MAIN
+      it.addCategory(Intent.CATEGORY_LAUNCHER)
+    }
+    activity.finishAffinity()
+    activity.startActivity(intent)
+    // App is terminated to ensure a fresh restart and kill all the current process
+    // so that ProcessState can be reinitialised on the fresh restart.
+    exitProcess(0)
   }
 }

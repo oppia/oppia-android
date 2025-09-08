@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.devoptions.AppRestartListener
+import org.oppia.android.app.devoptions.SavePendingChangesDialogListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
@@ -16,7 +18,10 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify platform parameters of the app. */
-class PlatformParametersFragment : InjectableFragment() {
+class PlatformParametersFragment :
+  InjectableFragment(),
+  AppRestartListener,
+  SavePendingChangesDialogListener {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
@@ -42,7 +47,6 @@ class PlatformParametersFragment : InjectableFragment() {
     val platformParameterStates:
       MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
     val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
-
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
@@ -85,6 +89,7 @@ class PlatformParametersFragment : InjectableFragment() {
           .setOverriddenValue(value)
           .build()
       }
+
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
       .addAllPlatformParameterStates(validParameterOverrides)
       .addAllResetPlatformParameters(resetParamList)
@@ -94,8 +99,15 @@ class PlatformParametersFragment : InjectableFragment() {
     )
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
-    platformParametersFragmentPresenter.handleOnDestroy()
+  override fun restartApp() {
+    platformParametersFragmentPresenter.appRestart()
+  }
+
+  override fun savePendingChanges() {
+    platformParametersFragmentPresenter.savePendingChanges()
+  }
+
+  override fun discardPendingChanges() {
+    platformParametersFragmentPresenter.discardPendingChanges()
   }
 }

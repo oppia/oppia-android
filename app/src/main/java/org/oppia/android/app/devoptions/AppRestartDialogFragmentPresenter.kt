@@ -22,14 +22,15 @@ class AppRestartDialogFragmentPresenter @Inject constructor(
     )
     binding.lifecycleOwner = fragment
 
+    val appRestartInterface = fragment.parentFragment as AppRestartListener
     val dialog = AlertDialog.Builder(activity, R.style.OppiaAlertDialogTheme)
       .setView(binding.root)
       .create()
     dialog.setCanceledOnTouchOutside(false)
 
     binding.restartButton.setOnClickListener {
+      appRestartInterface.restartApp()
       dialog.dismiss()
-      activity.finishAffinity()
     }
     return dialog
   }

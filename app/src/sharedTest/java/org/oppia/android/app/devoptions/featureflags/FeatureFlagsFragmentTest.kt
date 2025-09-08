@@ -9,6 +9,7 @@ import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -1110,7 +1111,11 @@ class FeatureFlagsFragmentTest {
   @Test
   fun testFeatureFlagsFragment_pressBack_saveChanges_clickRestartInDialog_exitsApp() {
     setUpTestApplicationComponent()
-    val exception = assertThrows<SecurityException>() {
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
 
@@ -1132,18 +1137,26 @@ class FeatureFlagsFragmentTest {
 
         testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
+        onView(withText(R.string.app_restart_dialog_button_text))
           .inRoot(isDialog())
           .perform(click())
+        testCoroutineDispatchers.runCurrent()
       }
     }
-    assertThat(exception.message).contains("System.exit()")
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
   }
 
   @Test
   fun testFeatureFlagsFragment_clickSaveButton_clickRestartInDialog_savesChangesAndExitsApp() {
     setUpTestApplicationComponent()
-    val exception = assertThrows<SecurityException>() {
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
 
@@ -1157,22 +1170,29 @@ class FeatureFlagsFragmentTest {
         ).perform(click())
 
         onView(withId(R.id.save_button)).perform(click())
-
         testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
+        onView(withText(R.string.app_restart_dialog_button_text))
           .inRoot(isDialog())
           .perform(click())
+        testCoroutineDispatchers.runCurrent()
       }
     }
-    assertThat(exception.message).contains("System.exit()")
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
   }
 
   @Test
   fun testFeatureFlagsFragment_modifyFlagAndSaveOnBackNavigation_persistsChanges() {
     setUpTestApplicationComponent()
     val initialValue = getEphemeralFeatureFlags()[0].currentValue
-    val exception = assertThrows<SecurityException>() {
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
 
@@ -1192,9 +1212,17 @@ class FeatureFlagsFragmentTest {
           .inRoot(isDialog())
           .perform(click())
         testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
       }
     }
-    assertThat(exception.message).contains("System.exit()")
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
 
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1211,7 +1239,11 @@ class FeatureFlagsFragmentTest {
   fun testFeatureFlagsFragment_modifyFlagAndSaveViaToolbar_persistsChanges() {
     setUpTestApplicationComponent()
     val initialValue = getEphemeralFeatureFlags()[0].currentValue
-    val exception = assertThrows<SecurityException>() {
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
       launch(FeatureFlagsTestActivity::class.java).use {
         testCoroutineDispatchers.runCurrent()
 
@@ -1225,15 +1257,18 @@ class FeatureFlagsFragmentTest {
         ).perform(click())
 
         onView(withId(R.id.save_button)).perform(click())
-
         testCoroutineDispatchers.runCurrent()
 
-        onView(withText(R.string.app_restart_dialog_title))
+        onView(withText(R.string.app_restart_dialog_button_text))
           .inRoot(isDialog())
           .perform(click())
+        testCoroutineDispatchers.runCurrent()
       }
     }
-    assertThat(exception.message).contains("System.exit()")
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
 
     launch(FeatureFlagsTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -1243,6 +1278,103 @@ class FeatureFlagsFragmentTest {
         position = 0,
         expectedState = !initialValue
       )
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_clickSave_showsRestartDialog_configChange_dialogPersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_navigateBack_showsRestartDialog_configChange_dialogPersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_save_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testFeatureFlagsFragment_pendingChangesDialog_configChange_dialogPersists() {
+    setUpTestApplicationComponent()
+    launch(FeatureFlagsTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.feature_flags_recycler_view,
+          position = 0,
+          targetViewId = R.id.feature_flag_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
