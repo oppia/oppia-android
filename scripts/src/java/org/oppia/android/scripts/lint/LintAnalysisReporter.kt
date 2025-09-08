@@ -458,11 +458,12 @@ class LintAnalysisReporter(private val repoRoot: File) {
 
     printSeveritySummary(filteredIssues, redundantExemptionsCount)
     println()
-
-    println(
-      "If you need additional help to resolve an issue," +
-        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
-    )
+    if (filteredIssues.isNotEmpty()) {
+      println(
+        "If you need additional help to resolve an issue," +
+          " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
+      )
+    }
     println()
 
     if (redundantExemptions.isNotEmpty()) {
