@@ -11,7 +11,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.SplashActivityBinding
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -31,7 +30,6 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
-import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
 import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
@@ -57,7 +55,6 @@ import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -487,14 +484,11 @@ class SplashActivityPresenter @Inject constructor(
     }
 
     private fun resumeSupervisorOnboarding(profileId: ProfileId) {
-      val introActivityParams = AdminIntroActivityParams.newBuilder()
-        .setProfileType(ProfileType.SUPERVISOR)
-        .build()
-
-      val intent = AdminIntroActivity.createAdminIntroActivityIntent(activity).apply {
-        putProtoExtra(ADMIN_INTRO_PARAMS_KEY, introActivityParams)
-        decorateWithUserProfileId(profileId)
-      }
+      val intent = AdminIntroActivity.createAdminIntroActivityIntent(
+        activity,
+        profileId,
+        ProfileType.SUPERVISOR
+      )
 
       activity.startActivity(intent)
       activity.finish()

@@ -26,6 +26,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -100,6 +102,8 @@ class AdminIntroActivityTest {
   @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var context: Context
 
+  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
   @Before
   fun setUp() {
     Intents.init()
@@ -129,7 +133,11 @@ class AdminIntroActivityTest {
   }
 
   private fun createAdminIntroActivityIntent(): Intent {
-    return AdminIntroActivity.createAdminIntroActivityIntent(context)
+    return AdminIntroActivity.createAdminIntroActivityIntent(
+      context,
+      testProfileId,
+      ProfileType.SUPERVISOR
+    )
   }
 
   private fun setUpTestApplicationComponent() {

@@ -6,11 +6,18 @@ import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AdminIntroActivityParams
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName.ADMIN_INTRO_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+
+/** Argument key for [AdminIntroActivity] intent parameters. */
+private const val ADMIN_INTRO_PARAMS_KEY = "AdminIntroActivityParams.params"
 
 /** Activity for displaying the admin onboarding screen. */
 class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
@@ -33,9 +40,19 @@ class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to open an [AdminIntroActivity] with the specified params. */
-    fun createAdminIntroActivityIntent(context: Context): Intent {
+    fun createAdminIntroActivityIntent(
+      context: Context,
+      profileId: ProfileId,
+      profileType: ProfileType
+    ): Intent {
+      val introActivityParams = AdminIntroActivityParams.newBuilder()
+        .setProfileType(profileType)
+        .build()
+
       return Intent(context, AdminIntroActivity::class.java).apply {
         decorateWithScreenName(ADMIN_INTRO_ACTIVITY)
+        putProtoExtra(ADMIN_INTRO_PARAMS_KEY, introActivityParams)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

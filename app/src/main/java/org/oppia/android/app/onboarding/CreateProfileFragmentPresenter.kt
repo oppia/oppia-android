@@ -164,19 +164,23 @@ class CreateProfileFragmentPresenter @Inject constructor(
       when (result) {
         is AsyncResult.Success -> {
           createProfileViewModel.hasErrorMessage.set(false)
+
           val params = IntroActivityParams.newBuilder()
             .setProfileNickname(profileName)
             .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
             .build()
 
           val learnerIntroIntent = IntroActivity.createIntroActivity(activity, params, profileId)
+
           val adminIntroIntent =
-            AdminIntroActivity.createAdminIntroActivityIntent(activity)
+            AdminIntroActivity.createAdminIntroActivityIntent(activity, profileId, profileType)
+
           val intent = if (profileType == ProfileType.SUPERVISOR) {
             adminIntroIntent
           } else {
             learnerIntroIntent
           }
+
           fragment.startActivity(intent)
         }
 
