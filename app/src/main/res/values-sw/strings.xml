@@ -91,7 +91,7 @@
   <string name="math_expression_error_spaces_in_numerical_input">Tafadhali ondoa nafasi katikati ya nambari katika jibu lako.</string>
   <string name="math_expression_error_unbalanced_parentheses">Tafadhali funga au uondoe mabano.</string>
   <string name="math_expression_error_single_redundant_parentheses">Tafadhali ondoa mabano karibu na jibu mzima: \' %s\'.</string>
-  <string name="math_expression_error_multiple_redundant_parentheses">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)', kwa mfano: '%1$s'.</string>
+  <string name="math_expression_error_multiple_redundant_parentheses">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'%1$s\'.</string>
   <string name="math_expression_error_redundant_parentheses_individual_term">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'%1$s\'.</string>
   <string name="math_expression_error_unnecessary_symbols">Kuna\'%s\' isiyo halali katika jibu. Tafadhali ondoa.</string>
   <string name="math_expression_error_number_after_var_term">Tafadhali panga upya utaratibu wa %1$s &amp; %2$s. Kwa mfano: %1$s %2$s.</string>
