@@ -225,7 +225,8 @@ class AndroidLintAnalyzer(
       "UnusedResources",
       "UnusedAttribute",
       "UnknownNullness",
-      "MergeRootFrame"
+      "MergeRootFrame",
+      "OldTargetApi"
     )
   }
 

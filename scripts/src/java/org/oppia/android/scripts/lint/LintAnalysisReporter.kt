@@ -153,7 +153,6 @@ class LintAnalysisReporter(private val repoRoot: File) {
       "LockedOrientationActivity" to LintIssueId.LOCKED_ORIENTATION_ACTIVITY,
       "MissingVersion" to LintIssueId.MISSING_VERSION,
       "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
-      "OldTargetApi" to LintIssueId.OLD_TARGET_API,
       "Overdraw" to LintIssueId.OVERDRAW,
       "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
       "Registered" to LintIssueId.REGISTERED,
