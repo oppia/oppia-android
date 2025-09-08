@@ -137,21 +137,21 @@ import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
-// When both extra tabs (info and practice) are enabled
+// When both extra tabs (info and practice) are enabled.
 private const val INFO_TAB_POSITION = 0
 private const val LESSON_TAB_POSITION = 1
 private const val PRACTICE_TAB_POSITION = 2
 private const val REVISION_TAB_POSITION = 3
 
-// When both extra tabs (info and practice) are disabled
+// When both extra tabs (info and practice) are disabled.
 private const val LESSON_TAB_POSITION_EXTRA_TABS_DISABLED = 0
 private const val REVISION_TAB_POSITION_EXTRA_TABS_DISABLED = 1
 
-// When only the info tab is enabled
+// When only the info tab is enabled.
 private const val LESSON_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED = 1
 private const val REVISION_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED = 2
 
-// When only the practice tab is enabled
+// When only the practice tab is enabled.
 private const val LESSON_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 0
 private const val PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 1
 private const val REVISION_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED = 2

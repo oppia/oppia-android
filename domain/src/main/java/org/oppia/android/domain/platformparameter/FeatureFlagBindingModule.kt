@@ -101,7 +101,6 @@ class FeatureFlagBindingModule {
   fun provideEnableTopicPracticeTab(processState: PlatformParameterProcessState) =
     processState.retrieveFeatureFlag(FeatureFlagId.TOPIC_PRACTICE_TAB)
 
-
   private companion object {
     private fun PlatformParameterProcessState.retrieveFeatureFlag(
       featureFlagId: FeatureFlagId
