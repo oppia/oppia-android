@@ -543,7 +543,10 @@ class LintAnalysisReporter(private val repoRoot: File) {
         println(
           wrapText(
             "In $filePath the ${toUpperSnakeCase(issueId)} exemption is redundant" +
-              " and can be removed since there are no corresponding lint issues."
+              " and can be removed since there are no corresponding lint issues." +
+              "Refer Android Lint Check Wiki for more information:" +
+              " https://github.com/oppia/oppia-android/wiki/" +
+              "Android-Lint-Check#exemption-file-maintenance-prompts"
           )
         )
 
@@ -747,7 +750,9 @@ class LintAnalysisReporter(private val repoRoot: File) {
       println("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
       println(
         "The following issue IDs are defined in issueIdMapping " +
-          "but no corresponding lint issues were found."
+          "but no corresponding lint issues were found. Refer Android Lint Check Wiki for more" +
+          " information: https://github.com/oppia/oppia-android/wiki/" +
+          "Android-Lint-Check#unused-enum-mappings-detection"
       )
       println("Please remove them from the LintIssueId enum and issueIdMapping:")
       println()
