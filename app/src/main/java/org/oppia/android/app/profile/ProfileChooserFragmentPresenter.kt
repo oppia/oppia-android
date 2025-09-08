@@ -33,10 +33,8 @@ import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
 
@@ -286,11 +284,27 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun ensureProfileOnboarded(profile: Profile) {
-    if (profile.profileType == ProfileType.SUPERVISOR || profile.completedProfileOnboarding) {
-      logInToProfile(profile)
-    } else {
+  private fun computeLoginRoute(profile: Profile) {
+    when {
+      !profile.completedProfileOnboarding && profile.profileType != ProfileType.SUPERVISOR ->
+        routeToOnboardingOrPinScreen(profile)
+      else -> routeToHomeOrPinScreen(profile)
+    }
+  }
+
+  private fun routeToOnboardingOrPinScreen(profile: Profile) {
+    if (profile.pin.isNullOrBlank()) {
       launchOnboardingScreen(profile.id, profile.name)
+    } else {
+      launchPinScreen(profile.id)
+    }
+  }
+
+  private fun routeToHomeOrPinScreen(profile: Profile) {
+    if (profile.pin.isNullOrBlank()) {
+      launchHomeScreen(profile.id)
+    } else {
+      launchPinScreen(profile.id)
     }
   }
 
@@ -300,37 +314,33 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       .setParentScreen(IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN)
       .build()
 
-    val intent = IntroActivity.createIntroActivity(activity)
-    intent.apply {
-      putProtoExtra(IntroActivity.PARAMS_KEY, introActivityParams)
-      decorateWithUserProfileId(profileId)
-    }
-
+    val intent = IntroActivity.createIntroActivity(activity, introActivityParams, profileId)
     activity.startActivity(intent)
   }
 
-  private fun logInToProfile(profile: Profile) {
-    if (profile.pin.isNullOrBlank()) {
-      profileManagementController.loginToProfile(profile.id).toLiveData().observe(fragment) {
-        if (it is AsyncResult.Success) {
-          if (enableMultipleClassrooms.value) {
-            activity.startActivity(
-              ClassroomListActivity.createClassroomListActivity(activity, profile.id)
-            )
-          } else {
-            activity.startActivity(
-              HomeActivity.createHomeActivity(activity, profile.id)
-            )
-          }
+  private fun launchHomeScreen(profileId: ProfileId) {
+    profileManagementController.loginToProfile(profileId).toLiveData().observe(fragment) {
+      if (it is AsyncResult.Success) {
+        if (enableMultipleClassrooms.value) {
+          activity.startActivity(
+            ClassroomListActivity.createClassroomListActivity(activity, profileId)
+          )
+        } else {
+          activity.startActivity(
+            HomeActivity.createHomeActivity(activity, profileId)
+          )
         }
       }
-    } else {
-      val profileLoginIntent = ProfileLoginActivity.createProfileLoginActivityIntent(
-        context,
-        profile.id
-      )
-      activity.startActivity(profileLoginIntent)
     }
+  }
+
+  private fun launchPinScreen(profileId: ProfileId) {
+    activity.startActivity(
+      ProfileLoginActivity.createProfileLoginActivityIntent(
+        context,
+        profileId
+      )
+    )
   }
 
   /** Handles navigation to either the [AdministratorControlsActivity] or [AdminAuthActivity]. */
@@ -360,6 +370,6 @@ class ProfileChooserFragmentPresenter @Inject constructor(
   /** Click listener for handling clicks to login to a profile. */
   fun onProfileClick(profile: Profile) {
     updateLearnerIdIfAbsent(profile)
-    ensureProfileOnboarded(profile)
+    computeLoginRoute(profile)
   }
 }

@@ -46,8 +46,6 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
       as DialogFragment
     adminPinDialog.dismiss()
 
-    fragmentManager.executePendingTransactions()
-
     val resetPinDialog = ResetPinDialogFragment.newInstance(profileId.internalId, profileName)
 
     resetPinDialog.showNow(fragmentManager, TAG_ADMIN_RESET_PIN_DIALOG)
@@ -59,6 +57,9 @@ class ProfileLoginActivityPresenter @Inject constructor(private val activity: Ap
       as DialogFragment
     resetPinDialog.dismiss()
 
+    // Before showing the success dialog, we need to force all pending transactions to complete
+    // immediately, since there is a series of dialogs leading to one another. This helps prevent
+    // stacking of dialogs and errors.
     fragmentManager.executePendingTransactions()
 
     showSuccessDialog()

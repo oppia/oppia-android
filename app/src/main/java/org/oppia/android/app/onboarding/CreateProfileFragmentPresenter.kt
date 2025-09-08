@@ -26,10 +26,8 @@ import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.parser.image.ImageLoader
 import org.oppia.android.util.parser.image.ImageViewTarget
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
 /** Presenter for [CreateProfileFragment]. */
@@ -173,31 +171,27 @@ class CreateProfileFragmentPresenter @Inject constructor(
             .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
             .build()
 
-          val intent =
-            IntroActivity.createIntroActivity(activity).apply {
-              putProtoExtra(IntroActivity.PARAMS_KEY, params)
-              decorateWithUserProfileId(profileId)
-            }
-
-          fragment.startActivity(intent)
-        }
-        is AsyncResult.Failure -> {
-          createProfileViewModel.hasErrorMessage.set(true)
-          val errorMessage = when (result.error) {
-            is ProfileManagementController.ProfileNameOnlyLettersException ->
-              appLanguageResourceHandler.getStringInLocale(
-                R.string.add_profile_error_name_only_letters
-              )
-            is ProfileManagementController.UnknownProfileTypeException ->
-              appLanguageResourceHandler.getStringInLocale(
-                R.string.add_profile_error_missing_profile_type
-              )
-            else -> {
-              appLanguageResourceHandler.getStringInLocale(
-                R.string.add_profile_default_error_message
-              )
-            }
+            val intent = IntroActivity.createIntroActivity(activity, params, profileId)
+            fragment.startActivity(intent)
           }
+          is AsyncResult.Failure -> {
+            createProfileViewModel.hasErrorMessage.set(true)
+
+            val errorMessage = when (result.error) {
+              is ProfileManagementController.ProfileNameOnlyLettersException ->
+                appLanguageResourceHandler.getStringInLocale(
+                  R.string.add_profile_error_name_only_letters
+                )
+              is ProfileManagementController.UnknownProfileTypeException ->
+                appLanguageResourceHandler.getStringInLocale(
+                  R.string.add_profile_error_missing_profile_type
+                )
+              else -> {
+                appLanguageResourceHandler.getStringInLocale(
+                  R.string.add_profile_default_error_message
+                )
+              }
+            }
 
           createProfileViewModel.errorMessage.set(errorMessage)
 

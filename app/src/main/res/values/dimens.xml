@@ -889,16 +889,12 @@
   <dimen name="classrooms_card_margin_start">8dp</dimen>
   <dimen name="classrooms_card_margin_end">0dp</dimen>
 
-  <!-- FlashbackConfirmationDialogFragment -->
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_margin_start">20dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_margin_end">20dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_start">24dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_end">24dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_top">16dp</dimen>
-  <dimen name="flashback_confirmation_dialog_fragment_constraint_layout_padding_bottom">16dp</dimen>
-
   <!-- Flashback Solution -->
-  <dimen name="flashback_solution_summary_card_margin_start">24dp</dimen>
-  <dimen name="flashback_solution_summary_card_margin_end">40dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_start">40dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">24dp</dimen>
   <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
+  <dimen name="flashback_solution_summary_label_margin_bottom">12dp</dimen>
+  <dimen name="state_solution_summary_label_margin_bottom">24dp</dimen>
+  <dimen name="flashback_explanation_box_stroke_width">1dp</dimen>
+  <dimen name="state_solution_box_stroke_width">2dp</dimen>
 </resources>

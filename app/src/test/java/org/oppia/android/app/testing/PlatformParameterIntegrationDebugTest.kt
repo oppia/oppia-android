@@ -33,6 +33,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.RemotePlatformParameter
@@ -125,6 +127,8 @@ class PlatformParameterIntegrationDebugTest {
 
   private companion object {
     private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val LOCAL_OVERRIDE_DATABASE_NAME =
+      "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_MESSAGE = "Welcome User"
   }
 
@@ -146,7 +150,46 @@ class PlatformParameterIntegrationDebugTest {
   @Test
   fun testIntegration_withRemoteNoLocalOverride_remoteTakesPrecedence_displaysWelcomeMsg() {
     executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
+      addTestRemotePlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestEnvironment()
+    launch(SplashTestActivity::class.java).use { scenario ->
+      // Fetch the latest platform parameter from cache store after execution of work request to
+      // imitate the loading process at the start of splash test activity.
+      scenario.onActivity { activity ->
+        activity.splashTestActivityPresenter.loadPlatformParameters()
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SPLASH_MESSAGE)
+    }
+  }
+
+  @Test
+  fun testIntegration_withLocalOverrideAndNoRemote_displaysWelcomeMsg() {
+    executeInPreviousAppInstance { component ->
+      addTestOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestEnvironment()
+    launch(SplashTestActivity::class.java).use { scenario ->
+      // Fetch the latest platform parameter from cache store after execution of work request to
+      // imitate the loading process at the start of splash test activity.
+      scenario.onActivity { activity ->
+        activity.splashTestActivityPresenter.loadPlatformParameters()
+      }
+      testCoroutineDispatchers.runCurrent()
+
+      assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(SPLASH_MESSAGE)
+    }
+  }
+
+  @Test
+  fun testIntegration_withRemoteAndLocalOverride_overrideTakesPrecedence_displaysWelcomeMsg() {
+    executeInPreviousAppInstance { component ->
+      addTestRemotePlatformParameterToDatabase(component, false)
+      addTestOverriddenPlatformParameterToDatabase(component, true)
       component.getTestCoroutineDispatchers().runCurrent()
     }
     setUpTestEnvironment()
@@ -176,7 +219,10 @@ class PlatformParameterIntegrationDebugTest {
   }
 
   // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
-  private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
+  private fun addTestRemotePlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
       REMOTE_DATABASE_NAME,
       RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
@@ -188,9 +234,35 @@ class PlatformParameterIntegrationDebugTest {
           RemotePlatformParameter.newBuilder().apply {
             id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
             remoteValue = PlatformParameterValue.newBuilder().apply {
-              boolean = true
+              boolean = value
             }.build()
             syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          }.build()
+        )
+      }.build()
+    }.waitForSuccessfulResult(
+      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
+    )
+  }
+
+  // Populates the Local Overridden DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
+  private fun addTestOverriddenPlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
+    val database = component.getCacheStoreFactory().create(
+      LOCAL_OVERRIDE_DATABASE_NAME,
+      LocalOverridePlatformParameterDatabase.getDefaultInstance()
+    )
+
+    database.storeDataAsync {
+      LocalOverridePlatformParameterDatabase.newBuilder().apply {
+        addOverriddenPlatformParameter(
+          OverriddenPlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+            overriddenValue = PlatformParameterValue.newBuilder()
+              .setBoolean(value)
+              .build()
           }.build()
         )
       }.build()

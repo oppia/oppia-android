@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.oppia.android.app.model.EventLog
 import org.oppia.android.app.model.EventLog.CardContext
 import org.oppia.android.app.model.EventLog.ExplorationContext
+import org.oppia.android.app.model.EventLog.FlashbackContext
 import org.oppia.android.app.model.EventLog.HintContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext
 import org.oppia.android.app.model.EventLog.SubmitAnswerContext
@@ -478,6 +479,46 @@ class LearnerAnalyticsLogger @Inject constructor(
     }
 
     /**
+     * Logs that flashback is offered to learner. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
+     * specifies the state the learner can revisit to review the concept.
+     */
+    fun logFlashbackOffered(stateNameToRevisit: String) {
+      logStateEvent(
+        linkedSkillId,
+        stateNameToRevisit,
+        ::createFlashbackContext,
+        EventBuilder::setFlashbackOfferedContext
+      )
+    }
+
+    /**
+     * Logs that the learner opened a flashback. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state, and [stateNameToRevisit]
+     * specifies the state the learner can revisit to review the concept.
+     */
+    fun logOpenFlashback(stateNameToRevisit: String) {
+      logStateEvent(
+        linkedSkillId,
+        stateNameToRevisit,
+        ::createFlashbackContext,
+        EventBuilder::setOpenFlashbackEvent
+      )
+    }
+
+    /**
+     * Logs that the learner closed a flashback. The [linkedSkillId] indicates the global skill ID
+     * being taught or evaluated by the interaction in this state.
+     */
+    fun logCloseFlashback() {
+      logStateEvent(
+        linkedSkillId,
+        ::createCardContext,
+        EventBuilder::setCloseFlashbackEvent
+      )
+    }
+
+    /**
      * Logs that the learner started playing a voice over audio track corresponding to [contentId]
      * with language code [languageCode] (or null if something failed when retrieving the content ID
      * or language code--note that this may affect whether the event is logged).
@@ -657,6 +698,16 @@ class LearnerAnalyticsLogger @Inject constructor(
       explorationDetails: ExplorationContext
     ) = CardContext.newBuilder().apply {
       this.skillId = skillId
+      this.explorationDetails = explorationDetails
+    }.build()
+
+    private fun createFlashbackContext(
+      skillId: String,
+      stateNameToRevisit: String,
+      explorationDetails: ExplorationContext
+    ) = FlashbackContext.newBuilder().apply {
+      this.skillId = skillId
+      this.stateNameToRevisit = stateNameToRevisit
       this.explorationDetails = explorationDetails
     }.build()
 

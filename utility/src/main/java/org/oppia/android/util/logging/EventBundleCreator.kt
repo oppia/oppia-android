@@ -13,6 +13,7 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_B
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.APP_IN_FOREGROUND_TIME
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.BEGIN_SURVEY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_REVISION_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.COMPLETE_APP_ONBOARDING
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CONSOLE_LOG
@@ -22,12 +23,14 @@ import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROF
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.EXIT_EXPLORATION_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FEATURE_FLAG_LIST_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FINISH_EXPLORATION_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FLASHBACK_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.INSTALL_ID_FOR_FAILED_ANALYTICS_LOG
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.LESSON_SAVED_ADVERTENTLY_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.MANDATORY_RESPONSE
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_CONCEPT_CARD
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_EXPLORATION_ACTIVITY
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_HOME
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_INFO_TAB
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_LESSONS_TAB
@@ -83,6 +86,7 @@ import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.Co
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.EmptyContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ExplorationContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FeatureFlagContext
+import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.FlashbackContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.ForegroundAppTimeContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.HintContext
 import org.oppia.android.util.logging.EventBundleCreator.EventActivityContext.LearnerDetailsContext
@@ -119,6 +123,7 @@ import org.oppia.android.app.model.EventLog.ConceptCardContext as ConceptCardEve
 import org.oppia.android.app.model.EventLog.ConsoleLoggerContext as ConsoleLoggerEventContext
 import org.oppia.android.app.model.EventLog.ExplorationContext as ExplorationEventContext
 import org.oppia.android.app.model.EventLog.FeatureFlagListContext as FeatureFlagListEventContext
+import org.oppia.android.app.model.EventLog.FlashbackContext as FlashbackEventContext
 import org.oppia.android.app.model.EventLog.HintContext as HintEventContext
 import org.oppia.android.app.model.EventLog.LearnerDetailsContext as LearnerDetailsEventContext
 import org.oppia.android.app.model.EventLog.MandatorySurveyResponseContext as MandatorySurveyResponseEventContext
@@ -287,6 +292,9 @@ class EventBundleCreator @Inject constructor(
         ProfileOnboardingContext(activityName, startProfileOnboardingEvent)
       END_PROFILE_ONBOARDING_EVENT ->
         ProfileOnboardingContext(activityName, endProfileOnboardingEvent)
+      FLASHBACK_OFFERED_CONTEXT -> FlashbackContext(activityName, flashbackOfferedContext)
+      OPEN_FLASHBACK_EVENT -> FlashbackContext(activityName, openFlashbackEvent)
+      CLOSE_FLASHBACK_EVENT -> CardContext(activityName, closeFlashbackEvent)
       ACTIVITYCONTEXT_NOT_SET, null -> EmptyContext(activityName) // No context to create here.
     }
   }
@@ -543,6 +551,18 @@ class EventBundleCreator @Inject constructor(
         store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
         store.putNonSensitiveValue("submitted_answer", adjustedAnswer)
         store.putNonSensitiveValue("is_answer_correct", isAnswerCorrect.toString())
+      }
+    }
+
+    /** The [EventActivityContext] corresponding to [FlashbackEventContext]s. */
+    class FlashbackContext(
+      activityName: String,
+      value: FlashbackEventContext
+    ) : EventActivityContext<FlashbackEventContext>(activityName, value) {
+      override fun FlashbackEventContext.storeValue(store: PropertyStore) {
+        store.putProperties("exploration_details", explorationDetails, ::ExplorationContext)
+        store.putNonSensitiveValue("skill_id", skillId)
+        store.putNonSensitiveValue("state_name_to_revisit", stateNameToRevisit)
       }
     }
 

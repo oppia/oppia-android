@@ -311,6 +311,8 @@ message UserAnswer {
     string plain_answer = 3;
     // A list of HTML textual representation of the answer.
     ListOfSetsOfHtmlStrings list_of_html_answers = 4;
+    // A representation of the selection choice answer.
+    ItemSelectionAnswerState item_selection_answer = 7;
   }
 
   // An accessible version of the corresponding plain answer. It will be used to read out the
@@ -338,6 +340,9 @@ message AnswerAndResponse {
   // The name of the state the learner can revisit to review a concept. It's presence indicates that
   // a flashback button should be shown.
   string state_name_to_revisit = 4;
+
+  // Whether the flashback associated with this answer has been viewed by the learner.
+  bool flashback_viewed = 5;
 }
 
 message AnswerOutcome {

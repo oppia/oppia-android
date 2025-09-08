@@ -25,6 +25,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -111,7 +112,11 @@ class AudioLanguageActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val intent =
-      AudioLanguageActivity.createAudioLanguageActivityIntent(context, ENGLISH_AUDIO_LANGUAGE)
+      AudioLanguageActivity.createAudioLanguageActivityIntent(
+        context,
+        ENGLISH_AUDIO_LANGUAGE,
+        AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+      )
 
     val screenName = intent.extractCurrentAppScreenName()
     assertThat(screenName).isEqualTo(ScreenName.AUDIO_LANGUAGE_ACTIVITY)
@@ -139,7 +144,11 @@ class AudioLanguageActivityTest {
     audioLanguage: AudioLanguage,
     testBlock: ActivityScenario<AudioLanguageActivity>.() -> Unit
   ) {
-    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(context, audioLanguage)
+    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
+      context,
+      audioLanguage,
+      AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+    )
     ActivityScenario.launch<AudioLanguageActivity>(intent).use { scenario ->
       testCoroutineDispatchers.runCurrent()
       scenario.testBlock()

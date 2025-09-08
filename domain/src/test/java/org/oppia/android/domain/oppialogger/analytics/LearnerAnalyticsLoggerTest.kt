@@ -87,6 +87,7 @@ class LearnerAnalyticsLoggerTest {
     private const val TEST_STORY_ID = "test_story_id"
     private const val TEST_EXP_5_STATE_THREE_NAME = "NumericExpressionInput.IsEquivalentTo"
     private const val TEST_EXP_5_STATE_FOUR_NAME = "AlgebraicExpressionInput.MatchesExactlyWith"
+    private const val TEST_EXP_2_STATE_EIGHT_NAME = "RatioInput"
     private const val DEFAULT_INITIAL_SESSION_ID = "ab4532d6-476c-3727-bc5a-ad84e5dae60f"
   }
 
@@ -783,7 +784,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
+    assertThat(eventLog).hasStartCardContextThat().hasSkillIdThat().isEqualTo("")
   }
 
   @Test
@@ -828,7 +829,7 @@ class LearnerAnalyticsLoggerTest {
 
     val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
     assertThat(eventLog).isEssentialPriority()
-    assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("test_skill_id_0")
+    assertThat(eventLog).hasEndCardContextThat().hasSkillIdThat().isEqualTo("")
   }
 
   @Test
@@ -1063,6 +1064,98 @@ class LearnerAnalyticsLoggerTest {
         }
       }
       hasAnswerCorrectValueThat().isFalse()
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logFlashbackOffered_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logFlashbackOffered("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasFlashbackOfferedContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_logOpenFlashback_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logOpenFlashback("Fractions")
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasOpenFlashbackContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testStateAnalyticsLogger_closeFlashback_logsStateEvent() {
+    val exploration2 = loadExploration(TEST_EXPLORATION_ID_2)
+    val expLogger = learnerAnalyticsLogger.beginExploration(exploration2)
+    val stateLogger = expLogger.startCard(exploration2.getStateByName(TEST_EXP_2_STATE_EIGHT_NAME))
+    testCoroutineDispatchers.runCurrent()
+
+    stateLogger.logCloseFlashback()
+    testCoroutineDispatchers.runCurrent()
+
+    val eventLog = fakeAnalyticsEventLogger.getMostRecentEvent()
+    assertThat(eventLog).isEssentialPriority()
+    assertThat(eventLog).hasCloseFlashbackContextThat() {
+      hasExplorationDetailsThat {
+        hasClassroomIdThat().isEqualTo(TEST_CLASSROOM_ID)
+        hasTopicIdThat().isEqualTo(TEST_TOPIC_ID)
+        hasStoryIdThat().isEqualTo(TEST_STORY_ID)
+        hasExplorationIdThat().isEqualTo(TEST_EXPLORATION_ID_2)
+        hasSessionIdThat().isEqualTo(DEFAULT_INITIAL_SESSION_ID)
+        hasVersionThat().isEqualTo(0)
+        hasStateNameThat().isEqualTo(TEST_EXP_2_STATE_EIGHT_NAME)
+        hasLearnerDetailsThat {
+          hasLearnerIdThat().isEqualTo(TEST_LEARNER_ID)
+          hasInstallationIdThat().isEqualTo(TEST_INSTALL_ID)
+        }
+      }
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
     }
   }
 

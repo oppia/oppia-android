@@ -2,16 +2,25 @@ package org.oppia.android.app.devoptions.platformparameters
 
 import android.app.Application
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -41,6 +50,8 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.devoptions.platformparameters.testing.PlatformParametersTestActivity
 import org.oppia.android.app.model.EphemeralPlatformParameter
+import org.oppia.android.app.model.LocalOverridePlatformParameterDatabase
+import org.oppia.android.app.model.OverriddenPlatformParameter
 import org.oppia.android.app.model.PlatformParameterId
 import org.oppia.android.app.model.PlatformParameterValue
 import org.oppia.android.app.model.RemotePlatformParameter
@@ -88,6 +99,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.espresso.TextInputAction.Companion.hasErrorText
@@ -135,7 +147,13 @@ class PlatformParametersFragmentTest {
   @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private companion object {
-    private const val DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS = 24
+    private const val TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE = false
+    private const val TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS = 30
+    private const val TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG = true
+    private const val REMOTE_DATABASE_NAME = "platform_parameter_and_feature_flag_database"
+    private const val LOCAL_OVERRIDE_DATABASE_NAME =
+      "local_overridden_platform_parameter_and_feature_flag_database"
     private const val SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME = "Splash Screen Welcome Message"
   }
 
@@ -167,11 +185,11 @@ class PlatformParametersFragmentTest {
           position = index,
           expectedDisplayName = getPlatformParameterDisplayName(ephemeralPlatformParameter.id)
         )
-        verifyPlatformParameterSyncStatus(
+        verifyPlatformParameterSyncDetails(
           position = index,
           expectedSyncStatus = getSyncStatusText(ephemeralPlatformParameter.syncStatus)
         )
-        verifyPlatformParameterState(
+        verifyPlatformParameterValue(
           position = index,
           expectedValue = ephemeralPlatformParameter.currentValue
         )
@@ -180,7 +198,413 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectName() {
+  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_returnsCorrectDisplayName() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterDisplayName(
+        position = position,
+        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_returnsNeverSyncedMessage() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.platform_parameter_never_synced_message)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_returnsDefaultValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
+
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = splashScreenWelcomeMsgParameter.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withNoRemoteOrOverride_hasNoBackgroundColor() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_intParam_withNoRemoteOrOverride_returnsDefaultValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val syncUpWorkerParameter = getEphemeralPlatformParameters()[1]
+
+      scrollToPosition(1)
+      verifyPlatformParameterValue(
+        position = 1,
+        expectedValue = syncUpWorkerParameter.currentValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsRemoteValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterValue(
+        position = position,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsSyncedFromServerMessage() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterSyncDetails(
+        position = position,
+        expectedSyncStatus =
+          context.getString(R.string.platform_parameter_synced_from_server_message)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_hasNoBackgroundColor() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParmetersFragment_boolParam_withOnlyRemoteValue_returnsCorrectDisplayName() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterDisplayName(
+        position = position,
+        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParmetersFragment_intParam_withOnlyRemoteValue_returnsRemoteValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterValue(
+        position = position,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setInteger(TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_onlyOverriddenValue_returnsOverriddenBoolValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterValue(
+        position = position,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_onlyOverriddenValue_returnsCorrectDisplayName() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyPlatformParameterDisplayName(
+        position = 0,
+        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_onlyOverriddenValue_returnsCurrentlyOverriddenMsg() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(
+          R.string.platform_parameter_currently_overridden_message
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPlatfromParametersFragment_boolParam_onlyOverriddenValue_hasYellowBackgroundColor() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_overridden_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_intParam_onlyOverriddenValue_returnsOverriddenIntegerValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterValue(
+        position = position,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_intParam_withOnlyOverrddenValue_alertIconIsVisible() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyOverriddenAlertIconIsVisible(0)
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsOverriddenValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsOverriddenStatus() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(
+          R.string.platform_parameter_currently_overridden_message
+        )
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_hasYellowBackgroundColor() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_feature_flag_overridden_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withRemoteAndOverride_returnsCorrectDisplayName() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestBooleanRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SPLASH_SCREEN_WELCOME_MESSAGE
+      )
+      addTestBooleanOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SPLASH_SCREEN_WELCOME_MSG
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -194,50 +618,35 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectSyncStatus() {
+  fun testPlatformParametersFragment_intParam_withRemoteAndOverride_returnsOverriddenValue() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerRemotePlatformParameterToDatabase(
+        testComponent,
+        TEST_REMOTE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      scrollToPosition(0)
-      verifyPlatformParameterSyncStatus(
-        position = 0,
-        expectedSyncStatus = context.getString(R.string.platform_parameter_default_sync_status)
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
+      verifyPlatformParameterValue(
+        position = position,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setInteger(TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS)
+          .build()
       )
     }
   }
 
   @Test
-  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectValue() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
-
-      scrollToPosition(0)
-      verifyPlatformParameterState(
-        position = 0,
-        expectedValue = splashScreenWelcomeMsgParameter.currentValue
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_withNoRemoteOrOverriddenFirstParameter_hasCorrectBackground() {
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(0)
-      verifyPlatformParameterBackgroundColor(
-        position = 0,
-        expectedColor = 0xFFBE563C.toInt()
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_splashScreenWelcomeMsgParameterSwitchToggled_updatesValue() {
+  fun testPlatformParametersFragment_toggleBooleanParameter_updatesValue() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -252,7 +661,7 @@ class PlatformParametersFragmentTest {
         )
       ).perform(click())
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(!splashScreenWelcomeMsgParameter.currentValue.boolean)
@@ -262,7 +671,7 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChanges_valuePersists() {
+  fun testPlatformParametersFragment_toggleBooleanPlatformParameter_configChange_persistsValue() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -279,7 +688,7 @@ class PlatformParametersFragmentTest {
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = PlatformParameterValue.newBuilder()
           .setBoolean(!splashScreenWelcomeMsgParameter.currentValue.boolean)
@@ -303,7 +712,7 @@ class PlatformParametersFragmentTest {
         )
       ).perform(editTextInputAction.replaceText("29"))
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 7,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(29)
@@ -312,7 +721,7 @@ class PlatformParametersFragmentTest {
 
       onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
 
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 7,
         expectedValue = PlatformParameterValue.newBuilder()
           .setInteger(29)
@@ -321,6 +730,7 @@ class PlatformParametersFragmentTest {
     }
   }
 
+  @Test
   fun testPlatformParametersFragment_removeTextFromInputBox_showsInvalidInputError() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
@@ -334,12 +744,11 @@ class PlatformParametersFragmentTest {
           targetViewId = R.id.platform_parameter_input_edit_text
         )
       ).perform(editTextInputAction.replaceText(""))
-
       onView(
         atPositionOnView(
           recyclerViewId = R.id.platform_parameters_recycler_view,
           position = 7,
-          targetViewId = R.id.platform_parameter_input_edit_text
+          targetViewId = R.id.platform_parameter_input_layout
         )
       ).check(
         matches(
@@ -350,70 +759,57 @@ class PlatformParametersFragmentTest {
   }
 
   @Test
-  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasServerStatus() {
-    executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
+  fun testPlatformParametersFragment_invalidValueThenValidInput_clearsErrorMessage() {
     setUpTestApplicationComponent()
     launch(PlatformParametersTestActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
 
-      verifyPlatformParameterSyncStatus(
-        position = 0,
-        expectedSyncStatus = context.getString(R.string.platform_parameter_server_sync_status)
+      scrollToPosition(7)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText(""))
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_layout
+        )
+      ).check(
+        matches(
+          hasErrorText(
+            context.getString(R.string.platform_parameter_invalid_input_error_msg)
+          )
+        )
       )
-    }
-  }
 
-  @Test
-  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectColor() {
-    executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("12"))
 
-      verifyPlatformParameterBackgroundColor(
-        position = 0,
-        expectedColor = 0xFFBE563C.toInt()
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectName() {
-    executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      verifyPlatformParameterDisplayName(
-        position = 0,
-        expectedDisplayName = SPLASH_SCREEN_WELCOME_MSG_PARAMETER_NAME
-      )
-    }
-  }
-
-  @Test
-  fun testPlatformParametersFragment_addRemoteParameter_splashScreenWelcomeMsgHasCorrectValue() {
-    executeInPreviousAppInstance { component ->
-      addTestRemotePlatformParameterToDatabase(component)
-      component.getTestCoroutineDispatchers().runCurrent()
-    }
-    setUpTestApplicationComponent()
-    launch(PlatformParametersTestActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      val splashScreenWelcomeMsgParameter = getEphemeralPlatformParameters()[0]
-
-      verifyPlatformParameterState(
-        position = 0,
-        expectedValue = splashScreenWelcomeMsgParameter.currentValue
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 7,
+          targetViewId = R.id.platform_parameter_input_layout
+        )
+      ).check(
+        matches(
+          not(
+            hasErrorText(
+              context.getString(R.string.platform_parameter_invalid_input_error_msg)
+            )
+          )
+        )
       )
     }
   }
@@ -440,7 +836,7 @@ class PlatformParametersFragmentTest {
       scrollToPosition(1)
 
       scrollToPosition(7)
-      verifyPlatformParameterState(
+      verifyPlatformParameterValue(
         position = 7,
         expectedValue = expectedValue
       )
@@ -468,12 +864,1004 @@ class PlatformParametersFragmentTest {
         .build()
 
       scrollToPosition(8)
-
       scrollToPosition(0)
-      verifyPlatformParameterState(
+
+      verifyPlatformParameterValue(
         position = 0,
         expectedValue = expectedValue
       )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_boolParam_withOverridenParameter_resetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_intParam_withOverridenParameter_resetButtonIsVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(component, 24)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_resetsParameterToDefaultValue() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(false)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_disablesResetButton() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withOverride_clickResetButton_returnsNeverSyncedMessage() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus = context.getString(R.string.platform_parameter_never_synced_message)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBackWithInvalidInput_displaysAlertDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(1)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 1,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText(""))
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_invalidInputAlert_withValidInput_doesNotShowDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use { _ ->
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(1)
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 1,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText(""))
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(
+        withText(
+          R.string.platform_parameter_invalid_input_alert_dialog_okay_button
+        )
+      ).perform(click())
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 1,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("25"))
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.platform_parameter_invalid_input_alert_dialog_title))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_noParameterModified_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(5)
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_saveButtonIsEnabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_clickResetButton_saveButtonIsEnabled() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParameterAndRevert_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_hasSkyBlueBackgroundColor() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyAnyParameter_configChange_skyBlueColorPersists() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBackWithParamModified_displaysPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_clickReset_navigateBack_displaysPendingChangesAlertDialog() {
+    executeInPreviousAppInstance { testComponent ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(
+        testComponent,
+        TEST_LOCAL_OVERRIDE_SYNC_UP_WORKER_PERIOD_HOURS
+      )
+      testComponent.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_revertParamChange_navigateBack_skipsPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val position = getSplashScreenWelcomeMsgPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBackWithNoParamsModified_skipsPendingChangesDialog() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParameterAndRevert_hasNoBackgroundColor() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor = context.getColor(R.color.component_color_shared_item_background_solid_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyOverriddenParameter_hasSkyBlueBackgroundColor() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_clickResetButton_hasSkyBlueBackgroundColor() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      verifyPlatformParameterBackgroundColor(
+        position = 0,
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withNoOverride_alertIconIsNotVisible() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.currently_overridden_alert_icon
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withRemoteValue_alertIconIsNotVisible() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanRemotePlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.currently_overridden_alert_icon
+        )
+      ).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withRemoteAndOverride_clickReset_resetsParameterToRemote() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanRemotePlatformParameterToDatabase(component, false)
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = PlatformParameterValue.newBuilder()
+          .setBoolean(false)
+          .build()
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_withRemoteAndOverride_onReset_showsSyncedWithServerMessage() {
+    executeInPreviousAppInstance { component ->
+      addTestBooleanRemotePlatformParameterToDatabase(component, false)
+      addTestBooleanOverriddenPlatformParameterToDatabase(component, true)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.reset_button
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+      verifyPlatformParameterSyncDetails(
+        position = 0,
+        expectedSyncStatus =
+          context.getString(R.string.platform_parameter_synced_from_server_message)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyIntegerParameterAndRevert_saveButtonIsDisabled() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val position = getSyncUpWorkerTimePeriodPosition()
+      val originalValue = getEphemeralPlatformParameters()[position].currentValue.integer.toString()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("25"))
+      onView(withId(R.id.save_button)).check(matches(isEnabled()))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText(originalValue))
+      onView(withId(R.id.save_button)).check(matches(not(isEnabled())))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyOverriddenIntegerParameter_hasSkyBlueBackgroundColor() {
+    executeInPreviousAppInstance { component ->
+      addTestIntegerOverriddenPlatformParameterToDatabase(component, 24)
+      component.getTestCoroutineDispatchers().runCurrent()
+    }
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      val position = getSyncUpWorkerTimePeriodPosition()
+      scrollToPosition(position)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = position,
+          targetViewId = R.id.platform_parameter_input_edit_text
+        )
+      ).perform(editTextInputAction.replaceText("30"))
+      verifyPlatformParameterBackgroundColor(
+        position = position,
+        expectedColor =
+          context.getColor(R.color.component_color_platform_parameter_modified_background_color)
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBackWithParamModified_clickDiscard_discardsChanges() {
+    setUpTestApplicationComponent()
+    val initialValue = getEphemeralPlatformParameters()[0].currentValue
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_discard_button_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+    }
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = initialValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_removeTextFromParameterAndFocusChange_retainsOriginalValue() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      it.onActivity { activity ->
+        val initialValue = getEphemeralPlatformParameters()[1].currentValue
+
+        testCoroutineDispatchers.runCurrent()
+        val recyclerView =
+          activity.findViewById<RecyclerView>(R.id.platform_parameters_recycler_view)
+        val viewHolder1 = recyclerView.findViewHolderForAdapterPosition(1)
+        val editText1 =
+          viewHolder1?.itemView?.findViewById<EditText>(R.id.platform_parameter_input_edit_text)
+
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 1,
+            targetViewId = R.id.platform_parameter_input_edit_text
+          )
+        ).perform(editTextInputAction.replaceText(""))
+        testCoroutineDispatchers.runCurrent()
+
+        val viewHolder2 = recyclerView.findViewHolderForAdapterPosition(2)
+        val editText2 =
+          viewHolder2?.itemView?.findViewById<EditText>(R.id.platform_parameter_input_edit_text)
+
+        editText1?.performAccessibilityAction(AccessibilityNodeInfo.ACTION_FOCUS, Bundle())
+        editText2?.performAccessibilityAction(AccessibilityNodeInfo.ACTION_FOCUS, Bundle())
+        scrollToPosition(1)
+        verifyPlatformParameterValue(
+          position = 1,
+          expectedValue = initialValue
+        )
+      }
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParam_navigateBack_clickSave_showRestartDialogExitApp() {
+    setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withId(R.id.restart_button))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParam_clickToolbarSave_showsRestartDialogExitApp() {
+    setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParamAndSaveOnBackNavigation_persistsChanges() {
+    setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked. 
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        pressBack()
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.pending_changes_dialog_save_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!getEphemeralPlatformParameters()[0].currentValue.boolean)
+        .build()
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_modifyParamAndSaveViaToolbar_persistsChanges() {
+    setUpTestApplicationComponent()
+
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException> {
+      launch(PlatformParametersTestActivity::class.java).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(0)
+        onView(
+          atPositionOnView(
+            recyclerViewId = R.id.platform_parameters_recycler_view,
+            position = 0,
+            targetViewId = R.id.platform_parameter_switch
+          )
+        ).perform(click())
+
+        onView(withId(R.id.save_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.app_restart_dialog_button_text))
+          .inRoot(isDialog())
+          .perform(click())
+      }
+    }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
+
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(0)
+      val expectedValue = PlatformParameterValue.newBuilder()
+        .setBoolean(!getEphemeralPlatformParameters()[0].currentValue.boolean)
+        .build()
+      scrollToPosition(0)
+      verifyPlatformParameterValue(
+        position = 0,
+        expectedValue = expectedValue
+      )
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_clickSave_showsRestartDialog_configChange_dialogPersists() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+
+      onView(withId(R.id.save_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_navigateBack_showsRestartDialog_configChange_dialogPersists() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_save_button_text))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.app_restart_dialog_title))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testPlatformParametersFragment_pendingChangesDialog_configChange_dialogPersist() {
+    setUpTestApplicationComponent()
+    launch(PlatformParametersTestActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(0)
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.platform_parameters_recycler_view,
+          position = 0,
+          targetViewId = R.id.platform_parameter_switch
+        )
+      ).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      pressBack()
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+
+      onView(isRoot()).perform(OrientationChangeAction.orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.pending_changes_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
     }
   }
 
@@ -498,16 +1886,15 @@ class PlatformParametersFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
-        targetViewId = R.id.sync_status_value_text_view
+        targetViewId = R.id.platform_parameter_constraint_layout
       )
     ).check { view, _ ->
-      val background = view.background
-      val color = (background as GradientDrawable).color?.defaultColor
+      val color = (view.background as ColorDrawable).color
       assertThat(color).isEqualTo(expectedColor)
     }
   }
 
-  private fun verifyPlatformParameterSyncStatus(
+  private fun verifyPlatformParameterSyncDetails(
     position: Int,
     expectedSyncStatus: String
   ) {
@@ -515,12 +1902,12 @@ class PlatformParametersFragmentTest {
       atPositionOnView(
         recyclerViewId = R.id.platform_parameters_recycler_view,
         position = position,
-        targetViewId = R.id.sync_status_value_text_view
+        targetViewId = R.id.sync_details_text_view
       )
     ).check(matches(withText(expectedSyncStatus)))
   }
 
-  private fun verifyPlatformParameterState(
+  private fun verifyPlatformParameterValue(
     position: Int,
     expectedValue: PlatformParameterValue
   ) {
@@ -560,13 +1947,15 @@ class PlatformParametersFragmentTest {
   private fun getSyncStatusText(syncStatus: SyncStatus): String {
     return when (syncStatus) {
       SyncStatus.SYNC_STATUS_UNSPECIFIED ->
-        context.getString(R.string.platform_parameter_unknown_sync_status)
+        context.getString(R.string.feature_flag_never_synced_message)
       SyncStatus.NOT_SYNCED_FROM_SERVER ->
-        context.getString(R.string.platform_parameter_default_sync_status)
+        context.getString(R.string.feature_flag_never_synced_message)
       SyncStatus.SYNCED_FROM_SERVER ->
-        context.getString(R.string.platform_parameter_server_sync_status)
+        context.getString(R.string.feature_flag_synced_from_server_message)
+      SyncStatus.LOCAL_OVERRIDE ->
+        context.getString(R.string.feature_flag_currently_overridden_message)
       else ->
-        context.getString(R.string.platform_parameter_unknown_sync_status)
+        context.getString(R.string.feature_flag_never_synced_message)
     }
   }
 
@@ -578,7 +1967,11 @@ class PlatformParametersFragmentTest {
 
   private fun getEphemeralPlatformParameters(): List<EphemeralPlatformParameter> {
     val provider = platformParameterControllerDebugImpl.loadEphemeralPlatformParameters()
-    return monitorFactory.waitForNextSuccessfulResult(provider)
+    return monitorFactory.waitForNextSuccessfulResult(provider).sortedWith(
+      compareByDescending<EphemeralPlatformParameter> {
+        it.syncStatus == SyncStatus.LOCAL_OVERRIDE
+      }.thenBy { it.id.name }
+    )
   }
 
   private fun getPlatformParameterDisplayName(id: PlatformParameterId): String {
@@ -588,10 +1981,39 @@ class PlatformParametersFragmentTest {
       .joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
   }
 
-  // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
-  private fun addTestRemotePlatformParameterToDatabase(component: TestApplicationComponent) {
+  private fun getSplashScreenWelcomeMsgPosition(): Int {
+    return getEphemeralPlatformParameters().indexOf(
+      getEphemeralPlatformParameters().first {
+        it.id == PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+      }
+    )
+  }
+
+  private fun getSyncUpWorkerTimePeriodPosition(): Int {
+    return getEphemeralPlatformParameters().indexOf(
+      getEphemeralPlatformParameters().first {
+        it.id == PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+      }
+    )
+  }
+
+  private fun verifyOverriddenAlertIconIsVisible(position: Int) {
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.platform_parameters_recycler_view,
+        position = position,
+        targetViewId = R.id.currently_overridden_alert_icon
+      )
+    ).check(matches(isDisplayed()))
+  }
+
+  // Populates the remote DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
+  private fun addTestBooleanRemotePlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
     val database = component.getCacheStoreFactory().create(
-      DATABASE_NAME,
+      REMOTE_DATABASE_NAME,
       RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
     )
 
@@ -601,9 +2023,88 @@ class PlatformParametersFragmentTest {
           RemotePlatformParameter.newBuilder().apply {
             id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
             remoteValue = PlatformParameterValue.newBuilder().apply {
-              boolean = true
+              boolean = value
             }.build()
             syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          }.build()
+        )
+      }.build()
+    }.waitForSuccessfulResult(
+      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
+    )
+  }
+
+  // Populates the remote DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
+  private fun addTestIntegerRemotePlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Int
+  ) {
+    val database = component.getCacheStoreFactory().create(
+      REMOTE_DATABASE_NAME,
+      RemotePlatformParameterAndFeatureFlagDatabase.getDefaultInstance()
+    )
+
+    database.storeDataAsync {
+      RemotePlatformParameterAndFeatureFlagDatabase.newBuilder().apply {
+        addRemotePlatformParameter(
+          RemotePlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+            remoteValue = PlatformParameterValue.newBuilder().apply {
+              integer = value
+            }.build()
+            syncStatus = SyncStatus.SYNCED_FROM_SERVER
+          }.build()
+        )
+      }.build()
+    }.waitForSuccessfulResult(
+      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
+    )
+  }
+
+  // Populates the Local Overridden DB with test platform parameter for SPLASH_SCREEN_WELCOME_MESSAGE.
+  private fun addTestBooleanOverriddenPlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Boolean
+  ) {
+    val database = component.getCacheStoreFactory().create(
+      LOCAL_OVERRIDE_DATABASE_NAME,
+      LocalOverridePlatformParameterDatabase.getDefaultInstance()
+    )
+
+    database.storeDataAsync {
+      LocalOverridePlatformParameterDatabase.newBuilder().apply {
+        addOverriddenPlatformParameter(
+          OverriddenPlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SPLASH_SCREEN_WELCOME_MESSAGE
+            overriddenValue = PlatformParameterValue.newBuilder()
+              .setBoolean(value)
+              .build()
+          }.build()
+        )
+      }.build()
+    }.waitForSuccessfulResult(
+      component.getTestCoroutineDispatchers(), component.getBackgroundDispatcher()
+    )
+  }
+
+  // Populates the Local Overridden DB with test platform parameter for SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS.
+  private fun addTestIntegerOverriddenPlatformParameterToDatabase(
+    component: TestApplicationComponent,
+    value: Int
+  ) {
+    val database = component.getCacheStoreFactory().create(
+      LOCAL_OVERRIDE_DATABASE_NAME,
+      LocalOverridePlatformParameterDatabase.getDefaultInstance()
+    )
+
+    database.storeDataAsync {
+      LocalOverridePlatformParameterDatabase.newBuilder().apply {
+        addOverriddenPlatformParameter(
+          OverriddenPlatformParameter.newBuilder().apply {
+            id = PlatformParameterId.SYNC_UP_WORKER_TIME_PERIOD_IN_HOURS
+            overriddenValue = PlatformParameterValue.newBuilder()
+              .setInteger(value)
+              .build()
           }.build()
         )
       }.build()
@@ -771,7 +2272,6 @@ class PlatformParametersFragmentTest {
     fun inject(platformParametersFragmentTest: PlatformParametersFragmentTest) {
       component.inject(platformParametersFragmentTest)
     }
-
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {
       return component.getActivityComponentBuilderProvider().get().setActivity(activity).build()
     }

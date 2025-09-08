@@ -205,11 +205,11 @@
   <string name="selected_image_region_selection_content_description">Mostrando imagem %1$s</string>
   <string name="unselected_image_region_selection_content_description">Selecione %1$s imagem</string>
   <plurals name="chapter_count">
-    <item quantity="one">1 Capítulo</item>
+    <item quantity="one">%s Capítulo</item>
     <item quantity="other">%s Capítulos</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">1 Story</item>
+    <item quantity="one">%s Story</item>
     <item quantity="other">%s Stories</item>
   </plurals>
   <plurals name="story_total_chapters">
@@ -217,15 +217,15 @@
     <item quantity="other">%1$s of %2$s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">1 Lesson</item>
+    <item quantity="one">%s Lesson</item>
     <item quantity="other">%s Lessons</item>
   </plurals>
   <plurals name="completed_story_count">
-    <item quantity="one">1 Story Completed</item>
+    <item quantity="one">%s Story Completed</item>
     <item quantity="other">%s Stories Completed</item>
   </plurals>
   <plurals name="ongoing_topic_count">
-    <item quantity="one">1 Topic in Progress</item>
+    <item quantity="one">%s Topic in Progress</item>
     <item quantity="other">%s Topics in Progress</item>
   </plurals>
   <string name="profile_chooser_activity_label">Página de seleção de perfil</string>
@@ -453,15 +453,15 @@
   <string name="down_button_disabled">Para baixo</string>
   <string name="profile_last_visited">%1$s %2$s</string>
   <plurals name="minutes_ago">
-    <item quantity="one">a minute ago</item>
+    <item quantity="one">%s minute ago</item>
     <item quantity="other">%s minutes ago</item>
   </plurals>
   <plurals name="hours_ago">
-    <item quantity="one">an hour ago</item>
+    <item quantity="one">%s hour ago</item>
     <item quantity="other">%s hours ago</item>
   </plurals>
   <plurals name="days_ago">
-    <item quantity="one">a day ago</item>
+    <item quantity="one">%s day ago</item>
     <item quantity="other">%s days ago</item>
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
@@ -612,7 +612,7 @@
   <string name="lock_icon_content_description">Ícone de cadeado</string>
   <string name="download_status_image_content_description">Estado de download</string>
   <string name="font_scale_html_content_text">Conteúdo HTML</string>
-  <string name="onboarding_language_activity_title">Bem vindo a %s!</string>
+  <string name="onboarding_language_activity_title">Bem-vindo a %s!</string>
   <string name="onboarding_language_activity_subtitle">Aprenda matemática gratuitamente, a qualquer hora!</string>
   <string name="onboarding_language_activity_text">Feito para estudantes de 7 a 14 anos</string>
   <string name="onboarding_language_activity_select_label">Selecione um idioma para começar</string>
@@ -643,7 +643,7 @@
   <string name="onboarding_navigation_back">Voltar</string>
   <string name="onboarding_navigation_continue">Continuar</string>
   <string name="audio_language_fragment_text">Em %s, você pode ouvir as lições!</string>
-  <string name="audio_language_fragment_subtitle">Selecione a lingua do áudio para ouvir às lições</string>
+  <string name="audio_language_fragment_subtitle">Selecione a língua do áudio para ouvir às lições</string>
   <string name="onboarding_step_count_five">Passo 5 de 5</string>
   <string name="arabic_language_display_name_content_description">Árabe</string>
 </resources>

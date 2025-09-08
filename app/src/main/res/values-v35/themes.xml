@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- TODO(#5943): Remove once proper edge-edge enforcement is supported.-->
 <resources>
-
   <style name="OppiaTheme" parent="Theme.MaterialComponents.Light.DarkActionBar.Bridge">
     <item name="colorPrimary">@color/color_palette_primary_color</item>
     <item name="colorPrimaryDark">@color/color_palette_primary_dark_color</item>
     <item name="colorAccent">@color/color_palette_primary_color</item>
     <item name="actionBarTheme">@style/OppiaActionBarTheme</item>
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -18,6 +19,12 @@
     <item name="android:editTextStyle">@style/InputInteractionEditText</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+  </style>
+
+  <style name="RevisionCardActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <item name="colorPrimaryDark">@color/component_color_revision_card_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
   </style>
 
   <style name="OppiaThemeWithoutActionBarColorAccentColorPrimary" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
@@ -28,13 +35,24 @@
     <item name="windowNoTitle">true</item>
     <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
     <item name="android:statusBarColor">@color/component_color_shared_activity_status_bar_color</item>
+    <item name="android:windowOptOutEdgeToEdgeEnforcement">true</item>
+  </style>
+
+  <style name="OppiaDialogFragmentTheme" parent="OppiaTheme">
+    <item name="colorAccent">@color/component_color_shared_dialogs_primary_color</item>
+    <item name="colorBackgroundFloating">@color/component_color_shared_item_background_solid_color</item>
+    <item name="android:textColorPrimary">@color/component_color_shared_primary_dark_text_color</item>
+    <item name="textColorAlertDialogListItem">@color/component_color_shared_primary_dark_text_color</item>
+    <item name="colorControlNormal">@color/component_color_shared_dialogs_radio_button_unchecked_color</item>
+    <item name="colorControlActivated">@color/component_color_shared_dialogs_radio_button_checked_color</item>
+    <item name="android:textAllCaps">false</item>
   </style>
 
   <style name="OppiaSwitchCompatTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
-    <item name="android:colorControlActivated">@color/color_palette_primary_color</item>
+    <item name="colorControlActivated">@color/component_color_shared_switch_color</item>
   </style>
 
-  <style name="OppiaAlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+  <style name="OppiaAlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert.Bridge">
     <item name="colorPrimary">@color/component_color_shared_dialogs_primary_color</item>
     <item name="colorPrimaryDark">@color/component_color_shared_dialogs_secondary_color</item>
     <item name="colorAccent">@color/component_color_shared_dialogs_primary_color</item>
@@ -43,5 +61,15 @@
     <item name="android:buttonBarNegativeButtonStyle">@style/textAllCaps</item>
     <item name="android:buttonBarPositiveButtonStyle">@style/textAllCaps</item>
     <item name="android:textAllCaps">false</item>
+  </style>
+
+  <style name="DeprecationAlertDialogTheme" parent="OppiaAlertDialogTheme">
+    <item name="android:paddingBottom">4dp</item>
+    <item name="android:color">@color/component_color_shared_secondary_2_text_color</item>
+    <item name="buttonBarPositiveButtonStyle">@style/DeprecationAlertDialogPositiveButton</item>
+  </style>
+
+  <style name="OppiaActionBarTheme" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
+    <item name="android:background">@color/component_color_shared_activity_action_bar_color</item>
   </style>
 </resources>
