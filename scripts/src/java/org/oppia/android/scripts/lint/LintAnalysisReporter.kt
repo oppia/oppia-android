@@ -292,7 +292,7 @@ class LintAnalysisReporter(private val repoRoot: File) {
     // Unknown issues cannot be exempted, so they should appear in the report
     val issueIdEnum = getLintIssueIdFromString(issue.id) ?: return false
 
-    return issue.locations.any { location ->
+    return issue.locations.all { location ->
       val relativePath = File(location.file).toRelativeString(repoRoot)
       val exemptedIssues = exemptionMap[relativePath]
       exemptedIssues?.contains(issueIdEnum) == true

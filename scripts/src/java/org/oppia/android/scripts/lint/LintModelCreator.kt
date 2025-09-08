@@ -289,7 +289,6 @@ class LintModelCreator(
             debuggable="true"
             useSupportLibraryVectorDrawables="true"
             package="$packageName"
-            resourceConfigurations="en,ar,pt-rBR,sw"
             $proguardAttribute>
             <buildFeatures
                 coreLibraryDesugaring="true" 
