@@ -346,7 +346,9 @@ class LintTimeoutWrapper(
       Thread.sleep(1000)
 
       throw IllegalStateException(
-        "Lint analysis timed out after $timeoutMinutes minutes. "
+        "Lint analysis timed out after $timeoutMinutes minutes. " +
+          "This can happen if the Lint tool hanged or is taking excess execution time. " +
+          "Consider increasing the timeout via --processTimeout=<minutes> if needed."
       )
     }
 
