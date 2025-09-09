@@ -67,6 +67,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
 ) {
   private lateinit var profileType: ProfileType
   private lateinit var profileId: ProfileId
+  private lateinit var profileNickname: String
   private lateinit var binding: AdminIntroFragmentBinding
 
   /** Creates and returns the view for the [AdminIntroFragment]. */
@@ -74,12 +75,14 @@ class AdminIntroFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     profileId: ProfileId,
-    profileType: ProfileType
+    profileType: ProfileType,
+    profileNickname: String
   ): View? {
     binding = AdminIntroFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     this.profileType = profileType
     this.profileId = profileId
+    this.profileNickname = profileNickname
 
     createComposeView()
 
@@ -163,7 +166,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        NavigationRow(profileId, profileType)
+        NavigationRow()
       }
     }
   }
@@ -239,7 +242,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun NavigationRow(profileId: ProfileId, profileType: ProfileType) {
+  private fun NavigationRow() {
     Row(
       modifier = Modifier
         .fillMaxWidth()
@@ -259,7 +262,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
       Button(
         onClick = {
           // TODO(#4938): Refactor to: create admin pin screen when the UI is ready.
-          navigateToProfileChooserActivity(profileId, profileType)
+          navigateToProfileChooserActivity()
         },
         colors = ButtonDefaults.buttonColors(
           backgroundColor = colorResource(
@@ -282,7 +285,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun navigateToProfileChooserActivity(profileId: ProfileId, profileType: ProfileType) {
+  private fun navigateToProfileChooserActivity() {
     val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
     intent.apply {
       decorateWithUserProfileId(profileId)
@@ -290,6 +293,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
         PROFILE_CHOOSER_PARAMS_KEY,
         ProfileChooserActivityParams.newBuilder()
           .setProfileType(profileType)
+          .setProfileNickname(profileNickname)
           .build()
       )
     }

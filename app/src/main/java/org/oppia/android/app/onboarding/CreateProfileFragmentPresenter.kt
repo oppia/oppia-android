@@ -172,8 +172,12 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
           val learnerIntroIntent = IntroActivity.createIntroActivity(activity, params, profileId)
 
-          val adminIntroIntent =
-            AdminIntroActivity.createAdminIntroActivityIntent(activity, profileId, profileType)
+          val adminIntroIntent = AdminIntroActivity.createAdminIntroActivityIntent(
+            activity,
+            profileId,
+            profileType,
+            profileName
+          )
 
           val intent = if (profileType == ProfileType.SUPERVISOR) {
             adminIntroIntent

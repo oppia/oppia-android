@@ -8,8 +8,11 @@ import android.view.ViewGroup
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileChooserFragmentArguments
+import org.oppia.android.util.extensions.getProto
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
 /** Fragment that allows user to select a profile or create new ones. */
@@ -34,10 +37,27 @@ class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener, Pr
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    return if (enableOnboardingFlowV2.value) {
-      profileChooserFragmentPresenter.handleCreateView(inflater, container)
+    if (enableOnboardingFlowV2.value) {
+      val adminProfileId =
+        checkNotNull(arguments?.extractCurrentUserProfileId()) {
+          "Expected profileId to be included in the arguments for ProfileChooserFragment."
+        }
+
+      val profileType = checkNotNull(
+        arguments?.getProto(
+          PROFILE_CHOOSER_ARGUMENTS_KEY,
+          ProfileChooserFragmentArguments.getDefaultInstance()
+        )?.profileType
+      ) { "Expected ProfileChooserFragment to have a profileType argument." }
+
+      return profileChooserFragmentPresenter.handleCreateView(
+        inflater,
+        container,
+        adminProfileId,
+        profileType
+      )
     } else {
-      profileChooserFragmentPresenterV1.handleCreateView(inflater, container)
+      return profileChooserFragmentPresenterV1.handleCreateView(inflater, container)
     }
   }
 

@@ -275,14 +275,15 @@ class ClassroomListFragmentPresenter @Inject constructor(
         val profile = result.value
         val profileType = profile.profileType
 
-        if (enableOnboardingFlowV2.value && !profile.completedProfileOnboarding) {
-          // These asynchronous API calls do not block or wait for their results. They execute in
-          // the background and have minimal chances of interfering with the synchronous
-          // `handleBackPress` call below.
+        if (enableOnboardingFlowV2.value &&
+          !profile.completedProfileOnboarding &&
+          profileType != ProfileType.SUPERVISOR
+        ) {
           profileManagementController.markProfileOnboardingEnded(profileId)
-          if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
-            appStartupStateController.markOnboardingFlowCompleted(profileId)
-          }
+        }
+
+        if (profileType == ProfileType.SOLE_LEARNER || profileType == ProfileType.SUPERVISOR) {
+          appStartupStateController.markOnboardingFlowCompleted(profileId)
         }
 
         // This synchronous function call executes independently of the async calls above.

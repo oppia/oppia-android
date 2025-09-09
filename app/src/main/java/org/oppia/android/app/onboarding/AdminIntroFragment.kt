@@ -31,14 +31,20 @@ class AdminIntroFragment : InjectableFragment() {
     val profileId = checkNotNull(arguments?.extractCurrentUserProfileId()) {
       "Expected profileId to be included in the arguments for AdminIntroFragment."
     }
-    val profileType = checkNotNull(
-      arguments?.getProto(
-        ADMIN_INTRO_FRAGMENT_ARGS, AdminIntroFragmentArguments.getDefaultInstance()
-      )?.profileType
-    ) {
+
+    val adminIntroFragmentArguments = arguments?.getProto(
+      ADMIN_INTRO_FRAGMENT_ARGS, AdminIntroFragmentArguments.getDefaultInstance()
+    )
+
+    val profileType = checkNotNull(adminIntroFragmentArguments?.profileType) {
       "Expected AdminIntroFragment to have a profileType argument."
     }
 
-    return adminIntroFragmentPresenter.handleCreateView(inflater, container, profileId, profileType)
+    val profileNickName = checkNotNull(adminIntroFragmentArguments?.profileNickname) {
+      "Expected AdminIntroFragment to have a profileNickName argument."
+    }
+
+    return adminIntroFragmentPresenter
+      .handleCreateView(inflater, container, profileId, profileType, profileNickName)
   }
 }

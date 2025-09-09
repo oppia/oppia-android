@@ -31,11 +31,13 @@ class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     (activityComponent as ActivityComponentImpl).inject(this)
 
     val profileId = intent.extractCurrentUserProfileId()
-    val profileType = intent.getProtoExtra(
+    val adminIntroActivityParams = intent.getProtoExtra(
       ADMIN_INTRO_PARAMS_KEY, AdminIntroActivityParams.getDefaultInstance()
-    ).profileType
+    )
+    val profileType = adminIntroActivityParams.profileType
+    val profileNickname = adminIntroActivityParams.profileNickname
 
-    adminIntroActivityPresenter.handleOnCreate(profileId, profileType)
+    adminIntroActivityPresenter.handleOnCreate(profileId, profileType, profileNickname)
   }
 
   companion object {
@@ -43,10 +45,12 @@ class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
     fun createAdminIntroActivityIntent(
       context: Context,
       profileId: ProfileId,
-      profileType: ProfileType
+      profileType: ProfileType,
+      profileNickname: String
     ): Intent {
       val introActivityParams = AdminIntroActivityParams.newBuilder()
         .setProfileType(profileType)
+        .setProfileNickname(profileNickname)
         .build()
 
       return Intent(context, AdminIntroActivity::class.java).apply {

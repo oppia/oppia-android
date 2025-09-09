@@ -55,6 +55,7 @@ import org.oppia.android.util.platformparameter.EnableAppAndOsDeprecation
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -460,13 +461,13 @@ class SplashActivityPresenter @Inject constructor(
       when {
         onboardingStarted && !onboardingCompleted -> when (profileType) {
           ProfileType.SOLE_LEARNER -> resumeLearnerOnboarding(profile.id, profile.name)
-          ProfileType.SUPERVISOR -> resumeSupervisorOnboarding(profile.id)
+          ProfileType.SUPERVISOR -> resumeSupervisorOnboarding(profile.id, profile.name)
           else -> {}
         }
 
         onboardingStarted && onboardingCompleted -> when (profileType) {
           ProfileType.SOLE_LEARNER -> logInToProfile(profile.id)
-          ProfileType.SUPERVISOR -> launchProfileChooserScreen()
+          ProfileType.SUPERVISOR -> launchProfileChooserScreen(profile.id)
           else -> {}
         }
       }
@@ -483,24 +484,26 @@ class SplashActivityPresenter @Inject constructor(
       activity.finish()
     }
 
-    private fun resumeSupervisorOnboarding(profileId: ProfileId) {
+    private fun resumeSupervisorOnboarding(profileId: ProfileId, profileName: String) {
       val intent = AdminIntroActivity.createAdminIntroActivityIntent(
         activity,
         profileId,
-        ProfileType.SUPERVISOR
+        ProfileType.SUPERVISOR,
+        profileName
       )
 
       activity.startActivity(intent)
       activity.finish()
     }
 
-    private fun launchProfileChooserScreen() {
+    private fun launchProfileChooserScreen(profileId: ProfileId) {
       val intentParams = ProfileChooserActivityParams.newBuilder()
         .setProfileType(ProfileType.SUPERVISOR)
         .build()
 
       val intent = ProfileChooserActivity.createProfileChooserActivity(activity).apply {
         putProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, intentParams)
+        decorateWithUserProfileId(profileId)
       }
 
       activity.startActivity(intent)
