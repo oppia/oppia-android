@@ -171,7 +171,7 @@ class HomeActivityLocalTest {
   @Test
   fun testActivity_onboardingV2_supervisorProfile_onInitialLaunch_logsCompleteAppOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled(true)
-    profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.addOnlyAdminProfile()
     profileTestHelper.updateProfileType(
       profileId = profileId,
       profileType = ProfileType.SUPERVISOR
@@ -253,16 +253,52 @@ class HomeActivityLocalTest {
   }
 
   @Test
-  fun testHomeActivity_onboardingV2Enabled_onInitialLaunch_logsEndProfileOnboardingEvent() {
+  fun testActivity_onboardingV2_soleLearner_onInitialLaunch_logsEndProfileOnboardingEvent() {
     setUpTestWithOnboardingV2Enabled(true)
     profileTestHelper.addOnlyAdminProfileWithoutPin()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SOLE_LEARNER)
+
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
       val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
         it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
       }
+
       assertThat(hasProfileOnboardingEndedEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_additionalLearner_onInitialLaunch_logsEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addMoreProfiles(1)
+    profileTestHelper.updateProfileType(profileId, ProfileType.ADDITIONAL_LEARNER)
+
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEndedEvent).isTrue()
+    }
+  }
+
+  @Test
+  fun testActivity_onboardingV2_supervisor_onInitialLaunch_doesNotLogEndProfileOnboardingEvent() {
+    setUpTestWithOnboardingV2Enabled(true)
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.updateProfileType(profileId, ProfileType.SUPERVISOR)
+    launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
+      testCoroutineDispatchers.runCurrent()
+
+      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEndedEvent).isFalse()
     }
   }
 
@@ -279,8 +315,11 @@ class HomeActivityLocalTest {
     launch<HomeActivity>(createHomeActivityIntent(profileId)).use {
       testCoroutineDispatchers.runCurrent()
 
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_HOME)
+      val hasProfileOnboardingEvent = fakeAnalyticsEventLogger.hasEventLogged {
+        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+      }
+
+      assertThat(hasProfileOnboardingEvent).isFalse()
     }
   }
 

@@ -123,13 +123,12 @@ class AdminIntroActivityTest {
 
   @Test
   fun testActivity_hasCorrectActivityLabel() {
-    launch<AdminIntroActivity>(createAdminIntroActivityIntent())
-      .use { scenario ->
-        scenario?.onActivity { activity ->
-          val title = activity.title
-          assertThat(title).isEqualTo(context.getString(R.string.admin_intro_activity_title))
-        }
+    launch<AdminIntroActivity>(createAdminIntroActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.admin_intro_activity_title))
       }
+    }
   }
 
   private fun createAdminIntroActivityIntent(): Intent {

@@ -25,6 +25,8 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -109,6 +111,8 @@ class CreateProfileActivityTest {
   @Inject
   lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
 
+  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
   @Before
   fun setUp() {
     Intents.init()
@@ -123,7 +127,8 @@ class CreateProfileActivityTest {
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
     val screenName =
-      CreateProfileActivity.createProfileActivityIntent(context)
+      CreateProfileActivity
+        .createProfileActivityIntent(context, testProfileId, ProfileType.SUPERVISOR)
         .extractCurrentAppScreenName()
 
     assertThat(screenName).isEqualTo(ScreenName.CREATE_PROFILE_ACTIVITY)
@@ -133,7 +138,7 @@ class CreateProfileActivityTest {
   fun testNewLearnerProfileActivity_hasCorrectActivityLabel() {
     launchNewLearnerProfileActivity().use { scenario ->
       lateinit var title: CharSequence
-      scenario?.onActivity { activity -> title = activity.title }
+      scenario.onActivity { activity -> title = activity.title }
 
       // Verify that the activity label is correct as a proxy to verify TalkBack will announce the
       // correct string when it's read out.
@@ -142,9 +147,10 @@ class CreateProfileActivityTest {
   }
 
   private fun launchNewLearnerProfileActivity():
-    ActivityScenario<CreateProfileActivity>? {
+    ActivityScenario<CreateProfileActivity> {
       val scenario = ActivityScenario.launch<CreateProfileActivity>(
-        CreateProfileActivity.createProfileActivityIntent(context)
+        CreateProfileActivity
+          .createProfileActivityIntent(context, testProfileId, ProfileType.SOLE_LEARNER)
       )
       testCoroutineDispatchers.runCurrent()
       return scenario
