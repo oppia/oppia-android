@@ -140,6 +140,7 @@ fun main(vararg args: String) {
   }
 }
 
+/** Executes Android Lint analysis with given arguments and handles setup, and execution. */
 fun executeAndroidLintAnalysis(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     require(args.isNotEmpty()) {
@@ -311,6 +312,12 @@ class LintTimeoutWrapper(
   @Volatile
   private var timedOut = false
 
+  /**
+   * Runs lint analysis with a timeout.
+   *
+   * @return the exit code from the lint process
+   * @throws IllegalStateException if lint doesn't finish within the specified duration
+   */
   fun runWithTimeout(): Int {
     val lintThread = thread(start = true, name = "lint-runner") {
       try {
