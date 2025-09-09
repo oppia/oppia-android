@@ -110,7 +110,6 @@ import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowLog
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -626,26 +625,6 @@ class DeveloperOptionsFragmentTest {
     val cause = performException.cause
     assertThat(cause).isInstanceOf(SecurityException::class.java)
     assertThat(cause?.message).contains("System.exit()")
-  }
-
-  @Test
-  fun testDeveloperOptionsFragment_clickDownload_configChange_downloadDoesnotRestarts() {
-    launch<DeveloperOptionsTestActivity>(
-      createDeveloperOptionsTestActivityIntent(internalProfileId)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
-      scrollToPosition(position = 2)
-      onView(withId(R.id.force_download_button)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      onView(isRoot()).perform(orientationLandscape())
-
-      val logs = ShadowLog.getLogs()
-      val platformParamLogs = logs.filter { it.tag == "PlatformParameterController" }
-      assertThat(
-        platformParamLogs.count { it.msg.contains("Calling Force Download of remote parameters") }
-      ).isEqualTo(1)
-    }
   }
 
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {
