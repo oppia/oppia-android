@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -52,6 +53,7 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
+import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
@@ -346,10 +348,16 @@ class CreateProfileFragmentTest {
         .perform(click())
       testCoroutineDispatchers.runCurrent()
 
+      val expectedParams = AdminIntroActivityParams.newBuilder()
+        .setProfileType(ProfileType.SUPERVISOR)
+        .setProfileNickname("John")
+        .build()
+
       intended(
         allOf(
           hasComponent(AdminIntroActivity::class.java.name),
-          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
+          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR),
+          hasProtoExtra(ADMIN_INTRO_PARAMS_KEY, expectedParams)
         )
       )
     }
@@ -476,7 +484,7 @@ class CreateProfileFragmentTest {
     launchNewLearnerProfileActivity().use { scenario ->
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      scenario?.onActivity { activity ->
+      scenario.onActivity { activity ->
         assertThat(activity.isFinishing).isTrue()
       }
     }
@@ -489,7 +497,7 @@ class CreateProfileFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.onboarding_navigation_back)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      scenario?.onActivity { activity ->
+      scenario.onActivity { activity ->
         assertThat(activity.isFinishing).isTrue()
       }
     }
@@ -582,9 +590,10 @@ class CreateProfileFragmentTest {
               // API 26+ - test autofill behavior
               assertThat(editText.importantForAutofill).isEqualTo(View.IMPORTANT_FOR_AUTOFILL_NO)
             }
+
             else -> {
               // API < 26 - autofill API not available
-              assertThrows<NoSuchMethodError>() {
+              assertThrows<NoSuchMethodError> {
                 editText.importantForAutofill
               }
             }
@@ -697,32 +706,6 @@ class CreateProfileFragmentTest {
     }
   }
 
-  @Test
-  fun testFragment_profileTypeArgumentMissing_showsUnknownProfileTypeError() {
-    val intent = CreateProfileActivity.createProfileActivityIntent(context)
-    // Not adding the profile type intent parameter to trigger the exception.
-    intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
-
-    val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
-    testCoroutineDispatchers.runCurrent()
-
-    scenario.use {
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(
-          editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
-        )
-
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.create_profile_nickname_error))
-        .check(matches(withText(R.string.add_profile_error_missing_profile_type)))
-    }
-  }
-
   private fun createGalleryPickActivityResultStub(): Instrumentation.ActivityResult {
     val resources: Resources = context.resources
     val imageUri = Uri.parse(
@@ -737,16 +720,18 @@ class CreateProfileFragmentTest {
   }
 
   private fun launchNewLearnerProfileActivity(profileType: ProfileType = ProfileType.SOLE_LEARNER):
-    ActivityScenario<CreateProfileActivity>? {
-      val intent = CreateProfileActivity.createProfileActivityIntent(context)
-      intent.decorateWithUserProfileId(ProfileId.newBuilder().setInternalId(0).build())
+    ActivityScenario<CreateProfileActivity> {
+      val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+      val intent =
+        CreateProfileActivity.createProfileActivityIntent(context, testProfileId, profileType)
+      intent.decorateWithUserProfileId(testProfileId)
       intent.putProtoExtra(
         CREATE_PROFILE_PARAMS_KEY,
         CreateProfileActivityParams.newBuilder()
           .setProfileType(profileType)
           .build()
       )
-      val scenario = ActivityScenario.launch<CreateProfileActivity>(intent)
+      val scenario = launch<CreateProfileActivity>(intent)
       testCoroutineDispatchers.runCurrent()
       return scenario
     }

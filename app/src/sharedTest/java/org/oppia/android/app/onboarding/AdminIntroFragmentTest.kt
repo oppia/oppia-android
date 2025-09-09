@@ -82,7 +82,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.logging.EventLogSubject
+import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -238,7 +238,7 @@ class AdminIntroFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      EventLogSubject.assertThat(event).hasStartProfileOnboardingContextThat {
+      assertThat(event).hasStartProfileOnboardingContextThat {
         hasProfileIdThat().isEqualTo(testProfileId)
       }
     }

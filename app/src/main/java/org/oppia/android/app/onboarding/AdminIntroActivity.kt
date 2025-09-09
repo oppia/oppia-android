@@ -17,7 +17,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 /** Argument key for [AdminIntroActivity] intent parameters. */
-private const val ADMIN_INTRO_PARAMS_KEY = "AdminIntroActivityParams.params"
+const val ADMIN_INTRO_PARAMS_KEY = "AdminIntroActivityParams.params"
 
 /** Activity for displaying the admin onboarding screen. */
 class AdminIntroActivity : InjectableAutoLocalizedAppCompatActivity() {
