@@ -602,8 +602,8 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
-      clickTabAtPosition(position = PRACTICE_TAB_POSITION)
-      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION)
+      clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
+      verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
     }
   }
 

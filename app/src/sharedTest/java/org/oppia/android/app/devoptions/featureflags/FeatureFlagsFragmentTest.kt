@@ -167,7 +167,7 @@ class FeatureFlagsFragmentTest {
 
       // Note to developers: if you add/remove a feature flag, please update the expected count.
       onView(withId(R.id.feature_flags_recycler_view))
-        .check(RecyclerViewMatcher.hasItemCount(count = 14))
+        .check(RecyclerViewMatcher.hasItemCount(count = 15))
     }
   }
 
