@@ -11,6 +11,7 @@ import kotlinx.coroutines.Deferred
 import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
 import org.oppia.android.app.model.DeviceSettings
+import org.oppia.android.app.model.LearningStreak
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Profile
 import org.oppia.android.app.model.ProfileAvatar
@@ -78,6 +79,7 @@ private const val SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "record_survey_last_shown_timestamp_provider_id"
 private const val RETRIEVE_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID =
   "retrieve_survey_last_shown_timestamp_provider_id"
+private const val UPDATE_LEARNING_STREAK_PROVIDER_ID = "update_learning_streak_provider_id"
 private const val SET_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
   "set_last_selected_classroom_id_provider_id"
 private const val RETRIEVE_LAST_SELECTED_CLASSROOM_ID_PROVIDER_ID =
@@ -1095,6 +1097,29 @@ class ProfileManagementController @Inject constructor(
     }
     return dataProviders.createInMemoryDataProviderAsync(
       SET_SURVEY_LAST_SHOWN_TIMESTAMP_PROVIDER_ID
+    ) {
+      return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
+    }
+  }
+
+  /**
+   * Updates the learning streak data for the specified profile.
+   * Returns a [DataProvider] indicating whether the save was a success.
+   */
+  fun updateLearningStreak(profileId: ProfileId, learningStreak: LearningStreak): DataProvider<Any?> {
+    val deferred = profileDataStore.storeDataWithCustomChannelAsync(
+      updateInMemoryCache = true
+    ) { profileDatabase ->
+      val profile = profileDatabase.profilesMap[profileId.internalId]
+      val updatedProfile = profile?.toBuilder()?.setLearningStreak(learningStreak)?.build()
+      val profileDatabaseBuilder = profileDatabase.toBuilder().putProfiles(
+        profileId.internalId,
+        updatedProfile
+      )
+      Pair(profileDatabaseBuilder.build(), ProfileActionStatus.SUCCESS)
+    }
+    return dataProviders.createInMemoryDataProviderAsync(
+      UPDATE_LEARNING_STREAK_PROVIDER_ID
     ) {
       return@createInMemoryDataProviderAsync getDeferredResult(profileId, null, deferred)
     }

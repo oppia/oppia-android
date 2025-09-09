@@ -99,6 +99,27 @@ message Profile {
 
   // Indicates that this profile has reached the home screen for the first time.
   bool completed_profile_onboarding = 22;
+
+  // Represents the user's learning streak data.
+  LearningStreak learning_streak = 23;
+}
+
+// Represents a user's learning streak data.
+message LearningStreak {
+  // Current consecutive days of learning activity.
+  int32 current_streak_count = 1;
+
+  // Longest streak achieved by the user (all-time record).
+  int32 longest_streak_count = 2;
+
+  // Timestamp of the last learning activity (in milliseconds since epoch).
+  int64 last_activity_timestamp_ms = 3;
+
+  // Timestamp when the current streak started (in milliseconds since epoch).
+  int64 current_streak_start_timestamp_ms = 4;
+
+  // Total number of learning sessions across all time.
+  int32 total_learning_sessions = 5;
 }
 
 // Represents the type of user using the app.

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:background="@color/component_color_shared_card_background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Streak Icon -->
+        <ImageView
+            android:id="@+id/streak_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/learning_streak_icon_content_description"
+            android:src="@{viewModel.streakIcon}"
+            tools:src="@drawable/ic_streak_fire_24dp" />
+
+        <!-- Streak Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Current Streak -->
+            <TextView
+                android:id="@+id/current_streak_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.currentStreak}"
+                android:textColor="@color/component_color_shared_primary_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="7 day streak!" />
+
+            <!-- Longest Streak -->
+            <TextView
+                android:id="@+id/longest_streak_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{viewModel.longestStreak}"
+                android:textColor="@color/component_color_shared_secondary_text_color"
+                android:textSize="14sp"
+                tools:text="Longest streak: 12 days" />
+
+            <!-- Motivational Message -->
+            <TextView
+                android:id="@+id/streak_message_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{viewModel.streakMessage}"
+                android:textColor="@color/component_color_shared_secondary_text_color"
+                android:textSize="14sp"
+                android:textStyle="italic"
+                tools:text="You're building a great habit! Keep it up!" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

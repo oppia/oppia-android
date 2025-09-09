@@ -351,6 +351,22 @@
   <string name="home_activity_title">Home</string>
   <string name="promoted_story_spotlight_hint">From now, you can see lessons recommended for you here.</string>
   <string name="select_a_topic_to_start">Select a Topic to Start</string>
+  
+  <!-- Learning Streak -->
+  <string name="learning_streak_current_count">%s day streak!</string>
+  <string name="learning_streak_longest_count">Longest streak: %s days</string>
+  <string name="learning_streak_start_today">Start your learning streak today!</string>
+  <string name="learning_streak_message_start">Learn something new today to start your streak!</string>
+  <string name="learning_streak_message_first_day">Great start! Come back tomorrow to keep it going.</string>
+  <string name="learning_streak_message_building">You\'re building a great habit! Keep it up!</string>
+  <string name="learning_streak_message_strong">Amazing streak! You\'re becoming a true learner!</string>
+  <string name="learning_streak_message_amazing">Incredible dedication! Your streak is getting impressive!</string>
+  <string name="learning_streak_message_legendary">Legendary streak! You\'re an inspiration to others!</string>
+  <string name="learning_streak_congratulations_title">Congratulations!</string>
+  <string name="learning_streak_new_record_message">You\'ve achieved a new personal best streak of %s days!</string>
+  <string name="learning_streak_milestone_message">You\'ve reached a %s day learning streak milestone!</string>
+  <string name="learning_streak_icon_content_description">Learning streak indicator</string>
+  
   <!--  ClassroomListActivity-->
   <string name="classroom_list_activity_title">Home</string>
   <string name="classrooms_list_activity_section_header">Classrooms</string>

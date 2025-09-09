@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
 import org.oppia.android.app.model.EphemeralState
@@ -38,6 +39,7 @@ import org.oppia.android.domain.oppialogger.LoggingIdentifierController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.LearnerAnalyticsLogger
 import org.oppia.android.domain.oppialogger.exceptions.ExceptionsController
+import org.oppia.android.domain.profile.LearningStreakController
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.domain.state.StateDeck
 import org.oppia.android.domain.topic.StoryProgressController
@@ -124,6 +126,7 @@ class ExplorationProgressController @Inject constructor(
   private val loggingIdentifierController: LoggingIdentifierController,
   private val profileManagementController: ProfileManagementController,
   private val learnerAnalyticsLogger: LearnerAnalyticsLogger,
+  private val learningStreakController: LearningStreakController,
   @BackgroundDispatcher private val backgroundCoroutineDispatcher: CoroutineDispatcher,
   private val explorationProgressListeners: Set<@JvmSuppressWildcards ExplorationProgressListener>,
   @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
@@ -1408,6 +1411,9 @@ class ExplorationProgressController @Inject constructor(
       explorationAnalyticsLogger.startCard(explorationProgress.stateDeck.getCurrentState()).also {
         if (logStartCard) {
           it.logStartCard()
+          
+          // Record learning session for streak tracking on the first card of an exploration
+          recordLearningSessionForStreak()
         }
 
         // Force the card count to update.
@@ -1462,6 +1468,26 @@ class ExplorationProgressController @Inject constructor(
           INDEXTYPE_NOT_SET, null -> {} // Nothing to do here.
         }
         helpIndex = newHelpIndex
+      }
+    }
+
+    /**
+     * Records a learning session for streak tracking. This should only be called once per
+     * exploration session to avoid duplicate entries.
+     */
+    private fun recordLearningSessionForStreak() {
+      // Only record if we're starting the first card and haven't recorded for this session yet
+      if (availableCardCount <= 1) {
+        CoroutineScope(backgroundCoroutineDispatcher).launch {
+          try {
+            val shouldRecord = learningStreakController.shouldRecordLearningSession(profileId)
+            if (shouldRecord) {
+              learningStreakController.recordLearningSession(profileId)
+            }
+          } catch (e: Exception) {
+            oppiaLogger.w("ExplorationProgressController", "Failed to record learning streak", e)
+          }
+        }
       }
     }
 
