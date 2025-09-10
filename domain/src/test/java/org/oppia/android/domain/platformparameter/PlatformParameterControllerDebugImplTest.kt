@@ -1138,6 +1138,19 @@ class PlatformParameterControllerDebugImplTest {
     assertThat(ephemeralNewUiFlag?.currentValue)
       .isEqualTo(TEST_REMOTE_MULTIPLE_CLASSROOMS)
   }
+
+  @Test
+  fun testDownloadRemoteParameters_secondInvocation_returnsSameInstance() {
+    setUpTestApplicationComponent()
+
+    val firstProvider = platformParameterControllerDebugImpl.downloadRemoteParameters()
+    val secondProvider = platformParameterControllerDebugImpl.downloadRemoteParameters()
+    testCoroutineDispatchers.runCurrent()
+
+    // Multiple calls to downloadRemoteParameters() should yield the same DataProvider instance.
+    assertThat(secondProvider).isEqualTo(firstProvider)
+  }
+
   // Populates the remote DB with test feature flag for MULTIPLE_CLASSROOMS.
   private fun addTestRemoteFeatureFlagToDatabase(
     component: TestApplicationComponent,
