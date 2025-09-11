@@ -213,17 +213,17 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testLintTimeoutWrapper_emptyArguments_completes() {
+  fun testLintTimeoutWrapper_emptyArguments_returnsInvalidUsageExitCode() {
     val emptyArgs = emptyArray<String>()
     val wrapper = LintTimeoutWrapper(emptyArgs, timeoutMinutes = 5)
 
     val exitCode = wrapper.runWithTimeout()
 
-    assertThat(exitCode).isAtLeast(-1)
+    assertThat(exitCode).isEqualTo(2) // INVALID_USAGE
   }
 
   @Test
-  fun testLintTimeoutWrapper_normalTimeout_completesSuccessfully() {
+  fun testLintTimeoutWrapper_versionCommand_completesWithinReasonableTime() {
     val versionArgs = arrayOf("--version")
     val wrapper = LintTimeoutWrapper(versionArgs, timeoutMinutes = 10)
 
