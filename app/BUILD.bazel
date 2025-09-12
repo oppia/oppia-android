@@ -142,6 +142,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt",
     "src/main/java/org/oppia/android/app/settings/profile/LoadProfileEditDeletionDialogListener.kt",
     "src/main/java/org/oppia/android/app/settings/profile/RouteToProfileEditListener.kt",
+    "src/main/java/org/oppia/android/app/survey/DismissSurveyListener.kt",
     "src/main/java/org/oppia/android/app/survey/SelectedAnswerAvailabilityReceiver.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
