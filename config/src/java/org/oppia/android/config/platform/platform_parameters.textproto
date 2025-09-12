@@ -59,7 +59,7 @@ platform_parameter_definition {
 platform_parameter_definition {
   id: NPS_SURVEY_GRACE_PERIOD_IN_DAYS
   default_value: {
-    integer: 0
+    integer: 30
   }
 }
 platform_parameter_definition {

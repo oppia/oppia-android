@@ -178,22 +178,18 @@ class HtmlParser private constructor(
   }
 
   private fun trimSpannable(spannable: SpannableStringBuilder): SpannableStringBuilder {
-    val trimmedText = spannable.toString()
+    val text = spannable.toString()
 
     // Find the first non-newline from the start.
-    var trimStart = 0
-    while (trimStart < trimmedText.length && trimmedText[trimStart] == '\n') {
-      trimStart++
-    }
+    var start = 0
+    while (start < text.length && text[start] == '\n') { start++ }
 
     // Find the last non-newline from the end.
-    var trimEnd = trimmedText.length
-    while (trimEnd > trimStart && trimmedText[trimEnd - 1] == '\n') {
-      trimEnd--
-    }
+    var end = text.length
+    while (end > start && text[end - 1] == '\n') { end-- }
 
     // Return only the trimmed span.
-    return SpannableStringBuilder(spannable.subSequence(trimStart, trimEnd))
+    return SpannableStringBuilder(spannable.subSequence(start, end))
   }
 
   private fun ensureNonEmpty(spannable: SpannableStringBuilder): SpannableStringBuilder {
