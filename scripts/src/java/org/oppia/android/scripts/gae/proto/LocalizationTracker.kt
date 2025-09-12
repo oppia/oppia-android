@@ -25,6 +25,7 @@ import org.oppia.android.scripts.gae.json.SubtitledText
 import org.oppia.android.scripts.gae.proto.OppiaWebTranslationExtractor.TranslatableActivityId
 import org.oppia.proto.v1.structure.ContentLocalizationDto
 import org.oppia.proto.v1.structure.ContentLocalizationsDto
+import org.oppia.proto.v1.structure.ImageWithRegionsDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.LocalizableTextDto
 import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
@@ -175,6 +176,11 @@ class LocalizationTracker private constructor(
         if (language.isValid()) container.recordVoiceover(language, contentId, voiceover.toProto())
       }
     }
+  }
+
+  fun trackImageRegion(id: ContainerId, imageWithRegions: ImageWithRegionsDto) {
+    val container = getExpectedContainer(id)
+    container.recordImageRegion(imageWithRegions)
   }
 
   fun isLanguageSupported(id: ContainerId, language: LanguageType): Boolean =
@@ -411,6 +417,9 @@ class LocalizationTracker private constructor(
       retrieveAssetsForLanguage(language).recordVoiceover(id, contentId, voiceover)
     }
 
+    fun recordImageRegion(imageWithRegions: ImageWithRegionsDto) =
+      defaultAssets.recordImageRegion(imageWithRegions)
+
     fun getSupportedLanguages(): Set<LanguageType> = languages.keys
 
     suspend fun computeSpecificContentLocalization(
@@ -506,13 +515,18 @@ class LocalizationTracker private constructor(
   private data class TrackedAssets(
     val language: LanguageType,
     val textTranslations: MutableMap<String, LocalizableTextDto> = mutableMapOf(),
-    val voiceovers: MutableMap<String, VoiceoverFileDto> = mutableMapOf()
+    val voiceovers: MutableMap<String, VoiceoverFileDto> = mutableMapOf(),
+    val imageRegionPaths: MutableSet<String> = mutableSetOf(),
   ) {
     val errors = mutableSetOf<String>()
 
     var thumbnail: ThumbnailDto? = null
 
     val allContentIds: Set<String> get() = textTranslations.keys + voiceovers.keys
+
+    fun recordImageRegion(imageWithRegions: ImageWithRegionsDto) {
+      imageRegionPaths += imageWithRegions.imageFilePath
+    }
 
     fun recordThumbnail(id: ContainerId, thumbnail: ThumbnailDto) {
       require(this.thumbnail == null) {
@@ -564,7 +578,7 @@ class LocalizationTracker private constructor(
         }
       }.distinct()
       val referencedImageFilenames =
-        htmlTexts.flatMapTo(mutableSetOf(), ::collectAllImageSourcesFromHtml)
+        htmlTexts.flatMapTo(mutableSetOf(), ::collectAllImageSourcesFromHtml) + imageRegionPaths
 
       // Batch all of the image requests together so that they can run in parallel.
       val imageSizes = referencedImageFilenames.map { filename ->
