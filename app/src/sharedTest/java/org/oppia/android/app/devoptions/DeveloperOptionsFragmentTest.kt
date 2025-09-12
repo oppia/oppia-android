@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -577,6 +579,52 @@ class DeveloperOptionsFragmentTest {
 
       intended(hasComponent(MathExpressionParserActivity::class.java.name))
     }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_navigateToForceDownload_clickDownload_showsDownloadingDialog() {
+    launch<DeveloperOptionsTestActivity>(
+      createDeveloperOptionsTestActivityIntent(internalProfileId)
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      scrollToPosition(position = 2)
+      onView(withId(R.id.force_download_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.force_download_dialog_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testDeveloperOptionsFragment_clickDownload_showsDialog_clickRestart_exitsApp() {
+    // Note: System.exit() is called in production when the restart button is clicked.
+    // In tests, this triggers a SecurityException to prevent shutting down the JVM.
+    // We catch and assert on this exception to verify that the exit path is executed.
+    val performException = assertThrows<PerformException>() {
+      launch<DeveloperOptionsTestActivity>(
+        createDeveloperOptionsTestActivityIntent(internalProfileId)
+      ).use {
+        testCoroutineDispatchers.runCurrent()
+
+        scrollToPosition(position = 2)
+        onView(withId(R.id.force_download_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText(R.string.force_download_dialog_title_text))
+          .inRoot(isDialog())
+          .check(matches(isDisplayed()))
+
+        onView(withId(R.id.restart_button)).perform(click())
+        testCoroutineDispatchers.runCurrent()
+      }
+    }
+
+    val cause = performException.cause
+    assertThat(cause).isInstanceOf(SecurityException::class.java)
+    assertThat(cause?.message).contains("System.exit()")
   }
 
   private fun createDeveloperOptionsTestActivityIntent(internalProfileId: Int): Intent {

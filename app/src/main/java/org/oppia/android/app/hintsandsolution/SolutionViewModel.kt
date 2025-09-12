@@ -60,7 +60,8 @@ class SolutionViewModel private constructor(
   private val appLanguageResourceHandler: AppLanguageResourceHandler,
   private val mathExpressionAccessibilityUtil: MathExpressionAccessibilityUtil,
   val explorationId: String,
-  val isFlashback: Boolean
+  val isFlashback: Boolean,
+  val solutionBoxStrokeWidth: Int
 ) {
   /**
    * A screenreader-friendly version of [solutionSummary] that should be used for readout, in place
@@ -254,7 +255,8 @@ class SolutionViewModel private constructor(
       interaction: Interaction,
       writtenTranslationContext: WrittenTranslationContext,
       explorationId: String,
-      isFlashback: Boolean
+      isFlashback: Boolean,
+      solutionBoxStrokeWidth: Int
     ): SolutionViewModel {
       return SolutionViewModel(
         solutionSummary,
@@ -266,7 +268,8 @@ class SolutionViewModel private constructor(
         appLanguageResourceHandler,
         mathExpressionAccessibilityUtil,
         explorationId,
-        isFlashback
+        isFlashback,
+        solutionBoxStrokeWidth
       )
     }
 

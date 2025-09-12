@@ -583,7 +583,7 @@
   <dimen name="classrooms_card_margin_end">0dp</dimen>
 
   <!-- Flashback Solution -->
-  <dimen name="flashback_solution_summary_card_margin_start">48dp</dimen>
-  <dimen name="flashback_solution_summary_card_margin_end">80dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_start">80dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">48dp</dimen>
   <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
 </resources>
