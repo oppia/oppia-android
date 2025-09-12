@@ -253,6 +253,8 @@
   <color name="color_palette_classroom_topic_list_background_color">@color/color_def_greenish_black_3</color>
   <color name="color_palette_classroom_promoted_list_classroom_label_color">@color/color_def_persian_blue_2</color>
   <color name="color_palette_classroom_promoted_list_card_background_color">@color/color_def_greenish_black_2</color>
-  <!-- FLASHBACK -->
-  <color name="color_palette_flashback_not_now_button_text_color">@color/color_def_persian_green</color>
+  <!-- PLATFORM PARAMETER AND FEATURE FLAG -->
+  <color name="color_palette_overridden_background_color">@color/color_def_dark_yellow</color>
+  <color name="color_palette_modified_background_color">@color/color_def_deep_blue</color>
+  <color name="color_palette_save_button_active_color">@color/color_def_bright_cyan</color>
 </resources>

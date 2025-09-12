@@ -78,6 +78,51 @@
     <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
     <item name="android:textSize">14sp</item>
   </style>
+  <!-- DIALOG BUTTON ACTIVE STYLE -->
+  <style name="DialogButtonActive" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- DISCARD BUTTON OUTLINE STYLE -->
+  <style name="DiscardButtonOutline" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:background">@drawable/dialog_button_outline</item>
+    <item name="android:textColor">@color/component_color_shared_primary_dark_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
+
+  <!-- SAVE BUTTON ACTIVE STYLE -->
+  <style name="SaveButtonActive" parent="TextAppearance.AppCompat.Widget.Button">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginBottom">4dp</item>
+    <item name="android:layout_marginEnd">4dp</item>
+    <item name="android:layout_marginTop">4dp</item>
+    <item name="android:padding">8dp</item>
+    <item name="android:background">@drawable/state_button_primary_background</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
+    <item name="android:textSize">14sp</item>
+  </style>
 
   <style name="SplashScreenTheme" parent="OppiaThemeWithoutActionBar">
     <item name="android:windowBackground">@drawable/splash_image</item>
@@ -865,54 +910,6 @@
     <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
     <item name="android:textSize">@dimen/profile_selection_fragment_profile_prompt_size</item>
     <item name="android:minHeight">@dimen/profile_selection_fragment_view_min_size</item>
-  </style>
-
-  <!-- Flashback Confirmation Dialog "Not now" button -->
-  <style name="FlashbackDialogNegativeActionButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginBottom">4dp</item>
-    <item name="android:layout_marginEnd">12dp</item>
-    <item name="android:layout_marginStart">4dp</item>
-    <item name="android:layout_marginTop">30dp</item>
-    <item name="android:padding">8dp</item>
-    <item name="android:background">@drawable/transparent_background</item>
-    <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/component_color_shared_dialogs_primary_color</item>
-    <item name="android:textSize">14sp</item>
-  </style>
-
-  <style name="FlashbackConfirmationMessageStyle" parent="TextViewStart">
-    <item name="android:layout_width">match_parent</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
-    <item name="android:textSize">16sp</item>
-    <item name="android:layout_marginTop">12dp</item>
-    <item name="android:fontFamily">sans-serif</item>
-    <item name="android:textAllCaps">false</item>
-  </style>
-
-  <style name="FlashbackConfirmationTitleTextStyle" parent="TextView.Common1">
-    <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="android:textSize">20sp</item>
-    <item name="android:textColor">@color/component_color_shared_primary_text_color</item>
-  </style>
-
-  <style name="FlashbackDialogPositiveActionButton" parent="TextAppearance.AppCompat.Widget.Button">
-    <item name="android:layout_width">wrap_content</item>
-    <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginBottom">4dp</item>
-    <item name="android:layout_marginEnd">4dp</item>
-    <item name="android:layout_marginTop">30dp</item>
-    <item name="android:padding">8dp</item>
-    <item name="android:background">@drawable/dialog_positive_rounded_button_solid_color_primary_background</item>
-    <item name="android:fontFamily">sans-serif-medium</item>
-    <item name="android:minHeight">@dimen/clickable_item_min_height</item>
-    <item name="android:textAllCaps">false</item>
-    <item name="android:textColor">@color/component_color_shared_secondary_4_text_color</item>
-    <item name="android:textSize">14sp</item>
   </style>
 
   <style name="SubmittedAnswerTextStyle" parent="TextView.Common1">
