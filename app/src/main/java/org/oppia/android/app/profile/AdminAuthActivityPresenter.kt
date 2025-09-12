@@ -90,19 +90,16 @@ class AdminAuthActivityPresenter @Inject constructor(
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
             val internalId = args?.internalProfileId ?: -1
             val profileId = ProfileId.newBuilder().setInternalId(internalId).build()
-            profileManagementController
-              .loginToProfile(profileId).toLiveData().observe(
-                activity
-              ) {
-                if (it is AsyncResult.Success) {
-                  activity.startActivity(
-                    AdministratorControlsActivity.createAdministratorControlsActivityIntent(
-                      context, profileId
-                    )
+            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
+              if (it is AsyncResult.Success) {
+                activity.startActivity(
+                  AdministratorControlsActivity.createAdministratorControlsActivityIntent(
+                    context, profileId
                   )
-                }
+                )
+                activity.finish()
               }
-            activity.finish()
+            }
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
             activity.startActivity(
