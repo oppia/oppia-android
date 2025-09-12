@@ -88,6 +88,9 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
     val explorationId = args.explorationId!!
     val surveyQuestions = getQuestions(args.questionsList)
 
+    dialog?.setCanceledOnTouchOutside(false)
+    dialog?.setCancelable(false)
+
     return surveyWelcomeDialogFragmentPresenter.handleCreateView(
       inflater,
       container,
@@ -100,10 +103,5 @@ class SurveyWelcomeDialogFragment : InjectableDialogFragment() {
 
   private fun getQuestions(questionNumberList: List<Int>): List<SurveyQuestionName> {
     return questionNumberList.map { number -> SurveyQuestionName.forNumber(number) }
-  }
-
-  override fun onStart() {
-    super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.SurveyOnboardingDialogStyle)
   }
 }
