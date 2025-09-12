@@ -83,6 +83,7 @@
   <color name="color_def_whitish_grey">#E5E5E5</color>
   <color name="color_def_checkbox_green">#008577</color>
   <color name="color_def_radio_green">#00A89F</color>
+  <color name="color_def_bright_cyan">#00A89F</color>
   <color name="color_def_stroke_silver">#777777</color>
   <color name="color_def_drag_drop_single_item_gradient_center">#F7F7F7</color>
   <color name="color_def_drag_drop_single_item_gradient_end">#DCDCDC</color>
@@ -102,6 +103,8 @@
   <color name="color_def_bright_violet">#7659B6</color>
   <color name="color_def_teal_blue">#2F6687</color>
   <color name="color_def_dark_red">#A6503A</color>
+  <color name="color_def_pale_yellow">#FFFFB8</color>
+  <color name="color_def_dark_yellow">#989830</color>
   <color name="color_def_dark_purple">#441530</color>
   <color name="color_def_blue_sapphire">#205D86</color>
   <color name="color_def_dark_silver_40">#80707070</color>
@@ -155,6 +158,7 @@
   <color name="color_def_dark_jade">#64817E</color>
   <color name="color_def_light_orange">#F8BF74</color>
   <color name="color_def_sky_blue">#B3D8F1</color>
+  <color name="color_def_deep_blue">#4F8AB3</color>
   <color name="color_def_white_1">#B8FFFFFF</color>
   <color name="color_def_ivory">#FEFFF0</color>
   <color name="color_def_charcoal">#2B2B2B</color>

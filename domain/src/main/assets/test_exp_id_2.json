@@ -458,7 +458,7 @@
         },
         "solicit_answer_details": false,
         "next_content_id_index": -1,
-        "linked_skill_id": null
+        "linked_skill_id": "test_skill_id_1"
       },
       "Fractions": {
         "content": {
@@ -1623,7 +1623,7 @@
         },
         "solicit_answer_details": false,
         "next_content_id_index": -1,
-        "linked_skill_id": null
+        "linked_skill_id": "test_skill_id_1"
       },
       "DragDropNoGroup": {
         "content": {

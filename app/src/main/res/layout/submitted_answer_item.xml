@@ -8,6 +8,11 @@
 
     <import type="androidx.constraintlayout.widget.ConstraintSet" />
 
+
+    <variable
+      name="SelectionSubmittedAnswerList"
+      type="java.util.List&lt;org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel&gt;" />
+
     <variable
       name="submittedListAnswer"
       type="org.oppia.android.app.model.ListOfSetsOfHtmlStrings" />
@@ -46,7 +51,7 @@
       android:id="@+id/submitted_answer_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:background="@drawable/submitted_answer_background"
+      android:background="@{viewModel.isFlashback ? @drawable/flashback_submitted_answer_background : @drawable/submitted_answer_background}"
       android:contentDescription="@{viewModel.submittedAnswerContentDescription}"
       android:padding="12dp"
       android:text="@{viewModel.submittedAnswer}"
@@ -73,13 +78,26 @@
         android:id="@+id/submitted_answer_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/submitted_answer_background"
+        android:background="@{viewModel.isFlashback ? @drawable/flashback_submitted_answer_background : @drawable/submitted_answer_background}"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:visibility="gone"
         app:itemDecorator="@{@drawable/divider}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:list="@{submittedListAnswer.setOfHtmlStringsList}" />
+
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selection_submitted_answer_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{viewModel.isFlashback ? @drawable/flashback_submitted_answer_background : @drawable/submitted_answer_background}"
+        android:visibility="gone"
+        android:paddingStart="@dimen/selection_interaction_item_padding_start"
+        android:paddingTop="12dp"
+        android:paddingEnd="@dimen/selection_interaction_item_padding_end"
+        android:paddingBottom="12dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:list="@{SelectionSubmittedAnswerList}" />
     </LinearLayout>
 
     <ImageView

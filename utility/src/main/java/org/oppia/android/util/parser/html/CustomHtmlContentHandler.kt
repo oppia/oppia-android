@@ -131,7 +131,8 @@ class CustomHtmlContentHandler private constructor(
         check(currentTrackedCustomTags.isNotEmpty()) {
           "Expected tracked custom tag to be initialized."
         }
-        val currentTrackedCustomTag = currentTrackedCustomTags.removeLast()
+        val currentTrackedCustomTag =
+          currentTrackedCustomTags.removeAt(currentTrackedCustomTags.lastIndex)
         check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
