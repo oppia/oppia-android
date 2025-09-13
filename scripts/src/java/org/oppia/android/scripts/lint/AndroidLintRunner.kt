@@ -297,8 +297,18 @@ class AndroidLintAnalyzer(
   }
 }
 
-// TODO(#5960): Remove LintTimeoutWrapper once Lint supports dispatcher timeouts.
-/** Wrapper class to run lint with timeout protection. */
+/**
+ * Wrapper class to run lint with timeout protection.
+ *
+ * The lint tool sometimes hangs on certain systems after writing the report
+ * (likely due to lingering non-daemon threads in the native Java process).
+ * Since lint runs natively inside this script as a Java application,
+ * it may continue running indefinitely unless explicitly stopped.
+ *
+ * This utility ensures that lint execution terminates within a bounded time,
+ * preventing hangs by enforcing a timeout and interrupting the process if
+ * it fails to complete.
+ */
 class LintTimeoutWrapper(
   private val cliArgs: Array<String>,
   private val timeoutMinutes: Long
