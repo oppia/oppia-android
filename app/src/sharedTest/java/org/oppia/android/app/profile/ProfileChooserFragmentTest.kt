@@ -52,9 +52,11 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
@@ -111,6 +113,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -128,10 +131,6 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
-import org.oppia.android.util.extensions.putProtoExtra
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 
 /** Tests for [ProfileChooserFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -1489,7 +1488,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_initialLaunchAfterOnboarding_adminProfileHasCorrectName(){
+  fun testFragment_initialLaunchAfterOnboarding_adminProfileHasCorrectName() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
 
@@ -1500,9 +1499,9 @@ class ProfileChooserFragmentTest {
       putProtoExtra(
         PROFILE_CHOOSER_PARAMS_KEY,
         ProfileChooserActivityParams.newBuilder()
-        .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
-        .setProfileNickname("John")
-        .build()
+          .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
+          .setProfileNickname("John")
+          .build()
       )
     }
 
@@ -1517,7 +1516,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_subsequentLaunch_adminProfileNameNotOverwritten(){
+  fun testFragment_subsequentLaunch_adminProfileNameNotOverwritten() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
 

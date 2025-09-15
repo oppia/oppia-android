@@ -962,6 +962,7 @@ message OnboardingFragmentStateBundle {
 
 // Params required when creating a new ProfileChooserActivity.
 message ProfileChooserActivityParams {
+  // TODO(#482): Remove once the default admin profile has been removed.
   // The nickname associated with a newly created profile.
   string profile_nickname = 1;
 

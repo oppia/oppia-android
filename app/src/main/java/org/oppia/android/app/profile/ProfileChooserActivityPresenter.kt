@@ -3,6 +3,7 @@ package org.oppia.android.app.profile
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.oppia.android.app.activity.ActivityScope
+import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileChooserFragmentArguments
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
@@ -14,7 +15,6 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
-import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 
 /** Key for [ProfileChooserFragment]'s arguments. */
 const val PROFILE_CHOOSER_ARGUMENTS_KEY = "ProfileChooserFragment.arguments"

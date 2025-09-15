@@ -220,7 +220,7 @@ class AdminIntroFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       val expectedParams = ProfileChooserActivityParams.newBuilder()
-        .setProfileType(ProfileType.SUPERVISOR)
+        .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
         .setProfileNickname("Admin")
         .build()
 
