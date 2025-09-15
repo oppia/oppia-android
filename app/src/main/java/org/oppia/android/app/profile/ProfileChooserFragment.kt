@@ -43,18 +43,18 @@ class ProfileChooserFragment : InjectableFragment(), RouteToAdminPinListener, Pr
           "Expected profileId to be included in the arguments for ProfileChooserFragment."
         }
 
-      val profileType = checkNotNull(
+      val parentScreen = checkNotNull(
         arguments?.getProto(
           PROFILE_CHOOSER_ARGUMENTS_KEY,
           ProfileChooserFragmentArguments.getDefaultInstance()
-        )?.profileType
-      ) { "Expected ProfileChooserFragment to have a profileType argument." }
+        )?.parentScreen
+      ) { "Expected ProfileChooserFragment to have a parentScreen argument." }
 
       return profileChooserFragmentPresenter.handleCreateView(
         inflater,
         container,
         adminProfileId,
-        profileType
+        parentScreen
       )
     } else {
       return profileChooserFragmentPresenterV1.handleCreateView(inflater, container)

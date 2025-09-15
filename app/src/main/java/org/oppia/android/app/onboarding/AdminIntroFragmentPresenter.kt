@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
 import org.oppia.android.app.model.ProfileChooserActivityParams
+import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.profile.ProfileChooserActivity
@@ -292,7 +293,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
       putProtoExtra(
         PROFILE_CHOOSER_PARAMS_KEY,
         ProfileChooserActivityParams.newBuilder()
-          .setProfileType(profileType)
+          .setParentScreen(ParentScreen.ADMIN_INTRO_SCREEN)
           .setProfileNickname(profileNickname)
           .build()
       )

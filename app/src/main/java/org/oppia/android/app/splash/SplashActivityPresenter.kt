@@ -498,7 +498,7 @@ class SplashActivityPresenter @Inject constructor(
 
     private fun launchProfileChooserScreen(profileId: ProfileId) {
       val intentParams = ProfileChooserActivityParams.newBuilder()
-        .setProfileType(ProfileType.SUPERVISOR)
+        .setParentScreen(ProfileChooserActivityParams.ParentScreen.SPLASH_SCREEN)
         .build()
 
       val intent = ProfileChooserActivity.createProfileChooserActivity(activity).apply {

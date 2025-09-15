@@ -14,6 +14,7 @@ import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 
 /** Key for [ProfileChooserFragment]'s arguments. */
 const val PROFILE_CHOOSER_ARGUMENTS_KEY = "ProfileChooserFragment.arguments"
@@ -27,12 +28,12 @@ class ProfileChooserActivityPresenter @Inject constructor(
   private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   /** Adds [ProfileChooserFragment] to view. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType, profileName: String) {
-    if (enableOnboardingFlowV2.value) {
+  fun handleOnCreate(profileId: ProfileId, parentScreen: ParentScreen, profileName: String) {
+    if (enableOnboardingFlowV2.value && parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
       // TODO(#4938): Ensure default profile is present when the admin resets the app data.
       profileManagementController.updateNewProfileDetails(
         profileId = profileId,
-        profileType = profileType,
+        profileType = ProfileType.SUPERVISOR,
         newName = profileName,
         avatarImagePath = null,
         colorRgb = -10710042,
@@ -57,7 +58,7 @@ class ProfileChooserActivityPresenter @Inject constructor(
 
       val fragmentArgs = ProfileChooserFragmentArguments
         .newBuilder()
-        .setProfileType(profileType)
+        .setParentScreen(parentScreen)
         .build()
 
       val args = Bundle().apply {

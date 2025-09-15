@@ -12,6 +12,8 @@ import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 
 /** Activity that controls profile creation and selection. */
 class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
@@ -30,16 +32,15 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    // TODO(#4938): Remove once admin profile onboarding is implemented.
     val profileChooserActivityParams = intent.getProtoExtra(
       PROFILE_CHOOSER_PARAMS_KEY,
       ProfileChooserActivityParams.getDefaultInstance()
     )
 
-    val profileType = profileChooserActivityParams.profileType
+    val parentScreen = profileChooserActivityParams.parentScreen
     val profileNickname = profileChooserActivityParams.profileNickname
     val profileId = intent.extractCurrentUserProfileId()
 
-    profileChooserActivityPresenter.handleOnCreate(profileId, profileType, profileNickname)
+    profileChooserActivityPresenter.handleOnCreate(profileId, parentScreen, profileNickname)
   }
 }

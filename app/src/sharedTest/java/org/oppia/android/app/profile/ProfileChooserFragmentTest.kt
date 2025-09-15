@@ -128,6 +128,10 @@ import org.robolectric.annotation.LooperMode
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.app.model.ProfileChooserActivityParams
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
+import org.oppia.android.util.extensions.putProtoExtra
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 
 /** Tests for [ProfileChooserFragment]. */
 @RunWith(AndroidJUnit4::class)
@@ -1484,8 +1488,61 @@ class ProfileChooserFragmentTest {
     }
   }
 
-  // add tests to verify admin name displayed is the one passed
-  // check event log
+  @Test
+  fun testFragment_initialLaunchAfterOnboarding_adminProfileHasCorrectName(){
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+
+    // Default empty profile similar to what is created at the start of onboarding.
+    profileTestHelper.createDefaultAdminProfile()
+
+    val intent = createProfileChooserActivityIntent().apply {
+      putProtoExtra(
+        PROFILE_CHOOSER_PARAMS_KEY,
+        ProfileChooserActivityParams.newBuilder()
+        .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
+        .setProfileNickname("John")
+        .build()
+      )
+    }
+
+    launch<ProfileChooserActivity>(intent).use {
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "John"
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_subsequentLaunch_adminProfileNameNotOverwritten(){
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+
+    // Helper creates a profile with name "Admin".
+    profileTestHelper.addOnlyAdminProfile()
+
+    val intent = createProfileChooserActivityIntent().apply {
+      putProtoExtra(
+        PROFILE_CHOOSER_PARAMS_KEY,
+        ProfileChooserActivityParams.newBuilder()
+          .setParentScreen(ProfileChooserActivityParams.ParentScreen.SPLASH_SCREEN)
+          .setProfileNickname("John")
+          .build()
+      )
+    }
+
+    launch<ProfileChooserActivity>(intent).use {
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
+    }
+  }
 
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)

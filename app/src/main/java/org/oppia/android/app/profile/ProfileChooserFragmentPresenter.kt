@@ -37,6 +37,7 @@ import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.statusbar.StatusBarColor
 import javax.inject.Inject
+import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 
 private val COLORS_LIST = listOf(
   R.color.component_color_avatar_background_1_color,
@@ -90,13 +91,13 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     inflater: LayoutInflater,
     container: ViewGroup?,
     adminProfileId: ProfileId,
-    profileType: ProfileType
+    parentScreen: ParentScreen
   ): View? {
     StatusBarColor.statusBarColorUpdate(
       R.color.component_color_shared_profile_status_bar_color, activity, false
     )
 
-    if (profileType == ProfileType.SUPERVISOR) {
+    if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
       profileManagementController.markProfileOnboardingEnded(adminProfileId)
