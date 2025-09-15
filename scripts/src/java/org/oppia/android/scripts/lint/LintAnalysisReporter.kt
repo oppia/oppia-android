@@ -750,7 +750,8 @@ class LintAnalysisReporter(private val repoRoot: File) {
       println("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
       println(
         "The following issue IDs are defined in issueIdMapping " +
-          "but no corresponding lint issues were found.\nRefer to the Android Lint Check Wiki for more" +
+          "but no corresponding lint issues were found." +
+          "\nRefer to the Android Lint Check Wiki for more" +
           " information: https://github.com/oppia/oppia-android/wiki/" +
           "Android-Lint-Check#unused-enum-mappings-detection"
       )
