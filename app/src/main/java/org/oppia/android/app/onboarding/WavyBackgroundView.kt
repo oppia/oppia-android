@@ -12,7 +12,7 @@ import kotlin.math.sin
 /** Adds a bezier curve background to a view. */
 @Composable
 fun WavyBackgroundView(backgroundColorResId: Int) {
-  val whiteColor = colorResource(backgroundColorResId)
+  val waveColor = colorResource(backgroundColorResId)
   Canvas(
     modifier = Modifier.fillMaxSize(),
     onDraw = {
@@ -47,7 +47,7 @@ fun WavyBackgroundView(backgroundColorResId: Int) {
 
       drawPath(
         path = wavyPath,
-        color = whiteColor
+        color = waveColor
       )
     }
   )
