@@ -19,7 +19,7 @@ import javax.inject.Inject
 /** Argument key for [CreateProfileActivity] intent parameters. */
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 
-/** Activity for displaying a new learner profile creation flow. */
+/** Activity for displaying a new profile creation screen. */
 class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
   @Inject
   lateinit var learnerProfileActivityPresenter: CreateProfileActivityPresenter

@@ -1484,6 +1484,9 @@ class ProfileChooserFragmentTest {
     }
   }
 
+  // add tests to verify admin name displayed is the one passed
+  // check event log
+
   private fun forceDefaultLocale(locale: Locale) {
     context.applicationContext.resources.configuration.setLocale(locale)
     Locale.setDefault(locale)

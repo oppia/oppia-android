@@ -135,7 +135,8 @@ class AdminIntroActivityTest {
     return AdminIntroActivity.createAdminIntroActivityIntent(
       context,
       testProfileId,
-      ProfileType.SUPERVISOR
+      ProfileType.SUPERVISOR,
+      "John"
     )
   }
 

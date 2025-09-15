@@ -1164,6 +1164,7 @@ class SplashActivityTest {
     profileTestHelper.markProfileOnboardingStarted(profileId)
     val params = AdminIntroActivityParams.newBuilder()
       .setProfileType(ProfileType.SUPERVISOR)
+      .setProfileNickname("Admin")
       .build()
 
     launchSplashActivityPartially {

@@ -299,7 +299,7 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
+  fun testFragment_orientationChange_supervisorCardClicked_launchesAdminIntroScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
