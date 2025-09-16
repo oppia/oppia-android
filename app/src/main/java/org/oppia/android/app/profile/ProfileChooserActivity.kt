@@ -30,15 +30,13 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileChooserActivityParams = intent.getProtoExtra(
+    val parentScreen = intent.getProtoExtra(
       PROFILE_CHOOSER_PARAMS_KEY,
       ProfileChooserActivityParams.getDefaultInstance()
-    )
+    ).parentScreen
 
-    val parentScreen = profileChooserActivityParams.parentScreen
-    val profileNickname = profileChooserActivityParams.profileNickname
     val profileId = intent.extractCurrentUserProfileId()
 
-    profileChooserActivityPresenter.handleOnCreate(profileId, parentScreen, profileNickname)
+    profileChooserActivityPresenter.handleOnCreate(profileId, parentScreen)
   }
 }

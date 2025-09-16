@@ -6,7 +6,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileChooserFragmentArguments
 import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.testing.ProfileChooserFragmentTestActivity
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -28,20 +27,9 @@ class ProfileChooserActivityPresenter @Inject constructor(
   private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   /** Adds [ProfileChooserFragment] to view. */
-  fun handleOnCreate(profileId: ProfileId, parentScreen: ParentScreen, profileName: String) {
-    if (enableOnboardingFlowV2.value && parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
-      // TODO(#4938): Ensure default profile is present when the admin resets the app data.
-      profileManagementController.updateNewProfileDetails(
-        profileId = profileId,
-        profileType = ProfileType.SUPERVISOR,
-        newName = profileName,
-        avatarImagePath = null,
-        colorRgb = -10710042,
-        isAdmin = true
-      )
-    } else {
-      // TODO(#482): Ensures that an admin profile is present.
-      // This can be removed once the new onboarding flow is finalized, as it will handle the creation of an admin profile.
+  fun handleOnCreate(profileId: ProfileId, parentScreen: ParentScreen) {
+    if (!enableOnboardingFlowV2.value) {
+      // In the legacy flow, the default admin account is created here.
       profileManagementController.addProfile(
         name = "Admin",
         pin = "",

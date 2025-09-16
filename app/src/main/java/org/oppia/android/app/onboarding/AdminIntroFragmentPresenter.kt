@@ -294,7 +294,6 @@ class AdminIntroFragmentPresenter @Inject constructor(
         PROFILE_CHOOSER_PARAMS_KEY,
         ProfileChooserActivityParams.newBuilder()
           .setParentScreen(ParentScreen.ADMIN_INTRO_SCREEN)
-          .setProfileNickname(profileNickname)
           .build()
       )
     }
