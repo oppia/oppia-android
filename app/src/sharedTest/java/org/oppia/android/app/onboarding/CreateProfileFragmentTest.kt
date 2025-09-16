@@ -200,7 +200,7 @@ class CreateProfileFragmentTest {
         )
     }
   }
-  fun testFragment_supervisorOnboardingFlow_stepCountFourText_isDisplayed() {
+  fun testFragment_supervisorOnboardingFlow_stepCountThreeText_isDisplayed() {
     launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
       onView(withId(R.id.onboarding_steps_count))
         .check(
@@ -209,7 +209,7 @@ class CreateProfileFragmentTest {
               isDisplayed(),
               withText(
                 context.getString(
-                  R.string.onboarding_step_count_four
+                  R.string.onboarding_step_count_three
                 )
               )
             )

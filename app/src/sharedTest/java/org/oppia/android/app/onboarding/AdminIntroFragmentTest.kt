@@ -37,6 +37,7 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
+import org.oppia.android.app.profile.PinSetupActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -200,7 +201,7 @@ class AdminIntroFragmentTest {
   }
 
   @Test
-  fun testIntroFragment_continueButtonClicked_launchesCreateProfileActivity() {
+  fun testIntroFragment_continueButtonClicked_launchesPinSetupActivity() {
     scenario = launch(AdminIntroActivity::class.java)
 
     composeRule.onNodeWithTag(CONTINUE_BUTTON_TEST_TAG)
@@ -209,7 +210,7 @@ class AdminIntroFragmentTest {
 
     testCoroutineDispatchers.runCurrent()
 
-    intended(hasComponent(CreateProfileActivity::class.java.name))
+    intended(hasComponent(PinSetupActivity::class.java.name))
   }
 
   @Test

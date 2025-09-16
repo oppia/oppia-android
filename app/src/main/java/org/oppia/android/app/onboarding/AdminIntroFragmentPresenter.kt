@@ -46,15 +46,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminIntroFragmentBinding
-import org.oppia.android.app.model.CreateProfileActivityParams
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
+
+/** Argument key for [ProfileChooserActivity] intent parameters. */
+const val PROFILE_CHOOSER_PARAMS_KEY = "ProfileChooserActivity.params"
 
 /** Test tag for the otter image. */
 const val OTTER_TEST_TAG = "TEST_TAG.otter"
@@ -263,7 +267,7 @@ class AdminIntroFragmentPresenter @Inject constructor(
 
       Button(
         onClick = {
-          navigateToCreateProfileNicknameActivity(profileId, profileType)
+          navigateToProfileChooserActivity(profileId, profileType)
         },
         colors = ButtonDefaults.buttonColors(
           backgroundColor = colorResource(
@@ -284,20 +288,23 @@ class AdminIntroFragmentPresenter @Inject constructor(
       }
     }
   }
-  private fun navigateToCreateProfileNicknameActivity(
-    profileId: ProfileId,
-    profileType: ProfileType
-  ) {
-    val intent = CreateProfileActivity.createProfileActivityIntent(activity)
+
+  // TODO(#4938): Refactor to: create profile nickname screen, the next onboarding step.
+  private fun navigateToProfileChooserActivity(profileId: ProfileId, profileType: ProfileType) {
+    val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
     intent.apply {
       decorateWithUserProfileId(profileId)
       putProtoExtra(
-        CREATE_PROFILE_PARAMS_KEY,
-        CreateProfileActivityParams.newBuilder()
+        PROFILE_CHOOSER_PARAMS_KEY,
+        ProfileChooserActivityParams.newBuilder()
           .setProfileType(profileType)
           .build()
       )
     }
     fragment.startActivity(intent)
+    // Finish this activity as well as all activities immediately below it in the current
+    // task so that the user cannot navigate back to the onboarding flow by pressing the
+    // back button once onboarding is complete.
+    fragment.activity?.finishAffinity()
   }
 }

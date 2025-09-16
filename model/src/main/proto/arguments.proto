@@ -939,6 +939,20 @@ message OnboardingFragmentStateBundle {
   OppiaLanguage selected_language = 1;
 }
 
+// TODO(#4938): Remove once admin profile onboarding is implemented.
+// Params required when creating a new ProfileChooserActivity.
+message ProfileChooserActivityParams {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+}
+
+// TODO(#4938): Remove once admin profile onboarding is implemented.
+// Arguments required when creating a new ProfileChooserFragment.
+message ProfileChooserFragmentArguments {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+}
+
 // The bundle of properties that are saved upon configuration changes for the StatePlayerRecyclerViewAssembler.
 message StatePlayerRecyclerViewAssemblerState {
   // Indicates whether the previous responses header is expanded.
