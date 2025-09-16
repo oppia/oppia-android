@@ -4,14 +4,9 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
 import org.oppia.android.app.ui.R
-
-/** Test tag for the confirm reset app data dialog. */
-const val DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG = "TEST_TAG.admin_reset_app_data"
 
 /** Composable that represents the admin's reset app data confirmation dialog. */
 @Composable
@@ -53,7 +48,6 @@ fun DataResetConfirmationDialog(
           )
         )
       }
-    },
-    modifier = Modifier.testTag(DATA_RESET_CONFIRMATION_DIALOG_TEST_TAG)
+    }
   )
 }

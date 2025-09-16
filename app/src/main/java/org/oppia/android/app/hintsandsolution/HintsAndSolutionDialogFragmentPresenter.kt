@@ -3,6 +3,7 @@ package org.oppia.android.app.hintsandsolution
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.HintSummaryBinding
 import org.oppia.android.app.databinding.databinding.HintsAndSolutionFragmentBinding
@@ -28,6 +29,7 @@ const val TAG_REVEAL_SOLUTION_DIALOG = "REVEAL_SOLUTION_DIALOG"
 /** Presenter for [HintsAndSolutionDialogFragment], sets up bindings from ViewModel. */
 @FragmentScope
 class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
+  private val activity: AppCompatActivity,
   private val fragment: Fragment,
   private val htmlParserFactory: HtmlParser.Factory,
   @DefaultResourceBucketName private val resourceBucketName: String,
@@ -85,9 +87,13 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     this.profileId = profileId
     this.explorationId = explorationId
 
+    // Stroke width for the solution box border.
+    val solutionBoxStrokeWidth =
+      activity.resources.getDimensionPixelSize(R.dimen.state_solution_box_stroke_width)
+
     // Check if hints are available for this state.
     hintsViewModel = hintsAndSolutionViewModelFactory
-      .create(state, helpIndex, writtenTranslationContext, explorationId)
+      .create(state, helpIndex, writtenTranslationContext, explorationId, solutionBoxStrokeWidth)
 
     val binding =
       HintsAndSolutionFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
@@ -185,15 +191,17 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.expandableHintHeader.setOnClickListener {
       if (hintViewModel.isHintRevealed.get()) {
         expandOrCollapseItem(position)
-        if (position in expandedItemIndexes)
-        (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
+        if (position in expandedItemIndexes) {
+          (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
+        }
       }
     }
     binding.expandHintListIcon.setOnClickListener {
       if (hintViewModel.isHintRevealed.get()) {
         expandOrCollapseItem(position)
-        if (position in expandedItemIndexes)
-        (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
+        if (position in expandedItemIndexes) {
+          (fragment.requireActivity() as? ViewHintListener)?.viewHint(hintIndex = position)
+        }
       }
     }
 
@@ -267,15 +275,17 @@ class HintsAndSolutionDialogFragmentPresenter @Inject constructor(
     binding.expandableSolutionHeader.setOnClickListener {
       if (coreViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
-        if (position in expandedItemIndexes)
-        (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
+        if (position in expandedItemIndexes) {
+          (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
+        }
       }
     }
     binding.expandSolutionListIcon.setOnClickListener {
       if (coreViewModel.isSolutionRevealed.get()) {
         expandOrCollapseItem(position)
-        if (position in expandedItemIndexes)
-        (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
+        if (position in expandedItemIndexes) {
+          (fragment.requireActivity() as? ViewSolutionInterface)?.viewSolution()
+        }
       }
     }
 

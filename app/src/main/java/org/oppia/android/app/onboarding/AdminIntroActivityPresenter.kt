@@ -23,7 +23,7 @@ class AdminIntroActivityPresenter @Inject constructor(
 ) {
 
   /** Creates the view for [AdminIntroActivity]. */
-  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType) {
+  fun handleOnCreate(profileId: ProfileId, profileType: ProfileType, profileNickname: String) {
     activity.setContentView(R.layout.admin_intro_activity)
 
     if (getAdminIntroFragment() == null) {
@@ -31,7 +31,10 @@ class AdminIntroActivityPresenter @Inject constructor(
 
       val args = Bundle().apply {
         val fragmentArgs =
-          AdminIntroFragmentArguments.newBuilder().setProfileType(profileType).build()
+          AdminIntroFragmentArguments.newBuilder()
+            .setProfileType(profileType)
+            .setProfileNickname(profileNickname)
+            .build()
         putProto(ADMIN_INTRO_FRAGMENT_ARGS, fragmentArgs)
         decorateWithUserProfileId(profileId)
       }

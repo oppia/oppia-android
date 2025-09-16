@@ -43,7 +43,7 @@ class NetworkConfigTestModule {
 
       // Reinstall all activities that were previously registered (since installPackage above
       // overrides them).
-      existingPackageInfo.activities.forEach(packageManager::addOrUpdateActivity)
+      existingPackageInfo.activities?.forEach(packageManager::addOrUpdateActivity)
     }
   }
 

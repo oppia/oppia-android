@@ -11,7 +11,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.SplashActivityBinding
 import org.oppia.android.app.home.HomeActivity
-import org.oppia.android.app.model.AdminIntroActivityParams
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.AppStartupState.BuildFlavorNoticeMode
 import org.oppia.android.app.model.AppStartupState.StartupMode
@@ -30,10 +29,8 @@ import org.oppia.android.app.notice.ForcedAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.GeneralAvailabilityUpgradeNoticeDialogFragment
 import org.oppia.android.app.notice.OptionalAppDeprecationNoticeDialogFragment
 import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
-import org.oppia.android.app.onboarding.ADMIN_INTRO_PARAMS_KEY
 import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.IntroActivity
-import org.oppia.android.app.onboarding.IntroActivity.Companion.PARAMS_KEY
 import org.oppia.android.app.onboarding.OnboardingActivity
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
@@ -462,13 +459,13 @@ class SplashActivityPresenter @Inject constructor(
       when {
         onboardingStarted && !onboardingCompleted -> when (profileType) {
           ProfileType.SOLE_LEARNER -> resumeLearnerOnboarding(profile.id, profile.name)
-          ProfileType.SUPERVISOR -> resumeSupervisorOnboarding(profile.id)
+          ProfileType.SUPERVISOR -> resumeSupervisorOnboarding(profile.id, profile.name)
           else -> {}
         }
 
         onboardingStarted && onboardingCompleted -> when (profileType) {
           ProfileType.SOLE_LEARNER -> logInToProfile(profile.id)
-          ProfileType.SUPERVISOR -> launchProfileChooserScreen()
+          ProfileType.SUPERVISOR -> launchProfileChooserScreen(profile.id)
           else -> {}
         }
       }
@@ -479,31 +476,34 @@ class SplashActivityPresenter @Inject constructor(
         .setProfileNickname(profileName)
         .build()
 
-      val intent = IntroActivity.createIntroActivity(activity).apply {
-        putProtoExtra(PARAMS_KEY, introActivityParams)
-        decorateWithUserProfileId(profileId)
-      }
+      val intent = IntroActivity.createIntroActivity(activity, introActivityParams, profileId)
 
       activity.startActivity(intent)
       activity.finish()
     }
 
-    private fun resumeSupervisorOnboarding(profileId: ProfileId) {
-      val introActivityParams = AdminIntroActivityParams.newBuilder()
-        .setProfileType(ProfileType.SUPERVISOR)
+    private fun resumeSupervisorOnboarding(profileId: ProfileId, profileName: String) {
+      val intent = AdminIntroActivity.createAdminIntroActivityIntent(
+        activity,
+        profileId,
+        ProfileType.SUPERVISOR,
+        profileName
+      )
+
+      activity.startActivity(intent)
+      activity.finish()
+    }
+
+    private fun launchProfileChooserScreen(profileId: ProfileId) {
+      val intentParams = ProfileChooserActivityParams.newBuilder()
+        .setParentScreen(ProfileChooserActivityParams.ParentScreen.SPLASH_SCREEN)
         .build()
-      // TODO update onboarding status when admin reaches the profile chooser screen
-      val intent = AdminIntroActivity.createAdminIntroActivityIntent(activity).apply {
-        putProtoExtra(ADMIN_INTRO_PARAMS_KEY, introActivityParams)
+
+      val intent = ProfileChooserActivity.createProfileChooserActivity(activity).apply {
+        putProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, intentParams)
         decorateWithUserProfileId(profileId)
       }
 
-      activity.startActivity(intent)
-      activity.finish()
-    }
-
-    private fun launchProfileChooserScreen() {
-      val intent = ProfileChooserActivity.createProfileChooserActivity(activity)
       activity.startActivity(intent)
       activity.finish()
     }

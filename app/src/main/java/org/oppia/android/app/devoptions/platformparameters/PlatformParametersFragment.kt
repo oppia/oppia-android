@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.oppia.android.app.devoptions.AppRestartListener
+import org.oppia.android.app.devoptions.SavePendingChangesDialogListener
 import org.oppia.android.app.fragment.FragmentComponentImpl
 import org.oppia.android.app.fragment.InjectableFragment
 import org.oppia.android.app.model.OverriddenPlatformParameter
@@ -16,7 +18,10 @@ import org.oppia.android.util.extensions.putProto
 import javax.inject.Inject
 
 /** Fragment to provide functionality to view and modify platform parameters of the app. */
-class PlatformParametersFragment : InjectableFragment() {
+class PlatformParametersFragment :
+  InjectableFragment(),
+  AppRestartListener,
+  SavePendingChangesDialogListener {
   @Inject
   lateinit var platformParametersFragmentPresenter: PlatformParametersFragmentPresenter
 
@@ -39,35 +44,70 @@ class PlatformParametersFragment : InjectableFragment() {
     container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View {
-    var platformParameterStates:
-      MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
+    val platformParameterStates:
+      MutableMap<PlatformParameterId, PlatformParameterValue?> = mutableMapOf()
+    val resetParamList: MutableMap<PlatformParameterId, PlatformParameterValue> = mutableMapOf()
     if (savedInstanceState != null) {
       val args = savedInstanceState.getProto(
         PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY,
         PlatformParametersFragmentStateBundle.getDefaultInstance()
       )
-      platformParameterStates = args?.platformParameterStatesList
-        ?.associate { it.id to it.overriddenValue }
-        ?.toMutableMap() ?: mutableMapOf()
+      args?.platformParameterStatesList?.forEach {
+        platformParameterStates[it.id] = it.overriddenValue
+      }
+      args?.resetPlatformParametersList?.forEach {
+        resetParamList[it.id] = it.overriddenValue
+      }
     }
 
     return platformParametersFragmentPresenter
-      .handleCreateView(inflater, container, platformParameterStates)
+      .handleCreateView(
+        inflater,
+        container,
+        platformParameterStates,
+        resetParamList
+      )
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    val platformParameterStates = platformParametersFragmentPresenter.platformParameterStates.map {
-      OverriddenPlatformParameter.newBuilder()
-        .setId(it.key)
-        .setOverriddenValue(it.value)
-        .build()
-    }
+    val validParameterOverrides =
+      platformParametersFragmentPresenter.getPlatformParameterStates()
+        .mapNotNull { (key, value) ->
+          value?.let {
+            OverriddenPlatformParameter.newBuilder()
+              .setId(key)
+              .setOverriddenValue(it)
+              .build()
+          }
+        }
+
+    val resetParamList =
+      platformParametersFragmentPresenter.getResetParameters().mapNotNull { (id, value) ->
+        OverriddenPlatformParameter.newBuilder()
+          .setId(id)
+          .setOverriddenValue(value)
+          .build()
+      }
+
     val proto = PlatformParametersFragmentStateBundle.newBuilder()
-      .addAllPlatformParameterStates(platformParameterStates)
+      .addAllPlatformParameterStates(validParameterOverrides)
+      .addAllResetPlatformParameters(resetParamList)
       .build()
     outState.putProto(
       PLATFORM_PARAMETERS_FRAGMENT_SAVED_STATE_KEY, proto
     )
+  }
+
+  override fun restartApp() {
+    platformParametersFragmentPresenter.appRestart()
+  }
+
+  override fun savePendingChanges() {
+    platformParametersFragmentPresenter.savePendingChanges()
+  }
+
+  override fun discardPendingChanges() {
+    platformParametersFragmentPresenter.discardPendingChanges()
   }
 }

@@ -149,6 +149,7 @@ class ProfileChooserFragmentTest {
   lateinit var appLanguageLocaleHandler: AppLanguageLocaleHandler
 
   private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+  private val testProfileId1 = ProfileId.newBuilder().setInternalId(1).build()
 
   @Before
   fun setUp() {
@@ -395,7 +396,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensIntroActivity() {
+  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = true)
@@ -408,25 +409,7 @@ class ProfileChooserFragmentTest {
           position = 1
         )
       ).perform(click())
-      intended(hasComponent(IntroActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testMigrateProfiles_onboardingV2_clickAdminWithoutPin_checkOpensIntroActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfileWithoutPin()
-
-    launch(ProfileChooserActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          recyclerViewId = R.id.profiles_list,
-          position = 0
-        )
-      ).perform(click())
-      intended(hasComponent(IntroActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -443,6 +426,7 @@ class ProfileChooserFragmentTest {
       colorRgb = -10710042,
       isAdmin = false
     )
+    profileTestHelper.markProfileOnboardingStarted(testProfileId1)
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
@@ -639,6 +623,7 @@ class ProfileChooserFragmentTest {
   @Test
   fun testProfileChooserFragment_clickProfile_opensHomeActivity() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfileWithoutPin()
     launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
@@ -944,7 +929,6 @@ class ProfileChooserFragmentTest {
           stringToMatch = "Admin",
           recyclerViewId = R.id.profiles_list_landscape
         )
-        scrollToPosition(recyclerViewId = R.id.profiles_list_landscape, position = 1)
         verifyTextOnProfileListItemAtPosition(
           itemPosition = 1,
           targetView = R.id.profile_name_text,
@@ -1242,7 +1226,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_addManyProfiles_checkNoAddProfile() {
+  fun testFragment_enableOnboardingV2_addManyProfiles_checkAddProfileButtonIsNotVisible() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1311,6 +1295,73 @@ class ProfileChooserFragmentTest {
       )
       onView(withId(R.id.add_profile_button)).check(matches(not(isDisplayed())))
       onView(withId(R.id.add_profile_prompt)).check(matches(not(isDisplayed())))
+    }
+  }
+
+  @Test
+  fun testFragment_enableOnboardingV2_addLessThan10Profiles_checkAddProfileButtonIsVisible() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+    profileTestHelper.addMoreProfiles(8)
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
+      scrollToPosition(position = 1)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 1,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "A"
+      )
+      scrollToPosition(position = 2)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 2,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "B"
+      )
+      scrollToPosition(position = 3)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 3,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "C"
+      )
+      scrollToPosition(position = 4)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 4,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "D"
+      )
+      scrollToPosition(position = 5)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 5,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "E"
+      )
+      scrollToPosition(position = 6)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 6,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "F"
+      )
+      scrollToPosition(position = 7)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 7,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "G"
+      )
+      scrollToPosition(position = 8)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 8,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "H"
+      )
+      onView(withId(R.id.add_profile_button)).check(matches(isDisplayed()))
+      onView(withId(R.id.add_profile_prompt)).check(matches(isDisplayed()))
     }
   }
 
@@ -1386,7 +1437,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_clickProfileWithPin_checkOpensProfileLoginActivity() {
+  fun testFragment_enableOnboardingV2_clickAdminProfileWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1400,6 +1451,36 @@ class ProfileChooserFragmentTest {
         )
       ).perform(click())
       intended(hasComponent(ProfileLoginActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_clickLearnerWithoutPin_alreadyOnboarded_checkOpensHomeActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+    profileManagementController.addProfile(
+      name = "Learner",
+      pin = "",
+      avatarImagePath = null,
+      allowDownloadAccess = true,
+      colorRgb = -10710042,
+      isAdmin = false
+    )
+    profileTestHelper.markProfileOnboardingEnded(testProfileId1)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        atPosition(
+          recyclerViewId = R.id.profiles_list,
+          position = 1
+        )
+      ).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(HomeActivity::class.java.name))
     }
   }
 
@@ -1456,6 +1537,7 @@ class ProfileChooserFragmentTest {
         position
       )
     )
+    testCoroutineDispatchers.runCurrent()
   }
 
   // TODO(#59): Figure out a way to reuse modules instead of needing to re-declare them.
@@ -1551,9 +1633,6 @@ class ProfileChooserFragmentTest {
   }
 
   private companion object {
-    private val BRAZIL_PORTUGUESE_LOCALE = Locale("pt", "BR")
     private val EGYPT_ARABIC_LOCALE = Locale("ar", "EG")
-    private val NIGERIA_NAIJA_LOCALE = Locale("pcm", "NG")
-    private val CANADA_FRENCH_LOCALE = Locale("fr", "CA")
   }
 }

@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */
 class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
-  @Inject
-  lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
+  @Inject lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
     fun createProfileChooserActivity(context: Context): Intent {
@@ -30,14 +29,14 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
-    // TODO(#4938): Remove once admin profile onboarding is implemented.
-    val profileType = intent.getProtoExtra(
+
+    val parentScreen = intent.getProtoExtra(
       PROFILE_CHOOSER_PARAMS_KEY,
       ProfileChooserActivityParams.getDefaultInstance()
-    ).profileType
+    ).parentScreen
 
     val profileId = intent.extractCurrentUserProfileId()
 
-    profileChooserActivityPresenter.handleOnCreate(profileId, profileType)
+    profileChooserActivityPresenter.handleOnCreate(profileId, parentScreen)
   }
 }

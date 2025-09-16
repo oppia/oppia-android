@@ -290,22 +290,22 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_supervisorNavigationCardClicked_launchesAdminIntroScreen() {
+  fun testFragment_supervisorNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(AdminIntroActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
   @Test
-  fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
+  fun testFragment_orientationChange_supervisorCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(AdminIntroActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
