@@ -44,6 +44,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
   // Note that the 'by lazy' here guarantees thread-safe and singleton initialization.
   private val initializationDeferred by lazy { loadParametersInternalAsync() }
   private val parametersAreLoadedFlow by lazy { MutableStateFlow(false) }
+  private val downloadRemoteParametersProvider by lazy { downloadRemoteParametersInternal() }
   private var ongoingDownloadTask: Deferred<Unit>? = null
 
   init {
@@ -73,18 +74,7 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
     }
   }
 
-  override fun downloadRemoteParameters(): DataProvider<Unit> {
-    oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
-    return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
-      ongoingDownloadTask?.cancel()
-      ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
-        // TODO(#5950): Replace with actual logic to force-download remote parameters.
-      }
-      ongoingDownloadTask?.await()
-      oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
-      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
-    }
-  }
+  override fun downloadRemoteParameters() = downloadRemoteParametersProvider
 
   /** Cancels any ongoing remote parameter download. */
   fun cancelRemoteParameterDownload(): Boolean {
@@ -255,6 +245,20 @@ class PlatformParameterControllerDebugImpl @Inject constructor(
 
       // Let observers know that parameters have been initialized.
       parametersAreLoadedFlow.value = true
+    }
+  }
+
+  private fun downloadRemoteParametersInternal(): DataProvider<Unit> {
+    return dataProviders.createInMemoryDataProviderAsync(DOWNLOAD_REMOTE_PARAMETERS_PROVIDER_ID) {
+      if (ongoingDownloadTask == null) {
+        oppiaLogger.d("PlatformParameterController", "Calling Force Download of remote parameters")
+        ongoingDownloadTask = CoroutineScope(backgroundCoroutineDispatcher).async {
+          // TODO(#5950): Replace with actual logic to force-download remote parameters.
+          oppiaLogger.d("PlatformParameterController", "Download finished successfully.")
+        }
+      }
+      ongoingDownloadTask?.await()
+      return@createInMemoryDataProviderAsync AsyncResult.Success(Unit)
     }
   }
 

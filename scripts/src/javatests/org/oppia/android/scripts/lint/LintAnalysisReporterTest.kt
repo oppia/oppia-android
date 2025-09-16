@@ -1278,6 +1278,10 @@ class LintAnalysisReporterTest {
       AndroidLintExemption.newBuilder().apply {
         exemptedFilePath = "app/src/main/res/values-es/strings.xml"
         addLintIssueId(LintIssueId.REGISTERED)
+      }.build(),
+      AndroidLintExemption.newBuilder().apply {
+        exemptedFilePath = "app/src/main/res/values/strings.xml"
+        addLintIssueId(LintIssueId.REGISTERED)
       }.build()
     )
 
