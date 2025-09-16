@@ -19,6 +19,7 @@ import org.oppia.android.app.model.DeprecationNoticeType
 import org.oppia.android.app.model.DeprecationResponse
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileOnboardingMode
 import org.oppia.android.app.model.ProfileType
@@ -32,6 +33,7 @@ import org.oppia.android.app.notice.OsDeprecationNoticeDialogFragment
 import org.oppia.android.app.onboarding.AdminIntroActivity
 import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.onboarding.OnboardingActivity
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.ui.R

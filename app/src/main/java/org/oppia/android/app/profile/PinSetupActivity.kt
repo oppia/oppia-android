@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ScreenName.PIN_SETUP_ACTIVITY
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
+import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extractCurrentUserProfileId
 import javax.inject.Inject
 
@@ -26,9 +28,10 @@ class PinSetupActivity : InjectableAutoLocalizedAppCompatActivity() {
 
   companion object {
     /** Returns a new [Intent] to open a [PinSetupActivity] with the specified params. */
-    fun createPinSetupActivityIntent(context: Context): Intent {
+    fun createPinSetupActivityIntent(context: Context, profileId: ProfileId): Intent {
       return Intent(context, PinSetupActivity::class.java).apply {
         decorateWithScreenName(PIN_SETUP_ACTIVITY)
+        decorateWithUserProfileId(profileId)
       }
     }
   }

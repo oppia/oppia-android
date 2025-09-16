@@ -20,7 +20,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
-import org.oppia.android.app.profile.PinSetupActivity
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.oppialogger.OppiaLogger
@@ -165,20 +164,26 @@ class CreateProfileFragmentPresenter @Inject constructor(
       when (result) {
         is AsyncResult.Success -> {
           createProfileViewModel.hasErrorMessage.set(false)
-          val intent = if (profileType == ProfileType.SOLE_LEARNER) {
-            val params = IntroActivityParams.newBuilder()
-              .setProfileNickname(profileName)
-              .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
-              .build()
 
-            IntroActivity.createIntroActivity(activity).apply {
-              putProtoExtra(IntroActivity.PARAMS_KEY, params)
-              decorateWithUserProfileId(profileId)
-            }
+          val params = IntroActivityParams.newBuilder()
+            .setProfileNickname(profileName)
+            .setParentScreen(IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN)
+            .build()
+
+          val learnerIntroIntent =
+            IntroActivity.createIntroActivity(activity, params, profileId)
+
+          val adminIntroIntent = AdminIntroActivity.createAdminIntroActivityIntent(
+            activity,
+            profileId,
+            profileType,
+            profileName
+          )
+
+          val intent = if (profileType == ProfileType.SUPERVISOR) {
+            adminIntroIntent
           } else {
-            PinSetupActivity.createPinSetupActivityIntent(activity).also {
-              it.decorateWithUserProfileId(profileId)
-            }
+            learnerIntroIntent
           }
 
           fragment.startActivity(intent)

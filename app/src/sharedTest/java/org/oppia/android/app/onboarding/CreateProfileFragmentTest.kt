@@ -59,7 +59,6 @@ import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.profile.PinSetupActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -206,6 +205,7 @@ class CreateProfileFragmentTest {
         )
     }
   }
+
   fun testFragment_supervisorOnboardingFlow_stepCountThreeText_isDisplayed() {
     launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
       onView(withId(R.id.onboarding_steps_count))
@@ -270,29 +270,6 @@ class CreateProfileFragmentTest {
       intended(
         allOf(
           hasComponent(AdminIntroActivity::class.java.name),
-          hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
-        )
-      )
-    }
-  }
-
-  @Test
-  fun testSupervisorOnboarding_continueClicked_filledNickname_launchesPinCreationScreen() {
-    launchNewLearnerProfileActivity(ProfileType.SUPERVISOR).use {
-      onView(withId(R.id.create_profile_nickname_edittext))
-        .perform(
-          editTextInputAction.appendText("John"),
-          closeSoftKeyboard()
-        )
-      testCoroutineDispatchers.runCurrent()
-
-      onView(withId(R.id.onboarding_navigation_continue))
-        .perform(click())
-      testCoroutineDispatchers.runCurrent()
-
-      intended(
-        allOf(
-          hasComponent(PinSetupActivity::class.java.name),
           hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR)
         )
       )

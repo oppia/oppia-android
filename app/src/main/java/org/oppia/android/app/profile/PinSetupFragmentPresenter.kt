@@ -45,12 +45,15 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.PinSetupFragmentBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
 import javax.inject.Inject
 
@@ -221,7 +224,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           onClick = { activity.finish() }
         ) {
           Text(
-            text = stringResource(R.string.onboarding_navigation_back),
+            text = resourceHandler.getStringInLocale(R.string.onboarding_navigation_back),
             color = colorResource(R.color.component_color_onboarding_shared_green_color),
             fontWeight = FontWeight.Bold
           )
@@ -313,6 +316,12 @@ class PinSetupFragmentPresenter @Inject constructor(
       if (it is AsyncResult.Success) {
         val intent = ProfileChooserActivity.createProfileChooserActivity(activity).also { intent ->
           intent.decorateWithUserProfileId(profileId)
+          intent.putProtoExtra(
+            PROFILE_CHOOSER_PARAMS_KEY,
+            ProfileChooserActivityParams.newBuilder()
+              .setParentScreen(ProfileChooserActivityParams.ParentScreen.CREATE_PIN_SCREEN)
+              .build()
+          )
         }
         fragment.startActivity(intent)
         // We don't want the user to be able to revisit the onboarding screens after this last step.

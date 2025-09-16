@@ -97,7 +97,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       R.color.component_color_shared_profile_status_bar_color, activity, false
     )
 
-    if (parentScreen == ParentScreen.ADMIN_INTRO_SCREEN) {
+    if (parentScreen == ParentScreen.CREATE_PIN_SCREEN) {
       // The admin onboarding ends here in order to prevent the admin from seeing the onboarding
       // flow again if they exit the app at this point.
       profileManagementController.markProfileOnboardingEnded(adminProfileId)
