@@ -406,7 +406,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withOverrideAndNoRemote_returnsDefaultNonOverriddenValue() {
+  fun testLoadEphemeralFeatureFlags_withOverrideAndNoRemote_returnsDefaultForNonOverriddenValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
       addTestOverriddenFeatureFlagToDatabase(testComponent, true)
@@ -490,7 +490,7 @@ class PlatformParameterControllerDebugImplTest {
   }
 
   @Test
-  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemote_returnsRemoteNonOverriddenValue() {
+  fun testLoadEphemeralFeatureFlags_withLocalOverrideAndRemote_returnRemoteForNonOverriddenValue() {
     TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
     executeInPreviousAppInstance { testComponent ->
       addTestRemoteFeatureFlagToDatabase(testComponent, true)
