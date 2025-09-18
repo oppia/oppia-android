@@ -20,9 +20,12 @@ This wiki page explains how to install Oppia Android on your local machine. If y
 ## Prepare developer environment
 
 1. Install Android Studio.
-   - For **Mac and Linux**, download and install Android Studio **Giraffe** from [this location](https://developer.android.com/studio/archive).
+   #### Mac and Linux
+   Download and install Android Studio **Giraffe** from [this location](https://developer.android.com/studio/archive).
    **Note**: You may try newer or older versions of Android Studio, but we can't guarantee good support as we have not tested them extensively yet.
-   - For **Windows**, Install Android Studio within WSL (recommended for Bazel plugin support):
+
+   #### Windows
+   Install Android Studio within WSL (recommended for Bazel plugin support):
      - Download Android Studio **Giraffee** on WSL:
        ```
        wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2022.3.1.22/android-studio-2022.3.1.22-linux.tar.gz
