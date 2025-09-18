@@ -222,12 +222,9 @@ Due to the issues mentioned above, we recommend dual-booting your PC with Linux 
 
 At a high-level, the steps to make Bazel work on Windows are:
 1. Install the Ubuntu subsystem
-2. Install prerequisite debian packages
-3. Install the Android SDK
-4. Install Bazel
-5. Set up the environment to be able to build Oppia Android
-6. Verify that the build is working
-7. Run Bazel commands as needed during development
+2. Install Bazel
+3. Set Bazel sym link and ANDROID_HOME path permanently in your terminal
+4. Verify that the build is working
 
 **Step 1: Install Ubuntu subsystem**
 
@@ -241,87 +238,7 @@ From within the Ubuntu terminal, start by ensuring all packages are up-to-date:
 sudo apt update && sudo apt upgrade
 ```
 
-**Step 2: Install JDK 17+**
-
-Setting up Bazel for Oppia Android requires JDK>=17 for [Android Package Manager](#3-installing-the-android-sdk).
-
-For Ubuntu systems, this can be set up using:
-
-```shell
-sudo apt install openjdk-17-jdk
-```
-
-For Fedora 25+, this can be set up using:
-
-```
-sudo dnf install java-17-openjdk
-```
-
-**Step 3: Install GCC**
-
-Install gcc using the following command:
-
-```shell
-sudo apt install gcc
-```
-
-**Step 4: Install the Android SDK**
-
-We need to be able to run Linux-compatible Android utilities which requires installing a Linux version of the Android SDK. Since we can't install Android Studio in the subsystem, we need to do this via CLI commands. The steps below are extracted from [this article](https://proandroiddev.com/how-to-setup-android-sdk-without-android-studio-6d60d0f2812a).
-
-First, prepare the environment for the SDK by creating the default directory to hold the SDK (from within Ubuntu terminal):
-
-```sh
-mkdir -p $HOME/Android/Sdk
-```
-
-Second, navigate to https://developer.android.com/studio#command-tools in a web browser (in Windows) and select to download the latest **Linux** command tools (even though you're using Windows, the Linux commandline tools are needed--the Windows version will not work with these instructions). Once downloaded, copy the zip file to the new SDK location (note that the ``/mnt/c/...`` path is based on ``C:\Users\<Name>\Downloads`` being the default download location--this may not be the case on your system) with your Windows username filled in for ``<Name>``:
-
-```sh
-cp /mnt/c/Users/<Name>/Downloads/commandlinetools*.zip $HOME/Android/Sdk
-```
-
-After that, change to the directory, unzip the archive, and remove it:
-
-```sh
-cd $HOME/Android/Sdk
-unzip commandlinetools*.zip
-rm commandlinetools*.zip
-```
-
-From there, the command line tools need to be moved in order to indicate to the tools themselves that they're relative to the Android SDK root directory:
-
-```sh
-cd cmdline-tools/
-mkdir tools
-mv -i * tools
-cd ..
-```
-
-(The above may give a warning for the ``mv`` command since it will try moving ``tools`` into ``tools``--this can be ignored).
-
-At this point, we can define the ``ANDROID_HOME`` variable to point to the new SDK root, and also update the ``PATH`` to point to cmdnline-tools so that we can actually install the SDK. To do this, run the following commands to append new lines to ``~/.bashrc``:
-
-```sh
-echo "export ANDROID_HOME=\$HOME/Android/Sdk" >> ~/.bashrc
-echo "export PATH=\$ANDROID_HOME/cmdline-tools/tools/bin/:\$PATH" >> ~/.bashrc
-source ~/.bashrc
-```
-
-(The last line reloads your Bash configuration file so that the variable adjustments above become live in your local terminal).
-
-The ``sdkmanager`` command can now be used to install the necessary packages. Run each of the following commands in succession (you may need to accept licenses for the SDK packages in the same way you would when using Android Studio):
-
-```sh
-sdkmanager
-sdkmanager --install "platform-tools"
-sdkmanager --install "platforms;android-33"
-sdkmanager --install "build-tools;32.0.0"
-```
-
-When the commands above are finished running, the Android SDK should now be installed in your subsystem & be accessible to Bazel.
-
-**Step 5: Install Bazel**
+**Step 2: Install Bazel**
 
 Use the steps outlined for Ubuntu Linux [above](#bazel-set-up-for-linux).
 
@@ -333,7 +250,20 @@ chmod +x bazelisk-linux-amd64
 sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
 ```
 
-**Step 6: Verify that the build is working**
+**Step 3: Set Bazel and ANDROID_HOME paths permanently in your terminal**
+
+Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:
+
+```
+export ANDROID_HOME=$HOME/Android/Sdk/
+```
+
+Create a symbolic link to the bazel-6.5.0:
+```
+sudo ln -s /usr/bin/bazel-6.5.0 /usr/local/bin/bazel
+```
+
+**Step 4: Verify that the build is working**
 
 Run the following command in your terminal:
 
@@ -342,7 +272,6 @@ bazel --version
 ```
 
 **Known limitations with using an Ubuntu subsystem on Windows:**
-- Android Studio must run on native Windows: this is a current limitation. However, https://github.com/microsoft/wslg is a WIP project that may provide an alternative option which allows full development to take place within the subsystem.
 - The subsystem is very slow: unfortunately, this is just a limitation with how the subsystem works on Windows. Until we fix the actual build pipeline to work natively, this is likely going to be a limitation that we have to live with. Note that installing an Ubuntu VM or dual-booting Ubuntu may lead to less issues & better performance than using a subsystem, but this hasn't yet been investigated or documented yet (see [#3437](https://github.com/oppia/oppia-android/issues/3437) for the WIP issue).
 - ADB is limited within the subsystem and thus must be used from within a Windows CLI like Command Prompt, Powershell, or Git Bash (if it's installed) in order to deploy the Bazel-built test or APK binary to an emulator or real device
 - Emulators likely cannot be launched from the subsystem (headless might be possible, but this hasn't been tested)
