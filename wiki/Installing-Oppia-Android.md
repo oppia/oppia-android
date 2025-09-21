@@ -212,9 +212,14 @@ bazel --version
 ### Bazel Set up for Windows
 This page outlines one way to allow Bazel to be used in CLI form on Windows. Please note that **this support is currently experimental**. We suggest that you post a discussion at [github-discussions](https://github.com/oppia/oppia-android/discussions/categories/q-a-installation) if you run into any problems.
 
-Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem. Windows currently only supports a terminal experience in this subsystem (though there is a prerelease version of the software with GUI support) which means Android Studio will not be supported. You will need to continue using the Windows version of Android Studio and only use the Linux subsystem for building & running Robolectric or JUnit-based tests.
+Unlike Unix-based systems where Bazel runs natively without issue, the current solution on Windows is to install an Ubuntu-based subsystem.
 
-Due to the issues mentioned above, we recommend dual-booting your PC with Linux for a smoother experience. However, if you prefer to use Windows, please follow the instructions below:
+#### Important notes about WSL setup
+
+- Android Studio can run inside WSL if you follow the steps in [Prepare developer environment](#windows)
+- This is the recommended approach, since it provides better Bazel plugin support.
+- You can fully rely on the Linux subsystem for both building the app and running tests, without needing the Windows version of Android Studio.
+- Performance in WSL may be slower compared to native Linux. Dual-booting may provide a smoother experience but comes with higher setup overhead.
 
 **Main prerequisites**:
 - Windows 10+: These instructions are geared towards users of Windows 10+ (older versions will not be compatible). If you're using an older version of Windows, please follow up with a comment on [this issue](https://github.com/oppia/oppia-android/issues/3371).
@@ -275,6 +280,8 @@ bazel --version
 - The subsystem is very slow: unfortunately, this is just a limitation with how the subsystem works on Windows. Until we fix the actual build pipeline to work natively, this is likely going to be a limitation that we have to live with. Note that installing an Ubuntu VM or dual-booting Ubuntu may lead to less issues & better performance than using a subsystem, but this hasn't yet been investigated or documented yet (see [#3437](https://github.com/oppia/oppia-android/issues/3437) for the WIP issue).
 - ADB is limited within the subsystem and thus must be used from within a Windows CLI like Command Prompt, Powershell, or Git Bash (if it's installed) in order to deploy the Bazel-built test or APK binary to an emulator or real device
 - Emulators likely cannot be launched from the subsystem (headless might be possible, but this hasn't been tested)
+
+Note: The app can still be built using the WSL version of Android Studio and deployed to an emulator. It also supports running tests directly from Android Studio.
 
 ## Install oppia-android
 
