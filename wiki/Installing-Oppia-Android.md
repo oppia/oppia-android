@@ -228,7 +228,7 @@ Unlike Unix-based systems where Bazel runs natively without issue, the current s
 At a high-level, the steps to make Bazel work on Windows are:
 1. Install the Ubuntu subsystem
 2. Install Bazel
-3. Set Bazel sym link and ANDROID_HOME path permanently in your terminal
+3. Set up your environment
 4. Verify that the build is working
 
 **Step 1: Install Ubuntu subsystem**
@@ -255,7 +255,7 @@ chmod +x bazelisk-linux-amd64
 sudo mv bazelisk-linux-amd64 /usr/local/bin/bazel
 ```
 
-**Step 3: Set Bazel and ANDROID_HOME paths permanently in your terminal**
+**Step 3: Set up your environment**
 
 Ensure that your `ANDROID_HOME` environment variable is set to the location of your Android SDK. Assuming the SDK is installed to default locations, you can use the following commands to set the `ANDROID_HOME` variable:
 
@@ -263,7 +263,7 @@ Ensure that your `ANDROID_HOME` environment variable is set to the location of y
 export ANDROID_HOME=$HOME/Android/Sdk/
 ```
 
-Create a symbolic link to the bazel-6.5.0:
+Create a symbolic link to bazel-6.5.0:
 ```
 sudo ln -s /usr/bin/bazel-6.5.0 /usr/local/bin/bazel
 ```
