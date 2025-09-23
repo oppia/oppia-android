@@ -363,7 +363,7 @@ class HtmlParserTest {
       }
       assertThat(htmlResult.toString()).isEqualTo(
         "The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
-          "number is bigger or smaller than another"
+          "number is bigger or smaller than another."
       )
     }
   }
@@ -420,7 +420,35 @@ class HtmlParserTest {
 
       assertThat(htmlResult.toString()).isEqualTo(
         "The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
-          "number is bigger or smaller than another"
+          "number is bigger or smaller than another."
+      )
+    }
+  }
+
+  @Test
+  fun testHtmlContentParsing_doesNotTrimNonNewlines() {
+    val htmlParser = htmlParserFactory.create(
+      resourceBucketName,
+      entityType = "",
+      entityId = "",
+      imageCenterAlign = true,
+      displayLocale = appLanguageLocaleHandler.getDisplayLocale()
+    )
+    runWithLaunchedActivity {
+      val (_, htmlResult) = onActivityWithResult {
+        val textView: TextView = it.findViewById(R.id.test_html_content_text_view)
+        val htmlResult = htmlParser.parseOppiaHtml(
+          "<ul><li>\n\ta). The counting numbers (1, 2, 3, 4, 5 ….)\n\n</li><li>\n\tHow to tell" +
+            " whether one counting number is bigger or smaller than another...\n\n</li></ul>",
+          textView
+        )
+        textView.text = htmlResult
+        return@onActivityWithResult textView to htmlResult
+      }
+
+      assertThat(htmlResult.toString()).isEqualTo(
+        "a). The counting numbers (1, 2, 3, 4, 5 ….)\nHow to tell whether one counting " +
+          "number is bigger or smaller than another..."
       )
     }
   }

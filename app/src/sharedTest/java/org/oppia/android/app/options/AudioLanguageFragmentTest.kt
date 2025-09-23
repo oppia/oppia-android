@@ -10,6 +10,7 @@ import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -514,6 +515,21 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  fun testFragment_fromOnboarding_swahiliIsFilteredOut() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use { scenario ->
+      scenario.onActivity { activity ->
+        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText("Kiswahili"))
+          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+          .check(doesNotExist())
+      }
+    }
+  }
+
+  @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
   fun testFragment_fromOptions_withEnglishLanguage_defaultSelectionIsEnglish() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, OPTIONS_SCREEN).use {
@@ -541,6 +557,21 @@ class AudioLanguageFragmentTest {
         onView(withId(R.id.audio_language_dropdown_list)).check(
           matches(withText(R.string.nigerian_pidgin_localized_language_name))
         )
+      }
+    }
+  }
+
+  @Test
+  fun testFragment_fromOptions_swahiliIsFilteredOut() {
+    launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, OPTIONS_SCREEN).use { scenario ->
+      scenario.onActivity { activity ->
+        onView(withId(R.id.audio_language_dropdown_list)).perform(click())
+
+        testCoroutineDispatchers.runCurrent()
+
+        onView(withText("Kiswahili"))
+          .inRoot(withDecorView(not(`is`(activity.window.decorView))))
+          .check(doesNotExist())
       }
     }
   }

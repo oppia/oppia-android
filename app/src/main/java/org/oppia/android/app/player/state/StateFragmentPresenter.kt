@@ -576,38 +576,48 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData().observe(
+    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+    liveData.observe(
       activity,
-      { gatingResult ->
-        when (gatingResult) {
-          is AsyncResult.Pending -> {
-            oppiaLogger.d("StateFragment", "A gating decision is pending")
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "StateFragment",
-              "Failed to retrieve gating decision",
-              gatingResult.error
-            )
-            (activity as StopStatePlayingSessionWithSavedProgressListener)
-              .deleteCurrentProgressAndStopSession(isCompletion = true)
-          }
-          is AsyncResult.Success -> {
-            if (gatingResult.value) {
-              val dialogFragment =
-                SurveyWelcomeDialogFragment.newInstance(
-                  profileId,
-                  topicId,
-                  explorationId,
-                  SURVEY_QUESTIONS
-                )
-              val transaction = activity.supportFragmentManager.beginTransaction()
-              transaction
-                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                .commitNow()
-            } else {
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
+          when (gatingResult) {
+            null, is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
               (activity as StopStatePlayingSessionWithSavedProgressListener)
                 .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+
+            is AsyncResult.Success -> {
+              oppiaLogger.d("StateFragment", "Successfully retrieved gating decision")
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .commitNow()
+
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
+                liveData.removeObserver(this)
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
             }
           }
         }

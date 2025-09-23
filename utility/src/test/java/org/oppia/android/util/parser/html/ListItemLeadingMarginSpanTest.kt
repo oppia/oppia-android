@@ -5,7 +5,9 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Rect
 import android.text.Spannable
+import android.text.TextPaint
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -297,15 +299,19 @@ class ListItemLeadingMarginSpanTest {
 
       val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
       val leadingText = "1."
-      val expectedMargin = 2 * leadingText.length + spacingBeforeText
 
-      val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
-      assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+      this.onActivity {
+        val expectedMargin =
+          calculateLeadingMargin(it.findViewById(R.id.test_list_content_text_view), leadingText)
 
-      val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
+        val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+        assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
 
-      val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
-      assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
+        val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
+
+        val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
+        assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
+      }
     }
   }
 
@@ -340,14 +346,18 @@ class ListItemLeadingMarginSpanTest {
       assertThat(bulletSpans.size.toLong()).isEqualTo(2)
       val bulletSpan0 = bulletSpans[0] as ListItemLeadingMarginSpan.OlSpan
       val leadingText = "1."
-      val expectedMargin = 2 * leadingText.length + spacingBeforeText
 
-      val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
-      assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+      this.onActivity {
+        val expectedMargin =
+          calculateLeadingMargin(it.findViewById(R.id.test_list_content_text_view), leadingText)
 
-      val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
-      val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
-      assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
+        val bulletSpan0Margin = bulletSpan0.getLeadingMargin(true)
+        assertThat(bulletSpan0Margin).isEqualTo(expectedMargin)
+
+        val bulletSpan1 = bulletSpans[1] as ListItemLeadingMarginSpan.OlSpan
+        val bulletSpan1Margin = bulletSpan1.getLeadingMargin(true)
+        assertThat(bulletSpan1Margin).isEqualTo(expectedMargin)
+      }
     }
   }
 
@@ -1026,6 +1036,19 @@ class ListItemLeadingMarginSpanTest {
       assertThat(shadowCanvas.getDrawnTextEvent(3).y).isWithin(1e-5f).of(422.0f)
       assertThat(shadowCanvas.getDrawnTextEvent(3).text).isEqualTo("2.")
     }
+  }
+
+  private fun calculateLeadingMargin(textView: TextView, leadingText: String): Int {
+    val textPaint = TextPaint(textView.paint)
+    val longestTextWidth = Rect().also {
+      textPaint.getTextBounds(
+        leadingText,
+        /* start= */ 0,
+        /* end= */ leadingText.length,
+        it
+      )
+    }.width()
+    return longestTextWidth + spacingBeforeText + spacingBeforeText
   }
 
   private fun createDisplayLocaleImpl(context: OppiaLocaleContext): DisplayLocaleImpl {
