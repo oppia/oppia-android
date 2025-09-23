@@ -113,22 +113,9 @@ Total Issues: 8
 ```
 
 The script will show:
-- **Pass** status for issues of Warning/Information severity only
-- **Fail** status for any Fatal/Error severity issues
+- **Pass** status for no issues reported or only issues of Information severity
+- **Fail** status for any Fatal/Error/Warning severity issues
 - **Fail** status if redundant exemptions or unused enum mappings are detected
-
-### Redundant Exemptions Section
-
-If redundant exemptions are detected, they are displayed at the top of the report:
-
-```
-Redundant exemptions (no corresponding lint issues found):
-Please remove them from scripts/assets/android_lint_exemptions.textproto
-
-File: app/src/main/java/com/example/MainActivity.kt
-  - DUPLICATE_STRINGS
-  - BACK_BUTTON
-```
 
 ## Grouped by File Path
 
@@ -233,11 +220,11 @@ When the Android Lint Analysis Tool encounters a new lint issue ID that hasn't b
 
 1. **Update the Proto Definition:**
     - Navigate to `scripts/src/java/org/oppia/android/scripts/proto/android_lint.proto`
-    - Add the new issue ID to the `LintIssueId` enum
+    - Add the new issue ID to the [LintIssueId](https://github.com/oppia/oppia-android/blob/fcb87dc79074450f90a658c9dddb186a12ab75f3/scripts/src/java/org/oppia/android/scripts/proto/android_lint.proto#L24) enum
 
 2. **Update the Issue Mapping:**
     - Navigate to `scripts/src/java/org/oppia/android/scripts/lint/LintAnalysisReporter.kt`
-    - Add the new issue ID to the `issueIdMapping` map
+    - Add the new issue ID to the [issueIdMapping](https://github.com/oppia/oppia-android/blob/fcb87dc79074450f90a658c9dddb186a12ab75f3/scripts/src/java/org/oppia/android/scripts/lint/LintAnalysisReporter.kt#L145) map
 
 ## Example:
 
@@ -306,7 +293,7 @@ The script automatically detects and reports **redundant exemptions** in the exe
 
 ## Exemption File Maintenance Prompts
 
-When redundant exemptions are detected, the script logs detailed information about these obsolete entries and prompts the user to remove them from the exemption textproto file. The script will **fail** when redundant exemptions are detected, forcing cleanup of the exemption file.
+When redundant exemptions are detected, the script logs detailed information about these obsolete entries and prompts the user to remove them from the [android_lint_exemptions](https://github.com/oppia/oppia-android/blob/develop/scripts/assets/android_lint_exemptions.textproto) textproto file. The script will **fail** when redundant exemptions are detected, forcing cleanup of the exemption file.
 
 ## Example Redundant Exemption Output
 
@@ -321,6 +308,7 @@ Issue 1 of 2: REDUNDANT_EXEMPTION
   Explanation:
     In app/src/main/java/com/example/MainActivity.kt the DUPLICATE_STRINGS exemption is redundant and can be
     removed since there are no corresponding lint issues.
+    Refer Android Lint Check Wiki for more information: https://github.com/oppia/oppia-android/wiki/Android-Lint-Check#exemption-file-management
 ------------------------------------------------------------
 Issue 2 of 2: REDUNDANT_EXEMPTION
   Severity: Warning
@@ -328,6 +316,7 @@ Issue 2 of 2: REDUNDANT_EXEMPTION
   Explanation:
     In app/src/main/java/com/example/MainActivity.kt the BACK_BUTTON exemption is redundant and can be
     removed since there are no corresponding lint issues.
+    Refer Android Lint Check Wiki for more information: https://github.com/oppia/oppia-android/wiki/Android-Lint-Check#exemption-file-management
 ```
 
 ## Recommended Action
@@ -350,6 +339,7 @@ When unused enum mappings are detected, the script will fail with output like:
 ============================================================
 UNUSED ENUM MAPPINGS DETECTED:
 The following issue IDs are defined in issueIdMapping but no corresponding lint issues were found.
+Refer Android Lint Check Wiki for more information: https://github.com/oppia/oppia-android/wiki/Android-Lint-Check#unused-enum-mappings-detection
 Please remove them from the LintIssueId enum and issueIdMapping:
 
   - KeyboardInaccessibleWidget -> KEYBOARD_INACCESSIBLE_WIDGET

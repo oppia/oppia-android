@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintStream
+import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -93,9 +94,9 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testMain_noArguments_throwsException() {
+  fun testExecuteAndroidLintAnalysis_noArguments_throwsException() {
     val exception = assertThrows<IllegalArgumentException> {
-      main()
+      executeAndroidLintAnalysis()
     }
 
     assertThat(exception).hasMessageThat().contains(
@@ -104,11 +105,11 @@ class AndroidLintRunnerTest {
   }
 
   @Test
-  fun testMain_nonExistentPath_throwsException() {
+  fun testExecuteAndroidLintAnalysis_nonExistentPath_throwsException() {
     val nonExistentPath = File(tempFolder.root, "nonexistent").absolutePath
 
     val exception = assertThrows<IllegalArgumentException> {
-      main(nonExistentPath)
+      executeAndroidLintAnalysis(nonExistentPath)
     }
 
     assertThat(exception).hasMessageThat().contains("Repository root path does not exist")
@@ -164,6 +165,74 @@ class AndroidLintRunnerTest {
     fakeTime += 3661000L
     elapsed = elapsedTimeDisplayer.stop()
     assertThat(elapsed).isEqualTo(3661000L)
+  }
+
+  @Test
+  fun testLintTimeoutWrapper_successfulExecution_returnsZero() {
+    val mockArgs = arrayOf("--version")
+    val wrapper = LintTimeoutWrapper(mockArgs, timeoutMinutes = 5)
+
+    val exitCode = wrapper.runWithTimeout()
+
+    assertThat(exitCode).isEqualTo(0)
+  }
+
+  @Test
+  fun testLintTimeoutWrapper_invalidArguments_returnsNonZero() {
+    val invalidArgs = arrayOf("--invalid-argument-that-does-not-exist")
+    val wrapper = LintTimeoutWrapper(invalidArgs, timeoutMinutes = 5)
+
+    val exitCode = wrapper.runWithTimeout()
+
+    assertThat(exitCode).isNotEqualTo(0)
+  }
+
+  @Test
+  fun testLintTimeoutWrapper_veryShortTimeout_throwsTimeoutException() {
+    val mockArgs = arrayOf(
+      "--help", // This should complete quickly, so using extremely short timeout
+      "--check", "all"
+    )
+    val wrapper = LintTimeoutWrapper(mockArgs, timeoutMinutes = 0) // 0 minutes timeout
+
+    val exception = assertThrows<IllegalStateException> {
+      wrapper.runWithTimeout()
+    }
+
+    assertThat(exception).hasMessageThat().contains("Lint analysis timed out after 0 minutes")
+  }
+
+  @Test
+  fun testLintTimeoutWrapper_helpCommand_returnsHelpExitCode() {
+    val helpArgs = arrayOf("--help")
+    val wrapper = LintTimeoutWrapper(helpArgs, timeoutMinutes = 5)
+
+    val exitCode = wrapper.runWithTimeout()
+
+    assertThat(exitCode).isIn(listOf(0, 4))
+  }
+
+  @Test
+  fun testLintTimeoutWrapper_emptyArguments_returnsInvalidUsageExitCode() {
+    val emptyArgs = emptyArray<String>()
+    val wrapper = LintTimeoutWrapper(emptyArgs, timeoutMinutes = 5)
+
+    val exitCode = wrapper.runWithTimeout()
+
+    assertThat(exitCode).isEqualTo(2) // INVALID_USAGE
+  }
+
+  @Test
+  fun testLintTimeoutWrapper_versionCommand_completesWithinReasonableTime() {
+    val versionArgs = arrayOf("--version")
+    val wrapper = LintTimeoutWrapper(versionArgs, timeoutMinutes = 10)
+
+    val startTime = System.currentTimeMillis()
+    val exitCode = wrapper.runWithTimeout()
+    val elapsedTime = System.currentTimeMillis() - startTime
+
+    assertThat(elapsedTime).isLessThan(TimeUnit.MINUTES.toMillis(1))
+    assertThat(exitCode).isEqualTo(0)
   }
 
   @Test

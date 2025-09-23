@@ -16,10 +16,12 @@ import java.lang.Module
 import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
+import kotlin.system.exitProcess
 import com.android.tools.lint.Main as LintCli
 
 /** The default timeout duration for executing external processes. */
-private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
+private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 15L
 /** Default path to the exemption .pb file. */
 private const val DEFAULT_PROTO_BINARY_PATH = "scripts/assets/android_lint_exemptions.pb"
 
@@ -123,10 +125,23 @@ private fun Long.toFormattedDuration(): String {
  * Examples:
  *   bazel run //scripts:android_lint_check -- $(pwd)
  *   bazel run //scripts:android_lint_check -- $(pwd) --group_by_severity
- *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=15
+ *   bazel run //scripts:android_lint_check -- $(pwd) --processTimeout=20
  *   bazel run //scripts:android_lint_check -- $(pwd) --timer
  */
 fun main(vararg args: String) {
+  var exitCode = 0
+  try {
+    executeAndroidLintAnalysis(*args)
+  } catch (e: Exception) {
+    e.printStackTrace()
+    exitCode = 1
+  } finally {
+    exitProcess(exitCode)
+  }
+}
+
+/** Executes Android Lint analysis with given arguments and handles setup, and execution. */
+fun executeAndroidLintAnalysis(vararg args: String) {
   ScriptBackgroundCoroutineDispatcher().use { scriptBgDispatcher ->
     require(args.isNotEmpty()) {
       "<path_to_repository_root argument> is required: \$(pwd)"
@@ -136,6 +151,7 @@ fun main(vararg args: String) {
     require(repoRoot.exists()) {
       "Repository root path does not exist: ${args[0]}"
     }
+
     val exemptionProtoPath = args.find { it.startsWith("--proto=") }?.let { option ->
       val path = option.substringAfter("=")
       require(path.endsWith(".pb")) {
@@ -143,6 +159,7 @@ fun main(vararg args: String) {
       }
       path
     } ?: DEFAULT_PROTO_BINARY_PATH
+
     val groupByIssueSeverity = args.contains("--group_by_severity")
     val showTimer = args.contains("--timer")
     val processTimeout = args.find { it.startsWith("--processTimeout=") }
@@ -225,7 +242,8 @@ class AndroidLintAnalyzer(
       "UnusedResources",
       "UnusedAttribute",
       "UnknownNullness",
-      "MergeRootFrame"
+      "MergeRootFrame",
+      "OldTargetApi"
     )
   }
 
@@ -280,6 +298,75 @@ class AndroidLintAnalyzer(
 }
 
 /**
+ * Wrapper class to run lint with timeout protection.
+ *
+ * The lint tool sometimes hangs on certain systems after writing the report
+ * (likely due to lingering non-daemon threads in the native Java process).
+ * Since lint runs natively inside this script as a Java application,
+ * it may continue running indefinitely unless explicitly stopped.
+ *
+ * This utility ensures that lint execution terminates within a bounded time,
+ * preventing hangs by enforcing a timeout and interrupting the process if
+ * it fails to complete.
+ */
+class LintTimeoutWrapper(
+  private val cliArgs: Array<String>,
+  private val timeoutMinutes: Long
+) {
+  @Volatile
+  private var exitCode: Int = -1
+
+  @Volatile
+  private var completed = false
+
+  @Volatile
+  private var timedOut = false
+
+  /**
+   * Runs lint analysis with a timeout.
+   *
+   * @return the exit code from the lint process
+   * @throws IllegalStateException if lint doesn't finish within the specified duration
+   */
+  fun runWithTimeout(): Int {
+    val lintThread = thread(start = true, name = "lint-runner") {
+      try {
+        exitCode = LintCli().run(cliArgs)
+        completed = true
+      } catch (e: Exception) {
+        e.printStackTrace()
+        exitCode = 1
+        completed = true
+      }
+    }
+
+    val timeoutMillis = TimeUnit.MINUTES.toMillis(timeoutMinutes)
+    val startTime = System.currentTimeMillis()
+
+    while (!completed && (System.currentTimeMillis() - startTime) < timeoutMillis) {
+      Thread.sleep(100)
+    }
+
+    if (!completed) {
+      timedOut = true
+      // Attempt to interrupt the lint thread
+      lintThread.interrupt()
+
+      // Short time to respond to interruption
+      Thread.sleep(1000)
+
+      throw IllegalStateException(
+        "Lint analysis timed out after $timeoutMinutes minutes. " +
+          "This can happen if the Lint tool hanged or is taking excess execution time. " +
+          "Consider increasing the timeout via --processTimeout=<minutes> if needed."
+      )
+    }
+
+    return exitCode
+  }
+}
+
+/**
  * Runs the Android Lint tool and reports issues.
  *
  * @param reportFile the XML file where lint results will be written
@@ -322,7 +409,14 @@ class AndroidLintRunner(
    * @param cliArgs the command-line arguments to pass to the Lint CLI
    */
   fun runLint(cliArgs: Array<String>) {
-    val exitCode = LintCli().run(cliArgs)
+    println("Starting lint analysis with $DEFAULT_PROCESS_TIMEOUT_MINUTES minute timeout.")
+
+    val exitCode = try {
+      val wrapper = LintTimeoutWrapper(cliArgs, DEFAULT_PROCESS_TIMEOUT_MINUTES)
+      wrapper.runWithTimeout()
+    } catch (e: IllegalStateException) {
+      exitProcess(1)
+    }
 
     // Allow exit code 1(ISSUES_FOUND) since it indicates issues with
     // severity Error which is being handled by LintAnalysisReporter.

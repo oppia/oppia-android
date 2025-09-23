@@ -30,6 +30,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController
 ) {
   private lateinit var explorationId: String
+  private val dismissSurveyListener = activity as DismissSurveyListener
 
   /** Sets up data binding. */
   fun handleCreateView(
@@ -51,9 +52,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
     }
 
     binding.maybeLaterButton.setOnClickListener {
-      activity.supportFragmentManager.beginTransaction()
-        .remove(fragment)
-        .commitNow()
+      dismissSurveyListener.dismissSurvey()
     }
 
     profileManagementController.updateSurveyLastShownTimestamp(profileId)
@@ -90,7 +89,7 @@ class SurveyWelcomeDialogFragmentPresenter @Inject constructor(
             fragment.startActivity(intent)
             activity.finish()
             val transaction = activity.supportFragmentManager.beginTransaction()
-            transaction.remove(fragment).commitAllowingStateLoss()
+            transaction.remove(fragment).commitNow()
           }
         }
       }

@@ -24,6 +24,8 @@ import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.state.listener.StateKeyboardButtonListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
+import org.oppia.android.app.survey.DismissSurveyListener
+import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
 import org.oppia.android.app.topic.conceptcard.ConceptCardListener
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.extensions.putProtoExtra
@@ -49,7 +51,8 @@ class ExplorationActivity :
   ConceptCardListener,
   BottomSheetOptionsMenuItemClickListener,
   RequestVoiceOverIconSpotlightListener,
-  FlashbackToolbarListener {
+  FlashbackToolbarListener,
+  DismissSurveyListener {
 
   @Inject lateinit var explorationActivityPresenter: ExplorationActivityPresenter
   private lateinit var state: State
@@ -219,5 +222,15 @@ class ExplorationActivity :
 
   override fun showFlashbackToolbar() {
     explorationActivityPresenter.showFlashbackToolbar()
+  }
+
+  override fun dismissSurvey() {
+    val previousFragment = supportFragmentManager
+      .findFragmentByTag(TAG_SURVEY_WELCOME_DIALOG)
+
+    if (previousFragment != null) {
+      supportFragmentManager.beginTransaction().remove(previousFragment).commitNow()
+      explorationActivityPresenter.backPressActivitySelector()
+    }
   }
 }

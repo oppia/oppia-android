@@ -90,13 +90,12 @@ class AppLanguageFragmentPresenter @Inject constructor(
       appLanguageViewModel.selectedLanguageLiveData.observe(
         fragment
       ) { language ->
-        selectedLanguage = language
         onboardingLanguageDropdown.setText(
-          appLanguageResourceHandler.computeLocalizedDisplayName(
-            language
-          ),
+          appLanguageResourceHandler.computeLocalizedDisplayName(language),
           false
         )
+        updateSelectedLanguage(selectedLanguage)
+        updateAppLanguage(selectedLanguage)
       }
 
       onboardingLanguageDropdown.apply {
@@ -109,7 +108,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
                 selectedLanguage = supportedLanguages.associateBy { oppiaLanguage ->
                   appLanguageResourceHandler.computeLocalizedDisplayName(oppiaLanguage)
                 }[it] ?: OppiaLanguage.ENGLISH
-                updateSelectedLanguage(selectedLanguage)
+                appLanguageViewModel.setSelectedLanguageLivedata(selectedLanguage)
               }
             }
           }
@@ -149,22 +148,7 @@ class AppLanguageFragmentPresenter @Inject constructor(
 
   private fun updateSelectedLanguage(selectedLanguage: OppiaLanguage) {
     val selection = AppLanguageSelection.newBuilder().setSelectedLanguage(selectedLanguage).build()
-    translationController.updateAppLanguage(profileId, selection).toLiveData()
-      .observe(
-        fragment
-      ) { result ->
-        when (result) {
-          is AsyncResult.Success -> {
-            updateAppLanguage(result.value.selectedLanguage)
-          }
-          is AsyncResult.Failure -> oppiaLogger.e(
-            "AppLanguageFragment",
-            "Failed to set AppLanguageSelection",
-            result.error
-          )
-          is AsyncResult.Pending -> {} // Do nothing.
-        }
-      }
+    translationController.updateAppLanguage(profileId, selection)
   }
 
   private fun updateAppLanguage(appLanguage: OppiaLanguage) {
