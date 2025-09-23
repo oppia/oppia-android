@@ -377,7 +377,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
+  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = true)
@@ -391,12 +391,12 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
   @Test
-  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensIntroActivity() {
+  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = true)
@@ -409,7 +409,7 @@ class ProfileChooserFragmentTest {
           position = 1
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -1437,7 +1437,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_clickAdminProfileWithPin_checkOpensPinPasswordActivity() {
+  fun testFragment_enableOnboardingV2_clickAdminProfileWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1450,59 +1450,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testFragment_enableOnboardingV2_clickNonAdminProfileWithPin_checkOpensPinPasswordActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
-    profileTestHelper.addMoreProfiles(1)
-
-    launch(ProfileChooserActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          recyclerViewId = R.id.profiles_list,
-          position = 1
-        )
-      ).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-
-      intended(hasComponent(PinPasswordActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testFragment_clickNonAdminProfileWithoutPin_userNotOnboarded_checkOpensIntroActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
-    profileManagementController.addProfile(
-      name = "Learner",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    profileTestHelper.markProfileOnboardingStarted(testProfileId1)
-
-    launch(ProfileChooserActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          recyclerViewId = R.id.profiles_list,
-          position = 1
-        )
-      ).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-
-      intended(hasComponent(IntroActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 

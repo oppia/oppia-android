@@ -257,4 +257,7 @@
   <color name="color_palette_overridden_background_color">@color/color_def_dark_yellow</color>
   <color name="color_palette_modified_background_color">@color/color_def_deep_blue</color>
   <color name="color_palette_save_button_active_color">@color/color_def_bright_cyan</color>
+  <!-- PROFILE LOGIN -->
+  <color name="color_palette_profile_login_background_color">@color/color_def_highlight_blue_darker</color>
+  <color name="color_palette_profile_login_primary_text_color">@color/color_def_white</color>
 </resources>

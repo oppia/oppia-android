@@ -15,6 +15,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import javax.inject.Inject
 
+// TODO(#5817): Remove along with PinPasswordActivity when v2 onboarding flow has stabilized.
 /** The ViewModel for [PinPasswordActivity]. */
 @ActivityScope
 class PinPasswordViewModel @Inject constructor(

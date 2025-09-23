@@ -102,7 +102,6 @@ class ClassroomListFragmentPresenter @Inject constructor(
   private lateinit var binding: ClassroomListFragmentBinding
   private lateinit var classroomListViewModel: ClassroomListViewModel
   private val profileId = activity.intent.extractCurrentUserProfileId()
-  private var onBackPressedCallback: OnBackPressedCallback? = null
 
   /** Creates and returns the view for the [ClassroomListFragment]. */
   fun handleCreateView(inflater: LayoutInflater, container: ViewGroup?): View? {
