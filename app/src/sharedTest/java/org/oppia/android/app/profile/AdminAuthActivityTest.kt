@@ -174,6 +174,7 @@ class AdminAuthActivityTest {
 
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_opensAddProfileActivity() {
+    profileTestHelper.addOnlyAdminProfile()
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -193,12 +194,14 @@ class AdminAuthActivityTest {
         closeSoftKeyboard()
       )
       onView(withId(R.id.admin_auth_submit_button)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
 
   @Test
   fun testAdminAuthActivity_inputCorrectPassword_imeAction_opensAddProfileActivity() {
+    profileTestHelper.addOnlyAdminProfile()
     launch<AdminAuthActivity>(
       AdminAuthActivity.createAdminAuthActivityIntent(
         context = context,
@@ -217,6 +220,7 @@ class AdminAuthActivityTest {
         editTextInputAction.appendText("12345"),
         pressImeActionButton()
       )
+      testCoroutineDispatchers.runCurrent()
       intended(hasComponent(AddProfileActivity::class.java.name))
     }
   }
