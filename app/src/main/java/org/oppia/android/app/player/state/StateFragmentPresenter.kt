@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import nl.dionsegijn.konfetti.KonfettiView
 import org.oppia.android.app.databinding.databinding.StateFragmentBinding
-import org.oppia.android.app.flashback.FlashbackConfirmationDialogFragment
-import org.oppia.android.app.flashback.TAG_FLASHBACK_CONFIRMATION_DIALOG
 import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.AnswerOutcome
 import org.oppia.android.app.model.CheckpointState
@@ -222,8 +220,7 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   fun onFlashbackButtonClicked(stateName: String) {
-    val dialogFragment = FlashbackConfirmationDialogFragment.newInstance(stateName)
-    dialogFragment.showNow(fragment.childFragmentManager, TAG_FLASHBACK_CONFIRMATION_DIALOG)
+    explorationProgressController.moveToFlashback(stateName)
   }
 
   fun onReturnToQuestionButtonClicked() {
@@ -579,38 +576,48 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData().observe(
+    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+    liveData.observe(
       activity,
-      { gatingResult ->
-        when (gatingResult) {
-          is AsyncResult.Pending -> {
-            oppiaLogger.d("StateFragment", "A gating decision is pending")
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "StateFragment",
-              "Failed to retrieve gating decision",
-              gatingResult.error
-            )
-            (activity as StopStatePlayingSessionWithSavedProgressListener)
-              .deleteCurrentProgressAndStopSession(isCompletion = true)
-          }
-          is AsyncResult.Success -> {
-            if (gatingResult.value) {
-              val dialogFragment =
-                SurveyWelcomeDialogFragment.newInstance(
-                  profileId,
-                  topicId,
-                  explorationId,
-                  SURVEY_QUESTIONS
-                )
-              val transaction = activity.supportFragmentManager.beginTransaction()
-              transaction
-                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                .commitNow()
-            } else {
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
+          when (gatingResult) {
+            null, is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
               (activity as StopStatePlayingSessionWithSavedProgressListener)
                 .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+
+            is AsyncResult.Success -> {
+              oppiaLogger.d("StateFragment", "Successfully retrieved gating decision")
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .commitNow()
+
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
+                liveData.removeObserver(this)
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
             }
           }
         }
