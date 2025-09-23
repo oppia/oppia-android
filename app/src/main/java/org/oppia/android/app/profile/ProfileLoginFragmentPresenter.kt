@@ -63,6 +63,7 @@ import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.profile.ProfileManagementController
 import org.oppia.android.util.data.AsyncResult
@@ -82,7 +83,7 @@ import javax.inject.Inject
 const val PIN_INPUT_TEST_TAG = "TEST_TAG.input"
 
 /**
- * Test tag for the forgot pin button.
+ * Test tag for each of the PIN boxes.
  *
  * Similar to [PIN_INPUT_TEST_TAG], we are adding a TEST_TAG modifier to the PIN boxes which are
  * dynamically generated and do not contain text when created that can be used to match them in
@@ -96,6 +97,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private val fragment: Fragment,
   private val oppiaLogger: OppiaLogger,
   private val profileManagementController: ProfileManagementController,
+  private val appStartupStateController: AppStartupStateController,
   private val resourceHandler: AppLanguageResourceHandler,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>
 ) {
@@ -421,8 +423,17 @@ class ProfileLoginFragmentPresenter @Inject constructor(
       .showNow(activity.supportFragmentManager, TAG_VALIDATE_ADMIN_PIN_DIALOG)
   }
 
+  /**
+   * Deletes all app data by removing all profile,s resetting onboarding state, and closing the app.
+   *
+   * Once completed, the user will be forced to go through onboarding again to re-create their
+   * profile.
+   */
   private fun deleteAppData() {
     profileManagementController.deleteAllProfiles().toLiveData().observe(fragment) {
+      // Reset onboarding so the app starts fresh.
+      appStartupStateController.resetOnboardingState()
+      // Close the app to ensure a clean restart regardless of reset outcome.
       activity.finishAffinity()
     }
   }

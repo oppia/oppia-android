@@ -221,7 +221,6 @@ class AdminIntroFragmentTest {
 
       val expectedParams = ProfileChooserActivityParams.newBuilder()
         .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
-        .setProfileNickname("Admin")
         .build()
 
       intended(hasComponent(ProfileChooserActivity::class.java.name))
