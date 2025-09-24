@@ -393,7 +393,8 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  private fun backPressActivitySelector() {
+  /** Selects the appropriate way to close the activity based on the parent screen. */
+  fun backPressActivitySelector() {
     when (parentScreen) {
       ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()
@@ -576,6 +577,9 @@ class ExplorationActivityPresenter @Inject constructor(
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
+                oppiaLogger.d(
+                  "ExplorationActivity", "Successfully retrieved gating decision"
+                )
                 val dialogFragment =
                   SurveyWelcomeDialogFragment.newInstance(
                     profileId,
@@ -583,13 +587,13 @@ class ExplorationActivityPresenter @Inject constructor(
                     explorationId,
                     SURVEY_QUESTIONS
                   )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
+                activity.supportFragmentManager
+                  .beginTransaction()
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
+                  .commitNow()
 
-                // Changes to underlying DataProviders will update the gating result.
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
                 liveData.removeObserver(this)
               } else {
                 backPressActivitySelector()

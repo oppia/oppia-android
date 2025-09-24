@@ -1185,6 +1185,20 @@ class SplashActivityTest {
     }
   }
 
+  @Test
+  fun testSplashActivity_onboardingV2Enabled_resetAppOnboardingState_routesToOnboardingActivity() {
+    simulateAppAlreadyOnboarded()
+    initializeTestApplication(onboardingV2Enabled = true)
+    profileTestHelper.initializeProfiles()
+    appStartupStateController.resetOnboardingState()
+    testCoroutineDispatchers.runCurrent()
+
+    launchSplashActivityPartially {
+      // Routes to OnboardingActivity because the app is not onboarded.
+      intended(hasComponent(OnboardingActivity::class.java.name))
+    }
+  }
+
   private fun simulateAppAlreadyOnboarded() {
     // Simulate the app was already onboarded by creating an isolated onboarding flow controller and
     // saving the onboarding status on the system before the activity is opened. Note that this has

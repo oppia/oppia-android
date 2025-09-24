@@ -67,6 +67,18 @@ class ForceDownloadRemoteParametersControllerTest {
     assertThat(result).isEqualTo(true)
   }
 
+  @Test
+  fun testDownloadRemoteParameters_secondInvocation_returnsSameInstance() {
+    setUpTestApplicationComponent()
+
+    val firstProvider = forceDownloadRemoteParametersController.downloadRemoteParameters()
+    val secondProvider = forceDownloadRemoteParametersController.downloadRemoteParameters()
+    testCoroutineDispatchers.runCurrent()
+
+    // Multiple calls to downloadRemoteParameters() should yield the same DataProvider instance.
+    assertThat(secondProvider).isEqualTo(firstProvider)
+  }
+
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }

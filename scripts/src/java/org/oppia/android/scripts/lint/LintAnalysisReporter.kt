@@ -153,11 +153,9 @@ class LintAnalysisReporter(private val repoRoot: File) {
       "LockedOrientationActivity" to LintIssueId.LOCKED_ORIENTATION_ACTIVITY,
       "MissingVersion" to LintIssueId.MISSING_VERSION,
       "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
-      "OldTargetApi" to LintIssueId.OLD_TARGET_API,
       "Overdraw" to LintIssueId.OVERDRAW,
       "RedundantLabel" to LintIssueId.REDUNDANT_LABEL,
       "Registered" to LintIssueId.REGISTERED,
-      "StringFormatCount" to LintIssueId.STRING_FORMAT_COUNT,
       "SwitchIntDef" to LintIssueId.SWITCH_INT_DEF,
       "TypographyDashes" to LintIssueId.TYPOGRAPHY_DASHES,
       "TypographyQuotes" to LintIssueId.TYPOGRAPHY_QUOTES,
@@ -293,7 +291,7 @@ class LintAnalysisReporter(private val repoRoot: File) {
     // Unknown issues cannot be exempted, so they should appear in the report
     val issueIdEnum = getLintIssueIdFromString(issue.id) ?: return false
 
-    return issue.locations.any { location ->
+    return issue.locations.all { location ->
       val relativePath = File(location.file).toRelativeString(repoRoot)
       val exemptedIssues = exemptionMap[relativePath]
       exemptedIssues?.contains(issueIdEnum) == true
@@ -459,11 +457,12 @@ class LintAnalysisReporter(private val repoRoot: File) {
 
     printSeveritySummary(filteredIssues, redundantExemptionsCount)
     println()
-
-    println(
-      "If you need additional help to resolve an issue," +
-        " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
-    )
+    if (filteredIssues.isNotEmpty()) {
+      println(
+        "If you need additional help to resolve an issue," +
+          " see https://googlesamples.github.io/android-custom-lint-rules/checks/severity.md.html"
+      )
+    }
     println()
 
     if (redundantExemptions.isNotEmpty()) {
@@ -544,7 +543,10 @@ class LintAnalysisReporter(private val repoRoot: File) {
         println(
           wrapText(
             "In $filePath the ${toUpperSnakeCase(issueId)} exemption is redundant" +
-              " and can be removed since there are no corresponding lint issues."
+              " and can be removed since there are no corresponding lint issues." +
+              "\nRefer to the Android Lint Check Wiki for more information:" +
+              " https://github.com/oppia/oppia-android/wiki/" +
+              "Android-Lint-Check#exemption-file-maintenance-prompts"
           )
         )
 
@@ -748,7 +750,10 @@ class LintAnalysisReporter(private val repoRoot: File) {
       println("${YELLOW}UNUSED ENUM MAPPINGS DETECTED:$RESET")
       println(
         "The following issue IDs are defined in issueIdMapping " +
-          "but no corresponding lint issues were found."
+          "but no corresponding lint issues were found." +
+          "\nRefer to the Android Lint Check Wiki for more" +
+          " information: https://github.com/oppia/oppia-android/wiki/" +
+          "Android-Lint-Check#unused-enum-mappings-detection"
       )
       println("Please remove them from the LintIssueId enum and issueIdMapping:")
       println()

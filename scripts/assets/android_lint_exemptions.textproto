@@ -2,7 +2,6 @@ android_lint_exemption: {
   exempted_file_path: "app/src/main/AndroidManifest.xml"
   lint_issue_id: LOCKED_ORIENTATION_ACTIVITY
   lint_issue_id: MISSING_VERSION
-  lint_issue_id: OLD_TARGET_API
   lint_issue_id: REDUNDANT_LABEL
 }
 android_lint_exemption: {
@@ -320,29 +319,11 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-sw/strings.xml"
-  lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_QUOTES
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values/strings.xml"
-  lint_issue_id: STRING_FORMAT_COUNT
   lint_issue_id: TYPOGRAPHY_QUOTES
-}
-android_lint_exemption: {
-  exempted_file_path: "data/src/main/AndroidManifest.xml"
-  lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "domain/src/main/AndroidManifest.xml"
-  lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "testing/src/main/AndroidManifest.xml"
-  lint_issue_id: OLD_TARGET_API
-}
-android_lint_exemption: {
-  exempted_file_path: "utility/src/main/AndroidManifest.xml"
-  lint_issue_id: OLD_TARGET_API
 }
 android_lint_exemption: {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/locale/DisplayLocaleImpl.kt"
