@@ -24,10 +24,11 @@ class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
     fun createAdminAuthActivityIntent(
       context: Context,
       adminPin: String,
-      profileId: ProfileId?,
+      internalProfileId: Int,
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
+      val profileId = ProfileId.newBuilder().apply { this.internalId = internalProfileId }.build()
       val args = AdminAuthActivityParams.newBuilder().apply {
         this.adminPin = adminPin
         this.colorRgb = colorRgb
@@ -36,7 +37,7 @@ class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
       return Intent(context, AdminAuthActivity::class.java).apply {
         putProtoExtra(ADMIN_AUTH_ACTIVITY_PARAMS_KEY, args)
         decorateWithScreenName(ADMIN_AUTH_ACTIVITY)
-        profileId?.let { decorateWithUserProfileId(profileId) }
+        decorateWithUserProfileId(profileId)
       }
     }
   }
