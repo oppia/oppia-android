@@ -262,7 +262,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         AdminAuthActivity.createAdminAuthActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
+          chooserViewModel.adminProfileId,
           selectUniqueRandomColor(),
           AdminAuthEnum.PROFILE_ADD_PROFILE.value
         )
@@ -360,7 +360,7 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         AdminAuthActivity.createAdminAuthActivityIntent(
           activity,
           chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
+          chooserViewModel.adminProfileId,
           selectUniqueRandomColor(),
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value
         )
