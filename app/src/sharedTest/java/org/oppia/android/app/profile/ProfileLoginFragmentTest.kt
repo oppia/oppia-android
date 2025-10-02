@@ -50,6 +50,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -77,6 +78,7 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
+import org.oppia.android.domain.onboarding.AppStartupStateController
 import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
@@ -90,6 +92,7 @@ import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.espresso.EditTextInputAction
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
@@ -129,11 +132,13 @@ import javax.inject.Singleton
 class ProfileLoginFragmentTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
   @get:Rule val oppiaTestRule = OppiaTestRule()
+  @get:Rule val composeRule = createEmptyComposeRule()
   @Inject lateinit var context: Context
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var profileManagementController: ProfileManagementController
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @get:Rule val composeRule = createEmptyComposeRule()
+  @Inject lateinit var appStartupStateController: AppStartupStateController
+  @Inject lateinit var monitorFactory: DataProviderTestMonitor.Factory
   @Inject lateinit var editTextInputAction: EditTextInputAction
 
   private lateinit var scenario: ActivityScenario<ProfileLoginActivity>
@@ -588,7 +593,6 @@ class ProfileLoginFragmentTest {
         .performClick()
 
       composeRule.onNodeWithText(context.getString(R.string.profile_login_forgot_pin_dialog_title))
-        .assertExists()
         .assertIsDisplayed()
 
       composeRule
@@ -606,7 +610,6 @@ class ProfileLoginFragmentTest {
           context.getString(R.string.app_name)
         )
       )
-        .assertExists()
         .assertIsDisplayed()
 
       composeRule
@@ -616,6 +619,10 @@ class ProfileLoginFragmentTest {
         .performClick()
 
       testCoroutineDispatchers.runCurrent()
+
+      val appStartupState = appStartupStateController.getAppStartupState()
+      val mode = monitorFactory.waitForNextSuccessfulResult(appStartupState)
+      assertThat(mode.startupMode).isEqualTo(AppStartupState.StartupMode.USER_NOT_YET_ONBOARDED)
 
       assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
     }

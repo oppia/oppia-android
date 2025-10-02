@@ -963,7 +963,7 @@ message OnboardingFragmentStateBundle {
 // Params required when creating a new ProfileChooserActivity.
 message ProfileChooserActivityParams {
   // The screen from which the ProfileChooserActivity was opened.
-  ParentScreen parent_screen = 2;
+  ParentScreen parent_screen = 1;
 
   // Different parent screens that can open a new ProfileChooserActivity instance.
   enum ParentScreen {
