@@ -35,7 +35,6 @@ import org.oppia.android.scripts.gae.json.GaeSubtitledUnicode
 import org.oppia.android.scripts.gae.json.GaeSubtopic
 import org.oppia.android.scripts.gae.json.GaeSubtopicPage
 import org.oppia.android.scripts.gae.json.GaeTopic
-import org.oppia.android.scripts.gae.json.GaeWorkedExample
 import org.oppia.android.scripts.gae.json.VersionedStructure
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.Companion.resolveLanguageCode
 import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.DESCRIPTION
@@ -53,7 +52,6 @@ import org.oppia.proto.v1.structure.BaseSolutionDto
 import org.oppia.proto.v1.structure.ChapterSummaryDto
 import org.oppia.proto.v1.structure.ClassroomDto
 import org.oppia.proto.v1.structure.ConceptCardDto
-import org.oppia.proto.v1.structure.ConceptCardDto.WorkedExampleDto
 import org.oppia.proto.v1.structure.ConceptCardLanguagePackDto
 import org.oppia.proto.v1.structure.ContinueInstanceDto
 import org.oppia.proto.v1.structure.DownloadableTopicSummaryDto
@@ -316,10 +314,6 @@ class JsonToProtoConverter(
       val contents = skill.skillContents
       localizationTracker.initializeContainer(conceptCardContainerId, defaultLanguage)
       localizationTracker.trackContainerText(conceptCardContainerId, contents.explanation)
-      for (workedExample in contents.workedExamples) {
-        localizationTracker.trackContainerText(conceptCardContainerId, workedExample.question)
-        localizationTracker.trackContainerText(conceptCardContainerId, workedExample.explanation)
-      }
 
       // Track translations after all default strings have been established.
       localizationTracker.trackTranslations(conceptCardContainerId, contents.writtenTranslations)
@@ -457,9 +451,6 @@ class JsonToProtoConverter(
       this.skillId = gaeSkill.id
       this.explanation =
         localizationTracker.convertContainerText(containerId, gaeSkill.skillContents.explanation)
-      this.addAllWorkedExamples(
-        gaeSkill.skillContents.workedExamples.map { it.toProto(containerId) }
-      )
       this.defaultLocalization =
         localizationTracker.computeSpecificContentLocalization(containerId, defaultLanguage)
       this.contentVersion = gaeSkill.version
@@ -536,16 +527,6 @@ class JsonToProtoConverter(
     val exploration: GaeExploration,
     val translations: Map<LanguageType, VersionedStructure<GaeEntityTranslations>>
   )
-
-  private fun GaeWorkedExample.toProto(
-    containerId: LocalizationTracker.ContainerId
-  ): WorkedExampleDto? {
-    return WorkedExampleDto.newBuilder().apply {
-      this.question = localizationTracker.convertContainerText(containerId, this@toProto.question)
-      this.explanation =
-        localizationTracker.convertContainerText(containerId, this@toProto.explanation)
-    }.build()
-  }
 
   private suspend fun GaeStory.toProto(
     defaultLanguage: LanguageType,

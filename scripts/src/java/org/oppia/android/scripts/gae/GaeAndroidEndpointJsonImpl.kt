@@ -862,7 +862,7 @@ class GaeAndroidEndpointJsonImpl(
     private val SUPPORTED_DEFAULT_LANGUAGES = setOf(LanguageType.ENGLISH)
 
     // From feconf.
-    private const val SUPPORTED_STATE_SCHEMA_VERSION = 56
+    private const val SUPPORTED_STATE_SCHEMA_VERSION = 57
 
     private fun ClientCompatibilityContextDto.verifyCompatibility() {
       check(topicListRequestResponseProtoVersion == createLatestTopicListProtoVersion()) {

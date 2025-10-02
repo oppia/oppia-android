@@ -38,7 +38,6 @@ import org.oppia.android.scripts.gae.json.GaeSubtopicPage
 import org.oppia.android.scripts.gae.json.GaeSubtopicPageContents
 import org.oppia.android.scripts.gae.json.GaeTopic
 import org.oppia.android.scripts.gae.json.GaeTranslatedContent
-import org.oppia.android.scripts.gae.json.GaeWorkedExample
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslation
 import org.oppia.android.scripts.gae.json.GaeWrittenTranslations
 import org.oppia.android.scripts.gae.json.VersionedStructure
@@ -259,18 +258,9 @@ class StructureCompatibilityChecker(
     defaultLanguage: LanguageType
   ): List<CompatibilityFailure> {
     return gaeSkillContents.explanation.checkHasValidHtml(origin) +
-      gaeSkillContents.workedExamples.flatMap { checkWorkedExampleCompatibility(origin, it) } +
       checkWrittenTranslationsCompatibility(
         origin, gaeSkillContents.writtenTranslations, expectedTranslatedContentIds, defaultLanguage
       ) + checkRecordedVoiceoversCompatibility(origin, gaeSkillContents.recordedVoiceovers)
-  }
-
-  private fun checkWorkedExampleCompatibility(
-    origin: ContainerId,
-    gaeWorkedExample: GaeWorkedExample
-  ): List<CompatibilityFailure> {
-    return gaeWorkedExample.question.checkHasValidHtml(origin) +
-      gaeWorkedExample.explanation.checkHasValidHtml(origin)
   }
 
   private fun checkWrittenTranslationsCompatibility(
