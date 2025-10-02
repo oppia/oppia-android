@@ -15,6 +15,7 @@ import org.oppia.android.scripts.gae.json.GaeInteractionObject.Fraction
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.MathExpression
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.NonNegativeInt
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.NormalizedString
+import org.oppia.android.scripts.gae.json.GaeInteractionObject.NumberWithUnits
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.RatioExpression
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.Real
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.SetOfXlatableContentIds
@@ -22,7 +23,6 @@ import org.oppia.android.scripts.gae.json.GaeInteractionObject.SetsOfXlatableCon
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.SignedInt
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.TranslatableHtmlContentId
 import org.oppia.android.scripts.gae.json.GaeInteractionObject.TranslatableSetOfNormalizedString
-import org.oppia.android.scripts.gae.json.GaeInteractionObject.NumberWithUnits
 import org.oppia.android.scripts.gae.json.GaeOutcome
 import org.oppia.android.scripts.gae.json.GaeRuleSpec
 import org.oppia.android.scripts.gae.json.GaeSkill
@@ -42,8 +42,8 @@ import org.oppia.android.scripts.gae.proto.LocalizationTracker.ContentContext.TI
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.FRACTION
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.LIST_OF_SETS_OF_TRANSLATABLE_HTML_CONTENT_IDS
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.MATH_EXPRESSION
-import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.NUMBER_WITH_UNITS
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.NORMALIZED_STRING
+import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.NUMBER_WITH_UNITS
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.RATIO_EXPRESSION
 import org.oppia.android.scripts.gae.proto.SolutionAnswer.AnswerTypeCase.REAL
 import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto
@@ -60,7 +60,6 @@ import org.oppia.proto.v1.structure.EndExplorationInstanceDto
 import org.oppia.proto.v1.structure.ExplorationDto
 import org.oppia.proto.v1.structure.ExplorationLanguagePackDto
 import org.oppia.proto.v1.structure.FractionDto
-import org.oppia.proto.v1.structure.NumberWithUnitsDto
 import org.oppia.proto.v1.structure.FractionInputInstanceDto
 import org.oppia.proto.v1.structure.HintDto
 import org.oppia.proto.v1.structure.ImageClickInputInstanceDto
@@ -79,11 +78,11 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.I
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.ITEM_SELECTION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MATH_EQUATION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
-import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto
 import org.oppia.proto.v1.structure.LanguageType
 import org.oppia.proto.v1.structure.ListOfSetsOfTranslatableHtmlContentIdsDto
@@ -91,9 +90,10 @@ import org.oppia.proto.v1.structure.LocalizedConceptCardIdDto
 import org.oppia.proto.v1.structure.LocalizedExplorationIdDto
 import org.oppia.proto.v1.structure.LocalizedRevisionCardIdDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto
-import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto
 import org.oppia.proto.v1.structure.NormalizedPoint2dDto
+import org.oppia.proto.v1.structure.NumberWithUnitsDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.NumericInputInstanceDto
 import org.oppia.proto.v1.structure.OutcomeDto
@@ -140,10 +140,6 @@ import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.Co
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.DoesNotContainAtLeastOneOfSpecDto as ItemSelectionDoesNotContainAtLeastOneOfSpec
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.EqualsSpecDto as ItemSelectionEqualsSpec
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto.IsProperSubsetOfSpecDto as ItemSelectionIsProperSubsetOfSpec
-import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.AnswerGroupDto as NumberWithUnitsAnswerGroupDto
-import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto as NumberWithUnitsRuleSpecDto
-import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto.IsEqualToSpecDto as NumberWithUnitsIsEqualSpec
-import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto as NumberWithUnitsIsEquivalentSpec
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.AnswerGroupDto as MathEquationAnswerGroupDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.CustomizationArgsDto as MathEquationCustomizationArgsDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto as MathEquationRuleSpecDto
@@ -152,6 +148,10 @@ import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto.Mat
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as MathEquationTrivialManipsSpec
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.AnswerGroupDto as MultipleChoiceAnswerGroupDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.RuleSpecDto.EqualsSpecDto as MultipleChoiceEqualsSpec
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.AnswerGroupDto as NumberWithUnitsAnswerGroupDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto as NumberWithUnitsRuleSpecDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto.IsEqualToSpecDto as NumberWithUnitsIsEqualSpec
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto as NumberWithUnitsIsEquivalentSpec
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.AnswerGroupDto as NumericExpressionAnswerGroupDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto.IsEquivalentToSpecDto as NumericExpressionIsEquivalentSpec
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto.MatchesExactlyWithSpecDto as NumericExpressionMatchesExactlySpec
@@ -278,9 +278,10 @@ class JsonToProtoConverter(
                 // Note that translatable content IDs objects are ignored because they don't provide
                 // new translations and should already be tracked in the interaction's customization
                 // arguments.
-                is Fraction, is MathExpression, is NonNegativeInt, is NormalizedString,
-                is RatioExpression, is Real, is SignedInt, is SetOfXlatableContentIds,
-                is SetsOfXlatableContentIds, is TranslatableHtmlContentId, is NumberWithUnits -> null
+                is Fraction, is MathExpression, is NonNegativeInt,
+                is NormalizedString, is RatioExpression, is Real, is SignedInt,
+                is SetOfXlatableContentIds, is SetsOfXlatableContentIds,
+                is TranslatableHtmlContentId, is NumberWithUnits -> null
                 is TranslatableSetOfNormalizedString ->
                   ruleInput.contentId?.let { it to ruleInput.normalizedStrSet }
               }
@@ -1000,7 +1001,9 @@ class JsonToProtoConverter(
   private fun List<GaeAnswerGroup>.toNumberWithUnitsGroups(
     containerId: LocalizationTracker.ContainerId
   ): List<NumberWithUnitsInputInstanceDto.AnswerGroupDto> {
-    return map { it.toProto(containerId, NUMBER_WITH_UNITS_INPUT).numberWithUnitsInputInstanceAnswerGroup }
+    return map {
+      it.toProto(containerId, NUMBER_WITH_UNITS_INPUT).numberWithUnitsInputInstanceAnswerGroup
+    }
   }
 
   // TODO: Simplify this & the other similar toProto() functions.
@@ -1010,7 +1013,9 @@ class JsonToProtoConverter(
   ): AnswerGroup {
     return AnswerGroup.newBuilder().apply {
       when (interactionType) {
-        FRACTION_INPUT -> this.fractionInputInstanceAnswerGroup = toFractionAnswerGroup(containerId)
+        FRACTION_INPUT -> {
+          this.fractionInputInstanceAnswerGroup = toFractionAnswerGroup(containerId)
+        }
         ITEM_SELECTION_INPUT ->
           this.itemSelectionInputInstanceAnswerGroup = toItemSelectionAnswerGroup(containerId)
         MULTIPLE_CHOICE_INPUT ->
@@ -1232,7 +1237,9 @@ class JsonToProtoConverter(
   private fun List<GaeRuleSpec>.toMathEquationProtos(containerId: LocalizationTracker.ContainerId) =
     toProtos(MATH_EQUATION_INPUT, containerId).map { it.mathEquationInputInstanceRuleSpec }
 
-  private fun List<GaeRuleSpec>.toNumberWithUnitsProto(containerId: LocalizationTracker.ContainerId) =
+  private fun List<GaeRuleSpec>.toNumberWithUnitsProto(
+    containerId: LocalizationTracker.ContainerId
+  ) =
     toProtos(NUMBER_WITH_UNITS_INPUT, containerId).map { it.numberWithUnitsInputInstanceRuleSpec }
 
   private fun List<GaeRuleSpec>.toProtos(
@@ -1954,7 +1961,9 @@ class JsonToProtoConverter(
   private fun Map<String, GaeInteractionObject>.getNumberWithUnits(
     name: String,
     containerId: LocalizationTracker.ContainerId
-  ): NumberWithUnitsDto = getRuleInput(name, RuleInputTypeCase.NUMBER_WITH_UNITS, containerId).numberWithUnits
+  ): NumberWithUnitsDto = getRuleInput(
+    name, RuleInputTypeCase.NUMBER_WITH_UNITS, containerId
+  ).numberWithUnits
 
   private fun Map<String, GaeInteractionObject>.getRuleInput(
     name: String,

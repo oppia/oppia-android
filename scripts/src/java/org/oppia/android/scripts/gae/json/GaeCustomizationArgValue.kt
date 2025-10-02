@@ -18,11 +18,11 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.I
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.ITEM_SELECTION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MATH_EQUATION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
-import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 
 // TODO: Mention parsing this requires setting customization key name & interaction type in the parsing context.
 sealed class GaeCustomizationArgValue {

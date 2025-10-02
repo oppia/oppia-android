@@ -14,9 +14,10 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.withIndex
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomIdList
+import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomRecord
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToConceptCardList
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToExploration
 import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToStoryRecord
@@ -95,12 +96,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomIdList
-import org.oppia.android.scripts.assets.DtoProtoToLegacyProtoConverter.convertToClassroomRecord
+import kotlin.system.exitProcess
 import org.oppia.proto.v1.api.DownloadRequestStructureIdentifierDto.Builder as DownloadReqStructIdDtoBuilder
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
-import kotlin.system.exitProcess
 
 /*
   TODO: Thoughts for improving the script:
@@ -236,7 +235,9 @@ class LessonDownloader(
   private val memoizedLoadedImageData by lazy { ConcurrentHashMap<File, ByteArray>() }
 
   fun downloadLessons(outputDir: File, failOnError: Boolean) {
-    val downloadDeferred = CoroutineScope(coroutineDispatcher).async { downloadAllLessons(outputDir, failOnError) }
+    val downloadDeferred = CoroutineScope(coroutineDispatcher).async {
+      downloadAllLessons(outputDir, failOnError)
+    }
     val exceptionResult = runBlocking {
       runCatching { downloadDeferred.await() }.also { shutdownBlocking() }
     }
@@ -711,7 +712,10 @@ class LessonDownloader(
         issues.forEach { issue ->
           val missingLangs = issue.missingLanguages.joinToString { it.name }
           val presentLangs = issue.presentLanguages.joinToString { it.name }
-          println("  - Image ${issue.filename} exists in languages: $presentLangs, but is missing in: $missingLangs")
+          println(
+            "  - Image ${issue.filename} exists in languages: $presentLangs, " +
+              "but is missing in: $missingLangs"
+          )
         }
       }
     } else println("Images missing across translations: (Hidden)")
@@ -766,9 +770,14 @@ class LessonDownloader(
       println("(look at above output for specific images that require verification).")
     }
 
-    val hasAnyFailure = issues.isNotEmpty() || imageDownloadFailures.isNotEmpty() || renamedImages.isNotEmpty() || convertedImages.isNotEmpty()
+    val hasAnyFailure = (
+      issues.isNotEmpty() || imageDownloadFailures.isNotEmpty() ||
+        renamedImages.isNotEmpty() || convertedImages.isNotEmpty()
+      )
     if (hasAnyFailure && failOnError) {
-      throw Exception("Failed to cleanly download and convert all lessons and images. See failures above.")
+      throw Exception(
+        "Failed to cleanly download and convert all lessons and images. See failures above."
+      )
     }
 
 //    val translationMetrics = analyzer.computeTranslationsUsageReport()

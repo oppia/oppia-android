@@ -623,9 +623,12 @@ private sealed class VersionedStructureReference<I : StructureId, S> {
       Compatible -> LoadResult.Success(payload)
       is Incompatible -> {
         // TODO: Remove this once Oppia web supports pulling structures without schema migrations (see https://github.com/oppia/oppia/issues/21253).
-        val irrecoverableFailure = compatibilityResult.failures.firstOrNull { it is CompatibilityFailure.StateSchemaVersionTooNew }
+        val irrecoverableFailure = compatibilityResult.failures.firstOrNull {
+          it is CompatibilityFailure.StateSchemaVersionTooNew
+        }
         check(irrecoverableFailure == null) {
-          "Oppia web introduced a state schema upgrade. Cannot recover--this script needs to be updated: $irrecoverableFailure"
+          "Oppia web introduced a state schema upgrade. Cannot recover--this " +
+            "script needs to be updated: $irrecoverableFailure"
         }
         LoadResult.Failure<S>(compatibilityResult.failures)
       }
@@ -792,7 +795,9 @@ private class ExplorationFetcher(
   ): Deferred<VersionedStructure<CompleteExploration>?> {
     return CoroutineScope(coroutineDispatcher).async {
       val latestExp = service.fetchLatestExplorationAsync(id.id).await()
-      return@async latestExp?.let { it.copyWithNewPayload(service.downloadExploration(id, it.payload)) }
+      return@async latestExp?.let {
+        it.copyWithNewPayload(service.downloadExploration(id, it.payload))
+      }
     }
   }
 
@@ -803,7 +808,9 @@ private class ExplorationFetcher(
   ): Deferred<VersionedStructure<CompleteExploration>?> {
     return CoroutineScope(coroutineDispatcher).async {
       val latestExp = service.fetchSingleExplorationAsync(id.id, version).await()
-      return@async latestExp?.let { it.copyWithNewPayload(service.downloadExploration(id, it.payload)) }
+      return@async latestExp?.let {
+        it.copyWithNewPayload(service.downloadExploration(id, it.payload))
+      }
     }
   }
 
@@ -833,7 +840,9 @@ private class ExplorationFetcher(
       val missingTranslations = translations.mapIndexedNotNull { index, value ->
         index.takeIf { value == null } // Take only indexes corresponding to missing values.
       }.map { VALID_LANGUAGE_TYPES[it] }
-      check(missingTranslations.isEmpty()) { "Failed to fetch translations for exploration $id: $missingTranslations." }
+      check(missingTranslations.isEmpty()) {
+        "Failed to fetch translations for exploration $id: $missingTranslations."
+      }
       return CompleteExploration(
         exploration,
         receivedTranslations.associateBy {

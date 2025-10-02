@@ -92,7 +92,9 @@ class LessonListDownloader(
 
   fun downloadLessonListAsync(lessonListOutputFile: File): Deferred<Unit> {
     return CoroutineScope(scriptBgDispatcher).async {
-      if (apiDebugDir != null) println("Config: Using ${apiDebugDir.path}/ for storing API responses (for debugging).")
+      if (apiDebugDir != null) {
+        println("Config: Using ${apiDebugDir.path}/ for storing API responses (for debugging).")
+      }
 
       val listResponse = downloadTopicListResponseDto()
       println()
