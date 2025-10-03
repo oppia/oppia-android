@@ -241,7 +241,9 @@ class GaeAndroidEndpointJsonImpl(
     return CoroutineScope(coroutineDispatcher).async {
       SUPPORTED_CLASSROOMS.map { classroomName ->
         CoroutineScope(coroutineDispatcher).async {
-          val classroomResult = activityService.fetchLatestClassroomAsync(classroomName).await().also {
+          val classroomResult = activityService.fetchLatestClassroomAsync(
+            classroomName
+          ).await().also {
             tracker.reportDownloaded(classroomName)
           }
           checkNotNull(classroomResult?.payload) { "Failed to fetch classroom: $classroomName." }
@@ -830,7 +832,7 @@ class GaeAndroidEndpointJsonImpl(
         "Continue", "FractionInput", "ItemSelectionInput", "MultipleChoiceInput",
         "NumericInput", "TextInput", "DragAndDropSortInput", "ImageClickInput",
         "RatioExpressionInput", "EndExploration", "NumericExpressionInput",
-        "AlgebraicExpressionInput", "MathEquationInput"//, "NumberWithUnits"
+        "AlgebraicExpressionInput", "MathEquationInput" // , "NumberWithUnits"
       )
 
     // TODO: Remove gif and png since we only want to use svg(z) and webp moving forward.
@@ -862,7 +864,7 @@ class GaeAndroidEndpointJsonImpl(
     private val SUPPORTED_DEFAULT_LANGUAGES = setOf(LanguageType.ENGLISH)
 
     // From feconf.
-    private const val SUPPORTED_STATE_SCHEMA_VERSION = 56
+    private const val SUPPORTED_STATE_SCHEMA_VERSION = 57
 
     private fun ClientCompatibilityContextDto.verifyCompatibility() {
       check(topicListRequestResponseProtoVersion == createLatestTopicListProtoVersion()) {

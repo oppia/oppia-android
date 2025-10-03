@@ -18,11 +18,11 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.I
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.ITEM_SELECTION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MATH_EQUATION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.TEXT_INPUT
-import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 
 @JsonClass(generateAdapter = false)
 sealed class GaeInteractionObject {
@@ -102,8 +102,11 @@ sealed class GaeInteractionObject {
   sealed class NumberWithUnits : GaeInteractionObject() {
     abstract val units: List<Unit>
 
-    data class FractionWithUnits(val fraction: Fraction, override val units: List<Unit>): NumberWithUnits()
-    data class RealWithUnits(val real: Double, override val units: List<Unit>): NumberWithUnits()
+    data class FractionWithUnits(
+      val fraction: Fraction,
+      override val units: List<Unit>
+    ) : NumberWithUnits()
+    data class RealWithUnits(val real: Double, override val units: List<Unit>) : NumberWithUnits()
 
     @JsonClass(generateAdapter = true)
     data class Unit(
@@ -145,8 +148,12 @@ sealed class GaeInteractionObject {
         parsableNumberWithUnitsAdapter: JsonAdapter<ParsableNumberWithUnits>
       ) {
         val parsableNumberWithUnits = when (numberWithUnits) {
-          is FractionWithUnits -> ParsableNumberWithUnits(type = "real", real = null, numberWithUnits.fraction, numberWithUnits.units)
-          is RealWithUnits -> ParsableNumberWithUnits(type = "real", numberWithUnits.real, fraction = null, numberWithUnits.units)
+          is FractionWithUnits -> ParsableNumberWithUnits(
+            type = "real", real = null, numberWithUnits.fraction, numberWithUnits.units
+          )
+          is RealWithUnits -> ParsableNumberWithUnits(
+            type = "real", numberWithUnits.real, fraction = null, numberWithUnits.units
+          )
         }
         parsableNumberWithUnitsAdapter.toJson(jsonWriter, parsableNumberWithUnits)
       }
@@ -176,7 +183,7 @@ sealed class GaeInteractionObject {
         setOfXlatableContentIdsAdapter: JsonAdapter<SetOfXlatableContentIds>
       ) {
         jsonWriter.beginArray()
-      setsOfXlatableContentIds.sets.forEach {
+        setsOfXlatableContentIds.sets.forEach {
           setOfXlatableContentIdsAdapter.toJson(jsonWriter, it)
         }
         jsonWriter.endArray()

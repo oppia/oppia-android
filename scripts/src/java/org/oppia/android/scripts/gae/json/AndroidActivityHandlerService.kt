@@ -321,7 +321,10 @@ class AndroidActivityHandlerService(
         val metadata = RequestMetadata(request().method, request().url.toUrl().toExternalForm())
         val responseBodyText = memoizedRawResponses[metadata]
         if (responseBodyText?.contains("maxmemory") == true) {
-          throw IllegalStateException("Oppia web ran out of memory. Clear Redis memory cache and try again.", exception)
+          throw IllegalStateException(
+            "Oppia web ran out of memory. Clear Redis memory cache and try again.",
+            exception
+          )
         } else throw IllegalStateException(
           "Failed to call: ${request()}. Response body:\n\n$responseBodyText".redact(), exception
         )
@@ -370,7 +373,9 @@ class AndroidActivityHandlerService(
     type: String,
     id: String,
     version: Int,
-    crossinline fetch: (AndroidActivityRequests.SingleNonLocalized) -> Call<List<VersionedStructure<T>>>,
+    crossinline fetch: (
+      AndroidActivityRequests.SingleNonLocalized
+    ) -> Call<List<VersionedStructure<T>>>,
     noinline retrieveStructureVersion: ((T) -> Int)?
   ): Deferred<VersionedStructure<T>?> {
     return CoroutineScope(dispatcher).async {
@@ -423,7 +428,10 @@ class AndroidActivityHandlerService(
       val reqsCol = createRequests(requestsRequiringRemoteFetching.map { (_, req) -> req })
       val fetchResult = if (reqsCol.requests.isNotEmpty()) {
         // Only fetch if there are versions to retrieve.
-        val versionsToRetrieve = requestsRequiringRemoteFetching.map { (index, _) -> versions[index] }
+        val versionsToRetrieve = requestsRequiringRemoteFetching.map {
+          (index, _) ->
+          versions[index]
+        }
         fetch(reqsCol).resolveAsyncVersionsAsync(id, versionsToRetrieve).await().map { structure ->
           // Ensure that the returned structures have the correct remote versions (since the web
           // controller isn't consistent in when it provides a version).

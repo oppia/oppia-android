@@ -23,7 +23,9 @@ inline fun <reified T : Any> JsonReader.nextCustomValue(adapter: JsonAdapter<T>)
 private fun <T : Any> JsonReader.maybeReadElement(readElement: () -> T) =
   if (hasNext()) readElement() else null
 
-private fun <V : Any> JsonReader.maybeReadObjectElement(readElement: (String) -> V): Pair<String, V>? {
+private fun <V : Any> JsonReader.maybeReadObjectElement(
+  readElement: (String) -> V
+): Pair<String, V>? {
   return maybeReadElement {
     nextName().let { name -> name to readElement(name) }
   }

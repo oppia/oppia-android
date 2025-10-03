@@ -77,6 +77,7 @@ import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.I
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.ITEM_SELECTION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MATH_EQUATION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.MULTIPLE_CHOICE_INPUT
+import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_EXPRESSION_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMERIC_INPUT
 import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.RATIO_EXPRESSION_INPUT
@@ -89,6 +90,8 @@ import org.oppia.proto.v1.structure.MathEquationInputInstanceDto
 import org.oppia.proto.v1.structure.MisconceptionDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto
 import org.oppia.proto.v1.structure.NormalizedPoint2dDto
+import org.oppia.proto.v1.structure.NumberWithUnitsDto
+import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto
 import org.oppia.proto.v1.structure.NumericInputInstanceDto
 import org.oppia.proto.v1.structure.OutcomeDto
@@ -112,13 +115,10 @@ import org.oppia.proto.v1.structure.AlgebraicExpressionInputInstanceDto.RuleSpec
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto as DragDropSortRuleSpecDto
 import org.oppia.proto.v1.structure.DragAndDropSortInputInstanceDto.RuleSpecDto.RuleTypeCase as DragDropSortRuleSpecTypeCase
 import org.oppia.proto.v1.structure.FractionInputInstanceDto.RuleSpecDto as FractionRuleSpecDto
-import org.oppia.proto.v1.structure.InteractionInstanceDto.InteractionTypeCase.NUMBER_WITH_UNITS_INPUT
 import org.oppia.proto.v1.structure.ItemSelectionInputInstanceDto.RuleSpecDto as ItemSelRuleSpecDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto as MathEqRuleSpecDto
 import org.oppia.proto.v1.structure.MathEquationInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as MathEqMatchesUpToTrivialManipulationsSpecDto
 import org.oppia.proto.v1.structure.MultipleChoiceInputInstanceDto.RuleSpecDto as MultChoiceRuleSpecDto
-import org.oppia.proto.v1.structure.NumberWithUnitsDto
-import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto
 import org.oppia.proto.v1.structure.NumberWithUnitsInputInstanceDto.RuleSpecDto as NumUnitsRuleSpecDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto as NumExpRuleSpecDto
 import org.oppia.proto.v1.structure.NumericExpressionInputInstanceDto.RuleSpecDto.MatchesUpToTrivialManipulationsSpecDto as NumExpMatchesUpToTrivialManipulationsSpecDto

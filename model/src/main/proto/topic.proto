@@ -88,8 +88,9 @@ message ConceptCard {
   // The core explanation of the skill being reviewed.
   SubtitledHtml explanation = 3;
 
-  // A list of worked examples to present to the learner.
-  repeated SubtitledHtml worked_example = 4;
+  // This field used to be a list of worked examples to present to the learner.
+  // The field was never used, and was removed in Oct 2025.
+  reserved 4;
 
   // Mapping from content_id to a VoiceoverMapping for each SubtitledHtml in this concept card that
   // has corresponding recorded audio to play.
