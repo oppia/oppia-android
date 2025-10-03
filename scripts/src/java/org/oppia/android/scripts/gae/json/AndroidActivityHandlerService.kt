@@ -270,6 +270,22 @@ class AndroidActivityHandlerService(
     return CoroutineScope(dispatcher).async { fullFetch.await().single() }
   }
 
+  fun fetchLatestQuestionsAsync(): Deferred<List<VersionedStructure<GaeQuestion>>> {
+    return CoroutineScope(dispatcher).async {
+      // TODO: Maybe convert this to a sequence to avoid the var.
+      val collectedQuestions = mutableListOf<VersionedStructure<GaeQuestion>>()
+      var nextQuestions = fetchQuestionsSync(offset = 0)
+      while (nextQuestions.isNotEmpty()) {
+        collectedQuestions += nextQuestions
+        nextQuestions = fetchQuestionsSync(offset = collectedQuestions.size)
+      }
+      return@async collectedQuestions
+    }
+  }
+
+  private suspend fun fetchQuestionsSync(offset: Int): List<VersionedStructure<GaeQuestion>> =
+    apiService.fetchLatestQuestions(offset).resolveSync()
+
   private fun <S> Call<VersionedStructures<S>>.resolveAsyncVersionsAsync(
     expectedId: String,
     expectedVersions: List<Int>

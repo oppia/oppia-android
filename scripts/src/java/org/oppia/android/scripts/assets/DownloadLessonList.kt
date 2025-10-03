@@ -84,6 +84,7 @@ class LessonListDownloader(
       gaeBaseUrl,
       apiDebugDir,
       forceCacheLoad = false,
+      downloadQuestions = false,
       scriptBgDispatcher,
       imageDownloader,
       forcedVersions = null // Always load latest when creating the pin versions list.

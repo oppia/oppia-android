@@ -139,7 +139,8 @@ fun main(vararg args: String) {
   check(args.size in 8..9) {
     "Expected use: bazel run //scripts:download_lessons <base_url> <gcs_base_url> <gcs_bucket>" +
       " </path/to/api/secret.file> </output/dir> <cache_mode=none/lazy/force>" +
-      " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]> [-Werror]"
+      " </path/to/cache/dir> </path/to/pinned_download_list_versions.[textproto,pb]>" +
+      " <download_questions=true/false> [-Werror]"
   }
 
   val baseUrl = args[0]
@@ -156,7 +157,8 @@ fun main(vararg args: String) {
   }
   val cacheDirPath = args[6]
   val downloadListVersionsPath = args[7]
-  val failOnError = args.getOrNull(8) == "-Werror"
+  val downloadQuestions = args[8].toBooleanStrict()
+  val failOnError = args.getOrNull(9) == "-Werror"
   if (failOnError) {
     println("FAILING IF ANY ERRORS OCCUR.")
   }
@@ -190,7 +192,8 @@ fun main(vararg args: String) {
   println("Using $downloadListVersionsPath to force structure versions for determinism.")
   val downloader =
     LessonDownloader(
-      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, forceCacheLoad, downloadListVersions
+      baseUrl, gcsBaseUrl, gcsBucket, apiSecret, cacheDir, forceCacheLoad, downloadQuestions,
+      downloadListVersions
     )
   try {
     downloader.downloadLessons(outputDir, failOnError)
@@ -207,6 +210,7 @@ class LessonDownloader(
   apiSecret: String,
   private val cacheDir: File?,
   private val forceCacheLoad: Boolean,
+  private val downloadQuestions: Boolean,
   downloadListVersions: DownloadListVersions?
 ) {
   private val threadPool by lazy {
@@ -224,6 +228,7 @@ class LessonDownloader(
       gaeBaseUrl,
       cacheDir,
       forceCacheLoad,
+      downloadQuestions,
       coroutineDispatcher,
       imageDownloader,
       forcedVersions = downloadListVersions

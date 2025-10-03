@@ -67,6 +67,7 @@ class GaeAndroidEndpointJsonImpl(
   gaeBaseUrl: String,
   cacheDir: File?,
   forceCacheLoad: Boolean,
+  private val downloadQuestions: Boolean,
   private val coroutineDispatcher: CoroutineDispatcher,
   private val imageDownloader: ImageDownloader,
   private val forcedVersions: DownloadListVersions?
@@ -141,6 +142,12 @@ class GaeAndroidEndpointJsonImpl(
           topicId, topicCountsTracker.topicStructureCountMap.getValue(topicId).metricsCallbacks
         ).also { tracker.reportDownloaded("${topicId}_$index") }
       }.awaitAll().associateBy { it.topic.id }
+
+      if (downloadQuestions) {
+        val questions = activityService.fetchLatestQuestionsAsync().await()
+        println()
+        println("DEBUG: Downloaded ${questions.size} JSON questions.")
+      }
 
       val missingTopicIds = topicIds - availableTopicPacks.keys
       val futureTopics = missingTopicIds.map { topicId ->
