@@ -82,7 +82,7 @@ class ConceptCardRetriever @Inject constructor(
               )
             ).build()
         )
-        .addAllWorkedExample(workedExamplesList)
+        // .addAllWorkedExample(workedExamplesList)
         .putAllWrittenTranslation(
           createWrittenTranslationMappingsFromJson(
             skillContents.optJSONObject("written_translations")

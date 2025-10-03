@@ -291,9 +291,6 @@ object DtoProtoToLegacyProtoConverter {
       if (dto.hasExplanation()) {
         this.explanation = dto.defaultLocalization.extractSubtitledHtml(dto.explanation)
       }
-      addAllWorkedExample(
-        dto.workedExamplesList.map { dto.defaultLocalization.extractSubtitledHtml(it.explanation) }
-      )
       putAllRecordedVoiceover(localizations.toVoiceoverMappings())
       putAllWrittenTranslation(localizations.toTranslationMappings(imageReferenceReplacements))
     }.build()
