@@ -40,7 +40,8 @@ class AppLanguageSelectionViewModel @Inject constructor(
       is AsyncResult.Success -> {
         val sortedLanguages = asyncResultAppLanguageListData.value.sortedWith(
           compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
-            .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) })
+            .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+        )
 
         sortedLanguages.map {
           AppLanguageItemViewModel(
