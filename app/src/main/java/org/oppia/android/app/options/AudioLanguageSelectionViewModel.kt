@@ -54,7 +54,12 @@ class AudioLanguageSelectionViewModel @Inject constructor(
 
   /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
   val recyclerViewAudioLanguageList: List<AudioLanguageItemViewModel> by lazy {
-    AudioLanguage.values().filter { it !in IGNORED_AUDIO_LANGUAGES }.map(::createItemViewModel)
+    val languages = AudioLanguage.values().filter { it !in IGNORED_AUDIO_LANGUAGES }
+    val sortedLanguages = languages.sortedWith(
+      compareBy<AudioLanguage> { it != AudioLanguage.ENGLISH_AUDIO_LANGUAGE }
+        .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+    )
+    sortedLanguages.map(::createItemViewModel)
   }
 
   /** Sets the list of audio languages supported by the app based on [OppiaLanguage]. */
