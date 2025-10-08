@@ -16,7 +16,9 @@ class MetricLogSchedulingWorkerFactory @Inject constructor(
     appContext: Context,
     workerClassName: String,
     workerParameters: WorkerParameters
-  ): ListenableWorker {
-    return workerFactory.create(appContext, workerParameters)
+  ): ListenableWorker? {
+    return if (workerClassName == MetricLogSchedulingWorker::class.java.name) {
+      workerFactory.create(appContext, workerParameters)
+    } else null
   }
 }

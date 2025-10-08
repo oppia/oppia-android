@@ -8,13 +8,15 @@ import javax.inject.Inject
 
 /** Custom [WorkerFactory] for the [PlatformParameterSyncUpWorker]. */
 class PlatformParameterSyncUpWorkerFactory @Inject constructor(
-  private val platformParameterSyncUpWorkerFactory: PlatformParameterSyncUpWorker.Factory
+  private val workerFactory: PlatformParameterSyncUpWorker.Factory
 ) : WorkerFactory() {
   override fun createWorker(
     context: Context,
     workerClassName: String,
     workerParameters: WorkerParameters
   ): ListenableWorker? {
-    return platformParameterSyncUpWorkerFactory.create(context, workerParameters)
+    return if (workerClassName == PlatformParameterSyncUpWorker::class.java.name) {
+      workerFactory.create(context, workerParameters)
+    } else null
   }
 }

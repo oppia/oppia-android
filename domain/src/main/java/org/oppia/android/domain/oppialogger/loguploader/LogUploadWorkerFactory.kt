@@ -17,6 +17,8 @@ class LogUploadWorkerFactory @Inject constructor(
     workerClassName: String,
     workerParameters: WorkerParameters
   ): ListenableWorker? {
-    return workerFactory.create(appContext, workerParameters)
+    return if (workerClassName == LogUploadWorker::class.java.name) {
+      workerFactory.create(appContext, workerParameters)
+    } else null
   }
 }
