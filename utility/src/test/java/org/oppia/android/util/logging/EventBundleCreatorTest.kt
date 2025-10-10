@@ -876,7 +876,8 @@ class EventBundleCreatorTest {
       .isEqualTo("2,3,4,5,7,8,10,11,12,13,14,15,17,18,0")
     assertThat(bundle).string("feature_flag_enabled_states")
       .isEqualTo("0,1,0,1,1,0,1,0,1,0,1,0,0,0,0")
-    assertThat(bundle).string("feature_flag_sync_statuses").isEqualTo("0,1,2,0,1,2,0,1,2,0,1,2,0,0")
+    assertThat(bundle).string("feature_flag_sync_statuses")
+      .isEqualTo("0,1,2,0,2,0,1,2,0,1,2,0,1,1,0")
   }
 
   @Test
