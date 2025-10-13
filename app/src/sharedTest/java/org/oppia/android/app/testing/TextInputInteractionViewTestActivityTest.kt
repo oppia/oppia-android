@@ -170,7 +170,6 @@ class TextInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testTextInput_withChar_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       TextInputInteractionViewTestActivity::class.java

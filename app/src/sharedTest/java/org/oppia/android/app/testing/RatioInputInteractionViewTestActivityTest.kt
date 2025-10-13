@@ -175,7 +175,6 @@ class RatioInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testRatioInput_withRatio_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       RatioInputInteractionViewTestActivity::class.java
