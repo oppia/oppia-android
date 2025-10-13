@@ -100,18 +100,13 @@ class MetricLogSchedulingWorkerTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
     setUpTestApplicationComponent()
-    context = InstrumentationRegistry.getInstrumentation().targetContext
-    val config = Configuration.Builder()
-      .setExecutor(SynchronousExecutor())
-      .setWorkerFactory(metricLogSchedulingWorkerFactory)
-      .build()
-    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
   @After
   fun tearDown() {
+    val workManagerImpl = androidx.work.impl.WorkManagerImpl.getInstance(context)
+    workManagerImpl.workDatabase.close()
     TestPlatformParameterModule.reset()
   }
 
@@ -124,7 +119,7 @@ class MetricLogSchedulingWorkerTest {
       MetricLogSchedulingWorker.STORAGE_USAGE_WORKER
     ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
       .setInputData(inputData)
       .build()
 
@@ -146,7 +141,7 @@ class MetricLogSchedulingWorkerTest {
       MetricLogSchedulingWorker.PERIODIC_BACKGROUND_METRIC_WORKER
     ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
       .setInputData(inputData)
       .build()
 
@@ -168,7 +163,7 @@ class MetricLogSchedulingWorkerTest {
       MetricLogSchedulingWorker.PERIODIC_UI_METRIC_WORKER
     ).build()
 
-    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<LogUploadWorker>()
+    val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<MetricLogSchedulingWorker>()
       .setInputData(inputData)
       .build()
 
@@ -218,10 +213,16 @@ class MetricLogSchedulingWorkerTest {
   }
 
   private fun setUpTestApplicationComponent() {
-    DaggerMetricLogSchedulingWorkerTest_TestApplicationComponent.builder()
-      .setApplication(ApplicationProvider.getApplicationContext())
-      .build()
+    TestPlatformParameterModule.forceEnablePerformanceMetricsCollection(true)
+    ApplicationProvider
+      .getApplicationContext<MetricLogSchedulingWorkerTest.TestApplication>()
       .inject(this)
+    context = InstrumentationRegistry.getInstrumentation().targetContext
+    val config = Configuration.Builder()
+      .setExecutor(SynchronousExecutor())
+      .setWorkerFactory(metricLogSchedulingWorkerFactory)
+      .build()
+    WorkManagerTestInitHelper.initializeTestWorkManager(context, config)
   }
 
   // TODO(#89): Move this to a common test application component.
