@@ -12,6 +12,7 @@ load("//third_party:versions.bzl", "HTTP_DEPENDENCY_VERSIONS", "MAVEN_REPOSITORI
 # TODO(#1542): Sync Android SDK version with the manifest.
 android_sdk_repository(
     name = "androidsdk",
+    path = "/home/shankhanil-saha/Android/Sdk",
     api_level = BUILD_SDK_VERSION,
     build_tools_version = BUILD_TOOLS_VERSION,
 )
