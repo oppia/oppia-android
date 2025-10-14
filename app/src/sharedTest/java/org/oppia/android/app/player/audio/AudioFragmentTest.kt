@@ -360,15 +360,20 @@ class AudioFragmentTest {
 
   @Test
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withContentDescription(
