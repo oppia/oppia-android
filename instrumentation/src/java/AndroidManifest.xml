@@ -60,7 +60,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.mydownloads.MyDownloadsActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.onboarding.OnboardingActivity"
@@ -138,7 +137,6 @@
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
       android:name=".app.splash.SplashActivity"
-      android:screenOrientation="portrait"
       android:theme="@style/SplashScreenTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
