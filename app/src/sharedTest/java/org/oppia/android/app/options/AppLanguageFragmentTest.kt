@@ -240,6 +240,30 @@ class AppLanguageFragmentTest {
   }
 
   @Test
+  fun testAppLanguage_englishIsFirstThenAlphabetical() {
+    launch(OptionsActivity::class.java).use {
+      it.onActivity { activity ->
+        val fragment = activity.supportFragmentManager
+          .findFragmentByTag(TAG_APP_LANGUAGE_FRAGMENT) as AppLanguageFragment
+        testCoroutineDispatchers.runCurrent()
+        fragment.requireView().requestLayout()
+      }
+      onView(withId(R.id.language_recycler_view))
+        .perform(
+          scrollToPosition<RecyclerView.ViewHolder>(0)
+        ).check(
+          matches(
+            atPositionOnView(
+              0,
+              withText("English"),
+              R.id.language_radio_button
+            )
+          )
+        )
+    }
+  }
+
+  @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
     setUpTestWithOnboardingV2Disabled()
     launch<AppLanguageActivity>(createAppLanguageActivityIntent(OppiaLanguage.ENGLISH))

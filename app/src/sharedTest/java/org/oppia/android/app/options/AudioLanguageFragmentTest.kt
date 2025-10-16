@@ -248,6 +248,36 @@ class AudioLanguageFragmentTest {
   }
 
   @Test
+  fun testAudioLanguage_englishIsFirstThenAlphabetical() {
+    topicController.getTopic(
+      ProfileId.newBuilder().setInternalId(0).build(),
+      TEST_TOPIC_ID_0
+    ).observeForever(mockTopicLiveDataObserver)
+    testCoroutineDispatchers.runCurrent()
+
+    launch<OptionsActivity>(
+      createAudioLanguageActivityIntent(
+        profileId.internalId,
+        TEST_TOPIC_ID_0
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.language_recycler_view))
+        .perform(
+          scrollToPosition<RecyclerView.ViewHolder>(0)
+        ).check(
+          matches(
+            atPositionOnView(
+              0,
+              withText("English"),
+              R.id.language_radio_button
+            )
+          )
+        )
+    }
+  }
+
+  @Test
   fun testAudioLanguage_onboardingV2Enabled_allViewsAreDisplayed() {
     launchV2FlowWithLanguage(ENGLISH_AUDIO_LANGUAGE, LEARNER_INTRO_SCREEN).use {
       onView(withId(R.id.audio_language_text)).check(
