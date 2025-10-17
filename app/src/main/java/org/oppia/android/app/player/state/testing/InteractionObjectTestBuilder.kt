@@ -1,18 +1,4 @@
-
-package org.oppia.android.domain.classify
-
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.HtmlTranslationList
-import org.oppia.android.app.model.InteractionObject
-import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
-import org.oppia.android.app.model.NumberUnit
-import org.oppia.android.app.model.NumberWithUnits
-import org.oppia.android.app.model.RatioExpression
-import org.oppia.android.app.model.SetOfTranslatableHtmlContentIds
-import org.oppia.android.app.model.TranslatableHtmlContentId
-import org.oppia.android.app.model.TranslatableSetOfNormalizedString
-import org.oppia.android.app.model.Translation
-import org.oppia.android.app.model.WrittenTranslationContext
+package org.oppia.android.app.player.state.testing
 
 /**
  * Helper class for test cases which can provide the [InteractionObject]
