@@ -1,6 +1,5 @@
 android_lint_exemption: {
   exempted_file_path: "app/src/main/AndroidManifest.xml"
-  lint_issue_id: LOCKED_ORIENTATION_ACTIVITY
   lint_issue_id: MISSING_VERSION
   lint_issue_id: REDUNDANT_LABEL
 }
