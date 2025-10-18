@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -284,7 +283,6 @@ class FractionInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testFractionInput_withFraction_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       FractionInputInteractionViewTestActivity::class.java

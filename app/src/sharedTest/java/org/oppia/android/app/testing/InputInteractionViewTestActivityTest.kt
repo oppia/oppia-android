@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -214,7 +213,6 @@ class InputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testNumberInput_withText_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       InputInteractionViewTestActivity::class.java
