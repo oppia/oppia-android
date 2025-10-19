@@ -734,6 +734,7 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":app",
+    ":interaction_object_test_builder",
     ":resources",
     ":test_deps",
     "//:dagger",

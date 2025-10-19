@@ -167,7 +167,6 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":domain",
-    ":interaction_object_test_builder",
     "//:dagger",
     "//app:crashlytics",
     "//app:crashlytics_deps",
