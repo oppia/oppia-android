@@ -695,17 +695,6 @@ kt_android_library(
 #  - Only test files depend on it
 
 kt_android_library(
-    name = "interaction_object_test_builder",
-    testonly = True,
-    srcs = [
-        "src/main/java/org/oppia/android/app/player/state/testing/InteractionObjectTestBuilder.kt",
-    ],
-    deps = [
-        "//model/src/main/proto:question_java_proto_lite",
-    ],
-)
-
-kt_android_library(
     name = "test_deps",
     testonly = True,
     srcs = [
@@ -734,7 +723,6 @@ kt_android_library(
 # keep sorted
 TEST_DEPS = [
     ":app",
-    ":interaction_object_test_builder",
     ":resources",
     ":test_deps",
     "//:dagger",

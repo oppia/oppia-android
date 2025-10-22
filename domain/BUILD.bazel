@@ -164,9 +164,21 @@ kt_android_library(
     ],
 )
 
+kt_android_library(
+    name = "interaction_object_test_builder",
+    testonly = True,
+    srcs = [
+        "src/main/java/org/oppia/android/app/player/state/testing/InteractionObjectTestBuilder.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:question_java_proto_lite",
+    ],
+)
+
 # keep sorted
 TEST_DEPS = [
     ":domain",
+    ":interaction_object_test_builder",
     "//:dagger",
     "//app:crashlytics",
     "//app:crashlytics_deps",
