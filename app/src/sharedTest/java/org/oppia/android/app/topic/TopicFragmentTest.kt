@@ -450,6 +450,7 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       onView(
         withText(
           TopicTab.getTabForPosition(
@@ -508,6 +509,7 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
       verifyTabTitleAtPosition(position = LESSON_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
@@ -538,6 +540,7 @@ class TopicFragmentTest {
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       val practiceTab =
         TopicTab.getTabForPosition(
           position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED,
