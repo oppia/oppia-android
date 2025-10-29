@@ -442,6 +442,7 @@ class TopicPracticeFragmentTest {
       clickPracticeItem(position = 2, targetViewId = R.id.subtopic_check_box)
 
       scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 1)
       onView(
