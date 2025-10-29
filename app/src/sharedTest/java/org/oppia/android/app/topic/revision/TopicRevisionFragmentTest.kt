@@ -305,6 +305,7 @@ class TopicRevisionFragmentTest {
       classroomId = TEST_CLASSROOM_ID_1,
       topicId = FRACTIONS_TOPIC_ID
     ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
       clickRevisionTab()
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->

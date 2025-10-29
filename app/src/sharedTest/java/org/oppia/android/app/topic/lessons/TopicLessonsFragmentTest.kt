@@ -1073,6 +1073,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       onView(
         atPositionOnView(
@@ -1094,6 +1095,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       onView(
@@ -1116,6 +1118,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use {
+      testCoroutineDispatchers.runCurrent()
       scrollToPosition(position = 1)
       clickStoryItem(position = 1, targetViewId = R.id.chapter_list_drop_down_icon)
       orientationLandscape()
@@ -1269,6 +1272,7 @@ class TopicLessonsFragmentTest {
         RATIOS_STORY_ID_0
       )
     ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
       clickLessonTab()
       testCoroutineDispatchers.runCurrent()
 
@@ -1276,6 +1280,7 @@ class TopicLessonsFragmentTest {
       clickStoryItem(position = 2, targetViewId = R.id.chapter_list_drop_down_icon)
 
       scenario.recreate()
+      testCoroutineDispatchers.runCurrent()
 
       scrollToPosition(position = 2)
       onView(

@@ -448,6 +448,7 @@ class TopicInfoFragmentTest {
       classroomId = TEST_CLASSROOM_ID,
       topicId = TEST_TOPIC_ID
     ).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
       clickInfoTab()
       testCoroutineDispatchers.runCurrent()
       scenario.onActivity { activity ->
