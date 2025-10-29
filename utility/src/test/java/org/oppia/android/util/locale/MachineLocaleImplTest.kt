@@ -300,7 +300,9 @@ class MachineLocaleImplTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, LocaleProdModule::class, FakeOppiaClockModule::class
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      TestModule::class
     ]
   )
   interface TestApplicationComponent {

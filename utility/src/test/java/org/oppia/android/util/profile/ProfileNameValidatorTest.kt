@@ -98,7 +98,11 @@ class ProfileNameValidatorTest {
   }
 
   @Singleton
-  @Component(modules = [RobolectricModule::class])
+  @Component(
+    modules = [
+      RobolectricModule::class
+    ]
+  )
   interface TestApplicationComponent {
     @Component.Builder
     interface Builder {

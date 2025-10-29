@@ -57,7 +57,7 @@
         android:background="@color/component_color_shared_transparent_background_color"
         android:contentDescription="@string/help_activity_back_arrow_description"
         android:padding="12dp"
-        android:tint="@color/component_color_shared_multipane_icon_color"
+        app:tint="@color/component_color_shared_multipane_icon_color"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/extra_controls_title"
         app:layout_constraintStart_toStartOf="@+id/administrator_controls_guideline"

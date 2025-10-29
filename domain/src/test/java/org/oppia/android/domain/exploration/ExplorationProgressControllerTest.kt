@@ -10,6 +10,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -21,7 +22,10 @@ import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.COMPLETED_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.PENDING_STATE
 import org.oppia.android.app.model.EphemeralState.StateTypeCase.TERMINAL_STATE
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.CLOSE_FLASHBACK_EVENT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.FLASHBACK_OFFERED_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.HINT_UNLOCKED_CONTEXT
+import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_FLASHBACK_EVENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.PROGRESS_SAVING_SUCCESS_CONTEXT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.REACH_INVESTED_ENGAGEMENT
 import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.RESUME_LESSON_SUBMIT_CORRECT_ANSWER_CONTEXT
@@ -36,6 +40,7 @@ import org.oppia.android.app.model.HelpIndex.IndexTypeCase.LATEST_REVEALED_HINT_
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.NEXT_AVAILABLE_HINT_INDEX
 import org.oppia.android.app.model.HelpIndex.IndexTypeCase.SHOW_SOLUTION
 import org.oppia.android.app.model.InteractionObject
+import org.oppia.android.app.model.ItemSelectionAnswerState
 import org.oppia.android.app.model.ListOfSetsOfTranslatableHtmlContentIds
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.Point2d
@@ -94,6 +99,7 @@ import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -110,11 +116,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableNpsSurvey
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import java.util.Locale
@@ -165,7 +166,17 @@ class ExplorationProgressControllerTest {
 
   @Before
   fun setUp() {
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
+    TestPlatformParameterModule.forceEnableNpsSurvey(true)
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
     setUpTestApplicationComponent()
+  }
+
+  @After
+  fun tearDown() {
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -2245,7 +2256,7 @@ class ExplorationProgressControllerTest {
     assertThat(eventLog).hasStartCardContextThat {
       hasExplorationDetailsThat().containsTestExp2Details()
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo(exploration.initStateName)
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -2290,7 +2301,7 @@ class ExplorationProgressControllerTest {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -2311,7 +2322,7 @@ class ExplorationProgressControllerTest {
       hasExplorationDetailsThat().containsTestExp2Details()
       // The exploration should have been started over.
       hasExplorationDetailsThat().hasStateNameThat().isEqualTo("Continue")
-      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasSkillIdThat().isEqualTo("")
     }
   }
 
@@ -3273,6 +3284,391 @@ class ExplorationProgressControllerTest {
     assertThat(getAggregateTopicTime()).isEqualTo(sessionTime)
   }
 
+  @Test
+  fun testFlashback_onSubmitWrongRatioInputAnswer_returnsFlashbackAttributes() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    val ratioExpression = RatioExpression.newBuilder().apply {
+      addAllRatioComponent(listOf(4, 7))
+    }.build()
+
+    // Submit a wrong answer.
+    val result = explorationProgressController.submitAnswer(createRatioInputAnswer(ratioExpression))
+    // Verify that the answer submission was successful.
+    val answerOutcome = monitorFactory.waitForNextSuccessfulResult(result)
+
+    assertThat(answerOutcome.labelledAsCorrectAnswer).isEqualTo(false)
+    assertThat(answerOutcome.destinationCase).isEqualTo(AnswerOutcome.DestinationCase.SAME_STATE)
+    assertThat(answerOutcome.feedback.contentId).contains("default_outcome")
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioInputAnswer_returnsPendingState() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+
+    // Verify that the current state updates. It should stay pending, and the wrong answer should be
+    // appended.
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(EphemeralState.StateTypeCase.PENDING_STATE)
+    assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Verify linked Skill Id of this state.
+    assertThat(ephemeralState.state.linkedSkillId).isEqualTo("test_skill_id_0")
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioInputAnswer_verifyFlashbackStateNameIsAdded() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Verify that there is exactly one wrong answer.
+    assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit)
+      .isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to false.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(false)
+  }
+
+  @Test
+  fun testFlashback_submitWrongRatioInputAnswer_resumeExploration_verifyCorrectPendingState() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+    endExploration()
+
+    val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint
+    )
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
+    // Verify that there is exactly one wrong answer.
+    assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit)
+      .isEqualTo("Fractions")
+  }
+
+  @Test
+  fun testFlashback_submitWrongAnswer_moveToFlashbackState_returnsEphemeralStateWithFlashbackStateTrue() { // ktlint-disable max-line-length
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    val ephemeralState1 = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState1.pendingState.wrongAnswerList[0]
+
+    // Trigger flashback dialog and click Continue button.
+    val ephemeralState2 =
+      moveToFlashbackState(answerAndResponse.stateNameToRevisit)
+
+    // Verify returned EphemeralState is a completed state.
+    assertThat(ephemeralState2.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    // Verify flashback state is true in the returned EphemeralState.
+    assertThat(ephemeralState2.flashbackState).isEqualTo(true)
+
+    // Verify linked Skill Id of this state.
+    assertThat(ephemeralState2.state.linkedSkillId).isEqualTo("test_skill_id_0")
+  }
+
+  @Test
+  fun testFlashback_clickReturnToQuestionButton_returnsEphemeralStateWithFlashbackStateFalse() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    val ephemeralState = moveBackToLatest()
+
+    // Verify returned EphemeralState is a pending state.
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    // Verify flashback state is false in the returned EphemeralState.
+    assertThat(ephemeralState.flashbackState).isEqualTo(false)
+  }
+
+  @Test
+  fun testFlashback_clickReturnToQuestionButton_returnsLatestPendingState() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    val ephemeralState = moveBackToLatest()
+
+    // Verify returned EphemeralState has correct pending state.
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
+
+    // Verify that there is exactly one wrong answer.
+    assertThat(ephemeralState.pendingState.wrongAnswerCount).isEqualTo(1)
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Verify answer and response contains the flashback state name.
+    assertThat(answerAndResponse.stateNameToRevisit).isEqualTo("Fractions")
+    // Verify the answer and response has the flashbackViewed field set to true.
+    assertThat(answerAndResponse.flashbackViewed).isEqualTo(true)
+  }
+
+  @Test
+  fun testFlashback_submitWrongAnswer_moveToFlashbackState_resumeExploration_returnsLatestPendingState() { // ktlint-disable max-line-length
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+    endExploration()
+
+    val checkpoint = retrieveExplorationCheckpoint(TEST_EXPLORATION_ID_2)
+    resumeExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2, checkpoint
+    )
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+
+    // Verify returned ephemeral state has latest pending state.
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(PENDING_STATE)
+    assertThat(ephemeralState.state.name).isEqualTo("RatioInput")
+  }
+
+  @Test
+  fun testSubmitAnswer_forMultipleChoiceInteraction_verifyUserAnswer() {
+    restartExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+
+    // Third state: Multiple choice. Correct answer: Eagle (second third choice).
+    submitMultipleChoiceAnswer(choiceIndex = 2)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates. The submitted answer should have a textual version
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    val answerAndFeedback = ephemeralState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase)
+      .isEqualTo(UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER)
+
+    // Verify the selected choice index is 2 (Eagle).
+    assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList)
+      .containsExactly(2)
+  }
+
+  @Test
+  fun testSubmitAnswer_forItemSelectionInteraction_verifyUserAnswer() {
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+
+    // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+    submitItemSelectionAnswer(0, 3, 2)
+    testCoroutineDispatchers.runCurrent()
+
+    // Verify that the current state updates.
+    val ephemeralState = waitForGetCurrentStateSuccessfulLoad()
+    assertThat(ephemeralState.stateTypeCase).isEqualTo(COMPLETED_STATE)
+    val answerAndFeedback = ephemeralState.completedState.getAnswer(0)
+    assertThat(answerAndFeedback.userAnswer.textualAnswerCase)
+      .isEqualTo(UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER)
+
+    // Verify the selected choice indices are 0, 1, 2.
+    assertThat(answerAndFeedback.userAnswer.itemSelectionAnswer.selectedIndexesList)
+      .containsExactly(0, 3, 2)
+  }
+
+  @Test
+  fun testFlashback_offeredFlashback_logsFlashbackOfferedContext() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+
+    val event = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == FLASHBACK_OFFERED_CONTEXT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback offered event was correctly logged.
+    assertThat(event!!).hasFlashbackOfferedContextThat() {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("RatioInput")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testFlashback_openedFlashback_logsOpenFlashbackEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+
+    val event = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == OPEN_FLASHBACK_EVENT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback open event was correctly logged.
+    assertThat(event!!).hasOpenFlashbackContextThat() {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasExplorationDetailsThat().hasStateNameThat().isEqualTo("RatioInput")
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+      hasStateNameToRevisitThat().isEqualTo("Fractions")
+    }
+  }
+
+  @Test
+  fun testFlashback_closeFlashback_logsCloseFlashbackEvent() {
+    logIntoAnalyticsReadyAdminProfile()
+    startPlayingNewExploration(
+      TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_0, TEST_STORY_ID_0, TEST_EXPLORATION_ID_2
+    )
+    waitForGetCurrentStateSuccessfulLoad()
+
+    // Navigate to flashback state and end exploration.
+    navigateToFlashbackState()
+
+    // Click on 'Return to Question' button.
+    moveBackToLatest()
+
+    val closeEvent = fakeAnalyticsEventLogger.getLoggedEvent {
+      it.context.activityContextCase == CLOSE_FLASHBACK_EVENT
+    }.also {
+      assert(it != null)
+    }
+
+    // Verify that the flashback close event was correctly logged.
+    assertThat(closeEvent!!).hasCloseFlashbackContextThat {
+      hasExplorationDetailsThat().containsTestExp2Details()
+      hasSkillIdThat().isEqualTo("test_skill_id_0")
+    }
+  }
+
+  private fun navigateToFlashbackState() {
+    navigateToPrototypeRatioInputState()
+
+    // Submit a wrong answer.
+    val ephemeralState = submitRatioInputAnswer(
+      RatioExpression.newBuilder().apply {
+        addAllRatioComponent(listOf(4, 7))
+      }.build()
+    )
+
+    // Access the first answer and response in the list.
+    val answerAndResponse = ephemeralState.pendingState.wrongAnswerList[0]
+
+    // Trigger flashback dialog and click Continue button.
+    moveToFlashbackState(answerAndResponse.stateNameToRevisit)
+  }
+
+  private fun navigateToPrototypeRatioInputState() {
+    playThroughPrototypeState1AndMoveToNextState()
+    playThroughPrototypeState2AndMoveToNextState()
+    playThroughPrototypeState3AndMoveToNextState()
+    playThroughPrototypeState4AndMoveToNextState()
+    playThroughPrototypeState5AndMoveToNextState()
+    playThroughPrototypeState6AndMoveToNextState()
+  }
+
+  private fun moveToFlashbackState(stateName: String): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.moveToFlashback(stateName)
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
+  }
+
+  private fun moveBackToLatest(): EphemeralState {
+    monitorFactory.waitForNextSuccessfulResult(
+      explorationProgressController.moveBackToLatest()
+    )
+    return waitForGetCurrentStateSuccessfulLoad()
+  }
+
   private fun getAggregateTopicTime(): Long {
     return monitorFactory.waitForNextSuccessfulResult(
       explorationActiveTimeController.retrieveAggregateTopicLearningTimeDataProvider(
@@ -3381,8 +3777,8 @@ class ExplorationProgressControllerTest {
     return submitAnswer(createMultipleChoiceAnswer(choiceIndex))
   }
 
-  private fun submitItemSelectionAnswer(vararg contentIds: String): EphemeralState {
-    return submitAnswer(createItemSelectionAnswer(contentIds.toList()))
+  private fun submitItemSelectionAnswer(vararg positions: Int): EphemeralState {
+    return submitAnswer(createItemSelectionAnswer(positions.toList()))
   }
 
   private fun submitNumericInputAnswer(numericAnswer: Double): EphemeralState {
@@ -3499,12 +3895,12 @@ class ExplorationProgressControllerTest {
 
   private fun submitPrototypeState4Answer(): EphemeralState {
     // Fourth state: Item selection (radio buttons). Correct answer: Green (first choice).
-    return submitItemSelectionAnswer("ca_choices_0")
+    return submitItemSelectionAnswer(0)
   }
 
   private fun submitPrototypeState5Answer(): EphemeralState {
     // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
-    return submitItemSelectionAnswer("ca_choices_0", "ca_choices_3", "ca_choices_2")
+    return submitItemSelectionAnswer(0, 3, 2)
   }
 
   private fun submitPrototypeState6Answer(): EphemeralState {
@@ -3626,15 +4022,16 @@ class ExplorationProgressControllerTest {
   }
 
   private fun createMultipleChoiceAnswer(choiceIndex: Int): UserAnswer {
-    return convertToUserAnswer(
+    return convertToUserAnswerForMultipleChoice(
       InteractionObject.newBuilder().apply {
         nonNegativeInt = choiceIndex
       }.build()
     )
   }
 
-  private fun createItemSelectionAnswer(contentIds: List<String>): UserAnswer {
-    return convertToUserAnswer(
+  private fun createItemSelectionAnswer(positions: List<Int>): UserAnswer {
+    val contentIds = positions.map { pos -> "ca_choices_$pos" }
+    return convertToUserAnswerForItemSelection(
       InteractionObject.newBuilder().apply {
         setOfTranslatableHtmlContentIds = SetOfTranslatableHtmlContentIds.newBuilder().apply {
           addAllContentIds(
@@ -3643,7 +4040,8 @@ class ExplorationProgressControllerTest {
             }
           )
         }.build()
-      }.build()
+      }.build(),
+      positions
     )
   }
 
@@ -3712,6 +4110,31 @@ class ExplorationProgressControllerTest {
 
   private fun convertToUserAnswer(answer: InteractionObject): UserAnswer {
     return UserAnswer.newBuilder().setAnswer(answer).setPlainAnswer(answer.toAnswerString()).build()
+  }
+
+  private fun convertToUserAnswerForMultipleChoice(answer: InteractionObject): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(answer)
+      .setItemSelectionAnswer(
+        ItemSelectionAnswerState.newBuilder()
+          .addAllSelectedIndexes(listOf(answer.nonNegativeInt))
+          .build()
+      )
+      .build()
+  }
+
+  private fun convertToUserAnswerForItemSelection(
+    answer: InteractionObject,
+    positions: List<Int>
+  ): UserAnswer {
+    return UserAnswer.newBuilder()
+      .setAnswer(answer)
+      .setItemSelectionAnswer(
+        ItemSelectionAnswerState.newBuilder()
+          .addAllSelectedIndexes(positions)
+          .build()
+      )
+      .build()
   }
 
   private fun forceDefaultLocale(locale: Locale) {
@@ -3837,51 +4260,45 @@ class ExplorationProgressControllerTest {
     @Provides
     @LoadLessonProtosFromAssets
     fun provideLoadLessonProtosFromAssets(): Boolean = true
-
-    @Provides
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Enable the study by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Enable study IDs by default in tests.
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableNpsSurvey
-    fun provideEnableNpsSurvey(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      return PlatformParameterValue.createDefaultParameter(defaultValue = true)
-    }
   }
 
   // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
-      TestModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, InteractionsModule::class, TestLogReportingModule::class,
-      ImageClickInputModule::class, LogStorageModule::class, TestDispatcherModule::class,
-      RatioInputModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      ExplorationStorageTestModule::class, HintsAndSolutionConfigModule::class,
-      HintsAndSolutionProdModule::class, NetworkConnectionUtilDebugModule::class,
-      AssetModule::class, LocaleProdModule::class, NumericExpressionInputModule::class,
-      AlgebraicExpressionInputModule::class, MathEquationInputModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, PlatformParameterSingletonModule::class,
-      ExplorationProgressModule::class, TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      DragDropSortInputModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      FractionInputModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      ImageClickInputModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      RatioInputModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TextInputRuleModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

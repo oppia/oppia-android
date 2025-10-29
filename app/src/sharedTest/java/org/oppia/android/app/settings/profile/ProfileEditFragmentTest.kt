@@ -56,7 +56,8 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -149,24 +150,25 @@ class ProfileEditFragmentTest {
   @Before
   fun setUp() {
     Intents.init()
-    setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.initializeProfiles()
-    TestPlatformParameterModule.reset()
+    // TODO(#5835): Call setUpTestApplicationComponent() here once flag overrides init earlier.
   }
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @Test
   fun testProfileEdit_clickProfileDeletion_checkOpensDeletionDialog_checkOpensSuccessDialog() {
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(click())
       onView(withText(R.string.profile_edit_delete_dialog_message))
@@ -183,6 +185,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_configChange_clickDelete_checkOpensDeletionDialog_checkOpensSuccessDialog() {
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
@@ -201,6 +204,7 @@ class ProfileEditFragmentTest {
   @Test
   @Config(qualifiers = "land")
   fun testProfileEdit_clickDelete_landscapeMode_checkOpensDeletionDialog() {
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 1).use {
       onView(withId(R.id.profile_delete_button)).perform(scrollTo()).perform(click())
       onView(isRoot()).perform(orientationLandscape())
@@ -219,6 +223,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsDisabled_switchIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    setUpTestApplicationComponent()
     profileManagementController
       .addProfile(
         name = "James",
@@ -236,6 +241,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadDisabled_switchIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -244,6 +250,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     profileManagementController
       .addProfile(
         name = "James",
@@ -262,6 +269,7 @@ class ProfileEditFragmentTest {
   @Config(qualifiers = "land")
   fun testProfileEdit_configChange_userHasDownloadAccess_downloadsEnabled_checkSwitchIsChecked() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     val addProfileProvider =
       profileManagementController.addProfile(
         name = "James",
@@ -281,6 +289,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_clickAllowDownloads_checkChanged() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     profileManagementController
       .addProfile(
         name = "James",
@@ -300,6 +309,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotClickable() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     profileManagementController
       .addProfile(
         name = "James",
@@ -317,6 +327,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userHasDownloadAccess_downloadsEnabled_switchContainerIsFocusable() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     profileManagementController
       .addProfile(
         name = "James",
@@ -334,6 +345,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_startWithUserHasDownloadAccess_downloadsEnabled_switchContainerIsDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     profileManagementController
       .addProfile(
         name = "James",
@@ -351,6 +363,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_userDoesNotHaveDownloadAccess_downloadsEnabled_switchIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_allow_download_container)).check(matches(not(isDisplayed())))
     }
@@ -359,6 +372,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOff_doesNotHaveMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button))
         .check(matches(not(isDisplayed())))
@@ -368,6 +382,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOn_hasMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
     }
@@ -377,6 +392,7 @@ class ProfileEditFragmentTest {
   @Config(qualifiers = "land")
   fun testProfileEdit_studyOn_landscape_hasMarkChaptersCompletedButton() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).check(matches(isDisplayed()))
@@ -386,6 +402,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOn_clickMarkChapsCompleted_opensMarkCompleteActivityForProfile() {
     TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_mark_chapters_for_completion_button)).perform(click())
 
@@ -404,6 +421,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_featureOff_doesNotHaveEnableQuickSwitchingSwitch() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(false)
+    setUpTestApplicationComponent()
 
     // Without the study feature enabled, the switch should not be visible.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -415,6 +433,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_featureOn_hasEnableQuickSwitchingSwitch() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    setUpTestApplicationComponent()
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(withId(R.id.profile_edit_enable_in_lesson_language_switching_container))
@@ -426,6 +445,7 @@ class ProfileEditFragmentTest {
   @Config(qualifiers = "land")
   fun testProfileEdit_featureOn_landscape_hasEnableQuickSwitchingSwitch() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    setUpTestApplicationComponent()
 
     launchFragmentTestActivity(internalProfileId = 0).use {
       onView(isRoot()).perform(orientationLandscape())
@@ -442,6 +462,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_featureOn_doNotHaveSwitchingPermission_enableLanguageSwitchingIsOff() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    setUpTestApplicationComponent()
 
     // Without the permission to switch languages, the setting should be off by default.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -453,6 +474,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_featureOn_hasSwitchingPermission_enableLanguageSwitchingIsOn() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    setUpTestApplicationComponent()
 
     val updateLangProvider =
       profileManagementController.updateEnableInLessonQuickLanguageSwitching(
@@ -471,6 +493,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_featureOn_doNotClickEnableLanguageSwitching_doesNotHaveSwitchingPermission() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    setUpTestApplicationComponent()
     // Open the UI, but don't interact with it.
     launchFragmentTestActivity(internalProfileId = 0).use {}
 
@@ -487,6 +510,7 @@ class ProfileEditFragmentTest {
   @Test
   fun testProfileEdit_studyOn_clickEnableLanguageSwitching_hasSwitchingPermission() {
     TestPlatformParameterModule.forceEnableFastLanguageSwitchingInLesson(true)
+    setUpTestApplicationComponent()
 
     // Enable language switching in the UI.
     launchFragmentTestActivity(internalProfileId = 0).use {
@@ -505,6 +529,7 @@ class ProfileEditFragmentTest {
 
   @Test
   fun testFragment_fragmentLoaded_verifyCorrectArgumentsPassed() {
+    setUpTestApplicationComponent()
     launchFragmentTestActivity(internalProfileId = 1).use { scenario ->
       scenario.onActivity { activity ->
 
@@ -545,33 +570,66 @@ class ProfileEditFragmentTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, TestImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
       TestAuthenticationModule::class,
-    ],
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
+    ]
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder

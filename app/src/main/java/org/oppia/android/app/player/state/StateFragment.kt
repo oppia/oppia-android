@@ -16,9 +16,11 @@ import org.oppia.android.app.player.state.answerhandling.InteractionAnswerErrorO
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerHandler
 import org.oppia.android.app.player.state.answerhandling.InteractionAnswerReceiver
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
@@ -38,7 +40,9 @@ class StateFragment :
   ReturnToTopicNavigationButtonListener,
   SubmitNavigationButtonListener,
   PreviousResponsesHeaderClickListener,
-  ShowHintAvailabilityListener {
+  ShowHintAvailabilityListener,
+  FlashbackButtonListener,
+  ReturnToQuestionButtonListener {
   companion object {
 
     /** Arguments key for StateFragment. */
@@ -130,6 +134,14 @@ class StateFragment :
 
   override fun onSubmitButtonClicked() = stateFragmentPresenter.onSubmitButtonClicked()
 
+  override fun onFlashbackButtonClicked(stateName: String) {
+    stateFragmentPresenter.onFlashbackButtonClicked(stateName)
+  }
+
+  override fun onReturnToQuestionButtonClicked() {
+    stateFragmentPresenter.onReturnToQuestionButtonClicked()
+  }
+
   override fun onResponsesHeaderClicked() = stateFragmentPresenter.onResponsesHeaderClicked()
 
   override fun onHintAvailable(helpIndex: HelpIndex, isCurrentStatePendingState: Boolean) =
@@ -164,6 +176,12 @@ class StateFragment :
   fun viewSolution() {
     stateFragmentPresenter.viewSolution()
   }
+
+  /**
+   * Delegates the removal of all [ConceptCardFragment] instances
+   * to the [StateFragmentPresenter].
+   */
+  fun dismissConceptCard() = stateFragmentPresenter.dismissConceptCard()
 
   fun getExplorationCheckpointState() = stateFragmentPresenter.getExplorationCheckpointState()
 

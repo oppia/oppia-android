@@ -74,7 +74,8 @@ import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -153,6 +154,7 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControls_hasCorrectActivityLabel() {
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(profileId)
     ).use {
@@ -168,25 +170,28 @@ class AdministratorControlsActivityTest {
 
   @Before
   fun setUp() {
-    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     Intents.init()
-    setUpTestApplicationComponent()
-    testCoroutineDispatchers.registerIdlingResource()
-    profileTestHelper.initializeProfiles()
+    // TODO(#5835): Call setUpTestApplicationComponent() here once flag overrides init earlier.
   }
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
+    testCoroutineDispatchers.registerIdlingResource()
+    profileTestHelper.initializeProfiles()
   }
 
   @Test
   fun testAdministratorControlsFragment_clickEditProfile_opensProfileListActivity() {
+    // TODO(#5835): Make this the default for the test suite & remove it from other tests.
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -200,6 +205,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsEnabled_generalOptionsIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -223,6 +230,7 @@ class AdministratorControlsActivityTest {
   @Test
   fun testAdministratorControlsFragment_editAccountOptionsDisabled_generalOptionsIsNotDisplayed() {
     TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(false)
+    setUpTestApplicationComponent()
 
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
@@ -245,6 +253,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_profileManagementIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -267,6 +277,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_clickOkButtonInLogoutDialog_opensProfileChooserActivity() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -283,6 +295,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_clickAppVersion_opensAppVersionActivity() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -297,6 +311,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControls_selectAdminNavItem_adminControlsIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -312,6 +328,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_clickLogoutButton_logoutDialogIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -328,6 +346,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_configChange_clickLogout_logoutDialogIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -346,6 +366,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_clickLogout_configChange_logoutDialogIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -363,6 +385,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testAdministratorControlsFragment_clickCancelButtonInLogoutDialog_dialogIsDismissed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -380,6 +404,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_defaultTabletConfig_openAppVersion_replacesPreviousFragment() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -430,6 +456,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_defaultTabletConfig_multiPaneBackButtonGone() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -443,6 +471,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_tabletConfigChange_multiPaneBackButtonGone() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -457,6 +487,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_defaultTabletConfig_editProfileVisible() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -470,6 +502,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_tabletConfigChange_editProfileVisible() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -484,6 +518,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_defaultTabletConfig_profileListIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -501,6 +537,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_tabletConfigChange_profileListIsDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -520,6 +558,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_selectProfileAdmin_backButton_selectSecondProfileDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -545,6 +585,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_selectProfileAdmin_backPressed_selectSecondProfileDisplayed() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -570,6 +612,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_selectProfileAdmin_tabletConfigChange_displaysProfileEdit() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -588,6 +632,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControls_selectProfileUser_tabletConfigChange_displaysProfileEdit() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -606,7 +652,9 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectAdmin_tabletConfigChange_downloadsEnabled_hasNoDownloadSettings() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -625,7 +673,9 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectUser_tabletConfigChange_downloadsEnabled_hasDownloadSettings() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableDownloadsSupport(true)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -645,7 +695,9 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectAdmin_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -666,7 +718,9 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdminControls_selectUser_tabletConfigChange_downloadsDisabled_hasNoDownloadSettings() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
     TestPlatformParameterModule.forceEnableDownloadsSupport(false)
+    setUpTestApplicationComponent()
     launch<AdministratorControlsActivity>(
       createAdministratorControlsActivityIntent(
         profileId = profileId
@@ -686,6 +740,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_clickProfileDeletionButton_checkOpensDeletionDialog() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
@@ -712,6 +768,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_configChange_checkOpensDeletionDialog() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
@@ -739,6 +797,8 @@ class AdministratorControlsActivityTest {
   @Test
   @Config(qualifiers = "sw600dp")
   fun testAdministratorControlsFragment_configChange_checkDeletionDialogIsVisible() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
     launch<AdministratorControlsActivity>(
@@ -766,6 +826,8 @@ class AdministratorControlsActivityTest {
 
   @Test
   fun testActivity_createIntent_verifyScreenNameInIntent() {
+    TestPlatformParameterModule.forceEnableEditAccountsOptionsUi(true)
+    setUpTestApplicationComponent()
     val profileId = ProfileId.newBuilder().setInternalId(1).build()
 
     val screenName = createAdministratorControlsActivityIntent(profileId)
@@ -891,32 +953,65 @@ class AdministratorControlsActivityTest {
   @Singleton
   @Component(
     modules = [
-      RobolectricModule::class,
-      TestPlatformParameterModule::class, PlatformParameterSingletonModule::class,
-      TestDispatcherModule::class, ApplicationModule::class,
-      LoggerModule::class, ContinueModule::class, FractionInputModule::class,
-      ItemSelectionInputModule::class, MultipleChoiceInputModule::class,
-      NumberWithUnitsRuleModule::class, NumericInputRuleModule::class, TextInputRuleModule::class,
-      DragDropSortInputModule::class, ImageClickInputModule::class, InteractionsModule::class,
-      GcsResourceModule::class, GlideImageLoaderModule::class, ImageParsingModule::class,
-      HtmlParserEntityTypeModule::class, QuestionModule::class, TestLogReportingModule::class,
-      AccessibilityTestModule::class, LogStorageModule::class, CachingTestModule::class,
-      ExpirationMetaDataRetrieverModule::class,
-      ViewBindingShimModule::class, RatioInputModule::class, WorkManagerConfigurationModule::class,
-      ApplicationStartupListenerModule::class, LogReportWorkerModule::class,
-      HintsAndSolutionConfigModule::class, HintsAndSolutionProdModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      NetworkConnectionUtilDebugModule::class, NetworkConnectionDebugUtilModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      CachingTestModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      GlideImageLoaderModule::class,
+      HintsAndSolutionConfigModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

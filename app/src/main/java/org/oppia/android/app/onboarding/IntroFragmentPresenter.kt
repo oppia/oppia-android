@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.LearnerIntroFragmentBinding
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.options.AudioLanguageActivity
@@ -45,7 +46,7 @@ class IntroFragmentPresenter @Inject constructor(
 
     profileManagementController.markProfileOnboardingStarted(profileId)
 
-    if (parentScreen == IntroActivityParams.ParentScreen.PROFILE_CHOOSER_SCREEN) {
+    if (parentScreen != IntroActivityParams.ParentScreen.CREATE_PROFILE_SCREEN) {
       binding.onboardingStepsCount?.visibility = View.GONE
     }
 
@@ -62,7 +63,8 @@ class IntroFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
         fragment.requireContext(),
-        AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+        AudioLanguage.ENGLISH_AUDIO_LANGUAGE,
+        AudioLanguageActivityParams.ParentScreen.LEARNER_INTRO_SCREEN
       )
       intent.decorateWithUserProfileId(profileId)
       fragment.startActivity(intent)

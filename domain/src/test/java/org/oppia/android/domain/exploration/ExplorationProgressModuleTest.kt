@@ -20,6 +20,7 @@ import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
+import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.locale.LocaleProdModule
@@ -83,10 +84,18 @@ class ExplorationProgressModuleTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogModule::class, RobolectricModule::class,
-      FakeOppiaClockModule::class, ExplorationProgressModule::class, TestDispatcherModule::class,
-      LocaleProdModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      NetworkConnectionUtilDebugModule::class, ExplorationStorageTestModule::class,
+      AssetModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageTestModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      RobolectricModule::class,
+      TestDispatcherModule::class,
+      TestLogModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
       TestPlatformParameterModule::class
     ]
   )

@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.Spannable
 import android.text.Spanned
 import android.text.style.ImageSpan
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import org.oppia.android.util.locale.OppiaLocale
 import java.util.Stack
@@ -32,6 +33,13 @@ class LiTagHandler(
   private val latestPendingList: ListTag<*, *>?
     get() = pendingLists.lastOrNull()
 
+  private var currentTextView: TextView? = null
+
+  /** Sets the TextView reference for calculating text measurements. */
+  fun setTextView(textView: TextView) {
+    currentTextView = textView
+  }
+
   override fun handleOpeningTag(output: Editable, tag: String) {
     when (tag) {
       CUSTOM_LIST_UL_TAG -> {
@@ -56,7 +64,9 @@ class LiTagHandler(
         // Actually place the spans only if the root tree has been finished (as the entirety of the
         // tree is needed for analysis).
         val closingList = pendingLists.pop().also { it.recordList() }
-        if (pendingLists.isEmpty()) closingList.finishListTree(output, context, displayLocale)
+        if (pendingLists.isEmpty()) {
+          closingList.finishListTree(output, context, displayLocale, currentTextView)
+        }
       }
       CUSTOM_LIST_LI_TAG -> latestPendingList?.closeItem(output)
     }
@@ -196,8 +206,13 @@ class LiTagHandler(
      * Recursively replaces all marks for this root list (and all its children) with renderable
      * spans in the provided [text].
      */
-    fun finishListTree(text: Editable, context: Context, displayLocale: OppiaLocale.DisplayLocale) =
-      finishListRecursively(parentSpan = null, text, context, displayLocale)
+    fun finishListTree(
+      text: Editable,
+      context: Context,
+      displayLocale: OppiaLocale.DisplayLocale,
+      textView: TextView?
+    ) =
+      finishListRecursively(parentSpan = null, text, context, displayLocale, textView)
 
     /**
      * Returns a new mark of type [M] for this tag.
@@ -210,22 +225,23 @@ class LiTagHandler(
       parentSpan: ListItemLeadingMarginSpan?,
       text: Editable,
       context: Context,
-      displayLocale: OppiaLocale.DisplayLocale
+      displayLocale: OppiaLocale.DisplayLocale,
+      textView: TextView?
     ) {
       val childrenToProcess = childrenLists.toMutableMap()
       markRangesToReplace.forEach { (startMark, endMark) ->
         val styledSpan = startMark.toSpan(
-          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size
+          parentSpan, context, displayLocale, peerItemCount = markRangesToReplace.size, textView
         )
         text.replaceMarksWithSpan(startMark, endMark, styledSpan)
         childrenToProcess.remove(startMark)?.finishListRecursively(
-          parentSpan = styledSpan, text, context, displayLocale
+          parentSpan = styledSpan, text, context, displayLocale, textView
         )
       }
 
       // Process the remaining children that are not lists themselves.
       childrenToProcess.values.forEach {
-        it.finishListRecursively(parentSpan = null, text, context, displayLocale)
+        it.finishListRecursively(parentSpan = null, text, context, displayLocale, textView)
       }
     }
 
@@ -262,7 +278,8 @@ class LiTagHandler(
       parentSpan: ListItemLeadingMarginSpan?,
       context: Context,
       displayLocale: OppiaLocale.DisplayLocale,
-      peerItemCount: Int
+      peerItemCount: Int,
+      textView: TextView?
     ): S
 
     /** Marks the opening tag location of a list item inside an <ul> element. */
@@ -276,7 +293,8 @@ class LiTagHandler(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int
+        peerItemCount: Int,
+        textView: TextView?
       ) = ListItemLeadingMarginSpan.UlSpan(parentSpan, context, indentationLevel, displayLocale)
     }
 
@@ -289,14 +307,18 @@ class LiTagHandler(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int
+        peerItemCount: Int,
+        textView: TextView?
       ): ListItemLeadingMarginSpan.OlSpan {
+        // Use a default TextView instance if none provided for backwards compatibility
+        val defaultTextView = textView ?: TextView(context)
         return ListItemLeadingMarginSpan.OlSpan(
           parentSpan,
           context,
           numberedItemPrefix = "${displayLocale.toHumanReadableString(number)}.",
           longestNumberedItemPrefix = "${displayLocale.toHumanReadableString(peerItemCount)}.",
-          displayLocale
+          displayLocale,
+          defaultTextView
         )
       }
     }
@@ -310,7 +332,8 @@ class LiTagHandler(
         parentSpan: ListItemLeadingMarginSpan?,
         context: Context,
         displayLocale: OppiaLocale.DisplayLocale,
-        peerItemCount: Int
+        peerItemCount: Int,
+        textView: TextView?
       ) = error("Ending marks cannot be converted to spans.")
     }
   }

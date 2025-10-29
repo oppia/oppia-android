@@ -42,6 +42,7 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.data.DataProviderTestMonitor
 import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
+import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
@@ -61,12 +62,6 @@ import org.oppia.android.util.logging.GlobalLogLevel
 import org.oppia.android.util.logging.LogLevel
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
-import org.oppia.android.util.platformparameter.ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.EnableLearnerStudyAnalytics
-import org.oppia.android.util.platformparameter.EnableLoggingLearnerStudyIds
-import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
-import org.oppia.android.util.platformparameter.LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
@@ -123,8 +118,7 @@ class ProfileManagementControllerTest {
 
   @After
   fun tearDown() {
-    TestModule.enableLearnerStudyAnalytics = false
-    TestModule.enableOnboardingFlowV2 = false
+    TestPlatformParameterModule.reset()
   }
 
   @Test
@@ -1731,6 +1725,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)
@@ -1760,6 +1755,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)
@@ -1781,6 +1777,7 @@ class ProfileManagementControllerTest {
         avatarImagePath = null
       )
       testComponent.getTestCoroutineDispatchers().runCurrent()
+      TestPlatformParameterModule.reset()
     }
 
     setUpTestWithOnboardingV2Enabled(true)
@@ -1790,7 +1787,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_oneAdminProfileWithoutPassword_returnsSoleLeanerTypeMode() {
+  fun testProfileOnboardingState_oneAdminProfileWithoutPin_returnsSoleLeanerTypeMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James", pin = "")
 
@@ -1808,7 +1805,7 @@ class ProfileManagementControllerTest {
   }
 
   @Test
-  fun testProfileOnboardingState_oneAdminProfileWithPassword_returnsAdminOnlyMode() {
+  fun testProfileOnboardingState_oneAdminProfileWithPin_returnsAdminOnlyMode() {
     setUpTestWithOnboardingV2Enabled(true)
     addAdminProfileAndWait(name = "James")
 
@@ -1846,18 +1843,6 @@ class ProfileManagementControllerTest {
       monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
 
     assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.NEW_INSTALL)
-  }
-
-  @Test
-  fun testProfileOnboardingState_existingProfilesV1_returnsUnknownProfileTypeMode() {
-    setUpTestWithOnboardingV2Enabled(true)
-    addAdminProfileAndWait(name = "James")
-
-    val profileOnboardingModeProvider = profileManagementController.getProfileOnboardingMode()
-    val profileOnboardingModeResult =
-      monitorFactory.waitForNextSuccessfulResult(profileOnboardingModeProvider)
-
-    assertThat(profileOnboardingModeResult).isEqualTo(ProfileOnboardingMode.UNKNOWN_PROFILE_TYPE)
   }
 
   @Test
@@ -2047,17 +2032,19 @@ class ProfileManagementControllerTest {
   private fun <T> DataProvider<T>.ensureExecutes() = monitorFactory.ensureDataProviderExecutes(this)
 
   private fun setUpTestApplicationComponentWithoutLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = false
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(false)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(false)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestApplicationComponentWithLearnerAnalyticsStudy() {
-    TestModule.enableLearnerStudyAnalytics = true
+    TestPlatformParameterModule.forceEnableLearnerStudyAnalytics(true)
+    TestPlatformParameterModule.forceEnableLoggingLearnerStudyIds(true)
     setUpTestApplicationComponent()
   }
 
   private fun setUpTestWithOnboardingV2Enabled(enableOnboardingV2: Boolean) {
-    TestModule.enableOnboardingFlowV2 = enableOnboardingV2
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(enableOnboardingV2)
     setUpTestApplicationComponent()
   }
 
@@ -2081,13 +2068,6 @@ class ProfileManagementControllerTest {
   // TODO(#89): Move this to a common test application component.
   @Module
   class TestModule {
-    internal companion object {
-      // This is expected to be off by default, so this helps the tests above confirm that the
-      // feature's default value is, indeed, off.
-      var enableLearnerStudyAnalytics = LEARNER_STUDY_ANALYTICS_DEFAULT_VALUE
-      var enableOnboardingFlowV2 = ENABLE_ONBOARDING_FLOW_V2_DEFAULT_VALUE
-    }
-
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
@@ -2107,40 +2087,6 @@ class ProfileManagementControllerTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    // The scoping here is to ensure changes to the module value above don't change the parameter
-    // within the same application instance.
-    @Provides
-    @Singleton
-    @EnableLearnerStudyAnalytics
-    fun provideLearnerStudyAnalytics(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @Singleton
-    @EnableLoggingLearnerStudyIds
-    fun provideLoggingLearnerStudyIds(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableLearnerStudyAnalytics
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
-
-    @Provides
-    @EnableOnboardingFlowV2
-    fun provideEnableOnboardingFlowV2(): PlatformParameterValue<Boolean> {
-      // Snapshot the value so that it doesn't change between injection and use.
-      val enableFeature = enableOnboardingFlowV2
-      return PlatformParameterValue.createDefaultParameter(
-        defaultValue = enableFeature
-      )
-    }
   }
 
   @Module
@@ -2158,11 +2104,19 @@ class ProfileManagementControllerTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, TestLogReportingModule::class, LogStorageModule::class,
-      TestDispatcherModule::class, RobolectricModule::class, FakeOppiaClockModule::class,
-      NetworkConnectionUtilDebugModule::class, LocaleProdModule::class,
-      TestLoggingIdentifierModule::class, SyncStatusModule::class, AssetModule::class,
-      ApplicationLifecycleModule::class
+      ApplicationLifecycleModule::class,
+      AssetModule::class,
+      FakeOppiaClockModule::class,
+      LocaleProdModule::class,
+      LogStorageModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      RobolectricModule::class,
+      SyncStatusModule::class,
+      TestDispatcherModule::class,
+      TestLogReportingModule::class,
+      TestLoggingIdentifierModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class
     ]
   )
   interface TestApplicationComponent : DataProvidersInjector {

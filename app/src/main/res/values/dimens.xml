@@ -734,6 +734,8 @@
   <dimen name="hints_and_solution_summary_card_width">0dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_start">16dp</dimen>
   <dimen name="hints_and_solution_summary_card_margin_end">16dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_top">12dp</dimen>
+  <dimen name="hints_and_solution_summary_card_margin_bottom">12dp</dimen>
 
   <!-- AdministratorControls-->
   <dimen name="administrator_controls_download_permissions_view_download_permissions_text_view_padding_start">16dp</dimen>
@@ -883,4 +885,13 @@
   <dimen name="classrooms_card_elevation">4dp</dimen>
   <dimen name="classrooms_card_margin_start">8dp</dimen>
   <dimen name="classrooms_card_margin_end">0dp</dimen>
+
+  <!-- Flashback Solution -->
+  <dimen name="flashback_solution_summary_card_margin_start">40dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_end">24dp</dimen>
+  <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
+  <dimen name="flashback_solution_summary_label_margin_bottom">12dp</dimen>
+  <dimen name="state_solution_summary_label_margin_bottom">24dp</dimen>
+  <dimen name="flashback_explanation_box_stroke_width">1dp</dimen>
+  <dimen name="state_solution_box_stroke_width">2dp</dimen>
 </resources>

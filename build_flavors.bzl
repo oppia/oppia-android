@@ -37,7 +37,7 @@ _FLAVOR_METADATA = {
     "dev": {
         "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 34,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": [],  # Developer builds are not optimized.
         "production_release": False,
@@ -51,13 +51,14 @@ _FLAVOR_METADATA = {
     "alpha": {
         "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 34,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/alpha:alpha_application",
             "//config/src/java/org/oppia/android/config:all_languages_config",
+            "//config/src/java/org/oppia/android/config:alpha_feature_flags_override_config",
         ],
         "version_code": OPPIA_ALPHA_VERSION_CODE,
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
@@ -65,12 +66,13 @@ _FLAVOR_METADATA = {
     "beta": {
         "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 34,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/beta:beta_application",
+            "//config/src/java/org/oppia/android/config:beta_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_BETA_VERSION_CODE,
@@ -79,12 +81,13 @@ _FLAVOR_METADATA = {
     "ga": {
         "manifest": "//:AndroidManifest.xml",
         "min_sdk_version": 21,
-        "target_sdk_version": 34,
+        "target_sdk_version": 35,
         "multidex": "native",
         "proguard_specs": _PRODUCTION_PROGUARD_SPECS,
         "production_release": True,
         "deps": [
             "//app/src/main/java/org/oppia/android/app/application/ga:general_availability_application",
+            "//config/src/java/org/oppia/android/config:ga_feature_flags_override_config",
             "//config/src/java/org/oppia/android/config:production_languages_config",
         ],
         "version_code": OPPIA_GA_VERSION_CODE,

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Authors:
 * Jepkorir
+* Joeamj
 * Killy95
 * Seanlip
 * VivianW
@@ -90,15 +91,15 @@
   <string name="math_expression_error_spaces_in_numerical_input">Tafadhali ondoa nafasi katikati ya nambari katika jibu lako.</string>
   <string name="math_expression_error_unbalanced_parentheses">Tafadhali funga au uondoe mabano.</string>
   <string name="math_expression_error_single_redundant_parentheses">Tafadhali ondoa mabano karibu na jibu mzima: \' %s\'.</string>
-  <string name="math_expression_error_multiple_redundant_parentheses">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'% 1 $ s\'.</string>
-  <string name="math_expression_error_redundant_parentheses_individual_term">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'% 1 $ s\'.</string>
+  <string name="math_expression_error_multiple_redundant_parentheses">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'%1$s\'.</string>
+  <string name="math_expression_error_redundant_parentheses_individual_term">Tafadhali ondoa mabano ya ziada karibu na \'(%1$s)\', kwa mfano: \'%1$s\'.</string>
   <string name="math_expression_error_unnecessary_symbols">Kuna\'%s\' isiyo halali katika jibu. Tafadhali ondoa.</string>
-  <string name="math_expression_error_number_after_var_term">Tafadhali panga upya utaratibu wa % %1$s &amp; %2$s. Kwa mfano:% $ 2% $ s.</string>
+  <string name="math_expression_error_number_after_var_term">Tafadhali panga upya utaratibu wa %1$s &amp; %2$s. Kwa mfano: %1$s %2$s.</string>
   <string name="math_expression_error_consecutive_binary_operators">%1$s na % $%2$s inapaswa kutengwa na nambari au kitu tofauti.</string>
   <string name="math_expression_error_consecutive_unary_operators">Tafadhali ondoa alama za ziada katika jibu lako.</string>
-  <string name="math_expression_error_missing_lhs_for_addition_operator">Je! Kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya kuongeza \'%1$s\'? Ikiwa sivyo, tafadhali ondoa\'% 1 $ s\' ya ziada.</string>
-  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Je, kuna nambari au kitu tofauti inayokosa kabla au baada ya ishara ya kuzidisha \'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'% 1 $ s\' ya ziada.</string>
-  <string name="math_expression_error_missing_lhs_for_division_operator">Je, kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya mgawanyiko \'%1$s\'? Ikiwa sivyo, tafadhali ondoa\'% 1 $ s\' ya ziada.</string>
+  <string name="math_expression_error_missing_lhs_for_addition_operator">Je! Kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya kuongeza \'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'%1$s\' ya ziada.</string>
+  <string name="math_expression_error_missing_lhs_for_multiplication_operator">Je, kuna nambari au kitu tofauti inayokosa kabla au baada ya ishara ya kuzidisha \'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'%1$s\' ya ziada.</string>
+  <string name="math_expression_error_missing_lhs_for_division_operator">Je, kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya mgawanyiko \'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'%1$s\' ya ziada.</string>
   <string name="math_expression_error_missing_lhs_for_exponentiation_operator">Je! Kuna idadi au kitu tofauti inayokosa kabla au baada ya ishara ya ufafanuzi\'%1$s\'? Ikiwa sivyo, tafadhali ondoa \'%1$s\' ya ziada.</string>
   <string name="math_expression_error_missing_rhs_for_addition_operator">Inaonekana kuwa nambari au kitu tofauti inakosa baada ya alama ya kuongeza \'%s\'.</string>
   <string name="math_expression_error_missing_rhs_for_subtraction_operator">Inaonekana kuwa nambari au kitu tofauti inakosekana baada ya ishara ya kuondoa \'%s\'.</string>
@@ -187,6 +188,14 @@
   <string name="set_up_multiple_profiles_description">Ongeza hadi watumiaji 10 kwenye akaunti yako. Nzuri sana kwa familia na madarasa.</string>
   <string name="profile_chooser_administrator_controls">Udhibiti vya Msimamizi</string>
   <string name="profile_chooser_language">Lugha</string>
+  <string name="profile_selection_header">Chagua wasifu wako ili kuchunguza masomo</string>
+  <string name="profile_selection_profile_icon_description">Picha ya wasifu ya mtumiaji</string>
+  <string name="profile_selection_add_icon_description">Ongeza wasifu mwingine</string>
+  <string name="profile_selection_add_profile_text">Ongeza wasifu wa mwanafunzi</string>
+  <string name="profile_selection_admin_label">Msimamizi</string>
+  <string name="profile_selection_scroll_left_content_description">Sogeza kushoto</string>
+  <string name="profile_selection_scroll_right_content_description">Sogeza kulia</string>
+  <string name="profile_selection_administrator_controls">Vidhibiti vya Msimamizi</string>
   <string name="admin_auth_toolbar">Vidhibiti vya Msimamizi</string>
   <string name="admin_auth_activity_add_profiles_title">Idhinisha kuongeza wasifu</string>
   <string name="admin_auth_activity_access_controls_title">Idhinisha kufikia Vidhibiti vya Msimamizi</string>

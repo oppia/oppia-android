@@ -6,11 +6,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.PinPasswordActivityBinding
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.PinPasswordActivityParams
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.onboarding.IntroActivity
 import org.oppia.android.app.profile.PinPasswordActivity.Companion.PIN_PASSWORD_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -22,6 +25,7 @@ import org.oppia.android.util.data.AsyncResult
 import org.oppia.android.util.data.DataProviders.Companion.toLiveData
 import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.util.platformparameter.EnableMultipleClassrooms
+import org.oppia.android.util.platformparameter.EnableOnboardingFlowV2
 import org.oppia.android.util.platformparameter.PlatformParameterValue
 import javax.inject.Inject
 import kotlin.system.exitProcess
@@ -38,11 +42,12 @@ class PinPasswordActivityPresenter @Inject constructor(
   private val resourceHandler: AppLanguageResourceHandler,
   private val accessibilityService: AccessibilityService,
   @EnableMultipleClassrooms private val enableMultipleClassrooms: PlatformParameterValue<Boolean>,
+  @EnableOnboardingFlowV2 private val enableOnboardingFlowV2: PlatformParameterValue<Boolean>
 ) {
   private var internalProfileId = -1
   private var profileId = ProfileId.getDefaultInstance()
-  private lateinit var alertDialog: AlertDialog
   private var confirmedDeletion = false
+  private lateinit var alertDialog: AlertDialog
 
   fun handleOnCreate() {
     val args = activity.intent.getProtoExtra(
@@ -58,6 +63,7 @@ class PinPasswordActivityPresenter @Inject constructor(
       activity,
       R.layout.pin_password_activity
     )
+
     pinViewModel.setProfileId(internalProfileId)
     binding.apply {
       lifecycleOwner = activity
@@ -85,7 +91,8 @@ class PinPasswordActivityPresenter @Inject constructor(
 
     // If the screen reader is off, the EditText will receive focus.
     // If the screen reader is on, the EditText won't receive focus.
-    // This is needed because requesting focus on the EditText when the screen reader is on gives TalkBack priority over other views in the screen, ignoring view hierachy.
+    // This is needed because requesting focus on the EditText when the screen reader is on gives
+    // TalkBack priority over other views in the screen, ignoring view hierachy.
     if (!accessibilityService.isScreenReaderEnabled())
       binding.pinPasswordInputPinEditText.requestFocus()
 
@@ -103,14 +110,14 @@ class PinPasswordActivityPresenter @Inject constructor(
             profileManagementController
               .loginToProfile(profileId).toLiveData().observe(
                 activity,
+                Observer
                 {
                   if (it is AsyncResult.Success) {
-                    activity.startActivity(
-                      if (enableMultipleClassrooms.value)
-                        ClassroomListActivity.createClassroomListActivity(activity, profileId)
-                      else
-                        HomeActivity.createHomeActivity(activity, profileId)
-                    )
+                    if (enableOnboardingFlowV2.value) {
+                      ensureProfileIsOnboarded()
+                    } else {
+                      launchHomeScreen()
+                    }
                     activity.finish()
                   }
                 }
@@ -127,6 +134,7 @@ class PinPasswordActivityPresenter @Inject constructor(
             )
             lifecycleSafeTimerFactory.createTimer(1000).observe(
               activity,
+              Observer
               {
                 binding.pinPasswordInputPinEditText.setText("")
               }
@@ -137,21 +145,32 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
 
     binding.forgotPin.setOnClickListener {
-      if (pinViewModel.isAdmin.get()!!) {
+      val isAdmin = pinViewModel.isAdmin.get() ?: false
+      if (isAdmin) {
         showAdminForgotPin()
       } else {
         val previousFrag =
           activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
         if (previousFrag != null) {
-          activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
+          activity.supportFragmentManager.beginTransaction()
+            .remove(previousFrag)
+            .commitNow()
         }
-        val dialogFragment = AdminSettingsDialogFragment
-          .newInstance(adminPin!!)
-        dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
+
+        val nameValue = pinViewModel.name.get()
+
+        if (adminPin != null && nameValue != null) {
+          val dialogFragment = AdminSettingsDialogFragment
+            .newInstance(adminPin, profileId, nameValue)
+          dialogFragment.showNow(
+            activity.supportFragmentManager,
+            TAG_ADMIN_SETTINGS_DIALOG
+          )
+        }
       }
     }
 
-    if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
+    if (pinViewModel.showAdminPinForgotPasswordPopUp.get() == true) {
       showAdminForgotPin()
     }
   }
@@ -225,11 +244,14 @@ class PinPasswordActivityPresenter @Inject constructor(
         dialog.dismiss()
       }
       .setPositiveButton(R.string.admin_confirm_app_wipe_positive_button_text) { _, _ ->
-        profileManagementController.deleteAllProfiles().toLiveData().observe(activity) {
-          // Regardless of the result of the operation, always restart the app.
-          confirmedDeletion = true
-          activity.finishAffinity()
-        }
+        profileManagementController.deleteAllProfiles().toLiveData().observe(
+          activity,
+          Observer {
+            // Regardless of the result of the operation, always restart the app.
+            confirmedDeletion = true
+            activity.finishAffinity()
+          }
+        )
       }.create()
     alertDialog.setCanceledOnTouchOutside(false)
     alertDialog.show()
@@ -255,5 +277,35 @@ class PinPasswordActivityPresenter @Inject constructor(
       .setPositiveButton(R.string.pin_password_close) { dialog, _ ->
         dialog.dismiss()
       }.create().show()
+  }
+
+  private fun ensureProfileIsOnboarded() {
+    val profile = checkNotNull(pinViewModel.profile.value)
+
+    if (!profile.completedProfileOnboarding) {
+      launchOnboardingScreen(profile.id, profile.name)
+    } else {
+      launchHomeScreen()
+    }
+  }
+
+  private fun launchOnboardingScreen(profileId: ProfileId, profileName: String) {
+    val introActivityParams = IntroActivityParams.newBuilder()
+      .setProfileNickname(profileName)
+      .setParentScreen(IntroActivityParams.ParentScreen.PIN_PASSWORD_SCREEN)
+      .build()
+
+    val intent = IntroActivity.createIntroActivity(activity, introActivityParams, profileId)
+    activity.startActivity(intent)
+  }
+
+  private fun launchHomeScreen() {
+    activity.startActivity(
+      if (enableMultipleClassrooms.value) {
+        ClassroomListActivity.createClassroomListActivity(activity, profileId)
+      } else {
+        HomeActivity.createHomeActivity(activity, profileId)
+      }
+    )
   }
 }

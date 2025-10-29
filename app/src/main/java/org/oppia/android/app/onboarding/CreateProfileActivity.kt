@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ScreenName.CREATE_PROFILE_ACTIVITY
 import org.oppia.android.util.extensions.getProtoExtra
@@ -13,7 +13,7 @@ import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.extrac
 import javax.inject.Inject
 
 /** Activity for displaying a new learner profile creation flow. */
-class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
+class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
   @Inject
   lateinit var learnerProfileActivityPresenter: CreateProfileActivityPresenter
 

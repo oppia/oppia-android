@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.AudioLanguage
+import org.oppia.android.app.model.AudioLanguageActivityParams
 import org.oppia.android.app.model.AudioLanguageActivityResultBundle
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.OptionsActivityParams
@@ -161,7 +162,11 @@ class OptionsActivity :
   }
 
   override fun routeAudioLanguageList(audioLanguage: AudioLanguage) {
-    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(this, audioLanguage)
+    val intent = AudioLanguageActivity.createAudioLanguageActivityIntent(
+      this,
+      audioLanguage,
+      AudioLanguageActivityParams.ParentScreen.OPTIONS_SCREEN
+    )
     intent.decorateWithUserProfileId(profileId)
     audioLanguageLauncher.launch(intent)
   }

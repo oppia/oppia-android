@@ -8,6 +8,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
@@ -88,12 +89,16 @@ import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewT
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.CONTINUE_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.DRAG_DROP_SORT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FEEDBACK
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_BUTTON
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FLASHBACK_SOLUTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.FRACTION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.MATH_EQUATION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NEXT_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_EXPRESSION_INPUT_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.NUMERIC_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.PREVIOUS_RESPONSES_HEADER
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RATIO_EXPRESSION_INPUT_INTERACTION
+import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.RETURN_TO_TOPIC_NAVIGATION_BUTTON
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SELECTION_INTERACTION
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.ViewType.SUBMITTED_ANSWER
@@ -107,11 +112,13 @@ import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.ChildViewCoordinatesProvider
 import org.oppia.android.app.utility.CustomGeneralLocation
 import org.oppia.android.app.utility.DragViewAction
+import org.oppia.android.app.utility.EspressoTestsMatchers.withDrawable
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.app.utility.RecyclerViewCoordinatesProvider
 import org.oppia.android.app.utility.clickPoint
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
-import org.oppia.android.data.backends.gae.NetworkModule
+import org.oppia.android.data.backends.gae.RetrofitModule
+import org.oppia.android.data.backends.gae.RetrofitServiceModule
 import org.oppia.android.domain.classify.InteractionsModule
 import org.oppia.android.domain.classify.rules.algebraicexpressioninput.AlgebraicExpressionInputModule
 import org.oppia.android.domain.classify.rules.continueinteraction.ContinueModule
@@ -223,6 +230,7 @@ class StateFragmentTest {
 
   @After
   fun tearDown() {
+    TestPlatformParameterModule.reset()
     testCoroutineDispatchers.unregisterIdlingResource()
     Intents.release()
   }
@@ -249,8 +257,6 @@ class StateFragmentTest {
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
-  // TODO(#56): Add support for testing that previous/next button states are properly retained on
-  //  config changes.
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
@@ -298,6 +304,31 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_interaction_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_configurationChange_previousButtonStateRetained() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
+      rotateToLandscape()
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_configurationChange_nextButtonStateRetained() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      clickPreviousNavigationButton()
+      onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
+      rotateToLandscape()
+      onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
 
@@ -2116,6 +2147,65 @@ class StateFragmentTest {
   }
 
   @Test
+  fun testStateFragment_clickLinkText_opensConceptCard_selectNavigationUp_conceptCardCloses() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testStateFragment_landscape_clickLinkText_opensConceptCard_selectNavigationUp_conceptCardCloses() { // ktlint-disable max-line-length
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(FRACTIONS_EXPLORATION_ID_1, shouldSavePartialProgress = false).use {
+      rotateToLandscape()
+      startPlayingExploration()
+      selectMultipleChoiceOption(
+        optionPosition = 3,
+        expectedOptionText = "No, because, in a fraction, the pieces must be the same size."
+      )
+      clickSubmitAnswerButton()
+      clickContinueNavigationButton()
+      typeFractionText("3/2") // Misconception.
+      clickSubmitAnswerButton()
+
+      onView(withId(R.id.feedback_text_view)).perform(openClickableSpan("refresher lesson"))
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
+      onView(withId(R.id.concept_card_heading_text))
+        .inRoot(isDialog())
+        .check(matches(withText(containsString("Identify the numerator and denominator"))))
+
+      onView(withContentDescription(R.string.navigate_up)).perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      onView(withId(R.id.concept_card_toolbar)).check(doesNotExist())
+    }
+  }
+
+  @Test
   fun testStateFragment_interactions_initialStateIsContinueInteraction() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
@@ -2658,7 +2748,12 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("Eagle")))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2699,15 +2794,19 @@ class StateFragmentTest {
       selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "النسر")
       clickSubmitAnswerButton()
 
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("النسر"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "النسر",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInArabic() {
+  fun testStateFragment_arabic_multipleChoice_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     updateContentLanguage(profileId, OppiaLanguage.ARABIC)
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
@@ -2719,9 +2818,12 @@ class StateFragmentTest {
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
-      // The answer should stay in Arabic despite switching back to English.
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("النسر"))))
+      // The answer should switch to English.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2765,9 +2867,12 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("Green"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -2813,16 +2918,19 @@ class StateFragmentTest {
       selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "أخضر")
       clickSubmitAnswerButton()
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("أخضر"))))
+      // Verify selected options in Multiple choice submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "أخضر",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
   // TODO(#3858): Enable for Espresso.
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC)
-  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInArabic() {
+  fun testStateFragment_arabic_itemSelection_submittedAnswer_switchToEnglish_answerIsInEnglish() {
     setUpTestWithLanguageSwitchingFeatureOff()
     launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = true).use {
       startPlayingExploration()
@@ -2837,10 +2945,12 @@ class StateFragmentTest {
 
       updateContentLanguage(profileId, OppiaLanguage.ENGLISH)
 
-      scrollToViewType(SUBMITTED_ANSWER)
-      // The answer should stay in the language it was submitted in even if the language changes.
-      onView(withId(R.id.submitted_answer_text_view))
-        .check(matches(withText(containsString("أخضر"))))
+      // The answer should switch to English.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
     }
   }
 
@@ -5320,6 +5430,543 @@ class StateFragmentTest {
     }
   }
 
+  @Test
+  fun testStateFragment_inputRatio_wrongAnswerSubmitted_ratioInputInteractionVisible() {
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_flashbackButtonIsVisible() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitTwoWrongRatioAnswer_flashbackButtonIsNotOffered() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit first wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+
+      // Submit second wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify default feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString("Not correct"))))
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFragment_flashbackFeatureOff_onSubmitWrongRatioAnswer_flashbackButtonIsNotVisible() {
+    setUpTestWithFlashbackFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitWrongRatioAnswer_retainStateOnConfigurationChange() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      rotateToLandscape()
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_verifyFlashbackState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify content is visible.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.content_text_view))
+        .check(matches(withText(containsString("What fraction represents half of something?"))))
+
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
+      // Verify solution is visible.
+      scrollToViewType(FLASHBACK_SOLUTION)
+      onView(withId(R.id.solution_title)).check(matches(withEffectiveVisibility(GONE)))
+      onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
+
+      val expectedSolutionSummary = "Half of something has one part in the numerator for" +
+        " every two parts in the denominator."
+      onView(withId(R.id.solution_summary))
+        .check(matches(withText(containsString(expectedSolutionSummary))))
+
+      onView(withId(R.id.solution_summary))
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      // Verify Return to question button is visible.
+      scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+      onView(withId(R.id.return_to_question_button)).check(
+        matches(withText(R.string.state_return_to_question_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_submittedWrongRatioAnswer_moveToFlashbackState_retainStateOnConfigurationChange() { // ktlint-disable max-line-length
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      rotateToLandscape()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify content is visible.
+      scrollToViewType(CONTENT)
+      onView(withId(R.id.content_text_view))
+        .check(matches(withText(containsString("What fraction represents half of something?"))))
+
+      // Verify user's submitted answer is visible.
+      scrollToViewType(SUBMITTED_ANSWER)
+      onView(withId(R.id.submitted_answer_text_view)).check(matches(withText("1/2")))
+
+      // Verify solution is visible.
+      scrollToViewType(FLASHBACK_SOLUTION)
+      onView(withId(R.id.solution_title)).check(matches(withEffectiveVisibility(GONE)))
+      onView(withId(R.id.solution_summary_label)).check(matches(withText("Explanation:")))
+
+      val expectedSolutionSummary = "Half of something has one part in the numerator for" +
+        " every two parts in the denominator."
+      onView(withId(R.id.solution_summary))
+        .check(matches(withText(containsString(expectedSolutionSummary))))
+
+      onView(withId(R.id.solution_summary))
+        .perform(openClickableSpan("test_skill_id_1 concept card"))
+
+      // Verify Return to question button is visible.
+      scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+      onView(withId(R.id.return_to_question_button)).check(
+        matches(withText(R.string.state_return_to_question_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_clickOnReturnToQuestionButton_returnsToLatestPendingState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Verify learner returns to the latest pending state.
+      val expectedText = "Two numbers are respectively 20% and 50% more than a third number." +
+        " The ratio of the two numbers is:"
+      verifyContentContains(expectedText)
+
+      // Verify Previous Responses Header text.
+      scrollToViewType(PREVIOUS_RESPONSES_HEADER)
+      onView(withId(R.id.previous_responses_header_text))
+        .check(matches(withText(containsString("PREVIOUS RESPONSES (1)"))))
+
+      // Verify feedback is visible.
+      val expectedFeedback = "Now that you’ve seen an example, let’s try again."
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(matches(withText(containsString(expectedFeedback))))
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_viewFlashback_submitWrongAnsAgain_verifyFlashbackButtonIsNotOffered() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:8")
+      clickSubmitAnswerButton()
+
+      // Verify flashback button is not visible.
+      onView(withId(R.id.flashback_button)).check(doesNotExist())
+
+      // Verify ratio expression input interaction is being displayed.
+      scrollToViewType(RATIO_EXPRESSION_INPUT_INTERACTION)
+      onView(withId(R.id.ratio_input_interaction_view)).check(matches(isDisplayed()))
+
+      // Verify submit button is visible.
+      scrollToViewType(SUBMIT_ANSWER_BUTTON)
+      onView(withId(R.id.submit_answer_button)).check(
+        matches(withText(R.string.state_submit_button))
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_viewFlashback_submitCorrectAnswer_canSuccessfullyMoveToNextState() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      moveToFlashbackState()
+
+      // Click Return to question button.
+      clickReturnToQuestionButton()
+
+      // Submit correct answer.
+      typeRatioExpression("4:5")
+      clickSubmitAnswerButton()
+
+      // Click continue navigation button.
+      clickContinueNavigationButton()
+
+      // Verify that the user is now on the eighth state.
+      verifyContentContains("In which language does Oppia mean 'to learn'?")
+      verifyViewTypeIsPresent(TEXT_INPUT_INTERACTION)
+    }
+  }
+
+  @Test
+  fun testFlashback_onSubmitOneWrongRatioAnswer_previousResponseHeaderIsNotShown() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+
+      navigateToPrototypeRatioInputState()
+
+      // Submit wrong answer.
+      typeRatioExpression("4:7")
+      clickSubmitAnswerButton()
+
+      // Verify previous response header is not visible.
+      onView(withId(R.id.previous_response_header)).check(doesNotExist())
+
+      // Verify flashback button is visible.
+      scrollToViewType(FLASHBACK_BUTTON)
+      onView(withId(R.id.flashback_button)).check(
+        matches(withText(R.string.state_flashback_button))
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitItemSelectionAnswer_verifyItemSelectionSubmittedAnswer() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+      playThroughPrototypeState4()
+
+      // Fifth state: Item selection (checkboxes). Correct answer: {Red, Green, Blue}.
+      selectItemSelectionCheckbox(optionPosition = 0, expectedOptionText = "Red")
+      selectItemSelectionCheckbox(optionPosition = 2, expectedOptionText = "Green")
+      selectItemSelectionCheckbox(optionPosition = 3, expectedOptionText = "Blue")
+      clickSubmitAnswerButton()
+
+      // Verify selected options in Item selection submitted answer.
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 0,
+        expectedOptionText = "Red",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Green",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+      verifyItemSelectionSubmittedAnswer(
+        optionPosition = 3,
+        expectedOptionText = "Blue",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+
+      // Verify unselected options in Item selection submitted answer.
+      verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+        optionPosition = 1,
+        expectedOptionText = "Yellow"
+      )
+      verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+        optionPosition = 4,
+        expectedOptionText = "Orange"
+      )
+      verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+        optionPosition = 5,
+        expectedOptionText = "Purple"
+      )
+    }
+  }
+
+  @Test
+  fun testStateFragment_submitMultipleChoiceAnswer_verifyMultipleChoiceSubmittedAnswer() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+
+      // Submit Multiple choice answer.
+      selectMultipleChoiceOption(optionPosition = 2, expectedOptionText = "Eagle")
+      clickSubmitAnswerButton()
+
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.submitted_answer_label_text
+      )
+
+      // Verify unselected options in Multiple choice submitted answer.
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 0,
+        expectedOptionText = "Penguin"
+      )
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 1,
+        expectedOptionText = "Chicken"
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_moveToFlashbackState_verifyMutipleChoiceSubmittedAnswerOnFlashabackScreen() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      // Submit incorrect multiple-choice answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Red")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify selected options in Multiple choice submitted answer.
+      verifyMultipleChoiceSubmittedAnswer(
+        optionPosition = 2,
+        expectedOptionText = "Eagle",
+        labelTextId = R.string.flashback_submitted_answer_label_text
+      )
+
+      // Verify unselected options in Multiple choice submitted answer.
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 0,
+        expectedOptionText = "Penguin"
+      )
+      verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+        optionPosition = 1,
+        expectedOptionText = "Chicken"
+      )
+    }
+  }
+
+  @Test
+  fun testFlashback_moveToFlashbackState_verifyExplainationBoxIsNotVisibleOnFlashbackScreen() {
+    setUpTestWithFlashbackFeatureOn()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      playThroughPrototypeState1()
+      playThroughPrototypeState2()
+      playThroughPrototypeState3()
+
+      // Submit incorrect multiple-choice answer.
+      selectMultipleChoiceOption(optionPosition = 1, expectedOptionText = "Red")
+      clickSubmitAnswerButton()
+
+      // Click on flashback button.
+      clickFlashbackButton()
+
+      // Verify feedback is visible.
+      scrollToViewType(FEEDBACK)
+      onView(withId(R.id.feedback_text_view))
+        .check(
+          matches(
+            withText(
+              containsString(
+                context.getString(R.string.flashback_state_feedback_text)
+              )
+            )
+          )
+        )
+
+      // Verify Explaination box is not visible.
+      onView(withId(R.id.solution_summary_container)).check(doesNotExist())
+    }
+  }
+
+  private fun moveToFlashbackState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+
+    // Submit wrong answer.
+    typeRatioExpression("4:8")
+    clickSubmitAnswerButton()
+
+    // Click on flashback button.
+    clickFlashbackButton()
+  }
+
+  private fun navigateToPrototypeRatioInputState() {
+    playThroughPrototypeState1()
+    playThroughPrototypeState2()
+    playThroughPrototypeState3()
+    playThroughPrototypeState4()
+    playThroughPrototypeState5()
+    playThroughPrototypeState6()
+  }
+
   private fun playThroughRatioExplorationState1() {
     clickContinueInteractionButton()
   }
@@ -5397,6 +6044,200 @@ class StateFragmentTest {
     typeTextInput("2:1")
     clickSubmitAnswerButton()
     clickContinueNavigationButton()
+  }
+
+  private fun submitIncorrectAnswerToTriggerFlashbackButton() {
+    // Select an incorrect answer in a multiple-choice interaction and submit.
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_interaction_recyclerview,
+        position = 1,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).perform(click())
+    clickSubmitAnswerButton()
+  }
+
+  private fun verifyUnselectedOptionInMultipleChoiceSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(matches(withDrawable(R.drawable.radio_unchecked_grey)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.unselected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withEffectiveVisibility(GONE)))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyUnselectedOptionInItemSelectionSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(matches(withDrawable(R.drawable.rect_checkbox_unchecked)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.unselected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withEffectiveVisibility(GONE)))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyMultipleChoiceSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String,
+    @StringRes labelTextId: Int
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(matches(withDrawable(R.drawable.radio_checked_grey)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_radio_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.selected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.multiple_choice_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withText(context.getString(labelTextId))))
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun verifyItemSelectionSubmittedAnswer(
+    optionPosition: Int,
+    expectedOptionText: String,
+    @StringRes labelTextId: Int
+  ) {
+    scrollToViewType(SUBMITTED_ANSWER)
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(matches(withDrawable(R.drawable.rect_checkbox_checked)))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_checkbox_icon
+      )
+    ).check(
+      matches(
+        withContentDescription(
+          context.getString(R.string.selected_option_icon_content_description)
+        )
+      )
+    )
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.item_selection_content_text_view
+      )
+    ).check(matches(withText(containsString(expectedOptionText))))
+
+    onView(
+      atPositionOnView(
+        recyclerViewId = R.id.selection_submitted_answer_recycler_view,
+        position = optionPosition,
+        targetViewId = R.id.submitted_answer_label_text_view
+      )
+    ).check(matches(withText(context.getString(labelTextId))))
+    testCoroutineDispatchers.runCurrent()
   }
 
   private fun addShadowMediaPlayerException(dataSource: Any, exception: Exception) {
@@ -5791,6 +6632,18 @@ class StateFragmentTest {
     testCoroutineDispatchers.runCurrent()
   }
 
+  private fun clickFlashbackButton() {
+    scrollToViewType(FLASHBACK_BUTTON)
+    onView(withId(R.id.flashback_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
+  private fun clickReturnToQuestionButton() {
+    scrollToViewType(RETURN_TO_QUESTION_BUTTON)
+    onView(withId(R.id.return_to_question_button)).perform(click())
+    testCoroutineDispatchers.runCurrent()
+  }
+
   private fun waitForImageViewInteractionToFullyLoad() {
     // TODO(#1523): Remove explicit delay - https://github.com/oppia/oppia-android/issues/1523
     onView(isRoot()).perform(
@@ -5955,6 +6808,15 @@ class StateFragmentTest {
 
   private fun setUpTestWithSurveyFeatureOff() {
     TestPlatformParameterModule.forceEnableNpsSurvey(false)
+    setUpTest()
+  }
+
+  private fun setUpTestWithFlashbackFeatureOn() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(true)
+    setUpTest()
+  }
+  private fun setUpTestWithFlashbackFeatureOff() {
+    TestPlatformParameterModule.forceEnableFlashbackSupport(false)
     setUpTest()
   }
 
@@ -6136,32 +6998,65 @@ class StateFragmentTest {
   @Singleton
   @Component(
     modules = [
-      TestModule::class, RobolectricModule::class, TestPlatformParameterModule::class,
-      TestDispatcherModule::class, ApplicationModule::class, LoggerModule::class,
-      ContinueModule::class, FractionInputModule::class, ItemSelectionInputModule::class,
-      MultipleChoiceInputModule::class, NumberWithUnitsRuleModule::class,
-      NumericInputRuleModule::class, TextInputRuleModule::class, DragDropSortInputModule::class,
-      ImageClickInputModule::class, InteractionsModule::class, GcsResourceModule::class,
-      TestImageLoaderModule::class, ImageParsingModule::class, HtmlParserEntityTypeModule::class,
-      QuestionModule::class, TestLogReportingModule::class, AccessibilityTestModule::class,
-      LogStorageModule::class,
-      ExpirationMetaDataRetrieverModule::class, ViewBindingShimModule::class,
-      RatioInputModule::class, ApplicationStartupListenerModule::class,
-      HintsAndSolutionConfigFastShowTestModule::class, HintsAndSolutionProdModule::class,
-      WorkManagerConfigurationModule::class, LogReportWorkerModule::class,
-      FirebaseLogUploaderModule::class, FakeOppiaClockModule::class,
-      DeveloperOptionsStarterModule::class, DeveloperOptionsModule::class,
-      ExplorationStorageModule::class, NetworkConnectionUtilDebugModule::class,
-      NetworkConnectionDebugUtilModule::class, NetworkModule::class, NetworkConfigProdModule::class,
-      AssetModule::class, LocaleProdModule::class, ActivityRecreatorTestModule::class,
-      PlatformParameterSingletonModule::class,
-      NumericExpressionInputModule::class, AlgebraicExpressionInputModule::class,
-      MathEquationInputModule::class, SplitScreenInteractionModule::class,
-      LoggingIdentifierModule::class, ApplicationLifecycleModule::class,
-      SyncStatusModule::class, MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
+      AccessibilityTestModule::class,
+      ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
-      CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      AlgebraicExpressionInputModule::class,
+      ApplicationLifecycleModule::class,
+      ApplicationModule::class,
+      ApplicationStartupListenerModule::class,
+      AssetModule::class,
+      ContinueModule::class,
+      CpuPerformanceSnapshotterModule::class,
+      DeveloperOptionsModule::class,
+      DeveloperOptionsStarterModule::class,
+      DragDropSortInputModule::class,
+      ExpirationMetaDataRetrieverModule::class,
+      ExplorationProgressModule::class,
+      ExplorationStorageModule::class,
+      FakeOppiaClockModule::class,
+      FirebaseLogUploaderModule::class,
+      FractionInputModule::class,
+      GcsResourceModule::class,
+      HintsAndSolutionConfigFastShowTestModule::class,
+      HintsAndSolutionProdModule::class,
+      HtmlParserEntityTypeModule::class,
+      ImageClickInputModule::class,
+      ImageParsingModule::class,
+      InteractionsModule::class,
+      ItemSelectionInputModule::class,
+      LocaleProdModule::class,
+      LogReportWorkerModule::class,
+      LogStorageModule::class,
+      LoggerModule::class,
+      LoggingIdentifierModule::class,
+      MathEquationInputModule::class,
+      MetricLogSchedulerModule::class,
+      MultipleChoiceInputModule::class,
+      NetworkConfigProdModule::class,
+      NetworkConnectionDebugUtilModule::class,
+      NetworkConnectionUtilDebugModule::class,
+      NumberWithUnitsRuleModule::class,
+      NumericExpressionInputModule::class,
+      NumericInputRuleModule::class,
+      PlatformParameterSingletonModule::class,
+      QuestionModule::class,
+      RatioInputModule::class,
+      RetrofitModule::class,
+      RetrofitServiceModule::class,
+      RobolectricModule::class,
+      SplitScreenInteractionModule::class,
+      SyncStatusModule::class,
+      TestAuthenticationModule::class,
+      TestDispatcherModule::class,
+      TestImageLoaderModule::class,
+      TestLogReportingModule::class,
+      TestModule::class,
+      TestPlatformParameterModule::class,
+      TestingBuildFlavorModule::class,
+      TextInputRuleModule::class,
+      ViewBindingShimModule::class,
+      WorkManagerConfigurationModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {

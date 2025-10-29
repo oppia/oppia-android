@@ -2,6 +2,7 @@ package org.oppia.android.app.player.state
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -24,22 +25,28 @@ import org.oppia.android.app.databinding.databinding.ContinueInteractionItemBind
 import org.oppia.android.app.databinding.databinding.ContinueNavigationButtonItemBinding
 import org.oppia.android.app.databinding.databinding.DragDropInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.FeedbackItemBinding
+import org.oppia.android.app.databinding.databinding.FlashbackButtonItemBinding
 import org.oppia.android.app.databinding.databinding.FractionInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ImageRegionSelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.ItemSelectionSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.MathExpressionInteractionsItemBinding
+import org.oppia.android.app.databinding.databinding.MultipleChoiceSubmittedAnswerItemsBinding
 import org.oppia.android.app.databinding.databinding.NextButtonItemBinding
 import org.oppia.android.app.databinding.databinding.NumericInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousButtonItemBinding
 import org.oppia.android.app.databinding.databinding.PreviousResponsesHeaderItemBinding
 import org.oppia.android.app.databinding.databinding.RatioInputInteractionItemBinding
 import org.oppia.android.app.databinding.databinding.ReplayButtonItemBinding
+import org.oppia.android.app.databinding.databinding.ReturnToQuestionButtonItemBinding
 import org.oppia.android.app.databinding.databinding.ReturnToTopicButtonItemBinding
 import org.oppia.android.app.databinding.databinding.SelectionInteractionItemBinding
+import org.oppia.android.app.databinding.databinding.SolutionSummaryBinding
 import org.oppia.android.app.databinding.databinding.SubmitButtonItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedAnswerListItemBinding
 import org.oppia.android.app.databinding.databinding.SubmittedHtmlAnswerItemBinding
 import org.oppia.android.app.databinding.databinding.TextInputInteractionItemBinding
+import org.oppia.android.app.hintsandsolution.SolutionViewModel
 import org.oppia.android.app.model.AnswerAndResponse
 import org.oppia.android.app.model.EphemeralState
 import org.oppia.android.app.model.EphemeralState.StateTypeCase
@@ -62,6 +69,7 @@ import org.oppia.android.app.player.state.itemviewmodel.ContinueInteractionViewM
 import org.oppia.android.app.player.state.itemviewmodel.ContinueNavigationButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.DragAndDropSortInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FeedbackViewModel
+import org.oppia.android.app.player.state.itemviewmodel.FlashbackButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.FractionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ImageRegionSelectionInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.MathExpressionInteractionsViewModel
@@ -71,18 +79,24 @@ import org.oppia.android.app.player.state.itemviewmodel.PreviousButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.PreviousResponsesHeaderViewModel
 import org.oppia.android.app.player.state.itemviewmodel.RatioExpressionInputInteractionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReplayButtonViewModel
+import org.oppia.android.app.player.state.itemviewmodel.ReturnToQuestionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.ReturnToTopicButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SelectionInteractionViewModel
+import org.oppia.android.app.player.state.itemviewmodel.SelectionItemInputType
+import org.oppia.android.app.player.state.itemviewmodel.SelectionSubmittedItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel
 import org.oppia.android.app.player.state.itemviewmodel.StateItemViewModel.InteractionItemFactory
+import org.oppia.android.app.player.state.itemviewmodel.StateSolutionViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmitButtonViewModel
 import org.oppia.android.app.player.state.itemviewmodel.SubmittedAnswerViewModel
 import org.oppia.android.app.player.state.itemviewmodel.TextInputViewModel
 import org.oppia.android.app.player.state.listener.ContinueNavigationButtonListener
+import org.oppia.android.app.player.state.listener.FlashbackButtonListener
 import org.oppia.android.app.player.state.listener.NextNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousNavigationButtonListener
 import org.oppia.android.app.player.state.listener.PreviousResponsesHeaderClickListener
 import org.oppia.android.app.player.state.listener.ReplayButtonListener
+import org.oppia.android.app.player.state.listener.ReturnToQuestionButtonListener
 import org.oppia.android.app.player.state.listener.ReturnToTopicNavigationButtonListener
 import org.oppia.android.app.player.state.listener.ShowHintAvailabilityListener
 import org.oppia.android.app.player.state.listener.SubmitNavigationButtonListener
@@ -105,6 +119,8 @@ import org.oppia.android.util.parser.html.HtmlParser
 import org.oppia.android.util.parser.html.ImageTagHandler
 import org.oppia.android.util.parser.html.LiTagHandler
 import org.oppia.android.util.parser.html.MathTagHandler
+import org.oppia.android.util.platformparameter.EnableFlashbackSupport
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.oppia.android.util.threading.BackgroundDispatcher
 import javax.inject.Inject
 
@@ -162,6 +178,7 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private var userAnswerState: UserAnswerState,
   private val consoleLogger: ConsoleLogger,
   private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+  private val solutionViewModelFactory: SolutionViewModel.Factory
 ) : HtmlParser.CustomOppiaTagActionListener {
   /**
    * A list of view models corresponding to past view models that are hidden by default. These are
@@ -237,12 +254,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
     previousAnswerViewModels.clear()
     val conversationPendingItemList = mutableListOf<StateItemViewModel>()
     val extraInteractionPendingItemList = mutableListOf<StateItemViewModel>()
-    if (playerFeatureSet.contentSupport) {
+    if (playerFeatureSet.contentSupport && !ephemeralState.flashbackState) {
       addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
     }
     val interaction = ephemeralState.state.interaction
+    var flashbackStateName: String? = null
+    var flashbackViewed = false
 
     if (ephemeralState.stateTypeCase == StateTypeCase.PENDING_STATE) {
+      val latestAnswer = ephemeralState.pendingState.wrongAnswerList.lastOrNull()
+      flashbackStateName = latestAnswer?.stateNameToRevisit
+      flashbackViewed = latestAnswer?.flashbackViewed == true
+
       if (playerFeatureSet.hintsAndSolutionsSupport) {
         (fragment as ShowHintAvailabilityListener).onHintAvailable(
           ephemeralState.pendingState.helpIndex,
@@ -255,7 +278,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         ephemeralState.pendingState.wrongAnswerList,
         isLastAnswerCorrect = false,
         gcsEntityId,
-        ephemeralState.writtenTranslationContext
+        ephemeralState.writtenTranslationContext,
+        interaction
       )
       if (playerFeatureSet.interactionSupport) {
         val interactionItemList =
@@ -283,16 +307,48 @@ class StatePlayerRecyclerViewAssembler private constructor(
         )
       }
 
-      // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
-      // so that the UI always has the correct answer indication, even after configuration changes.
-      addPreviousAnswers(
-        conversationPendingItemList,
-        extraInteractionPendingItemList,
-        ephemeralState.completedState.answerList,
-        isLastAnswerCorrect = true,
-        gcsEntityId,
-        ephemeralState.writtenTranslationContext
-      )
+      if (ephemeralState.flashbackState) {
+        addFlashbackFeedbackItem(
+          conversationPendingItemList,
+          gcsEntityId,
+          ephemeralState.writtenTranslationContext
+        )
+        addContentItem(conversationPendingItemList, ephemeralState, gcsEntityId)
+        addFlashbackSubmittedAnswerItem(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          ephemeralState.completedState.answerList,
+          gcsEntityId,
+          ephemeralState.state.interaction,
+          ephemeralState.writtenTranslationContext
+        )
+        if (playerFeatureSet.flashbackSolutionSummarySupport) {
+          addFlashbackSolutionItem(
+            conversationPendingItemList,
+            gcsEntityId,
+            ephemeralState.state.interaction,
+            ephemeralState.writtenTranslationContext
+          )
+        }
+        if (playerFeatureSet.flashbackNavigationSupport) {
+          addReturnToQuestionButton(
+            conversationPendingItemList,
+            extraInteractionPendingItemList
+          )
+        }
+      } else {
+        // Ensure the answer is marked in situations where that's guaranteed (e.g. completed state)
+        // so that the UI always has the correct answer indication, even after configuration changes.
+        addPreviousAnswers(
+          conversationPendingItemList,
+          extraInteractionPendingItemList,
+          ephemeralState.completedState.answerList,
+          isLastAnswerCorrect = true,
+          gcsEntityId,
+          ephemeralState.writtenTranslationContext,
+          interaction
+        )
+      }
     }
 
     val isTerminalState = ephemeralState.stateTypeCase == StateTypeCase.TERMINAL_STATE
@@ -329,16 +385,20 @@ class StatePlayerRecyclerViewAssembler private constructor(
       maybeShowCelebrationForEndOfSession()
     }
 
-    maybeAddNavigationButtons(
-      conversationPendingItemList,
-      extraInteractionPendingItemList,
-      hasPreviousState,
-      canContinueToNextState,
-      hasGeneralContinueButton,
-      isTerminalState,
-      shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
-      continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs
-    )
+    if (!ephemeralState.flashbackState) {
+      maybeAddNavigationButtons(
+        conversationPendingItemList,
+        extraInteractionPendingItemList,
+        hasPreviousState,
+        canContinueToNextState,
+        hasGeneralContinueButton,
+        isTerminalState,
+        shouldAnimateContinueButton = ephemeralState.showContinueButtonAnimation,
+        continueButtonAnimationTimestampMs = ephemeralState.continueButtonAnimationTimestampMs,
+        flashbackStateName,
+        flashbackViewed
+      )
+    }
     return Pair(conversationPendingItemList, extraInteractionPendingItemList)
   }
 
@@ -397,12 +457,26 @@ class StatePlayerRecyclerViewAssembler private constructor(
     answersAndResponses: List<AnswerAndResponse>,
     isLastAnswerCorrect: Boolean,
     gcsEntityId: String,
-    writtenTranslationContext: WrittenTranslationContext
+    writtenTranslationContext: WrittenTranslationContext,
+    interaction: Interaction
   ) {
-    if (answersAndResponses.size > 1) {
+    // 'flashbackRecentlyViewed' determines whether the flashback was recently viewed by the
+    // learner.
+    // True if flashback navigation is supported and the latest AnswerAndResponse has a
+    // valid stateNameToRevisit with flashbackViewed set to true.
+    var flashbackRecentlyViewed = false
+    answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      flashbackRecentlyViewed = playerFeatureSet.flashbackNavigationSupport &&
+        !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+        answerAndResponse.flashbackViewed
+    }
+    val previousAnswerCount = if (flashbackRecentlyViewed)
+      answersAndResponses.size else answersAndResponses.size - 1
+
+    if (answersAndResponses.size > 1 || flashbackRecentlyViewed) {
       if (playerFeatureSet.wrongAnswerCollapsing) {
         PreviousResponsesHeaderViewModel(
-          answersAndResponses.size - 1,
+          previousAnswerCount,
           hasConversationView,
           ObservableBoolean(hasPreviousResponsesExpanded),
           fragment as PreviousResponsesHeaderClickListener,
@@ -423,7 +497,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            /* isAnswerCorrect= */ false
+            /* isAnswerCorrect= */ false,
+            interaction,
+            writtenTranslationContext
           )?.let { viewModel ->
             if (showPreviousAnswers) {
               pendingItemList += viewModel
@@ -433,7 +509,16 @@ class StatePlayerRecyclerViewAssembler private constructor(
         }
         if (playerFeatureSet.feedbackSupport) {
           createFeedbackItem(
-            answerAndResponse.feedback,
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank() ||
+              !playerFeatureSet.flashbackNavigationSupport
+            )
+              answerAndResponse.feedback
+            else
+              SubtitledHtml.newBuilder()
+                .setHtml(
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+                )
+                .build(),
             gcsEntityId,
             writtenTranslationContext
           )?.let { viewModel ->
@@ -443,28 +528,133 @@ class StatePlayerRecyclerViewAssembler private constructor(
             previousAnswerViewModels += viewModel
           }
         }
+
+        if (
+          playerFeatureSet.flashbackNavigationSupport &&
+          !answerAndResponse.stateNameToRevisit.isNullOrBlank() &&
+          answerAndResponse.flashbackViewed
+        ) {
+          addFlashbackButton(
+            answerAndResponse.stateNameToRevisit
+          ).let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+
+          if (playerFeatureSet.feedbackSupport) {
+            createFeedbackItem(
+              SubtitledHtml.newBuilder()
+                .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
+                .build(),
+              gcsEntityId,
+              writtenTranslationContext
+            )?.let { viewModel ->
+              if (showPreviousAnswers) {
+                pendingItemList += viewModel
+              }
+              previousAnswerViewModels += viewModel
+            }
+          }
+        }
       }
     }
     answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      if (flashbackRecentlyViewed) {
+        // Only add previous answers if current responses are expanded, or if collapsing is disabled.
+        val showPreviousAnswers = !playerFeatureSet.wrongAnswerCollapsing ||
+          hasPreviousResponsesExpanded
+
+        if (playerFeatureSet.pastAnswerSupport) {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            /* isAnswerCorrect= */ false,
+            interaction,
+            writtenTranslationContext
+          )?.let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+        }
+
+        if (playerFeatureSet.feedbackSupport) {
+          createFeedbackItem(
+            if (answerAndResponse.stateNameToRevisit.isNullOrBlank())
+              answerAndResponse.feedback
+            else
+              SubtitledHtml.newBuilder()
+                .setHtml(
+                  resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+                )
+                .build(),
+            gcsEntityId,
+            writtenTranslationContext
+          )?.let { viewModel ->
+            if (showPreviousAnswers) {
+              pendingItemList += viewModel
+            }
+            previousAnswerViewModels += viewModel
+          }
+        }
+
+        addFlashbackButton(
+          answerAndResponse.stateNameToRevisit
+        ).let { viewModel ->
+          if (showPreviousAnswers) {
+            pendingItemList += viewModel
+          }
+          previousAnswerViewModels += viewModel
+        }
+
+        if (playerFeatureSet.feedbackSupport) {
+          createFeedbackItem(
+            SubtitledHtml.newBuilder()
+              .setHtml(resourceHandler.getStringInLocale(R.string.flashback_viewed_feedback_text))
+              .build(),
+            gcsEntityId, writtenTranslationContext
+          )?.let(pendingItemList::add)
+        }
+        return
+      }
+
       if (playerFeatureSet.pastAnswerSupport) {
         if (isLastAnswerCorrect && isSplitView.get()!!) {
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            isAnswerCorrect = true
+            isAnswerCorrect = true,
+            interaction,
+            writtenTranslationContext
           )?.let(rightPendingItemList::add)
         } else {
           createSubmittedAnswer(
             answerAndResponse.userAnswer,
             gcsEntityId,
-            isLastAnswerCorrect || answerAndResponse.isCorrectAnswer
+            isLastAnswerCorrect || answerAndResponse.isCorrectAnswer,
+            interaction,
+            writtenTranslationContext
           )?.let(pendingItemList::add)
         }
       }
       if (playerFeatureSet.feedbackSupport) {
-        createFeedbackItem(answerAndResponse.feedback, gcsEntityId, writtenTranslationContext)?.let(
-          pendingItemList::add
-        )
+        createFeedbackItem(
+          if (answerAndResponse.stateNameToRevisit.isNullOrBlank() ||
+            !playerFeatureSet.flashbackNavigationSupport
+          )
+            answerAndResponse.feedback
+          else
+            SubtitledHtml.newBuilder()
+              .setHtml(
+                resourceHandler.getStringInLocale(R.string.flashback_feedback_prompt)
+              )
+              .build(),
+          gcsEntityId,
+          writtenTranslationContext
+        )?.let(pendingItemList::add)
       }
     }
   }
@@ -601,7 +791,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
   private fun createSubmittedAnswer(
     userAnswer: UserAnswer,
     gcsEntityId: String,
-    isAnswerCorrect: Boolean
+    isAnswerCorrect: Boolean,
+    interaction: Interaction,
+    writtenTranslationContext: WrittenTranslationContext,
+    isFlashback: Boolean = false
   ): SubmittedAnswerViewModel? {
     return userAnswer.takeIf { it.hasAnswerToDisplayToUser() }?.let {
       SubmittedAnswerViewModel(
@@ -610,7 +803,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
         hasConversationView,
         isSplitView.get()!!,
         playerFeatureSet.conceptCardSupport,
-        resourceHandler
+        resourceHandler,
+        interaction,
+        writtenTranslationContext,
+        translationController,
+        consoleLogger,
+        isFlashback
       ).also { submittedAnswerViewModel ->
         submittedAnswerViewModel.setIsCorrectAnswer(isAnswerCorrect)
         submittedAnswerViewModel.isExtraInteractionAnswerCorrect.set(isAnswerCorrect)
@@ -645,7 +843,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     hasGeneralContinueButton: Boolean,
     stateIsTerminal: Boolean,
     shouldAnimateContinueButton: Boolean,
-    continueButtonAnimationTimestampMs: Long
+    continueButtonAnimationTimestampMs: Long,
+    flashbackStateName: String?,
+    flashbackViewed: Boolean
   ) {
     val hasPreviousButton = playerFeatureSet.backwardNavigation && hasPreviousState
     when {
@@ -692,6 +892,18 @@ class StatePlayerRecyclerViewAssembler private constructor(
       }
       // Otherwise, there's no navigation button that should be shown since the current interaction
       // handles this or navigation in this context is disabled.
+    }
+    if (!flashbackStateName.isNullOrBlank() &&
+      !flashbackViewed &&
+      playerFeatureSet.flashbackNavigationSupport
+    ) {
+      addFlashbackButton(flashbackStateName).let { viewModel ->
+        if (isSplitView.get() == true) {
+          extraInteractionPendingItemList += viewModel
+        } else {
+          conversationPendingItemList += viewModel
+        }
+      }
     }
   }
 
@@ -812,6 +1024,112 @@ class StatePlayerRecyclerViewAssembler private constructor(
         previousNavigationButtonListener,
         isSplitView.get()!!
       )
+    }
+  }
+
+  private fun addFlashbackButton(
+    flashbackStateName: String
+  ): FlashbackButtonViewModel {
+    return FlashbackButtonViewModel(
+      hasConversationView,
+      isSplitView.get()!!,
+      fragment as FlashbackButtonListener,
+      flashbackStateName
+    )
+  }
+
+  private fun addReturnToQuestionButton(
+    conversationPendingItemList: MutableList<StateItemViewModel>,
+    extraInteractionPendingItemList: MutableList<StateItemViewModel>
+  ) {
+    val targetList =
+      if (isSplitView.get()!!) extraInteractionPendingItemList else conversationPendingItemList
+
+    targetList += ReturnToQuestionViewModel(
+      hasConversationView,
+      isSplitView.get()!!,
+      fragment as ReturnToQuestionButtonListener
+    )
+  }
+
+  private fun addFlashbackFeedbackItem(
+    pendingItemList: MutableList<StateItemViewModel>,
+    gcsEntityId: String,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
+    if (playerFeatureSet.feedbackSupport) {
+      val flashbackFeedbackHtml = SubtitledHtml.newBuilder()
+        .setHtml(resourceHandler.getStringInLocale(R.string.flashback_state_feedback_text))
+        .build()
+
+      createFeedbackItem(flashbackFeedbackHtml, gcsEntityId, writtenTranslationContext)?.let(
+        pendingItemList::add
+      )
+    }
+  }
+
+  private fun addFlashbackSolutionItem(
+    pendingItemList: MutableList<StateItemViewModel>,
+    gcsEntityId: String,
+    interaction: Interaction,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
+    interaction.solution
+      .takeIf { it.hasExplanation() && it.hasCorrectAnswer() }
+      ?.let { solution ->
+
+        // Stroke width for the solution box border.
+        val solutionBoxStrokeWidth =
+          context.resources.getDimensionPixelSize(R.dimen.flashback_explanation_box_stroke_width)
+
+        val coreViewModel = solutionViewModelFactory.create(
+          solutionSummary = translationController.extractString(
+            solution.explanation,
+            writtenTranslationContext
+          ),
+          isSolutionRevealed = ObservableBoolean(true),
+          isSolutionExclusive = solution.answerIsExclusive,
+          correctAnswer = solution.correctAnswer,
+          interaction = interaction,
+          writtenTranslationContext = writtenTranslationContext,
+          explorationId = gcsEntityId,
+          isFlashback = true,
+          solutionBoxStrokeWidth = solutionBoxStrokeWidth
+        )
+        pendingItemList += solutionViewModelFactory.createStateSolutionViewModel(coreViewModel)
+      }
+  }
+
+  private fun addFlashbackSubmittedAnswerItem(
+    pendingItemList: MutableList<StateItemViewModel>,
+    rightPendingItemList: MutableList<StateItemViewModel>,
+    answersAndResponses: List<AnswerAndResponse>,
+    gcsEntityId: String,
+    interaction: Interaction,
+    writtenTranslationContext: WrittenTranslationContext
+  ) {
+    answersAndResponses.lastOrNull()?.let { answerAndResponse ->
+      if (playerFeatureSet.pastAnswerSupport) {
+        if (isSplitView.get()!!) {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isAnswerCorrect = true,
+            interaction,
+            writtenTranslationContext = writtenTranslationContext,
+            true
+          )?.let(rightPendingItemList::add)
+        } else {
+          createSubmittedAnswer(
+            answerAndResponse.userAnswer,
+            gcsEntityId,
+            isAnswerCorrect = true,
+            interaction,
+            writtenTranslationContext = writtenTranslationContext,
+            true
+          )?.let(pendingItemList::add)
+        }
+      }
     }
   }
 
@@ -952,6 +1270,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private val userAnswerState: UserAnswerState,
     private val consoleLogger: ConsoleLogger,
     private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+    private val solutionViewModelFactory: SolutionViewModel.Factory,
+    private val enableFlashbackSupport: PlatformParameterValue<Boolean>
   ) {
 
     private val adapterBuilder: BindableAdapter.MultiTypeBuilder<StateItemViewModel,
@@ -1135,6 +1455,12 @@ class StatePlayerRecyclerViewAssembler private constructor(
           binding.viewModel = submittedAnswerViewModel
           val userAnswer = submittedAnswerViewModel.submittedUserAnswer
           when (userAnswer.textualAnswerCase) {
+            UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER -> {
+              showSelectionSubmittedAnswer(binding)
+              binding.selectionSubmittedAnswerRecyclerView.adapter =
+                createSelectionSubmittedAnswerListAdapter(viewModel.getSelectionItemInputType())
+              binding.selectionSubmittedAnswerList = viewModel.choiceItems
+            }
             UserAnswer.TextualAnswerCase.HTML_ANSWER -> {
               showSingleAnswer(binding)
               val accessibleAnswer = if (userAnswer.contentDescription.isNotEmpty()) {
@@ -1177,6 +1503,62 @@ class StatePlayerRecyclerViewAssembler private constructor(
       )
       featureSets += PlayerFeatureSet(pastAnswerSupport = true)
       return this
+    }
+
+    /** Adds support for navigating to flashback state. */
+    fun addRedirectionSupport(): Builder {
+      if (enableFlashbackSupport.value) {
+        adapterBuilder.registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.FLASHBACK_BUTTON,
+          inflateDataBinding = FlashbackButtonItemBinding::inflate,
+          setViewModel = FlashbackButtonItemBinding::setButtonViewModel,
+          transformViewModel = { it as FlashbackButtonViewModel }
+        ).registerViewDataBinder(
+          viewType = StateItemViewModel.ViewType.RETURN_TO_QUESTION_BUTTON,
+          inflateDataBinding = ReturnToQuestionButtonItemBinding::inflate,
+          setViewModel = ReturnToQuestionButtonItemBinding::setButtonViewModel,
+          transformViewModel = { it as ReturnToQuestionViewModel }
+        )
+        featureSets += PlayerFeatureSet(flashbackNavigationSupport = true)
+      }
+      return this
+    }
+
+    /** Adds support for displaying state solution to the learner. */
+    fun addFlashbackSolutionSupport(): Builder {
+      adapterBuilder.registerViewDataBinder(
+        viewType = StateItemViewModel.ViewType.FLASHBACK_SOLUTION,
+        inflateDataBinding = SolutionSummaryBinding::inflate,
+        setViewModel = this::bindSolutionViewModel,
+        transformViewModel = { it as StateSolutionViewModel }
+      )
+      featureSets += PlayerFeatureSet(flashbackSolutionSummarySupport = true)
+      return this
+    }
+
+    private fun bindSolutionViewModel(
+      binding: SolutionSummaryBinding,
+      solutionViewModel: StateSolutionViewModel
+    ) {
+      val coreViewModel = solutionViewModel.coreViewModel
+      binding.viewModel = coreViewModel
+
+      binding.solutionSummaryLabel.setTypeface(null, Typeface.BOLD)
+      binding.solutionSummary.text =
+        htmlParserFactory.create(
+          resourceBucketName,
+          entityType,
+          coreViewModel.explorationId,
+          customOppiaTagActionListener = customTagListener,
+          imageCenterAlign = true,
+          displayLocale = resourceHandler.getDisplayLocale()
+        ).parseOppiaHtml(
+          coreViewModel.solutionSummary,
+          binding.solutionSummary,
+          supportsLinks = true,
+          supportsConceptCards = true
+        )
+      binding.isListExpanded = true
     }
 
     private fun createListAnswerAdapter(
@@ -1231,9 +1613,86 @@ class StatePlayerRecyclerViewAssembler private constructor(
         .build()
     }
 
+    private fun createSelectionSubmittedAnswerListAdapter(
+      selectionItemInputType: SelectionItemInputType
+    ): BindableAdapter<SelectionSubmittedItemViewModel> {
+      return when (selectionItemInputType) {
+        SelectionItemInputType.CHECKBOXES -> {
+          singleTypeBuilderFactory.create<SelectionSubmittedItemViewModel>()
+            .registerViewBinder(
+              inflateView = { parent ->
+                ItemSelectionSubmittedAnswerItemsBinding.inflate(
+                  LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+                ).root
+              },
+              bindView = { view, viewModel ->
+                val binding = DataBindingUtil
+                  .findBinding<ItemSelectionSubmittedAnswerItemsBinding>(view)!!
+                binding.htmlContent =
+                  htmlParserFactory.create(
+                    resourceBucketName,
+                    entityType,
+                    viewModel.entityId,
+                    false,
+                    displayLocale = viewModel.resourceHandler.getDisplayLocale()
+                  ).parseOppiaHtml(
+                    translationController.extractString(
+                      viewModel.htmlContent,
+                      viewModel.writtenTranslationContext
+                    ),
+                    binding.itemSelectionContentTextView
+                  )
+                if (viewModel.isSelected) {
+                  binding.itemSelectionContentTextView.setTypeface(null, Typeface.BOLD)
+                  binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
+                }
+                binding.viewModel = viewModel
+              }
+            )
+            .build()
+        }
+
+        SelectionItemInputType.RADIO_BUTTONS -> {
+          singleTypeBuilderFactory.create<SelectionSubmittedItemViewModel>()
+            .registerViewBinder(
+              inflateView = { parent ->
+                MultipleChoiceSubmittedAnswerItemsBinding.inflate(
+                  LayoutInflater.from(parent.context), parent, /* attachToParent= */ false
+                ).root
+              },
+              bindView = { view, viewModel ->
+                val binding = DataBindingUtil
+                  .findBinding<MultipleChoiceSubmittedAnswerItemsBinding>(view)!!
+                binding.htmlContent =
+                  htmlParserFactory.create(
+                    resourceBucketName,
+                    entityType,
+                    viewModel.entityId,
+                    /* imageCenterAlign= */ false,
+                    displayLocale = viewModel.resourceHandler.getDisplayLocale()
+                  ).parseOppiaHtml(
+                    translationController.extractString(
+                      viewModel.htmlContent,
+                      viewModel.writtenTranslationContext
+                    ),
+                    binding.multipleChoiceContentTextView
+                  )
+                if (viewModel.isSelected) {
+                  binding.multipleChoiceContentTextView.setTypeface(null, Typeface.BOLD)
+                  binding.submittedAnswerLabelTextView.visibility = View.VISIBLE
+                }
+                binding.viewModel = viewModel
+              }
+            )
+            .build()
+        }
+      }
+    }
+
     private fun showSingleAnswer(binding: ViewDataBinding) {
       when (binding) {
         is SubmittedAnswerItemBinding -> {
+          binding.selectionSubmittedAnswerRecyclerView.visibility = View.GONE
           binding.submittedAnswerRecyclerView.visibility = View.GONE
           binding.submittedAnswerTextView.visibility = View.VISIBLE
         }
@@ -1243,8 +1702,19 @@ class StatePlayerRecyclerViewAssembler private constructor(
     private fun showListOfAnswers(binding: ViewDataBinding) {
       when (binding) {
         is SubmittedAnswerItemBinding -> {
+          binding.selectionSubmittedAnswerRecyclerView.visibility = View.GONE
           binding.submittedAnswerRecyclerView.visibility = View.VISIBLE
           binding.submittedAnswerTextView.visibility = View.GONE
+        }
+      }
+    }
+
+    private fun showSelectionSubmittedAnswer(binding: ViewDataBinding) {
+      when (binding) {
+        is SubmittedAnswerItemBinding -> {
+          binding.submittedAnswerRecyclerView.visibility = View.GONE
+          binding.submittedAnswerTextView.visibility = View.GONE
+          binding.selectionSubmittedAnswerRecyclerView.visibility = View.VISIBLE
         }
       }
     }
@@ -1440,7 +1910,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         translationController,
         userAnswerState,
         consoleLogger,
-        conceptCardTagHandlerFactory
+        conceptCardTagHandlerFactory,
+        solutionViewModelFactory
       )
       if (playerFeatureSet.conceptCardSupport) {
         customTagListener.proxyListener = assembler
@@ -1463,6 +1934,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
       private val singleAdapterFactory: BindableAdapter.SingleTypeBuilder.Factory,
       private val consoleLogger: ConsoleLogger,
       private val conceptCardTagHandlerFactory: ConceptCardTagHandler.Factory,
+      private val solutionViewModelFactory: SolutionViewModel.Factory,
+      @EnableFlashbackSupport private val enableFlashbackSupport: PlatformParameterValue<Boolean>
     ) {
       /**
        * Returns a new [Builder] for the specified GCS resource bucket information for loading
@@ -1490,7 +1963,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
           singleAdapterFactory,
           userAnswerState,
           consoleLogger,
-          conceptCardTagHandlerFactory
+          conceptCardTagHandlerFactory,
+          solutionViewModelFactory,
+          enableFlashbackSupport
         )
       }
     }
@@ -1511,7 +1986,9 @@ class StatePlayerRecyclerViewAssembler private constructor(
     val showCelebrationAtEndOfSession: Boolean = false,
     val hintsAndSolutionsSupport: Boolean = false,
     val supportAudioVoiceovers: Boolean = false,
-    val conceptCardSupport: Boolean = false
+    val conceptCardSupport: Boolean = false,
+    val flashbackNavigationSupport: Boolean = false,
+    val flashbackSolutionSummarySupport: Boolean = false
   ) {
     /**
      * Returns a union of this feature set with other one. Loosely based on
@@ -1534,7 +2011,10 @@ class StatePlayerRecyclerViewAssembler private constructor(
           other.showCelebrationAtEndOfSession,
         hintsAndSolutionsSupport = hintsAndSolutionsSupport || other.hintsAndSolutionsSupport,
         supportAudioVoiceovers = supportAudioVoiceovers || other.supportAudioVoiceovers,
-        conceptCardSupport = conceptCardSupport || other.conceptCardSupport
+        conceptCardSupport = conceptCardSupport || other.conceptCardSupport,
+        flashbackNavigationSupport = flashbackNavigationSupport || other.flashbackNavigationSupport,
+        flashbackSolutionSummarySupport = flashbackSolutionSummarySupport ||
+          other.flashbackSolutionSummarySupport
       )
     }
   }
@@ -1546,6 +2026,8 @@ class StatePlayerRecyclerViewAssembler private constructor(
         UserAnswer.TextualAnswerCase.PLAIN_ANSWER -> plainAnswer.isNotEmpty()
         UserAnswer.TextualAnswerCase.LIST_OF_HTML_ANSWERS ->
           listOfHtmlAnswers.setOfHtmlStringsOrBuilderList.isNotEmpty()
+        UserAnswer.TextualAnswerCase.ITEM_SELECTION_ANSWER ->
+          itemSelectionAnswer.selectedIndexesList.isNotEmpty()
         UserAnswer.TextualAnswerCase.TEXTUALANSWER_NOT_SET, null -> false
       }
     }

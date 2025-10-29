@@ -64,6 +64,8 @@
   <string name="next_state_description">Navigate to the next card</string>
   <string name="state_submit_button">Submit</string>
   <string name="submit_button_text">Submit</string>
+  <string name="state_flashback_button">See example</string>
+  <string name="state_return_to_question_button">Return to question</string>
   <string name="lesson_replay_button_text">Replay</string>
   <string name="state_end_exploration_button">Return To Topic</string>
   <string name="previous_responses_header">Previous Responses (%s)</string>
@@ -78,7 +80,6 @@
   <string name="featured_questions">Featured Questions</string>
   <string name="frequently_asked_questions">Frequently Asked Questions</string>
   <string name="faq_activity_title">FAQs (Frequently Asked Questions)</string>
-  <string name="pin_password_activity_title">PIN verification</string>
   <string name="onboarding_activity_title">Introduction</string>
   <string name="frequently_asked_questions_FAQ">Frequently Asked Questions (FAQs)</string>
   <string name="info">Info</string>
@@ -193,6 +194,16 @@
   <string name="welcome_profile_name">%1$s %2$s!</string>
   <string name="selected_image_region_selection_content_description">Image showing %1$s.</string>
   <string name="unselected_image_region_selection_content_description">Select %1$s image.</string>
+  <string name="flashback_toolbar_title_text">Example</string>
+  <string name="flashback_state_feedback_text">Let\'s review the solution to a previous question.</string>
+  <string name="flashback_viewed_feedback_text">Now that you\’ve seen an example, let\’s try again.</string>
+  <string name="flashback_feedback_prompt">That answer isn\'t correct. Let\'s look at an example.</string>
+  <string name="submitted_answer_label_text">(Your submitted answer)</string>
+  <string name="submitted_answer_label_text_content_description">Your submitted answer</string>
+  <string name="selected_option_icon_content_description">Selected answer</string>
+  <string name="unselected_option_icon_content_description">Unselected answer</string>
+  <string name="flashback_submitted_answer_label_text">(This is the correct answer)</string>
+  <string name="flashback_submitted_answer_label_text_content_description">This is the correct answer</string>
   <plurals name="chapter_count">
     <item quantity="one">1 Chapter</item>
     <item quantity="other">%s Chapters</item>
@@ -293,6 +304,7 @@
   <string name="get_started">Get Started</string>
   <string name="onboarding_slide_dots_content_description">Slide %1$s of %2$s</string>
   <!-- PinPasswordActivity -->
+  <string name="pin_password_activity_title">PIN verification</string>
   <string name="pin_password_hello">Hi, %s!</string>
   <string name="pin_password_admin_enter">Please enter your Administrator PIN.</string>
   <string name="pin_password_user_enter">Please enter your PIN.</string>
@@ -701,4 +713,22 @@
   <!-- AudioLanguageFragment -->
   <string name="arabic_language_display_name_content_description">Arabic</string>
 
+  <!--  FlashbackConfirmationDialogFragment -->
+  <string name="flashback_confirmation_dialog_continue_button_text">Continue</string>
+  <string name="flashback_confirmation_dialog_not_now_text">Not now</string>
+  <string name="flashback_confirmation_dialog_title_text">Need help? No problem.</string>
+  <string name="flashback_confirmation_dialog_message_text">Review the previous question\'s solution</string>
+
+  <!-- Profile Login Activity -->
+  <string name="profile_login_activity_title">Login</string>
+  <string name="profile_login_activity_enter_pin_prompt">Please enter your PIN</string>
+  <string name="profile_login_activity_greeting_text">Welcome back, %s!</string>
+  <string name="profile_login_activity_pin_error">You have entered an incorrect PIN.</string>
+  <string name="profile_login_activity_forgot_pin_text">I forgot my PIN</string>
+  <string name="profile_login_forgot_pin_dialog_title">Forgot PIN?</string>
+  <string name="profile_login_forgot_pin_dialog_message">To reset your PIN, you\'ll need to clear all saved data for %s.\n\nKeep in mind that this action will cause all profiles and user progress to be deleted, and it cannot be undone. Also, the app will close when this completes and will need to be reopened.</string>
+  <string name="profile_login_forgot_pin_dialog_reset_button">Reset %s Data</string>
+  <string name="profile_login_forgot_pin_dialog_cancel_button">Cancel</string>
+  <string name="profile_login_reset_pin_success_dialog_close">Close</string>
+  <string name="profile_login_reset_pin_success_dialog_message">PIN changed successfully!</string>
 </resources>

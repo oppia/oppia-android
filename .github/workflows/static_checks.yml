@@ -83,10 +83,6 @@ jobs:
         run: |
           bash /home/runner/work/oppia-android/oppia-android/scripts/ktlint_lint_check.sh $HOME
 
-      - name: Feature flag checks
-        run: |
-          bash /home/runner/work/oppia-android/oppia-android/scripts/feature_flags_check.sh $HOME
-
       - name: Protobuf lint check
         run: |
           bash /home/runner/work/oppia-android/oppia-android/scripts/buf_lint_check.sh $HOME
@@ -172,6 +168,13 @@ jobs:
         run: |
           bazel run //scripts:check_textview_styles -- $(pwd)
 
+      - name: Android Lint Check
+        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+        if:  ${{ !cancelled() }}
+        run: |
+          bazel run //scripts:android_lint_check -- $(pwd)
+
       - name: Testfile Presence Check
         # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
         # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
@@ -208,15 +211,6 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           bazel run //scripts:string_resource_validation_check -- $(pwd)
-
-      - name: Binary files check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bash /home/runner/work/oppia-android/oppia-android/scripts/pre-commit.sh
-          echo "No binary files found in commit"
-          echo "BINARY FILES CHECK PASSED"
 
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to

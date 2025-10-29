@@ -35,10 +35,12 @@ import org.oppia.android.app.player.audio.AudioUiManager
 import org.oppia.android.app.player.state.ConfettiConfig.LARGE_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MEDIUM_CONFETTI_BURST
 import org.oppia.android.app.player.state.ConfettiConfig.MINI_CONFETTI_BURST
+import org.oppia.android.app.player.state.listener.FlashbackToolbarListener
 import org.oppia.android.app.player.state.listener.RouteToHintsAndSolutionListener
 import org.oppia.android.app.player.stopplaying.StopStatePlayingSessionWithSavedProgressListener
 import org.oppia.android.app.survey.SurveyWelcomeDialogFragment
 import org.oppia.android.app.survey.TAG_SURVEY_WELCOME_DIALOG
+import org.oppia.android.app.topic.conceptcard.ConceptCardFragment
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.SplitScreenManager
@@ -201,12 +203,28 @@ class StateFragmentPresenter @Inject constructor(
     }
   }
 
+  private fun showOrHideFlashbackToolbar(ephemeralState: EphemeralState) {
+    if (ephemeralState.flashbackState) {
+      (activity as FlashbackToolbarListener).showFlashbackToolbar()
+    } else {
+      (activity as FlashbackToolbarListener).hideFlashbackToolbar()
+    }
+  }
+
   fun onSubmitButtonClicked() {
     hideKeyboard()
     val answer = stateViewModel.getPendingAnswer(recyclerViewAssembler::getPendingAnswerHandler)
     if (answer != null) {
       handleSubmitAnswer(answer)
     }
+  }
+
+  fun onFlashbackButtonClicked(stateName: String) {
+    explorationProgressController.moveToFlashback(stateName)
+  }
+
+  fun onReturnToQuestionButtonClicked() {
+    explorationProgressController.moveBackToLatest()
   }
 
   fun onResponsesHeaderClicked() {
@@ -247,6 +265,7 @@ class StateFragmentPresenter @Inject constructor(
       .addWrongAnswerCollapsingSupport()
       .addBackwardNavigationSupport()
       .addForwardNavigationSupport()
+      .addRedirectionSupport()
       .addReturnToTopicSupport()
       .addCelebrationForCorrectAnswers(
         congratulationsTextView,
@@ -263,6 +282,7 @@ class StateFragmentPresenter @Inject constructor(
         this::getAudioUiManager
       )
       .addConceptCardSupport()
+      .addFlashbackSolutionSupport()
       .build()
   }
 
@@ -331,6 +351,7 @@ class StateFragmentPresenter @Inject constructor(
     currentStateName = ephemeralState.state.name
 
     showOrHideAudioByState(ephemeralState.state)
+    showOrHideFlashbackToolbar(ephemeralState)
 
     val dataPair = recyclerViewAssembler.compute(
       ephemeralState,
@@ -426,6 +447,11 @@ class StateFragmentPresenter @Inject constructor(
 
   private fun handleSubmitAnswer(answer: UserAnswer) {
     subscribeToAnswerOutcome(explorationProgressController.submitAnswer(answer).toLiveData())
+  }
+
+  /** Removes all [ConceptCardFragment] in the given FragmentManager. */
+  fun dismissConceptCard() {
+    ConceptCardFragment.dismissAll(fragment.childFragmentManager)
   }
 
   private fun moveToNextState() {
@@ -550,38 +576,48 @@ class StateFragmentPresenter @Inject constructor(
   }
 
   private fun maybeShowSurveyDialog(profileId: ProfileId, topicId: String) {
-    surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData().observe(
+    val liveData = surveyGatingController.maybeShowSurvey(profileId, topicId).toLiveData()
+    liveData.observe(
       activity,
-      { gatingResult ->
-        when (gatingResult) {
-          is AsyncResult.Pending -> {
-            oppiaLogger.d("StateFragment", "A gating decision is pending")
-          }
-          is AsyncResult.Failure -> {
-            oppiaLogger.e(
-              "StateFragment",
-              "Failed to retrieve gating decision",
-              gatingResult.error
-            )
-            (activity as StopStatePlayingSessionWithSavedProgressListener)
-              .deleteCurrentProgressAndStopSession(isCompletion = true)
-          }
-          is AsyncResult.Success -> {
-            if (gatingResult.value) {
-              val dialogFragment =
-                SurveyWelcomeDialogFragment.newInstance(
-                  profileId,
-                  topicId,
-                  explorationId,
-                  SURVEY_QUESTIONS
-                )
-              val transaction = activity.supportFragmentManager.beginTransaction()
-              transaction
-                .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                .commitNow()
-            } else {
+      object : Observer<AsyncResult<Boolean>> {
+        override fun onChanged(gatingResult: AsyncResult<Boolean>?) {
+          when (gatingResult) {
+            null, is AsyncResult.Pending -> {
+              oppiaLogger.d("StateFragment", "A gating decision is pending")
+            }
+
+            is AsyncResult.Failure -> {
+              oppiaLogger.e(
+                "StateFragment",
+                "Failed to retrieve gating decision",
+                gatingResult.error
+              )
               (activity as StopStatePlayingSessionWithSavedProgressListener)
                 .deleteCurrentProgressAndStopSession(isCompletion = true)
+            }
+
+            is AsyncResult.Success -> {
+              oppiaLogger.d("StateFragment", "Successfully retrieved gating decision")
+              if (gatingResult.value) {
+                val dialogFragment =
+                  SurveyWelcomeDialogFragment.newInstance(
+                    profileId,
+                    topicId,
+                    explorationId,
+                    SURVEY_QUESTIONS
+                  )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction
+                  .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
+                  .commitNow()
+
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
+                liveData.removeObserver(this)
+              } else {
+                (activity as StopStatePlayingSessionWithSavedProgressListener)
+                  .deleteCurrentProgressAndStopSession(isCompletion = true)
+              }
             }
           }
         }

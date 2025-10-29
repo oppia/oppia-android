@@ -235,6 +235,15 @@ message EventLog {
       // The event being logged indicates that the profile user has reached the home screen for the
       // first time.
       ProfileOnboardingContext end_profile_onboarding_event = 58;
+
+      // The event being logged is related to offering See Example button.
+      FlashbackContext flashback_offered_context = 59;
+
+      // The event being logged is related to opening flashback card.
+      FlashbackContext open_flashback_event = 60;
+
+      // The event being logged is related to closing flashback card.
+      CardContext close_flashback_event = 61;
     }
   }
 
@@ -317,6 +326,18 @@ message EventLog {
 
     // Whether the answer that the learner submitted is the correct answer.
     bool is_answer_correct = 3;
+  }
+
+  // Represents the event context for flashback within an exploration.
+  message FlashbackContext {
+    // Defined attributes that are common among other exploration related event log contexts.
+    ExplorationContext exploration_details = 1;
+
+    // The ID of skill to which this exploration card is associated.
+    string skill_id = 2;
+
+    // The name of the state the learner can revisit to review a concept.
+    string state_name_to_revisit = 3;
   }
 
   // Represents the event context for performing an action pertaining to a voiceover within an
@@ -520,14 +541,16 @@ message EventLog {
 
   // Structure for an individual feature flag log context.
   message FeatureFlagItemContext {
-    // The name of the feature flag or sync status flag.
-    string flag_name = 1;
+    reserved 1; // Old flag_name property.
+
+    // The ID of the feature flag.
+    FeatureFlagId id = 4;
 
     // The enabled state of the feature flag.
-    bool flag_enabled_state = 2;
+    bool is_enabled = 2;
 
     // The sync status of the feature flag or sync status flag.
-    PlatformParameter.SyncStatus flag_sync_status = 3;
+    SyncStatus sync_status = 3;
   }
 
   // Structure for the profile onboarding context.

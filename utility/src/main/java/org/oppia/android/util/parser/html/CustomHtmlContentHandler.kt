@@ -131,7 +131,8 @@ class CustomHtmlContentHandler private constructor(
         check(currentTrackedCustomTags.isNotEmpty()) {
           "Expected tracked custom tag to be initialized."
         }
-        val currentTrackedCustomTag = currentTrackedCustomTags.removeLast()
+        val currentTrackedCustomTag =
+          currentTrackedCustomTags.removeAt(currentTrackedCustomTags.lastIndex)
         check(currentTrackedCustomTag.tag == tag) {
           "Expected tracked tag $currentTrackedTag to match custom tag: $tag"
         }
@@ -145,8 +146,14 @@ class CustomHtmlContentHandler private constructor(
           }
         }
         customTagHandlers.getValue(tag).handleClosingTag(output, indentation = 0, tag)
-        customTagHandlers.getValue(tag)
-          .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+
+        if (imageRetriever == null) {
+          customTagHandlers.getValue(tag)
+            .handleTagForContentDescription(attributes, openTagIndex, output.length, output)
+        } else {
+          customTagHandlers.getValue(tag)
+            .handleTag(attributes, openTagIndex, output.length, output, imageRetriever)
+        }
       }
     }
   }
@@ -201,6 +208,22 @@ class CustomHtmlContentHandler private constructor(
       closeIndex: Int,
       output: Editable,
       imageRetriever: ImageRetriever?
+    ) {
+    }
+
+    /**
+     * Called when a custom tag is encountered during content description generation.
+     *
+     * @param attributes the tag's attributes
+     * @param openIndex the index in the output [Editable] at which this tag begins
+     * @param closeIndex the index in the output [Editable] at which this tag ends
+     * @param output the destination [Editable] to which content can be added
+     */
+    fun handleTagForContentDescription(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable
     ) {
     }
 
@@ -269,19 +292,21 @@ class CustomHtmlContentHandler private constructor(
      * Returns the content description for the HTML content, processing all custom tags that implement
      * [ContentDescriptionProvider].
      */
-    fun <T> getContentDescription(
+    fun getContentDescription(
       html: String,
-      imageRetriever: T?,
       customTagHandlers: Map<String, CustomTagHandler>
-    ): String where T : Html.ImageGetter, T : ImageRetriever {
-      val handler = CustomHtmlContentHandler(customTagHandlers, imageRetriever)
+    ): String {
+      val handler = CustomHtmlContentHandler(
+        customTagHandlers,
+        null
+      )
 
       // Triggers the HTML parsing process, allowing CustomHtmlContentHandler to
       // intercept and populate the contentDescriptionBuilder.
       HtmlCompat.fromHtml(
         "<init-custom-handler/>$html",
         HtmlCompat.FROM_HTML_MODE_LEGACY,
-        imageRetriever,
+        null,
         handler
       )
       return handler.getContentDescription()

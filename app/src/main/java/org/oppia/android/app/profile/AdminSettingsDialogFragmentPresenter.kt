@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AdminSettingsDialogBinding
 import org.oppia.android.app.fragment.FragmentScope
+import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.app.utility.TextInputEditTextHelper.Companion.onTextChanged
@@ -24,7 +25,9 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
 ) {
   fun handleOnCreateDialog(
     routeDialogInterface: ProfileRouteDialogInterface,
-    adminPin: String?
+    adminPin: String?,
+    profileId: ProfileId,
+    profileName: String
   ): Dialog {
     val binding: AdminSettingsDialogBinding =
       DataBindingUtil.inflate(
@@ -83,7 +86,7 @@ class AdminSettingsDialogFragmentPresenter @Inject constructor(
           return@setOnClickListener
         }
         if (binding.adminSettingsInputPinEditText.text.toString() == adminPin) {
-          routeDialogInterface.routeToResetPinDialog()
+          routeDialogInterface.routeToResetPinDialog(profileId, profileName)
         } else {
           adminViewModel.errorMessage.set(
             resourceHandler.getStringInLocale(

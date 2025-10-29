@@ -7,6 +7,7 @@
 * SamarBenNafa
 * Sarah zoubida
 * Seanlip
+* Zaid1442011
 -->
 <resources>
   <string name="nav_header_desc">أعلى قائمة التنقل</string>
@@ -121,7 +122,7 @@
   <string name="math_expression_error_multiple_redundant_parentheses">الرجاء إزالة الأقواس الزائدة حول \"( %1$s )\" ، على سبيل المثال: \" %1$s \".</string>
   <string name="math_expression_error_redundant_parentheses_individual_term">الرجاء إزالة الأقواس الزائدة حول \'( %1$s )\' ، على سبيل المثال: \' %1$s \'.</string>
   <string name="math_expression_error_unnecessary_symbols">يوجد \' %s \' غير صالح في الإجابة. يرجى إزالته.</string>
-  <string name="math_expression_error_number_after_var_term">الرجاء إعادة ترتيب ترتيب %1$s و %2$s . على سبيل المثال: %2$s% 1 $ s.</string>
+  <string name="math_expression_error_number_after_var_term">الرجاء إعادة ترتيب ترتيب %1$s و %2$s . على سبيل المثال: %2$s%1$s.</string>
   <string name="math_expression_error_consecutive_binary_operators">يجب فصل %1$s و %2$s برقم أو متغير.</string>
   <string name="math_expression_error_consecutive_unary_operators">الرجاء إزالة الرموز الإضافية في إجابتك.</string>
   <string name="math_expression_error_missing_lhs_for_addition_operator">هل هناك رقم أو متغير مفقود قبل أو بعد رمز الإضافة \' %1$s \'؟ إذا لم يكن كذلك ، يرجى إزالة \' %1$s \' الإضافي.</string>
@@ -254,6 +255,14 @@
   <string name="set_up_multiple_profiles_description">أضف حتى 10 مستخدمين إلى حسابك. مثالي للعائلات والفصول الدراسية.</string>
   <string name="profile_chooser_administrator_controls">أدوات تحكم المشرف</string>
   <string name="profile_chooser_language">اللغة</string>
+  <string name="profile_selection_header">حدد ملفك الشخصي لاستكشاف الدروس</string>
+  <string name="profile_selection_profile_icon_description">صورة الملف الشخصي للمستخدم</string>
+  <string name="profile_selection_add_icon_description">إضافة ملف تعريف آخر</string>
+  <string name="profile_selection_add_profile_text">إضافة ملف تعريف المتعلم</string>
+  <string name="profile_selection_admin_label">إداري</string>
+  <string name="profile_selection_scroll_left_content_description">انتقل إلى اليسار</string>
+  <string name="profile_selection_scroll_right_content_description">انتقل إلى اليمين</string>
+  <string name="profile_selection_administrator_controls">عناصر تحكم المسؤول</string>
   <string name="admin_auth_toolbar">أدوات تحكم المشرف</string>
   <string name="admin_auth_activity_add_profiles_title">أمّن الحساب لإضافة ملفات شخصية</string>
   <string name="admin_auth_activity_access_controls_title">أمّن الحساب للوصول إلى أدوات تحكم المشرف</string>

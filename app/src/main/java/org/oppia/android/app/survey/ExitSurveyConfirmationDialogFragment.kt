@@ -55,9 +55,4 @@ class ExitSurveyConfirmationDialogFragment : InjectableDialogFragment() {
     dialog?.setCancelable(false)
     return exitSurveyConfirmationDialogFragmentPresenter.handleCreateView(inflater, container)
   }
-
-  override fun onStart() {
-    super.onStart()
-    dialog?.window?.setWindowAnimations(R.style.ExitSurveyConfirmationDialogStyle)
-  }
 }

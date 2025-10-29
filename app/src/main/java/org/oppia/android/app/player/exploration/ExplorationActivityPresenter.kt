@@ -248,6 +248,14 @@ class ExplorationActivityPresenter @Inject constructor(
 
   fun scrollToTop() = getExplorationFragment()?.scrollToTop()
 
+  fun hideFlashbackToolbar() {
+    exploreViewModel.showFlashbackToolbar.set(false)
+  }
+
+  fun showFlashbackToolbar() {
+    exploreViewModel.showFlashbackToolbar.set(true)
+  }
+
   private fun getExplorationManagerFragment(): ExplorationManagerFragment? {
     return activity.supportFragmentManager.findFragmentByTag(
       TAG_EXPLORATION_MANAGER_FRAGMENT
@@ -322,6 +330,10 @@ class ExplorationActivityPresenter @Inject constructor(
    * current exploration.
    */
   fun backButtonPressed() {
+    if (exploreViewModel.showFlashbackToolbar.get() == true) {
+      getExplorationFragment()?.onFlashbackToolbarBackPressed()
+      return
+    }
     // If checkpointing is not enabled, show StopExplorationDialogFragment to exit the exploration,
     // this is expected to happen if the exploration is marked as completed.
     if (!isCheckpointingEnabled) {
@@ -331,6 +343,10 @@ class ExplorationActivityPresenter @Inject constructor(
     // If checkpointing is enabled, get the current checkpoint state to show an appropriate dialog
     // fragment and log lesson saved advertently event.
     showDialogFragmentBasedOnCurrentCheckpointState()
+  }
+
+  fun dismissConceptCard() {
+    getExplorationFragment()?.dismissConceptCard()
   }
 
   private fun updateToolbarTitle(explorationId: String) {
@@ -377,7 +393,8 @@ class ExplorationActivityPresenter @Inject constructor(
     }
   }
 
-  private fun backPressActivitySelector() {
+  /** Selects the appropriate way to close the activity based on the parent screen. */
+  fun backPressActivitySelector() {
     when (parentScreen) {
       ExplorationActivityParams.ParentScreen.TOPIC_SCREEN_LESSONS_TAB,
       ExplorationActivityParams.ParentScreen.STORY_SCREEN -> activity.finish()
@@ -560,6 +577,9 @@ class ExplorationActivityPresenter @Inject constructor(
             }
             is AsyncResult.Success -> {
               if (gatingResult.value) {
+                oppiaLogger.d(
+                  "ExplorationActivity", "Successfully retrieved gating decision"
+                )
                 val dialogFragment =
                   SurveyWelcomeDialogFragment.newInstance(
                     profileId,
@@ -567,13 +587,13 @@ class ExplorationActivityPresenter @Inject constructor(
                     explorationId,
                     SURVEY_QUESTIONS
                   )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction
+                activity.supportFragmentManager
+                  .beginTransaction()
                   .add(dialogFragment, TAG_SURVEY_WELCOME_DIALOG)
-                  .addToBackStack(null)
-                  .commit()
+                  .commitNow()
 
-                // Changes to underlying DataProviders will update the gating result.
+                // Changes to underlying DataProviders will update the gating result,
+                // which can interrupt the survey dialog.
                 liveData.removeObserver(this)
               } else {
                 backPressActivitySelector()

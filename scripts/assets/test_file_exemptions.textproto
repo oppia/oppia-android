@@ -15,6 +15,10 @@ test_file_exemption {
   override_min_coverage_percent_required: 0
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/RecentlyPlayedActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/activity/ActivityIntentFactoriesModule.kt"
   test_file_not_required: true
 }
@@ -203,15 +207,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/ActivityComponentFactory.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/application/ApplicationComponent.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/application/ApplicationContext.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -387,6 +383,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/DeveloperOptionsActivity.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -427,6 +427,38 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceDownloadRemoteParametersDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceDownloadRemoteParametersDialogFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/ForceDownloadRemoteParametersButtonClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/AppRestartDialogFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/PendingChangesDialogFragment.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/PendingChangesDialogFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/SavePendingChangesDialogListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToForceNetworkTypeListener.kt"
   test_file_not_required: true
 }
@@ -448,6 +480,14 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToViewEventLogsListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToFeatureFlagsListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/RouteToPlatformParametersListener.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -498,10 +538,64 @@ test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/forcenetworktype/testing/ForceNetworkTypeTestActivity.kt"
   test_file_not_required: true
 }
+
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSelector.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsActivityPresenter.kt"
   test_file_not_required: true
 }
+
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragment.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsFragmentPresenter.kt"
+   test_file_not_required: true
+ }
+test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagsViewModel.kt"
+   test_file_not_required: true
+ }
+test_file_exemption {
+    exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/FeatureFlagItemViewModel.kt"
+    test_file_not_required: true
+ }
+test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/featureflags/testing/FeatureFlagsTestActivity.kt"
+   test_file_not_required: true
+ }
+test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersActivity.kt"
+   source_file_is_incompatible_with_code_coverage: true
+ }
+test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersActivityPresenter.kt"
+   test_file_not_required: true
+ }
+test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersFragment.kt"
+   source_file_is_incompatible_with_code_coverage: true
+ }
+test_file_exemption {
+   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersFragmentPresenter.kt"
+    test_file_not_required: true
+  }
+test_file_exemption {
+    exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParametersViewModel.kt"
+    test_file_not_required: true
+  }
+test_file_exemption {
+     exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/PlatformParameterItemViewModel.kt"
+     test_file_not_required: true
+  }
+test_file_exemption {
+    exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/platformparameters/testing/PlatformParametersTestActivity.kt"
+    test_file_not_required: true
+  }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/devoptions/markchapterscompleted/ChapterSummaryViewModel.kt"
   test_file_not_required: true
@@ -1007,10 +1101,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/UserAppHistoryViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/WelcomeViewModel.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -1052,10 +1142,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryClickListener.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/home/recentlyplayed/PromotedStoryListAdapter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1227,6 +1313,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/AppLanguageViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/CreateProfileActivity.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -1335,10 +1425,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingAppLanguageViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/onboarding/OnboardingViewPagerViewModel.kt"
   test_file_not_required: true
 }
@@ -1388,6 +1474,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/options/AppLanguageFragmentPresenterV1.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1699,10 +1789,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/InteractionViewModelFactory.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/InteractionViewModelModule.kt"
   test_file_not_required: true
 }
@@ -1764,6 +1850,10 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SubmittedAnswerViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/SelectionSubmittedItemViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1875,15 +1965,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileClickListener.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AddProfileViewModel.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileItemViewModel.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1927,7 +2009,15 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/DataResetConfirmationDialog.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/DynamicProfileItemMarginsDecorator.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/AdminPinRecoveryDialog.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -1964,6 +2054,30 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileChooserViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileClickListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileItemViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileLoginActivity.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileLoginActivityPresenter.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileLoginFragment.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/profile/ProfileLoginFragmentPresenter.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -2219,10 +2333,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/shim/ViewComponentFactory.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/splash/SplashActivity.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -2291,6 +2401,9 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/DismissSurveyListener.kt"
+  test_file_not_required: true
+}test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/survey/ExitSurveyConfirmationDialogFragment.kt"
   test_file_not_required: true
 }
@@ -2491,10 +2604,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/HtmlParserTestActivity.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ImageRegionSelectionTestActivity.kt"
   test_file_not_required: true
 }
@@ -2520,10 +2629,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/LessonThumbnailImageViewTestFragment.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "app/src/main/java/org/oppia/android/app/testing/ListItemLeadingMarginSpanTestActivity.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3051,8 +3156,96 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/home/HomeActivityLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/player/exploration/ExplorationActivityLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/player/state/StateFragmentLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/profile/ProfileChooserFragmentLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/story/StoryActivityLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/topic/info/TopicInfoFragmentLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/topic/lessons/TopicLessonsFragmentLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/topic/questionplayer/QuestionPlayerActivityLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/topic/revisioncard/RevisionCardActivityLocalTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/CompletedStoryListSpanTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/HomeSpanTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/OngoingTopicListSpanTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/PlatformParameterIntegrationDebugTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/ProfileChooserSpanTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/ProfileProgressSpanCountTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/RecentlyPlayedSpanTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/TopicRevisionSpanTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/PlatformParameterIntegrationTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/player/state/StateFragmentAccessibilityTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/testing/player/split/PlayerSplitScreenTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/recyclerview/RecyclerViewMatcher.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/testing/NavigationDrawerActivityDebugTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/testing/NavigationDrawerActivityProdTest.kt",
+  is_extra_test_file: true
 }
 test_file_exemption {
   exempted_file_path: "app/src/sharedTest/java/org/oppia/android/app/utility/ClickActions.kt"
@@ -3463,6 +3656,10 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/devoptions/ForceDownloadRemoteParametersController.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/devoptions/ModifyLessonProgressController.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
@@ -3695,11 +3892,47 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterAlphaModule.kt"
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagBindingModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagIdKey.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlags.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/FeatureFlagsMapBindingModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterBindingModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterConfigRetriever.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterConfigRetrieverProdImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterController.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterDebugModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerProdImpl.kt"
+  source_file_is_incompatible_with_code_coverage: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerDebugImpl.kt"
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
@@ -3707,11 +3940,19 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterProcessState.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterSingletonImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterSingletonModule.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/testing/TestPlatformParameterConfigRetriever.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3783,10 +4024,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/survey/SurveyConstantsProvider.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/survey/SurveyProgress.kt"
   test_file_not_required: true
 }
@@ -3804,18 +4041,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/ConceptCardRetriever.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/PrimeTopicAssetsController.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/PrimeTopicAssetsControllerImpl.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/topic/PrimeTopicAssetsControllerModule.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3859,8 +4084,16 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/testing/InteractionObjectTestBuilder.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/test/java/org/oppia/android/domain/locale/LanguageConfigRetrieverProductionTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/test/java/org/oppia/android/domain/locale/LanguageConfigRetrieverWithoutAssetsTest.kt",
+  is_extra_test_file: true
 }
 test_file_exemption {
   exempted_file_path: "instrumentation/src/java/org/oppia/android/instrumentation/application/EndToEndTestGcsResourceModule.kt"
@@ -3885,6 +4118,10 @@ test_file_exemption {
 test_file_exemption {
   exempted_file_path: "instrumentation/src/java/org/oppia/android/instrumentation/testing/EndToEndTestHelper.kt"
   test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "instrumentation/src/javatests/org/oppia/android/instrumentation/player/ExplorationPlayerTest.kt",
+  is_extra_test_file: true
 }
 test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/apkstats/ApkAnalyzerClient.kt"
@@ -3912,14 +4149,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/common/remote/GitHubService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/license/LicenseFetcher.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/license/LicenseFetcherImpl.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -3951,15 +4180,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Issue.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "scripts/src/java/org/oppia/android/scripts/todo/model/Todo.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/AccessibilityTestRule.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4095,63 +4316,11 @@ test_file_exemption {
   source_file_is_incompatible_with_code_coverage: true
 }
 test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/EventLogSubject.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/logging/SyncStatusTestModule.kt"
   override_min_coverage_percent_required: 0
 }
 test_file_exemption {
   exempted_file_path: "testing/src/main/java/org/oppia/android/testing/mockito/MockitoKotlinHelper.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/ApiMockLoader.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockClassroomService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockConceptCardService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockExplorationService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockFeedbackReportingService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockPlatformParameterService.kt"
-  override_min_coverage_percent_required: 64
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockQuestionPlayerService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockStoryService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockSubtopicService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/MockTopicService.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/network/RetrofitTestModule.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "testing/src/main/java/org/oppia/android/testing/platformparameter/TestPlatformParameterConstants.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4215,6 +4384,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "testing/src/test/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRuleCustomContextTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "testing/src/test/java/org/oppia/android/testing/junit/InitializeDefaultLocaleRuleOmissionTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
   exempted_file_path: "testing/src/test/java/org/oppia/android/testing/threading/TestCoroutineDispatcherTestBase.kt"
   test_file_not_required: true
 }
@@ -4247,10 +4424,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/CacheAssetsLocally.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/CachingModule.kt"
   test_file_not_required: true
 }
@@ -4260,10 +4433,6 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/LoadLessonProtosFromAssets.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/caching/TopicListToCache.kt"
   test_file_not_required: true
 }
 test_file_exemption {
@@ -4631,10 +4800,6 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/ConcurrentCollections.kt"
-  test_file_not_required: true
-}
-test_file_exemption {
   exempted_file_path: "utility/src/main/java/org/oppia/android/util/threading/DispatcherInjector.kt"
   test_file_not_required: true
 }
@@ -4648,5 +4813,45 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "utility/src/test/java/org/oppia/android/util/logging/SyncStatusManagerTestBase.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/test/java/org/oppia/android/util/math/AlgebraicExpressionParserTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/test/java/org/oppia/android/util/math/AlgebraicEquationParserTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "utility/src/test/java/org/oppia/android/util/math/NumericExpressionParserTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/FlashbackButtonViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/FlashbackButtonListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/ReturnToQuestionViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/FlashbackToolbarListener.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/itemviewmodel/StateSolutionViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/hintsandsolution/HintsDialogSolutionViewModel.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/listener/ReturnToQuestionButtonListener.kt"
   test_file_not_required: true
 }
