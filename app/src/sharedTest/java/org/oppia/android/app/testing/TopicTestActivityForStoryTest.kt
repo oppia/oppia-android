@@ -145,6 +145,7 @@ class TopicTestActivityForStoryTest {
   @Test
   fun testTopicTestActivityForStory_defaultTabIsPlay_isSuccessful() {
     launch(TopicTestActivityForStory::class.java).use {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_tabs_container)).check(
         matches(
           matchCurrentTabTitle(
