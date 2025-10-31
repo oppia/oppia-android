@@ -435,9 +435,11 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_swipePage_hasSwipedPage() {
     initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = false)
+    markAllSpotlightsSeen()
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.topic_tabs_viewpager)).check(matches(isDisplayed()))
       onView(withId(R.id.topic_tabs_viewpager)).perform(swipeLeft())
       verifyTabTitleAtPosition(position = 1)
@@ -602,9 +604,11 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_enableExtraTabs_clickOnPracticeTab_showsPracticeTabSelected() {
     initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = true)
+    markAllSpotlightsSeen()
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
       verifyTabTitleAtPosition(position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED)
     }
@@ -632,9 +636,11 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_clickOnReviewTab_showsReviewTabSelected() {
     initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = false)
+    markAllSpotlightsSeen()
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
       verifyTabTitleAtPosition(position = REVISION_TAB_POSITION_EXTRA_TABS_DISABLED)
     }
@@ -662,9 +668,11 @@ class TopicFragmentTest {
   @Test
   fun testTopicFragment_enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTab() {
     initializeApplicationComponent(enableTopicInfoTab = true, enableTopicPracticeTab = false)
+    markAllSpotlightsSeen()
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
     ) {
+      testCoroutineDispatchers.runCurrent()
       clickTabAtPosition(position = REVISION_TAB_POSITION_INFO_ENABLED_PRACTICE_DISABLED)
       clickTabAtPosition(position = INFO_TAB_POSITION)
       verifyTabTitleAtPosition(position = INFO_TAB_POSITION)
@@ -674,6 +682,7 @@ class TopicFragmentTest {
   @Test
   fun enableExtraTabs_clickOnReviewTab_thenInfoTab_showsInfoTabWithContentMatched() {
     initializeApplicationComponent(enableTopicInfoTab = true, enableTopicPracticeTab = false)
+    markAllSpotlightsSeen()
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, storyId = null
     ) {
