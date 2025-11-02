@@ -80,6 +80,7 @@ import org.oppia.android.domain.classify.rules.numericexpressioninput.NumericExp
 import org.oppia.android.domain.classify.rules.numericinput.NumericInputRuleModule
 import org.oppia.android.domain.classify.rules.ratioinput.RatioInputModule
 import org.oppia.android.domain.classify.rules.textinput.TextInputRuleModule
+import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_0
 import org.oppia.android.domain.classroom.TEST_CLASSROOM_ID_1
 import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
@@ -99,6 +100,8 @@ import org.oppia.android.domain.topic.FRACTIONS_STORY_ID_0
 import org.oppia.android.domain.topic.FRACTIONS_TOPIC_ID
 import org.oppia.android.domain.topic.RATIOS_STORY_ID_0
 import org.oppia.android.domain.topic.RATIOS_TOPIC_ID
+import org.oppia.android.domain.topic.TEST_STORY_ID_2
+import org.oppia.android.domain.topic.TEST_TOPIC_ID_1
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
 import org.oppia.android.testing.FakeAnalyticsEventLogger
 import org.oppia.android.testing.OppiaTestRule
@@ -892,6 +895,66 @@ class TopicFragmentTest {
         targetViewId = R.id.master_skills_text_view,
         stringToMatch = "Master These Skills"
       )
+    }
+  }
+
+  @Test
+  fun testTopicFragment_disablePracticeTab_openTopicWithPracticeQuestions_hidesPracticeTab() {
+    initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = false)
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndAddedFragment(
+      profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+    ) {
+      testCoroutineDispatchers.runCurrent()
+      // Unconditionally retrieve the practice tab name since this test is verifying that it's not
+      // enabled.
+      val practiceTab =
+        TopicTab.getTabForPosition(
+          position = PRACTICE_TAB_POSITION,
+          enableTopicInfoTab = true,
+          enableTopicPracticeTab = true
+        )
+      onView(withText(practiceTab.name)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testTopicFragment_enablePracticeTab_openTopicWithoutPracticeQuestions_hidesPracticeTab() {
+    initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = true)
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndAddedFragment(
+      profileId, TEST_CLASSROOM_ID_0, TEST_TOPIC_ID_1, TEST_STORY_ID_2
+    ) {
+      testCoroutineDispatchers.runCurrent()
+      // Unconditionally retrieve the practice tab name since this test is verifying that it's not
+      // enabled.
+      val practiceTab =
+        TopicTab.getTabForPosition(
+          position = PRACTICE_TAB_POSITION,
+          enableTopicInfoTab = true,
+          enableTopicPracticeTab = true
+        )
+      onView(withText(practiceTab.name)).check(doesNotExist())
+    }
+  }
+
+  @Test
+  fun testTopicFragment_enablePracticeTab_openTopicWithPracticeQuestions_showsPracticeTab() {
+    initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = true)
+    markAllSpotlightsSeen()
+    runWithLaunchedActivityAndAddedFragment(
+      profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
+    ) {
+      testCoroutineDispatchers.runCurrent()
+      onView(
+        withText(
+          TopicTab.getTabForPosition(
+            position = PRACTICE_TAB_POSITION_PRACTICE_ENABLED_INFO_DISABLED,
+            enableTopicInfoTab = enableTopicInfoTab.value,
+            enableTopicPracticeTab = enableTopicPracticeTab.value
+          ).name
+        )
+      ).check(matches(isDescendantOfA(withId(R.id.topic_tabs_container))))
     }
   }
 
