@@ -4,10 +4,7 @@ import javax.inject.Inject
 
 /** Utility to validate that profile names are correctly formatted. */
 class ProfileNameValidator @Inject constructor() {
-  private val repeatableSymbols = listOf('.', '\'', '-', ' ')
-  private val noRepeatedAllowedSymbolsRegex by lazy {
-    Regex("[${repeatableSymbols.joinToString(separator = "") { "\\$it" } }]{2}")
-  }
+  private val space = ' '
 
   /**
    * Validates a profile name to ensure that it isn't confusingly formatted or contains invalid
@@ -18,25 +15,21 @@ class ProfileNameValidator @Inject constructor() {
    * @return whether the profile name whether is a valid, acceptable name
    */
   fun isNameValid(name: String): Boolean {
-    return containsOnlyLettersAndAllowedSymbols(name) && containsNoRepeatedUseOfAllowedSymbols(name) && notOnlySymbols(name)
+    return containsOnlyLettersAndSpaces(name) && notOnlySpaces(name)
   }
 
-  /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
-  private fun containsOnlyLettersAndAllowedSymbols(name: String): Boolean {
+  /** Validates if the character in the name is an alphabet or a space. */
+  private fun containsOnlyLettersAndSpaces(name: String): Boolean {
     name.forEach {
-      if (!(it.isAlphabetic() || it in repeatableSymbols)) {
+      if (!(it.isAlphabetic() || it == space)) {
         return false
       }
     }
     return true
   }
 
-  private fun containsNoRepeatedUseOfAllowedSymbols(name: String): Boolean {
-    return !name.contains(noRepeatedAllowedSymbolsRegex)
-  }
-
-  /** Checks if name contains only symbols */
-  private fun notOnlySymbols(name: String): Boolean {
+  /** Ensures that name does not contains only spaces. */
+  private fun notOnlySpaces(name: String): Boolean {
     name.forEach {
       if (it.isAlphabetic()) {
         return true
