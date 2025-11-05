@@ -3,6 +3,7 @@ package org.oppia.android.app.options
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -12,6 +13,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -133,8 +135,8 @@ import javax.inject.Singleton
 class AudioLanguageFragmentTest {
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
+    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 1
     private const val PORTUGUESE_BUTTON_INDEX = 2
-    private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 4
   }
 
   @get:Rule
@@ -244,6 +246,64 @@ class AudioLanguageFragmentTest {
       selectEnglish()
 
       verifyEnglishIsSelected()
+    }
+  }
+
+  @Test
+  fun testAudioLanguage_englishIsFirstThenAlphabetical() {
+    initializeTestApplicationComponent(enableOnboardingFlowV2 = false)
+    launchActivityWithLanguage(ENGLISH_AUDIO_LANGUAGE).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(0))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.audio_language_recycler_view,
+          position = 0,
+          targetViewId = R.id.language_text_view
+        )
+      ).check(matches(withText("English")))
+
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(1))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.audio_language_recycler_view,
+          position = 1,
+          targetViewId = R.id.language_text_view
+        )
+      ).check(matches(withText("Naijá")))
+
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(2))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.audio_language_recycler_view,
+          position = 2,
+          targetViewId = R.id.language_text_view
+        )
+      ).check(matches(withText("Português")))
+
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(3))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.audio_language_recycler_view,
+          position = 3,
+          targetViewId = R.id.language_text_view
+        )
+      ).check(matches(withText("العربية")))
+
+      onView(withId(R.id.audio_language_recycler_view))
+        .perform(scrollToPosition<RecyclerView.ViewHolder>(4))
+      onView(
+        atPositionOnView(
+          recyclerViewId = R.id.audio_language_recycler_view,
+          position = 4,
+          targetViewId = R.id.language_text_view
+        )
+      ).check(matches(withText("हिन्दी")))
     }
   }
 
