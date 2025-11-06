@@ -3,6 +3,7 @@
 * Alshamiri1
 * Meno25
 * MohamedMedhat
+* Mohammed Qays
 * Mouradeq
 * SamarBenNafa
 * Sarah zoubida
@@ -74,6 +75,8 @@
   <string name="next_state_description">التوجه إلى البطاقة القادمة</string>
   <string name="state_submit_button">تقديم</string>
   <string name="submit_button_text">إرسال</string>
+  <string name="state_flashback_button">انظر المثال</string>
+  <string name="state_return_to_question_button">العودة إلى السؤال</string>
   <string name="lesson_replay_button_text">إعادة التشغيل</string>
   <string name="state_end_exploration_button">العودة إلى الموضوع</string>
   <string name="previous_responses_header">الردود السابقة (%s)</string>
@@ -87,7 +90,6 @@
   <string name="featured_questions">الأسئلة المميزة</string>
   <string name="frequently_asked_questions">الأسئلة المتكررة</string>
   <string name="faq_activity_title">الأسئلة المتكررة</string>
-  <string name="pin_password_activity_title">التحقق من رقم التعريف الشخصي</string>
   <string name="onboarding_activity_title">مقدمة</string>
   <string name="frequently_asked_questions_FAQ">الأسئلة الأكثر تكرارا</string>
   <string name="info">معلومات</string>
@@ -199,6 +201,16 @@
   <string name="topic_prefix">الموضوع: %s</string>
   <string name="selected_image_region_selection_content_description">الصورة تظهر %1$s.</string>
   <string name="unselected_image_region_selection_content_description">حدد الصورة %1$s.</string>
+  <string name="flashback_toolbar_title_text">مثال</string>
+  <string name="flashback_state_feedback_text">دعونا نراجع حل السؤال السابق.</string>
+  <string name="flashback_viewed_feedback_text">الآن بعد أن رأيت مثالاً، دعنا نحاول مرة أخرى.</string>
+  <string name="flashback_feedback_prompt">هذه الإجابة غير صحيحة. لنلقِ نظرة على مثال.</string>
+  <string name="submitted_answer_label_text">(جوابك المقدم)</string>
+  <string name="submitted_answer_label_text_content_description">ردك المقدم</string>
+  <string name="selected_option_icon_content_description">الإجابة المختارة</string>
+  <string name="unselected_option_icon_content_description">إجابة غير محددة</string>
+  <string name="flashback_submitted_answer_label_text">(هذه هي الإجابة الصحيحة)</string>
+  <string name="flashback_submitted_answer_label_text_content_description">هذه هي الإجابة الصحيحة</string>
   <plurals name="chapter_count">
     <item quantity="zero">و لا فصل</item>
     <item quantity="one">فصلًا واحدًا</item>
@@ -315,6 +327,7 @@
   <string name="next_arrow">التالي</string>
   <string name="get_started">ابدأ</string>
   <string name="onboarding_slide_dots_content_description">الشريحة %1$s من %2$s</string>
+  <string name="pin_password_activity_title">التحقق من رقم التعريف الشخصي</string>
   <string name="pin_password_hello">أهلًا، %s!</string>
   <string name="pin_password_admin_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بالمشرف.</string>
   <string name="pin_password_user_enter">من فضلك أدخل رقم التعريف الشخصي الخاص بك.</string>
@@ -685,4 +698,19 @@
   <string name="audio_language_fragment_subtitle">اختر لغة المقاطع الصوتية للاستماع إلى الدروس</string>
   <string name="onboarding_step_count_five">الخطوة 5 من 5</string>
   <string name="arabic_language_display_name_content_description">العربية</string>
+  <string name="flashback_confirmation_dialog_continue_button_text">استمرار</string>
+  <string name="flashback_confirmation_dialog_not_now_text">ليس الآن</string>
+  <string name="flashback_confirmation_dialog_title_text">هل تحتاج مساعدة؟ لا مشكلة.</string>
+  <string name="flashback_confirmation_dialog_message_text">راجع حل السؤال السابق</string>
+  <string name="profile_login_activity_title">تسجيل الدخول</string>
+  <string name="profile_login_activity_enter_pin_prompt">الرجاء إدخال رقم التعريف الشخصي الخاص بك</string>
+  <string name="profile_login_activity_greeting_text">مرحباً بك مرة أخرى، %s !</string>
+  <string name="profile_login_activity_pin_error">لقد قمت بإدخال رقم التعريف الشخصي (PIN) غير صحيح.</string>
+  <string name="profile_login_activity_forgot_pin_text">لقد نسيت رقم التعريف الشخصي الخاص بي</string>
+  <string name="profile_login_forgot_pin_dialog_title">هل نسيت الرقم السري؟</string>
+  <string name="profile_login_forgot_pin_dialog_message">لإعادة تعيين رقم التعريف الشخصي (PIN)، ستحتاج إلى مسح جميع البيانات المحفوظة لـ %s .\n\n يُرجى العلم أن هذا الإجراء سيؤدي إلى حذف جميع الملفات الشخصية وسجلات تقدم المستخدم، ولا يُمكن التراجع عنه. كما سيُغلق التطبيق عند اكتماله وسيُطلب منك إعادة فتحه.</string>
+  <string name="profile_login_forgot_pin_dialog_reset_button">إعادة تعيين بيانات %s</string>
+  <string name="profile_login_forgot_pin_dialog_cancel_button">إلغاء</string>
+  <string name="profile_login_reset_pin_success_dialog_close">يغلق</string>
+  <string name="profile_login_reset_pin_success_dialog_message">تم تغيير رقم التعريف الشخصي (PIN) بنجاح!</string>
 </resources>
