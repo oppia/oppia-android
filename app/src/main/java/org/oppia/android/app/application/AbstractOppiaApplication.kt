@@ -57,27 +57,25 @@ abstract class AbstractOppiaApplication(
       CoroutineScope(Dispatchers.Main).async {
         // The current WorkManager version doesn't work in SDK 31+, so disable it.
         // TODO(#4751): Re-enable WorkManager for S+.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-          FirebaseApp.initializeApp(applicationContext)
-          // FirebaseAppCheck protects our API resources from abuse. It works with Firebase
-          // services, Google Cloud services, and can also be implemented for our own APIs. See
-          // https://firebase.google.com/docs/app-check for currently supported Firebase products.
-          // Note that as of this code being checked in, only the app's Firestore usage is affected
-          // by App Check (Analytics is NOT affected).
-          if (component.getCurrentBuildFlavor() == BuildFlavor.DEVELOPER) {
-            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-              DebugAppCheckProviderFactory.getInstance(),
-            )
-          } else {
-            FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
-              PlayIntegrityAppCheckProviderFactory.getInstance(),
-            )
-          }
-          WorkManager.initialize(applicationContext, workManagerConfiguration)
-          val workManager = WorkManager.getInstance(applicationContext)
-          component.getAnalyticsStartupListenerStartupListeners().safeForEach {
-            it.onCreate(workManager)
-          }
+        FirebaseApp.initializeApp(applicationContext)
+        // FirebaseAppCheck protects our API resources from abuse. It works with Firebase
+        // services, Google Cloud services, and can also be implemented for our own APIs. See
+        // https://firebase.google.com/docs/app-check for currently supported Firebase products.
+        // Note that as of this code being checked in, only the app's Firestore usage is affected
+        // by App Check (Analytics is NOT affected).
+        if (component.getCurrentBuildFlavor() == BuildFlavor.DEVELOPER) {
+          FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            DebugAppCheckProviderFactory.getInstance(),
+          )
+        } else {
+          FirebaseAppCheck.getInstance().installAppCheckProviderFactory(
+            PlayIntegrityAppCheckProviderFactory.getInstance(),
+          )
+        }
+        WorkManager.initialize(applicationContext, workManagerConfiguration)
+        val workManager = WorkManager.getInstance(applicationContext)
+        component.getAnalyticsStartupListenerStartupListeners().safeForEach {
+          it.onCreate(workManager)
         }
         component.getApplicationStartupListeners().forEach(ApplicationStartupListener::onCreate)
       }.invokeOnCompletion {
