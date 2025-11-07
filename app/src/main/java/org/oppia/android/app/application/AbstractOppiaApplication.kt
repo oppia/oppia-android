@@ -54,8 +54,6 @@ abstract class AbstractOppiaApplication(
       // This can introduce some inconsistencies in SplashActivity, though by the time
       // SplashActivity completes the following should be fully initialized.
       CoroutineScope(Dispatchers.Main).async {
-        // The current WorkManager version doesn't work in SDK 31+, so disable it.
-        // TODO(#4751): Re-enable WorkManager for S+.
         FirebaseApp.initializeApp(applicationContext)
         // FirebaseAppCheck protects our API resources from abuse. It works with Firebase
         // services, Google Cloud services, and can also be implemented for our own APIs. See
