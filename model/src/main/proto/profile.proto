@@ -129,11 +129,15 @@ message ProfileAvatar {
 
 // Opaque data structure to pass ID.
 message ProfileId {
-  /**
-   * Unique ID used to identify a single profile.
-   * Should not be used directory outside of the profile system.
-   */
-  int32 internal_id = 1;
+  reserved 1;
+  oneof type {
+    // Unique ID used to identify a single profile.
+    // Should not be used directory outside of the profile system.
+    int32 internal_id = 2;
+
+    // Indicates the user is logged out.
+    bool logged_out = 3;
+  }
 }
 
 // Used in BindableAdapter for ProfileChooserFragment.
