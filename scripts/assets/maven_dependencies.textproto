@@ -890,8 +890,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.work:work-runtime-ktx:2.4.0"
-  artifact_version: "2.4.0"
+  artifact_name: "androidx.work:work-runtime-ktx:2.7.0"
+  artifact_version: "2.7.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -901,8 +901,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "androidx.work:work-runtime:2.4.0"
-  artifact_version: "2.4.0"
+  artifact_name: "androidx.work:work-runtime:2.7.0"
+  artifact_version: "2.7.0"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
