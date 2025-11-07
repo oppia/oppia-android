@@ -365,11 +365,6 @@
       android:name=".app.testing.TextInputLayoutBindingAdaptersTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <provider
-      android:name="androidx.work.impl.WorkManagerInitializer"
-      android:authorities="${applicationId}.workmanager-init"
-      android:exported="false"
-      tools:node="remove" />
-    <provider
       android:name="androidx.startup.InitializationProvider"
       android:authorities="${applicationId}.androidx-startup"
       tools:node="remove" />
