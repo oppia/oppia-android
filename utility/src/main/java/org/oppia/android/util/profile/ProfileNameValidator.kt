@@ -18,7 +18,9 @@ class ProfileNameValidator @Inject constructor() {
    * @return whether the profile name whether is a valid, acceptable name
    */
   fun isNameValid(name: String): Boolean {
-    return containsOnlyLettersAndAllowedSymbols(name) && containsNoRepeatedUseOfAllowedSymbols(name) && notOnlySymbols(name)
+    return containsOnlyLettersAndAllowedSymbols(name) &&
+      containsNoRepeatedUseOfAllowedSymbols(name) &&
+      notOnlySymbols(name)
   }
 
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
