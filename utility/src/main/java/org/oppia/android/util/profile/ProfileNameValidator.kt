@@ -20,7 +20,7 @@ class ProfileNameValidator @Inject constructor() {
   fun isNameValid(name: String): Boolean {
     return containsOnlyLettersAndAllowedSymbols(name) &&
       containsNoRepeatedUseOfAllowedSymbols(name) &&
-      doesNotContainOnlyAllowedSymbolsandSpaces(name)
+      doesNotContainOnlyAllowedSymbolsAndSpaces(name)
   }
 
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
