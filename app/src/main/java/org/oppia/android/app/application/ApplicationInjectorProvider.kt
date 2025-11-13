@@ -4,6 +4,8 @@ import org.oppia.android.app.translation.AppLanguageApplicationInjector
 import org.oppia.android.app.translation.AppLanguageApplicationInjectorProvider
 import org.oppia.android.domain.locale.LocaleApplicationInjector
 import org.oppia.android.domain.locale.LocaleApplicationInjectorProvider
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.data.DataProvidersInjectorProvider
 import org.oppia.android.util.logging.ConsoleLoggerInjector
@@ -20,7 +22,8 @@ interface ApplicationInjectorProvider :
   OppiaClockInjectorProvider,
   LocaleApplicationInjectorProvider,
   DispatcherInjectorProvider,
-  ConsoleLoggerInjectorProvider {
+  ConsoleLoggerInjectorProvider,
+  PlatformParameterControllerInjectorProvider {
   fun getApplicationInjector(): ApplicationInjector
 
   override fun getDataProvidersInjector(): DataProvidersInjector = getApplicationInjector()
@@ -35,4 +38,7 @@ interface ApplicationInjectorProvider :
   override fun getDispatcherInjector(): DispatcherInjector = getApplicationInjector()
 
   override fun getConsoleLoggerInjector(): ConsoleLoggerInjector = getApplicationInjector()
+
+  override fun getPlatformParameterControllerInjector(): PlatformParameterControllerInjector =
+    getApplicationInjector()
 }
