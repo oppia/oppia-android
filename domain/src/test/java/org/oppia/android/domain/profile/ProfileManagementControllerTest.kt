@@ -1709,7 +1709,7 @@ class ProfileManagementControllerTest {
   @Test
   fun testUpdateDefaultProfile_profileTypeUnspecified_returnsProfileTypeError() {
     setUpTestApplicationComponent()
-    addAdminProfile(name = "Admin")
+    addAdminProfileAndWait(name = "Admin")
 
     val updateProvider = profileManagementController.updateProfileType(
       PROFILE_ID_0,
