@@ -38,7 +38,7 @@
   <string name="cellular_data_alert_dialog_title">متصل بالإنترنت عن طريق بيانات الهاتف</string>
   <string name="cellular_data_alert_dialog_description">تشغيل الصوت عبر الإنترنت قد يستخدم الكثير من بيانات الهاتف.</string>
   <string name="cellular_data_alert_dialog_checkbox">لا تُظهِر هذه الرسالة مُجددًا</string>
-  <string name="concept_card_toolbar_title">بطاقة المفهوم</string>
+  <string name="concept_card_toolbar_title">بطاقة المفاهيم</string>
   <string name="concept_card_one_button_text">بطاقة المفاهيم 1</string>
   <string name="concept_card_two_button_text">بطاقة المفاهيم 2</string>
   <string name="revision_card_toolbar_title">دليل الدراسة</string>
