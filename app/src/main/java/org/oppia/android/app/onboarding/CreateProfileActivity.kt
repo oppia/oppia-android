@@ -20,7 +20,7 @@ import javax.inject.Inject
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 
 /** Activity for displaying a new profile creation screen. */
-class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
+class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
   @Inject
   lateinit var learnerProfileActivityPresenter: CreateProfileActivityPresenter
 
