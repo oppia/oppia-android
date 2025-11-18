@@ -3156,6 +3156,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/activity/PlatformParameterInitializationIntegrationTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/test/java/org/oppia/android/app/home/HomeActivityLocalTest.kt",
   is_extra_test_file: true
 }
@@ -3921,6 +3925,14 @@ test_file_exemption {
 }
 test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterController.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerInjector.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerInjectorProvider.kt"
   test_file_not_required: true
 }
 test_file_exemption {
