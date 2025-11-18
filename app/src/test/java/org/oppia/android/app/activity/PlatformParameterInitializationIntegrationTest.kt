@@ -152,7 +152,8 @@ class PlatformParameterInitializationIntegrationTest {
     // This is a hack to try and simulate InjectableAppCompatActivity missing its extra
     // initialization logic to demonstrate that the failure still happens without it.
     val exception: IllegalStateException = assertThrows<IllegalStateException>() {
-      // See asdf for why the parameter fetching is happening here.
+      // See testLaunchInjectableAppCompatActivity_withParameterLoading_doesNotThrowException for why
+      // the parameter fetching is happening here.
       runWithLaunchedActivity { lowestSupportedApiLevelProvider.get() }
     }
     assertThat(exception)
