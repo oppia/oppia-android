@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -169,7 +170,8 @@ class AdminIntroFragmentTest {
   }
 
   @Test
-  fun testIntroFragment_onLaunch_landscapeMode_allViewsAreCorrectlyDisplayed() {
+  @Config(qualifiers = "+land")
+  fun testIntroFragment_onLaunch_landscapeMode_stepCountIsNotDisplayed() {
     launch(AdminIntroActivity::class.java).use {
       onView(ViewMatchers.isRoot()).perform(orientationLandscape())
 
@@ -192,6 +194,9 @@ class AdminIntroFragmentTest {
 
       composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .assertIsDisplayed()
+
+      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
+        .assertIsNotDisplayed()
     }
   }
 
