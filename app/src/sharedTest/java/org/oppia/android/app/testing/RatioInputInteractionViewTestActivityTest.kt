@@ -24,7 +24,6 @@ import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -175,7 +174,6 @@ class RatioInputInteractionViewTestActivityTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testRatioInput_withRatio_configChange_hasCorrectPendingAnswer() {
     val activityScenario = ActivityScenario.launch(
       RatioInputInteractionViewTestActivity::class.java

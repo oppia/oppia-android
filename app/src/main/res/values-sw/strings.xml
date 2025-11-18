@@ -66,7 +66,6 @@
   <string name="featured_questions">Maswali Yanayoangaziwa</string>
   <string name="frequently_asked_questions">maswali yanayoulizwa mara kwa mara</string>
   <string name="faq_activity_title">maswali yanayoulizwa mara kwa mara</string>
-  <string name="pin_password_activity_title">Uthibitishaji wa nambari ya siri</string>
   <string name="onboarding_activity_title">Utangulizi</string>
   <string name="frequently_asked_questions_FAQ">maswali yanayoulizwa mara kwa mara</string>
   <string name="info">habari</string>
@@ -246,6 +245,7 @@
   <string name="next_arrow">Inayofuata</string>
   <string name="get_started">Anza</string>
   <string name="onboarding_slide_dots_content_description" fuzzy="true">Slaidi %s ya %s</string>
+  <string name="pin_password_activity_title">Uthibitishaji wa nambari ya siri</string>
   <string name="pin_password_hello">Habari, %s!</string>
   <string name="pin_password_admin_enter">Tafadhali weka Nambari yako ya Siri ya Msimamizi.</string>
   <string name="pin_password_user_enter">Tafadhali weka Nambari yako ya Siri.</string>
