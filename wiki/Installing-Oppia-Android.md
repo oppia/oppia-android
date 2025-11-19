@@ -313,21 +313,39 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 ## Opening the project in Android Studio
 
-1. Launch Android Studio, and on the welcome screen, select **Plugins** to install the Bazel for Android Studio plugin and restart Android Studio.
+1. Launch Android Studio, and on the welcome screen, select **Plugins** to install the Bazel for Android Studio plugin.
 
-2. On next open, click the options button next to the new project/open project to find the "Import Bazel Project" option.
+2. Select **SDK Manager** to install android API's and build tools.
+
+  <img width="1753" height="1141" alt="Screenshot_20251117_220512" src="https://github.com/user-attachments/assets/8dc52546-5b8f-4e79-bd0e-5e7b2803faf5" />
+
+3. Under **SDK Platforms** tab select API Level 35.
+
+<img width="1591" height="1271" alt="Screenshot_20251117_220720" src="https://github.com/user-attachments/assets/45f3cfd8-2327-4c14-a764-7017de2b38b6" />
+
+4. Go to **SDK Tools** tab and select **Show Package Details** check box.
+
+<img width="1586" height="1274" alt="Screenshot_20251117_220851" src="https://github.com/user-attachments/assets/692a690c-a09b-4a39-952f-4e2824d9f23b" />
+
+5. Expand **Android SDK Build-Tools** section and select 34.0.0.
+
+<img width="1579" height="1266" alt="Screenshot_20251117_220951" src="https://github.com/user-attachments/assets/b57f3632-2177-48ac-ab96-453592a7953c" />
+
+6. Click Apply, finish downloads and restart Android Studio.
+
+7. On next open, click the options button next to the new project/open project to find the "Import Bazel Project" option.
 
    <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/efcc4e6e-b6ba-44fc-9c96-aa381de83911" />
 
-3. A setup wizard will open. For Workspace, click (**...**) to open file manager and select `/opensource/oppia-android` as the location since this is where we have our project's `WORKSPACE` file.
+8. A setup wizard will open. For Workspace, click (**...**) to open file manager and select `/opensource/oppia-android` as the location since this is where we have our project's `WORKSPACE` file.
 
    ![Image](https://github.com/user-attachments/assets/9baf6f71-560b-49fe-84a7-c7b846a64287)
 
-4. On **OK**, you will be asked to **Trust project**. Accept because we trust the project.
+9. On **OK**, you will be asked to **Trust project**. Accept because we trust the project.
 
    <img width="1029" alt="Image" src="https://github.com/user-attachments/assets/bfc91f6d-d809-418d-ab20-89d899f12f72" />
 
-5. On **next**, to Select Project View, select **Import project view file**.
+10. On **next**, to Select Project View, select **Import project view file**.
 
    <img width="991" alt="Screenshot 2025-03-19 at 18 44 41" src="https://github.com/user-attachments/assets/2679a750-414b-4680-8558-7f438e11f633" />
 
