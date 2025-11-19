@@ -355,7 +355,7 @@ Click on the 3 dots to open the file picker. Scroll down and select `oppia-andro
 
 6. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not respond, change line ending format from CRLF to LF of the `oppia-android.bazelproject` file (Open the file in any text editor / Android Studio and at the bottom right select CRLF and change it to LF).
    
-    ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
+   ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
 
 7. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
 
