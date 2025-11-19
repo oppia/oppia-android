@@ -335,8 +335,9 @@ Click on the 3 dots to open the file picker. Scroll down and select `oppia-andro
 
    <img width="991" alt="Screenshot 2025-03-19 at 18 45 23" src="https://github.com/user-attachments/assets/31e0694c-a179-4adf-8d4d-28793c586ee5" />
 
-6. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not, respond change line ending format from CRLF to LF of the `oppia-android.bazelproject` file.
-   ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
+6. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not respond, change line ending format from CRLF to LF of the `oppia-android.bazelproject` file (Open the file in any text editor / Android Studio and at the bottom right select CRLF and change it to LF).
+   
+    ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
 
 7. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
 
