@@ -25,12 +25,7 @@ class ProfileNameValidator @Inject constructor() {
 
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
   private fun containsOnlyLettersAndAllowedSymbols(name: String): Boolean {
-    name.forEach {
-      if (!(it.isAlphabetic() || it in repeatableSymbols)) {
-        return false
-      }
-    }
-    return true
+    return name.all{ it.isAlphabetic() || it in repeatableSymbols }
   }
 
   private fun containsNoRepeatedUseOfAllowedSymbols(name: String): Boolean {
@@ -39,12 +34,7 @@ class ProfileNameValidator @Inject constructor() {
 
   /** Checks if name contains only symbols */
   private fun doesNotContainOnlyAllowedSymbolsAndSpaces(name: String): Boolean {
-    name.forEach {
-      if (it.isAlphabetic()) {
-        return true
-      }
-    }
-    return false
+    return name.any { it.isAlphabetic() }
   }
 
   private fun Char.isAlphabetic(): Boolean {
