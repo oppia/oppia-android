@@ -584,6 +584,7 @@ class JsonToProtoConverter(
       this.content = this@toProto.content.toProto(containerId)
       this.interaction = this@toProto.interaction?.toProto(containerId)
         ?: error("State has invalid interaction: $containerId.")
+      this@toProto.linkedSkillId?.let(this::setLinkedSkillId)
     }.build()
   }
 

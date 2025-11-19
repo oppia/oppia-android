@@ -312,6 +312,7 @@ object DtoProtoToLegacyProtoConverter {
       this.name = name
       this.content = contentIdTracker.extractSubtitledHtml(dto.content)
       this.interaction = dto.interaction.convertToInteraction(contentIdTracker)
+      this.linkedSkillId = dto.linkedSkillId
       putAllRecordedVoiceovers(allLocalizations.toVoiceoverMappings(contentIdTracker.contentIds))
       putAllWrittenTranslations(
         localizations.toTranslationMappings(imageReferenceReplacements, contentIdTracker.contentIds)
