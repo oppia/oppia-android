@@ -105,7 +105,7 @@ class ProfileTestHelperTest {
 
   @Test
   fun testAddDefaultProfile_createDefaultProfile_checkProfileIsAdded() {
-    profileTestHelper.createDefaultAdminProfile()
+    profileTestHelper.addOnlyAdminProfile()
     testCoroutineDispatchers.runCurrent()
     val profilesProvider = profileManagementController.getProfiles()
     testCoroutineDispatchers.runCurrent()

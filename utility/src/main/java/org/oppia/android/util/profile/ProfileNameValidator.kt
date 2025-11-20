@@ -25,7 +25,7 @@ class ProfileNameValidator @Inject constructor() {
 
   /** Validates if the character in the name is an alphabet or an allowed symbol or not. */
   private fun containsOnlyLettersAndAllowedSymbols(name: String): Boolean {
-    return name.all{ it.isAlphabetic() || it in repeatableSymbols }
+    return name.all { it.isAlphabetic() || it in repeatableSymbols }
   }
 
   /** Makes sure that there are no repeated symbols in the name. */
