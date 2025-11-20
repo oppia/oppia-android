@@ -28,6 +28,7 @@ class ProfileNameValidator @Inject constructor() {
     return name.all{ it.isAlphabetic() || it in repeatableSymbols }
   }
 
+  /** Makes sure that there are no repeated symbols in the name. */
   private fun containsNoRepeatedUseOfAllowedSymbols(name: String): Boolean {
     return !name.contains(noRepeatedAllowedSymbolsRegex)
   }
