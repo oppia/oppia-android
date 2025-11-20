@@ -257,7 +257,7 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 # Proguard configurations for Bazel builds.
 /config/proguard/ @oppia/android-dev-workflow-reviewers
 
-# Specific manifest files specifically required for Bazel builds.
+# Specific manifest files specifically required for Bazel builds or the Android lint tool.
 /app/src/main/AppAndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/main/DatabindingAdaptersManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/main/DatabindingResourcesManifest.xml @oppia/android-dev-workflow-reviewers
@@ -267,6 +267,7 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 /app/src/main/ViewsManifest.xml @oppia/android-dev-workflow-reviewers
 /app/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /config/src/java/org/oppia/android/config/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
+/data/src/main/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /data/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /domain/src/*/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
 /testing/src/test/AndroidManifest.xml @oppia/android-dev-workflow-reviewers
@@ -303,7 +304,7 @@ oppia-android.bazelproject @oppia/android-app-infrastructure-reviewers
 
 # Primary app manifest. Eventually, this will be split up so that only the
 # sensitive portions require owners approval.
-AndroidManifest.xml @oppia/owners
+/app/src/main/AndroidManifest.xml @oppia/owners
 
 # Top-level user-facing major/minor versions, and the version codes used to
 # ensure users receive the correct build when installing it from Play Store.

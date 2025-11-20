@@ -35,7 +35,7 @@ _PRODUCTION_PROGUARD_SPECS = [
 # Note to developers: keys of this dict should follow the order of AVAILABLE_FLAVORS.
 _FLAVOR_METADATA = {
     "dev": {
-        "manifest": "//:AndroidManifest.xml",
+        "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
         "multidex": "native",
@@ -49,7 +49,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.dev.DeveloperOppiaApplication",
     },
     "alpha": {
-        "manifest": "//:AndroidManifest.xml",
+        "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
         "multidex": "native",
@@ -64,7 +64,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.alpha.AlphaOppiaApplication",
     },
     "beta": {
-        "manifest": "//:AndroidManifest.xml",
+        "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
         "multidex": "native",
@@ -79,7 +79,7 @@ _FLAVOR_METADATA = {
         "application_class": ".app.application.beta.BetaOppiaApplication",
     },
     "ga": {
-        "manifest": "//:AndroidManifest.xml",
+        "manifest": "//app:src/main/AndroidManifest.xml",
         "min_sdk_version": 21,
         "target_sdk_version": 35,
         "multidex": "native",

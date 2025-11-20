@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TODO(#6010): Remove this manifest. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.oppia.android.data">
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
+</manifest>

@@ -124,14 +124,16 @@ private class TransformAndroidManifest(
       // prioritize this name.
       value = "android:name"
     }
-    val manifestNode = manifestDocument.childNodes.item(0)
+    val manifestNode =
+      manifestDocument.childNodes.asSequence().find { it.nodeName == "manifest" }
+        ?: error("Failed to find top-level 'manifest' element in manifest file.")
     manifestNode.attributes.apply {
       setNamedItem(versionCodeAttribute)
       setNamedItem(versionNameAttribute)
     }
     val applicationNode =
       manifestNode.childNodes.asSequence().find { it.nodeName == "application" }
-        ?: error("Failed to find an 'application' tag in manifest.")
+        ?: error("Failed to find an 'application' element in manifest.")
     applicationNode.attributes.apply {
       setNamedItem(applicationNameAttribute)
       setNamedItem(replaceNameAttribute)
