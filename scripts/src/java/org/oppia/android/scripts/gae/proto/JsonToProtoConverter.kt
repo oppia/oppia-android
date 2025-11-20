@@ -775,10 +775,11 @@ class JsonToProtoConverter(
       this.customizationArgs = ImageClickInputInstanceDto.CustomizationArgsDto.newBuilder().apply {
         imageAndRegions = checkNotNull(interactionArgs.getImageWithRegions("imageAndRegions")) {
           "Expected imageAndRegions customization argument to be defined in interaction: $this"
-        }.also {
-          localizationTracker.trackImageRegion(containerId, imageAndRegions)
         }
       }.build()
+
+      localizationTracker.trackImageRegion(containerId, this.customizationArgs.imageAndRegions)
+
       this.addAllAnswerGroups(
         this@toImageClickInputInstance.answerGroups.toImageClickAnswerGroups(containerId)
       )
