@@ -27,6 +27,7 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   private val oppiaLogger: OppiaLogger
 ) : ObservableViewModel() {
   private lateinit var profileId: ProfileId
+  private lateinit var supportedAudioLanguages: List<OppiaLanguage>
 
   /** An [ObservableField] to bind the resolved audio language to the dropdown text. */
   val selectedAudioLanguage = ObservableField(OppiaLanguage.LANGUAGE_UNSPECIFIED)
@@ -52,16 +53,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   /** The [AudioLanguage] currently selected in the radio button list. */
   val selectedLanguage = MutableLiveData<AudioLanguage>()
 
-  /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
-  val recyclerViewAudioLanguageList: List<AudioLanguageItemViewModel> by lazy {
-    val languages = AudioLanguage.values().filter { it !in IGNORED_AUDIO_LANGUAGES }
-    val sortedLanguages = languages.sortedWith(
-      compareBy<AudioLanguage> { it != AudioLanguage.ENGLISH_AUDIO_LANGUAGE }
-        .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
-    )
-    sortedLanguages.map(::createItemViewModel)
-  }
-
   /** Sets the list of audio languages supported by the app based on [OppiaLanguage]. */
   val supportedOppiaLanguagesLiveData: LiveData<List<OppiaLanguage>> by lazy {
     Transformations.map(
@@ -82,6 +73,19 @@ class AudioLanguageSelectionViewModel @Inject constructor(
     }
   }
 
+  /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
+  val recyclerViewAudioLanguageList: List<AudioLanguageItemViewModel> by lazy {
+    val sortedLanguages = supportedAudioLanguages
+      .sortedWith(
+        compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
+          .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
+      )
+
+    sortedLanguages
+      .map { getAudioLanguageFromOppiaLanguage(it) }
+      .map(::createItemViewModel)
+  }
+
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
     translationController.getAudioLanguagePreselection(profileId)
   }
@@ -89,6 +93,24 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   /** Receives and sets the current profileId in this viewModel. */
   fun updateProfileId(profileId: ProfileId) {
     this.profileId = profileId
+  }
+
+  /** Maps an [OppiaLanguage] to an [AudioLanguage]. */
+  fun getAudioLanguageFromOppiaLanguage(oppiaLanguage: OppiaLanguage): AudioLanguage {
+    return when (oppiaLanguage) {
+      OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
+      OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
+      OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
+      OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
+      OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
+      OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
+      OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
+    }
+  }
+
+  /** Sets the list of audio languages supported by the app. */
+  fun setSupportedAudioLanguages(languages: List<OppiaLanguage>) {
+    this.supportedAudioLanguages = languages
   }
 
   private fun createItemViewModel(language: AudioLanguage): AudioLanguageItemViewModel {
