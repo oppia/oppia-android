@@ -19,22 +19,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /** Tests for [ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider]. */
-@Suppress("PrivatePropertyName") // Truly immutable constants can be named in CONSTANT_CASE.
+@Suppress("FunctionName") // FunctionName: test names are conventionally named with underscores.
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(manifest = Config.NONE)
 class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
-
-  private val ITEM_SET_12345 =
-    createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4", "test5")
-  private val ITEM_SET_1 = createSetOfTranslatableHtmlContentIds("test1")
-  private val ITEM_SET_16 = createSetOfTranslatableHtmlContentIds("test1", "test6")
-  private val ITEM_SET_12 = createSetOfTranslatableHtmlContentIds("test1", "test2")
-  private val ITEM_SET_126 = createSetOfTranslatableHtmlContentIds("test1", "test2", "test6")
-  private val ITEM_SET_EMPTY = createSetOfTranslatableHtmlContentIds()
-  private val ITEM_SET_6 = createSetOfTranslatableHtmlContentIds("test6")
-  private val DIFFERENT_INTERACTION_OBJECT_TYPE = createInt(value = 0)
-
   @Inject
   internal lateinit var itemSelectionInputDesNotContainAtLeastOneOfRuleClassifierProvider:
     ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
@@ -49,116 +38,232 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   }
 
   @Test
-  fun testItemSet_setAnswer_inputIsASubset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_1)
+  fun testMatches_emptyAnswer_emptyInput_returnsFalse() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds())
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
+      answer = createSetOfTranslatableHtmlContentIds(),
       inputs = inputs,
       classificationContext = ClassificationContext()
     )
 
+    // There's nothing to miss from the input so this is never a match.
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testItemSet_setAnswer_inputHasOneElementInSet_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_16)
+  fun testMatches_emptyAnswer_singletonInput_returnsTrue() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1"))
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
+      answer = createSetOfTranslatableHtmlContentIds(),
       inputs = inputs,
       classificationContext = ClassificationContext()
     )
 
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testItemSet_setAnswer_inputHasTwoElementsInSetNoneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_12)
-
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testItemSet_setAnswer_inputHasTwoElementsInSetOneExtra_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_126)
-
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
-
-    assertThat(matches).isFalse()
-  }
-
-  @Test
-  fun testItemSet_setAnswer_inputIsEmptySet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SET_EMPTY)
-
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
-
+    // Answer is missing 'test1'.
     assertThat(matches).isTrue()
   }
 
   @Test
-  fun testItemSet_setAnswer_inputIsExclusiveOfSet_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SET_6)
+  fun testMatches_singletonAnswer_emptyInput_returnsFalse() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds())
 
     val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12345,
+      answer = createSetOfTranslatableHtmlContentIds("test1"),
       inputs = inputs,
       classificationContext = ClassificationContext()
     )
 
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testItemSet_setAnswerIsEmpty_inputIsNonEmpty_answerDoesNotContainInput() {
-    val inputs = mapOf("x" to ITEM_SET_12345)
-
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_EMPTY,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
-
-    assertThat(matches).isTrue()
-  }
-
-  @Test
-  fun testItemSet_setAnswer_inputIsASuperset_answerContainsInput() {
-    val inputs = mapOf("x" to ITEM_SET_12345)
-
-    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-      answer = ITEM_SET_12,
-      inputs = inputs,
-      classificationContext = ClassificationContext()
-    )
-
+    // There's nothing to miss from the input so this is never a match.
     assertThat(matches).isFalse()
   }
 
   @Test
-  fun testItemSet_inputIsMissing_throwsException() {
-    val inputs = mapOf("y" to ITEM_SET_1)
+  fun testMatches_singletonAnswer_singletonInput_different_returnsTrue() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1"))
 
-    val exception = assertThrows<IllegalStateException>() {
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test2"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // Answer is missing 'test1'.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatches_singletonAnswer_singletonInput_same_returnsFalse() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1"))
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // Answer is contains 'test1' (the only input element, so none of input's elements are absent).
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatches_answerWithTwoElems_inputWithTwoElems_distinct_returnsTrue() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1", "test2"))
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test3", "test4"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // All of input's elements are absent.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatches_answerWithTwoElems_inputWithTwoElems_oneCommon_returnsTrue() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1", "test2"))
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1", "test4"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // 'test2' is still missing.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatches_answerWithTwoElems_inputWithTwoElems_bothCommon_returnsFalse() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1", "test2"))
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1", "test2"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // All of the input's elements are present in the answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_answerIsSubset_returnsTrue() {
+    val inputs = mapOf(
+      "x" to createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4")
+    )
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1", "test2", "test4"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // 'test3' is still missing in the answer.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_answerIsSubset_diffOrders_returnsTrue() {
+    val inputs = mapOf(
+      "x" to createSetOfTranslatableHtmlContentIds("test2", "test4", "test1", "test3")
+    )
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test4", "test1", "test2"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // 'test3' is still missing in the answer.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_answerHasMultipleCommonToInput_returnsTrue() {
+    val inputs = mapOf(
+      "x" to createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4")
+    )
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1", "test2", "test4", "test5", "test6"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // 'test3' is still missing in the answer.
+    assertThat(matches).isTrue()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_inputIsSubset_returnsFalse() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test2", "test3", "test4"))
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4", "test5"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // All of the input's elements are present in the answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_inputIsSubset_diffOrder_returnsFalse() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test4", "test2", "test3"))
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test2", "test3", "test4", "test5", "test1"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // All of the input's elements are present in the answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_allMatch_returnsFalse() {
+    val inputs = mapOf(
+      "x" to createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4")
+    )
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test1", "test2", "test3", "test4"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // All of the input's elements are present in the answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatches_multiElemAnswer_multiElemInput_allMatch_diffOrder_returnsFalse() {
+    val inputs = mapOf(
+      "x" to createSetOfTranslatableHtmlContentIds("test2", "test4", "test3", "test1")
+    )
+
+    val matches = inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
+      answer = createSetOfTranslatableHtmlContentIds("test4", "test1", "test3", "test2"),
+      inputs = inputs,
+      classificationContext = ClassificationContext()
+    )
+
+    // All of the input's elements are present in the answer.
+    assertThat(matches).isFalse()
+  }
+
+  @Test
+  fun testMatches_inputIsMissing_throwsException() {
+    val inputs = mapOf("y" to createSetOfTranslatableHtmlContentIds("test1"))
+
+    val exception = assertThrows<IllegalStateException> {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = ITEM_SET_12345,
+        answer = createSetOfTranslatableHtmlContentIds("test1"),
         inputs = inputs,
         classificationContext = ClassificationContext()
       )
@@ -170,12 +275,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   }
 
   @Test
-  fun testItemSet_inputHasTheWrongType_throwsException() {
-    val inputs = mapOf("x" to DIFFERENT_INTERACTION_OBJECT_TYPE)
+  fun testMatches_inputHasTheWrongType_throwsException() {
+    val inputs = mapOf("x" to createInt(value = 0))
 
-    val exception = assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalStateException> {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = ITEM_SET_12345,
+        answer = createSetOfTranslatableHtmlContentIds("test1"),
         inputs = inputs,
         classificationContext = ClassificationContext()
       )
@@ -187,12 +292,12 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProviderTest {
   }
 
   @Test
-  fun testItemSet_answerHasTheWrongType_throwsException() {
-    val inputs = mapOf("x" to ITEM_SET_12345)
+  fun testMatches_answerHasTheWrongType_throwsException() {
+    val inputs = mapOf("x" to createSetOfTranslatableHtmlContentIds("test1"))
 
-    val exception = assertThrows<IllegalStateException>() {
+    val exception = assertThrows<IllegalStateException> {
       inputDoesNotContainAtLeastOneOfRuleClassifier.matches(
-        answer = DIFFERENT_INTERACTION_OBJECT_TYPE,
+        answer = createInt(value = 0),
         inputs = inputs,
         classificationContext = ClassificationContext()
       )

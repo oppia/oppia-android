@@ -10,8 +10,9 @@ import org.oppia.android.domain.util.getContentIdSet
 import javax.inject.Inject
 
 /**
- * Provider for a classifier that determines whether an item selection answer does not contain any
- * of a set of options per the item selection input interaction.
+ * Provider for a classifier that determines whether an item selection answer does not contain at
+ * least one element of a set of options per the item selection input interaction, that is, this
+ * classifier only matches if an answer contains all of the input options (plus optional extras).
  *
  * https://github.com/oppia/oppia/blob/37285a/extensions/interactions/ItemSelectionInput/directives/item-selection-input-rules.service.ts#L41
  */
@@ -34,5 +35,5 @@ class ItemSelectionInputDoesNotContainAtLeastOneOfRuleClassifierProvider
     answer: SetOfTranslatableHtmlContentIds,
     input: SetOfTranslatableHtmlContentIds,
     classificationContext: ClassificationContext
-  ): Boolean = answer.getContentIdSet().intersect(input.getContentIdSet()).isEmpty()
+  ): Boolean = (input.getContentIdSet() - answer.getContentIdSet()).isNotEmpty()
 }
