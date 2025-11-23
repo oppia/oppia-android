@@ -103,12 +103,16 @@ class AdminAuthActivityPresenter @Inject constructor(
             }
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-            activity.startActivity(
-              AddProfileActivity.createAddProfileActivityIntent(
-                context, args?.colorRgb ?: -10710042
-              )
-            )
-            activity.finish()
+            profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
+              if (it is AsyncResult.Success) {
+                activity.startActivity(
+                  AddProfileActivity.createAddProfileActivityIntent(
+                    context, args?.colorRgb ?: -10710042
+                  )
+                )
+                activity.finish()
+              }
+            }
           }
         }
       } else if (inputPin.length == adminPin.length) {
