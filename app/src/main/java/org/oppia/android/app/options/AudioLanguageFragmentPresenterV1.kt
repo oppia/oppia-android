@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import org.oppia.android.app.databinding.databinding.AudioLanguageFragmentBinding
 import org.oppia.android.app.databinding.databinding.AudioLanguageItemBinding
 import org.oppia.android.app.model.AudioLanguage
-import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.recyclerview.BindableAdapter
 import javax.inject.Inject
 
@@ -26,24 +25,6 @@ class AudioLanguageFragmentPresenterV1 @Inject constructor(
     container: ViewGroup?,
     audioLanguage: AudioLanguage
   ): View {
-
-    audioLanguageSelectionViewModel.supportedOppiaLanguagesLiveData.observe(
-      fragment,
-      { languages ->
-        val supportedAudioLanguages = languages.filter { language ->
-          when (language) {
-            OppiaLanguage.UNRECOGNIZED,
-            OppiaLanguage.LANGUAGE_UNSPECIFIED,
-            OppiaLanguage.HINGLISH,
-            OppiaLanguage.PORTUGUESE,
-            OppiaLanguage.SWAHILI -> false
-            else -> true
-          }
-        }
-        audioLanguageSelectionViewModel.setSupportedAudioLanguages(supportedAudioLanguages)
-      }
-    )
-
     return AudioLanguageFragmentBinding.inflate(
       inflater,
       container,

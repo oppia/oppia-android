@@ -10,6 +10,7 @@ import org.oppia.android.app.model.AudioLanguage
 import org.oppia.android.app.model.OppiaLanguage
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.translation.AppLanguageResourceHandler
+import org.oppia.android.app.viewmodel.ObservableArrayList
 import org.oppia.android.app.viewmodel.ObservableViewModel
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.translation.TranslationController
@@ -74,17 +75,30 @@ class AudioLanguageSelectionViewModel @Inject constructor(
   }
 
   /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
-  val recyclerViewAudioLanguageList: List<AudioLanguageItemViewModel> by lazy {
-    val sortedLanguages = supportedAudioLanguages
-      .sortedWith(
+  val recyclerViewAudioLanguageList: ObservableArrayList<AudioLanguageItemViewModel>
+    get() = _recyclerViewAudioLanguageList
+
+  init {
+    supportedOppiaLanguagesLiveData.observeForever { languages ->
+      val sortedLanguages = (languages ?: emptyList()).sortedWith(
         compareBy<OppiaLanguage> { it != OppiaLanguage.ENGLISH }
           .thenBy { appLanguageResourceHandler.computeLocalizedDisplayName(it) }
       )
 
-    sortedLanguages
-      .map { getAudioLanguageFromOppiaLanguage(it) }
-      .map(::createItemViewModel)
+      _recyclerViewAudioLanguageList.apply {
+        clear()
+        addAll(
+          sortedLanguages
+            .map(::getAudioLanguageFromOppiaLanguage)
+            .filter { it !in IGNORED_AUDIO_LANGUAGES }
+            .map(::createItemViewModel)
+        )
+      }
+    }
   }
+
+  private val _recyclerViewAudioLanguageList =
+    ObservableArrayList<AudioLanguageItemViewModel>()
 
   private val languagePreselectionProvider: DataProvider<OppiaLanguage> by lazy {
     translationController.getAudioLanguagePreselection(profileId)
@@ -106,11 +120,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
       OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
       OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
     }
-  }
-
-  /** Sets the list of audio languages supported by the app. */
-  fun setSupportedAudioLanguages(languages: List<OppiaLanguage>) {
-    this.supportedAudioLanguages = languages
   }
 
   private fun createItemViewModel(language: AudioLanguage): AudioLanguageItemViewModel {
