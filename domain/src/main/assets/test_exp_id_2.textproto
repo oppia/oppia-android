@@ -1269,7 +1269,7 @@ states {
       }
     }
     recorded_voiceovers {
-      key: "default_outcome"
+      key: "default_outcome_id_with_extras_because_this_is_valid"
       value {
       }
     }
@@ -1370,7 +1370,7 @@ states {
       }
     }
     written_translations {
-      key: "default_outcome"
+      key: "default_outcome_id_with_extras_because_this_is_valid"
       value {
         translation_mapping {
           key: "pt"
@@ -1547,7 +1547,7 @@ states {
         dest_state_name: "RatioInput"
         feedback {
           html: "<p>Not correct</p>"
-          content_id: "default_outcome"
+          content_id: "default_outcome_id_with_extras_because_this_is_valid"
         }
       }
       customization_args {
