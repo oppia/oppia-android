@@ -1,14 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   package="org.oppia.android.data">
   <uses-sdk android:minSdkVersion="21"
     android:targetSdkVersion="30" />
-
-  <application>
-    <provider
-      android:name="androidx.startup.InitializationProvider"
-      android:authorities="${applicationId}.androidx-startup"
-      tools:replace="android:authorities"
-      android:exported="false" />
-  </application>
 </manifest>
