@@ -64,6 +64,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -617,6 +618,7 @@ class ProfileChooserFragmentTest {
       ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_PARAMS_KEY))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
@@ -1132,6 +1134,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
