@@ -25,6 +25,7 @@ import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
+import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
@@ -1038,6 +1039,19 @@ class TranslationControllerTest {
 
     val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
     assertThat(language).isEqualTo(HINDI)
+  }
+
+  @Test
+  fun testGetAudioLanguage_updateLanguageToHinglish_returnsEnglish() {
+    forceDefaultLocale(Locale.ROOT)
+    ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINGLISH)
+
+    val languageProvider = translationController.getAudioTranslationContentLanguage(PROFILE_ID_0)
+
+    val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
+    // Supported languages are [ARABIC, ENGLISH, HINDI, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN]
+    // Attempting to update to HINGLISH should fall back to ENGLISH
+    assertThat(language).isEqualTo(ENGLISH)
   }
 
   @Test

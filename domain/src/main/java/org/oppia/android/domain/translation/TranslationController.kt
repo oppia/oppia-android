@@ -51,6 +51,7 @@ private const val AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID =
   "audio_translation_content_language_resolution"
 private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
+private const val SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID = "supported_audio_languages"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 private const val PROFILE_AUDIO_LANGUAGE_PROVIDER_ID = "profile_audio_language"
@@ -297,10 +298,23 @@ class TranslationController @Inject constructor(
   ): DataProvider<OppiaLocale.ContentLocale> {
     val resolvedLanguageProvider =
       getAudioTranslationContentLanguageSelection(profileId).combineWith(
-        getAppLanguageSelection(profileId), AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID
-      ) { audioLanguageSelection, appLanguageSelection ->
-        computeAudioTranslationContentLanguage(appLanguageSelection, audioLanguageSelection)
+        getSupportedAppLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
+      ) { audioLanguageSelection, supportedAppLanguages ->
+        // Before a profile sets an audio language, LANGUAGE_UNSPECIFIED is always returned.
+        if (audioLanguageSelection.selectedLanguage in supportedAppLanguages
+          || audioLanguageSelection.selectedLanguage == OppiaLanguage.LANGUAGE_UNSPECIFIED) {
+          audioLanguageSelection
+        } else {
+          AudioTranslationLanguageSelection.newBuilder()
+            .setSelectedLanguage(OppiaLanguage.ENGLISH)
+            .build()
+        }
       }
+        .combineWith(
+          getAppLanguageSelection(profileId), AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID
+        ) { audioLanguageSelection, appLanguageSelection ->
+          computeAudioTranslationContentLanguage(appLanguageSelection, audioLanguageSelection)
+        }
     return getSystemLanguage().combineWithAsync(
       resolvedLanguageProvider, AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
     ) { systemLanguage, resolutionStatus ->
