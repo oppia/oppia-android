@@ -301,8 +301,9 @@ class TranslationController @Inject constructor(
         getSupportedAppLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
       ) { audioLanguageSelection, supportedAppLanguages ->
         // Before a profile sets an audio language, LANGUAGE_UNSPECIFIED is always returned.
-        if (audioLanguageSelection.selectedLanguage in supportedAppLanguages
-          || audioLanguageSelection.selectedLanguage == OppiaLanguage.LANGUAGE_UNSPECIFIED) {
+        if (audioLanguageSelection.selectedLanguage in supportedAppLanguages ||
+          audioLanguageSelection.selectedLanguage == OppiaLanguage.LANGUAGE_UNSPECIFIED
+        ) {
           audioLanguageSelection
         } else {
           AudioTranslationLanguageSelection.newBuilder()
