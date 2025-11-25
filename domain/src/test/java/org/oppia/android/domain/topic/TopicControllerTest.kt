@@ -174,6 +174,46 @@ class TopicControllerTest {
   }
 
   @Test
+  fun testRetrieveTopic_firstTestTopic_hasCorrectPracticeQuestionStatus() {
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_0)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.hasPracticeQuestions).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_secondTestTopic_hasCorrectPracticeQuestionStatus() {
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_1)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.hasPracticeQuestions).isFalse()
+  }
+
+  @Test
+  fun testRetrieveTopic_thirdTestTopic_hasCorrectPracticeQuestionStatus() {
+    val topicProvider = topicController.getTopic(profileId1, TEST_TOPIC_ID_2)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.hasPracticeQuestions).isFalse()
+  }
+
+  @Test
+  fun testRetrieveTopic_fractionsTopic_hasCorrectPracticeQuestionStatus() {
+    val topicProvider = topicController.getTopic(profileId1, FRACTIONS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.hasPracticeQuestions).isTrue()
+  }
+
+  @Test
+  fun testRetrieveTopic_ratiosTopic_hasCorrectPracticeQuestionStatus() {
+    val topicProvider = topicController.getTopic(profileId1, RATIOS_TOPIC_ID)
+
+    val topic = monitorFactory.waitForNextSuccessfulResult(topicProvider).topic
+    assertThat(topic.hasPracticeQuestions).isTrue()
+  }
+
+  @Test
   fun testRetrieveStory_validStory_isSuccessful() {
     val storyProvider = topicController.getStory(profileId1, TEST_TOPIC_ID_1, TEST_STORY_ID_2)
 
