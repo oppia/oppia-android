@@ -357,6 +357,9 @@ message AnswerOutcome {
   // needing to synchronize with other data providers).
   State state = 3;
 
+  // Whether this corresponds the the default outcome option for a state interaction.
+  bool is_default_outcome = 8;
+
   // One of several destinations the learner should be routed to as a result of submitting this answer.
   oneof destination {
     // Indicates that the learner should not progress past the current state.
