@@ -9,7 +9,6 @@ import org.oppia.android.app.activity.ActivityScope
 import org.oppia.android.app.administratorcontrols.AdministratorControlsActivity
 import org.oppia.android.app.databinding.databinding.AdminAuthActivityBinding
 import org.oppia.android.app.model.AdminAuthActivityParams
-import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
@@ -31,7 +30,6 @@ class AdminAuthActivityPresenter @Inject constructor(
   private val profileManagementController: ProfileManagementController,
 ) {
   private lateinit var binding: AdminAuthActivityBinding
-  private var profileId = ProfileId.getDefaultInstance()
   private val args by lazy {
     activity.intent.getProtoExtra(
       ADMIN_AUTH_ACTIVITY_PARAMS_KEY,
@@ -51,7 +49,6 @@ class AdminAuthActivityPresenter @Inject constructor(
     val adminPin = checkNotNull(args?.adminPin) {
       "Expected AdminAuthActivity.admin_auth_admin_pin to be in intent extras."
     }
-    profileId = activity.intent.extractCurrentUserProfileId()
     binding.apply {
       lifecycleOwner = activity
       viewModel = authViewModel
@@ -84,6 +81,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     }
 
     binding.adminAuthSubmitButton.setOnClickListener {
+      val profileId = activity.intent.extractCurrentUserProfileId()
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
       if (inputPin.isEmpty()) {
         return@setOnClickListener
