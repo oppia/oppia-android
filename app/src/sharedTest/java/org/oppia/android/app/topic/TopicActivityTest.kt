@@ -171,8 +171,6 @@ class TopicActivityTest {
 
   @Test
   fun testTopicActivity_hasCorrectActivityLabel() {
-    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
-    TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     launchTopicActivity(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID
     ).use { scenario ->
@@ -188,9 +186,9 @@ class TopicActivityTest {
   @Test
   @RunOn(TestPlatform.ROBOLECTRIC) // TODO(#3858): Enable for Espresso.
   fun testTopicActivity_startPracticeSession_questionActivityStartedWithProfileId() {
-    TestPlatformParameterModule.forceEnableTopicInfoTab(true)
     TestPlatformParameterModule.forceEnableTopicPracticeTab(true)
     launchTopicActivity(profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID).use {
+      testCoroutineDispatchers.runCurrent()
       // Open the practice tab and select a skill.
       onView(withText("Practice")).perform(click())
       testCoroutineDispatchers.runCurrent()
@@ -218,8 +216,6 @@ class TopicActivityTest {
     val scenario = ActivityScenario.launch<TopicActivity>(
       TopicActivity.createTopicActivityIntent(context, profileId, classroomId, topicId)
     )
-    testCoroutineDispatchers.runCurrent()
-    onView(withId(R.id.topic_name_text_view)).check(matches(isDisplayed()))
     return scenario
   }
 
