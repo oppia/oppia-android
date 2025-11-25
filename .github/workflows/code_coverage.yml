@@ -165,10 +165,8 @@ jobs:
           echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
           echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
-          echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
           # Write targets to file for --target_pattern_file
           echo "$BAZEL_TEST_TARGETS" > bazel_targets.txt
-          echo "Target file created with $(wc -l < bazel_targets.txt) targets"
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -248,7 +246,7 @@ jobs:
       - name: Upload Coverage Report Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-${{ env.SHARD_NAME }}
+          name: coverage-report-${{ env.SHARD_NAME }} # Saving with unique names to avoid conflict
           path: coverage_reports
 
       - name: Upload bazel target file
@@ -306,7 +304,7 @@ jobs:
 
       - name: Upload Generated Markdown Report
         uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() }} # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report
           path: coverage_reports/CoverageReport.md
@@ -331,4 +329,3 @@ jobs:
       - name: Check that coverage status is passed
         if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.evaluate_code_coverage_reports.result != 'success' }}
         run: exit 1
-  

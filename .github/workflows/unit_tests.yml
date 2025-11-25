@@ -149,10 +149,8 @@ jobs:
           echo "Test category: $TEST_CATEGORY"
           echo "Bazel test targets: $BAZEL_TEST_TARGETS"
           echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
-          echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
           # Write targets to file for --target_pattern_file
           echo "$BAZEL_TEST_TARGETS" > bazel_targets.txt
-          echo "Target file created with $(wc -l < bazel_targets.txt) targets"
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
