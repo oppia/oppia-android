@@ -1042,19 +1042,6 @@ class TranslationControllerTest {
   }
 
   @Test
-  fun testGetAudioLanguage_updateLanguageToHinglish_returnsEnglish() {
-    forceDefaultLocale(Locale.ROOT)
-    ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINGLISH)
-
-    val languageProvider = translationController.getAudioTranslationContentLanguage(PROFILE_ID_0)
-
-    val language = monitorFactory.waitForNextSuccessfulResult(languageProvider)
-    // Supported languages are [ARABIC, ENGLISH, HINDI, BRAZILIAN_PORTUGUESE, SWAHILI, NIGERIAN_PIDGIN]
-    // Attempting to update to HINGLISH should fall back to ENGLISH
-    assertThat(language).isEqualTo(ENGLISH)
-  }
-
-  @Test
   fun testGetAudioLanguage_updateLanguageToUseApp_returnsAppLanguage() {
     // First, initialize the language to Hindi before overwriting to use the app language.
     ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINDI)
@@ -1161,6 +1148,21 @@ class TranslationControllerTest {
     assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
     // This region comes from the default locale.
     assertThat(context.regionDefinition.region).isEqualTo(BRAZIL)
+  }
+
+  @Test
+  fun testGetAudioLocale_updateLanguageToHinglish_returnsEnglishLocale() {
+    forceDefaultLocale(Locale.ROOT)
+    ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINGLISH)
+
+    val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    // This region comes from the default locale.
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
   @Test

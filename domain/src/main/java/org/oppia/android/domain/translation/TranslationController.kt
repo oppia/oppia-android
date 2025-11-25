@@ -3,6 +3,7 @@ package org.oppia.android.domain.translation
 import com.google.protobuf.MessageLite
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.AudioTranslationLanguageSelection.SelectionTypeCase
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
@@ -301,7 +302,9 @@ class TranslationController @Inject constructor(
         getSupportedAppLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
       ) { audioLanguageSelection, supportedAppLanguages ->
         // Before a profile sets an audio language, LANGUAGE_UNSPECIFIED is always returned.
+        // In some cases, a language might not be supported but has a fallback configured.
         if (audioLanguageSelection.selectedLanguage in supportedAppLanguages ||
+          audioLanguageSelection.selectionTypeCase == SelectionTypeCase.USE_APP_LANGUAGE ||
           audioLanguageSelection.selectedLanguage == OppiaLanguage.LANGUAGE_UNSPECIFIED
         ) {
           audioLanguageSelection
@@ -450,10 +453,9 @@ class TranslationController @Inject constructor(
     audioLanguageSelection: AudioTranslationLanguageSelection
   ): LanguageResolutionStatus {
     return when (audioLanguageSelection.selectionTypeCase) {
-      AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
+      SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(audioLanguageSelection.selectedLanguage)
-      AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
-      AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
+      SelectionTypeCase.USE_APP_LANGUAGE, SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(appLanguageSelection)
     }
   }
