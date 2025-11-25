@@ -488,7 +488,7 @@ class TopicFragmentTest {
   }
 
   @Test
-  fun testTopicFragment_disableExtraTabs_isNotDisplayedInTabLayout() {
+  fun testTopicFragment_disableExtraTabs_bothTabsAreNotDisplayedInTabLayout() {
     initializeApplicationComponent(enableTopicInfoTab = false, enableTopicPracticeTab = false)
     runWithLaunchedActivityAndAddedFragment(
       profileId, TEST_CLASSROOM_ID_1, FRACTIONS_TOPIC_ID, FRACTIONS_STORY_ID_0
