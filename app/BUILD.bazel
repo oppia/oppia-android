@@ -145,6 +145,7 @@ LISTENERS = [
     "src/main/java/org/oppia/android/app/recyclerview/OnItemDragListener.kt",
     "src/main/java/org/oppia/android/app/settings/profile/LoadProfileEditDeletionDialogListener.kt",
     "src/main/java/org/oppia/android/app/settings/profile/RouteToProfileEditListener.kt",
+    "src/main/java/org/oppia/android/app/survey/DismissSurveyListener.kt",
     "src/main/java/org/oppia/android/app/survey/SelectedAnswerAvailabilityReceiver.kt",
     "src/main/java/org/oppia/android/app/topic/RouteToRevisionCardListener.kt",
     "src/main/java/org/oppia/android/app/topic/lessons/ChapterSummarySelector.kt",
@@ -657,6 +658,7 @@ kt_android_library(
         "//third_party:androidx_compose_foundation_foundation-layout",
         "//third_party:androidx_compose_material_material",
         "//third_party:androidx_compose_runtime_runtime",
+        "//third_party:androidx_compose_runtime_runtime-livedata",
         "//third_party:androidx_compose_ui_ui",
         "//third_party:androidx_core_core-ktx",
         "//third_party:androidx_databinding_databinding-adapters",
@@ -691,6 +693,17 @@ kt_android_library(
 # Place your file here if:
 #  - It is not a test file
 #  - Only test files depend on it
+
+kt_android_library(
+    name = "interaction_object_test_builder",
+    testonly = True,
+    srcs = [
+        "src/main/java/org/oppia/android/app/player/state/testing/InteractionObjectTestBuilder.kt",
+    ],
+    deps = [
+        "//model/src/main/proto:question_java_proto_lite",
+    ],
+)
 
 kt_android_library(
     name = "test_deps",

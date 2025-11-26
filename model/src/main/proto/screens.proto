@@ -176,6 +176,9 @@ enum ScreenName {
 
   // Screen name value for platform parameter screen.
   PLATFORM_PARAMETERS_ACTIVITY = 55;
+
+  // Screen name value for the scenario when a user with a PIN wants to log in to their profile.
+  PROFILE_LOGIN_ACTIVITY = 56;
 }
 
 // Defines the current visible UI screen of the application.

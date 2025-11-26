@@ -64,6 +64,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -377,7 +378,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensPinPasswordActivity() {
+  fun testMigrateProfiles_onboardingV2_clickAdminProfile_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = true)
@@ -391,12 +392,12 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
   @Test
-  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensIntroActivity() {
+  fun testMigrateProfiles_onboardingV2_clickLearnerWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.initializeProfiles(autoLogIn = true)
@@ -409,7 +410,7 @@ class ProfileChooserFragmentTest {
           position = 1
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 
@@ -617,6 +618,7 @@ class ProfileChooserFragmentTest {
       ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_PARAMS_KEY))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
@@ -1132,6 +1134,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
@@ -1437,7 +1440,7 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
-  fun testFragment_enableOnboardingV2_clickAdminProfileWithPin_checkOpensPinPasswordActivity() {
+  fun testFragment_enableOnboardingV2_clickAdminProfileWithPin_checkOpensProfileLoginActivity() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()
     profileTestHelper.addOnlyAdminProfile()
@@ -1450,59 +1453,7 @@ class ProfileChooserFragmentTest {
           position = 0
         )
       ).perform(click())
-      intended(hasComponent(PinPasswordActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testFragment_enableOnboardingV2_clickNonAdminProfileWithPin_checkOpensPinPasswordActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
-    profileTestHelper.addMoreProfiles(1)
-
-    launch(ProfileChooserActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          recyclerViewId = R.id.profiles_list,
-          position = 1
-        )
-      ).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-
-      intended(hasComponent(PinPasswordActivity::class.java.name))
-    }
-  }
-
-  @Test
-  fun testFragment_clickNonAdminProfileWithoutPin_userNotOnboarded_checkOpensIntroActivity() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfile()
-    profileManagementController.addProfile(
-      name = "Learner",
-      pin = "",
-      avatarImagePath = null,
-      allowDownloadAccess = true,
-      colorRgb = -10710042,
-      isAdmin = false
-    )
-    profileTestHelper.markProfileOnboardingStarted(testProfileId1)
-
-    launch(ProfileChooserActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-      onView(
-        atPosition(
-          recyclerViewId = R.id.profiles_list,
-          position = 1
-        )
-      ).perform(click())
-
-      testCoroutineDispatchers.runCurrent()
-
-      intended(hasComponent(IntroActivity::class.java.name))
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }
 

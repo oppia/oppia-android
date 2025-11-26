@@ -336,10 +336,9 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun launchPinScreen(profileId: ProfileId) {
     activity.startActivity(
-      PinPasswordActivity.createPinPasswordActivityIntent(
-        activity,
-        chooserViewModel.adminPin,
-        profileId.internalId
+      ProfileLoginActivity.createProfileLoginActivityIntent(
+        context,
+        profileId
       )
     )
   }

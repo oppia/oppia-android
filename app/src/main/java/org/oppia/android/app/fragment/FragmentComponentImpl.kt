@@ -64,6 +64,7 @@ import org.oppia.android.app.player.stopplaying.UnsavedExplorationDialogFragment
 import org.oppia.android.app.policies.PoliciesFragment
 import org.oppia.android.app.profile.AdminSettingsDialogFragment
 import org.oppia.android.app.profile.ProfileChooserFragment
+import org.oppia.android.app.profile.ProfileLoginFragment
 import org.oppia.android.app.profile.ResetPinDialogFragment
 import org.oppia.android.app.profileprogress.ProfilePictureEditDialogFragment
 import org.oppia.android.app.profileprogress.ProfileProgressFragment
@@ -216,4 +217,5 @@ interface FragmentComponentImpl : FragmentComponent, ViewComponentBuilderInjecto
   fun inject(onboardingProfileTypeFragment: OnboardingProfileTypeFragment)
   fun inject(createProfileFragment: CreateProfileFragment)
   fun inject(introFragment: IntroFragment)
+  fun inject(profileLoginFragment: ProfileLoginFragment)
 }

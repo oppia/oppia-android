@@ -676,8 +676,8 @@ message AdminAuthActivityParams {
   // Admin pin.
   string admin_pin = 1;
 
-  // ID of the current profile.
-  int32 internal_profile_id = 2;
+  // Earlier used for the ID of the current profile.
+  reserved 2;
 
   // Color of the profile avatar.
   int32 color_rgb = 3;
@@ -702,6 +702,9 @@ message AdminPinActivityParams {
 message AdminSettingsDialogFragmentArguments {
   // Admin pin.
   string admin_pin = 1;
+
+  // Name of the current profile attempting to reset their PIN.
+  string current_profile_name = 2;
 }
 
 // Represents the parameters needed to create PinPasswordActivity.

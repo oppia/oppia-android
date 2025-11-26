@@ -145,21 +145,32 @@ class PinPasswordActivityPresenter @Inject constructor(
     }
 
     binding.forgotPin.setOnClickListener {
-      if (pinViewModel.isAdmin.get()!!) {
+      val isAdmin = pinViewModel.isAdmin.get() ?: false
+      if (isAdmin) {
         showAdminForgotPin()
       } else {
         val previousFrag =
           activity.supportFragmentManager.findFragmentByTag(TAG_ADMIN_SETTINGS_DIALOG)
         if (previousFrag != null) {
-          activity.supportFragmentManager.beginTransaction().remove(previousFrag).commitNow()
+          activity.supportFragmentManager.beginTransaction()
+            .remove(previousFrag)
+            .commitNow()
         }
-        val dialogFragment = AdminSettingsDialogFragment
-          .newInstance(adminPin!!)
-        dialogFragment.showNow(activity.supportFragmentManager, TAG_ADMIN_SETTINGS_DIALOG)
+
+        val nameValue = pinViewModel.name.get()
+
+        if (adminPin != null && nameValue != null) {
+          val dialogFragment = AdminSettingsDialogFragment
+            .newInstance(adminPin, profileId, nameValue)
+          dialogFragment.showNow(
+            activity.supportFragmentManager,
+            TAG_ADMIN_SETTINGS_DIALOG
+          )
+        }
       }
     }
 
-    if (pinViewModel.showAdminPinForgotPasswordPopUp.get()!!) {
+    if (pinViewModel.showAdminPinForgotPasswordPopUp.get() == true) {
       showAdminForgotPin()
     }
   }

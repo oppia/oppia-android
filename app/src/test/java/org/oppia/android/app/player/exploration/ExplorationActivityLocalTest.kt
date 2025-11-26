@@ -9,14 +9,19 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,6 +44,7 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.IntentFactoryShimModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.survey.SurveyActivity
 import org.oppia.android.app.test.R
 import org.oppia.android.app.testing.ExplorationInjectionActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -139,9 +145,15 @@ class ExplorationActivityLocalTest {
   private val internalProfileId: Int = 0
   private val afternoonUtcTimestampMillis = 1556101812000
 
+  @Before
+  fun setUp() {
+    Intents.init()
+  }
+
   @After
   fun tearDown() {
     TestPlatformParameterModule.reset()
+    Intents.release()
     testCoroutineDispatchers.unregisterIdlingResource()
   }
 
@@ -165,7 +177,7 @@ class ExplorationActivityLocalTest {
       )
     ).use {
       testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getOldestEvent()
+      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
 
       assertThat(event.context.activityContextCase).isEqualTo(OPEN_EXPLORATION_ACTIVITY)
       assertThat(event.priority).isEqualTo(EventLog.Priority.ESSENTIAL)
@@ -336,6 +348,120 @@ class ExplorationActivityLocalTest {
       onView(withText(R.string.survey_onboarding_message_text))
         .inRoot(isDialog())
         .check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_triggerSurveyPopup_clickMaybeLater_closesExplorationActivity() {
+    setUpTestWithNpsEnabled()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    getApplicationDependencies(
+      internalProfileId,
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
+    markAllSpotlightsSeen()
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use { scenario ->
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
+        .perform(click())
+
+      onView(withText(R.string.stop_exploration_dialog_leave_button))
+        .inRoot(isDialog())
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.maybe_later_button))
+        .inRoot(isDialog())
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+
+      scenario.onActivity { activity ->
+        assertThat(activity.isFinishing).isTrue()
+      }
+    }
+  }
+
+  @Test
+  fun testExplorationActivity_triggerSurveyPopup_clickBeginSurvey_launchesSurveyActivity() {
+    setUpTestWithNpsEnabled()
+    fakeOppiaClock.setFakeTimeMode(FakeOppiaClock.FakeTimeMode.MODE_FIXED_FAKE_TIME)
+    fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis)
+
+    getApplicationDependencies(
+      internalProfileId,
+      TEST_CLASSROOM_ID_0,
+      TEST_TOPIC_ID_0,
+      TEST_STORY_ID_0,
+      TEST_EXPLORATION_ID_2
+    )
+    markAllSpotlightsSeen()
+
+    launch<ExplorationActivity>(
+      createExplorationActivityIntent(
+        internalProfileId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+    ).use {
+      explorationDataController.startPlayingNewExploration(
+        internalProfileId,
+        TEST_CLASSROOM_ID_0,
+        TEST_TOPIC_ID_0,
+        TEST_STORY_ID_0,
+        TEST_EXPLORATION_ID_2
+      )
+      testCoroutineDispatchers.runCurrent()
+
+      fakeOppiaClock.setCurrentTimeMs(afternoonUtcTimestampMillis + 360_000L)
+
+      onView(withContentDescription(R.string.nav_app_bar_navigate_up_description))
+        .perform(click())
+
+      onView(withText(R.string.stop_exploration_dialog_leave_button))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(R.string.survey_onboarding_title_text))
+        .inRoot(isDialog())
+        .check(matches(isDisplayed()))
+      onView(withId(R.id.begin_survey_button))
+        .inRoot(isDialog())
+        .perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(SurveyActivity::class.java.name))
     }
   }
 

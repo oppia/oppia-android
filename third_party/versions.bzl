@@ -28,6 +28,7 @@ MAVEN_PRODUCTION_DEPENDENCY_VERSIONS = {
     "androidx.compose.foundation:foundation-layout": "1.1.1",
     "androidx.compose.material:material": "1.1.1",
     "androidx.compose.runtime:runtime": "1.1.1",
+    "androidx.compose.runtime:runtime-livedata": "1.1.1",
     "androidx.compose.ui:ui": "1.1.1",
     "androidx.constraintlayout:constraintlayout": "1.1.3",
     "androidx.core:core": "1.0.1",
