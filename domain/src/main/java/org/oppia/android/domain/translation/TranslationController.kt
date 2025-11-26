@@ -3,6 +3,7 @@ package org.oppia.android.domain.translation
 import com.google.protobuf.MessageLite
 import org.oppia.android.app.model.AppLanguageSelection
 import org.oppia.android.app.model.AudioTranslationLanguageSelection
+import org.oppia.android.app.model.AudioTranslationLanguageSelection.SelectionTypeCase
 import org.oppia.android.app.model.LanguageSupportDefinition
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.IETF_BCP47_ID
 import org.oppia.android.app.model.LanguageSupportDefinition.LanguageId.LanguageTypeCase.LANGUAGETYPE_NOT_SET
@@ -51,6 +52,7 @@ private const val AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID =
   "audio_translation_content_language_resolution"
 private const val AUDIO_TRANSLATION_CONTENT_SELECTION_DATA_PROVIDER_ID =
   "audio_translation_content_selection"
+private const val SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID = "supported_audio_languages"
 private const val UPDATE_AUDIO_TRANSLATION_CONTENT_DATA_PROVIDER_ID =
   "update_audio_translation_content"
 private const val PROFILE_AUDIO_LANGUAGE_PROVIDER_ID = "profile_audio_language"
@@ -295,12 +297,29 @@ class TranslationController @Inject constructor(
   fun getAudioTranslationContentLocale(
     profileId: ProfileId
   ): DataProvider<OppiaLocale.ContentLocale> {
+    // TODO(#6020): Replace getSupportedAppLanguages with an audio languages specific API.
     val resolvedLanguageProvider =
       getAudioTranslationContentLanguageSelection(profileId).combineWith(
-        getAppLanguageSelection(profileId), AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID
-      ) { audioLanguageSelection, appLanguageSelection ->
-        computeAudioTranslationContentLanguage(appLanguageSelection, audioLanguageSelection)
+        getSupportedAppLanguages(), SUPPORTED_AUDIO_LANGUAGES_DATA_PROVIDER_ID
+      ) { audioLanguageSelection, supportedAppLanguages ->
+        // Before a profile sets an audio language, LANGUAGE_UNSPECIFIED is always returned.
+        // In some cases, a language might not be supported but has a fallback configured.
+        if (audioLanguageSelection.selectedLanguage in supportedAppLanguages ||
+          audioLanguageSelection.selectionTypeCase == SelectionTypeCase.USE_APP_LANGUAGE ||
+          audioLanguageSelection.selectedLanguage == OppiaLanguage.LANGUAGE_UNSPECIFIED
+        ) {
+          audioLanguageSelection
+        } else {
+          AudioTranslationLanguageSelection.newBuilder()
+            .setSelectedLanguage(OppiaLanguage.ENGLISH)
+            .build()
+        }
       }
+        .combineWith(
+          getAppLanguageSelection(profileId), AUDIO_TRANSLATION_CONTENT_LANG_RES_DATA_PROVIDER_ID
+        ) { audioLanguageSelection, appLanguageSelection ->
+          computeAudioTranslationContentLanguage(appLanguageSelection, audioLanguageSelection)
+        }
     return getSystemLanguage().combineWithAsync(
       resolvedLanguageProvider, AUDIO_TRANSLATION_CONTENT_LOCALE_DATA_PROVIDER_ID
     ) { systemLanguage, resolutionStatus ->
@@ -435,10 +454,9 @@ class TranslationController @Inject constructor(
     audioLanguageSelection: AudioTranslationLanguageSelection
   ): LanguageResolutionStatus {
     return when (audioLanguageSelection.selectionTypeCase) {
-      AudioTranslationLanguageSelection.SelectionTypeCase.SELECTED_LANGUAGE ->
+      SelectionTypeCase.SELECTED_LANGUAGE ->
         LanguageResolutionStatus.Resolved(audioLanguageSelection.selectedLanguage)
-      AudioTranslationLanguageSelection.SelectionTypeCase.USE_APP_LANGUAGE,
-      AudioTranslationLanguageSelection.SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
+      SelectionTypeCase.USE_APP_LANGUAGE, SelectionTypeCase.SELECTIONTYPE_NOT_SET, null ->
         computeAppLanguage(appLanguageSelection)
     }
   }
