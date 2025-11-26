@@ -166,7 +166,7 @@ jobs:
           echo "FILE_CACHING_BUCKET=$FILE_CATEGORY" >> $GITHUB_ENV
           echo "CHANGED_FILES=$CHANGED_FILES" >> $GITHUB_ENV
           # Write targets to file for --target_pattern_file
-          echo "$BAZEL_TEST_TARGETS" > bazel_targets.txt
+          printf '%s\n' $BAZEL_TEST_TARGETS > bazel_targets.txt
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -329,3 +329,4 @@ jobs:
       - name: Check that coverage status is passed
         if: ${{ needs.compute_changed_files.outputs.can_skip_files != 'true' && needs.evaluate_code_coverage_reports.result != 'success' }}
         run: exit 1
+

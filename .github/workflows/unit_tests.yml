@@ -149,8 +149,10 @@ jobs:
           echo "Test category: $TEST_CATEGORY"
           echo "Bazel test targets: $BAZEL_TEST_TARGETS"
           echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
+          SHARD_NAME=$(echo "$AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 1)
+          echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
           # Write targets to file for --target_pattern_file
-          echo "$BAZEL_TEST_TARGETS" > bazel_targets.txt
+          printf '%s\n' $BAZEL_TEST_TARGETS > bazel_targets.txt
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -243,7 +245,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unit-tests-bazel-targets-${{ matrix.affected-tests-bucket-base64-encoded-shard }}
+          name: unit-tests-bazel-targets-${{ env.SHARD_NAME }}
           path: bazel_targets.txt
 
   # Reference: https://github.community/t/127354/7.
