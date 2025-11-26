@@ -54,11 +54,11 @@ class AudioLanguageSelectionViewModel @Inject constructor(
 
   /** Sets the list of audio languages supported by the app based on [OppiaLanguage]. */
   // TODO(#6020): Replace getSupportedAppLanguages with an audio languages specific API.
-  val supportedOppiaLanguagesLiveData: LiveData<List<OppiaLanguage>> by lazy {
+  val supportedOppiaLanguagesLiveData: LiveData<List<OppiaLanguage>> =
     Transformations.map(
       translationController.getSupportedAppLanguages().toLiveData()
     ) { supportedLanguagesResult ->
-      return@map when (supportedLanguagesResult) {
+      when (supportedLanguagesResult) {
         is AsyncResult.Failure -> {
           oppiaLogger.e(
             "AudioLanguageFragment",
@@ -71,7 +71,6 @@ class AudioLanguageSelectionViewModel @Inject constructor(
         is AsyncResult.Success -> supportedLanguagesResult.value
       }
     }
-  }
 
   /** The list of [AudioLanguageItemViewModel]s which can be bound to a recycler view. */
   val recyclerViewAudioLanguageList: LiveData<List<AudioLanguageItemViewModel>> =
