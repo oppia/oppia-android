@@ -65,11 +65,11 @@ feature_flag_definition {
 }
 feature_flag_definition {
   id: TOPIC_INFO_TAB
-  remote_server_name: "enable_topic_info_tab"
+  remote_server_name: "android_enable_topic_info_tab"
   default_is_enabled: false
 }
 feature_flag_definition {
   id: TOPIC_PRACTICE_TAB
-  remote_server_name: "enable_topic_practice_tab"
+  remote_server_name: "android_enable_topic_practice_tab"
   default_is_enabled: false
 }
