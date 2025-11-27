@@ -33,6 +33,7 @@ class AudioLanguageFragmentPresenterV1 @Inject constructor(
       audioLanguageSelectionViewModel.selectedLanguage.value = audioLanguage
       audioLanguageRecyclerView.apply {
         viewModel = audioLanguageSelectionViewModel
+        lifecycleOwner = fragment
         adapter = createRecyclerViewAdapter()
       }
     }.root

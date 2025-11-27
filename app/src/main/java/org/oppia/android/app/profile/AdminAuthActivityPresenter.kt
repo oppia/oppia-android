@@ -81,6 +81,7 @@ class AdminAuthActivityPresenter @Inject constructor(
     }
 
     binding.adminAuthSubmitButton.setOnClickListener {
+      val profileId = activity.intent.extractCurrentUserProfileId()
       val inputPin = binding.adminAuthInputPinEditText.text.toString()
       if (inputPin.isEmpty()) {
         return@setOnClickListener
@@ -88,7 +89,6 @@ class AdminAuthActivityPresenter @Inject constructor(
       if (inputPin == adminPin) {
         when (args?.adminPinEnum ?: 0) {
           AdminAuthEnum.PROFILE_ADMIN_CONTROLS.value -> {
-            val profileId = activity.intent.extractCurrentUserProfileId()
             profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
               if (it is AsyncResult.Success) {
                 activity.startActivity(
@@ -101,7 +101,6 @@ class AdminAuthActivityPresenter @Inject constructor(
             }
           }
           AdminAuthEnum.PROFILE_ADD_PROFILE.value -> {
-            val profileId = activity.intent.extractCurrentUserProfileId()
             profileManagementController.loginToProfile(profileId).toLiveData().observe(activity) {
               if (it is AsyncResult.Success) {
                 activity.startActivity(

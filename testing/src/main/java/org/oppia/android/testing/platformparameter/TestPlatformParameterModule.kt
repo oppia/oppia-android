@@ -2,6 +2,10 @@ package org.oppia.android.testing.platformparameter
 
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import org.oppia.android.app.model.FeatureFlagId.APP_AND_OS_DEPRECATION
 import org.oppia.android.app.model.FeatureFlagId.DOWNLOADS_SUPPORT
 import org.oppia.android.app.model.FeatureFlagId.EDIT_ACCOUNTS_OPTIONS_UI
@@ -47,8 +51,28 @@ class TestPlatformParameterModule {
   @Provides
   @Singleton
   fun providePlatformParameterController(
-    factory: PlatformParameterControllerProdImpl.Factory
-  ): PlatformParameterController = factory.create(processState)
+    factory: PlatformParameterControllerProdImpl.Factory,
+    testCoroutineDispatchers: TestCoroutineDispatchers
+  ): PlatformParameterController {
+    val prodController = factory.create(processState)
+    return object : PlatformParameterController {
+      override fun loadParametersAsync(): Deferred<Unit> {
+        // Calling code can be blocking which means the returned deferred must run immediately,
+        // hence the use of the Unconfined dispatcher.
+        return CoroutineScope(Dispatchers.Unconfined).async {
+          // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
+          val loadResult = prodController.loadParametersAsync()
+          testCoroutineDispatchers.runCurrent()
+          check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
+        }
+      }
+
+      override fun getParameterInitializationStatus() =
+        prodController.getParameterInitializationStatus()
+
+      override fun downloadRemoteParameters() = prodController.downloadRemoteParameters()
+    }
+  }
 
   @Provides
   fun providePlatformParameterConfigRetriever(
@@ -61,7 +85,7 @@ class TestPlatformParameterModule {
     platformParameterController: PlatformParameterController,
     testCoroutineDispatchers: TestCoroutineDispatchers
   ): PlatformParameterProcessState {
-    // TODO(#5835): Remove this blocking hack to ensure tests are properly initialized for params.
+    // TODO(#5835): Remove this blocking hack to ensure tests are properly inited for params.
     val loadDeferred = platformParameterController.loadParametersAsync()
     testCoroutineDispatchers.runCurrent()
     check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }

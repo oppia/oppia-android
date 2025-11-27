@@ -28,7 +28,8 @@ class AdminAuthActivity : InjectableSystemLocalizedAppCompatActivity() {
       colorRgb: Int,
       adminPinEnum: Int
     ): Intent {
-      val profileId = ProfileId.newBuilder().apply { this.internalId = internalProfileId }.build()
+      // TODO(#5440): Ensure the ProfileId is valid.
+      val profileId = ProfileId.newBuilder().setInternalId(internalProfileId).build()
       val args = AdminAuthActivityParams.newBuilder().apply {
         this.adminPin = adminPin
         this.colorRgb = colorRgb
