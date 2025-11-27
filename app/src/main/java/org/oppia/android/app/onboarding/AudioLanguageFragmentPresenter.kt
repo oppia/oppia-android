@@ -175,7 +175,10 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         when (result) {
           is AsyncResult.Success -> {
             if (parentScreen == ParentScreen.OPTIONS_SCREEN) {
-              updateAudioLanguage(getAudioLanguageFromOppiaLanguage(selectedLanguage))
+              updateAudioLanguage(
+                audioLanguageSelectionViewModel
+                  .getAudioLanguageFromOppiaLanguage(selectedLanguage)
+              )
             }
           }
           is AsyncResult.Failure ->
@@ -196,18 +199,6 @@ class AudioLanguageFragmentPresenter @Inject constructor(
         parentActivity.optionActivityPresenter.updateAudioLanguage(audioLanguage)
       is AudioLanguageActivity ->
         parentActivity.audioLanguageActivityPresenter.setLanguageSelected(audioLanguage)
-    }
-  }
-
-  private fun getAudioLanguageFromOppiaLanguage(oppiaLanguage: OppiaLanguage): AudioLanguage {
-    return when (oppiaLanguage) {
-      OppiaLanguage.UNRECOGNIZED, OppiaLanguage.LANGUAGE_UNSPECIFIED, OppiaLanguage.HINGLISH,
-      OppiaLanguage.PORTUGUESE, OppiaLanguage.SWAHILI -> AudioLanguage.AUDIO_LANGUAGE_UNSPECIFIED
-      OppiaLanguage.ARABIC -> AudioLanguage.ARABIC_LANGUAGE
-      OppiaLanguage.ENGLISH -> AudioLanguage.ENGLISH_AUDIO_LANGUAGE
-      OppiaLanguage.HINDI -> AudioLanguage.HINDI_AUDIO_LANGUAGE
-      OppiaLanguage.BRAZILIAN_PORTUGUESE -> AudioLanguage.BRAZILIAN_PORTUGUESE_LANGUAGE
-      OppiaLanguage.NIGERIAN_PIDGIN -> AudioLanguage.NIGERIAN_PIDGIN_LANGUAGE
     }
   }
 

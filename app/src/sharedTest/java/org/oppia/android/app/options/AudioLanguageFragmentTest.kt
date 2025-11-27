@@ -133,6 +133,8 @@ import javax.inject.Singleton
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(application = AudioLanguageFragmentTest.TestApplication::class)
 class AudioLanguageFragmentTest {
+  // TODO(#6022): Add tests for validating that when an unsupported language was previously
+  //  selected, it goes back to English
   private companion object {
     private const val ENGLISH_BUTTON_INDEX = 0
     private const val NIGERIAN_PIDGIN_BUTTON_INDEX = 1

@@ -1278,7 +1278,7 @@ class ExplorationProgressController @Inject constructor(
       !outcome.labelledAsCorrectAnswer &&
       !doesInteractionAutoContinue(outcome.state.interaction.id) &&
       !linkedSkillId.isNullOrEmpty() &&
-      outcome.feedback.contentId.equals("default_outcome") &&
+      outcome.isDefaultOutcome &&
       !stateDeck.wasFlashbackPreviouslyOffered() &&
       stateDeck.hasFlashbackState(linkedSkillId)
   }

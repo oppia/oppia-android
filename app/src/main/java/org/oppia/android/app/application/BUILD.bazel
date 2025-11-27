@@ -53,6 +53,7 @@ kt_android_library(
     deps = [
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:platform_parameter_controller_injector",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector",
         "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector",
@@ -69,6 +70,7 @@ kt_android_library(
         ":application_injector",
         "//app/src/main/java/org/oppia/android/app/translation:app_language_application_injector_provider",
         "//domain/src/main/java/org/oppia/android/domain/locale:locale_application_injector_provider",
+        "//domain/src/main/java/org/oppia/android/domain/platformparameter:platform_parameter_controller_injector_provider",
         "//utility/src/main/java/org/oppia/android/util/logging:console_logger_injector_provider",
         "//utility/src/main/java/org/oppia/android/util/system:oppia_clock_injector_provider",
         "//utility/src/main/java/org/oppia/android/util/threading:dispatcher_injector_provider",
