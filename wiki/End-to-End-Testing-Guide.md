@@ -15,7 +15,7 @@ End-to-End tests test the app from an end user’s experience by simulating the 
 These tests play a major role in publishing the app. They run on a real or emulated device to make sure that our code interacts with the Android environment as expected, providing confidence in the final application or a feature when it's finished.
 
 End-to-End tests in Oppia-android are written using [UiAutomator](https://developer.android.com/training/testing/ui-automator).
-These tests are written under the instrumentation directory and don’t have Gradle support.
+These tests are written under the instrumentation directory.
 
 ```
 instrumentation/ -- android test binaries for each test suite.

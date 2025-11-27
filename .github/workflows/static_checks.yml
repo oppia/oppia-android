@@ -187,7 +187,7 @@ jobs:
         # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
         if: ${{ !cancelled() }}
         run: |
-          bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb AndroidManifest.xml
+          bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
 
       - name: KDoc Validation Check
         # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,

@@ -371,8 +371,7 @@ private class LayerConfigurationBuilder(
 ) {
 
   companion object {
-    // These dependencies are referenced from Gradle build files
-    // replicating the layer-layer dependencies
+    // These dependencies are defined at a project level for approximate correspondence.
     private val LAYER_DEPENDENCIES = mapOf(
       LayerName.APP to LayerName.LIBRARY_LAYERS,
       LayerName.TESTING to listOf(LayerName.UTILITY, LayerName.DOMAIN),

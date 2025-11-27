@@ -8,7 +8,6 @@ Please follow the following style rules when writing code, in order to minimize 
 - [XML files](#xml-files)
 - [Java/Kotlin files](#javakotlin-files)
 - [Layout files](#layout-files)
-- [build.gradle file](#buildgradle-file)
 
 ## General
 - We follow the [Kotlin Android style guide](https://developer.android.com/kotlin/style-guide).
@@ -83,7 +82,3 @@ In general, avoid using hard-coded strings.
   - Here are some examples of valid IDs:
     - ``recently_played_activity_recently_played_fragment_placeholder`` (a ``FrameLayout`` in ``recently_played_activity.xml``)
     - ``recently_played_fragment_ongoing_story_recycler_view`` (a ``RecyclerView`` in ``recently_played_fragment.xml``)
-
-## build.gradle file
-- Arrange lists in alphabetical order unless there's a good reason not to.
-- Combine `implementation`, `androidTestImplementation` and `testImplementation` to declare all similar dependencies in one block.

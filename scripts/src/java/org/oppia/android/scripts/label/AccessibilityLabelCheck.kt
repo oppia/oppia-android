@@ -22,7 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory
  *
  * Example:
  *   bazel run //scripts:accessibility_label_check -- $(pwd)
- *   scripts/assets/accessibility_label_exemptions.pb AndroidManifest.xml
+ *   scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
  */
 fun main(vararg args: String) {
   val repoPath = "${args[0]}/"

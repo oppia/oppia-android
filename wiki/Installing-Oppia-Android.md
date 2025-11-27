@@ -428,7 +428,7 @@ These are tests in other layers, such as **domain** or **utility**.
       - Run the app again.
 
 #### Bazel issues
-The team is in the process of migrating away from Gradle to Bazel.
+The team is in the process finalizing its migration to Bazel by modularizing all of the components and tests in the codebase.
 
 Please note that:
 - The IntelliJ Bazel plugin currently has some known issues:

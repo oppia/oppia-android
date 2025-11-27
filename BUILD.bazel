@@ -66,6 +66,8 @@ package_group(
     ],
 )
 
+# TODO(#1640): Move binary manifest to be top-level.
+
 # Define all binary flavors that can be built. Note that these are AABs and thus cannot be installed
 # directly. However, their binaries can be installed using mobile-install like so:
 #  bazel mobile-install //:oppia_dev_binary

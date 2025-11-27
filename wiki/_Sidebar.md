@@ -52,7 +52,7 @@
   * [Triaging Process](https://github.com/oppia/oppia-android/wiki/Triaging-process)
   * Bazel
     * [Exploring Bazel](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide)
-    * [Gradle Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)
+    * [Bazel Migration Best Practices and FAQ](https://github.com/oppia/oppia-android/wiki/Gradle--Bazel-Migration-Best-Practices-and-FAQ)
     * [Updating Maven Dependencies](https://github.com/oppia/oppia-android/wiki/Updating-Maven-Dependencies)
   * [Internationalization](https://github.com/oppia/oppia-android/wiki/Internationalization)
   * [Terminology in Oppia](https://github.com/oppia/oppia-android/wiki/Terminology-in-Oppia)

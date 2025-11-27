@@ -14,7 +14,7 @@ The Oppia Android codebase makes use of Kotlin and XML and can be built using An
 <img width="750" alt="Screenshot 2020-01-13 at 1 21 25 PM" src="https://user-images.githubusercontent.com/9396084/72245148-e60c4b80-3615-11ea-8a28-73b2b2bfc656.png">
 
 
-The Oppia project follows a standard Gradle project layout with five layers. Each subdirectory in a layer contains files that are specific to a particular feature or purpose.
+The Oppia project follows an approximate Gradle project layout with five layers. Each subdirectory in a layer contains files that are specific to a particular feature or purpose.
 
 #### 1. app
 
