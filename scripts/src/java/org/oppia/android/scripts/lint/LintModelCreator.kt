@@ -38,7 +38,7 @@ class LintModelCreator(
     private const val BUILD_DIR_NAME = "build"
     private const val CLASSES_DIR_NAME = "classes"
 
-    // Build configurations for Android module configuration
+    // Build configurations for Android app layer configuration
     private const val PACKAGE_PREFIX = "org.oppia.android"
     private const val MIN_SDK_VERSION = "21"
     private const val TARGET_SDK_VERSION = "35"
@@ -55,32 +55,32 @@ class LintModelCreator(
   private val sdkProperties = AndroidBuildSdkProperties()
 
   /**
-   * Generates all required lint model files for the specified module configuration.
+   * Generates all required lint model files for the specified layer configuration.
    * Uses caching to avoid regeneration when inputs haven't changed.
    *
-   * @param moduleConfig Configuration object containing module-specific settings
-   * @return The directory containing the generated model files
+   * @param layerConfig configuration object containing layer-specific settings
+   * @return the directory containing the generated model files
    */
-  fun generateModelFiles(moduleConfig: ModuleConfig): File {
-    val bazelInputsHash = computeBazelInputsHash(moduleConfig)
+  fun generateModelFiles(layerConfig: LayerConfig): File {
+    val bazelInputsHash = computeBazelInputsHash(layerConfig)
 
     if (isCacheValid(bazelInputsHash)) {
       return modelDir
     }
     val modelPath = modelDir.toPath().createDirectories()
     val buildDir = modelPath.resolve(BUILD_DIR_NAME).createDirectories()
-    val modulePath = File(repoRoot, moduleConfig.name).toPath().absolute()
+    val layerPath = File(repoRoot, layerConfig.name).toPath().absolute()
 
     generateModuleXml(
       modelPath.resolve(MODULE_XML_FILE).toFile(),
-      moduleConfig,
-      modulePath,
+      layerConfig,
+      layerPath,
       buildDir
     )
 
     generateVariantXml(
       modelDir.resolve(VARIANT_XML_FILE),
-      moduleConfig,
+      layerConfig,
       buildDir
     )
 
@@ -96,25 +96,25 @@ class LintModelCreator(
   /**
    * Computes a hash of all Bazel inputs that could affect lint model generation.
    * This includes:
-   * - Module configuration (name, type, dependencies)
+   * - Layer configuration (name, type, dependencies)
    * - Source files and their modification times
    * - Resource directories and their contents
    * - Manifest file content
    * - Bazel build configuration
    */
-  private fun computeBazelInputsHash(moduleConfig: ModuleConfig): String {
+  private fun computeBazelInputsHash(layerConfig: LayerConfig): String {
     val digest = MessageDigest.getInstance("SHA-256")
 
-    digest.update(moduleConfig.name.toByteArray())
-    digest.update(moduleConfig.isLibrary.toString().toByteArray())
-    digest.update(moduleConfig.isAndroid.toString().toByteArray())
-    digest.update(moduleConfig.isTest.toString().toByteArray())
+    digest.update(layerConfig.name.toByteArray())
+    digest.update(layerConfig.isLibrary.toString().toByteArray())
+    digest.update(layerConfig.isAndroid.toString().toByteArray())
+    digest.update(layerConfig.isTest.toString().toByteArray())
 
-    moduleConfig.dependencies.sorted().forEach { dep ->
+    layerConfig.dependencies.sorted().forEach { dep ->
       digest.update(dep.toByteArray())
     }
 
-    moduleConfig.srcFiles.sorted().forEach { srcFile ->
+    layerConfig.srcFiles.sorted().forEach { srcFile ->
       digest.update(srcFile.toByteArray())
       val file = File(srcFile)
       if (file.exists()) {
@@ -122,7 +122,7 @@ class LintModelCreator(
       }
     }
 
-    moduleConfig.testFiles.sorted().forEach { testFile ->
+    layerConfig.testFiles.sorted().forEach { testFile ->
       digest.update(testFile.toByteArray())
       val file = File(testFile)
       if (file.exists()) {
@@ -130,23 +130,23 @@ class LintModelCreator(
       }
     }
 
-    moduleConfig.resourceDirs.sorted().forEach { resDir ->
+    layerConfig.resourceDirs.sorted().forEach { resDir ->
       digest.update(resDir.toByteArray())
       hashDirectoryContents(File(resDir), digest)
     }
 
-    val manifestFile = File(moduleConfig.manifestFile)
+    val manifestFile = File(layerConfig.manifestFile)
     if (manifestFile.exists()) {
       digest.update(manifestFile.readText().toByteArray())
       digest.update(manifestFile.lastModified().toString().toByteArray())
     }
 
-    moduleConfig.aarFiles.sortedBy { it.originalPath }.forEach { aarInfo ->
+    layerConfig.aarFiles.sortedBy { it.originalPath }.forEach { aarInfo ->
       digest.update(aarInfo.originalPath.toByteArray())
       digest.update(aarInfo.extractedPath.toByteArray())
     }
 
-    moduleConfig.jarFiles.sorted().forEach { jarFile ->
+    layerConfig.jarFiles.sorted().forEach { jarFile ->
       digest.update(jarFile.toByteArray())
       val file = File(jarFile)
       if (file.exists()) {
@@ -237,24 +237,24 @@ class LintModelCreator(
 
   private fun generateModuleXml(
     moduleFile: File,
-    moduleConfig: ModuleConfig,
-    modulePath: Path,
+    layerConfig: LayerConfig,
+    layerPath: Path,
     buildDir: Path
   ) {
-    val moduleType = if (moduleConfig.isLibrary) LIBRARY else APP
+    val moduleType = if (layerConfig.isLibrary) LIBRARY else APP
     val buildToolsVersion = sdkProperties.buildToolsVersion
     val javaSourceLevel = JavaConfiguration(bazelInfo = bazelInfo).getVersion()
     val buildFolder = escapeXmlAttribute(buildDir.createDirectories().toFile().absolutePath)
     val content =
       """
         <lint-module
-            dir="${escapeXmlAttribute(modulePath.toString())}"
-            name="${escapeXmlAttribute(moduleConfig.name)}"
+            dir="${escapeXmlAttribute(layerPath.toString())}"
+            name="${escapeXmlAttribute(layerConfig.name)}"
             type="${moduleType.name}"
             buildFolder="$buildFolder"
             javaSourceLevel="$javaSourceLevel"
             compileTarget="$buildToolsVersion"
-            partialResultsDir="${escapeXmlAttribute(moduleConfig.partialResultsDir.absolutePath)}"
+            partialResultsDir="${escapeXmlAttribute(layerConfig.partialResultsDir.absolutePath)}"
             neverShrinking="true">
             <lintOptions />
             <variant name="main"/>
@@ -264,17 +264,13 @@ class LintModelCreator(
     moduleFile.writeText(content)
   }
 
-  private fun generateVariantXml(
-    variantFile: File,
-    moduleConfig: ModuleConfig,
-    buildDir: Path
-  ) {
-    val rawPackageName = extractPackageFromManifest(moduleConfig.manifestFile)
-      ?: "$PACKAGE_PREFIX.${moduleConfig.name}"
+  private fun generateVariantXml(variantFile: File, layerConfig: LayerConfig, buildDir: Path) {
+    val rawPackageName = extractPackageFromManifest(layerConfig.manifestFile)
+      ?: "$PACKAGE_PREFIX.${layerConfig.name}"
 
     val packageName = escapeXmlAttribute(rawPackageName)
 
-    val proguardAttribute = createProguardAttribute(moduleConfig.name)
+    val proguardAttribute = createProguardAttribute(layerConfig.name)
 
     val classOutputPath = escapeXmlAttribute(
       buildDir.resolve(CLASSES_DIR_NAME).createDirectories().toFile().absolutePath
@@ -291,14 +287,14 @@ class LintModelCreator(
             package="$packageName"
             $proguardAttribute>
             <buildFeatures
-                coreLibraryDesugaring="true" 
+                coreLibraryDesugaring="true"
                 viewBinding="true"
                 namespacing="REQUIRED" />
             <sourceProviders>
-                ${generateMainSourceProvider(moduleConfig)}
+                ${generateMainSourceProvider(layerConfig)}
             </sourceProviders>
             <testSourceProviders>
-                ${generateTestSourceProvider(moduleConfig)}
+                ${generateTestSourceProvider(layerConfig)}
             </testSourceProviders>
             <mainArtifact
                 classOutputs="$classOutputPath"
@@ -310,26 +306,26 @@ class LintModelCreator(
     variantFile.writeText(content)
   }
 
-  private fun generateMainSourceProvider(moduleConfig: ModuleConfig): String {
+  private fun generateMainSourceProvider(layerConfig: LayerConfig): String {
     val attributes = buildList {
-      add("""manifest="${escapeXmlAttribute(File(moduleConfig.manifestFile).absolutePath)}"""")
+      add("""manifest="${escapeXmlAttribute(File(layerConfig.manifestFile).absolutePath)}"""")
 
       val javaDir = escapeXmlAttribute(
         File(
           repoRoot,
-          "${moduleConfig.name}/src/main/java"
+          "${layerConfig.name}/src/main/java"
         ).absolutePath
       )
       add("""javaDirectories="$javaDir"""")
 
-      val mainResDirs = moduleConfig.resourceDirs
+      val mainResDirs = layerConfig.resourceDirs
         .map { escapeXmlAttribute(File(it).absolutePath) }
         .filter { it.contains("/src/main/") }
       if (mainResDirs.isNotEmpty()) {
         add("""resDirectories="${mainResDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
-      val assetsDir = File(repoRoot, "${moduleConfig.name}/src/main/assets")
+      val assetsDir = File(repoRoot, "${layerConfig.name}/src/main/assets")
       if (assetsDir.exists()) {
         add("""assetsDirectories="${escapeXmlAttribute(assetsDir.absolutePath)}"""")
       }
@@ -338,30 +334,30 @@ class LintModelCreator(
     return createSourceProviderXml(attributes)
   }
 
-  private fun generateTestSourceProvider(moduleConfig: ModuleConfig): String {
+  private fun generateTestSourceProvider(layerConfig: LayerConfig): String {
     val attributes = buildList {
-      val testManifest = File(repoRoot, "${moduleConfig.name}/src/test/AndroidManifest.xml")
+      val testManifest = File(repoRoot, "${layerConfig.name}/src/test/AndroidManifest.xml")
       if (testManifest.exists()) {
         add("""manifest="${testManifest.absolutePath}"""")
       }
 
       val testJavaDirs = listOf(
-        File(repoRoot, "${moduleConfig.name}/src/test/java").absolutePath,
-        File(repoRoot, "${moduleConfig.name}/src/sharedTest/java").absolutePath
+        File(repoRoot, "${layerConfig.name}/src/test/java").absolutePath,
+        File(repoRoot, "${layerConfig.name}/src/sharedTest/java").absolutePath
       ).filter { File(it).exists() }
 
       if (testJavaDirs.isNotEmpty()) {
         add("""javaDirectories="${testJavaDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
-      val testResDirs = moduleConfig.resourceDirs
+      val testResDirs = layerConfig.resourceDirs
         .map { File(it).absolutePath }
         .filter { it.contains("/src/test/") }
       if (testResDirs.isNotEmpty()) {
         add("""resDirectories="${testResDirs.joinToString(FILE_SEPARATOR)}"""")
       }
 
-      val testAssetsDir = File(repoRoot, "${moduleConfig.name}/src/test/assets")
+      val testAssetsDir = File(repoRoot, "${layerConfig.name}/src/test/assets")
       if (testAssetsDir.exists()) {
         add("""assetsDirectories="${testAssetsDir.absolutePath}"""")
       }
@@ -383,8 +379,8 @@ class LintModelCreator(
     """.trimIndent()
   }
 
-  private fun createProguardAttribute(moduleName: String): String {
-    if (moduleName != ModuleName.APP.moduleName) return ""
+  private fun createProguardAttribute(layerName: String): String {
+    if (layerName != LayerName.APP.layerName) return ""
 
     val proguardDir = File(repoRoot, PROGUARD_CONFIG_PATH)
     val proguardFiles = proguardDir

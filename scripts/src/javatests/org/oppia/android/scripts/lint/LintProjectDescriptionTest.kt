@@ -130,15 +130,15 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_containsModules() {
+  fun testGenerateProjectDescriptionXml_containsLayers() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    val expectedModules = listOf("app", "utility", "domain", "testing", "data")
-    expectedModules.forEach { moduleName ->
-      assertThat(xmlContent).contains("name=\"$moduleName\"")
+    val expectedLayers = listOf("app", "utility", "domain", "testing", "data")
+    expectedLayers.forEach { layerName ->
+      assertThat(xmlContent).contains("name=\"$layerName\"")
     }
   }
 
@@ -162,20 +162,19 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_createsModuleSpecificDirectories() {
+  fun testGenerateProjectDescriptionXml_createsLayerSpecificDirectories() {
     setupFakeCommandExecutor()
 
     lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
 
-    val expectedModules = listOf("app", "utility", "domain", "testing", "data")
-    expectedModules.forEach { moduleName ->
-      val moduleModelDir =
-        File(workingDirectory, "models-directory/$moduleName")
-      val modulePartialResultsDir =
-        File(workingDirectory, "partial-results-directory/$moduleName-partial-results")
+    val expectedLayers = listOf("app", "utility", "domain", "testing", "data")
+    expectedLayers.forEach { layerName ->
+      val layerModelDir = File(workingDirectory, "models-directory/$layerName")
+      val layerPartialResultsDir =
+        File(workingDirectory, "partial-results-directory/$layerName-partial-results")
 
-      assertThat(moduleModelDir.exists()).isTrue()
-      assertThat(modulePartialResultsDir.exists()).isTrue()
+      assertThat(layerModelDir.exists()).isTrue()
+      assertThat(layerPartialResultsDir.exists()).isTrue()
     }
   }
 
@@ -193,21 +192,21 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_libraryModulesMarkedCorrectly() {
+  fun testGenerateProjectDescriptionXml_libraryLayersMarkedCorrectly() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    // App module should be library="false"
+    // App layer should be library="false"
     assertThat(xmlContent).contains("name=\"app\"")
-    val appModulePattern = Regex("""name="app"[^>]*library="false"""")
-    assertThat(appModulePattern.find(xmlContent)).isNotNull()
+    val appLayerPattern = Regex("""name="app"[^>]*library="false"""")
+    assertThat(appLayerPattern.find(xmlContent)).isNotNull()
 
-    // Library modules should be library="true"
-    val libraryModules = listOf("utility", "domain", "testing", "data")
-    libraryModules.forEach { moduleName ->
-      assertThat(xmlContent).contains("name=\"$moduleName\"")
+    // Library layers should be library="true"
+    val libraryLayers = listOf("utility", "domain", "testing", "data")
+    libraryLayers.forEach { layerName ->
+      assertThat(xmlContent).contains("name=\"$layerName\"")
     }
 
     val libraryTrueCount = xmlContent.split("library=\"true\"").size - 1
@@ -215,19 +214,19 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_testModuleMarkedCorrectly() {
+  fun testGenerateProjectDescriptionXml_testLayerMarkedCorrectly() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    val testModulePattern = Regex("""name="testing"[^>]*test="true"""")
-    assertThat(testModulePattern.find(xmlContent)).isNotNull()
+    val testLayerPattern = Regex("""name="testing"[^>]*test="true"""")
+    assertThat(testLayerPattern.find(xmlContent)).isNotNull()
 
-    val nonTestModules = listOf("app", "utility", "domain", "data")
-    nonTestModules.forEach { moduleName ->
-      val nonTestModulePattern = Regex("""name="$moduleName"[^>]*test="false"""")
-      assertThat(nonTestModulePattern.find(xmlContent)).isNotNull()
+    val nonTestLayers = listOf("app", "utility", "domain", "data")
+    nonTestLayers.forEach { layerName ->
+      val nonTestLayerPattern = Regex("""name="$layerName"[^>]*test="false"""")
+      assertThat(nonTestLayerPattern.find(xmlContent)).isNotNull()
     }
   }
 
@@ -379,7 +378,7 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_moduleDependencies() {
+  fun testGenerateProjectDescriptionXml_hasLayerDependencies() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
@@ -389,15 +388,15 @@ class LintProjectDescriptionTest {
     assertThat(xmlContent).contains("<dep module=\"domain\"/>")
     assertThat(xmlContent).contains("<dep module=\"data\"/>")
 
-    val testingModuleContent = extractModuleContent(xmlContent, "testing")
-    assertThat(testingModuleContent).contains("<dep module=\"utility\"/>")
-    assertThat(testingModuleContent).contains("<dep module=\"domain\"/>")
+    val testingLayerContent = extractModuleContent(xmlContent, "testing")
+    assertThat(testingLayerContent).contains("<dep module=\"utility\"/>")
+    assertThat(testingLayerContent).contains("<dep module=\"domain\"/>")
 
-    val domainModuleContent = extractModuleContent(xmlContent, "domain")
-    assertThat(domainModuleContent).contains("<dep module=\"utility\"/>")
+    val domainLayerContent = extractModuleContent(xmlContent, "domain")
+    assertThat(domainLayerContent).contains("<dep module=\"utility\"/>")
 
-    val dataModuleContent = extractModuleContent(xmlContent, "data")
-    assertThat(dataModuleContent).contains("<dep module=\"utility\"/>")
+    val dataLayerContent = extractModuleContent(xmlContent, "data")
+    assertThat(dataLayerContent).contains("<dep module=\"utility\"/>")
   }
 
   @Test
@@ -418,7 +417,7 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_moduleAttributesAreCorrect() {
+  fun testGenerateProjectDescriptionXml_layerAttributesAreCorrect() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
@@ -444,11 +443,11 @@ class LintProjectDescriptionTest {
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    // Check that we have multiple source files per module
+    // Check that we have multiple source files per layer
     val srcFilePattern = Regex("""src file="([^"]+)"(?! test="true")""")
     val srcFiles = srcFilePattern.findAll(xmlContent).map { it.groupValues[1] }.toList()
 
-    // We should have at least 15 source files (3 per module * 5 modules)
+    // We should have at least 15 source files (3 per layer * 5 layers)
     assertThat(srcFiles.size).isAtLeast(15)
 
     // Verify we have both .kt and .java files
@@ -478,11 +477,11 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testGenerateProjectDescriptionXml_emptyModuleHandling() {
-    tempFolder.newFolder("empty-module")
-    val emptyModuleSrcDir = tempFolder.newFolder("empty-module", "src", "main")
-    val emptyModuleManifest = File(emptyModuleSrcDir, "AndroidManifest.xml")
-    emptyModuleManifest.writeText(
+  fun testGenerateProjectDescriptionXml_emptyLayerHandling() {
+    tempFolder.newFolder("empty-layer")
+    val emptyLayerSrcDir = tempFolder.newFolder("empty-layer", "src", "main")
+    val emptyLayerManifest = File(emptyLayerSrcDir, "AndroidManifest.xml")
+    emptyLayerManifest.writeText(
       """
       <?xml version="1.0" encoding="utf-8"?>
       <manifest package="org.oppia.android.empty" />
@@ -491,7 +490,7 @@ class LintProjectDescriptionTest {
 
     setupFakeCommandExecutor()
 
-    // Should not throw an exception even with empty modules
+    // Should not throw an exception even with empty layers
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     assertThat(result.exists()).isTrue()
   }
@@ -660,23 +659,23 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testBuildAllModuleConfigurations_returnsCorrectNumberOfModules() {
+  fun testBuildAllLayerConfigurations_returnsCorrectNumberOfLayers() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    val moduleCount = xmlContent.split("<module").size - 1
-    assertThat(moduleCount).isEqualTo(5)
+    val layerCount = xmlContent.split("<module").size - 1
+    assertThat(layerCount).isEqualTo(5)
 
-    val expectedModules = listOf("app", "utility", "domain", "testing", "data")
-    expectedModules.forEach { moduleName ->
-      assertThat(xmlContent).contains("name=\"$moduleName\"")
+    val expectedLayers = listOf("app", "utility", "domain", "testing", "data")
+    expectedLayers.forEach { layerName ->
+      assertThat(xmlContent).contains("name=\"$layerName\"")
     }
   }
 
   @Test
-  fun testBuildAllModuleConfigurations_setsCorrectLibraryFlags() {
+  fun testBuildAllLayerConfigurations_setsCorrectLibraryFlags() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
@@ -690,7 +689,7 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testBuildAllModuleConfigurations_includesResourceDirectories() {
+  fun testBuildAllLayerConfigurations_includesResourceDirectories() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
@@ -698,7 +697,7 @@ class LintProjectDescriptionTest {
 
     // Verify resource directories are included
     val resourceDirCount = xmlContent.split("<resource dir=").size - 1
-    assertThat(resourceDirCount).isAtLeast(5) // At least one per module
+    assertThat(resourceDirCount).isAtLeast(5) // At least one per layer
 
     // Verify resource directories contain "res" in path
     val resourcePattern = Regex("""<resource dir="[^"]*res[^"]*"/>""")
@@ -707,15 +706,15 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testBuildAllModuleConfigurations_includesManifestFiles() {
+  fun testBuildAllLayerConfigurations_includesManifestFiles() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    // Verify each module has a manifest file
+    // Verify each layer has a manifest file
     val manifestCount = xmlContent.split("<manifest file=").size - 1
-    assertThat(manifestCount).isEqualTo(5) // One per module
+    assertThat(manifestCount).isEqualTo(5) // One per layer
 
     // Verify manifest files point to AndroidManifest.xml
     val manifestPattern = Regex("""<manifest file="[^"]*AndroidManifest\.xml"/>""")
@@ -724,17 +723,17 @@ class LintProjectDescriptionTest {
   }
 
   @Test
-  fun testBuildAllModuleConfigurations_setsAndroidFlag() {
+  fun testBuildAllLayerConfigurations_setsAndroidFlag() {
     setupFakeCommandExecutor()
 
     val result = lintProjectDescriptionWithFakeExecutor.generateProjectDescriptionXml()
     val xmlContent = result.readText()
 
-    // All modules should have android="true"
+    // All layers should have android="true"
     val androidTrueCount = xmlContent.split("android=\"true\"").size - 1
-    assertThat(androidTrueCount).isEqualTo(5) // All modules are Android modules
+    assertThat(androidTrueCount).isEqualTo(5) // All layers are Android code
 
-    // No modules should have android="false"
+    // No layers should have android="false"
     assertThat(xmlContent).doesNotContain("android=\"false\"")
   }
 
@@ -742,31 +741,31 @@ class LintProjectDescriptionTest {
     testBazelWorkspace.initEmptyWorkspace()
     testBazelWorkspace.setUpWorkspaceForRulesJvmExternal(listOf("junit:junit:4.12"))
 
-    // Create all required modules
-    createModule("app")
-    createModule("utility")
-    createModule("domain")
-    createModule("testing")
-    createModule("data")
+    // Create all required layers
+    createLayer("app")
+    createLayer("utility")
+    createLayer("domain")
+    createLayer("testing")
+    createLayer("data")
   }
 
-  private fun createModule(moduleName: String) {
-    createModuleDirectories(moduleName)
-    createModuleFiles(moduleName)
+  private fun createLayer(layerName: String) {
+    createLayerDirectories(layerName)
+    createLayerFiles(layerName)
   }
 
-  private fun createModuleDirectories(moduleName: String) {
+  private fun createLayerDirectories(layerName: String) {
     val directories = listOf(
-      moduleName,
-      "$moduleName/src",
-      "$moduleName/src/main",
-      "$moduleName/src/main/java",
-      "$moduleName/src/main/res",
-      "$moduleName/src/main/res/values",
-      "$moduleName/src/test",
-      "$moduleName/src/test/java",
-      "$moduleName/src/sharedTest",
-      "$moduleName/src/sharedTest/java"
+      layerName,
+      "$layerName/src",
+      "$layerName/src/main",
+      "$layerName/src/main/java",
+      "$layerName/src/main/res",
+      "$layerName/src/main/res/values",
+      "$layerName/src/test",
+      "$layerName/src/test/java",
+      "$layerName/src/sharedTest",
+      "$layerName/src/sharedTest/java"
     )
 
     directories.forEach { dir ->
@@ -774,71 +773,71 @@ class LintProjectDescriptionTest {
     }
   }
 
-  private fun createModuleFiles(moduleName: String) {
-    createManifestFile(moduleName)
-    createSourceFile(moduleName)
-    createTestFile(moduleName)
-    createSharedTestFile(moduleName)
-    createResourceFile(moduleName)
-    createAdditionalSourceFiles(moduleName)
+  private fun createLayerFiles(layerName: String) {
+    createManifestFile(layerName)
+    createSourceFile(layerName)
+    createTestFile(layerName)
+    createSharedTestFile(layerName)
+    createResourceFile(layerName)
+    createAdditionalSourceFiles(layerName)
   }
 
-  private fun createManifestFile(moduleName: String) {
-    val manifest = tempFolder.newFile("$moduleName/src/main/AndroidManifest.xml")
+  private fun createManifestFile(layerName: String) {
+    val manifest = tempFolder.newFile("$layerName/src/main/AndroidManifest.xml")
     manifest.writeText(
       """
       <?xml version="1.0" encoding="utf-8"?>
-      <manifest package="org.oppia.android.$moduleName" />
+      <manifest package="org.oppia.android.$layerName" />
       """.trimIndent()
     )
   }
 
-  private fun createSourceFile(moduleName: String) {
-    val className = moduleName.capitalize()
-    val sourceFile = tempFolder.newFile("$moduleName/src/main/java/${className}Class.kt")
+  private fun createSourceFile(layerName: String) {
+    val className = layerName.capitalize()
+    val sourceFile = tempFolder.newFile("$layerName/src/main/java/${className}Class.kt")
     sourceFile.writeText(
       """
-      package org.oppia.android.$moduleName
-      
+      package org.oppia.android.$layerName
+
       class ${className}Class {
-          fun doSomething(): String = "Hello from $moduleName"
+          fun doSomething(): String = "Hello from $layerName"
       }
       """.trimIndent()
     )
   }
 
-  private fun createTestFile(moduleName: String) {
-    val className = moduleName.capitalize()
-    val testFile = tempFolder.newFile("$moduleName/src/test/java/${className}ClassTest.kt")
+  private fun createTestFile(layerName: String) {
+    val className = layerName.capitalize()
+    val testFile = tempFolder.newFile("$layerName/src/test/java/${className}ClassTest.kt")
     testFile.writeText(
       """
-      package org.oppia.android.$moduleName
-      
+      package org.oppia.android.$layerName
+
       import org.junit.Test
       import org.junit.Assert.assertEquals
-      
+
       class ${className}ClassTest {
           @Test
           fun testDoSomething() {
               val instance = ${className}Class()
-              assertEquals("Hello from $moduleName", instance.doSomething())
+              assertEquals("Hello from $layerName", instance.doSomething())
           }
       }
       """.trimIndent()
     )
   }
 
-  private fun createSharedTestFile(moduleName: String) {
-    val className = moduleName.capitalize()
+  private fun createSharedTestFile(layerName: String) {
+    val className = layerName.capitalize()
     val sharedTestFile =
-      tempFolder.newFile("$moduleName/src/sharedTest/java/${className}SharedTest.kt")
+      tempFolder.newFile("$layerName/src/sharedTest/java/${className}SharedTest.kt")
     sharedTestFile.writeText(
       """
-      package org.oppia.android.$moduleName
-      
+      package org.oppia.android.$layerName
+
       import org.junit.Test
       import org.junit.Assert.assertNotNull
-      
+
       class ${className}SharedTest {
           @Test
           fun testSharedFunctionality() {
@@ -850,41 +849,41 @@ class LintProjectDescriptionTest {
     )
   }
 
-  private fun createAdditionalSourceFiles(moduleName: String) {
+  private fun createAdditionalSourceFiles(layerName: String) {
     val javaFile = tempFolder
-      .newFile("$moduleName/src/main/java/${moduleName.capitalize()}Helper.java")
+      .newFile("$layerName/src/main/java/${layerName.capitalize()}Helper.java")
     javaFile.writeText(
       """
-      package org.oppia.android.$moduleName;
-      
-      public class ${moduleName.capitalize()}Helper {
-          public static String getModuleName() {
-              return "$moduleName";
+      package org.oppia.android.$layerName;
+
+      public class ${layerName.capitalize()}Helper {
+          public static String getLayerName() {
+              return "$layerName";
           }
       }
       """.trimIndent()
     )
 
-    val utilFile = tempFolder.newFile("$moduleName/src/main/java/${moduleName.capitalize()}Util.kt")
+    val utilFile = tempFolder.newFile("$layerName/src/main/java/${layerName.capitalize()}Util.kt")
     utilFile.writeText(
       """
-      package org.oppia.android.$moduleName
-      
-      object ${moduleName.capitalize()}Util {
-          const val MODULE_NAME = "$moduleName"
+      package org.oppia.android.$layerName
+
+      object ${layerName.capitalize()}Util {
+          const val LAYER_NAME = "$layerName"
       }
       """.trimIndent()
     )
   }
 
-  private fun createResourceFile(moduleName: String) {
-    val resourceFile = tempFolder.newFile("$moduleName/src/main/res/values/strings.xml")
+  private fun createResourceFile(layerName: String) {
+    val resourceFile = tempFolder.newFile("$layerName/src/main/res/values/strings.xml")
     resourceFile.writeText(
       """
       <?xml version="1.0" encoding="utf-8"?>
       <resources>
-          <string name="${moduleName}_name">$moduleName Module</string>
-          <string name="${moduleName}_description">Description for $moduleName</string>
+          <string name="${layerName}_name">$layerName Layer</string>
+          <string name="${layerName}_description">Description for $layerName</string>
       </resources>
       """.trimIndent()
     )
@@ -913,8 +912,8 @@ class LintProjectDescriptionTest {
     return replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
   }
 
-  private fun extractModuleContent(xmlContent: String, moduleName: String): String {
-    val moduleStart = xmlContent.indexOf("name=\"$moduleName\"")
+  private fun extractModuleContent(xmlContent: String, layerName: String): String {
+    val moduleStart = xmlContent.indexOf("name=\"$layerName\"")
     if (moduleStart == -1) return ""
 
     val moduleEnd = xmlContent.indexOf("</module>", moduleStart)
@@ -937,7 +936,7 @@ class LintProjectDescriptionTest {
           0
         }
         args.contains("cquery") && args.any { it.startsWith("deps(//") } -> {
-          // Return some dependencies for other modules
+          // Return some dependencies for other Bazel targets
           outputStream.println("external/junit/junit-4.12.jar")
           outputStream.println("external/hamcrest/hamcrest-core-1.3.jar")
           0
@@ -1021,7 +1020,7 @@ class LintProjectDescriptionTest {
         Manifest-Version: 1.0
         Implementation-Title: $libraryName
         Implementation-Version: $version
-        
+
         """.trimIndent().toByteArray()
       )
       zipOut.closeEntry()
