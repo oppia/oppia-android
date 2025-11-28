@@ -107,8 +107,6 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       PinSetupMessage()
 
-      PinSetupInstructionText()
-
       PinInputField(
         value = uiState.pin,
         onValueChange = { newValue ->
@@ -212,19 +210,6 @@ class PinSetupFragmentPresenter @Inject constructor(
       textAlign = TextAlign.Center,
       color = colorResource(R.color.component_color_shared_primary_text_color),
       modifier = Modifier.padding(bottom = 24.dp)
-    )
-  }
-
-  @Composable
-  private fun PinSetupInstructionText() {
-    Text(
-      text = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_enter_pin_label
-      ),
-      fontSize = 14.sp,
-      textAlign = TextAlign.Center,
-      color = colorResource(R.color.component_color_shared_primary_text_color),
-      modifier = Modifier.padding(bottom = 16.dp)
     )
   }
 
