@@ -107,8 +107,6 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       PinSetupMessage()
 
-      PinSetupInstructionText()
-
       PinInputField(
         value = uiState.pin,
         onValueChange = { newValue ->
@@ -216,19 +214,6 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun PinSetupInstructionText() {
-    Text(
-      text = resourceHandler.getStringInLocaleWithWrapping(
-        R.string.pin_setup_activity_enter_pin_label
-      ),
-      fontSize = 14.sp,
-      textAlign = TextAlign.Center,
-      color = colorResource(R.color.component_color_shared_primary_text_color),
-      modifier = Modifier.padding(bottom = 16.dp)
-    )
-  }
-
-  @Composable
   private fun PinInputField(
     value: String,
     onValueChange: (String) -> Unit,
@@ -269,10 +254,9 @@ class PinSetupFragmentPresenter @Inject constructor(
           fontSize = 16.sp
         ),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-          textColor = colorResource(R.color.component_color_shared_primary_text_color),
-          backgroundColor = colorResource(R.color.component_color_shared_activity_background_color),
-          focusedBorderColor = colorResource(R.color.component_color_shared_dark_text_color),
-          errorBorderColor = colorResource(R.color.component_color_shared_error_color)
+          unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
+          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
+          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
         )
       )
       if (error.isNotEmpty()) {
@@ -376,6 +360,22 @@ class PinSetupFragmentPresenter @Inject constructor(
     val isValidConfirmPin = confirmPin.length == ADMIN_PIN_LENGTH && confirmPin.all(Char::isDigit)
 
     return when {
+      pin.isEmpty() -> {
+        PinValidationResult(
+          isValid = false,
+          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+            R.string.pin_setup_activity_blank_error
+          )
+        )
+      }
+      pin.isNotEmpty() && confirmPin.isEmpty() -> {
+        PinValidationResult(
+          isValid = false,
+          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+            R.string.pin_setup_activity_mismatch_error
+          )
+        )
+      }
       !isValidPin || !isValidConfirmPin -> {
         PinValidationResult(
           isValid = false,
