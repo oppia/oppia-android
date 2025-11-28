@@ -191,7 +191,8 @@ class PinSetupFragmentPresenter @Inject constructor(
               errorMessage = validationResult.errorMessage
             )
           }
-        }
+        },
+        isContinueEnabled = uiState.pinError.isEmpty() && uiState.confirmPinError.isEmpty()
       )
     }
   }
@@ -296,7 +297,8 @@ class PinSetupFragmentPresenter @Inject constructor(
   @Composable
   private fun NavigationButtons(
     onBackClick: () -> Unit,
-    onContinueClick: () -> Unit
+    onContinueClick: () -> Unit,
+    isContinueEnabled: Boolean = true
   ) {
     Row(
       modifier = Modifier
@@ -316,11 +318,13 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       Button(
         onClick = onContinueClick,
+        enabled = isContinueEnabled,
         modifier = Modifier
           .height(48.dp)
           .widthIn(min = 140.dp, max = 200.dp),
         colors = ButtonDefaults.buttonColors(
-          backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color)
+          backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color),
+          disabledBackgroundColor = colorResource(R.color.component_color_shared_item_selection_interaction_disabled_color)
         )
       ) {
         Text(
