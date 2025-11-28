@@ -4,11 +4,14 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertDoesNotExist
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertValueEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
@@ -321,6 +324,83 @@ class PinSetupFragmentTest {
       composeRule
         .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
         .assertIsNotEnabled()
+    }
+  }
+
+  @Test
+  fun testFragment_validPin_shortConfirm_showsMismatchError_continueDisabled() {
+    launch(PinSetupActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .performTextInput("12345")
+
+      // Enter a too-short confirm PIN.
+      composeRule
+        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .performTextInput("12")
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.pin_setup_activity_mismatch_error))
+        .assertIsDisplayed()
+      
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsNotEnabled()
+    }
+  }
+
+  @Test
+  fun testFragment_enterMatchingConfirmPin_afterPinLengthError_enablesContinue() {
+    launch(PinSetupActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Start with a short PIN to trigger length error.
+      val enterPinNode = context.getString(R.string.pin_setup_activity_enter_pin_label)
+      composeRule.onNodeWithText(enterPinNode).performTextInput("12")
+      
+      composeRule
+        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .assertIsDisplayed()
+     
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsNotEnabled()
+
+      composeRule.onNodeWithText(enterPinNode).performTextInput("345")
+      testCoroutineDispatchers.runCurrent()
+      
+      composeRule
+        .onNodeWithText(context.getString(R.string.pin_setup_activity_length_error))
+        .assertDoesNotExist()
+
+      composeRule
+        .onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .performTextInput("12345")
+      
+      // Enter matching confirm PIN; continue should be enabled now.
+      composeRule
+        .onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
+        .assertIsEnabled()
+    }
+  }
+
+  @Test
+  fun testFragment_imeActionDone_withMatchingValidPins_navigatesToProfileChooser() {
+    launch(PinSetupActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_enter_pin_label))
+        .performTextInput("12345")
+
+      composeRule.onNodeWithText(context.getString(R.string.pin_setup_activity_confirm_pin_label))
+        .performTextInput("12345")
+        .performImeAction()
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(ProfileChooserActivity::class.java.name))
     }
   }
 
