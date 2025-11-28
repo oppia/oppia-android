@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -12,12 +11,10 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
@@ -46,7 +43,6 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
-import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -171,10 +167,8 @@ class AdminIntroFragmentTest {
 
   @Test
   @Config(qualifiers = "+land")
-  fun testIntroFragment_onLaunch_landscapeMode_stepCountIsNotDisplayed() {
+  fun testIntroFragment_landscapeMode_viewsAreCorrectlyDisplayed_stepCountIsNotVisible() {
     launch(AdminIntroActivity::class.java).use {
-      onView(ViewMatchers.isRoot()).perform(orientationLandscape())
-
       composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
         .assertIsDisplayed()
 
@@ -196,7 +190,7 @@ class AdminIntroFragmentTest {
         .assertIsDisplayed()
 
       composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
-        .assertIsNotDisplayed()
+        .assertDoesNotExist()
     }
   }
 
