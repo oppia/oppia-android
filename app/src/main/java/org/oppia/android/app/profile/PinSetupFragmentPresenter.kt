@@ -127,7 +127,8 @@ class PinSetupFragmentPresenter @Inject constructor(
             )
           }
         },
-        label = resourceHandler.getStringInLocaleWithWrapping(R.string.pin_setup_activity_enter_pin_label),
+        label = resourceHandler
+          .getStringInLocaleWithWrapping(R.string.pin_setup_activity_enter_pin_label),
         error = uiState.pinError,
         isError = uiState.pinError.isNotEmpty(),
         focusManager = focusManager,
@@ -148,7 +149,8 @@ class PinSetupFragmentPresenter @Inject constructor(
             )
           }
         },
-        label = resourceHandler.getStringInLocaleWithWrapping(R.string.pin_setup_activity_confirm_pin_label),
+        label = resourceHandler
+          .getStringInLocaleWithWrapping(R.string.pin_setup_activity_confirm_pin_label),
         error = uiState.confirmPinError,
         isError = uiState.confirmPinError.isNotEmpty(),
         focusManager = focusManager,
@@ -324,11 +326,13 @@ class PinSetupFragmentPresenter @Inject constructor(
           .widthIn(min = 140.dp, max = 200.dp),
         colors = ButtonDefaults.buttonColors(
           backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color),
-          disabledBackgroundColor = colorResource(R.color.component_color_shared_item_selection_interaction_disabled_color)
+          disabledBackgroundColor =
+            colorResource(R.color.component_color_shared_item_selection_interaction_disabled_color)
         )
       ) {
         Text(
-          text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_continue),
+          text = resourceHandler
+            .getStringInLocaleWithWrapping(R.string.onboarding_navigation_continue),
           color = colorResource(R.color.component_color_onboarding_shared_white_color),
           fontWeight = FontWeight.Bold
         )
