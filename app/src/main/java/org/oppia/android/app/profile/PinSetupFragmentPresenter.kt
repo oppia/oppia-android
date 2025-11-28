@@ -360,6 +360,22 @@ class PinSetupFragmentPresenter @Inject constructor(
     val isValidConfirmPin = confirmPin.length == ADMIN_PIN_LENGTH && confirmPin.all(Char::isDigit)
 
     return when {
+      pin.isEmpty() -> {
+        PinValidationResult(
+          isValid = false,
+          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+            R.string.pin_setup_activity_blank_error
+          )
+        )
+      }
+      pin.isNotEmpty() && confirmPin.isEmpty() -> {
+        PinValidationResult(
+          isValid = false,
+          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
+            R.string.pin_setup_activity_mismatch_error
+          )
+        )
+      }
       !isValidPin || !isValidConfirmPin -> {
         PinValidationResult(
           isValid = false,
