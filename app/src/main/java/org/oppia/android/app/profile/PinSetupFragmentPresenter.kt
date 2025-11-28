@@ -30,10 +30,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -92,11 +93,7 @@ class PinSetupFragmentPresenter @Inject constructor(
   @Composable
   fun PinSetupScreen(profileId: ProfileId) {
     val focusManager = LocalFocusManager.current
-    var pin by remember { mutableStateOf("") }
-    var confirmPin by remember { mutableStateOf("") }
-    var showError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-    val maxPinLength = 5
+    var uiState by remember { mutableStateOf(PinSetupUiState()) }
 
     Column(
       modifier = Modifier
@@ -106,157 +103,231 @@ class PinSetupFragmentPresenter @Inject constructor(
     ) {
       Spacer(modifier = Modifier.weight(1f))
 
-      Text(
-        text = resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_header
-        ),
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
-        color = colorResource(R.color.component_color_shared_primary_text_color),
-        modifier = Modifier.padding(bottom = 16.dp)
-      )
+      PinSetupHeader()
 
-      Text(
-        text = resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_message
-        ),
-        fontSize = 14.sp,
-        textAlign = TextAlign.Center,
-        color = colorResource(R.color.component_color_shared_primary_text_color),
-        modifier = Modifier.padding(bottom = 24.dp)
-      )
+      PinSetupMessage()
 
-      Text(
-        text = resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_enter_pin_label
-        ),
-        fontSize = 14.sp,
-        color = colorResource(R.color.component_color_shared_primary_text_color),
-        modifier = Modifier
-          .align(Alignment.Start)
-          .padding(bottom = 8.dp)
-      )
+      PinSetupInstructionText()
 
-      OutlinedTextField(
-        value = pin,
-        onValueChange = { if (it.length <= maxPinLength) pin = it },
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(bottom = 8.dp),
-        textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
-        visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-          imeAction = ImeAction.Next,
-          keyboardType = KeyboardType.NumberPassword
-        ),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-          unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
-          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
-          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
-        )
-      )
-
-      Text(
-        text = resourceHandler.getStringInLocaleWithWrapping(
-          R.string.pin_setup_activity_confirm_pin_label
-        ),
-        fontSize = 14.sp,
-        color = colorResource(R.color.component_color_shared_primary_text_color),
-        modifier = Modifier
-          .align(Alignment.Start)
-          .padding(bottom = 8.dp)
-      )
-
-      OutlinedTextField(
-        value = confirmPin,
-        onValueChange = { if (it.length <= maxPinLength) confirmPin = it },
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(bottom = 8.dp),
-        textStyle = LocalTextStyle.current.copy(fontSize = 14.sp),
-        singleLine = true,
-        visualTransformation = PasswordVisualTransformation(),
-        keyboardOptions = KeyboardOptions(
-          imeAction = ImeAction.Done,
-          keyboardType = KeyboardType.NumberPassword
-        ),
-        keyboardActions = KeyboardActions(
-          onDone = {
-            validatePinOrShowError(
-              pin,
-              confirmPin,
-              setShowError = { showError = it },
-              setErrorMessage = { errorMessage = it }
+      PinInputField(
+        value = uiState.pin,
+        onValueChange = { newValue ->
+          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH
+          if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
+            uiState = uiState.copy(
+              pin = newValue,
+              pinError = validatePinInput(newValue),
+              // Clear general error when user starts typing
+              showError = if (newValue.isNotEmpty()) false else uiState.showError
             )
-            focusManager.clearFocus()
           }
-        ),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-          unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
-          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
-          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
-        )
+        },
+        label = resourceHandler.getStringInLocaleWithWrapping(R.string.pin_setup_activity_enter_pin_label),
+        error = uiState.pinError,
+        isError = uiState.pinError.isNotEmpty(),
+        focusManager = focusManager,
+        imeAction = ImeAction.Next
       )
 
-      Spacer(modifier = Modifier.height(16.dp))
+      PinInputField(
+        value = uiState.confirmPin,
+        onValueChange = { newValue ->
+          // Filter to only allow digits and limit to ADMIN_PIN_LENGTH
+          if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
+            uiState = uiState.copy(
+              confirmPin = newValue,
+              confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty()) 
+                validateConfirmPinInput(uiState.pin, newValue) else "",
+              // Clear general error when user starts typing
+              showError = if (newValue.isNotEmpty()) false else uiState.showError
+            )
+          }
+        },
+        label = resourceHandler.getStringInLocaleWithWrapping(R.string.pin_setup_activity_confirm_pin_label),
+        error = uiState.confirmPinError,
+        isError = uiState.confirmPinError.isNotEmpty(),
+        focusManager = focusManager,
+        imeAction = ImeAction.Done,
+        onDone = {
+          val validationResult = validatePins(uiState.pin, uiState.confirmPin)
+          if (validationResult.isValid) {
+            updatePin(profileId, uiState.pin)
+          } else {
+            uiState = uiState.copy(
+              showError = true,
+              errorMessage = validationResult.errorMessage
+            )
+          }
+        }
+      )
 
       PinErrorText(
-        showError = showError,
-        errorMessage = errorMessage
+        showError = uiState.showError,
+        errorMessage = uiState.errorMessage
       )
 
       Spacer(modifier = Modifier.weight(1f))
 
-      Text(
-        text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_step_count_five),
-        fontSize = 14.sp,
-        color = colorResource(R.color.component_color_onboarding_shared_green_color),
-        modifier = Modifier.padding(bottom = 16.dp)
-      )
+      StepCounter()
 
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-      ) {
-        TextButton(
-          onClick = { activity.finish() }
-        ) {
-          Text(
-            text = resourceHandler.getStringInLocale(R.string.onboarding_navigation_back),
-            color = colorResource(R.color.component_color_onboarding_shared_green_color),
-            fontWeight = FontWeight.Bold
-          )
-        }
-
-        Button(
-          onClick = {
-            val isValidPin = validatePinOrShowError(
-              pin,
-              confirmPin,
-              setShowError = { showError = it },
-              setErrorMessage = { errorMessage = it }
+      NavigationButtons(
+        onBackClick = { activity.finish() },
+        onContinueClick = {
+          val validationResult = validatePins(uiState.pin, uiState.confirmPin)
+          if (validationResult.isValid) {
+            uiState = uiState.copy(showError = false)
+            updatePin(profileId, uiState.pin)
+          } else {
+            uiState = uiState.copy(
+              showError = true,
+              errorMessage = validationResult.errorMessage
             )
-
-            if (isValidPin) {
-              showError = false
-              updatePin(profileId, pin)
-            }
-          },
-          modifier = Modifier.height(48.dp)
-            .width(160.dp)
-            .padding(top = 12.dp),
-          colors = ButtonDefaults.buttonColors(
-            backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color)
-          )
-        ) {
-          Text(
-            text = stringResource(R.string.onboarding_navigation_continue),
-            color = colorResource(R.color.component_color_onboarding_shared_white_color),
-            fontWeight = FontWeight.Bold
-          )
+          }
         }
+      )
+    }
+  }
+
+  @Composable
+  private fun PinSetupHeader() {
+    Text(
+      text = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.pin_setup_activity_header
+      ),
+      fontSize = 20.sp,
+      fontWeight = FontWeight.Bold,
+      textAlign = TextAlign.Center,
+      color = colorResource(R.color.component_color_shared_primary_text_color),
+      modifier = Modifier.padding(bottom = 16.dp)
+    )
+  }
+
+  @Composable
+  private fun PinSetupMessage() {
+    Text(
+      text = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.pin_setup_activity_message
+      ),
+      fontSize = 14.sp,
+      textAlign = TextAlign.Center,
+      color = colorResource(R.color.component_color_shared_primary_text_color),
+      modifier = Modifier.padding(bottom = 24.dp)
+    )
+  }
+
+  @Composable
+  private fun PinSetupInstructionText() {
+    Text(
+      text = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.pin_setup_activity_enter_pin_label
+      ),
+      fontSize = 14.sp,
+      textAlign = TextAlign.Center,
+      color = colorResource(R.color.component_color_shared_primary_text_color),
+      modifier = Modifier.padding(bottom = 16.dp)
+    )
+  }
+
+  @Composable
+  private fun PinInputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    error: String,
+    isError: Boolean,
+    focusManager: FocusManager,
+    imeAction: ImeAction,
+    onDone: (() -> Unit)? = null
+  ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+      OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(text = label) },
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(bottom = if (error.isEmpty()) 16.dp else 4.dp),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions.Default.copy(
+          keyboardType = KeyboardType.Number,
+          imeAction = imeAction
+        ),
+        keyboardActions = KeyboardActions(
+          onNext = if (imeAction == ImeAction.Next) {
+            { focusManager.moveFocus(FocusDirection.Down) }
+          } else null,
+          onDone = if (imeAction == ImeAction.Done) {
+            {
+              focusManager.clearFocus()
+              onDone?.invoke()
+            }
+          } else null
+        ),
+        visualTransformation = PasswordVisualTransformation(),
+        isError = isError,
+        textStyle = LocalTextStyle.current.copy(
+          fontSize = 16.sp
+        ),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+          unfocusedBorderColor = colorResource(R.color.component_color_edittext_stroke_color),
+          focusedBorderColor = colorResource(R.color.component_color_onboarding_shared_black_color),
+          cursorColor = colorResource(R.color.component_color_onboarding_shared_black_color)
+        )
+      )
+      if (error.isNotEmpty()) {
+        Text(
+          text = error,
+          color = colorResource(R.color.component_color_shared_error_color),
+          fontSize = 12.sp,
+          modifier = Modifier.padding(bottom = 12.dp, start = 16.dp)
+        )
+      }
+    }
+  }
+
+  @Composable
+  private fun StepCounter() {
+    Text(
+      text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_step_count_five),
+      fontSize = 14.sp,
+      color = colorResource(R.color.component_color_onboarding_shared_green_color),
+      modifier = Modifier.padding(bottom = 16.dp)
+    )
+  }
+
+  @Composable
+  private fun NavigationButtons(
+    onBackClick: () -> Unit,
+    onContinueClick: () -> Unit
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+      TextButton(
+        onClick = onBackClick
+      ) {
+        Text(
+          text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_back),
+          color = colorResource(R.color.component_color_onboarding_shared_green_color),
+          fontWeight = FontWeight.Bold
+        )
+      }
+
+      Button(
+        onClick = onContinueClick,
+        modifier = Modifier.height(48.dp)
+          .width(160.dp)
+          .padding(top = 12.dp),
+        colors = ButtonDefaults.buttonColors(
+          backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color)
+        )
+      ) {
+        Text(
+          text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_navigation_continue),
+          color = colorResource(R.color.component_color_onboarding_shared_white_color),
+          fontWeight = FontWeight.Bold
+        )
       }
     }
   }
@@ -275,38 +346,53 @@ class PinSetupFragmentPresenter @Inject constructor(
     }
   }
 
-  private fun validatePinOrShowError(
-    pin: String,
-    confirmPin: String,
-    setShowError: (Boolean) -> Unit,
-    setErrorMessage: (String) -> Unit
-  ): Boolean {
-    val isValidPin = pin.length == 5 && pin.all(Char::isDigit)
-    val isValidConfirmPin = confirmPin.length == 5 && confirmPin.all(Char::isDigit)
+  private fun validatePinInput(pin: String): String {
+    return when {
+      pin.isNotEmpty() && pin.length < ADMIN_PIN_LENGTH -> {
+        // Use existing length error string for real-time feedback
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.pin_setup_activity_length_error
+        )
+      }
+      else -> ""
+    }
+  }
+
+  private fun validateConfirmPinInput(pin: String, confirmPin: String): String {
+    return when {
+      confirmPin.isNotEmpty() && confirmPin != pin -> {
+        // Use existing mismatch error string for real-time feedback  
+        resourceHandler.getStringInLocaleWithWrapping(
+          R.string.pin_setup_activity_mismatch_error
+        )
+      }
+      else -> ""
+    }
+  }
+
+  private fun validatePins(pin: String, confirmPin: String): PinValidationResult {
+    val isValidPin = pin.length == ADMIN_PIN_LENGTH && pin.all(Char::isDigit)
+    val isValidConfirmPin = confirmPin.length == ADMIN_PIN_LENGTH && confirmPin.all(Char::isDigit)
 
     return when {
       !isValidPin || !isValidConfirmPin -> {
-        setShowError(true)
-        setErrorMessage(
-          resourceHandler.getStringInLocaleWithWrapping(
+        PinValidationResult(
+          isValid = false,
+          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
             R.string.pin_setup_activity_length_error
           )
         )
-        false
       }
       pin != confirmPin -> {
-        setShowError(true)
-        setErrorMessage(
-          resourceHandler.getStringInLocaleWithWrapping(
+        PinValidationResult(
+          isValid = false,
+          errorMessage = resourceHandler.getStringInLocaleWithWrapping(
             R.string.pin_setup_activity_mismatch_error
           )
         )
-        false
       }
       else -> {
-        setShowError(false)
-        setErrorMessage("")
-        true
+        PinValidationResult(isValid = true)
       }
     }
   }
@@ -329,4 +415,25 @@ class PinSetupFragmentPresenter @Inject constructor(
       }
     }
   }
+
+  companion object {
+    /** The required length for admin PINs. */
+    private const val ADMIN_PIN_LENGTH = 5
+  }
 }
+
+/** Data class to encapsulate the PIN setup UI state. */
+data class PinSetupUiState(
+  val pin: String = "",
+  val confirmPin: String = "",
+  val showError: Boolean = false,
+  val errorMessage: String = "",
+  val pinError: String = "",
+  val confirmPinError: String = ""
+)
+
+/** Data class for PIN validation result. */
+data class PinValidationResult(
+  val isValid: Boolean,
+  val errorMessage: String = ""
+)
