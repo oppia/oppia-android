@@ -15,8 +15,7 @@ import javax.inject.Inject
 
 /** Activity that controls profile creation and selection. */
 class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
-  @Inject
-  lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
+  @Inject lateinit var profileChooserActivityPresenter: ProfileChooserActivityPresenter
 
   companion object {
     fun createProfileChooserActivity(context: Context): Intent {
@@ -31,13 +30,15 @@ class ProfileChooserActivity : InjectableSystemLocalizedAppCompatActivity() {
     super.onCreate(savedInstanceState)
     (activityComponent as ActivityComponentImpl).inject(this)
 
-    val profileType = intent.getProtoExtra(
+    val profileChooserActivityParams = intent.getProtoExtra(
       PROFILE_CHOOSER_PARAMS_KEY,
       ProfileChooserActivityParams.getDefaultInstance()
-    ).profileType
+    )
 
+    val parentScreen = profileChooserActivityParams.parentScreen
+    val profileNickname = profileChooserActivityParams.profileNickname
     val profileId = intent.extractCurrentUserProfileId()
 
-    profileChooserActivityPresenter.handleOnCreate(profileId, profileType)
+    profileChooserActivityPresenter.handleOnCreate(profileId, parentScreen, profileNickname)
   }
 }

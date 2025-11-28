@@ -731,4 +731,10 @@
   <string name="profile_login_forgot_pin_dialog_cancel_button">Cancel</string>
   <string name="profile_login_reset_pin_success_dialog_close">Close</string>
   <string name="profile_login_reset_pin_success_dialog_message">PIN changed successfully!</string>
+
+  <!-- Onboarding Admin Intro Activity -->
+  <string name="admin_intro_activity_title">Introduction</string>
+  <string name="admin_intro_activity_header">As the admin of the app, you can</string>
+  <string name="admin_intro_activity_settings_text">Manage profile settings for all learners on this device</string>
+  <string name="admin_intro_activity_learners_text">Add new learners to this device (up to 10)</string>
 </resources>

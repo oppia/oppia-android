@@ -362,6 +362,10 @@
         android:label="@string/profile_login_activity_title"
         android:theme="@style/OppiaThemeWithoutActionBar" />
     <activity
+        android:name=".app.onboarding.AdminIntroActivity"
+        android:label="@string/admin_intro_activity_title"
+        android:theme="@style/OppiaThemeWithoutActionBar" />
+    <activity
       android:name=".app.testing.TextInputLayoutBindingAdaptersTestActivity"
       android:theme="@style/OppiaThemeWithoutActionBar" />
     <provider

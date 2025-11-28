@@ -548,4 +548,8 @@
   <dimen name="flashback_solution_summary_card_margin_start">144dp</dimen>
   <dimen name="flashback_solution_summary_card_margin_end">112dp</dimen>
   <dimen name="flashback_solution_summary_card_margin_top">24dp</dimen>
+
+  <!-- Onboarding V2 -->
+  <dimen name="onboarding_admin_intro_horizontal_card_padding">108dp</dimen>
+  <dimen name="onboarding_admin_intro_vertical_card_padding">72dp</dimen>
 </resources>

@@ -1,14 +1,17 @@
-package org.oppia.android.app.profile
+package org.oppia.android.app.onboarding
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import dagger.Component
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,14 +26,12 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.END_PROFILE_ONBOARDING_EVENT
-import org.oppia.android.app.model.EventLog.Context.ActivityContextCase.OPEN_PROFILE_CHOOSER
-import org.oppia.android.app.model.EventLog.Priority
-import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
-import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
+import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.ScreenName
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
+import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -63,22 +64,20 @@ import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeAnalyticsEventLogger
+import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
-import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
 import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
-import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
+import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.extractCurrentAppScreenName
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -95,130 +94,50 @@ import javax.inject.Singleton
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-  application = ProfileChooserFragmentLocalTest.TestApplication::class,
+  application = AdminIntroActivityTest.TestApplication::class,
   qualifiers = "port-xxhdpi"
 )
-class ProfileChooserFragmentLocalTest {
+class AdminIntroActivityTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
+  @Inject lateinit var context: Context
 
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  private val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+  @Before
+  fun setUp() {
+    Intents.init()
+    setUpTestApplicationComponent()
+  }
 
   @After
   fun tearDown() {
-    TestPlatformParameterModule.reset()
+    Intents.release()
   }
 
   @Test
-  fun testProfileChooser_onboardingV1_onEveryLaunch_logsProfileChooserEvent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
-    setUpTestApplicationComponent()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-      assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)
-    }
+  fun testActivity_createIntent_verifyScreenNameInIntent() {
+    val screenName = createAdminIntroActivityIntent().extractCurrentAppScreenName()
+    assertThat(screenName).isEqualTo(ScreenName.ADMIN_INTRO_ACTIVITY)
   }
 
   @Test
-  fun testProfileChooser_onboardingV2_onInitialLaunch_logsProfileChooserEvent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    launch<ProfileChooserActivity>(
-      createProfileChooserActivityIntent(ParentScreen.ADMIN_INTRO_SCREEN)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-      assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)
-    }
-  }
-
-  @Test
-  fun testProfileChooser_onboardingV2_onEveryLaunch_logsProfileChooserEvent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-
-      assertThat(event.priority).isEqualTo(Priority.ESSENTIAL)
-      assertThat(event.context.activityContextCase).isEqualTo(OPEN_PROFILE_CHOOSER)
-    }
-  }
-
-  @Test
-  fun testProfileChooser_onboardingV1_onInitialLaunch_doesNotLogCompleteProfileOboardingEvent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(false)
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles(autoLogIn = true)
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-
-      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
-        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
+  fun testActivity_hasCorrectActivityLabel() {
+    launch<AdminIntroActivity>(createAdminIntroActivityIntent()).use { scenario ->
+      scenario.onActivity { activity ->
+        val title = activity.title
+        assertThat(title).isEqualTo(context.getString(R.string.admin_intro_activity_title))
       }
-
-      assertThat(hasProfileOnboardingEndedEvent).isFalse()
     }
   }
 
-  @Test
-  fun testProfileChooser_onboardingV2_onInitialLaunch_logsCompleteProfileOboardingEvent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-    profileTestHelper.addOnlyAdminProfileWithoutPin()
-
-    launch<ProfileChooserActivity>(
-      createProfileChooserActivityIntent(ParentScreen.ADMIN_INTRO_SCREEN)
-    ).use {
-      testCoroutineDispatchers.runCurrent()
-
-      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
-        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
-      }
-
-      assertThat(hasProfileOnboardingEndedEvent).isTrue()
-    }
-  }
-
-  @Test
-  fun testProfileChooser_onboardingV2_onSubsequentLaunch_doesNotLogCompleteProfileOboardingEvent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
-    setUpTestApplicationComponent()
-
-    // Logs in to the admin account for the first time.
-    profileTestHelper.initializeProfiles(autoLogIn = true)
-
-    // Logs in to the admin account for the second time.
-    profileTestHelper.logIntoAdmin()
-
-    launch<ProfileChooserActivity>(createProfileChooserActivityIntent()).use {
-      testCoroutineDispatchers.runCurrent()
-
-      val hasProfileOnboardingEndedEvent = fakeAnalyticsEventLogger.hasEventLogged {
-        it.context.activityContextCase == END_PROFILE_ONBOARDING_EVENT
-      }
-
-      assertThat(hasProfileOnboardingEndedEvent).isFalse()
-    }
-  }
-
-  private fun createProfileChooserActivityIntent(
-    parentScreen: ParentScreen = ParentScreen.SPLASH_SCREEN
-  ): Intent {
-    val params = ProfileChooserActivityParams.newBuilder()
-      .setParentScreen(parentScreen)
-      .build()
-
-    return ProfileChooserActivity
-      .createProfileChooserActivity(ApplicationProvider.getApplicationContext()).apply {
-        putProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, params)
-      }
+  private fun createAdminIntroActivityIntent(): Intent {
+    return AdminIntroActivity.createAdminIntroActivityIntent(
+      context,
+      testProfileId,
+      ProfileType.SUPERVISOR,
+      "John"
+    )
   }
 
   private fun setUpTestApplicationComponent() {
@@ -292,22 +211,20 @@ class ProfileChooserFragmentLocalTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
-    }
+    interface Builder : ApplicationComponent.Builder
 
-    fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest)
+    fun inject(adminIntroActivityTest: AdminIntroActivityTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerProfileChooserFragmentLocalTest_TestApplicationComponent.builder()
+      DaggerAdminIntroActivityTest_TestApplicationComponent.builder()
         .setApplication(this)
         .build() as TestApplicationComponent
     }
 
-    fun inject(profileChooserFragmentLocalTest: ProfileChooserFragmentLocalTest) {
-      component.inject(profileChooserFragmentLocalTest)
+    fun inject(adminIntroActivityTest: AdminIntroActivityTest) {
+      component.inject(adminIntroActivityTest)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

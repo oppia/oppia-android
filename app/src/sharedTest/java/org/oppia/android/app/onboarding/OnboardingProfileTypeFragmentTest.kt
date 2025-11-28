@@ -41,7 +41,6 @@ import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
@@ -83,7 +82,6 @@ import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.logging.EventLogSubject
 import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
 import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
@@ -95,7 +93,6 @@ import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
-import org.oppia.android.util.locale.OppiaLocale
 import org.oppia.android.util.logging.LoggerModule
 import org.oppia.android.util.logging.SyncStatusModule
 import org.oppia.android.util.logging.firebase.FirebaseLogUploaderModule
@@ -121,15 +118,10 @@ import javax.inject.Singleton
   qualifiers = "port-xxhdpi"
 )
 class OnboardingProfileTypeFragmentTest {
-  @get:Rule
-  val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-
-  @get:Rule
-  val oppiaTestRule = OppiaTestRule()
-
+  @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
+  @get:Rule val oppiaTestRule = OppiaTestRule()
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
   @Inject lateinit var context: Context
-  @Inject lateinit var machineLocale: OppiaLocale.MachineLocale
   @Inject lateinit var profileTestHelper: ProfileTestHelper
   @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
 
@@ -298,22 +290,22 @@ class OnboardingProfileTypeFragmentTest {
   }
 
   @Test
-  fun testFragment_supervisorNavigationCardClicked_launchesProfileChooserScreen() {
+  fun testFragment_supervisorNavigationCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
   @Test
-  fun testFragment_orientationChange_supervisorCardClicked_launchesProfileChooserScreen() {
+  fun testFragment_orientationChange_supervisorCardClicked_launchesCreateProfileScreen() {
     launchOnboardingProfileTypeActivity().use {
       onView(isRoot()).perform(orientationLandscape())
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
       testCoroutineDispatchers.runCurrent()
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
+      intended(hasComponent(CreateProfileActivity::class.java.name))
     }
   }
 
@@ -337,18 +329,6 @@ class OnboardingProfileTypeFragmentTest {
       testCoroutineDispatchers.runCurrent()
       scenario?.onActivity { activity ->
         assertThat(activity.isFinishing).isTrue()
-      }
-    }
-  }
-
-  @Test
-  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
-    launchOnboardingProfileTypeActivity().use {
-      onView(withId(R.id.profile_type_supervisor_navigation_card)).perform(click())
-      testCoroutineDispatchers.runCurrent()
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      EventLogSubject.assertThat(event).hasStartProfileOnboardingContextThat {
-        hasProfileIdThat().isEqualTo(testProfileId)
       }
     }
   }

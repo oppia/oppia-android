@@ -962,14 +962,39 @@ message OnboardingFragmentStateBundle {
 
 // Params required when creating a new ProfileChooserActivity.
 message ProfileChooserActivityParams {
-  // The ProfileType of the new profile as implied by the user's selection.
-  ProfileType profile_type = 1;
+  // TODO(#482): Remove once the default admin profile has been removed.
+  // The nickname associated with a newly created profile.
+  string profile_nickname = 1;
+
+  // The screen from which the ProfileChooserActivity was opened.
+  ParentScreen parent_screen = 2;
+
+  // Different parent screens that can open a new ProfileChooserActivity instance.
+  enum ParentScreen {
+    // Indicates that the originating screen isn't actually known.
+    PARENT_SCREEN_UNSPECIFIED = 0;
+
+    // Corresponds to the story viewer screen.
+    SPLASH_SCREEN = 1;
+
+    // Corresponds to the admin intro screen.
+    ADMIN_INTRO_SCREEN = 2;
+
+    // Corresponds to the exit profile dialog.
+    EXIT_PROFILE_SCREEN = 3;
+
+    // Corresponds to the logout dialog.
+    LOGOUT_SCREEN = 4;
+
+    // Corresponds to the onboarding screen.
+    ONBOARDING_SCREEN = 5;
+  }
 }
 
 // Arguments required when creating a new ProfileChooserFragment.
 message ProfileChooserFragmentArguments {
-  // The ProfileType of the new profile as implied by the user's selection.
-  ProfileType profile_type = 1;
+  // The screen from which the ProfileChooserActivity was opened.
+  ProfileChooserActivityParams.ParentScreen parent_screen = 1;
 }
 
 // The bundle of properties that are saved upon configuration changes for the StatePlayerRecyclerViewAssembler.
@@ -994,4 +1019,22 @@ message PlatformParametersFragmentStateBundle {
 
   // List of platform parameters that have been reset.
   repeated OverriddenPlatformParameter reset_platform_parameters = 2;
+}
+
+// Params required when creating a new AdminIntroActivity.
+message AdminIntroActivityParams {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+
+  // The nickname associated with a newly created profile.
+  string profile_nickname = 2;
+}
+
+// Arguments required when creating a new AdminIntroFragment.
+message AdminIntroFragmentArguments {
+  // The ProfileType of the new profile as implied by the user's selection.
+  ProfileType profile_type = 1;
+
+  // The nickname associated with a newly created profile.
+  string profile_nickname = 2;
 }

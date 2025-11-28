@@ -5,7 +5,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/component_color_onboarding_learner_intro_background_color">
+    android:background="@color/component_color_onboarding_intro_background_color">
 
     <androidx.constraintlayout.widget.Guideline
       android:id="@+id/learner_intro_title_guide"
