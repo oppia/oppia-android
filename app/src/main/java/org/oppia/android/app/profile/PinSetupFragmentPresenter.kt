@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalTextStyle
@@ -94,14 +96,16 @@ class PinSetupFragmentPresenter @Inject constructor(
   fun PinSetupScreen(profileId: ProfileId) {
     val focusManager = LocalFocusManager.current
     var uiState by remember { mutableStateOf(PinSetupUiState()) }
+    val scrollState = rememberScrollState()
 
     Column(
       modifier = Modifier
         .fillMaxSize()
+        .verticalScroll(scrollState)
         .padding(horizontal = 16.dp, vertical = 24.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Spacer(modifier = Modifier.weight(1f))
+      Spacer(modifier = Modifier.height(16.dp))
 
       PinSetupHeader()
 
@@ -164,7 +168,7 @@ class PinSetupFragmentPresenter @Inject constructor(
         errorMessage = uiState.errorMessage
       )
 
-      Spacer(modifier = Modifier.weight(1f))
+      Spacer(modifier = Modifier.height(24.dp))
 
       StepCounter()
 
@@ -286,7 +290,9 @@ class PinSetupFragmentPresenter @Inject constructor(
     onContinueClick: () -> Unit
   ) {
     Row(
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween
     ) {
       TextButton(
@@ -301,9 +307,9 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       Button(
         onClick = onContinueClick,
-        modifier = Modifier.height(48.dp)
-          .width(160.dp)
-          .padding(top = 12.dp),
+        modifier = Modifier
+          .height(48.dp)
+          .widthIn(min = 140.dp, max = 200.dp),
         colors = ButtonDefaults.buttonColors(
           backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color)
         )
