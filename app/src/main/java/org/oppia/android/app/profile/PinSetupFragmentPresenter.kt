@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.LocalTextStyle
@@ -54,7 +52,6 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
-import org.oppia.android.app.onboarding.OnboardingStepCount
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -105,28 +102,13 @@ class PinSetupFragmentPresenter @Inject constructor(
     val stepCountIsVisible by remember(orientation) {
       derivedStateOf { isLandscape }
     }
-
-    val scrollState = rememberScrollState()
-    val columnModifier = if (isLandscape) {
-      Modifier
-        .fillMaxSize()
-        .verticalScroll(scrollState)
-        .padding(horizontal = 16.dp, vertical = 24.dp)
-    } else {
-      Modifier
-        .fillMaxSize()
-        .padding(horizontal = 16.dp, vertical = 24.dp)
-    }
-
     Column(
-      modifier = columnModifier,
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = 16.dp, vertical = 24.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      if (stepCountIsVisible) {
-        StepCounter()
-      }
-
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.weight(1f))
 
       PinSetupHeader()
 
@@ -159,7 +141,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
             uiState = uiState.copy(
               confirmPin = newValue,
-              confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty()) 
+              confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty())
                 validateConfirmPinInput(uiState.pin, newValue) else "",
               // Clear general error when user starts typing
               showError = if (newValue.isNotEmpty()) false else uiState.showError
@@ -189,7 +171,12 @@ class PinSetupFragmentPresenter @Inject constructor(
         errorMessage = uiState.errorMessage
       )
 
-      Spacer(modifier = Modifier.height(24.dp))
+      Spacer(modifier = Modifier.weight(1f))
+
+      if (!stepCountIsVisible) {
+        StepCountText()
+        Spacer(modifier = Modifier.height(8.dp))
+      }
 
       NavigationButtons(
         onBackClick = { activity.finish() },
@@ -294,11 +281,14 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun StepCounter() {
+  private fun StepCountText() {
     Text(
-      text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_step_count_five),
-      fontSize = 14.sp,
+      text = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.onboarding_step_count_five
+      ),
       color = colorResource(R.color.component_color_onboarding_shared_green_color),
+      fontSize = 16.sp,
+      fontWeight = FontWeight.Medium,
       modifier = Modifier.padding(bottom = 16.dp)
     )
   }
