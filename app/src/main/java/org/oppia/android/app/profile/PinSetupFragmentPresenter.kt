@@ -1,5 +1,6 @@
 package org.oppia.android.app.profile
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
@@ -51,6 +54,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
+import org.oppia.android.app.onboarding.OnboardingStepCount
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -96,15 +100,32 @@ class PinSetupFragmentPresenter @Inject constructor(
   fun PinSetupScreen(profileId: ProfileId) {
     val focusManager = LocalFocusManager.current
     var uiState by remember { mutableStateOf(PinSetupUiState()) }
-    val scrollState = rememberScrollState()
+    val orientation = LocalConfiguration.current.orientation
+    val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
+    val stepCountIsVisible by remember(orientation) {
+      derivedStateOf { isLandscape }
+    }
 
-    Column(
-      modifier = Modifier
+    val scrollState = rememberScrollState()
+    val columnModifier = if (isLandscape) {
+      Modifier
         .fillMaxSize()
         .verticalScroll(scrollState)
-        .padding(horizontal = 16.dp, vertical = 24.dp),
+        .padding(horizontal = 16.dp, vertical = 24.dp)
+    } else {
+      Modifier
+        .fillMaxSize()
+        .padding(horizontal = 16.dp, vertical = 24.dp)
+    }
+
+    Column(
+      modifier = columnModifier,
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
+      if (stepCountIsVisible) {
+        StepCounter()
+      }
+
       Spacer(modifier = Modifier.height(16.dp))
 
       PinSetupHeader()
@@ -169,8 +190,6 @@ class PinSetupFragmentPresenter @Inject constructor(
       )
 
       Spacer(modifier = Modifier.height(24.dp))
-
-      StepCounter()
 
       NavigationButtons(
         onBackClick = { activity.finish() },
