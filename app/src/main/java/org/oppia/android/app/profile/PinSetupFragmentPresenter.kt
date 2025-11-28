@@ -1,5 +1,6 @@
 package org.oppia.android.app.profile
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -24,6 +25,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
@@ -94,7 +97,11 @@ class PinSetupFragmentPresenter @Inject constructor(
   fun PinSetupScreen(profileId: ProfileId) {
     val focusManager = LocalFocusManager.current
     var uiState by remember { mutableStateOf(PinSetupUiState()) }
-
+    val orientation = LocalConfiguration.current.orientation
+    val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
+    val stepCountIsVisible by remember(orientation) {
+      derivedStateOf { isLandscape }
+    }
     Column(
       modifier = Modifier
         .fillMaxSize()
@@ -134,7 +141,7 @@ class PinSetupFragmentPresenter @Inject constructor(
           if (newValue.all { it.isDigit() } && newValue.length <= ADMIN_PIN_LENGTH) {
             uiState = uiState.copy(
               confirmPin = newValue,
-              confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty()) 
+              confirmPinError = if (newValue.isNotEmpty() && uiState.pin.isNotEmpty())
                 validateConfirmPinInput(uiState.pin, newValue) else "",
               // Clear general error when user starts typing
               showError = if (newValue.isNotEmpty()) false else uiState.showError
@@ -166,7 +173,10 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       Spacer(modifier = Modifier.weight(1f))
 
-      StepCounter()
+      if (!stepCountIsVisible) {
+        StepCountText()
+        Spacer(modifier = Modifier.height(8.dp))
+      }
 
       NavigationButtons(
         onBackClick = { activity.finish() },
@@ -181,7 +191,8 @@ class PinSetupFragmentPresenter @Inject constructor(
               errorMessage = validationResult.errorMessage
             )
           }
-        }
+        },
+        isContinueEnabled = uiState.pinError.isEmpty() && uiState.confirmPinError.isEmpty()
       )
     }
   }
@@ -271,11 +282,14 @@ class PinSetupFragmentPresenter @Inject constructor(
   }
 
   @Composable
-  private fun StepCounter() {
+  private fun StepCountText() {
     Text(
-      text = resourceHandler.getStringInLocaleWithWrapping(R.string.onboarding_step_count_five),
-      fontSize = 14.sp,
+      text = resourceHandler.getStringInLocaleWithWrapping(
+        R.string.onboarding_step_count_five
+      ),
       color = colorResource(R.color.component_color_onboarding_shared_green_color),
+      fontSize = 16.sp,
+      fontWeight = FontWeight.Medium,
       modifier = Modifier.padding(bottom = 16.dp)
     )
   }
@@ -283,10 +297,13 @@ class PinSetupFragmentPresenter @Inject constructor(
   @Composable
   private fun NavigationButtons(
     onBackClick: () -> Unit,
-    onContinueClick: () -> Unit
+    onContinueClick: () -> Unit,
+    isContinueEnabled: Boolean = true
   ) {
     Row(
-      modifier = Modifier.fillMaxWidth(),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 16.dp),
       horizontalArrangement = Arrangement.SpaceBetween
     ) {
       TextButton(
@@ -301,11 +318,13 @@ class PinSetupFragmentPresenter @Inject constructor(
 
       Button(
         onClick = onContinueClick,
-        modifier = Modifier.height(48.dp)
-          .width(160.dp)
-          .padding(top = 12.dp),
+        enabled = isContinueEnabled,
+        modifier = Modifier
+          .height(48.dp)
+          .widthIn(min = 140.dp, max = 200.dp),
         colors = ButtonDefaults.buttonColors(
-          backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color)
+          backgroundColor = colorResource(R.color.component_color_onboarding_shared_green_color),
+          disabledBackgroundColor = colorResource(R.color.component_color_shared_item_selection_interaction_disabled_color)
         )
       ) {
         Text(
