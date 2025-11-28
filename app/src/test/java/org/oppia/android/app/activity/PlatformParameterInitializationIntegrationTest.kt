@@ -1,30 +1,23 @@
-package org.oppia.android.app.onboarding
+package org.oppia.android.app.activity
 
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import dagger.BindsInstance
 import dagger.Component
-import org.junit.After
-import org.junit.Before
+import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.oppia.android.app.activity.ActivityComponent
-import org.oppia.android.app.activity.ActivityComponentFactory
 import org.oppia.android.app.activity.route.ActivityRouterModule
 import org.oppia.android.app.application.ApplicationComponent
 import org.oppia.android.app.application.ApplicationInjector
@@ -34,15 +27,10 @@ import org.oppia.android.app.application.ApplicationStartupListenerModule
 import org.oppia.android.app.application.testing.TestingBuildFlavorModule
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
-import org.oppia.android.app.model.ProfileChooserActivityParams
-import org.oppia.android.app.model.ProfileId
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
-import org.oppia.android.app.profile.ProfileChooserActivity
 import org.oppia.android.app.shim.ViewBindingShimModule
-import org.oppia.android.app.test.R
+import org.oppia.android.app.testing.activity.TestActivity
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
-import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
 import org.oppia.android.data.backends.gae.RetrofitServiceModule
@@ -64,24 +52,28 @@ import org.oppia.android.domain.exploration.ExplorationProgressModule
 import org.oppia.android.domain.exploration.ExplorationStorageModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionConfigModule
 import org.oppia.android.domain.hintsandsolution.HintsAndSolutionProdModule
-import org.oppia.android.domain.onboarding.ExpirationMetaDataRetrieverModule
+import org.oppia.android.domain.onboarding.testing.ExpirationMetaDataRetrieverTestModule
 import org.oppia.android.domain.oppialogger.LogStorageModule
 import org.oppia.android.domain.oppialogger.LoggingIdentifierModule
 import org.oppia.android.domain.oppialogger.analytics.ApplicationLifecycleModule
 import org.oppia.android.domain.oppialogger.analytics.CpuPerformanceSnapshotterModule
 import org.oppia.android.domain.oppialogger.logscheduler.MetricLogSchedulerModule
 import org.oppia.android.domain.oppialogger.loguploader.LogReportWorkerModule
+import org.oppia.android.domain.platformparameter.FeatureFlagBindingModule
+import org.oppia.android.domain.platformparameter.FeatureFlagsMapBindingModule
+import org.oppia.android.domain.platformparameter.PlatformParameterBindingModule
+import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetriever
+import org.oppia.android.domain.platformparameter.PlatformParameterConfigRetrieverProdImpl
+import org.oppia.android.domain.platformparameter.PlatformParameterController
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerProdImpl
+import org.oppia.android.domain.platformparameter.PlatformParameterModule
 import org.oppia.android.domain.platformparameter.PlatformParameterSingletonModule
 import org.oppia.android.domain.question.QuestionModule
 import org.oppia.android.domain.workmanager.WorkManagerConfigurationModule
-import org.oppia.android.testing.FakeAnalyticsEventLogger
-import org.oppia.android.testing.OppiaTestRule
 import org.oppia.android.testing.TestLogReportingModule
+import org.oppia.android.testing.assertThrows
 import org.oppia.android.testing.firebase.TestAuthenticationModule
 import org.oppia.android.testing.junit.InitializeDefaultLocaleRule
-import org.oppia.android.testing.logging.EventLogSubject.Companion.assertThat
-import org.oppia.android.testing.platformparameter.TestPlatformParameterModule
-import org.oppia.android.testing.profile.ProfileTestHelper
 import org.oppia.android.testing.robolectric.RobolectricModule
 import org.oppia.android.testing.threading.TestCoroutineDispatchers
 import org.oppia.android.testing.threading.TestDispatcherModule
@@ -89,6 +81,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.data.DataProvider
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -99,175 +92,163 @@ import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
-import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
-import org.oppia.android.util.profile.PROFILE_ID_INTENT_DECORATOR
+import org.oppia.android.util.platformparameter.LowestSupportedApiLevel
+import org.oppia.android.util.platformparameter.PlatformParameterValue
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
+import javax.inject.Provider
 import javax.inject.Singleton
 
-/** Tests for [AdminIntroFragment]. */
+/**
+ * Tests for validating that platform parameter initialization happens correctly for
+ * `InjectableAppCompatActivity`s.
+ */
+// FunctionName: test names are conventionally named with underscores.
 @Suppress("FunctionName")
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(
-  application = AdminIntroFragmentTest.TestApplication::class,
-  qualifiers = "port-xxhdpi"
-)
-class AdminIntroFragmentTest {
+@Config(application = PlatformParameterInitializationIntegrationTest.TestApplication::class)
+class PlatformParameterInitializationIntegrationTest {
   @get:Rule val initializeDefaultLocaleRule = InitializeDefaultLocaleRule()
-  @get:Rule val oppiaTestRule = OppiaTestRule()
-  @get:Rule val composeRule = createEmptyComposeRule()
+
   @Inject lateinit var context: Context
   @Inject lateinit var testCoroutineDispatchers: TestCoroutineDispatchers
-  @Inject lateinit var fakeAnalyticsEventLogger: FakeAnalyticsEventLogger
-  @Inject lateinit var profileTestHelper: ProfileTestHelper
+  @Inject lateinit var platformParameterController: PlatformParameterController
 
-  @Before
-  fun setUp() {
-    Intents.init()
-    setUpTestApplicationComponent()
-    profileTestHelper.initializeProfiles()
-  }
+  @field:[Inject LowestSupportedApiLevel]
+  lateinit var lowestSupportedApiLevelProvider: Provider<PlatformParameterValue<Int>>
 
-  @After
-  fun tearDown() {
-    TestPlatformParameterModule.reset()
-    Intents.release()
+  @Test
+  fun testInjectPlatformParameter_withoutParameterLoading_throwsException() {
+    setUpTestApplicationComponent(skipParameterLoading = true)
+    waitForParametersToLoad()
+
+    // Injecting a parameter without allowing platform parameters to load should throw an exception.
+    // This acts as a sanity baseline for verification later in the test suite.
+    val exception: IllegalStateException = assertThrows<IllegalStateException>() {
+      lowestSupportedApiLevelProvider.get()
+    }
+    assertThat(exception)
+      .hasMessageThat()
+      .containsMatch("Attempting to access (.+?) before initialization")
   }
 
   @Test
-  fun testIntroFragment_onLaunch_allViewsAreCorrectlyDisplayed() {
-    launch(AdminIntroActivity::class.java).use {
+  fun testInjectPlatformParameter_withParameterLoading_doesNotThrowException() {
+    setUpTestApplicationComponent(skipParameterLoading = false)
+    waitForParametersToLoad()
 
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithContentDescription(
-        context.getString(R.string.onboarding_otter_content_description)
-      )
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .assertIsDisplayed()
-    }
+    // The parameter injection should work if loading is enabled. This demonstrates that the test's
+    // machinery itself can work to validate InjectableAppCompatActivity's initialization behavior.
+    lowestSupportedApiLevelProvider.get()
   }
 
   @Test
-  @Config(qualifiers = "+land")
-  fun testIntroFragment_landscapeMode_viewsAreCorrectlyDisplayed_stepCountIsNotVisible() {
-    launch(AdminIntroActivity::class.java).use {
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_header))
-        .assertIsDisplayed()
+  fun testLaunchInjectableAppCompatActivity_withoutParameterLoading_throwsException() {
+    setUpTestApplicationComponent(skipParameterLoading = true)
 
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_settings_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.admin_intro_activity_learners_text))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithContentDescription(
-        context.getString(R.string.onboarding_otter_content_description)
-      )
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .assertIsDisplayed()
-
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_step_count_four))
-        .assertDoesNotExist()
+    // Trying to launch the activity when parameter loading is disabled will throw an exception.
+    // This is a hack to try and simulate InjectableAppCompatActivity missing its extra
+    // initialization logic to demonstrate that the failure still happens without it.
+    val exception: IllegalStateException = assertThrows<IllegalStateException>() {
+      // See testLaunchInjectableAppCompatActivity_withParameterLoading_doesNotThrowException for why
+      // the parameter fetching is happening here.
+      runWithLaunchedActivity { lowestSupportedApiLevelProvider.get() }
     }
+    assertThat(exception)
+      .hasMessageThat()
+      .containsMatch("Attempting to access (.+?) before initialization")
   }
 
   @Test
-  fun testIntroFragment_onBackButtonClicked_currentScreenIsDestroyed() {
-    launch(AdminIntroActivity::class.java).use { scenario ->
+  fun testLaunchInjectableAppCompatActivity_withParameterLoading_doesNotThrowException() {
+    setUpTestApplicationComponent(skipParameterLoading = false)
 
-      scenario.onActivity { activity ->
-        composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_back))
-          .performClick()
-
-        testCoroutineDispatchers.runCurrent()
-
-        assertThat(activity.isFinishing).isTrue()
-      }
-    }
+    // This doesn't throw an exception because InjectableAppCompatActivity's loading logic kicks in
+    // and ensures that parameters are successfully loaded prior to try to fetch things. Note that
+    // the test doesn't explicitly load parameters since it's relying on the activity to do that.
+    // Note also the extra parameter fetch is for redundancy. As of the time this test was written
+    // there was at least 1 feature flag that would be fetched during activity initialization which
+    // would trigger the failure. If that changes in the future and there are no flags along the
+    // default happy path, this extra parameter injection should trigger the same failure (since a
+    // regression could then be missed). It's for this reason that the parameter itself is validated
+    // as failing on its own in earlier tests in this suite.
+    runWithLaunchedActivity { lowestSupportedApiLevelProvider.get() }
   }
 
-  // This is a placeholder test that should fail when the PIN creation screen has been implemented.
-  @Test
-  fun testIntroFragment_continueButtonClicked_launchesProfileChooserActivity() {
-    launchAdminIntroActivity().use {
-      composeRule.onNodeWithText(context.getString(R.string.onboarding_navigation_continue))
-        .performClick()
-
-      testCoroutineDispatchers.runCurrent()
-
-      val expectedParams = ProfileChooserActivityParams.newBuilder()
-        .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
-        .build()
-
-      intended(hasComponent(ProfileChooserActivity::class.java.name))
-      intended(hasProtoExtra(PROFILE_CHOOSER_PARAMS_KEY, expectedParams))
-      intended(hasExtraWithKey(PROFILE_ID_INTENT_DECORATOR))
-    }
-  }
-
-  @Test
-  fun testFragment_launchFragment_logsProfileOnboardingStartedEvent() {
-    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
-
-    launch(AdminIntroActivity::class.java).use {
-      testCoroutineDispatchers.runCurrent()
-
-      val event = fakeAnalyticsEventLogger.getMostRecentEvent()
-      assertThat(event).hasStartProfileOnboardingContextThat {
-        hasProfileIdThat().isEqualTo(testProfileId)
-      }
-    }
-  }
-
-  private fun launchAdminIntroActivity(): ActivityScenario<AdminIntroActivity> {
-    val testProfileId = ProfileId.newBuilder().setInternalId(0).build()
-
-    val scenario = launch<AdminIntroActivity>(
-      AdminIntroActivity.createAdminIntroActivityIntent(
-        context,
-        testProfileId,
-        ProfileType.SUPERVISOR,
-        "Admin"
-      ).apply {
-        decorateWithUserProfileId(testProfileId)
-      }
-    )
-    testCoroutineDispatchers.runCurrent()
-    return scenario
-  }
-
-  private fun setUpTestApplicationComponent() {
-    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+  private fun setUpTestApplicationComponent(skipParameterLoading: Boolean) {
+    TestModule.skipParameterLoading = skipParameterLoading
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
   }
 
+  private fun waitForParametersToLoad() {
+    // Ensure platform parameters are loaded (unless the test explicitly disables that). This mimics
+    // how other tests are arranged.
+    val loadDeferred = platformParameterController.loadParametersAsync()
+    testCoroutineDispatchers.runCurrent()
+    check(loadDeferred.isCompleted) { "Expected parameter loading to have finished." }
+  }
+
+  private fun runWithLaunchedActivity(testBlock: ActivityScenario<TestActivity>.() -> Unit) {
+    ActivityScenario.launch<TestActivity>(TestActivity.createIntent(context)).use { scenario ->
+      testCoroutineDispatchers.runCurrent()
+      scenario.testBlock()
+    }
+  }
+
+  @Module
+  class TestModule {
+    companion object {
+      var skipParameterLoading: Boolean? = null
+    }
+
+    @Provides
+    @Singleton
+    fun bindPlatformParameterController(
+      impl: PlatformParameterControllerProdImpl,
+      testCoroutineDispatchers: TestCoroutineDispatchers
+    ): PlatformParameterController {
+      return object : PlatformParameterController {
+        override fun loadParametersAsync(): Deferred<Unit> {
+          val skipParameterLoading = checkNotNull(skipParameterLoading) {
+            "Error: The test isn't set up correctly."
+          }
+          // Calling code can be blocking which means the returned deferred must run immediately,
+          // hence the use of the Unconfined dispatcher.
+          return CoroutineScope(Dispatchers.Unconfined).async {
+            if (!skipParameterLoading) {
+              val loadResult = impl.loadParametersAsync()
+              testCoroutineDispatchers.runCurrent()
+              check(loadResult.isCompleted) { "Expected parameter loading to have finished." }
+            }
+            // Otherwise, do nothing to load parameters.
+          }
+        }
+
+        override fun getParameterInitializationStatus(): DataProvider<Boolean> {
+          return impl.getParameterInitializationStatus()
+        }
+
+        override fun downloadRemoteParameters(): DataProvider<Unit> {
+          return impl.downloadRemoteParameters()
+        }
+      }
+    }
+
+    @Provides
+    fun bindPlatformParameterConfigRetriever(
+      impl: PlatformParameterConfigRetrieverProdImpl
+    ): PlatformParameterConfigRetriever = impl
+  }
+
+  // TODO(#89): Move this to a common test application component.
   @Singleton
   @Component(
     modules = [
+      TestModule::class,
       AccessibilityTestModule::class,
+      ActivityIntentFactoriesModule::class,
       ActivityRecreatorTestModule::class,
       ActivityRouterModule::class,
       AlgebraicExpressionInputModule::class,
@@ -281,7 +262,7 @@ class AdminIntroFragmentTest {
       DeveloperOptionsModule::class,
       DeveloperOptionsStarterModule::class,
       DragDropSortInputModule::class,
-      ExpirationMetaDataRetrieverModule::class,
+      ExpirationMetaDataRetrieverTestModule::class,
       ExplorationProgressModule::class,
       ExplorationStorageModule::class,
       FakeOppiaClockModule::class,
@@ -310,6 +291,11 @@ class AdminIntroFragmentTest {
       NumberWithUnitsRuleModule::class,
       NumericExpressionInputModule::class,
       NumericInputRuleModule::class,
+      FeatureFlagsMapBindingModule::class,
+      FeatureFlagBindingModule::class,
+      PlatformParameterBindingModule::class,
+      PlatformParameterModule.PlatformParameterProcessStateModule::class,
+      PlatformParameterModule.PlatformParameterControllerProdImplModule::class,
       PlatformParameterSingletonModule::class,
       QuestionModule::class,
       RatioInputModule::class,
@@ -321,7 +307,6 @@ class AdminIntroFragmentTest {
       TestAuthenticationModule::class,
       TestDispatcherModule::class,
       TestLogReportingModule::class,
-      TestPlatformParameterModule::class,
       TestingBuildFlavorModule::class,
       TextInputRuleModule::class,
       ViewBindingShimModule::class,
@@ -330,22 +315,25 @@ class AdminIntroFragmentTest {
   )
   interface TestApplicationComponent : ApplicationComponent {
     @Component.Builder
-    interface Builder : ApplicationComponent.Builder {
-      override fun build(): TestApplicationComponent
+    interface Builder {
+      @BindsInstance
+      fun setApplication(application: Application): Builder
+
+      fun build(): TestApplicationComponent
     }
 
-    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest)
+    fun inject(test: PlatformParameterInitializationIntegrationTest)
   }
 
   class TestApplication : Application(), ActivityComponentFactory, ApplicationInjectorProvider {
     private val component: TestApplicationComponent by lazy {
-      DaggerAdminIntroFragmentTest_TestApplicationComponent.builder()
+      DaggerPlatformParameterInitializationIntegrationTest_TestApplicationComponent.builder()
         .setApplication(this)
-        .build() as TestApplicationComponent
+        .build()
     }
 
-    fun inject(adminIntroFragmentTest: AdminIntroFragmentTest) {
-      component.inject(adminIntroFragmentTest)
+    fun inject(test: PlatformParameterInitializationIntegrationTest) {
+      component.inject(test)
     }
 
     override fun createActivityComponent(activity: AppCompatActivity): ActivityComponent {

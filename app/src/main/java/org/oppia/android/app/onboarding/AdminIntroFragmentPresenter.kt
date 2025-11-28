@@ -139,9 +139,9 @@ class AdminIntroFragmentPresenter @Inject constructor(
             R.string.onboarding_otter_content_description
           ),
           modifier = Modifier
-            .size(120.dp)
+            .size(if (stepCountIsVisible) 120.dp else 90.dp)
             .align(Alignment.TopCenter)
-            .offset(y = (-32).dp)
+            .offset(y = if (stepCountIsVisible) (-32).dp else 0.dp)
         )
       }
 

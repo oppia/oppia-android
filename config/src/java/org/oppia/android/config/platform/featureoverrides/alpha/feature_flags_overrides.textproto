@@ -10,3 +10,7 @@ feature_flag_definition {
   id: MULTIPLE_CLASSROOMS
   default_is_enabled: true
 }
+feature_flag_definition {
+  id: ONBOARDING_FLOW_V2
+  default_is_enabled: true
+}

@@ -35,7 +35,6 @@ import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -360,17 +359,21 @@ class AudioFragmentTest {
   }
 
   @Test
-  @Ignore("Landscape not properly supported") // TODO(#56): Reenable once landscape is supported.
   fun testAudioFragment_invokePrepared_playAudio_configurationChange_checkStillPlaying() {
+    addMediaInfo()
     launch<AudioFragmentTestActivity>(
       createAudioFragmentTestIntent(
         internalProfileId
       )
     ).use {
-      invokePreparedListener(shadowMediaPlayer)
+      testCoroutineDispatchers.runCurrent()
+
       onView(withId(R.id.play_pause_audio_icon)).perform(click())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.audio_progress_seek_bar)).perform(setProgress(100))
+      testCoroutineDispatchers.runCurrent()
       onView(isRoot()).perform(orientationLandscape())
+      testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.play_pause_audio_icon)).check(
         matches(
           withContentDescription(

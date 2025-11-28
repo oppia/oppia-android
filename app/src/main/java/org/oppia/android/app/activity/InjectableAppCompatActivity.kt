@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import kotlinx.coroutines.runBlocking
 import org.oppia.android.app.fragment.FragmentComponent
 import org.oppia.android.app.fragment.FragmentComponentBuilderInjector
 import org.oppia.android.app.fragment.FragmentComponentFactory
 import org.oppia.android.app.translation.AppLanguageActivityInjector
 import org.oppia.android.app.translation.AppLanguageActivityInjectorProvider
 import org.oppia.android.app.translation.AppLanguageWatcherMixin
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjectorProvider
+
 /**
  * An [AppCompatActivity] that facilitates field injection to child activities and constituent
  * fragments that extend [org.oppia.android.app.fragment.InjectableFragment].
@@ -29,6 +32,7 @@ abstract class InjectableAppCompatActivity :
     val applicationContext = checkNotNull(newBase?.applicationContext) {
       "Expected attached Context to have an application context defined."
     }
+    ensurePlatformParametersAreLoaded(applicationContext)
     onInitializeActivityComponent(applicationContext)
     val newConfiguration = onInitializeLocalization(newBase)
     super.attachBaseContext(newBase?.createConfigurationContext(newConfiguration))
@@ -50,6 +54,16 @@ abstract class InjectableAppCompatActivity :
   }
 
   override fun getAppLanguageActivityInjector(): AppLanguageActivityInjector = activityComponent
+
+  private fun ensurePlatformParametersAreLoaded(applicationContext: Context) {
+    // NOTE TO DEVELOPER: It's generally always bad practice to use 'runBlocking'. However, it is
+    // necessary here to ensure that parameters are definitely fully initialized before attempting
+    // to access them (which can happen as early as locale initialization below). See #5962 for the
+    // deeper context.
+    val injectorProvider = applicationContext as PlatformParameterControllerInjectorProvider
+    val injector = injectorProvider.getPlatformParameterControllerInjector()
+    runBlocking { injector.getPlatformParameterController().loadParametersAsync().await() }
+  }
 
   private fun onInitializeActivityComponent(applicationContext: Context) {
     val componentFactory = applicationContext as ActivityComponentFactory

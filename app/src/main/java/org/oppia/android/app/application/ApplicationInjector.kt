@@ -2,6 +2,7 @@ package org.oppia.android.app.application
 
 import org.oppia.android.app.translation.AppLanguageApplicationInjector
 import org.oppia.android.domain.locale.LocaleApplicationInjector
+import org.oppia.android.domain.platformparameter.PlatformParameterControllerInjector
 import org.oppia.android.util.data.DataProvidersInjector
 import org.oppia.android.util.logging.ConsoleLoggerInjector
 import org.oppia.android.util.system.OppiaClockInjector
@@ -14,4 +15,5 @@ interface ApplicationInjector :
   OppiaClockInjector,
   LocaleApplicationInjector,
   DispatcherInjector,
-  ConsoleLoggerInjector
+  ConsoleLoggerInjector,
+  PlatformParameterControllerInjector

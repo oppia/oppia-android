@@ -278,12 +278,12 @@ class ClassroomListFragmentPresenter @Inject constructor(
         if (enableOnboardingFlowV2.value) {
           when {
             profileType == ProfileType.SUPERVISOR && profile.numberOfLogins == 1 -> {
-              // Supervisors end  profile onboarding on the profiles list screen, but they do
+              // Supervisors complete profile onboarding on the profiles list screen, but they
               // complete app onboarding here.
               appStartupStateController.markOnboardingFlowCompleted(profileId)
             }
             profileType == ProfileType.SOLE_LEARNER && !profile.completedProfileOnboarding -> {
-              // Sole learners both end profile onboarding and complete app onboarding here.
+              // Sole learners complete both profile and app onboarding here.
               // These asynchronous API calls do not block or wait for their results. They execute
               // in the background and have minimal chances of interfering with the synchronous
               // `handleBackPress` call below.
@@ -292,8 +292,8 @@ class ClassroomListFragmentPresenter @Inject constructor(
             }
             profileType == ProfileType.ADDITIONAL_LEARNER &&
               !profile.completedProfileOnboarding -> {
-              // Additional learners only end profile onboarding, since they will never be the first
-              // profile in the app.
+              // Additional learners complete only profile onboarding, since they will never be the
+              // first profile in the app.
               profileManagementController.markProfileOnboardingEnded(profileId)
             }
           }

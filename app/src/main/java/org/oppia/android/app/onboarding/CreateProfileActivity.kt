@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.CreateProfileActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
@@ -20,7 +20,7 @@ import javax.inject.Inject
 const val CREATE_PROFILE_PARAMS_KEY = "CreateProfileActivity.params"
 
 /** Activity for displaying a new profile creation screen. */
-class CreateProfileActivity : InjectableAutoLocalizedAppCompatActivity() {
+class CreateProfileActivity : InjectableSystemLocalizedAppCompatActivity() {
   @Inject
   lateinit var learnerProfileActivityPresenter: CreateProfileActivityPresenter
 

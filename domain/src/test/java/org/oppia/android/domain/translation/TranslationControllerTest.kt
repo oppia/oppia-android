@@ -25,6 +25,7 @@ import org.oppia.android.app.model.OppiaLanguage.ARABIC
 import org.oppia.android.app.model.OppiaLanguage.BRAZILIAN_PORTUGUESE
 import org.oppia.android.app.model.OppiaLanguage.ENGLISH
 import org.oppia.android.app.model.OppiaLanguage.HINDI
+import org.oppia.android.app.model.OppiaLanguage.HINGLISH
 import org.oppia.android.app.model.OppiaLanguage.LANGUAGE_UNSPECIFIED
 import org.oppia.android.app.model.OppiaLanguage.NIGERIAN_PIDGIN
 import org.oppia.android.app.model.OppiaLanguage.PORTUGUESE
@@ -1147,6 +1148,21 @@ class TranslationControllerTest {
     assertThat(context.languageDefinition.language).isEqualTo(BRAZILIAN_PORTUGUESE)
     // This region comes from the default locale.
     assertThat(context.regionDefinition.region).isEqualTo(BRAZIL)
+  }
+
+  @Test
+  fun testGetAudioLocale_updateLanguageToHinglish_returnsEnglishLocale() {
+    forceDefaultLocale(Locale.ROOT)
+    ensureAudioTranslationsLanguageIsUpdatedTo(PROFILE_ID_0, HINGLISH)
+
+    val localeProvider = translationController.getAudioTranslationContentLocale(PROFILE_ID_0)
+
+    val locale = monitorFactory.waitForNextSuccessfulResult(localeProvider)
+    val context = locale.localeContext
+    assertThat(context.usageMode).isEqualTo(AUDIO_TRANSLATIONS)
+    assertThat(context.languageDefinition.language).isEqualTo(ENGLISH)
+    // This region comes from the default locale.
+    assertThat(context.regionDefinition.region).isEqualTo(REGION_UNSPECIFIED)
   }
 
   @Test
