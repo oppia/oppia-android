@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import org.oppia.android.app.activity.ActivityComponentImpl
-import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
+import org.oppia.android.app.activity.InjectableSystemLocalizedAppCompatActivity
 import org.oppia.android.app.model.PolicyPage
 import org.oppia.android.app.model.ScreenName.ONBOARDING_ACTIVITY
 import org.oppia.android.app.policies.PoliciesActivity
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 /** Activity that contains the onboarding flow for learners. */
 class OnboardingActivity :
-  InjectableAutoLocalizedAppCompatActivity(),
+  InjectableSystemLocalizedAppCompatActivity(),
   RouteToProfileListListener,
   RouteToPoliciesListener {
   @Inject

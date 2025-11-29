@@ -1,5 +1,4 @@
-
-package org.oppia.android.domain.classify
+package org.oppia.android.app.player.state.testing
 
 import org.oppia.android.app.model.Fraction
 import org.oppia.android.app.model.HtmlTranslationList

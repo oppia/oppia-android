@@ -52,9 +52,11 @@ import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.OppiaLanguage
+import org.oppia.android.app.model.ProfileChooserActivityParams
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.onboarding.IntroActivity
+import org.oppia.android.app.onboarding.PROFILE_CHOOSER_PARAMS_KEY
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.profile.AdminAuthActivity.Companion.ADMIN_AUTH_ACTIVITY_PARAMS_KEY
 import org.oppia.android.app.profile.AdminPinActivity.Companion.ADMIN_PIN_ACTIVITY_PARAMS_KEY
@@ -64,6 +66,7 @@ import org.oppia.android.app.shim.ViewBindingShimModule
 import org.oppia.android.app.test.R
 import org.oppia.android.app.translation.AppLanguageLocaleHandler
 import org.oppia.android.app.translation.testing.ActivityRecreatorTestModule
+import org.oppia.android.app.utility.EspressoTestsMatchers.hasProtoExtra
 import org.oppia.android.app.utility.OrientationChangeAction.Companion.orientationLandscape
 import org.oppia.android.data.backends.gae.NetworkConfigProdModule
 import org.oppia.android.data.backends.gae.RetrofitModule
@@ -111,6 +114,7 @@ import org.oppia.android.testing.time.FakeOppiaClockModule
 import org.oppia.android.util.accessibility.AccessibilityTestModule
 import org.oppia.android.util.caching.AssetModule
 import org.oppia.android.util.caching.testing.CachingTestModule
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.util.gcsresource.GcsResourceModule
 import org.oppia.android.util.locale.LocaleProdModule
 import org.oppia.android.util.logging.LoggerModule
@@ -617,6 +621,7 @@ class ProfileChooserFragmentTest {
       ).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
       intended(hasExtraWithKey(ADMIN_AUTH_ACTIVITY_PARAMS_KEY))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
@@ -1132,6 +1137,7 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
       onView(withId(R.id.add_profile_button)).perform(click())
       intended(hasComponent(AdminAuthActivity::class.java.name))
+      intended(hasProtoExtra(PROFILE_ID_INTENT_DECORATOR, testProfileId))
     }
   }
 
@@ -1481,6 +1487,62 @@ class ProfileChooserFragmentTest {
       testCoroutineDispatchers.runCurrent()
 
       intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_initialLaunchAfterOnboarding_adminProfileHasCorrectName() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+
+    // Default empty profile similar to what is created at the start of onboarding.
+    profileTestHelper.createDefaultAdminProfile()
+
+    val intent = createProfileChooserActivityIntent().apply {
+      putProtoExtra(
+        PROFILE_CHOOSER_PARAMS_KEY,
+        ProfileChooserActivityParams.newBuilder()
+          .setParentScreen(ProfileChooserActivityParams.ParentScreen.ADMIN_INTRO_SCREEN)
+          .setProfileNickname("John")
+          .build()
+      )
+    }
+
+    launch<ProfileChooserActivity>(intent).use {
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "John"
+      )
+    }
+  }
+
+  @Test
+  fun testFragment_subsequentLaunch_adminProfileNameNotOverwritten() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+
+    // Helper creates a profile with name "Admin".
+    profileTestHelper.addOnlyAdminProfile()
+
+    val intent = createProfileChooserActivityIntent().apply {
+      putProtoExtra(
+        PROFILE_CHOOSER_PARAMS_KEY,
+        ProfileChooserActivityParams.newBuilder()
+          .setParentScreen(ProfileChooserActivityParams.ParentScreen.SPLASH_SCREEN)
+          .setProfileNickname("John")
+          .build()
+      )
+    }
+
+    launch<ProfileChooserActivity>(intent).use {
+      scrollToPosition(position = 0)
+      verifyTextOnProfileListItemAtPosition(
+        itemPosition = 0,
+        targetView = R.id.profile_name_text,
+        stringToMatch = "Admin"
+      )
     }
   }
 
