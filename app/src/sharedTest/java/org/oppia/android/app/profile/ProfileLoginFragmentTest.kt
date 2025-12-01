@@ -50,6 +50,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.player.state.itemviewmodel.SplitScreenInteractionModule
 import org.oppia.android.app.shim.ViewBindingShimModule
@@ -311,13 +312,12 @@ class ProfileLoginFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
-    launch(
-      ProfileLoginActivity.createProfileLoginActivityIntent(
-        context,
-        adminProfileId,
-        ProfileLoginActivity.Companion.LoginFlow.ADD_NEW_LEARNER
-      )
-    ).use {
+    val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
+      context,
+      adminProfileId,
+      ProfileLoginActivity.Companion.LoginFlow.ADD_NEW_LEARNER
+    )
+    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       // Enter the correct admin PIN (default in tests is 12345 for admin).
@@ -340,13 +340,12 @@ class ProfileLoginFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
-    launch(
-      ProfileLoginActivity.createProfileLoginActivityIntent(
-        context,
-        adminProfileId,
-        ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
-      )
-    ).use {
+    val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
+      context,
+      adminProfileId,
+      ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+    )
+    ActivityScenario.launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
 
       composeRule
