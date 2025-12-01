@@ -104,6 +104,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private lateinit var binding: ProfileLoginFragmentBinding
   private lateinit var profileLiveData: LiveData<Profile>
   private lateinit var adminProfileLiveData: LiveData<Profile>
+  private var loginFlow: ProfileLoginActivity.Companion.LoginFlow =
+    ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
 
   /** Creates and returns the view for the [ProfileLoginFragment]. */
   fun handleCreateView(
@@ -111,6 +113,8 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     container: ViewGroup?,
     profileId: ProfileId
   ): View? {
+    // Determine how this screen was opened to route appropriately on successful login.
+    loginFlow = ProfileLoginActivity.extractLoginFlowFromIntent(activity.intent)
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
@@ -229,14 +233,41 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     profileManagementController.loginToProfile(profileId).toLiveData()
       .observe(fragment) {
         if (it is AsyncResult.Success) {
-          activity.startActivity(
-            if (enableMultipleClassrooms.value) {
-              ClassroomListActivity.createClassroomListActivity(activity, profileId)
-            } else {
-              HomeActivity.createHomeActivity(activity, profileId)
+          when (loginFlow) {
+            ProfileLoginActivity.Companion.LoginFlow.ADD_NEW_LEARNER -> {
+              val profile = profileLiveData.value
+              // For add-new flow, require a supervisor login to proceed to creating a profile.
+              if (profile?.profileType == ProfileType.SUPERVISOR) {
+                val intent = org.oppia.android.app.onboarding.CreateProfileActivity
+                  .createProfileActivityIntent(
+                    activity,
+                    profile.id,
+                    ProfileType.LEARNER
+                  )
+                activity.startActivity(intent)
+              } else {
+                // Non-supervisors shouldn't be in this flow; default to home/classroom.
+                activity.startActivity(
+                  if (enableMultipleClassrooms.value) {
+                    ClassroomListActivity.createClassroomListActivity(activity, profileId)
+                  } else {
+                    HomeActivity.createHomeActivity(activity, profileId)
+                  }
+                )
+                activity.finish()
+              }
             }
-          )
-          activity.finish()
+            ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE -> {
+              activity.startActivity(
+                if (enableMultipleClassrooms.value) {
+                  ClassroomListActivity.createClassroomListActivity(activity, profileId)
+                } else {
+                  HomeActivity.createHomeActivity(activity, profileId)
+                }
+              )
+              activity.finish()
+            }
+          }
         }
       }
   }

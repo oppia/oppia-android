@@ -261,24 +261,17 @@ class ProfileChooserFragmentPresenter @Inject constructor(
 
   private fun addProfileButtonClickListener() {
     if (chooserViewModel.adminPin.isEmpty()) {
-      // TODO(#4938): Replace with the redesigned PinSetupActivity.
       activity.startActivity(
-        AdminPinActivity.createAdminPinActivityIntent(
+        PinSetupActivity.createPinSetupActivityIntent(
           activity,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADD_PROFILE.value
+          chooserViewModel.adminProfileId
         )
       )
     } else {
-      // TODO(#4938): Replace with the redesigned ProfileLoginActivity.
       activity.startActivity(
-        AdminAuthActivity.createAdminAuthActivityIntent(
+        ProfileLoginActivity.createProfileLoginForAddProfileIntent(
           activity,
-          chooserViewModel.adminPin,
-          chooserViewModel.adminProfileId.internalId,
-          selectUniqueRandomColor(),
-          AdminAuthEnum.PROFILE_ADD_PROFILE.value
+          chooserViewModel.adminProfileId
         )
       )
     }

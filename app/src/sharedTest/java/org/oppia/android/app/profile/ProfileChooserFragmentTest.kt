@@ -441,6 +441,42 @@ class ProfileChooserFragmentTest {
   }
 
   @Test
+  fun testOnboardingV2_adminWithoutPin_clickAdd_opensPinSetupActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.addOnlyAdminProfile()
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      // Click add profile item/button.
+      onView(withText(context.getString(R.string.profile_chooser_add)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(PinSetupActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithPin_clickAdd_opensProfileLoginActivity() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+      onView(withText(context.getString(R.string.profile_chooser_add)))
+        .perform(click())
+
+      testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
+    }
+  }
+
+  // The add button should open ProfileLoginActivity (admin auth) rather than CreateProfileActivity
+  // directly; CreateProfileActivity is opened after successful admin login in ProfileLogin flow.
+
+  @Test
   fun testMigrateProfiles_onboardingV2_clickLearnerWithoutPin_checkIntroActivityHasNoStepCount() {
     TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
     setUpTestApplicationComponent()

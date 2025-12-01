@@ -306,6 +306,61 @@ class ProfileLoginFragmentTest {
   }
 
   @Test
+  fun testFragment_adminLogin_withAddNewLearnerFlow_routesToCreateProfileActivity() {
+    setUpTestApplicationComponentWithFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    launch(
+      ProfileLoginActivity.createProfileLoginActivityIntent(
+        context,
+        adminProfileId,
+        ProfileLoginActivity.Companion.LoginFlow.ADD_NEW_LEARNER
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      // Enter the correct admin PIN (default in tests is 12345 for admin).
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(CreateProfileActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testFragment_adminLogin_withOpenExistingProfileFlow_routesToHome() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    TestPlatformParameterModule.forceEnableMultipleClassrooms(false)
+    setUpTestApplicationComponentWithoutFeatureFlags()
+    profileTestHelper.addOnlyAdminProfile()
+    val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
+
+    launch(
+      ProfileLoginActivity.createProfileLoginActivityIntent(
+        context,
+        adminProfileId,
+        ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+      )
+    ).use {
+      testCoroutineDispatchers.runCurrent()
+
+      composeRule
+        .onNodeWithTag(PIN_INPUT_TEST_TAG, useUnmergedTree = true)
+        .performClick()
+        .performTextInput("12345")
+
+      testCoroutineDispatchers.runCurrent()
+
+      intended(hasComponent(HomeActivity::class.java.name))
+    }
+  }
+
+  @Test
   fun testFragment_nonAdmin_enterWrongThreeDigits_showsErrorMessage() {
     setUpTestApplicationComponentWithFeatureFlags()
     profileTestHelper.addMoreProfiles(1)
