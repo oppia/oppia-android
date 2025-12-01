@@ -242,7 +242,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
                   .createProfileActivityIntent(
                     activity,
                     profile.id,
-                    ProfileType.LEARNER
+                    ProfileType.ADDITIONAL_LEARNER
                   )
                 activity.startActivity(intent)
               } else {
