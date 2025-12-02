@@ -99,8 +99,27 @@ class CreateProfileFragmentPresenter @Inject constructor(
     binding.onboardingNavigationContinue.setOnClickListener {
       val nickname = binding.createProfileNicknameEdittext.text.toString().trim()
 
-      if (!checkNicknameAndUpdateError(nickname)) {
-        updateProfileDetails(nickname, profileType)
+      if (checkNicknameAndUpdateError(nickname)) return@setOnClickListener
+
+      when (profileType) {
+        ProfileType.SUPERVISOR, ProfileType.SOLE_LEARNER -> {
+          // First-profile flow: update the existing admin/sole learner profile details.
+          updateProfileDetails(nickname, profileType)
+        }
+        ProfileType.ADDITIONAL_LEARNER -> {
+          // Supervisor adding a new learner profile: create a new profile entry.
+          // Note: Update to pass a PIN when that step is introduced.
+          createLearnerProfile(profileName = nickname, pin = "")
+        }
+        else -> {
+          // Defensive fallback for unexpected/unspecified profile type.
+          createProfileViewModel.hasErrorMessage.set(true)
+          createProfileViewModel.errorMessage.set(
+            appLanguageResourceHandler.getStringInLocale(
+              R.string.add_profile_error_missing_profile_type
+            )
+          )
+        }
       }
     }
 

@@ -59,6 +59,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.ProfileLoginFragmentBinding
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.translation.AppLanguageResourceHandler
@@ -106,6 +107,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   private lateinit var adminProfileLiveData: LiveData<Profile>
   private var loginFlow: ProfileLoginActivity.Companion.LoginFlow =
     ProfileLoginActivity.Companion.LoginFlow.OPEN_EXISTING_PROFILE
+  private var newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER
 
   /** Creates and returns the view for the [ProfileLoginFragment]. */
   fun handleCreateView(
@@ -115,6 +117,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   ): View? {
     // Determine how this screen was opened to route appropriately on successful login.
     loginFlow = ProfileLoginActivity.extractLoginFlowFromIntent(activity.intent)
+    newProfileType = extractNewProfileTypeFromIntent(activity.intent)
     binding = ProfileLoginFragmentBinding.inflate(inflater, container, /* attachToRoot= */ false)
 
     profileLiveData =
@@ -125,6 +128,15 @@ class ProfileLoginFragmentPresenter @Inject constructor(
     createComposeView()
 
     return binding.root
+  }
+
+  private fun extractNewProfileTypeFromIntent(intent: android.content.Intent): ProfileType {
+    val params = org.oppia.android.util.extensions.getProtoExtra(
+      intent,
+      "ProfileLoginActivity.params",
+      org.oppia.android.app.model.ProfileLoginActivityParams.getDefaultInstance()
+    )
+    return params.newProfileType
   }
 
   private fun getAdminPin() {
@@ -242,7 +254,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
                   .createProfileActivityIntent(
                     activity,
                     profile.id,
-                    ProfileType.ADDITIONAL_LEARNER
+                    newProfileType
                   )
                 activity.startActivity(intent)
               } else {

@@ -271,7 +271,8 @@ class ProfileChooserFragmentPresenter @Inject constructor(
       activity.startActivity(
         ProfileLoginActivity.createProfileLoginForAddProfileIntent(
           activity,
-          chooserViewModel.adminProfileId
+          chooserViewModel.adminProfileId,
+          ProfileType.ADDITIONAL_LEARNER
         )
       )
     }

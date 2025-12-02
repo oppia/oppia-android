@@ -92,6 +92,12 @@ message DestinationScreen {
   }
 }
 
+// Intent extras for ProfileLoginActivity.
+message ProfileLoginActivityParams {
+  // The type of new profile to create after successful admin login in add-profile flow.
+  ProfileType new_profile_type = 1;
+}
+
 // Intent extras for RecentlyPlayedActivity.
 message RecentlyPlayedActivityParams {
   // The ID of current profile.

@@ -3,10 +3,11 @@ package org.oppia.android.app.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.VisibleForTesting
 import org.oppia.android.app.activity.ActivityComponentImpl
 import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
+import org.oppia.android.app.model.ProfileType
+import org.oppia.android.app.model.ProfileLoginActivityParams
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -32,6 +33,7 @@ class ProfileLoginActivity :
 
   companion object {
     private const val EXTRA_LOGIN_FLOW = "ProfileLoginActivity.login_flow"
+    private const val EXTRA_LOGIN_PARAMS = "ProfileLoginActivity.params"
 
     enum class LoginFlow(val value: Int) {
       OPEN_EXISTING_PROFILE(0),
@@ -59,10 +61,21 @@ class ProfileLoginActivity :
     /** Convenience intent for launching login as part of the add-profile flow. */
     fun createProfileLoginForAddProfileIntent(
       context: Context,
-      profileId: ProfileId
-    ): Intent = createProfileLoginActivityIntent(context, profileId, LoginFlow.ADD_NEW_LEARNER)
+      profileId: ProfileId,
+      newProfileType: ProfileType = ProfileType.ADDITIONAL_LEARNER
+    ): Intent = createProfileLoginActivityIntent(
+      context,
+      profileId,
+      LoginFlow.ADD_NEW_LEARNER
+    ).apply {
+      org.oppia.android.util.extensions.putProtoExtra(
+        EXTRA_LOGIN_PARAMS,
+        ProfileLoginActivityParams.newBuilder()
+          .setNewProfileType(newProfileType)
+          .build()
+      )
+    }
 
-    @VisibleForTesting
     fun extractLoginFlowFromIntent(intent: Intent): LoginFlow =
       LoginFlow.fromValue(
         intent.getIntExtra(
@@ -70,6 +83,7 @@ class ProfileLoginActivity :
           LoginFlow.OPEN_EXISTING_PROFILE.value
         )
       )
+
   }
 
   override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {
