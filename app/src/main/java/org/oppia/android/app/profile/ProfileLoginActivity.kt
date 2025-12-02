@@ -64,7 +64,12 @@ class ProfileLoginActivity :
 
     @VisibleForTesting
     fun extractLoginFlowFromIntent(intent: Intent): LoginFlow =
-      LoginFlow.fromValue(intent.getIntExtra(EXTRA_LOGIN_FLOW, LoginFlow.OPEN_EXISTING_PROFILE.value))
+      LoginFlow.fromValue(
+        intent.getIntExtra(
+          EXTRA_LOGIN_FLOW,
+          LoginFlow.OPEN_EXISTING_PROFILE.value
+        )
+      )
   }
 
   override fun routeToResetPinDialog(profileId: ProfileId, profileName: String) {

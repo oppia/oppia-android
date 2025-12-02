@@ -2,13 +2,9 @@ package org.oppia.android.app.onboarding
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -25,9 +21,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.oppia.android.app.ui.R
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import org.oppia.android.app.ui.R
 
 @Composable
 fun HandOverNoticeDialog(
@@ -79,7 +75,8 @@ fun HandOverNoticeDialog(
           )
 
           Text(
-            text = "Give this device to $learnerNickname for them to begin learning, or continue creating profiles for more learners.",
+            text = "Give this device to $learnerNickname for them to begin learning, " +
+              "or continue creating profiles for more learners.",
             fontSize = 18.sp,
             color = colorResource(R.color.component_color_shared_primary_text_color),
             textAlign = TextAlign.Center,
