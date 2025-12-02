@@ -128,6 +128,88 @@
       app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_edittext" />
 
+    <CheckBox
+      android:id="@+id/create_profile_pin_check_box"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:buttonTint="@color/component_color_shared_checkbox_selector"
+      android:text="@string/add_profile_create_a_3_digit_pin"
+      android:checked="@={viewModel.showPinFields}"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_error" />
+
+    <TextView
+      android:id="@+id/create_profile_pin_info"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:drawableStart="@drawable/ic_info_icon"
+      android:drawableTint="@color/component_color_onboarding_shared_green_color"
+      android:text="@string/add_profile_pin_info"
+      android:visibility="@{viewModel.showPinFields ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_pin_check_box" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/create_profile_pin_constraint_layout"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:visibility="@{viewModel.showPinFields ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_pin_info">
+
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/create_profile_pin"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:hint="@string/add_profile_input_pin"
+        app:errorMessage="@{viewModel.pinErrorMsg}"
+        app:helperText="@string/add_profile_required"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/add_profile_activity_pin_edit_text"
+          style="@style/TextInputEditText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:imeOptions="actionNext"
+          android:inputType="numberPassword"
+          android:maxLength="3"
+          android:text="@{viewModel.inputPin}" />
+      </com.google.android.material.textfield.TextInputLayout>
+
+      <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/create_profile_confirm_pin"
+        style="@style/TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
+        android:hint="@string/add_profile_input_confirm_pin"
+        app:errorMessage="@{viewModel.confirmPinErrorMsg}"
+        app:helperText="@string/add_profile_required"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_profile_activity_pin">
+
+        <com.google.android.material.textfield.TextInputEditText
+          android:id="@+id/create_profile_activity_confirm_pin_edit_text"
+          style="@style/TextInputEditText"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:imeOptions="actionDone"
+          android:inputType="numberPassword"
+          android:maxLength="3"
+          android:text="@{viewModel.inputConfirmPin}" />
+      </com.google.android.material.textfield.TextInputLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <Button
       android:id="@+id/onboarding_navigation_back"
       style="@style/OnboardingNavigationSecondaryButton"

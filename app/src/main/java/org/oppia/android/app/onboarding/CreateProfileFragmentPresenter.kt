@@ -80,6 +80,9 @@ class CreateProfileFragmentPresenter @Inject constructor(
 
     uploadImageView = binding.createProfileUserImageView
 
+    // Only show the PIN creation UI when a supervisor is adding an additional learner.
+    createProfileViewModel.showPinUi.set(profileType == ProfileType.ADDITIONAL_LEARNER)
+
     uploadImageView.apply {
       setColorFilter(
         ResourcesCompat.getColor(
@@ -108,8 +111,35 @@ class CreateProfileFragmentPresenter @Inject constructor(
         }
         ProfileType.ADDITIONAL_LEARNER -> {
           // Supervisor adding a new learner profile: create a new profile entry.
-          // Note: Update to pass a PIN when that step is introduced.
-          createLearnerProfile(profileName = nickname, pin = "")
+          val pin = if (createProfileViewModel.showPinFields.get() == true) {
+            createProfileViewModel.inputPin.get().orEmpty()
+          } else ""
+          val confirm = if (createProfileViewModel.showPinFields.get() == true) {
+            createProfileViewModel.inputConfirmPin.get().orEmpty()
+          } else ""
+
+          // Mirror AddProfileActivityPresenter validations.
+          var failed = false
+          if (pin.isNotEmpty() && pin.length < 3) {
+            createProfileViewModel.pinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_length
+              )
+            )
+            failed = true
+          }
+          if (pin != confirm) {
+            createProfileViewModel.confirmPinErrorMsg.set(
+              appLanguageResourceHandler.getStringInLocale(
+                R.string.add_profile_error_pin_confirm_wrong
+              )
+            )
+            failed = true
+          }
+          createProfileViewModel.hasErrorMessage.set(failed)
+          if (failed) return@setOnClickListener
+
+          createLearnerProfile(profileName = nickname, pin = pin)
         }
         else -> {
           // Defensive fallback for unexpected/unspecified profile type.

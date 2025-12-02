@@ -136,6 +136,8 @@
       android:layout_height="wrap_content"
       android:buttonTint="@color/component_color_shared_checkbox_selector"
       android:text="Create a 3-Digit PIN for the learner (Optional)"
+      android:checked="@={viewModel.showPinFields}"
+      android:visibility="@{viewModel.showPinUi ? View.VISIBLE : View.GONE}"
       app:layout_constraintTop_toBottomOf="@id/create_profile_nickname_error"/>
 
     <TextView
@@ -145,13 +147,15 @@
       android:text="If you choose to create a PIN, the learner will have to insert it to access their account."
       android:drawableStart="@drawable/ic_info_icon"
       android:drawableTint="@color/component_color_onboarding_shared_green_color"
-        app:layout_constraintTop_toBottomOf="@id/create_profile_pin_check_box"/>
+      android:visibility="@{(viewModel.showPinUi &amp;&amp; viewModel.showPinFields) ? View.VISIBLE : View.GONE}"
+      app:layout_constraintTop_toBottomOf="@id/create_profile_pin_check_box"/>
 
   <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/create_profile_pin_constraint_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="18dp"
+      android:visibility="@{(viewModel.showPinUi &amp;&amp; viewModel.showPinFields) ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/create_profile_pin_info">
@@ -163,6 +167,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:hint="@string/add_profile_input_pin"
+        app:errorMessage="@{viewModel.pinErrorMsg}"
         app:helperText="@string/add_profile_required"
         app:helperTextEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +181,8 @@
           android:layout_height="wrap_content"
           android:imeOptions="actionNext"
           android:inputType="numberPassword"
-          android:maxLength="3" />
+          android:maxLength="3"
+          android:text="@{viewModel.inputPin}" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -186,6 +192,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/add_profile_confirm_pin_margin_top"
         android:hint="@string/add_profile_input_confirm_pin"
+        app:errorMessage="@{viewModel.confirmPinErrorMsg}"
         app:helperText="@string/add_profile_required"
         app:helperTextEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -199,7 +206,8 @@
           android:layout_height="wrap_content"
           android:imeOptions="actionDone"
           android:inputType="numberPassword"
-          android:maxLength="3" />
+          android:maxLength="3"
+          android:text="@{viewModel.inputConfirmPin}" />
     </com.google.android.material.textfield.TextInputLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 

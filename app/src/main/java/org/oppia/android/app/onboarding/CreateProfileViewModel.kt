@@ -25,6 +25,18 @@ class CreateProfileViewModel @Inject constructor(
   /** [ObservableField] that tracks the error message to be displayed to the user. */
   val errorMessage = ObservableField("")
 
+  // PIN inputs & error messages (bound from create_profile_fragment layouts).
+  val inputPin = ObservableField("")
+  val inputConfirmPin = ObservableField("")
+  val pinErrorMsg = ObservableField("")
+  val confirmPinErrorMsg = ObservableField("")
+
+  // Whether to show PIN fields in the UI (two-way bound to the checkbox).
+  val showPinFields = ObservableField(false)
+
+  // Whether the PIN section should be available at all (only for supervisor adding a learner).
+  val showPinUi = ObservableField(false)
+
   /** List of RGB colors that have already been assigned to a profile. */
   val usedColors: LiveData<List<Int>> by lazy {
     Transformations.map(
