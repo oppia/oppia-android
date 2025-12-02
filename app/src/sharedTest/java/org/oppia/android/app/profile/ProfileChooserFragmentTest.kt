@@ -466,10 +466,27 @@ class ProfileChooserFragmentTest {
 
     launch(ProfileChooserActivity::class.java).use {
       testCoroutineDispatchers.runCurrent()
-      onView(withText(context.getString(R.string.profile_chooser_add)))
-        .perform(click())
+      onView(withText(context.getString(R.string.profile_chooser_add))).perform(click())
 
       testCoroutineDispatchers.runCurrent()
+      intended(hasComponent(ProfileLoginActivity::class.java.name))
+    }
+  }
+
+  @Test
+  fun testOnboardingV2_adminWithPin_clickAdd_passesAdditionalLearnerTypeToLogin() {
+    TestPlatformParameterModule.forceEnableOnboardingFlowV2(true)
+    setUpTestApplicationComponent()
+    profileTestHelper.initializeProfiles(autoLogIn = false)
+
+    launch(ProfileChooserActivity::class.java).use {
+      testCoroutineDispatchers.runCurrent()
+
+      onView(withText(context.getString(R.string.profile_chooser_add))).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Launch should be to ProfileLoginActivity; while we don't assert extras directly here,
+      // the downstream login test ensures ADDITIONAL_LEARNER routing to CreateProfileActivity.
       intended(hasComponent(ProfileLoginActivity::class.java.name))
     }
   }

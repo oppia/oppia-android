@@ -50,6 +50,7 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.devoptions.DeveloperOptionsModule
 import org.oppia.android.app.devoptions.DeveloperOptionsStarterModule
 import org.oppia.android.app.home.HomeActivity
+import org.oppia.android.app.onboarding.CreateProfileActivity
 import org.oppia.android.app.model.AppStartupState
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.onboarding.CreateProfileActivity
@@ -317,10 +318,10 @@ class ProfileLoginFragmentTest {
     profileTestHelper.addOnlyAdminProfile()
     val adminProfileId = ProfileId.newBuilder().setInternalId(0).build()
 
-    val intent = ProfileLoginActivity.createProfileLoginActivityIntent(
+    val intent = ProfileLoginActivity.createProfileLoginForAddProfileIntent(
       context,
       adminProfileId,
-      ProfileLoginActivity.Companion.LoginFlow.ADD_NEW_LEARNER
+      ProfileType.ADDITIONAL_LEARNER
     )
     ActivityScenario.launch<ProfileLoginActivity>(intent).use {
       testCoroutineDispatchers.runCurrent()
