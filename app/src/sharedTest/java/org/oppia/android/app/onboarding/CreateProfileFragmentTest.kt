@@ -168,6 +168,94 @@ class CreateProfileFragmentTest {
     Intents.release()
   }
 
+  // Additional-learner PIN UI tests
+
+  @Test
+  fun testAdditionalLearnerFlow_pinUi_checkboxVisible_fieldsHiddenInitially() {
+    // When the flow is for creating an additional learner, the checkbox should be visible but
+    // the PIN fields should be hidden until the box is checked.
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_pin_check_box)).check(matches(isDisplayed()))
+      onView(withId(R.id.create_profile_pin_constraint_layout))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
+  @Test
+  fun testAdditionalLearnerFlow_checkPinCheckbox_showsPinAndConfirmFields() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+
+      // After checking, the PIN fields container should be visible.
+      onView(withId(R.id.create_profile_pin_constraint_layout))
+        .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+      onView(withId(R.id.add_profile_activity_pin_edit_text)).check(matches(isDisplayed()))
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdditionalLearnerFlow_shortPin_showsPinLengthError() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      // Provide a valid nickname to bypass nickname validation.
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+      // Enable PIN fields and enter short PIN.
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(editTextInputAction.appendText("1"), closeSoftKeyboard())
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Expect pin length error.
+      onView(withText(R.string.add_profile_error_pin_length)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdditionalLearnerFlow_mismatchedConfirm_showsConfirmError() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(editTextInputAction.appendText("111"), closeSoftKeyboard())
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // Expect confirm mismatch error.
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testAdditionalLearnerFlow_validPinAndConfirm_noErrorShownOnContinue() {
+    launchNewLearnerProfileActivity(profileType = ProfileType.ADDITIONAL_LEARNER).use {
+      onView(withId(R.id.create_profile_nickname_edittext))
+        .perform(editTextInputAction.appendText("John"), closeSoftKeyboard())
+      onView(withId(R.id.create_profile_pin_check_box)).perform(click())
+
+      onView(withId(R.id.add_profile_activity_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+      onView(withId(R.id.create_profile_activity_confirm_pin_edit_text))
+        .perform(editTextInputAction.appendText("123"), closeSoftKeyboard())
+
+      onView(withId(R.id.onboarding_navigation_continue)).perform(click())
+      testCoroutineDispatchers.runCurrent()
+
+      // No PIN-related error texts should be shown.
+      onView(withText(R.string.add_profile_error_pin_length))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+      onView(withText(R.string.add_profile_error_pin_confirm_wrong))
+        .check(matches(withEffectiveVisibility(Visibility.GONE)))
+    }
+  }
+
   @Test
   fun testFragment_nicknameLabelIsDisplayed() {
     launchNewLearnerProfileActivity().use {
