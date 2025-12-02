@@ -313,7 +313,7 @@ Please follow these steps to set up Oppia Android on your local machine.
 
 ## Opening the project in Android Studio
 
-1. Launch Android Studio, and on the welcome screen, select Plugins to install the Bazel for Android Studio plugin and restart Android Studio.
+1. Launch Android Studio, and on the welcome screen, select **Plugins** to install the Bazel for Android Studio plugin and restart Android Studio.
 
 2. On next open, click the options button next to the new project/open project to find the "Import Bazel Project" option.
 
@@ -331,15 +331,15 @@ Please follow these steps to set up Oppia Android on your local machine.
 
    <img width="991" alt="Screenshot 2025-03-19 at 18 44 41" src="https://github.com/user-attachments/assets/2679a750-414b-4680-8558-7f438e11f633" />
 
-6. Click on the 3 dots to open the file picker. Scroll down and select `oppia-android.bazelproject`, then click **next**.
+Click on the 3 dots to open the file picker. Scroll down and select `oppia-android.bazelproject`, then click **next**.
 
    <img width="991" alt="Screenshot 2025-03-19 at 18 45 23" src="https://github.com/user-attachments/assets/31e0694c-a179-4adf-8d4d-28793c586ee5" />
 
-7. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not respond, change line ending format from CRLF to LF of the `oppia-android.bazelproject` file (Open the file in any text editor / Android Studio and at the bottom right select CRLF and change it to LF).
+6. The project view will be generated as follows. Click the **Create** button to complete the import. If the create button does not respond, change line ending format from CRLF to LF of the `oppia-android.bazelproject` file (Open the file in any text editor / Android Studio and at the bottom right select CRLF and change it to LF).
    
    ![Screenshot 2025-03-19 at 18 47 57](https://github.com/user-attachments/assets/b7016ab8-9ae5-44e0-a624-c7cc8fc576da)
 
-8. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
+7. Immediately, the project will begin to synchronize, and will be ready once sync completes. Read more about syncing in the [Bazel User Guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide#Syncing-the-project).
 
    ![Screenshot 2025-03-19 at 18 49 59](https://github.com/user-attachments/assets/603d85d6-1336-4893-8153-eef8caef5e81)
 
@@ -351,7 +351,7 @@ In the `.aswb` directory, you will find the generated `.bazelproject` file. It s
 import oppia-android.bazelproject
 ```
 
-9. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
+8. Once sync has finished, you can now build and install the app on either a virtual or physical device. Bazel supports deploying to only one device at a time, so you can connect one device, or launch one emulator at a time.
 
    You can run the project by using the Bazel plugin to set up run configurations for the target that you wish to build. This performs the same action as the run commands listed in the [Bazel user guide](https://github.com/oppia/oppia-android/wiki/Bazel-User-Guide), but using the GUI to run the app might be more intuitive for some developers.
 
