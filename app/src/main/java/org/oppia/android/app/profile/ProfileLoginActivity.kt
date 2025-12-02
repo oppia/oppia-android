@@ -34,7 +34,7 @@ class ProfileLoginActivity :
 
   companion object {
     private const val EXTRA_LOGIN_FLOW = "ProfileLoginActivity.login_flow"
-    private const val EXTRA_LOGIN_PARAMS = "ProfileLoginActivity.params"
+    const val EXTRA_LOGIN_PARAMS = "ProfileLoginActivity.params"
 
     enum class LoginFlow(val value: Int) {
       OPEN_EXISTING_PROFILE(0),

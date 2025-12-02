@@ -132,7 +132,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
 
   private fun extractNewProfileTypeFromIntent(intent: android.content.Intent): ProfileType {
     val params = intent.getProtoExtra(
-      "ProfileLoginActivity.params",
+      ProfileLoginActivity.EXTRA_LOGIN_PARAMS,
       org.oppia.android.app.model.ProfileLoginActivityParams.getDefaultInstance()
     )
     return params.newProfileType
