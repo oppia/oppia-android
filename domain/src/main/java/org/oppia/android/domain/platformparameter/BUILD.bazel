@@ -89,6 +89,28 @@ kt_android_library(
 )
 
 kt_android_library(
+    name = "platform_parameter_controller_injector",
+    srcs = [
+        "PlatformParameterControllerInjector.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":controller",
+    ],
+)
+
+kt_android_library(
+    name = "platform_parameter_controller_injector_provider",
+    srcs = [
+        "PlatformParameterControllerInjectorProvider.kt",
+    ],
+    visibility = ["//:oppia_api_visibility"],
+    deps = [
+        ":platform_parameter_controller_injector",
+    ],
+)
+
+kt_android_library(
     name = "prod_module",
     srcs = [
         "FeatureFlagBindingModule.kt",

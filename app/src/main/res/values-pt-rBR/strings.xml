@@ -9,6 +9,7 @@
 * Leosls
 * Pyscowicz
 * Re demz
+* SaldırganSincap
 * Seanlip
 * Svjatysberega
 * Vanessagelinski
@@ -79,6 +80,8 @@
   <string name="next_state_description">Avançar para o próximo cartão</string>
   <string name="state_submit_button">Enviar</string>
   <string name="submit_button_text">Enviar</string>
+  <string name="state_flashback_button">Veja o exemplo</string>
+  <string name="state_return_to_question_button">Voltar para a lição</string>
   <string name="lesson_replay_button_text">Repetir</string>
   <string name="state_end_exploration_button">Retornar ao Tópico</string>
   <string name="previous_responses_header">Respostas Anteriores (%s)</string>
@@ -92,7 +95,6 @@
   <string name="featured_questions">Perguntas em Destaque</string>
   <string name="frequently_asked_questions">Perguntas Frequentes</string>
   <string name="faq_activity_title">FAQs (Perguntas Frequentes)</string>
-  <string name="pin_password_activity_title">Verificação de PIN</string>
   <string name="onboarding_activity_title">Introdução</string>
   <string name="frequently_asked_questions_FAQ">Perguntas Frequentes (FAQs)</string>
   <string name="info">Info</string>
@@ -209,24 +211,24 @@
     <item quantity="other">%s Capítulos</item>
   </plurals>
   <plurals name="story_count">
-    <item quantity="one">%s Story</item>
-    <item quantity="other">%s Stories</item>
+    <item quantity="one">%s História</item>
+    <item quantity="other">%s Histórias</item>
   </plurals>
   <plurals name="story_total_chapters">
     <item quantity="one">%1$s of %2$s Chapter Completed</item>
     <item quantity="other">%1$s of %2$s Chapters Completed</item>
   </plurals>
   <plurals name="lesson_count">
-    <item quantity="one">%s Lesson</item>
-    <item quantity="other">%s Lessons</item>
+    <item quantity="one">%s Lição</item>
+    <item quantity="other">%s Lições</item>
   </plurals>
   <plurals name="completed_story_count">
-    <item quantity="one">%s Story Completed</item>
-    <item quantity="other">%s Stories Completed</item>
+    <item quantity="one">%s História Concluída</item>
+    <item quantity="other">%s Histórias Concluídas</item>
   </plurals>
   <plurals name="ongoing_topic_count">
-    <item quantity="one">%s Topic in Progress</item>
-    <item quantity="other">%s Topics in Progress</item>
+    <item quantity="one">%s Tópico em Andamento</item>
+    <item quantity="other">%s Tópicos em Andamento</item>
   </plurals>
   <string name="profile_chooser_activity_label">Página de seleção de perfil</string>
   <string name="profile_chooser_admin">Administrador</string>
@@ -288,6 +290,7 @@
   <string name="next_arrow">Próximo</string>
   <string name="get_started">Começar</string>
   <string name="onboarding_slide_dots_content_description">Slide %1$s de %2$s</string>
+  <string name="pin_password_activity_title">Verificação de PIN</string>
   <string name="pin_password_hello">Olá, %s!</string>
   <string name="pin_password_admin_enter">Por favor, insira o PIN do Administrador.</string>
   <string name="pin_password_user_enter">Por favor, insira seu PIN.</string>
@@ -453,16 +456,16 @@
   <string name="down_button_disabled">Para baixo</string>
   <string name="profile_last_visited">%1$s %2$s</string>
   <plurals name="minutes_ago">
-    <item quantity="one">%s minute ago</item>
-    <item quantity="other">%s minutes ago</item>
+    <item quantity="one">%s minuto atrás</item>
+    <item quantity="other">%s minutos atrás</item>
   </plurals>
   <plurals name="hours_ago">
-    <item quantity="one">%s hour ago</item>
-    <item quantity="other">%s hours ago</item>
+    <item quantity="one">%s hora atrás</item>
+    <item quantity="other">%s horas atrás</item>
   </plurals>
   <plurals name="days_ago">
-    <item quantity="one">%s day ago</item>
-    <item quantity="other">%s days ago</item>
+    <item quantity="one">%s dia atrás</item>
+    <item quantity="other">%s dias atrás</item>
   </plurals>
   <string name="topic_revision_recyclerview_tag">topic_revision_recyclerview_tag</string>
   <string name="ongoing_recycler_view_tag">ongoing_recycler_view_tag</string>
@@ -546,7 +549,7 @@
   <string name="faq_question_cant_find_question">Não consigo encontrar minha pergunta aqui. E agora?</string>
   <string name="faq_answer_whats_oppia">&lt;p&gt;%1$s &lt;i&gt;\"O-pee-yah\"&lt;/i&gt; (Finnish) - \"aprender\"&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;%1$s tem a missão de ajudar qualquer pessoa a aprender o que quiser de uma forma eficaz e agradável.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Ao criar um conjunto de aulas gratuitas, de alta qualidade e comprovadamente eficazes com a ajuda de educadores de todo o mundo, %1$s visa proporcionar aos alunos uma educação de qualidade - independentemente de onde estejam ou a quais recursos tradicionais tenham acesso.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Como estudante, você pode começar sua aventura de aprendizado navegando pelos tópicos listados na página inicial!&lt;/p&gt;</string>
   <string name="faq_answer_whos_an_admin">&lt;p&gt;Um administrador é o usuário principal que gerencia perfis e configurações de cada perfil da conta. Provavelmente foram seus pais, professores ou responsáveis ​​que criaram este perfil para você.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Os administradores podem gerenciar perfis, atribuir PINs e alterar outras configurações. sob sua conta. Dependendo do seu perfil, podem ser necessárias permissões de administrador para determinados recursos, como alteração do PIN e muito mais.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Para ver quem é o seu administrador, acesse o Perfil. Seletor. O primeiro perfil listado e com \"Administrador\" escrito em seu nome é o Administrador.&lt;/p&gt;</string>
-  <string name="faq_answer_create_profile">&lt;p&gt;Se for a primeira vez que você cria um perfil e você não tem um PIN:&lt;ol&gt;&lt;li&gt;No Seletor de perfil, toque em &lt;strong&gt;Configurar vários perfis&lt;/strong&gt;.&lt;/li&gt;&lt; li&gt;Crie um PIN e &lt;strong&gt;Salve&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Preencha todos os campos do perfil.&lt;ol&gt;&lt;li&gt;(Opcional) Faça upload de uma foto.&lt;/li&gt;&lt;li&gt; Digite um nome.&lt;/li&gt;&lt;li&gt;(Opcional) Atribua um PIN de três dígitos.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil será adicionado ao seu Seletor de perfil!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;Se você já criou um perfil e possui um PIN:&lt;ol&gt;&lt;li&gt;No Seletor de perfil, toque em &lt; strong&gt;Adicionar perfil&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Insira seu PIN e toque em &lt;strong&gt;Enviar&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Preencha todos os campos do perfil.&lt;ol&gt;&lt;li &gt;(Opcional) Faça upload de uma foto.&lt;/li&gt;&lt;li&gt;Digite um nome.&lt;/li&gt;&lt;li&gt;(Opcional) Atribua um PIN de três dígitos.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li &gt;Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil é adicionado ao seu Seletor de perfil!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Observação: somente o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
+  <string name="faq_answer_create_profile">&lt;p&gt;Se for a primeira vez que você cria um perfil e você não tem um PIN:&lt;ol&gt;&lt;li&gt;No Seletor de perfil, toque em &lt;strong&gt;Configurar vários perfis&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Crie um PIN e &lt;strong&gt;Salve&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Preencha todos os campos do perfil.&lt;ol&gt;&lt;li&gt;(Opcional) Faça upload de uma foto.&lt;/li&gt;&lt;li&gt; Digite um nome.&lt;/li&gt;&lt;li&gt;(Opcional) Atribua um PIN de três dígitos.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil será adicionado ao seu Seletor de perfil!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;Se você já criou um perfil e possui um PIN:&lt;ol&gt;&lt;li&gt;No Seletor de perfil, toque em &lt;strong&gt;Adicionar perfil&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Insira seu PIN e toque em &lt;strong&gt;Enviar&lt;/strong&gt;.&lt;/li&gt;&lt;li&gt;Preencha todos os campos do perfil.&lt;ol&gt;&lt;li &gt;(Opcional) Faça upload de uma foto.&lt;/li&gt;&lt;li&gt;Digite um nome.&lt;/li&gt;&lt;li&gt;(Opcional) Atribua um PIN de três dígitos.&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;li &gt;Toque em &lt;strong&gt;Criar&lt;/strong&gt;. Este perfil é adicionado ao seu Seletor de perfil!&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Observação: somente o &lt;u&gt;Administrador&lt;/u&gt; pode gerenciar perfis.&lt;/p&gt;</string>
   <string name="faq_answer_app_language">&lt;p&gt;O aplicativo %s atualmente oferece suporte a inglês, português do Brasil, árabe, suaíli e pidgin nigeriano. Escolha um desses idiomas no menu, em Opções. Para solicitar o aplicativo em seu idioma, entre em contato conosco pelo e-mail &lt;strong&gt;admin@oppia.org&lt;/strong&gt;.&lt;/p&gt;</string>
   <string name="faq_answer_bug_reporting">&lt;p&gt;&lt;ol&gt;&lt;li&gt;Na tela inicial do aplicativo %s, toque no menu no canto superior esquerdo.&lt;/li&gt;&lt;li&gt;Toque em &lt;strong&gt;Compartilhar feedback&lt;/strong&gt;.&lt;/li&gt;&lt;li &gt;Siga as instruções para relatar o bug ou compartilhar comentários.&lt;/li&gt;&lt;/ol&gt;&lt;/p&gt;</string>
   <string name="faq_answer_math_lessons">&lt;p&gt;A missão do %1$s é ajudar os alunos a adquirir as habilidades necessárias para a vida. A matemática é uma habilidade essencial na vida cotidiana. %1$s oferecerá novas aulas sobre ciências e outros assuntos em breve!&lt;/p&gt;</string>

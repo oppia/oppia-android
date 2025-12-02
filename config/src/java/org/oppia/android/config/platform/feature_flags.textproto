@@ -66,5 +66,5 @@ feature_flag_definition {
 feature_flag_definition {
   id: FLASHBACK_SUPPORT
   remote_server_name: "android_enable_flashback_support"
-  default_is_enabled: false
+  default_is_enabled: true
 }

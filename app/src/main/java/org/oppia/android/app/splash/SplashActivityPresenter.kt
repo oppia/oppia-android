@@ -459,17 +459,17 @@ class SplashActivityPresenter @Inject constructor(
       )
 
       when {
-        onboardingStarted && !onboardingCompleted -> when (profileType) {
-          ProfileType.SOLE_LEARNER -> resumeLearnerOnboarding(profile.id, profile.name)
-          ProfileType.SUPERVISOR -> resumeSupervisorOnboarding(profile.id, profile.name)
-          else -> {}
-        }
+        onboardingStarted && !onboardingCompleted && profileType == ProfileType.SOLE_LEARNER ->
+          resumeLearnerOnboarding(profile.id, profile.name)
 
-        onboardingStarted && onboardingCompleted -> when (profileType) {
-          ProfileType.SOLE_LEARNER -> logInToProfile(profile.id)
-          ProfileType.SUPERVISOR -> launchProfileChooserScreen(profile.id)
-          else -> {}
-        }
+        onboardingStarted && !onboardingCompleted && profileType == ProfileType.SUPERVISOR ->
+          resumeSupervisorOnboarding(profile.id, profile.name)
+
+        onboardingStarted && onboardingCompleted && profileType == ProfileType.SOLE_LEARNER ->
+          logInToProfile(profile.id)
+
+        onboardingStarted && onboardingCompleted && profileType == ProfileType.SUPERVISOR ->
+          launchProfileChooserScreen(profile.id)
       }
     }
 

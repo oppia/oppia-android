@@ -455,7 +455,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   /**
-   * Deletes all app data by removing all profile,s resetting onboarding state, and closing the app.
+   * Deletes all app data by removing all profiles, resetting onboarding state, and closing the app.
    *
    * Once completed, the user will be forced to go through onboarding again to re-create their
    * profile.

@@ -9,7 +9,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import kotlin.math.sin
 
-/** Adds a bezier curve background to a view. */
+/** Adds a sine wave background to a view. */
 @Composable
 fun WavyBackgroundView(backgroundColorResId: Int) {
   val waveColor = colorResource(backgroundColorResId)

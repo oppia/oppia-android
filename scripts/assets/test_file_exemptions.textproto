@@ -3184,6 +3184,10 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "app/src/test/java/org/oppia/android/app/activity/PlatformParameterInitializationIntegrationTest.kt",
+  is_extra_test_file: true
+}
+test_file_exemption {
   exempted_file_path: "app/src/test/java/org/oppia/android/app/home/HomeActivityLocalTest.kt",
   is_extra_test_file: true
 }
@@ -3952,6 +3956,14 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerInjector.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
+  exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterControllerInjectorProvider.kt"
+  test_file_not_required: true
+}
+test_file_exemption {
   exempted_file_path: "domain/src/main/java/org/oppia/android/domain/platformparameter/PlatformParameterDebugModule.kt"
   test_file_not_required: true
 }
@@ -4112,7 +4124,7 @@ test_file_exemption {
   test_file_not_required: true
 }
 test_file_exemption {
-  exempted_file_path: "domain/src/test/java/org/oppia/android/domain/classify/InteractionObjectTestBuilder.kt"
+  exempted_file_path: "app/src/main/java/org/oppia/android/app/player/state/testing/InteractionObjectTestBuilder.kt"
   test_file_not_required: true
 }
 test_file_exemption {

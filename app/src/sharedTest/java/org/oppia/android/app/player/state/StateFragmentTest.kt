@@ -260,8 +260,6 @@ class StateFragmentTest {
   //  13. Add tests for audio states, including: audio playing & having an error, or no-network
   //      connectivity scenarios. See the PR introducing this comment & #1340 / #1341 for context.
   //  14. Add tests to check the placeholder in FractionInput, TextInput and NumericInput.
-  // TODO(#56): Add support for testing that previous/next button states are properly retained on
-  //  config changes.
 
   @Test
   fun testStateFragment_loadExp_explorationLoads() {
@@ -309,6 +307,31 @@ class StateFragmentTest {
 
       scrollToViewType(CONTINUE_INTERACTION)
       onView(withId(R.id.continue_interaction_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_configurationChange_previousButtonStateRetained() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
+      rotateToLandscape()
+      onView(withId(R.id.previous_state_navigation_button)).check(matches(isDisplayed()))
+    }
+  }
+
+  @Test
+  fun testStateFragment_configurationChange_nextButtonStateRetained() {
+    setUpTestWithLanguageSwitchingFeatureOff()
+    launchForExploration(TEST_EXPLORATION_ID_2, shouldSavePartialProgress = false).use {
+      startPlayingExploration()
+      clickContinueInteractionButton()
+      clickPreviousNavigationButton()
+      onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
+      rotateToLandscape()
+      onView(withId(R.id.next_state_navigation_button)).check(matches(isDisplayed()))
     }
   }
 

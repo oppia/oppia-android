@@ -150,7 +150,6 @@ class LintAnalysisReporter(private val repoRoot: File) {
       "CustomSplashScreen" to LintIssueId.CUSTOM_SPLASH_SCREEN,
       "InconsistentLayout" to LintIssueId.INCONSISTENT_LAYOUT,
       "KeyboardInaccessibleWidget" to LintIssueId.KEYBOARD_INACCESSIBLE_WIDGET,
-      "LockedOrientationActivity" to LintIssueId.LOCKED_ORIENTATION_ACTIVITY,
       "MissingVersion" to LintIssueId.MISSING_VERSION,
       "NotifyDataSetChanged" to LintIssueId.NOTIFY_DATA_SET_CHANGED,
       "Overdraw" to LintIssueId.OVERDRAW,
