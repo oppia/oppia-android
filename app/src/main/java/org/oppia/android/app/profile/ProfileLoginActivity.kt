@@ -8,6 +8,7 @@ import org.oppia.android.app.activity.InjectableAutoLocalizedAppCompatActivity
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ProfileLoginActivityParams
+import org.oppia.android.util.extensions.putProtoExtra
 import org.oppia.android.app.model.ScreenName
 import org.oppia.android.util.logging.CurrentAppScreenNameIntentDecorator.decorateWithScreenName
 import org.oppia.android.util.profile.CurrentUserProfileIdIntentDecorator.decorateWithUserProfileId
@@ -68,7 +69,7 @@ class ProfileLoginActivity :
       profileId,
       LoginFlow.ADD_NEW_LEARNER
     ).apply {
-      org.oppia.android.util.extensions.putProtoExtra(
+      putProtoExtra(
         EXTRA_LOGIN_PARAMS,
         ProfileLoginActivityParams.newBuilder()
           .setNewProfileType(newProfileType)

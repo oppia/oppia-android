@@ -59,9 +59,9 @@ import org.oppia.android.app.classroom.ClassroomListActivity
 import org.oppia.android.app.databinding.databinding.ProfileLoginFragmentBinding
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.Profile
-import org.oppia.android.app.model.ProfileType
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
+import org.oppia.android.util.extensions.getProtoExtra
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
 import org.oppia.android.domain.onboarding.AppStartupStateController
@@ -131,8 +131,7 @@ class ProfileLoginFragmentPresenter @Inject constructor(
   }
 
   private fun extractNewProfileTypeFromIntent(intent: android.content.Intent): ProfileType {
-    val params = org.oppia.android.util.extensions.getProtoExtra(
-      intent,
+    val params = intent.getProtoExtra(
       "ProfileLoginActivity.params",
       org.oppia.android.app.model.ProfileLoginActivityParams.getDefaultInstance()
     )
