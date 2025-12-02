@@ -142,12 +142,14 @@
 
     <TextView
       android:id="@+id/create_profile_pin_info"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="If you choose to create a PIN, the learner will have to insert it to access their account."
       android:drawableStart="@drawable/ic_info_icon"
       android:drawableTint="@color/component_color_onboarding_shared_green_color"
       android:visibility="@{(viewModel.showPinUi &amp;&amp; viewModel.showPinFields) ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
       app:layout_constraintTop_toBottomOf="@id/create_profile_pin_check_box"/>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -156,8 +158,8 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="18dp"
       android:visibility="@{(viewModel.showPinUi &amp;&amp; viewModel.showPinFields) ? View.VISIBLE : View.GONE}"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="@id/create_profile_nickname_edittext"
+      app:layout_constraintStart_toStartOf="@id/create_profile_nickname_edittext"
       app:layout_constraintTop_toBottomOf="@id/create_profile_pin_info">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -197,7 +199,7 @@
         app:helperTextEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_profile_activity_pin">
+        app:layout_constraintTop_toBottomOf="@id/create_profile_pin">
 
       <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/create_profile_activity_confirm_pin_edit_text"
