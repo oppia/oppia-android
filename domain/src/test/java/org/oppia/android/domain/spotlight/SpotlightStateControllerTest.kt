@@ -17,6 +17,9 @@ import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.Spotlight.FeatureCase.FIRST_CHAPTER
 import org.oppia.android.app.model.Spotlight.FeatureCase.LESSONS_BACK_BUTTON
 import org.oppia.android.app.model.Spotlight.FeatureCase.PROMOTED_STORIES
+import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
+import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+import org.oppia.android.app.model.Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_LESSON_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.TOPIC_REVISION_TAB
 import org.oppia.android.app.model.Spotlight.FeatureCase.VOICEOVER_LANGUAGE_ICON
@@ -243,6 +246,57 @@ class SpotlightStateControllerTest {
     val retrieveSpotlightStateProvider =
       spotlightStateController.retrieveSpotlightViewState(profileId0, VOICEOVER_LANGUAGE_ICON)
     val result = dataProviderTestMonitor.waitForNextSuccessfulResult(retrieveSpotlightStateProvider)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_profileAdminControls_notMarked_returnsNotSeen() {
+    val provider =
+      spotlightStateController.retrieveSpotlightViewState(profileId0, PROFILE_ADMIN_CONTROLS_ITEM)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(provider)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_profileAdminControls_marked_returnsSeen() {
+    markSpotlightSeen(PROFILE_ADMIN_CONTROLS_ITEM)
+    val provider =
+      spotlightStateController.retrieveSpotlightViewState(profileId0, PROFILE_ADMIN_CONTROLS_ITEM)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(provider)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_profileAdminItem_notMarked_returnsNotSeen() {
+    val provider =
+      spotlightStateController.retrieveSpotlightViewState(profileId0, PROFILE_ADMIN_ITEM)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(provider)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_profileAdminItem_marked_returnsSeen() {
+    markSpotlightSeen(PROFILE_ADMIN_ITEM)
+    val provider =
+      spotlightStateController.retrieveSpotlightViewState(profileId0, PROFILE_ADMIN_ITEM)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(provider)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_profileAddLearnerFab_notMarked_returnsNotSeen() {
+    val provider =
+      spotlightStateController.retrieveSpotlightViewState(profileId0, PROFILE_ADD_LEARNER_FAB)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(provider)
+    assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_NOT_SEEN)
+  }
+
+  @Test
+  fun testRetrieveSpotlightViewState_profileAddLearnerFab_marked_returnsSeen() {
+    markSpotlightSeen(PROFILE_ADD_LEARNER_FAB)
+    val provider =
+      spotlightStateController.retrieveSpotlightViewState(profileId0, PROFILE_ADD_LEARNER_FAB)
+    val result = dataProviderTestMonitor.waitForNextSuccessfulResult(provider)
     assertThat(result).isEqualTo(SpotlightViewState.SPOTLIGHT_SEEN)
   }
 

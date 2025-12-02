@@ -62,6 +62,15 @@ class ProfileChooserActivityPresenter @Inject constructor(
         ProfileChooserFragmentTestActivity.TAG_PROFILE_CHOOSER_FRAGMENT
       ).commitNow()
     }
+
+    // Ensure spotlight fragment is attached similar to HomeActivity.
+    if (getSpotlightFragment() == null) {
+      activity.supportFragmentManager.beginTransaction().add(
+        R.id.profile_spotlight_fragment_placeholder,
+        org.oppia.android.app.spotlight.SpotlightFragment.newInstance(profileId.internalId),
+        org.oppia.android.app.spotlight.SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+      ).commitNow()
+    }
   }
 
   private fun getProfileChooserFragment(): ProfileChooserFragment? {
@@ -70,5 +79,11 @@ class ProfileChooserActivityPresenter @Inject constructor(
       .findFragmentById(
         R.id.profile_chooser_fragment_placeholder
       ) as ProfileChooserFragment?
+  }
+
+  private fun getSpotlightFragment(): org.oppia.android.app.spotlight.SpotlightFragment? {
+    return activity.supportFragmentManager.findFragmentById(
+      R.id.profile_spotlight_fragment_placeholder
+    ) as? org.oppia.android.app.spotlight.SpotlightFragment
   }
 }
