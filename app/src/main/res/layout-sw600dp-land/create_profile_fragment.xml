@@ -196,7 +196,7 @@
         app:helperTextEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_profile_activity_pin">
+        app:layout_constraintTop_toBottomOf="@id/create_profile_pin">
 
         <com.google.android.material.textfield.TextInputEditText
           android:id="@+id/create_profile_activity_confirm_pin_edit_text"
