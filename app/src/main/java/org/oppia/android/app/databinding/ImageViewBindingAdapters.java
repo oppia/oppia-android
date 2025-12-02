@@ -42,6 +42,10 @@ public final class ImageViewBindingAdapters {
    */
   @BindingAdapter("profileImageSource")
   public static void setProfileImage(ImageView imageView, ProfileAvatar profileAvatar) {
+    // Clear any previous state from recycled views to avoid tint/image bleed.
+    imageView.clearColorFilter();
+    Glide.with(imageView.getContext()).clear(imageView);
+
     if (profileAvatar != null) {
       if (profileAvatar.getAvatarTypeCase() == ProfileAvatar.AvatarTypeCase.AVATAR_COLOR_RGB) {
         Glide.with(imageView.getContext())
@@ -64,6 +68,7 @@ public final class ImageViewBindingAdapters {
                   DataSource dataSource,
                   boolean isFirstResource
               ) {
+                // Apply the profile's color tint for colored avatars.
                 imageView.setColorFilter(
                     profileAvatar.getAvatarColorRgb(),
                     PorterDuff.Mode.DST_OVER
@@ -72,6 +77,8 @@ public final class ImageViewBindingAdapters {
               }
             }).into(imageView);
       } else {
+        // Ensure no tint remains for image-based avatars.
+        imageView.clearColorFilter();
         Glide.with(imageView.getContext())
             .load(profileAvatar.getAvatarImageUri())
             .placeholder(R.drawable.ic_default_avatar)

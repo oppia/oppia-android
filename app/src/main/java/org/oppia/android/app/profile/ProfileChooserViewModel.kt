@@ -71,9 +71,13 @@ class ProfileChooserViewModel @Inject constructor(
       }
     }
 
-    val sortedProfileList = profileList.sortedBy { profileItemViewModel ->
-      machineLocale.run { profileItemViewModel.profile.name.toMachineLowerCase() }
-    }.toMutableList()
+    val sortedProfileList = profileList
+      .sortedWith(compareBy(
+        { !it.profile.isAdmin }, // Keep admin first.
+        { machineLocale.run { it.profile.name.toMachineLowerCase() } },
+        { it.profile.id.internalId } // Stable tiebreaker to avoid random reorder.
+      ))
+      .toMutableList()
 
     val adminProfileViewModel = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
 
@@ -119,9 +123,13 @@ class ProfileChooserViewModel @Inject constructor(
       }
     }
 
-    val sortedProfileList = profileList.sortedBy {
-      machineLocale.run { it.profile.name.toMachineLowerCase() }
-    }.toMutableList()
+    val sortedProfileList = profileList
+      .sortedWith(compareBy(
+        { !it.profile.isAdmin }, // Keep admin first.
+        { machineLocale.run { it.profile.name.toMachineLowerCase() } },
+        { it.profile.id.internalId } // Stable tiebreaker to avoid random reorder.
+      ))
+      .toMutableList()
 
     val adminProfile = sortedProfileList.find { it.profile.isAdmin } ?: return listOf()
 
