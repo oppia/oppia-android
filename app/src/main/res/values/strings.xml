@@ -748,3 +748,7 @@
   <string name="pin_setup_activity_length_error">Your PIN should be 5 digits long</string>
   <string name="pin_setup_activity_mismatch_error">Please make sure that both PINs match</string>
 </resources>
+  <!-- Spotlight hints for profile chooser (Onboarding V2). -->
+  <string name="profile_chooser_spotlight_admin_controls">Click here to explore administrator controls</string>
+  <string name="profile_chooser_spotlight_admin_profile">Click here to enter your account and explore lessons as a learner</string>
+  <string name="profile_chooser_spotlight_add_learner">Click here to create a profile for a learner</string>

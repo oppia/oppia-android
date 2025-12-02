@@ -34,6 +34,15 @@ message Spotlight {
 
     // Corresponds to the voice-over language option in audio player.
     SpotlightViewState voiceover_language_icon = 8;
+
+    // Corresponds to the Admin Controls entry on the profile chooser screen (Onboarding V2).
+    SpotlightViewState profile_admin_controls_item = 9;
+
+    // Corresponds to the Admin profile item on the profile chooser screen (Onboarding V2).
+    SpotlightViewState profile_admin_item = 10;
+
+    // Corresponds to the Add Learner Floating Action Button on the profile chooser screen (Onboarding V2).
+    SpotlightViewState profile_add_learner_fab = 11;
   }
 }
 
@@ -75,4 +84,13 @@ message SpotlightStateDatabase {
 
   // Corresponds to the voice-over language option in audio player.
   SpotlightViewState voiceover_language_icon = 8;
+
+  // Corresponds to the Admin Controls entry on the profile chooser screen (Onboarding V2).
+  SpotlightViewState profile_admin_controls_item = 9;
+
+  // Corresponds to the Admin profile item on the profile chooser screen (Onboarding V2).
+  SpotlightViewState profile_admin_item = 10;
+
+  // Corresponds to the Add Learner Floating Action Button on the profile chooser screen (Onboarding V2).
+  SpotlightViewState profile_add_learner_fab = 11;
 }

@@ -21,6 +21,7 @@ import org.oppia.android.app.fragment.FragmentScope
 import org.oppia.android.app.home.HomeActivity
 import org.oppia.android.app.model.IntroActivityParams
 import org.oppia.android.app.model.Profile
+import org.oppia.android.app.model.Spotlight
 import org.oppia.android.app.model.ProfileChooserActivityParams.ParentScreen
 import org.oppia.android.app.model.ProfileId
 import org.oppia.android.app.model.ProfileType
@@ -29,6 +30,8 @@ import org.oppia.android.app.recyclerview.BindableAdapter
 import org.oppia.android.app.recyclerview.StartSnapHelper
 import org.oppia.android.app.translation.AppLanguageResourceHandler
 import org.oppia.android.app.ui.R
+import org.oppia.android.app.spotlight.SpotlightManager
+import org.oppia.android.app.spotlight.SpotlightTarget
 import org.oppia.android.domain.oppialogger.OppiaLogger
 import org.oppia.android.domain.oppialogger.analytics.AnalyticsController
 import org.oppia.android.domain.profile.ProfileManagementController
@@ -111,6 +114,43 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         }
 
     logProfileChooserEvent()
+
+    // Request admin controls spotlight (icon/text area) when laid out.
+    binding.profileSelectionSettingIcon?.let { iconView ->
+      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
+        SpotlightTarget(
+          anchor = iconView,
+          hint = resourceHandler.getStringInLocale(
+            R.string.profile_chooser_spotlight_admin_controls
+          ),
+          feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
+        )
+      )
+    }
+    binding.profileSelectionAdminControlsText?.let { textView ->
+      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
+        SpotlightTarget(
+          anchor = textView,
+          hint = resourceHandler.getStringInLocale(
+            R.string.profile_chooser_spotlight_admin_controls
+          ),
+          feature = Spotlight.FeatureCase.PROFILE_ADMIN_CONTROLS_ITEM
+        )
+      )
+    }
+
+    // Request add-learner FAB spotlight when laid out.
+    binding.addProfileButton?.let { fab ->
+      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
+        SpotlightTarget(
+          anchor = fab,
+          hint = resourceHandler.getStringInLocale(
+            R.string.profile_chooser_spotlight_add_learner
+          ),
+          feature = Spotlight.FeatureCase.PROFILE_ADD_LEARNER_FAB
+        )
+      )
+    }
 
     binding.apply {
       when (Resources.getSystem().configuration.orientation) {
@@ -257,6 +297,18 @@ class ProfileChooserFragmentPresenter @Inject constructor(
     viewModel: ProfileItemViewModel
   ) {
     binding.viewModel = viewModel
+    // Spotlight the admin profile item (first item) using delayed-layout request (avoids View.post).
+    if (viewModel.profile.profileType == ProfileType.SUPERVISOR) {
+      getSpotlightManager()?.requestSpotlightViewWithDelayedLayout(
+        SpotlightTarget(
+          anchor = binding.root,
+          hint = resourceHandler.getStringInLocale(
+            R.string.profile_chooser_spotlight_admin_profile
+          ),
+          feature = Spotlight.FeatureCase.PROFILE_ADMIN_ITEM
+        )
+      )
+    }
   }
 
   private fun addProfileButtonClickListener() {
@@ -276,6 +328,12 @@ class ProfileChooserFragmentPresenter @Inject constructor(
         )
       )
     }
+  }
+
+  private fun getSpotlightManager(): SpotlightManager? {
+    return fragment.childFragmentManager.findFragmentByTag(
+      SpotlightManager.SPOTLIGHT_FRAGMENT_TAG
+    ) as? SpotlightManager
   }
 
   private fun logProfileChooserEvent() {
